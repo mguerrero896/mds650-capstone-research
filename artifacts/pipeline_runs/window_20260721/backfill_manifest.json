@@ -1,0 +1,48 @@
+{
+  "authorized_for_modeling": false,
+  "b1_status": "INFEASIBLE",
+  "benchmark_status": "NOT_RUN_PIT_GATE",
+  "candidate_assets": [
+    "AAPL",
+    "AMZN",
+    "META",
+    "MSFT",
+    "NVDA",
+    "QQQ",
+    "SPY",
+    "TSLA"
+  ],
+  "capped_uw_windows": [],
+  "duplicate_event_records_removed": 1323587,
+  "event_coverage_complete": true,
+  "fallback_comparison": "B2-vs-B0",
+  "frozen_assets": [
+    "AAPL",
+    "AMZN",
+    "MSFT",
+    "NVDA",
+    "QQQ",
+    "SPY"
+  ],
+  "mode": "backfill",
+  "pit_warning": "Option-event publication availability and ordinary option-state PIT timestamps remain unverified; no B1/B2 predictor claim is authorized.",
+  "raw_response_hash_count": 4320,
+  "row_counts": {
+    "corporate_events": 716,
+    "forecast_origins": 143964,
+    "option_quotes": 0,
+    "option_state_snapshots": 0,
+    "option_trades": 0,
+    "rv30_targets": 143964,
+    "underlying_1min": 780214,
+    "unusual_option_events": 348413
+  },
+  "run_id": "29db8e70-0686-4585-86d5-dfabc00295cf",
+  "study_window_end_exclusive": "2026-07-21",
+  "study_window_start": "2025-07-21",
+  "target_contract": {
+    "anchor_plus_future_closes": 31,
+    "formula_version": "rv30-v1",
+    "future_log_returns": 30
+  }
+}

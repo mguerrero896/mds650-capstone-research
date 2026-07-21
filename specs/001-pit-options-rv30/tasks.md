@@ -1,0 +1,229 @@
+# Tasks: Point-in-Time Options Activity for RV30 Forecasting
+
+**Input**: `spec.md`, `plan.md`, `research.md`, `data-model.md`, and the three
+contracts under `contracts/`.
+
+**Tests**: Required by the specification and must be written before production
+implementation. Live integration tests are small, authenticated, sanitized, and
+skipped/blocked when a required secret is absent; they never trigger backfill.
+
+**Research safety**: all tasks are local/research-only. No broker order, email,
+publication, deployment, destructive deletion, or secret-value logging is
+permitted.
+
+## Recovery iteration control
+
+This revision preserves the planned production task graph while recording a bounded, research-only
+execution completed after the approved audit/test gates. Pilot and backfill scripts under
+`scripts/` emit evidence manifests but do not constitute the production connector, model or
+benchmark implementation tasks below. `[x]` items are completed controls or evidence tasks;
+unchecked tasks remain intentionally pending. B1 infeasibility blocks benchmark claims, not the
+evidence package.
+
+## Phase 1: Setup
+
+- [x] T001 Historical baseline and approved runtime: `pyproject.toml` targets Python 3.12.12 (`>=3.12,<3.13`) after compatibility-matrix approval; provider calls were not used for the migration.
+- [x] T002 Create `uv` configuration and regenerate a reproducible `uv.lock` without provider calls; clean Python 3.12.12 installation passed.
+- [ ] T003 [P] Create the `src/mds650/` package skeleton and public module exports.
+- [ ] T004 [P] Create `tests/unit/`, `tests/contract/`, `tests/integration/`, `tests/e2e/`, and sanitized fixture directories.
+- [ ] T005 [P] Configure `ruff`, `mypy`, `pytest`, coverage, and test markers in `pyproject.toml`.
+- [ ] T006 [P] Add `.gitignore`, `.env.example` with variable names only, and raw-data exclusion rules.
+
+## Phase 2: Foundational (blocking prerequisites)
+
+- [ ] T007 Write failing unit tests for strict settings, presence-only secret checks, research-only mode, and forbidden external mutations in `tests/unit/test_settings.py`.
+- [ ] T008 [P] Write failing contract tests for all sanitized fixture schema fingerprints in `tests/contract/test_provider_schemas.py`.
+- [ ] T009 [P] Write failing unit tests for UTC/New York conversion, regular-session boundaries, DST transitions, and five-minute origin alignment in `tests/unit/test_time.py`.
+- [ ] T010 [P] Write failing unit tests for deterministic duplicate keys, null policy, and invalid OHLC relationships in `tests/unit/test_quality.py`, then execute TDD's red baseline before any implementation task.
+- [ ] T011 [P] Implement `src/mds650/config.py` with `pydantic-settings`, presence-only secret validation, explicit research-only defaults, and typed configuration.
+- [ ] T012 [P] Implement `src/mds650/logging.py` with structured standard-library logging and secret redaction.
+- [ ] T013 [P] Implement `src/mds650/errors.py` with typed fail-closed errors for authentication, schema drift, licensing, PIT, quality, and overlap failures.
+- [ ] T014 Implement `src/mds650/time.py` for timezone-aware parsing, DST-safe session calendars, and origin windows (depends on T009).
+- [ ] T015 Implement `src/mds650/quality.py` for configurable completeness, duplicates, nulls, and schema acceptance (depends on T010).
+- [ ] T016 Implement `src/mds650/storage.py` for immutable raw payload hashing, Parquet/DuckDB normalized storage, and provenance links.
+- [ ] T017 Implement `src/mds650/contracts.py` with typed records matching `data-model.md` and contract documents.
+- [ ] T018 [P] Add sanitized provider fixtures and fixture metadata under `tests/fixtures/providers/` with no credentials or unrestricted raw redistribution.
+- [x] T018A [P] Import `artifacts/api_audit/exploratory_v0/provider_audit_manifest.json` as byte-preserved sanitized fixtures and record its provenance.
+- [x] T018B [P] Validate fixture hashes and fail on duplicate manifest composite keys or duplicate hashes under distinct requests in `tests/contract/test_authenticated_audit_manifest.py` and `tests/unit/test_audit_manifest.py`.
+- [x] T018C [P] Create and validate JSON Schema 1.1 at `specs/001-pit-options-rv30/contracts/provider-audit-manifest.schema.json`.
+- [x] T018D [P] Plan and exercise schema-validation, secret-scan, personal-path, deterministic-order and idempotency tests without executing production provider connectors.
+- [ ] T019 Run foundational tests and static gates after T011–T018; record red baseline and contract status in `docs/recovery/spec_kit_analysis_report.md`.
+
+**Checkpoint**: foundational contracts, safety controls, time semantics, and
+storage conventions are ready; no provider client or pilot may run before this
+checkpoint passes.
+
+## Phase 3A: User Story 1 — Authenticated data feasibility (Priority: P1)
+
+**Goal**: produce sanitized, machine-readable and human-readable audits for
+FMP, Unusual Whales, and directed Massive contract data.
+
+**Independent test**: fixture contract tests pass, secret presence is verified
+without values, and a small live audit either produces a valid manifest or an
+explicit blocked failure code.
+
+### Tests first
+
+- [ ] T020 [P] [US1] Add failing FMP fixture tests for one-minute OHLCV and structured earnings fields in `tests/contract/test_fmp_contract.py`.
+- [ ] T021 [P] [US1] Add failing Unusual Whales fixture tests for pagination, contract/event fields, activity proxies, and PIT option-state availability in `tests/contract/test_unusual_whales_contract.py`.
+- [ ] T022 [P] [US1] Add failing Massive fixture tests for directed contract trades/quotes, bid/ask, condition codes, timestamp precision, and empty windows in `tests/contract/test_massive_contract.py`.
+- [ ] T023 [P] [US1] Add failing pagination tests with repeated-page, cursor, and maximum-page fixtures in `tests/unit/test_pagination.py`.
+- [ ] T024 [P] [US1] Add failing sanitized-manifest tests proving no secret values or authorization headers are emitted in `tests/unit/test_audit_manifest.py`.
+- [ ] T025 [P] [US1] Add failing small live integration smoke tests guarded by presence-only secret checks in `tests/integration/test_provider_smoke.py`.
+- [x] T025A [P] [US1] Diagnose Massive host, authentication, contract format and entitlement status in `docs/recovery/provider_audit_v1_plan.md`; do not download full OPRA quotes. The initial raw-ticker probe returned 404/403; the corrected `O:`-prefixed event-returned contract on `api.massive.com` returned 200 for reference, trades and quotes, while broader coverage remains unverified.
+- [x] T025B [P] [US1] Resolve Unusual Whales canonical aliases and field-by-field time semantics for `created_at`, `start_time` and `end_time`; prohibit undocumented `executed_at`. Aliases, official term-structure/skew field coverage and timestamp metadata are recorded; PIT ordinary option state remains unverified because availability timing is absent.
+- [x] T025C [P] [US1] Probe FMP timezone using winter, summer, DST-transition and early-close requests; exact bar semantics remain an acceptance blocker pending official-calendar comparison.
+- [x] T025D [P] [US1] Classify FMP earnings applicability as `applicable`, `not_applicable`, `unsupported` or `invalid_response` and require returned/requested symbol equality; SPY/QQQ are `not_applicable` unless evidence changes that classification.
+- [x] T025E [P] [US1] Probe whether FMP timestamps are bar starts or closes and define the exact origin close/last valid origin in `docs/methodology_decisions.md`; result remains unresolved and blocks RV30 implementation.
+- [x] T025F [P] [US1] Locate the missing AMZN and TSLA minute candidates and classify them as `unclassified_provider_calendar_or_halt` without interpolation; further official-calendar/halt resolution remains required.
+
+### Implementation
+
+- [ ] T026 [P] [US1] Implement `src/mds650/providers/base.py` with typed retry/backoff, timeout, pagination, rate-limit observation, and schema-fingerprint interfaces.
+- [ ] T027 [P] [US1] Implement `src/mds650/providers/fmp.py` for one-minute OHLCV and structured earnings audit requests.
+- [ ] T028 [P] [US1] Implement `src/mds650/providers/unusual_whales.py` for historical unusual activity and point-in-time option-state probes.
+- [ ] T029 [P] [US1] Implement `src/mds650/providers/massive.py` for directed contract trades and quote validation only.
+- [ ] T030 Implement `src/mds650/audit.py` to orchestrate the three provider audits and classify hard/soft failures (depends on T026–T029).
+- [ ] T031 Implement `src/mds650/manifests.py` to write the provider-audit contract, hashes, schema fields, coverage, and sanitized human report (depends on T016, T030).
+- [x] T031A [P] Migrate raw evidence from Temp to restricted persistent storage without exposing personal paths in distributable reports; record migration hashes in `docs/recovery/audit_v0_findings.md`.
+- [x] T031B [P] Generate and validate manifest `schema_version: "1.1"` with explicit enums and separate diagnostics in `specs/001-pit-options-rv30/contracts/provider-audit-manifest.schema.json`.
+- [x] T031C [P] Prove audit idempotency using composite request keys, repeated-page detection and deterministic order in `tests/contract/test_authenticated_audit_manifest.py`.
+- [x] T031D [P] Prove absence of secrets and personal paths in manifests, fixtures, logs and reports in `tests/contract/test_authenticated_audit_manifest.py` and `tests/unit/test_audit_manifest.py`.
+- [x] T031E [US1] Generate provider-audit summary v1 exclusively from a validated manifest and preserve v0 as exploratory evidence; latest validated bounded evidence is `artifacts/api_audit/authenticated_v1r/provider_audit_summary.md`, with v1m–v1q retained immutably and lineage documented in `docs/recovery/provider_audit_v1_plan.md`.
+- [ ] T032 [US1] Add configurable acceptance thresholds and provider license checks in `config/acceptance.yaml` and `src/mds650/acceptance.py`.
+- [ ] T033 [US1] Run fixture and bounded live integration tests in `tests/integration/test_provider_smoke.py`; emit no backfill command when the audit is red.
+
+**Checkpoint**: US1 is complete only when the audit manifest is reproducible,
+sanitized, and reports the oldest accessible dates, common overlap, B1
+feasibility, and exact failure codes.
+
+## Phase 3B: User Story 3 — Verified literature base (Priority: P2, parallel with Phase 3A)
+
+**Goal**: verify ten empirical studies before freezing variables, benchmarks, exact models,
+metrics, validation or methodological claims.
+
+**Independent test**: each row resolves to a DOI/stable URL and records APA 7, authors, year,
+title, venue/status, market/sample, frequency, objective, predictors, exact models, exact
+benchmark, temporal protocol, leakage control, metrics, result, limitation, exact project
+implication and verification status.
+
+- [x] T049 [P] [US3] Add a literature schema and validation tests in `tests/contract/test_literature_matrix.py`.
+- [x] T050 [P] [US3] Create `docs/literature_matrix.csv` with ten verified rows and all required fields; do not use generic model-superiority claims.
+- [x] T051 [P] [US3] Create `docs/literature_sources/` index with DOI/stable URL, publication status, retrieval date and verification notes.
+- [x] T052 [US3] Validate date range January 2023–July 2026, categories and exact models (HAR, HARQ, OLS, LASSO, Elastic Net, Random Forest, XGBoost, LightGBM, MLP, LSTM) in `docs/literature_matrix.csv`.
+- [x] T053 [US3] Record recent empirical justification for HAR and QLIKE while separating foundational citations in `docs/literature_sources/`.
+- [x] T054 [US3] Run literature verification and mark unresolved source/licensing issues as explicit blockers in `docs/recovery/spec_kit_analysis_report.md` before any variable/benchmark/model freeze.
+
+**Checkpoint**: Phase 3B is accepted only when all ten studies are independently verifiable;
+it may proceed in parallel with Phase 3A but blocks later freeze decisions.
+
+## Phase 4: User Story 2 — Point-in-time pilot dataset (Priority: P1)
+
+**Goal**: construct a leakage-safe eight-asset pilot with immutable raw
+provenance, six normalized components, five-minute origins, and RV30 targets.
+
+**Independent test**: the end-to-end pilot fixture produces deterministic rows,
+event/no-event origins, quality profile, and row-level traceability without
+future predictor fields.
+
+### Tests first
+
+- [ ] T034 [P] [US2] Add failing normalization tests for all six component tables in `tests/unit/test_normalize.py`.
+- [ ] T035 [P] [US2] Add failing point-in-time leakage tests for contemporaneous and future fields in `tests/unit/test_pit.py`.
+- [ ] T036 [P] [US2] Add failing deterministic RV30 tests using only future one-minute closes in `tests/unit/test_target.py`.
+- [ ] T037 [P] [US2] Add failing earnings join tests and optional-news gating tests in `tests/unit/test_event_joins.py`.
+- [ ] T038 [P] [US2] Add failing asset quality/freeze tests proving 4–6 assets are selected only on configured quality and overlap metrics in `tests/unit/test_asset_freeze.py`.
+- [ ] T039 [P] [US2] Add failing missing-window, duplicate, and insufficient-event tests in `tests/unit/test_pilot_failures.py`.
+- [ ] T040 [P] [US2] Add failing end-to-end pilot test with sanitized fixtures in `tests/e2e/test_pilot_dataset.py`.
+
+### Implementation
+
+- [ ] T041 [P] [US2] Implement `src/mds650/normalize.py` for six typed component tables, UTC/NY timestamps, deduplication, and provenance.
+- [ ] T042 [P] [US2] Implement `src/mds650/events.py` for mandatory earnings joins and post-validation optional-news inclusion.
+- [ ] T043 [P] [US2] Implement `src/mds650/origins.py` for five-minute forecast origins, regular-session validation, and natural-prevalence event/no-event origins.
+- [ ] T044 [P] [US2] Implement `src/mds650/targets.py` for deterministic 30-minute realized variance from future one-minute closes.
+- [ ] T045 [P] [US2] Implement `src/mds650/asset_selection.py` for quality/coverage-only freeze and common-history calculation.
+- [ ] T046 Implement `src/mds650/pilot.py` to orchestrate extraction, normalization, joins, target construction, and fail-closed output (depends on T041–T045).
+- [ ] T047 [US2] Implement `src/mds650/profiling.py` for machine-readable profile, human report, and row trace.
+- [ ] T048 [US2] Run the fixture end-to-end pilot in `tests/e2e/test_pilot_dataset.py` and verify that a few-event window widens only through a recorded configuration change.
+
+**Checkpoint**: US2 is complete only when every pilot row has a valid cutoff,
+future-close trace, source hash, and target status, and no asset was selected by
+preliminary predictive performance.
+
+## Phase 5: User Story 4 — Nested benchmarks and reproducible evidence (Priority: P2)
+
+**Goal**: evaluate B0/B1/B2 out of sample with purge/embargo, QLIKE, confidence
+intervals, and an auditable execution manifest.
+
+**Independent test**: a deterministic fixture run produces nested benchmark
+records, blocked B1 behavior when PIT state is unavailable, and reproducible
+hashes/seeds.
+
+### Tests first
+
+- [ ] T055 [P] [US4] Add failing split, purge, and embargo tests in `tests/unit/test_splits.py`.
+- [ ] T056 [P] [US4] Add failing nested benchmark contract tests for B0/B1/B2 and B2-versus-B1 reporting in `tests/contract/test_benchmarks.py`.
+- [ ] T057 [P] [US4] Add failing metric and confidence-interval tests for QLIKE and secondary metrics in `tests/unit/test_metrics.py`.
+- [ ] T058 [P] [US4] Add failing reproducibility-manifest tests for seeds, repository revision, lock hash, data hashes, safety flags, and the predeclared multiple-testing/effect-size policy in `tests/unit/test_execution_manifest.py`.
+
+### Implementation
+
+- [ ] T059 [P] [US4] Implement `src/mds650/splits.py` for chronological OOS splits, purging, and embargo.
+- [ ] T060 [P] [US4] Implement `src/mds650/metrics.py` for QLIKE, secondary metrics, bootstrap confidence intervals, comparison summaries, and persistence of the predeclared multiple-testing/effect-size policy before final-test inspection.
+- [ ] T061 [P] [US4] Implement `src/mds650/benchmarks.py` for B0/B1/B2 feature contracts and fail-closed B1 gating.
+- [ ] T062 [P] [US4] Implement `src/mds650/execution.py` for deterministic seeds, artifact hashes, safety flags, and execution manifests.
+- [ ] T063 [US4] Run fixture benchmark evaluation in `tests/e2e/test_benchmark_evaluation.py` and generate per-asset, pooled, regime, and multiple-comparison diagnostics.
+
+**Checkpoint**: US4 is complete only when B2 versus B1 is reported on identical
+origins/assets and any inability to construct B1 blocks an incremental claim.
+
+## Phase 7: Colab and documentation polish
+
+- [x] T064 [P] Create `notebooks/MDS650_Research_Pipeline.ipynb` from modular imports with research question, Colab Secrets presence gate, frozen configuration, schemas, QC tables, preview, validation status, and sanitized exports.
+- [x] T065 [P] Add `docs/architecture.md` describing local source-of-truth boundaries and the Colab orchestration layer.
+- [x] T066 [P] Add `docs/week4_evidence_recovery.md` with provider, overlap, PIT, licensing, and evidence-recovery decision trees.
+- [x] T067 [P] Add `docs/data_dictionary.md` generated from returned schemas and normalized model definitions, plus a contract test in `tests/contract/test_public_data_dictionary.py` that checks the six observed components, PIT fields and public architecture boundary.
+- [ ] T068 Run `uv sync --locked`, `pytest`, `ruff check .`, `mypy src`, and coverage gates; record exact results in the execution manifest.
+- [ ] T069 Run the non-destructive quickstart from `specs/001-pit-options-rv30/quickstart.md`, compare local and Colab configuration/schema/QC manifest hashes, and confirm no secret values appear in logs, reports, fixtures, or notebook output.
+
+## Dependencies and parallel execution
+
+- Setup T001–T006 precedes foundational work.
+- Foundational T007–T019 blocks all user stories.
+- Within each story, tests precede their implementation; `[P]` marks tasks in distinct files with no dependency.
+- Phase 3A (US1) and Phase 3B (US3 literature) can proceed in parallel after foundational
+  fixture/schema gates. US2 depends on an accepted v1 provider audit; B1 depends on verified
+  ordinary option-state PIT status; asset freeze depends on verified common overlap; backfill
+  depends on an approved pilot; modeling depends on the frozen dataset; T064–T069 depend on
+  real evidence, accepted pilot/literature/benchmark contracts and runtime approval.
+- T049–T054 are Phase 3B tasks and MUST NOT be deferred until after the pilot.
+- Stop immediately and record a blocked status if any user-specified stopping condition is met.
+
+## Requirement traceability
+
+| Requirements | Planned task coverage |
+|---|---|
+| FR-001–FR-005 | T020–T033, T025A–T025F |
+| FR-006, FR-012, FR-022, FR-023 | T018A–T018D, T024, T031A–T031D |
+| FR-007, FR-007A, FR-011 | T009, T014, T025C, T025E, T025F, T035, T036, T039 |
+| FR-008, FR-010 | T038, T040, T045, T048 |
+| FR-009, FR-028 | T025D, T037, T042 |
+| FR-013–FR-016, FR-029 | T055–T063 |
+| FR-017 | T049–T054 |
+| FR-018–FR-020 | T064–T069 |
+| FR-021 | T007–T010, T020–T025, T034–T040, T055–T058 |
+| FR-024 | T006, T007, T069 |
+| FR-025–FR-027 | T018B–T018D, T025B, T031B–T031E |
+| SC-001–SC-003 | T018A–T018D, T024, T031A–T031E, T033 |
+| SC-004–SC-006 | T034–T048 |
+| SC-007 | T049–T054 |
+| SC-008–SC-009 | T055–T063 |
+| SC-010–SC-013 | T064–T069 and compatibility approval gate |
+
+## MVP strategy
+
+The recovery MVP is T018A–T018D plus the documentation corrections, schema review and
+Spec Kit coherence gates. The executed evidence increment is represented by the authenticated
+v1x audit, PIT artifact, pilot manifest and frozen-window backfill manifest; it does not waive
+the unchecked production tests or authorize B1/B2 benchmark claims.

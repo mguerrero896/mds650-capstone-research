@@ -1,0 +1,147 @@
+{
+  "authorized_for_backfill": false,
+  "b1_status": "BLOCKED",
+  "blockers": [
+    "B1_NOT_AUTHORIZED",
+    "COMMON_HISTORY_NOT_ESTABLISHED",
+    "PROVIDER_FAILURES_PRESENT"
+  ],
+  "candidate_assets": [
+    "SPY",
+    "QQQ",
+    "AAPL",
+    "MSFT",
+    "NVDA",
+    "TSLA",
+    "AMZN",
+    "META"
+  ],
+  "common_history_status": "NOT_ESTABLISHED",
+  "covered_assets": [
+    "AAPL",
+    "AMZN",
+    "META",
+    "MSFT",
+    "NVDA",
+    "QQQ",
+    "SPY",
+    "TSLA"
+  ],
+  "event_no_event_counts": {
+    "AAPL": {
+      "event": 1,
+      "no_event": 7
+    },
+    "AMZN": {
+      "event": 1,
+      "no_event": 7
+    },
+    "META": {
+      "event": 1,
+      "no_event": 7
+    },
+    "MSFT": {
+      "event": 1,
+      "no_event": 7
+    },
+    "NVDA": {
+      "event": 1,
+      "no_event": 7
+    },
+    "QQQ": {
+      "event": 1,
+      "no_event": 7
+    },
+    "SPY": {
+      "event": 1,
+      "no_event": 7
+    },
+    "TSLA": {
+      "event": 1,
+      "no_event": 7
+    }
+  },
+  "fixture_data_only": true,
+  "frozen_assets": [
+    "AAPL",
+    "AMZN",
+    "META",
+    "MSFT",
+    "NVDA",
+    "QQQ"
+  ],
+  "frozen_by": "coverage_and_quality_fixture_only",
+  "historical_provider_backfill": false,
+  "manifest_schema_version": "fixture-preview-1.0",
+  "mode": "fixture_preview",
+  "row_counts": {
+    "corporate_events": 8,
+    "forecast_origins": 16,
+    "option_quotes": 8,
+    "option_state_snapshots": 8,
+    "option_trades": 8,
+    "row_trace": 16,
+    "rv30_targets": 16,
+    "underlying_1min": 320,
+    "unusual_option_events": 8
+  },
+  "run_id": "fixture-preview-20260721",
+  "source_recipe_sha256": "11dc929cfd33ef15b803a89330454c27bea80114d1df13f83cd56b9b5410c570",
+  "synthetic_data_used": true,
+  "target_contract": {
+    "anchor_plus_future_closes": 31,
+    "formula_version": "rv30-v1",
+    "future_log_returns": 30
+  },
+  "target_exclusions": [
+    "AAPL:2026-07-16T13:40:00+00:00",
+    "AAPL:2026-07-16T13:45:00+00:00",
+    "AAPL:2026-07-16T13:50:00+00:00",
+    "AAPL:2026-07-16T13:55:00+00:00",
+    "AAPL:2026-07-16T14:00:00+00:00",
+    "AAPL:2026-07-16T14:05:00+00:00",
+    "AMZN:2026-07-16T13:40:00+00:00",
+    "AMZN:2026-07-16T13:45:00+00:00",
+    "AMZN:2026-07-16T13:50:00+00:00",
+    "AMZN:2026-07-16T13:55:00+00:00",
+    "AMZN:2026-07-16T14:00:00+00:00",
+    "AMZN:2026-07-16T14:05:00+00:00",
+    "META:2026-07-16T13:40:00+00:00",
+    "META:2026-07-16T13:45:00+00:00",
+    "META:2026-07-16T13:50:00+00:00",
+    "META:2026-07-16T13:55:00+00:00",
+    "META:2026-07-16T14:00:00+00:00",
+    "META:2026-07-16T14:05:00+00:00",
+    "MSFT:2026-07-16T13:40:00+00:00",
+    "MSFT:2026-07-16T13:45:00+00:00",
+    "MSFT:2026-07-16T13:50:00+00:00",
+    "MSFT:2026-07-16T13:55:00+00:00",
+    "MSFT:2026-07-16T14:00:00+00:00",
+    "MSFT:2026-07-16T14:05:00+00:00",
+    "NVDA:2026-07-16T13:40:00+00:00",
+    "NVDA:2026-07-16T13:45:00+00:00",
+    "NVDA:2026-07-16T13:50:00+00:00",
+    "NVDA:2026-07-16T13:55:00+00:00",
+    "NVDA:2026-07-16T14:00:00+00:00",
+    "NVDA:2026-07-16T14:05:00+00:00",
+    "QQQ:2026-07-16T13:40:00+00:00",
+    "QQQ:2026-07-16T13:45:00+00:00",
+    "QQQ:2026-07-16T13:50:00+00:00",
+    "QQQ:2026-07-16T13:55:00+00:00",
+    "QQQ:2026-07-16T14:00:00+00:00",
+    "QQQ:2026-07-16T14:05:00+00:00",
+    "SPY:2026-07-16T13:40:00+00:00",
+    "SPY:2026-07-16T13:45:00+00:00",
+    "SPY:2026-07-16T13:50:00+00:00",
+    "SPY:2026-07-16T13:55:00+00:00",
+    "SPY:2026-07-16T14:00:00+00:00",
+    "SPY:2026-07-16T14:05:00+00:00",
+    "TSLA:2026-07-16T13:40:00+00:00",
+    "TSLA:2026-07-16T13:45:00+00:00",
+    "TSLA:2026-07-16T13:50:00+00:00",
+    "TSLA:2026-07-16T13:55:00+00:00",
+    "TSLA:2026-07-16T14:00:00+00:00",
+    "TSLA:2026-07-16T14:05:00+00:00"
+  ],
+  "warning": "Not historical provider data, not a pilot acceptance, and not authorized for modeling."
+}

@@ -1,0 +1,64 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mds650-research-pipeline"
+version = "0.1.0"
+description = "Point-in-time options activity research pipeline for 30-minute realized variance."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "duckdb>=1.4,<2",
+  "httpx>=0.28,<1",
+  "polars>=1.35,<2",
+  "pydantic>=2.12,<3",
+  "pydantic-settings>=2.11,<3",
+  "pyarrow>=22,<23",
+  "tzdata>=2025.2,<2027",
+]
+
+[dependency-groups]
+dev = [
+  "coverage>=7.10,<8",
+  "mypy>=1.18,<2",
+  "pytest>=8.4,<9",
+  "pytest-cov>=7,<8",
+  "jsonschema>=4.23,<5",
+  "exchange-calendars>=4.11,<5",
+  "ruff>=0.14,<1",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mds650"]
+
+[tool.pytest.ini_options]
+addopts = "-q --strict-markers"
+testpaths = ["tests"]
+markers = [
+  "live: bounded authenticated provider probe; never a backfill",
+  "e2e: fixture-only end-to-end pipeline test",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+packages = ["mds650"]
+mypy_path = "src"
+exclude = "(^|/)(tests|notebooks)/"
+
+[tool.coverage.run]
+branch = true
+source = ["mds650"]
+
+[tool.coverage.report]
+exclude_also = ["if TYPE_CHECKING:"]
+fail_under = 80

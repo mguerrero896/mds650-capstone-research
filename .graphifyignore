@@ -1,0 +1,21 @@
+# Generated/local state; never part of the project knowledge graph.
+.codex/
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.gstack/
+graphify-out/
+
+# Provider payloads are retained outside the repository and must not be indexed.
+artifacts/api_audit/*/raw/
+artifacts/api_audit/*/responses/
+artifacts/api_audit/*/payloads/
+data/raw/
+
+# Local secrets and machine-specific files.
+.env
+*.key
+*.pem

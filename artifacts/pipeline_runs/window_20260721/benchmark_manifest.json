@@ -1,0 +1,8 @@
+{
+  "B0": "NOT_RUN_PIT_GATE",
+  "B1": "INFEASIBLE",
+  "B2": "NOT_RUN_PIT_GATE",
+  "fallback": "B2-vs-B0 declared but not evaluated",
+  "primary_claim": "B2-vs-B1 not authorized",
+  "run_id": "29db8e70-0686-4585-86d5-dfabc00295cf"
+}

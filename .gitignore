@@ -1,0 +1,40 @@
+# Python and tooling
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Local/raw evidence and data
+data/raw/
+artifacts/raw/
+*.duckdb
+*.duckdb.wal
+
+# Notebook state
+.ipynb_checkpoints/
+
+# Graphify generated graph is versioned; local AST cache and cost counters are not.
+graphify-out/cache/
+graphify-out/cost.json
+
+# Editors and OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+.gstack/

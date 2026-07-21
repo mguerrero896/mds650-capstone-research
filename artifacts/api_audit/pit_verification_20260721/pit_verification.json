@@ -1,0 +1,65 @@
+{
+  "b1_status": "INFEASIBLE",
+  "decision": "ordinary IV/skew/term-structure fields are available, but retained payloads contain market dates without an independent publication/availability timestamp; B1 is infeasible and B2-vs-B0 is the only permitted fallback.",
+  "fallback_comparison": "B2-vs-B0",
+  "generated_at_utc": "2026-07-20T20:49:32.995823Z",
+  "independent_publication_timestamp_required": true,
+  "inspected_payloads": [
+    {
+      "fields": [
+        "date",
+        "dte",
+        "expiry",
+        "implied_move",
+        "implied_move_perc",
+        "ticker",
+        "volatility"
+      ],
+      "market_date_fields_only": true,
+      "payload_sha256": "2b1627c60e4cd85d9cebace8ce6f6424e38d6f234ff50a785212bcc0d249091f",
+      "probe": "uw-ordinary-term-structure-recent-aapl",
+      "publication_or_availability_fields": [],
+      "rows": 24
+    },
+    {
+      "fields": [
+        "date",
+        "dte",
+        "expiry",
+        "implied_move",
+        "implied_move_perc",
+        "ticker",
+        "volatility"
+      ],
+      "market_date_fields_only": true,
+      "payload_sha256": "d4573c3bde08772c35c4012b83818f3613f8ac7fab2e2013431e8f21681a6b5e",
+      "probe": "uw-ordinary-term-structure-old-aapl",
+      "publication_or_availability_fields": [],
+      "rows": 20
+    },
+    {
+      "fields": [
+        "date",
+        "delta",
+        "risk_reversal",
+        "ticker"
+      ],
+      "market_date_fields_only": true,
+      "payload_sha256": "8a06f314a8db0a3f267613d38cec1a64291cbb41bba7c8b7a09632e0d858b688",
+      "probe": "uw-ordinary-skew-recent-aapl",
+      "publication_or_availability_fields": [],
+      "rows": 30
+    },
+    {
+      "fields": [],
+      "market_date_fields_only": false,
+      "payload_sha256": "8fe32e407a1038ee38753b70e5374b3a46d6ae9d5f16cd5b73c53abaca8f5ed0",
+      "probe": "uw-ordinary-skew-old-aapl",
+      "publication_or_availability_fields": [],
+      "rows": 0
+    }
+  ],
+  "ordinary_option_state_pit_verified": false,
+  "schema_version": "pit-verification-1.0",
+  "source": "retained raw Unusual Whales option-state payloads"
+}

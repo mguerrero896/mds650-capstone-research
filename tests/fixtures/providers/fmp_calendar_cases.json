@@ -1,0 +1,8 @@
+[
+  {"case": "winter", "asset": "SPY", "rows": 1170, "regular_session_expected_rows": 1170, "missing_session_dates": [], "missing_minute_candidates": [], "classification": "pass"},
+  {"case": "summer", "asset": "SPY", "rows": 1170, "regular_session_expected_rows": 1560, "missing_session_dates": ["2026-07-13"], "missing_minute_candidates": [], "classification": "missing_session_unclassified"},
+  {"case": "dst", "asset": "SPY", "rows": 779, "regular_session_expected_rows": 1170, "missing_session_dates": ["2026-03-06"], "missing_minute_candidates": ["2026-03-09 15:19:00"], "classification": "missing_session_and_minute_unclassified"},
+  {"case": "early-close", "asset": "SPY", "rows": 210, "regular_session_expected_rows": 210, "missing_session_dates": [], "missing_minute_candidates": [], "classification": "pass"},
+  {"case": "missing-minute", "asset": "AMZN", "rows": 1169, "regular_session_expected_rows": 1170, "missing_session_dates": [], "missing_minute_candidates": ["2015-01-07 12:15:00"], "classification": "unclassified_provider_calendar_or_halt"},
+  {"case": "missing-minute", "asset": "TSLA", "rows": 1169, "regular_session_expected_rows": 1170, "missing_session_dates": [], "missing_minute_candidates": ["2015-01-07 12:34:00"], "classification": "unclassified_provider_calendar_or_halt"}
+]

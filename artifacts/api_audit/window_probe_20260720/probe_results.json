@@ -1,0 +1,269 @@
+{
+  "summary": {
+    "generated_at_utc": "2026-07-20T20:09:07.092569+00:00",
+    "request_count": 19,
+    "unusual_whales": {
+      "oldest_entitled_day": "2023-08-18",
+      "days_back_from_today": 1067,
+      "note": "day D allowed == HTTP 200 for newer_than=D, older_than=D+1; 403 == plan-blocked. rows may be 0 on allowed days."
+    },
+    "fmp": {
+      "per_depth": {
+        "7d": {
+          "date": "2026-07-13",
+          "status": 200,
+          "rows": 390
+        },
+        "30d": {
+          "date": "2026-06-19",
+          "status": 200,
+          "rows": 0
+        },
+        "90d": {
+          "date": "2026-04-21",
+          "status": 200,
+          "rows": 390
+        },
+        "180d": {
+          "date": "2026-01-21",
+          "status": 200,
+          "rows": 390
+        },
+        "365d": {
+          "date": "2025-07-18",
+          "status": 200,
+          "rows": 390
+        },
+        "730d": {
+          "date": "2024-07-19",
+          "status": 200,
+          "rows": 390
+        }
+      },
+      "deepest_nonempty_days": 730
+    },
+    "massive": {
+      "reference_2017": {
+        "status": 200,
+        "rows": 1
+      },
+      "stock_minute_2015": {
+        "status": 403,
+        "rows": 0
+      }
+    },
+    "secret_values_emitted": false
+  },
+  "requests": [
+    {
+      "provider": "unusual_whales",
+      "purpose": "flow-alerts day 2023-08-16",
+      "url": "https://api.unusualwhales.com/api/option-trades/flow-alerts",
+      "params": {
+        "newer_than": "2023-08-16T00:00:00Z",
+        "older_than": "2023-08-17T00:00:00Z"
+      },
+      "status": 403,
+      "rows": 0
+    },
+    {
+      "provider": "unusual_whales",
+      "purpose": "flow-alerts day 2025-01-31",
+      "url": "https://api.unusualwhales.com/api/option-trades/flow-alerts",
+      "params": {
+        "newer_than": "2025-01-31T00:00:00Z",
+        "older_than": "2025-02-01T00:00:00Z"
+      },
+      "status": 200,
+      "rows": 50
+    },
+    {
+      "provider": "unusual_whales",
+      "purpose": "flow-alerts day 2024-05-09",
+      "url": "https://api.unusualwhales.com/api/option-trades/flow-alerts",
+      "params": {
+        "newer_than": "2024-05-09T00:00:00Z",
+        "older_than": "2024-05-10T00:00:00Z"
+      },
+      "status": 200,
+      "rows": 0
+    },
+    {
+      "provider": "unusual_whales",
+      "purpose": "flow-alerts day 2023-12-27",
+      "url": "https://api.unusualwhales.com/api/option-trades/flow-alerts",
+      "params": {
+        "newer_than": "2023-12-27T00:00:00Z",
+        "older_than": "2023-12-28T00:00:00Z"
+      },
+      "status": 200,
+      "rows": 0
+    },
+    {
+      "provider": "unusual_whales",
+      "purpose": "flow-alerts day 2023-10-21",
+      "url": "https://api.unusualwhales.com/api/option-trades/flow-alerts",
+      "params": {
+        "newer_than": "2023-10-21T00:00:00Z",
+        "older_than": "2023-10-22T00:00:00Z"
+      },
+      "status": 200,
+      "rows": 0
+    },
+    {
+      "provider": "unusual_whales",
+      "purpose": "flow-alerts day 2023-09-18",
+      "url": "https://api.unusualwhales.com/api/option-trades/flow-alerts",
+      "params": {
+        "newer_than": "2023-09-18T00:00:00Z",
+        "older_than": "2023-09-19T00:00:00Z"
+      },
+      "status": 200,
+      "rows": 0
+    },
+    {
+      "provider": "unusual_whales",
+      "purpose": "flow-alerts day 2023-09-01",
+      "url": "https://api.unusualwhales.com/api/option-trades/flow-alerts",
+      "params": {
+        "newer_than": "2023-09-01T00:00:00Z",
+        "older_than": "2023-09-02T00:00:00Z"
+      },
+      "status": 200,
+      "rows": 0
+    },
+    {
+      "provider": "unusual_whales",
+      "purpose": "flow-alerts day 2023-08-24",
+      "url": "https://api.unusualwhales.com/api/option-trades/flow-alerts",
+      "params": {
+        "newer_than": "2023-08-24T00:00:00Z",
+        "older_than": "2023-08-25T00:00:00Z"
+      },
+      "status": 200,
+      "rows": 0
+    },
+    {
+      "provider": "unusual_whales",
+      "purpose": "flow-alerts day 2023-08-20",
+      "url": "https://api.unusualwhales.com/api/option-trades/flow-alerts",
+      "params": {
+        "newer_than": "2023-08-20T00:00:00Z",
+        "older_than": "2023-08-21T00:00:00Z"
+      },
+      "status": 200,
+      "rows": 0
+    },
+    {
+      "provider": "unusual_whales",
+      "purpose": "flow-alerts day 2023-08-18",
+      "url": "https://api.unusualwhales.com/api/option-trades/flow-alerts",
+      "params": {
+        "newer_than": "2023-08-18T00:00:00Z",
+        "older_than": "2023-08-19T00:00:00Z"
+      },
+      "status": 200,
+      "rows": 0
+    },
+    {
+      "provider": "unusual_whales",
+      "purpose": "flow-alerts day 2023-08-17",
+      "url": "https://api.unusualwhales.com/api/option-trades/flow-alerts",
+      "params": {
+        "newer_than": "2023-08-17T00:00:00Z",
+        "older_than": "2023-08-18T00:00:00Z"
+      },
+      "status": 403,
+      "rows": 0
+    },
+    {
+      "provider": "fmp",
+      "purpose": "1min depth 7d",
+      "url": "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL",
+      "params": {
+        "from": "2026-07-13",
+        "to": "2026-07-13"
+      },
+      "status": 200,
+      "rows": 390
+    },
+    {
+      "provider": "fmp",
+      "purpose": "1min depth 30d",
+      "url": "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL",
+      "params": {
+        "from": "2026-06-19",
+        "to": "2026-06-19"
+      },
+      "status": 200,
+      "rows": 0
+    },
+    {
+      "provider": "fmp",
+      "purpose": "1min depth 90d",
+      "url": "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL",
+      "params": {
+        "from": "2026-04-21",
+        "to": "2026-04-21"
+      },
+      "status": 200,
+      "rows": 390
+    },
+    {
+      "provider": "fmp",
+      "purpose": "1min depth 180d",
+      "url": "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL",
+      "params": {
+        "from": "2026-01-21",
+        "to": "2026-01-21"
+      },
+      "status": 200,
+      "rows": 390
+    },
+    {
+      "provider": "fmp",
+      "purpose": "1min depth 365d",
+      "url": "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL",
+      "params": {
+        "from": "2025-07-18",
+        "to": "2025-07-18"
+      },
+      "status": 200,
+      "rows": 390
+    },
+    {
+      "provider": "fmp",
+      "purpose": "1min depth 730d",
+      "url": "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL",
+      "params": {
+        "from": "2024-07-19",
+        "to": "2024-07-19"
+      },
+      "status": 200,
+      "rows": 390
+    },
+    {
+      "provider": "massive",
+      "purpose": "expired 2017 contract reference",
+      "url": "https://api.massive.com/v3/reference/options/contracts",
+      "params": {
+        "underlying_ticker": "AAPL",
+        "expiration_date.lte": "2017-12-31",
+        "expired": "true",
+        "limit": "1"
+      },
+      "status": 200,
+      "rows": 1
+    },
+    {
+      "provider": "massive",
+      "purpose": "2015 minute aggregates AAPL",
+      "url": "https://api.massive.com/v2/aggs/ticker/AAPL/range/1/minute/2015-01-05/2015-01-05",
+      "params": {
+        "limit": "5"
+      },
+      "status": 403,
+      "rows": 0
+    }
+  ]
+}
