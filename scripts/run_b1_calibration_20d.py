@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import os
+import time as time_module
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from datetime import date, timedelta
@@ -51,6 +52,43 @@ def _secret(name: str) -> str:
     return value
 
 
+def _fmp_list_request(
+    client: httpx.Client,
+    url: str,
+    params: dict[str, str],
+    key: str,
+    *,
+    max_attempts: int = 4,
+    backoff_seconds: float = 1.0,
+) -> list[dict[str, Any]]:
+    """Request one FMP list payload with bounded transient retries."""
+    safe = {**params, "apikey": key}
+    for attempt in range(1, max_attempts + 1):
+        try:
+            response = client.get(url, params=safe)
+        except httpx.TransportError:
+            if attempt == max_attempts:
+                raise RuntimeError("FMP_REQUEST_RETRY_EXHAUSTED") from None
+            time_module.sleep(backoff_seconds * 2 ** (attempt - 1))
+            continue
+        retryable = response.status_code == 429 or response.status_code >= 500
+        if retryable and attempt < max_attempts:
+            time_module.sleep(backoff_seconds * 2 ** (attempt - 1))
+            continue
+        if response.status_code != 200:
+            raise RuntimeError(f"FMP_HTTP_{response.status_code}")
+        try:
+            payload = response.json()
+        except ValueError:
+            raise RuntimeError("FMP_RESPONSE_NOT_JSON") from None
+        if not isinstance(payload, list) or not all(
+            isinstance(row, dict) for row in payload
+        ):
+            raise RuntimeError("FMP_RESPONSE_NOT_LIST")
+        return payload
+    raise RuntimeError("FMP_REQUEST_RETRY_EXHAUSTED")
+
+
 def _market_input_window(config: B1BuildConfig) -> tuple[date, date]:
     """Return the trailing-year PIT input window for rates and dividends."""
     first = min(date.fromisoformat(day) for day in config.sessions)
@@ -67,17 +105,30 @@ def _rates_and_dividends(
     first, last = _market_input_window(config)
     rates: dict[str, float] = {}
     with httpx.Client(timeout=90.0) as client:
-        response = client.get("https://financialmodelingprep.com/stable/treasury-rates", params={"from": first.isoformat(), "to": last.isoformat(), "apikey": fmp_key})
-        payload = response.json() if response.status_code == 200 else []
-        for row in payload if isinstance(payload, list) else []:
+        payload = _fmp_list_request(
+            client,
+            "https://financialmodelingprep.com/stable/treasury-rates",
+            {"from": first.isoformat(), "to": last.isoformat()},
+            fmp_key,
+        )
+        for row in payload:
             if isinstance(row, dict) and row.get("date") and row.get("month3") is not None:
                 rates[str(row["date"])] = float(row["month3"]) / 100.0
+    if not rates:
+        raise RuntimeError("FMP_TREASURY_RATES_EMPTY")
     dividends: dict[str, list[dict[str, Any]]] = {}
     with httpx.Client(timeout=90.0) as client:
         for asset in ASSETS:
-            response = client.get("https://financialmodelingprep.com/stable/dividends", params={"symbol": asset, "from": first.isoformat(), "to": last.isoformat(), "apikey": fmp_key})
-            payload = response.json() if response.status_code == 200 else []
-            dividends[asset] = payload if isinstance(payload, list) else []
+            dividends[asset] = _fmp_list_request(
+                client,
+                "https://financialmodelingprep.com/stable/dividends",
+                {
+                    "symbol": asset,
+                    "from": first.isoformat(),
+                    "to": last.isoformat(),
+                },
+                fmp_key,
+            )
     result: dict[tuple[str, str], float] = {}
     for row in origins.group_by(["asset", "session_date"]).agg(pl.col("spot").first()).iter_rows(named=True):
         asset, day, spot = str(row["asset"]), str(row["session_date"]), float(row["spot"])
@@ -96,8 +147,19 @@ def _rates_and_dividends(
 
 def _rate_for(day: str, rates: dict[str, float]) -> float:
     """Select the latest Treasury rate not after the origin date."""
+    return _rate_observation_for(day, rates)[1]
+
+
+def _rate_observation_for(
+    day: str,
+    rates: dict[str, float],
+) -> tuple[str, float]:
+    """Return the latest pre-origin Treasury observation date and value."""
     candidates = [key for key in rates if key <= day]
-    return rates[max(candidates)] if candidates else 0.0
+    if not candidates:
+        raise RuntimeError(f"B1Q_RATE_NOT_AVAILABLE:{day}")
+    source_date = max(candidates)
+    return source_date, rates[source_date]
 
 
 def _resolve_contracts(origins: pl.DataFrame, massive_key: str) -> dict[tuple[str, str], list[dict[str, Any]]]:
@@ -124,7 +186,12 @@ def _fetch_quotes(
         futures = {executor.submit(closure.fetch_contract_day, job, massive_key): job for job in jobs}
         for future in as_completed(futures):
             asset, day, contract = futures[future]
-            output[(asset, day, contract["contract"])] = future.result()
+            cache = future.result()
+            if cache.get("http_status") != 200:
+                raise RuntimeError(
+                    f"B1Q_QUOTE_CACHE_HTTP_FAILURE:{asset}:{day}"
+                )
+            output[(asset, day, contract["contract"])] = cache
     return output
 
 
@@ -196,14 +263,17 @@ def main(config: B1BuildConfig = DEFAULT_CONFIG) -> None:
     contracts = _resolve_contracts(origins, massive_key)
     quote_caches = _fetch_quotes(contracts, massive_key, config)
     rows: list[dict[str, Any]] = []
+    attempt_rows: list[dict[str, Any]] = []
     failures: list[dict[str, Any]] = []
     for origin in origins.iter_rows(named=True):
         asset, day = str(origin["asset"]), str(origin["session_date"])
+        rate_source_date, rate = _rate_observation_for(day, rates)
+        dividend_yield = dividend_yields.get((asset, day), 0.0)
         iv_rows: list[dict[str, Any]] = []
         for contract in contracts.get((asset, day), []):
             cache = quote_caches[(asset, day, contract["contract"])]
             quote = closure.latest_quote(cache, int(origin["origin_ns"]))
-            attempt: dict[str, Any] = {**contract, "asset": asset, "origin_id": origin["origin_id"], "forecast_origin_utc": origin["forecast_origin_utc"].isoformat(), "spot": float(origin["spot"]), "moneyness": float(contract["strike"]) / float(origin["spot"]), "rate": _rate_for(day, rates), "dividend_yield": dividend_yields.get((asset, day), 0.0), "iv_success": False, "iv": None, "failure_reason": "NO_QUOTE_BEFORE_ORIGIN"}
+            attempt: dict[str, Any] = {**contract, "asset": asset, "session_date": day, "origin_id": origin["origin_id"], "forecast_origin_utc": origin["forecast_origin_utc"].isoformat(), "forecast_origin_ns": int(origin["origin_ns"]), "spot": float(origin["spot"]), "moneyness": float(contract["strike"]) / float(origin["spot"]), "rate": rate, "rate_source_date": rate_source_date, "dividend_yield": dividend_yield, "dividend_assumption": "PRE_ORIGIN_TRAILING_DECLARATIONS" if dividend_yield > 0 else "NO_PRE_ORIGIN_DIVIDEND_Q_ZERO", "source_request_hash": cache.get("source_request_hash"), "iv_success": False, "iv": None, "failure_reason": "NO_QUOTE_BEFORE_ORIGIN"}
             if quote:
                 attempt["sip_timestamp"] = quote.get("sip_timestamp")
                 attempt["failure_reason"] = quote.get(
@@ -211,7 +281,7 @@ def main(config: B1BuildConfig = DEFAULT_CONFIG) -> None:
                     "NO_QUOTE_BEFORE_ORIGIN",
                 )
             if quote and quote.get("midpoint") is not None:
-                attempt.update({"quote_age_seconds": quote.get("quote_age_seconds"), "relative_spread": quote.get("relative_spread"), "midpoint": quote.get("midpoint")})
+                attempt.update({"bid": quote.get("bid"), "ask": quote.get("ask"), "quote_age_seconds": quote.get("quote_age_seconds"), "relative_spread": quote.get("relative_spread"), "midpoint": quote.get("midpoint")})
                 if quote["quote_age_seconds"] > 60:
                     attempt["failure_reason"] = "STALE_QUOTE"
                 elif quote["relative_spread"] > 0.25:
@@ -220,20 +290,29 @@ def main(config: B1BuildConfig = DEFAULT_CONFIG) -> None:
                     result = closure.invert_iv(float(origin["spot"]), float(contract["strike"]), float(contract["dte"]) / 365.0, attempt["rate"], attempt["dividend_yield"], float(quote["midpoint"]), str(contract["option_type"]))
                     attempt.update({"iv_success": bool(result["success"]), "iv": result.get("iv"), "failure_reason": result.get("failure_reason"), "iterations": result.get("iterations"), "lower_bound": result.get("lower_bound"), "upper_bound": result.get("upper_bound")})
             iv_rows.append(attempt)
+        attempt_rows.extend(iv_rows)
         summary = closure.route_summary(iv_rows, route="B1Q")
         atm, skew, term = summary.get("b1q_atm_iv"), summary.get("b1q_skew"), summary.get("b1q_term_structure") or {}
         pit_evidence = _quote_pit_evidence(iv_rows, int(origin["origin_ns"]))
-        row = {"origin_id": origin["origin_id"], "asset": asset, "session_date": day, "forecast_origin_utc": origin["forecast_origin_utc"], "session_segment": origin["session_segment"], "instrument_type": "ETF" if asset in {"SPY", "QQQ"} else "equity", "atm_iv_available": atm is not None, "skew_available": skew is not None, "term_structure_available": any(value is not None for value in term.values()), "b1a_complete": atm is not None, "b1b_complete": atm is not None and skew is not None, "b1c_complete": atm is not None and skew is not None and all(value is not None for value in (term.get("short_to_medium"), term.get("medium_to_long"), term.get("short_to_long"))), "b1q_atm_iv": atm, "b1q_skew": skew, "b1q_term_structure": term, "valid_contract_count": summary.get("valid_contract_count", 0), "valid_quote_count": summary.get("valid_quote_count", 0), "valid_expiry_bucket_count": summary.get("valid_expiry_bucket_count", 0), "median_quote_age": summary.get("median_quote_age"), "median_relative_spread": summary.get("median_relative_spread"), "iv_attempts": len(iv_rows), "iv_successes": sum(bool(item.get("iv_success")) for item in iv_rows), "iv_inversion_success_rate": sum(bool(item.get("iv_success")) for item in iv_rows) / len(iv_rows) if iv_rows else 0.0, "first_failure_code": _first_failure(iv_rows, summary), **pit_evidence, "route": "B1Q_MASSIVE_PRIMARY", "b1t_status": "DIAGNOSTIC_ONLY"}
+        row = {"origin_id": origin["origin_id"], "asset": asset, "session_date": day, "forecast_origin_utc": origin["forecast_origin_utc"], "session_segment": origin["session_segment"], "instrument_type": "ETF" if asset in {"SPY", "QQQ"} else "equity", "rate": rate, "rate_source_date": rate_source_date, "dividend_yield": dividend_yield, "dividend_assumption": "PRE_ORIGIN_TRAILING_DECLARATIONS" if dividend_yield > 0 else "NO_PRE_ORIGIN_DIVIDEND_Q_ZERO", "atm_iv_available": atm is not None, "skew_available": skew is not None, "term_structure_available": any(value is not None for value in term.values()), "b1a_complete": atm is not None, "b1b_complete": atm is not None and skew is not None, "b1c_complete": atm is not None and skew is not None and all(value is not None for value in (term.get("short_to_medium"), term.get("medium_to_long"), term.get("short_to_long"))), "b1q_atm_iv": atm, "b1q_skew": skew, "b1q_term_structure": term, "valid_contract_count": summary.get("valid_contract_count", 0), "valid_quote_count": summary.get("valid_quote_count", 0), "valid_expiry_bucket_count": summary.get("valid_expiry_bucket_count", 0), "median_quote_age": summary.get("median_quote_age"), "median_relative_spread": summary.get("median_relative_spread"), "iv_attempts": len(iv_rows), "iv_successes": sum(bool(item.get("iv_success")) for item in iv_rows), "iv_inversion_success_rate": sum(bool(item.get("iv_success")) for item in iv_rows) / len(iv_rows) if iv_rows else 0.0, "first_failure_code": _first_failure(iv_rows, summary), **pit_evidence, "route": "B1Q_MASSIVE_PRIMARY", "b1t_status": "DIAGNOSTIC_ONLY"}
         rows.append(row)
         failures.extend({key: item.get(key) for key in ("asset", "origin_id", "contract", "option_type", "dte", "moneyness", "rate", "dividend_yield", "sip_timestamp", "midpoint", "quote_age_seconds", "relative_spread", "iv_success", "failure_reason", "iv")} for item in iv_rows if not item.get("iv_success"))
     frame = pl.DataFrame(rows, infer_schema_length=None, strict=False)
     frame.write_parquet(config.output_root / "b1_origin_matrix_20d.parquet", compression="zstd")
+    pl.DataFrame(
+        attempt_rows,
+        infer_schema_length=None,
+        strict=False,
+    ).write_parquet(
+        config.output_root / "b1_iv_attempts_20d.parquet",
+        compression="zstd",
+    )
     frame.group_by("asset").agg([pl.len().alias("origins"), pl.col("atm_iv_available").mean().alias("atm_iv_component"), pl.col("skew_available").mean().alias("skew_component"), pl.col("term_structure_available").mean().alias("term_structure_component"), pl.col("b1a_complete").mean().alias("b1a"), pl.col("b1b_complete").mean().alias("b1b"), pl.col("b1c_complete").mean().alias("b1c"), pl.col("iv_inversion_success_rate").mean().alias("iv_success_rate")]).sort("asset").write_csv(config.output_root / "b1_coverage_by_asset.csv")
     frame.group_by("session_segment").agg([pl.len().alias("origins"), pl.col("atm_iv_available").mean().alias("atm_iv_component"), pl.col("skew_available").mean().alias("skew_component"), pl.col("term_structure_available").mean().alias("term_structure_component"), pl.col("b1a_complete").mean().alias("b1a"), pl.col("b1b_complete").mean().alias("b1b"), pl.col("b1c_complete").mean().alias("b1c"), pl.col("iv_inversion_success_rate").mean().alias("iv_success_rate")]).sort("session_segment").write_csv(config.output_root / "b1_coverage_by_session_segment.csv")
     global_cov = _coverage(frame)
     by_date = {str(row["session_date"]): _coverage(frame.filter(pl.col("session_date") == row["session_date"])) for row in frame.select("session_date").unique().iter_rows(named=True)}
     by_route = {"B1Q": global_cov, "B1T": {"status": "DIAGNOSTIC_ONLY", "coverage": None}}
-    summary = {"status": "PASS_B1Q_20_SESSION_RECOMPUTATION", "origins": frame.height, "global": global_cov, "by_date": by_date, "by_route": by_route, "nested_invariants": {"b1c_implies_b1b": bool(frame.filter(pl.col("b1c_complete") & ~pl.col("b1b_complete")).height == 0), "b1b_implies_b1a": bool(frame.filter(pl.col("b1b_complete") & ~pl.col("b1a_complete")).height == 0), "coverage_b1c_le_b1b": global_cov["b1c"] <= global_cov["b1b"], "coverage_b1b_le_b1a": global_cov["b1b"] <= global_cov["b1a"]}, "pit_invariants": {"future_quote_rows": frame.filter(~pl.col("b1q_quote_not_after_origin") & pl.col("b1q_max_sip_timestamp_ns").is_not_null()).height, "b1a_without_pit_evidence": frame.filter(pl.col("b1a_complete") & ~pl.col("b1q_pit_evidence_valid")).height}, "primary_quote_age_seconds": 60, "primary_relative_spread": 0.25, "b1t_independent": False, "modeling": "BLOCKED", "qlike": "BLOCKED", "secret_values_emitted": False}
+    summary = {"status": "PASS_B1Q_20_SESSION_RECOMPUTATION", "origins": frame.height, "iv_attempt_rows": len(attempt_rows), "global": global_cov, "by_date": by_date, "by_route": by_route, "nested_invariants": {"b1c_implies_b1b": bool(frame.filter(pl.col("b1c_complete") & ~pl.col("b1b_complete")).height == 0), "b1b_implies_b1a": bool(frame.filter(pl.col("b1b_complete") & ~pl.col("b1a_complete")).height == 0), "coverage_b1c_le_b1b": global_cov["b1c"] <= global_cov["b1b"], "coverage_b1b_le_b1a": global_cov["b1b"] <= global_cov["b1a"]}, "pit_invariants": {"future_quote_rows": frame.filter(~pl.col("b1q_quote_not_after_origin") & pl.col("b1q_max_sip_timestamp_ns").is_not_null()).height, "b1a_without_pit_evidence": frame.filter(pl.col("b1a_complete") & ~pl.col("b1q_pit_evidence_valid")).height, "future_rate_source_rows": frame.filter(pl.col("rate_source_date") > pl.col("session_date")).height}, "primary_quote_age_seconds": 60, "primary_relative_spread": 0.25, "b1t_independent": False, "modeling": "BLOCKED", "qlike": "BLOCKED", "secret_values_emitted": False}
     _assert_invariants(frame, summary)
     (config.output_root / "b1_coverage_20d.json").write_text(json.dumps(summary, indent=2, default=str), encoding="utf-8")
     pl.DataFrame(failures, infer_schema_length=None, strict=False).write_csv(config.output_root / "b1_iv_failures_20d.csv")

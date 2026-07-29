@@ -8,6 +8,7 @@ from pathlib import Path
 
 import httpx
 import polars as pl
+import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -169,3 +170,67 @@ def test_massive_request_retries_transient_transport_failure() -> None:
     assert status == 200
     assert payload == {"results": []}
     assert request_id == "request-1"
+
+
+def test_fmp_list_request_retries_and_rejects_non_list_payload() -> None:
+    calls = 0
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal calls
+        calls += 1
+        if calls == 1:
+            return httpx.Response(503, json={"error": "temporary"})
+        return httpx.Response(200, json=[{"date": "2026-03-24", "month3": 4.1}])
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        payload = b1_builder._fmp_list_request(
+            client,
+            "https://financialmodelingprep.com/stable/treasury-rates",
+            {"from": "2026-03-24", "to": "2026-03-24"},
+            "secret-not-emitted",
+            backoff_seconds=0,
+        )
+    assert calls == 2
+    assert payload == [{"date": "2026-03-24", "month3": 4.1}]
+
+    with httpx.Client(
+        transport=httpx.MockTransport(
+            lambda request: httpx.Response(200, json={"unexpected": True})
+        )
+    ) as client, pytest.raises(RuntimeError, match="FMP_RESPONSE_NOT_LIST"):
+        b1_builder._fmp_list_request(
+            client,
+            "https://financialmodelingprep.com/stable/dividends",
+            {"symbol": "AAPL"},
+            "secret-not-emitted",
+            backoff_seconds=0,
+        )
+
+    with httpx.Client(
+        transport=httpx.MockTransport(
+            lambda request: httpx.Response(200, content=b"not-json")
+        )
+    ) as client, pytest.raises(RuntimeError, match="FMP_RESPONSE_NOT_JSON"):
+        b1_builder._fmp_list_request(
+            client,
+            "https://financialmodelingprep.com/stable/dividends",
+            {"symbol": "AAPL"},
+            "secret-not-emitted",
+            backoff_seconds=0,
+        )
+
+
+def test_rate_observation_is_never_selected_from_the_future() -> None:
+    """B1Q must use the latest Treasury observation on or before the session."""
+    source_date, rate = b1_builder._rate_observation_for(
+        "2026-03-24",
+        {"2026-03-23": 0.041, "2026-03-25": 0.042},
+    )
+    assert source_date == "2026-03-23"
+    assert rate == 0.041
+
+    with pytest.raises(RuntimeError, match="B1Q_RATE_NOT_AVAILABLE"):
+        b1_builder._rate_observation_for(
+            "2026-03-24",
+            {"2026-03-25": 0.042},
+        )
