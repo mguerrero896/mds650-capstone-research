@@ -344,12 +344,12 @@ explicitly attributed to non-IV B0/B1Q coverage rather than optional IV missingn
 ## Phase 10: User Story 4 — Preregistered development evaluation (Priority: P2)
 
 - [x] T179 Add only `scikit-learn>=1.7,<2` and `lightgbm>=4.6,<5` with `uv`, update `pyproject.toml` and `uv.lock`, and rerun the clean-install compatibility gate.
-- [ ] T180 [P] [US4] Add failing fold, 30-minute purge/embargo and training-only preprocessing tests in `tests/unit/test_temporal_validation.py`.
-- [ ] T181 [P] [US4] Add failing positive-prediction and fixed-role tests for Gamma GLM and LightGBM in `tests/unit/test_modeling.py`.
-- [ ] T182 [P] [US4] Add failing QLIKE, MAE/RMSE, paired-day bootstrap and Holm tests in `tests/unit/test_metrics.py`.
-- [ ] T183 [US4] Implement the four frozen expanding folds in `src/mds650/temporal_validation.py`.
-- [ ] T184 [P] [US4] Implement deterministic QLIKE, MAE/RMSE, 10,000-draw paired-day bootstrap and Holm adjustment in `src/mds650/metrics.py`.
-- [ ] T185 [P] [US4] Implement confirmatory `GammaRegressor` and fixed `LGBMRegressor(objective="gamma")` training in `src/mds650/modeling.py`.
+- [x] T180 [P] [US4] Add failing fold, 30-minute purge/embargo and training-only preprocessing tests in `tests/unit/test_temporal_validation.py`.
+- [x] T181 [P] [US4] Add failing positive-prediction and fixed-role tests for Gamma GLM and LightGBM in `tests/unit/test_modeling.py`.
+- [x] T182 [P] [US4] Add failing QLIKE, MAE/RMSE, paired-day bootstrap and Holm tests in `tests/unit/test_metrics.py`.
+- [x] T183 [US4] Implement the four frozen expanding folds in `src/mds650/temporal_validation.py`.
+- [x] T184 [P] [US4] Implement deterministic QLIKE, MAE/RMSE, 10,000-draw paired-day bootstrap and Holm adjustment in `src/mds650/metrics.py`.
+- [x] T185 [P] [US4] Implement confirmatory `GammaRegressor` and fixed `LGBMRegressor(objective="gamma")` training in `src/mds650/modeling.py`.
 - [ ] T186 [US4] Run common-row development forecasts and write `artifacts/phase5/development_forecasts.parquet` plus `artifacts/phase5/development_results.json` in `scripts/run_phase5_development_evaluation.py`.
 - [ ] T187 [US4] Preserve every registered feature/model/timing variant and result sign in `artifacts/phase5/variant_ledger.json`.
 - [ ] T188 [US4] Freeze code, data, feature, fold, model, prediction and result hashes in `artifacts/phase5/method_freeze.json` with `holdout_reads=0`.
