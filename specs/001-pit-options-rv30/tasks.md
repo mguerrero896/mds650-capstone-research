@@ -323,7 +323,7 @@ explicitly attributed to non-IV B0/B1Q coverage rather than optional IV missingn
 - [x] T162 Implement exact 80/10 XNYS session construction and canonical JSON hashing in `src/mds650/study_design.py`.
 - [x] T163 [P] Add failing preregistration schema, status, feature-registry, fold, model-role and zero-holdout-read tests in `tests/contract/test_phase5_preregistration.py`.
 - [x] T164 Create `specs/001-pit-options-rv30/contracts/phase5-preregistration.schema.json` with exact arrays, enums, hashes and cross-field invariants.
-- [ ] T165 Implement preregistration freezing in `scripts/freeze_phase5_preregistration.py` and generate `artifacts/phase5/study_sessions_90.json` plus `artifacts/phase5/preregistration.json` before any model or QLIKE call.
+- [x] T165 Implement preregistration freezing in `scripts/freeze_phase5_preregistration.py` and generate `artifacts/phase5/study_sessions_90.json` plus `artifacts/phase5/preregistration.json` before any model or QLIKE call.
 - [ ] T166 [P] Add failing D: root, write probe, 80-GB peak floor, holdout-exclusion and resumability tests in `tests/contract/test_phase5_storage.py`.
 - [ ] T167 Parameterize the existing streaming downloader and builders with explicit allow-lists and roots in `scripts/download_calibration_20d.py`, `scripts/build_b2_calibration_20d.py` and `scripts/run_b1_calibration_20d.py`.
 - [ ] T168 Implement non-destructive D: preparation and verified-copy manifests in `scripts/prepare_phase5_storage.py`; never delete the retained C: evidence.
