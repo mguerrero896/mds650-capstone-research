@@ -105,3 +105,29 @@ def test_b1q_market_inputs_cover_full_trailing_year(tmp_path: Path) -> None:
         date(2025, 3, 24),
         date(2026, 6, 10),
     )
+
+
+def test_b1q_origin_records_observed_quote_pit_evidence() -> None:
+    origin_ns = 1774359300000000000
+
+    valid = b1_builder._quote_pit_evidence(
+        [
+            {"sip_timestamp": origin_ns - 2_000_000_000},
+            {"sip_timestamp": origin_ns - 1_000_000_000},
+            {"sip_timestamp": None},
+        ],
+        origin_ns,
+    )
+    assert valid == {
+        "b1q_max_sip_timestamp_ns": origin_ns - 1_000_000_000,
+        "b1q_quote_not_after_origin": True,
+        "b1q_pit_evidence_valid": True,
+    }
+
+    assert b1_builder._quote_pit_evidence([], origin_ns)[
+        "b1q_pit_evidence_valid"
+    ] is False
+    assert b1_builder._quote_pit_evidence(
+        [{"sip_timestamp": origin_ns + 1}],
+        origin_ns,
+    )["b1q_quote_not_after_origin"] is False

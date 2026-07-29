@@ -148,6 +148,25 @@ def _first_failure(iv_rows: list[dict[str, Any]], summary: dict[str, Any]) -> st
     return "NO_FAILURE"
 
 
+def _quote_pit_evidence(
+    iv_rows: list[dict[str, Any]],
+    origin_ns: int,
+) -> dict[str, int | bool | None]:
+    """Summarize observed SIP timestamps for one forecast origin."""
+    timestamps = [
+        int(row["sip_timestamp"])
+        for row in iv_rows
+        if isinstance(row.get("sip_timestamp"), int)
+    ]
+    latest = max(timestamps) if timestamps else None
+    not_after_origin = latest is not None and latest <= origin_ns
+    return {
+        "b1q_max_sip_timestamp_ns": latest,
+        "b1q_quote_not_after_origin": not_after_origin,
+        "b1q_pit_evidence_valid": bool(timestamps) and not_after_origin,
+    }
+
+
 def _coverage(frame: pl.DataFrame) -> dict[str, Any]:
     """Compute component and nested coverage for one frame."""
     n = frame.height or 1
@@ -185,8 +204,14 @@ def main(config: B1BuildConfig = DEFAULT_CONFIG) -> None:
             cache = quote_caches[(asset, day, contract["contract"])]
             quote = closure.latest_quote(cache, int(origin["origin_ns"]))
             attempt: dict[str, Any] = {**contract, "asset": asset, "origin_id": origin["origin_id"], "forecast_origin_utc": origin["forecast_origin_utc"].isoformat(), "spot": float(origin["spot"]), "moneyness": float(contract["strike"]) / float(origin["spot"]), "rate": _rate_for(day, rates), "dividend_yield": dividend_yields.get((asset, day), 0.0), "iv_success": False, "iv": None, "failure_reason": "NO_QUOTE_BEFORE_ORIGIN"}
+            if quote:
+                attempt["sip_timestamp"] = quote.get("sip_timestamp")
+                attempt["failure_reason"] = quote.get(
+                    "missing_reason",
+                    "NO_QUOTE_BEFORE_ORIGIN",
+                )
             if quote and quote.get("midpoint") is not None:
-                attempt.update({"sip_timestamp": quote.get("sip_timestamp"), "quote_age_seconds": quote.get("quote_age_seconds"), "relative_spread": quote.get("relative_spread"), "midpoint": quote.get("midpoint")})
+                attempt.update({"quote_age_seconds": quote.get("quote_age_seconds"), "relative_spread": quote.get("relative_spread"), "midpoint": quote.get("midpoint")})
                 if quote["quote_age_seconds"] > 60:
                     attempt["failure_reason"] = "STALE_QUOTE"
                 elif quote["relative_spread"] > 0.25:
@@ -197,9 +222,10 @@ def main(config: B1BuildConfig = DEFAULT_CONFIG) -> None:
             iv_rows.append(attempt)
         summary = closure.route_summary(iv_rows, route="B1Q")
         atm, skew, term = summary.get("b1q_atm_iv"), summary.get("b1q_skew"), summary.get("b1q_term_structure") or {}
-        row = {"origin_id": origin["origin_id"], "asset": asset, "session_date": day, "forecast_origin_utc": origin["forecast_origin_utc"], "session_segment": origin["session_segment"], "instrument_type": "ETF" if asset in {"SPY", "QQQ"} else "equity", "atm_iv_available": atm is not None, "skew_available": skew is not None, "term_structure_available": any(value is not None for value in term.values()), "b1a_complete": atm is not None, "b1b_complete": atm is not None and skew is not None, "b1c_complete": atm is not None and skew is not None and all(value is not None for value in (term.get("short_to_medium"), term.get("medium_to_long"), term.get("short_to_long"))), "b1q_atm_iv": atm, "b1q_skew": skew, "b1q_term_structure": term, "valid_contract_count": summary.get("valid_contract_count", 0), "valid_quote_count": summary.get("valid_quote_count", 0), "valid_expiry_bucket_count": summary.get("valid_expiry_bucket_count", 0), "median_quote_age": summary.get("median_quote_age"), "median_relative_spread": summary.get("median_relative_spread"), "iv_attempts": len(iv_rows), "iv_successes": sum(bool(item.get("iv_success")) for item in iv_rows), "iv_inversion_success_rate": sum(bool(item.get("iv_success")) for item in iv_rows) / len(iv_rows) if iv_rows else 0.0, "first_failure_code": _first_failure(iv_rows, summary), "route": "B1Q_MASSIVE_PRIMARY", "b1t_status": "DIAGNOSTIC_ONLY"}
+        pit_evidence = _quote_pit_evidence(iv_rows, int(origin["origin_ns"]))
+        row = {"origin_id": origin["origin_id"], "asset": asset, "session_date": day, "forecast_origin_utc": origin["forecast_origin_utc"], "session_segment": origin["session_segment"], "instrument_type": "ETF" if asset in {"SPY", "QQQ"} else "equity", "atm_iv_available": atm is not None, "skew_available": skew is not None, "term_structure_available": any(value is not None for value in term.values()), "b1a_complete": atm is not None, "b1b_complete": atm is not None and skew is not None, "b1c_complete": atm is not None and skew is not None and all(value is not None for value in (term.get("short_to_medium"), term.get("medium_to_long"), term.get("short_to_long"))), "b1q_atm_iv": atm, "b1q_skew": skew, "b1q_term_structure": term, "valid_contract_count": summary.get("valid_contract_count", 0), "valid_quote_count": summary.get("valid_quote_count", 0), "valid_expiry_bucket_count": summary.get("valid_expiry_bucket_count", 0), "median_quote_age": summary.get("median_quote_age"), "median_relative_spread": summary.get("median_relative_spread"), "iv_attempts": len(iv_rows), "iv_successes": sum(bool(item.get("iv_success")) for item in iv_rows), "iv_inversion_success_rate": sum(bool(item.get("iv_success")) for item in iv_rows) / len(iv_rows) if iv_rows else 0.0, "first_failure_code": _first_failure(iv_rows, summary), **pit_evidence, "route": "B1Q_MASSIVE_PRIMARY", "b1t_status": "DIAGNOSTIC_ONLY"}
         rows.append(row)
-        failures.extend({key: item.get(key) for key in ("asset", "origin_id", "contract", "option_type", "dte", "moneyness", "rate", "dividend_yield", "midpoint", "quote_age_seconds", "relative_spread", "iv_success", "failure_reason", "iv")} for item in iv_rows if not item.get("iv_success"))
+        failures.extend({key: item.get(key) for key in ("asset", "origin_id", "contract", "option_type", "dte", "moneyness", "rate", "dividend_yield", "sip_timestamp", "midpoint", "quote_age_seconds", "relative_spread", "iv_success", "failure_reason", "iv")} for item in iv_rows if not item.get("iv_success"))
     frame = pl.DataFrame(rows, infer_schema_length=None, strict=False)
     frame.write_parquet(config.output_root / "b1_origin_matrix_20d.parquet", compression="zstd")
     frame.group_by("asset").agg([pl.len().alias("origins"), pl.col("atm_iv_available").mean().alias("atm_iv_component"), pl.col("skew_available").mean().alias("skew_component"), pl.col("term_structure_available").mean().alias("term_structure_component"), pl.col("b1a_complete").mean().alias("b1a"), pl.col("b1b_complete").mean().alias("b1b"), pl.col("b1c_complete").mean().alias("b1c"), pl.col("iv_inversion_success_rate").mean().alias("iv_success_rate")]).sort("asset").write_csv(config.output_root / "b1_coverage_by_asset.csv")
@@ -207,7 +233,7 @@ def main(config: B1BuildConfig = DEFAULT_CONFIG) -> None:
     global_cov = _coverage(frame)
     by_date = {str(row["session_date"]): _coverage(frame.filter(pl.col("session_date") == row["session_date"])) for row in frame.select("session_date").unique().iter_rows(named=True)}
     by_route = {"B1Q": global_cov, "B1T": {"status": "DIAGNOSTIC_ONLY", "coverage": None}}
-    summary = {"status": "PASS_B1Q_20_SESSION_RECOMPUTATION", "origins": frame.height, "global": global_cov, "by_date": by_date, "by_route": by_route, "nested_invariants": {"b1c_implies_b1b": bool(frame.filter(pl.col("b1c_complete") & ~pl.col("b1b_complete")).height == 0), "b1b_implies_b1a": bool(frame.filter(pl.col("b1b_complete") & ~pl.col("b1a_complete")).height == 0), "coverage_b1c_le_b1b": global_cov["b1c"] <= global_cov["b1b"], "coverage_b1b_le_b1a": global_cov["b1b"] <= global_cov["b1a"]}, "primary_quote_age_seconds": 60, "primary_relative_spread": 0.25, "b1t_independent": False, "modeling": "BLOCKED", "qlike": "BLOCKED", "secret_values_emitted": False}
+    summary = {"status": "PASS_B1Q_20_SESSION_RECOMPUTATION", "origins": frame.height, "global": global_cov, "by_date": by_date, "by_route": by_route, "nested_invariants": {"b1c_implies_b1b": bool(frame.filter(pl.col("b1c_complete") & ~pl.col("b1b_complete")).height == 0), "b1b_implies_b1a": bool(frame.filter(pl.col("b1b_complete") & ~pl.col("b1a_complete")).height == 0), "coverage_b1c_le_b1b": global_cov["b1c"] <= global_cov["b1b"], "coverage_b1b_le_b1a": global_cov["b1b"] <= global_cov["b1a"]}, "pit_invariants": {"future_quote_rows": frame.filter(~pl.col("b1q_quote_not_after_origin") & pl.col("b1q_max_sip_timestamp_ns").is_not_null()).height, "b1a_without_pit_evidence": frame.filter(pl.col("b1a_complete") & ~pl.col("b1q_pit_evidence_valid")).height}, "primary_quote_age_seconds": 60, "primary_relative_spread": 0.25, "b1t_independent": False, "modeling": "BLOCKED", "qlike": "BLOCKED", "secret_values_emitted": False}
     _assert_invariants(frame, summary)
     (config.output_root / "b1_coverage_20d.json").write_text(json.dumps(summary, indent=2, default=str), encoding="utf-8")
     pl.DataFrame(failures, infer_schema_length=None, strict=False).write_csv(config.output_root / "b1_iv_failures_20d.csv")
@@ -218,6 +244,8 @@ def _assert_invariants(frame: pl.DataFrame, summary: dict[str, Any]) -> None:
     """Fail closed on nested B1 violations globally and in declared subgroups."""
     if not all(summary["nested_invariants"].values()):
         raise RuntimeError("B1Q_NESTED_INVARIANT_FAILURE")
+    if any(summary["pit_invariants"].values()):
+        raise RuntimeError("B1Q_PIT_INVARIANT_FAILURE")
     for column in ("asset", "session_date", "session_segment", "instrument_type"):
         for _, group in frame.group_by(column):
             values = _coverage(group)
