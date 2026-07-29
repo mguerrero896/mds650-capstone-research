@@ -333,7 +333,7 @@ explicitly attributed to non-IV B0/B1Q coverage rather than optional IV missingn
 
 - [ ] T170 [US2] Acquire only the 55 missing development Full Tape sessions resumably into `D:\MDS650\raw` and write per-session manifests under `D:\MDS650\manifests`.
 - [x] T171 [P] [US2] Build exact-session FMP B0 sources for the 55 missing dates in `D:\MDS650\data\fmp` using +1 primary and +2 sensitivity availability.
-- [ ] T172 [P] [US2] Build Massive B1Q contract-day caches and origin ATM-IV rows for the 55 missing dates in `D:\MDS650\cache\massive` and `D:\MDS650\data\b1q`.
+- [x] T172 [P] [US2] Build Massive B1Q contract-day caches and origin ATM-IV rows for the 55 missing dates in `D:\MDS650\cache\massive` and `D:\MDS650\data\b1q`.
 - [ ] T173 [US2] Reconcile 25 reused plus 55 new sessions and emit `artifacts/phase5/development_source_manifest_80d.json` with no holdout dates.
 - [x] T174 [P] [US2] Add failing exact-formula, zero-denominator, target-blind and cutoff tests in `tests/unit/test_phase5_features.py`.
 - [x] T175 [US2] Implement only the nine frozen compact B2 formulas by reusing Phase 4B eligibility logic in `src/mds650/phase5_features.py`.
