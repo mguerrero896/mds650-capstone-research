@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import build_b2_calibration_20d as b2_builder  # noqa: E402
+import build_phase5_common_panel as panel_builder  # noqa: E402
 import run_b1_calibration_20d as b1_builder  # noqa: E402
 import run_b1_closure as b1_closure  # noqa: E402
 
@@ -233,4 +234,35 @@ def test_rate_observation_is_never_selected_from_the_future() -> None:
         b1_builder._rate_observation_for(
             "2026-03-24",
             {"2026-03-25": 0.042},
+        )
+
+
+def test_b1_attempt_ledger_is_hashed_and_pit_validated(tmp_path: Path) -> None:
+    ledger = tmp_path / "attempts.parquet"
+    frame = pl.DataFrame(
+        {
+            "session_date": ["2026-03-24"],
+            "forecast_origin_ns": [1_000],
+            "rate_source_date": ["2026-03-23"],
+            "sip_timestamp": [999],
+            "source_request_hash": ["abc"],
+        }
+    )
+    frame.write_parquet(ledger)
+
+    assert panel_builder._validate_b1_attempt_ledger(
+        ledger,
+        {"iv_attempt_rows": 1},
+    ) == {
+        "rows": 1,
+        "future_rate_rows": 0,
+        "future_quote_rows": 0,
+        "missing_request_hash_rows": 0,
+    }
+
+    frame.with_columns(pl.lit(1_001).alias("sip_timestamp")).write_parquet(ledger)
+    with pytest.raises(ValueError, match="PHASE5_B1_ATTEMPT_LEDGER_INVALID"):
+        panel_builder._validate_b1_attempt_ledger(
+            ledger,
+            {"iv_attempt_rows": 1},
         )

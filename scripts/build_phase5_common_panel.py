@@ -73,6 +73,52 @@ def _sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _validate_b1_attempt_ledger(
+    path: Path,
+    summary: Mapping[str, Any],
+) -> dict[str, int]:
+    """Validate the complete B1Q attempt ledger without loading it eagerly."""
+    scan = pl.scan_parquet(path)
+    required = {
+        "session_date",
+        "forecast_origin_ns",
+        "rate_source_date",
+        "sip_timestamp",
+        "source_request_hash",
+    }
+    missing = sorted(required - set(scan.collect_schema().names()))
+    if missing:
+        raise ValueError(f"PHASE5_B1_ATTEMPT_COLUMNS_MISSING:{','.join(missing)}")
+    stats = scan.select(
+        pl.len().alias("rows"),
+        (pl.col("rate_source_date") > pl.col("session_date"))
+        .sum()
+        .alias("future_rate_rows"),
+        (
+            pl.col("sip_timestamp").is_not_null()
+            & (pl.col("sip_timestamp") > pl.col("forecast_origin_ns"))
+        )
+        .sum()
+        .alias("future_quote_rows"),
+        (
+            pl.col("source_request_hash").is_null()
+            | (pl.col("source_request_hash") == "")
+        )
+        .sum()
+        .alias("missing_request_hash_rows"),
+    ).collect().row(0, named=True)
+    expected_rows = summary.get("iv_attempt_rows")
+    if (
+        not isinstance(expected_rows, int)
+        or stats["rows"] != expected_rows
+        or stats["future_rate_rows"]
+        or stats["future_quote_rows"]
+        or stats["missing_request_hash_rows"]
+    ):
+        raise ValueError("PHASE5_B1_ATTEMPT_LEDGER_INVALID")
+    return {key: int(value) for key, value in stats.items()}
+
+
 def _write_json(path: Path, payload: Mapping[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".part")
@@ -604,6 +650,7 @@ def main(config: PanelBuildConfig = DEFAULT_CONFIG) -> None:
     bars_path = config.new_fmp_root / "underlying_1min_20d.parquet"
     fmp_manifest_path = config.new_fmp_root / "fmp_20d_manifest.json"
     b1_path = config.new_b1_root / "b1_origin_matrix_20d.parquet"
+    b1_attempts_path = config.new_b1_root / "b1_iv_attempts_20d.parquet"
     b1_summary_path = config.new_b1_root / "b1_coverage_20d.json"
     fmp_manifest = _read_json(fmp_manifest_path)
     if (
@@ -618,6 +665,10 @@ def main(config: PanelBuildConfig = DEFAULT_CONFIG) -> None:
         or not all(b1_summary.get("nested_invariants", {}).values())
     ):
         raise ValueError("PHASE5_B1Q_SOURCE_INVALID")
+    b1_attempt_ledger = _validate_b1_attempt_ledger(
+        b1_attempts_path,
+        b1_summary,
+    )
 
     new_origins_source = pl.read_parquet(origins_path)
     if (
@@ -709,6 +760,7 @@ def main(config: PanelBuildConfig = DEFAULT_CONFIG) -> None:
             "fmp_origins_55d.parquet": _sha256_file(origins_path),
             "fmp_bars_55d.parquet": _sha256_file(bars_path),
             "b1q_origins_55d.parquet": _sha256_file(b1_path),
+            "b1q_iv_attempts_55d.parquet": _sha256_file(b1_attempts_path),
         },
         "outputs": {
             "development_all_origins_80d.parquet": _sha256_file(all_path),
@@ -718,6 +770,7 @@ def main(config: PanelBuildConfig = DEFAULT_CONFIG) -> None:
         "common_origin_count": common.height,
         "target_sha256_all": quality["target_sha256_all"],
         "target_sha256_common": quality["target_sha256_common"],
+        "b1_attempt_ledger": b1_attempt_ledger,
         "selected_assets": quality["selected_assets"],
         "holdout_reads": 0,
     }
