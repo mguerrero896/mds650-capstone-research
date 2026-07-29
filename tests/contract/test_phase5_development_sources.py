@@ -231,6 +231,62 @@ def test_latest_quote_builds_a_sorted_asof_index() -> None:
     assert cache["_sip_timestamps"] == [999, 1_001, 1_003]
 
 
+def test_historical_contract_resolution_uses_asof_active_contracts(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    requests: list[dict[str, str]] = []
+
+    def request_json(
+        client: object,
+        url: str,
+        params: dict[str, str],
+        key: str,
+    ) -> tuple[int, dict[str, object], str]:
+        requests.append(dict(params))
+        expiry = params["expiration_date.gte"]
+        return (
+            200,
+            {
+                "results": [
+                    {
+                        "ticker": f"O:AAPL{expiry.replace('-', '')}C00100000",
+                        "underlying_ticker": "AAPL",
+                        "expiration_date": expiry,
+                        "strike_price": 100.0,
+                        "contract_type": "call",
+                    },
+                    {
+                        "ticker": f"O:AAPL{expiry.replace('-', '')}P00100000",
+                        "underlying_ticker": "AAPL",
+                        "expiration_date": expiry,
+                        "strike_price": 100.0,
+                        "contract_type": "put",
+                    },
+                ]
+            },
+            "request-1",
+        )
+
+    monkeypatch.setattr(b1_closure, "_request_json", request_json)
+
+    contracts = b1_closure.resolve_contracts(
+        object(),  # type: ignore[arg-type]
+        "secret-not-emitted",
+        "AAPL",
+        "2026-03-24",
+        100.0,
+    )
+
+    assert len(requests) == 3
+    assert all(request["as_of"] == "2026-03-24" for request in requests)
+    assert all(request["expired"] == "false" for request in requests)
+    assert {contract["bucket"] for contract in contracts} == {
+        "short",
+        "medium",
+        "long",
+    }
+
+
 def test_fmp_list_request_retries_and_rejects_non_list_payload() -> None:
     calls = 0
 

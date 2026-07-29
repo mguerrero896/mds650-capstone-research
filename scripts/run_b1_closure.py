@@ -124,7 +124,9 @@ def resolve_contracts(client: httpx.Client, key: str, asset: str, day: str, spot
         params = {
             "underlying_ticker": asset,
             "as_of": day,
-            "expired": "true" if end < date.today() else "false",
+            # `as_of` already moves the reference universe to the historical day;
+            # request contracts that were active at that point in time.
+            "expired": "false",
             "expiration_date.gte": start.isoformat(),
             "expiration_date.lte": end.isoformat(),
             "strike_price.gte": f"{spot * 0.90:.6f}",
