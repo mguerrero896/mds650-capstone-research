@@ -1,0 +1,35 @@
+{
+  "schema_version": "phase5-compatibility-gate-1.0",
+  "status": "PASS_WINDOWS_COLAB_PENDING_T195",
+  "runtime": {
+    "platform": "Windows",
+    "python": "3.12.12",
+    "uv": "0.9.24",
+    "clean_environment": ".venv-phase5-matrix"
+  },
+  "locked_packages": {
+    "duckdb": "1.5.4",
+    "lightgbm": "4.7.0",
+    "polars": "1.42.1",
+    "pyarrow": "22.0.0",
+    "scikit-learn": "1.9.0"
+  },
+  "uv_lock_sha256": "97382a973be6cede8621050748b1409e4cb6c70591063217e05896d8b03be241",
+  "commands": [
+    "uv sync --frozen --link-mode copy --python 3.12.12",
+    ".venv-phase5-matrix/Scripts/python.exe -m pytest -q",
+    ".venv-phase5-matrix/Scripts/ruff.exe check src tests",
+    ".venv-phase5-matrix/Scripts/mypy.exe src"
+  ],
+  "results": {
+    "clean_install": "PASS",
+    "imports": "PASS",
+    "tests_collected": 212,
+    "tests_failed": 0,
+    "ruff": "PASS",
+    "mypy": "PASS",
+    "colab": "PENDING_T195"
+  },
+  "secret_values_emitted": false,
+  "personal_paths_emitted": false
+}

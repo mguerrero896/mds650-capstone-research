@@ -343,7 +343,7 @@ explicitly attributed to non-IV B0/B1Q coverage rather than optional IV missingn
 
 ## Phase 10: User Story 4 — Preregistered development evaluation (Priority: P2)
 
-- [ ] T179 Add only `scikit-learn>=1.7,<2` and `lightgbm>=4.6,<5` with `uv`, update `pyproject.toml` and `uv.lock`, and rerun the clean-install compatibility gate.
+- [x] T179 Add only `scikit-learn>=1.7,<2` and `lightgbm>=4.6,<5` with `uv`, update `pyproject.toml` and `uv.lock`, and rerun the clean-install compatibility gate.
 - [ ] T180 [P] [US4] Add failing fold, 30-minute purge/embargo and training-only preprocessing tests in `tests/unit/test_temporal_validation.py`.
 - [ ] T181 [P] [US4] Add failing positive-prediction and fixed-role tests for Gamma GLM and LightGBM in `tests/unit/test_modeling.py`.
 - [ ] T182 [P] [US4] Add failing QLIKE, MAE/RMSE, paired-day bootstrap and Holm tests in `tests/unit/test_metrics.py`.

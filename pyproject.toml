@@ -16,6 +16,8 @@ dependencies = [
   "pydantic-settings>=2.11,<3",
   "pyarrow>=22,<23",
   "tzdata>=2025.2,<2027",
+  "scikit-learn>=1.7,<2",
+  "lightgbm>=4.6,<5",
 ]
 
 [dependency-groups]
