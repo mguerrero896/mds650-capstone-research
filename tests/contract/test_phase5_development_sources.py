@@ -92,3 +92,16 @@ def test_b1q_reads_origins_from_explicit_fmp_source(tmp_path: Path) -> None:
     assert result.height == 1
     assert result["origin_id"].to_list() == ["AAPL:2026-03-24T13:35:00+00:00"]
     assert result["origin_ns"].to_list() == [1774359300000000000]
+
+
+def test_b1q_market_inputs_cover_full_trailing_year(tmp_path: Path) -> None:
+    config = b1_builder.B1BuildConfig(
+        output_root=tmp_path / "b1q",
+        cache_root=tmp_path / "cache",
+        sessions=("2026-03-24", "2026-06-10"),
+    )
+
+    assert b1_builder._market_input_window(config) == (
+        date(2025, 3, 24),
+        date(2026, 6, 10),
+    )

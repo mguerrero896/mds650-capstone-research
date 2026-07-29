@@ -51,14 +51,20 @@ def _secret(name: str) -> str:
     return value
 
 
+def _market_input_window(config: B1BuildConfig) -> tuple[date, date]:
+    """Return the trailing-year PIT input window for rates and dividends."""
+    first = min(date.fromisoformat(day) for day in config.sessions)
+    last = max(date.fromisoformat(day) for day in config.sessions)
+    return first - timedelta(days=365), last
+
+
 def _rates_and_dividends(
     fmp_key: str,
     origins: pl.DataFrame,
     config: B1BuildConfig = DEFAULT_CONFIG,
 ) -> tuple[dict[str, float], dict[tuple[str, str], float]]:
     """Load pre-origin rate and dividend inputs for the twenty-session window."""
-    first = min(date.fromisoformat(day) for day in config.sessions) - timedelta(days=30)
-    last = max(date.fromisoformat(day) for day in config.sessions)
+    first, last = _market_input_window(config)
     rates: dict[str, float] = {}
     with httpx.Client(timeout=90.0) as client:
         response = client.get("https://financialmodelingprep.com/stable/treasury-rates", params={"from": first.isoformat(), "to": last.isoformat(), "apikey": fmp_key})
