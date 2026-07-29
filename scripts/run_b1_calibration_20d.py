@@ -6,7 +6,7 @@ from __future__ import annotations
 import json
 import os
 import time as time_module
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from dataclasses import dataclass
 from datetime import date, timedelta
 from functools import lru_cache
@@ -184,26 +184,45 @@ def _fetch_quotes(
     jobs = [(asset, day, contract) for (asset, day), values in contracts.items() for contract in values]
     output: dict[tuple[str, str, str], tuple[Path, str]] = {}
     with ThreadPoolExecutor(max_workers=8) as executor:
-        futures = {executor.submit(closure.fetch_contract_day, job, massive_key): job for job in jobs}
-        for future in as_completed(futures):
-            asset, day, contract = futures[future]
-            cache = future.result()
-            if cache.get("http_status") != 200:
-                raise RuntimeError(
-                    f"B1Q_QUOTE_CACHE_HTTP_FAILURE:{asset}:{day}"
+        job_iterator = iter(jobs)
+        pending = {}
+        for _ in range(min(16, len(jobs))):
+            job = next(job_iterator)
+            pending[executor.submit(closure.fetch_contract_day, job, massive_key)] = job
+        while pending:
+            completed, _ = wait(pending, return_when=FIRST_COMPLETED)
+            for future in completed:
+                asset, day, contract = pending.pop(future)
+                cache = future.result()
+                if cache.get("http_status") != 200:
+                    raise RuntimeError(
+                        f"B1Q_QUOTE_CACHE_HTTP_FAILURE:{asset}:{day}"
+                    )
+                cache_path = Path(str(cache.get("cache_path", "")))
+                source_hash = cache.get("source_request_hash")
+                if not cache_path.is_file() or not isinstance(source_hash, str):
+                    raise RuntimeError(
+                        f"B1Q_QUOTE_CACHE_EVIDENCE_MISSING:{asset}:{day}"
+                    )
+                output[(asset, day, contract["contract"])] = (
+                    cache_path,
+                    source_hash,
                 )
-            cache_path = Path(str(cache.get("cache_path", "")))
-            source_hash = cache.get("source_request_hash")
-            if not cache_path.is_file() or not isinstance(source_hash, str):
-                raise RuntimeError(f"B1Q_QUOTE_CACHE_EVIDENCE_MISSING:{asset}:{day}")
-            output[(asset, day, contract["contract"])] = (
-                cache_path,
-                source_hash,
-            )
+                try:
+                    job = next(job_iterator)
+                except StopIteration:
+                    continue
+                pending[
+                    executor.submit(
+                        closure.fetch_contract_day,
+                        job,
+                        massive_key,
+                    )
+                ] = job
     return output
 
 
-@lru_cache(maxsize=64)
+@lru_cache(maxsize=32)
 def _load_quote_cache(path: Path) -> dict[str, Any]:
     """Load one contract-day cache with bounded process memory."""
     payload = json.loads(path.read_text(encoding="utf-8"))
