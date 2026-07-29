@@ -10,7 +10,7 @@ from typing import Any
 import numpy as np
 import polars as pl
 
-from mds650.study_design import canonical_sha256
+from mds650.study_design import canonical_sha256, source_sha256
 
 ROOT = Path(__file__).resolve().parents[2]
 PHASE5 = ROOT / "artifacts" / "phase5"
@@ -59,24 +59,14 @@ def test_development_forecasts_are_positive_paired_and_holdout_free() -> None:
         "gamma_glm_confirmatory",
         "lightgbm_robustness",
     }
-    assert (
-        forecasts.group_by(["origin_id", "model_role"])
-        .agg(pl.col("information_set").n_unique().alias("sets"))
-        ["sets"]
-        .to_list()
-        == [3] * (expected.height * 2)
-    )
+    assert forecasts.group_by(["origin_id", "model_role"]).agg(
+        pl.col("information_set").n_unique().alias("sets")
+    )["sets"].to_list() == [3] * (expected.height * 2)
     assert np.isfinite(forecasts["forecast"].to_numpy()).all()
     assert (forecasts["forecast"] > 0).all()
-    assert not set(forecasts["session_date"]) & set(
-        preregistration["holdout_sessions"]
-    )
+    assert not set(forecasts["session_date"]) & set(preregistration["holdout_sessions"])
     expected_targets = expected.select("origin_id", "rv30").sort("origin_id")
-    actual_targets = (
-        forecasts.select("origin_id", "rv30")
-        .unique()
-        .sort("origin_id")
-    )
+    actual_targets = forecasts.select("origin_id", "rv30").unique().sort("origin_id")
     assert actual_targets.equals(expected_targets)
 
 
@@ -87,20 +77,14 @@ def test_results_retain_both_nested_contrasts_and_all_signs() -> None:
     assert results["status"] == "PASS_DEVELOPMENT_ONLY"
     assert results["holdout_reads"] == 0
     assert results["bootstrap_repetitions"] == 10_000
-    assert {
-        (row["model_role"], row["contrast"]) for row in contrasts
-    } == {
+    assert {(row["model_role"], row["contrast"]) for row in contrasts} == {
         ("gamma_glm_confirmatory", "delta_b1"),
         ("gamma_glm_confirmatory", "delta_b2"),
         ("lightgbm_robustness", "delta_b1"),
         ("lightgbm_robustness", "delta_b2"),
     }
-    assert all(
-        row["result_sign"] in {"POSITIVE", "NEGATIVE", "ZERO"} for row in contrasts
-    )
-    gamma = [
-        row for row in contrasts if row["model_role"] == "gamma_glm_confirmatory"
-    ]
+    assert all(row["result_sign"] in {"POSITIVE", "NEGATIVE", "ZERO"} for row in contrasts)
+    gamma = [row for row in contrasts if row["model_role"] == "gamma_glm_confirmatory"]
     assert all(0 <= row["p_value_holm"] <= 1 for row in gamma)
     assert results["manifest_sha256"] == canonical_sha256(
         {key: value for key, value in results.items() if key != "manifest_sha256"}
@@ -110,20 +94,17 @@ def test_results_retain_both_nested_contrasts_and_all_signs() -> None:
 def test_variant_ledger_preserves_grid_primary_and_timing_variants() -> None:
     ledger = _json(LEDGER)
 
-    assert ledger["outcome_reporting"] == (
-        "RETAIN_ALL_POSITIVE_NEGATIVE_AND_NULL_RESULTS"
-    )
+    assert ledger["outcome_reporting"] == ("RETAIN_ALL_POSITIVE_NEGATIVE_AND_NULL_RESULTS")
     assert len(ledger["tuning_variants"]) == 4 * 3 * (4 + 16)
-    assert sum(
-        row["selected"] for row in ledger["tuning_variants"]
-    ) == 4 * 3 * 2
-    assert len(
-        {row["variant_id"] for row in ledger["tuning_variants"]}
-    ) == len(ledger["tuning_variants"])
+    assert sum(row["selected"] for row in ledger["tuning_variants"]) == 4 * 3 * 2
+    assert len(ledger["holdout_method_candidates"]) == 3 * (4 + 16)
+    assert len(ledger["holdout_method_selection"]) == 3 * 2
+    assert sum(row["selected"] for row in ledger["holdout_method_candidates"]) == 3 * 2
+    assert len({row["variant_id"] for row in ledger["tuning_variants"]}) == len(
+        ledger["tuning_variants"]
+    )
     assert all(row["status"] == "RUN" for row in ledger["tuning_variants"])
-    assert {
-        row["variant_id"] for row in ledger["timing_variants"]
-    } == {
+    assert {row["variant_id"] for row in ledger["timing_variants"]} == {
         "FMP_DELAY_1_MINUTE",
         "FMP_DELAY_2_MINUTES",
         "B2_DELAY_60_SECONDS",
@@ -140,18 +121,20 @@ def test_method_freeze_hashes_exact_development_evidence() -> None:
 
     assert freeze["status"] == "FROZEN_AFTER_DEVELOPMENT_BEFORE_HOLDOUT"
     assert freeze["holdout_reads"] == 0
-    assert freeze["input_hashes"]["common_development_80d.parquet"] == _sha256(
-        PANEL
+    assert len(freeze["holdout_hyperparameters"]) == 6
+    assert {
+        "scripts/run_phase5_holdout.py",
+        "src/mds650/holdout.py",
+        "src/mds650/study_design.py",
+    } <= set(freeze["source_code_hashes"])
+    assert all(
+        digest == source_sha256(ROOT / relative_path)
+        for relative_path, digest in freeze["source_code_hashes"].items()
     )
-    assert freeze["input_hashes"]["preregistration.json"] == _sha256(
-        PREREGISTRATION
-    )
-    assert freeze["output_hashes"]["development_forecasts.parquet"] == _sha256(
-        FORECASTS
-    )
-    assert freeze["output_hashes"]["development_results.json"] == _sha256(
-        RESULTS
-    )
+    assert freeze["input_hashes"]["common_development_80d.parquet"] == _sha256(PANEL)
+    assert freeze["input_hashes"]["preregistration.json"] == _sha256(PREREGISTRATION)
+    assert freeze["output_hashes"]["development_forecasts.parquet"] == _sha256(FORECASTS)
+    assert freeze["output_hashes"]["development_results.json"] == _sha256(RESULTS)
     assert freeze["output_hashes"]["variant_ledger.json"] == _sha256(LEDGER)
     assert freeze["manifest_sha256"] == canonical_sha256(
         {key: value for key, value in freeze.items() if key != "manifest_sha256"}

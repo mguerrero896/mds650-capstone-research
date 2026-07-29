@@ -1,0 +1,8 @@
+{
+  "archived_file_sha256": "f71046d0a9ca57c764d457f4f73bbb81998039ac400f7f5ae9916d07f178b118",
+  "classification": "INVALID_FOR_FINAL_METHOD_FREEZE",
+  "finding": "The frozen method did not carry the preregistered B2 delay, so the one-read runner could only reject events after the forecast origin rather than enforce the primary 60-second operational-availability cutoff.",
+  "holdout_reads": 0,
+  "remediation": "Freeze the preregistered timing contract, enforce b2_window_end <= forecast_origin - 60 seconds, and prove the complete one-read runner with a synthetic end-to-end contract test.",
+  "schema_version": "phase5-pre-holdout-finding-1.0"
+}

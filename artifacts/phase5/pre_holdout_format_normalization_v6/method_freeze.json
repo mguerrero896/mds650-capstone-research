@@ -1,86 +1,31 @@
 {
-  "bootstrap_repetitions": 10000,
-  "contrasts": [
+  "folds": [
     {
-      "baseline_mean_qlike": 0.2313823981395778,
-      "ci_high": 0.006896015937825427,
-      "ci_low": -0.00758307830079597,
-      "clusters": 40,
-      "contrast": "delta_b1",
-      "definition": "QLIKE(B0)-QLIKE(B1a)",
-      "estimate": -0.000288269454701238,
-      "expanded_mean_qlike": 0.23167066759427904,
-      "model_role": "gamma_glm_confirmatory",
-      "observations": 15548,
-      "p_value_holm": 0.9501049895010499,
-      "p_value_raw": 0.9501049895010499,
-      "p_value_two_sided": 0.9501049895010499,
-      "positive_direction": "expanded_information_set_better",
-      "repetitions": 10000,
-      "result_sign": "NEGATIVE",
-      "seed": 650
+      "fold": 1,
+      "test_end": "2026-06-03",
+      "test_start": "2026-05-20",
+      "train_end": "2026-05-19"
     },
     {
-      "baseline_mean_qlike": 0.23167066759427904,
-      "ci_high": 0.024097767094802176,
-      "ci_low": 0.003323425901685497,
-      "clusters": 40,
-      "contrast": "delta_b2",
-      "definition": "QLIKE(B1a)-QLIKE(B2)",
-      "estimate": 0.013117577107306001,
-      "expanded_mean_qlike": 0.21855309048697308,
-      "model_role": "gamma_glm_confirmatory",
-      "observations": 15548,
-      "p_value_holm": 0.011998800119988001,
-      "p_value_raw": 0.0059994000599940004,
-      "p_value_two_sided": 0.0059994000599940004,
-      "positive_direction": "expanded_information_set_better",
-      "repetitions": 10000,
-      "result_sign": "POSITIVE",
-      "seed": 650
+      "fold": 2,
+      "test_end": "2026-06-17",
+      "test_start": "2026-06-04",
+      "train_end": "2026-06-03"
     },
     {
-      "baseline_mean_qlike": 0.2102566370190068,
-      "ci_high": 0.010346095382518336,
-      "ci_low": 0.0004592406472089364,
-      "clusters": 40,
-      "contrast": "delta_b1",
-      "definition": "QLIKE(B0)-QLIKE(B1a)",
-      "estimate": 0.004830681758071913,
-      "expanded_mean_qlike": 0.2054259552609349,
-      "model_role": "lightgbm_robustness",
-      "observations": 15548,
-      "p_value_holm": null,
-      "p_value_raw": 0.024997500249975,
-      "p_value_two_sided": 0.024997500249975,
-      "positive_direction": "expanded_information_set_better",
-      "repetitions": 10000,
-      "result_sign": "POSITIVE",
-      "seed": 650
+      "fold": 3,
+      "test_end": "2026-07-02",
+      "test_start": "2026-06-18",
+      "train_end": "2026-06-17"
     },
     {
-      "baseline_mean_qlike": 0.2054259552609349,
-      "ci_high": 0.006493160278113106,
-      "ci_low": -0.001882082894427481,
-      "clusters": 40,
-      "contrast": "delta_b2",
-      "definition": "QLIKE(B1a)-QLIKE(B2)",
-      "estimate": 0.0021911878513316404,
-      "expanded_mean_qlike": 0.20323476740960328,
-      "model_role": "lightgbm_robustness",
-      "observations": 15548,
-      "p_value_holm": null,
-      "p_value_raw": 0.3213678632136786,
-      "p_value_two_sided": 0.3213678632136786,
-      "positive_direction": "expanded_information_set_better",
-      "repetitions": 10000,
-      "result_sign": "POSITIVE",
-      "seed": 650
+      "fold": 4,
+      "test_end": "2026-07-17",
+      "test_start": "2026-07-06",
+      "train_end": "2026-07-02"
     }
   ],
-  "evaluated_origin_count": 15548,
-  "forecast_row_count": 93288,
-  "forecast_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+  "forecast_floor": 1e-12,
   "holdout_hyperparameters": [
     {
       "information_set": "B0",
@@ -153,70 +98,77 @@
     }
   ],
   "holdout_reads": 0,
-  "information_sets": [
-    "B0",
-    "B1a",
-    "B2"
-  ],
-  "manifest_sha256": "7dd89a8c7333aff7e8f44e7b0dbe2e8226272230f3a4b1c12200b3cb20c2ed86",
-  "metrics": [
-    {
-      "information_set": "B0",
-      "mae": 4.284482862854578e-05,
-      "model_role": "gamma_glm_confirmatory",
-      "observations": 15548,
-      "qlike": 0.2313823981395778,
-      "rmse": 0.0029691544486998163
-    },
-    {
-      "information_set": "B1a",
-      "mae": 0.00011531023226947905,
-      "model_role": "gamma_glm_confirmatory",
-      "observations": 15548,
-      "qlike": 0.23167066759427904,
-      "rmse": 0.01234456569281729
-    },
-    {
-      "information_set": "B2",
-      "mae": 1.3058199698502246e-05,
-      "model_role": "gamma_glm_confirmatory",
-      "observations": 15548,
-      "qlike": 0.21855309048697308,
-      "rmse": 0.0002164183411709067
-    },
-    {
-      "information_set": "B0",
-      "mae": 7.625784069681763e-06,
-      "model_role": "lightgbm_robustness",
-      "observations": 15548,
-      "qlike": 0.2102566370190068,
-      "rmse": 1.8637237687316516e-05
-    },
-    {
-      "information_set": "B1a",
-      "mae": 7.675010366548464e-06,
-      "model_role": "lightgbm_robustness",
-      "observations": 15548,
-      "qlike": 0.2054259552609349,
-      "rmse": 1.8593677108383034e-05
-    },
-    {
-      "information_set": "B2",
-      "mae": 7.619089852586987e-06,
-      "model_role": "lightgbm_robustness",
-      "observations": 15548,
-      "qlike": 0.20323476740960328,
-      "rmse": 1.8504435509210046e-05
-    }
-  ],
-  "model_roles": [
-    "gamma_glm_confirmatory",
-    "lightgbm_robustness"
-  ],
+  "inference": {
+    "bootstrap_repetitions": 10000,
+    "cluster_unit": "XNYS_SESSION_DATE_WITH_ALL_ASSETS",
+    "confirmatory_family": [
+      "delta_b1",
+      "delta_b2"
+    ],
+    "multiplicity": "Holm"
+  },
+  "information_sets": {
+    "B0": [
+      "asset",
+      "b0_spot",
+      "b0_rv_5m_lag",
+      "b0_rv_30m_lag",
+      "b0_return_5m_lag",
+      "b0_volume_5m_lag",
+      "b0_session_minute"
+    ],
+    "B1a": [
+      "asset",
+      "b0_spot",
+      "b0_rv_5m_lag",
+      "b0_rv_30m_lag",
+      "b0_return_5m_lag",
+      "b0_volume_5m_lag",
+      "b0_session_minute",
+      "b1q_atm_iv"
+    ],
+    "B2": [
+      "asset",
+      "b0_spot",
+      "b0_rv_5m_lag",
+      "b0_rv_30m_lag",
+      "b0_return_5m_lag",
+      "b0_volume_5m_lag",
+      "b0_session_minute",
+      "b1q_atm_iv",
+      "b2_log_trade_count",
+      "b2_unique_contract_share",
+      "b2_log_mean_trade_premium",
+      "b2_log_max_trade_premium",
+      "b2_call_put_premium_imbalance_scaled",
+      "b2_execution_side_premium_imbalance",
+      "b2_repeated_contract_premium_share",
+      "b2_strike_concentration",
+      "b2_expiry_concentration"
+    ]
+  },
+  "input_hashes": {
+    "common_development_80d.parquet": "e5b9e04296d6dacd6c1321b760e1a253a47fcf67055a4e41b9d2c6a8b00c77da",
+    "development_panel_quality.json": "752565f5fd498b3ad27f23c32c5e79af33e2a3289dcd2c8245c4135fd67c8a75",
+    "development_source_manifest_80d.json": "ad2c80fbb6f42f360bdd7a10a01b3c4fb771ef46b1ef80ab1e6e35320f04a126",
+    "preregistration.json": "862e81f05d02a913e8d13431a6e230287c9c49f009ebd41b334a5eefc6fc419a",
+    "uv.lock": "97382a973be6cede8621050748b1409e4cb6c70591063217e05896d8b03be241"
+  },
+  "manifest_sha256": "d04245f66de3e93a71cf6cfad4d1e33f14101b73d7ae090132c4093a21955029",
   "outcome_reporting": "RETAIN_ALL_POSITIVE_NEGATIVE_AND_NULL_RESULTS",
-  "outer_fold_count": 4,
-  "preregistration_manifest_sha256": "ef77a20a4c0dde602e1daf29a3cbcbc698ccdb2b9acc0ce611cd0b6bc6b5273b",
-  "schema_version": "phase5-development-results-1.0",
+  "output_hashes": {
+    "development_forecasts.parquet": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+    "development_results.json": "87e78fcbaff8c32adb4a58ea2f1b0531beb779449ec741fc00d08786accd687d",
+    "variant_ledger.json": "f254e3b0ecf7cbdcb3dc660c2021a606fd5bf635f16bde9e61ac04583da7820f"
+  },
+  "package_versions": {
+    "lightgbm": "4.7.0",
+    "numpy": "2.5.1",
+    "polars": "1.42.1",
+    "scikit-learn": "1.9.0"
+  },
+  "schema_version": "phase5-method-freeze-1.0",
+  "seed": 650,
   "selected_assets": [
     "AAPL",
     "AMZN",
@@ -503,5 +455,24 @@
       }
     }
   ],
-  "status": "PASS_DEVELOPMENT_ONLY"
+  "source_code_hashes": {
+    "scripts/run_phase5_development_evaluation.py": "3c863e0cbce3456a5cb8f6ac7676f97a471540bface22ef27d12229106bc5afe",
+    "scripts/run_phase5_holdout.py": "1996160fb9efd0d129f9a3ab676d8d0f98427d63d18ba88e45045a7eb3e39f5f",
+    "src/mds650/holdout.py": "1d5ef48368cc6c39f9b6ebe75f7d4df93b8c039e85ff16da8d161e95dbc865c8",
+    "src/mds650/metrics.py": "e80eddb94f1626c21c16468db6a55de004254da157c1ce4dee9b0c65e20d1749",
+    "src/mds650/modeling.py": "e91b7feda2ba1bbe1690301302229493698cbdaa1b710489caf90436313ed4ce",
+    "src/mds650/study_design.py": "990c7e2a3d4012ccfe718c740c2e5eaf6eecc0f377222c650a11720fd517fcc7",
+    "src/mds650/temporal_validation.py": "56de7393f6a9dbaf61b30aaec096a3b60f5603c03f3bba17ec4cec58bd6501a7"
+  },
+  "status": "FROZEN_AFTER_DEVELOPMENT_BEFORE_HOLDOUT",
+  "timing": {
+    "b2_primary_delay_seconds": 60,
+    "b2_sensitivity_delay_seconds": [
+      120,
+      300
+    ],
+    "created_at_semantics": "OPERATIONAL_AVAILABILITY_PROXY_NOT_PUBLICATION_TIME",
+    "fmp_primary_delay_minutes": 1,
+    "fmp_sensitivity_delay_minutes": 2
+  }
 }

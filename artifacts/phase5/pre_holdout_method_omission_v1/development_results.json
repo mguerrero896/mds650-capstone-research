@@ -81,84 +81,13 @@
   "evaluated_origin_count": 15548,
   "forecast_row_count": 93288,
   "forecast_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
-  "holdout_hyperparameters": [
-    {
-      "information_set": "B0",
-      "model_role": "gamma_glm_confirmatory",
-      "parameters": {
-        "alpha": 0.1,
-        "max_iter": 2000,
-        "tol": 1e-08
-      },
-      "selection_basis": "WEIGHTED_MEAN_OF_FOUR_DEVELOPMENT_INNER_VALIDATION_QLIKE_VALUES"
-    },
-    {
-      "information_set": "B0",
-      "model_role": "lightgbm_robustness",
-      "parameters": {
-        "learning_rate": 0.03,
-        "max_depth": 3,
-        "min_child_samples": 50,
-        "n_estimators": 200,
-        "num_leaves": 15,
-        "reg_lambda": 1.0
-      },
-      "selection_basis": "WEIGHTED_MEAN_OF_FOUR_DEVELOPMENT_INNER_VALIDATION_QLIKE_VALUES"
-    },
-    {
-      "information_set": "B1a",
-      "model_role": "gamma_glm_confirmatory",
-      "parameters": {
-        "alpha": 0.1,
-        "max_iter": 2000,
-        "tol": 1e-08
-      },
-      "selection_basis": "WEIGHTED_MEAN_OF_FOUR_DEVELOPMENT_INNER_VALIDATION_QLIKE_VALUES"
-    },
-    {
-      "information_set": "B1a",
-      "model_role": "lightgbm_robustness",
-      "parameters": {
-        "learning_rate": 0.03,
-        "max_depth": 5,
-        "min_child_samples": 50,
-        "n_estimators": 200,
-        "num_leaves": 7,
-        "reg_lambda": 1.0
-      },
-      "selection_basis": "WEIGHTED_MEAN_OF_FOUR_DEVELOPMENT_INNER_VALIDATION_QLIKE_VALUES"
-    },
-    {
-      "information_set": "B2",
-      "model_role": "gamma_glm_confirmatory",
-      "parameters": {
-        "alpha": 0.1,
-        "max_iter": 2000,
-        "tol": 1e-08
-      },
-      "selection_basis": "WEIGHTED_MEAN_OF_FOUR_DEVELOPMENT_INNER_VALIDATION_QLIKE_VALUES"
-    },
-    {
-      "information_set": "B2",
-      "model_role": "lightgbm_robustness",
-      "parameters": {
-        "learning_rate": 0.03,
-        "max_depth": 5,
-        "min_child_samples": 50,
-        "n_estimators": 200,
-        "num_leaves": 7,
-        "reg_lambda": 1.0
-      },
-      "selection_basis": "WEIGHTED_MEAN_OF_FOUR_DEVELOPMENT_INNER_VALIDATION_QLIKE_VALUES"
-    }
-  ],
   "holdout_reads": 0,
   "information_sets": [
     "B0",
     "B1a",
     "B2"
   ],
-  "manifest_sha256": "7dd89a8c7333aff7e8f44e7b0dbe2e8226272230f3a4b1c12200b3cb20c2ed86",
+  "manifest_sha256": "b16d4cc1709657faa04d2102b37dab2a977090eb8b52f964b23f6184e64ff05a",
   "metrics": [
     {
       "information_set": "B0",

@@ -1,0 +1,12 @@
+{
+  "archived_files": [
+    "development_results.json",
+    "method_freeze.json",
+    "variant_ledger.json"
+  ],
+  "cause": "FINAL_HOLDOUT_HYPERPARAMETERS_WERE_NOT_EXPLICITLY_FROZEN",
+  "forecast_artifact_changed": false,
+  "remediation": "SELECT_ONE_PARAMETER_SET_PER_INFORMATION_SET_AND_MODEL_USING_ONLY_THE_WEIGHTED_FOUR_FOLD_INNER_VALIDATION_QLIKE_VALUES",
+  "schema_version": "phase5-pre-holdout-method-omission-1.0",
+  "status": "INVALID_FOR_HOLDOUT_PRESERVED_FOR_AUDIT"
+}

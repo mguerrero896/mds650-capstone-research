@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib
 from datetime import date
+from pathlib import Path
 
 import pytest
 
@@ -59,3 +60,12 @@ def test_canonical_sha256_is_key_order_independent() -> None:
     right = {"a": {"x": True}, "b": [2, 1]}
 
     assert _study_design().canonical_sha256(left) == _study_design().canonical_sha256(right)
+
+
+def test_source_sha256_is_line_ending_independent(tmp_path: Path) -> None:
+    posix = tmp_path / "posix.py"
+    windows = tmp_path / "windows.py"
+    posix.write_bytes(b"first\nsecond\n")
+    windows.write_bytes(b"first\r\nsecond\r\n")
+
+    assert _study_design().source_sha256(posix) == _study_design().source_sha256(windows)

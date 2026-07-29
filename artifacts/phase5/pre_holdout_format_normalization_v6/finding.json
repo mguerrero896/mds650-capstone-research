@@ -1,0 +1,8 @@
+{
+  "archived_file_sha256": "6892921eaa42c080f36bc739acc236cfff867edb4f9595ae363c8f1ab5eaa966",
+  "classification": "INVALID_FOR_FINAL_METHOD_FREEZE",
+  "finding": "The method and source hashes were valid, but the project formatter still reported five changed Phase 5 files.",
+  "holdout_reads": 0,
+  "remediation": "Apply Ruff formatting before the final source hash and repeat the deterministic development freeze.",
+  "schema_version": "phase5-pre-holdout-finding-1.0"
+}

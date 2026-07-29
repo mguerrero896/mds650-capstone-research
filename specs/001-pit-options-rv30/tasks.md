@@ -356,8 +356,8 @@ explicitly attributed to non-IV B0/B1Q coverage rather than optional IV missingn
 
 ## Phase 11: User Story 4 — One-time prospective holdout and final evidence (Priority: P2)
 
-- [ ] T189 [P] [US4] Add failing incomplete-session, pre-freeze, hash-mismatch and second-read tests in `tests/contract/test_phase5_holdout_guard.py`.
-- [ ] T190 [US4] Implement the fail-closed `0 -> 1` holdout access transition in `src/mds650/holdout.py` and `scripts/run_phase5_holdout.py`.
+- [x] T189 [P] [US4] Add failing incomplete-session, pre-freeze, hash-mismatch and second-read tests in `tests/contract/test_phase5_holdout_guard.py`.
+- [x] T190 [US4] Implement the fail-closed `0 -> 1` holdout access transition in `src/mds650/holdout.py` and `scripts/run_phase5_holdout.py`.
 - [ ] T191 [US4] After all ten sessions complete, acquire holdout provider evidence into restricted D: roots without analytical outcome reads and record `artifacts/phase5/holdout_access_ledger.json`.
 - [ ] T192 [US4] Execute the sole authorized holdout read and write `artifacts/phase5/holdout_results.json`; a second invocation MUST fail.
 - [ ] T193 [P] [US4] Report asset, session-tercile, volatility-regime, FMP +1/+2 and B2 60/120/300-second stability in `artifacts/phase5/stability_results.json`.

@@ -1,0 +1,10 @@
+{
+  "archived_files": [
+    "method_freeze.json"
+  ],
+  "cause": "RUNNER_HASH_PRECEDED_THE_FINAL_EARLY_CALENDAR_GATE",
+  "development_results_changed": false,
+  "remediation": "FREEZE_THE_RUNNER_THAT_FAILS_BEFORE_ANY_FILE_OR_PROVIDER_ACCESS",
+  "schema_version": "phase5-pre-holdout-early-gate-hash-1.0",
+  "status": "INVALID_FOR_HOLDOUT_PRESERVED_FOR_AUDIT"
+}

@@ -1,0 +1,8 @@
+{
+  "archived_file_sha256": "3f5ef691c4a6ac3f76137f8b8da9eb01b93a40bf95ac8be8eb5edc618501d83a",
+  "classification": "INVALID_FOR_FINAL_METHOD_FREEZE",
+  "finding": "The frozen method recorded raw-byte source hashes but the holdout runner did not enforce them; raw hashes were also vulnerable to CRLF/LF checkout differences.",
+  "holdout_reads": 0,
+  "remediation": "Normalize source line endings before SHA-256, include the canonical hash implementation itself, and reject missing or drifted source hashes before consuming the one-read ledger.",
+  "schema_version": "phase5-pre-holdout-finding-1.0"
+}

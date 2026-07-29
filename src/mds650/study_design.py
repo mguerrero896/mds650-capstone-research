@@ -78,6 +78,23 @@ def canonical_sha256(payload: Mapping[str, Any]) -> str:
     return hashlib.sha256(canonical).hexdigest()
 
 
+def source_sha256(path: Path) -> str:
+    """Hash text source independently of checkout line endings.
+
+    Parameters
+    ----------
+    path:
+        UTF-8-compatible source file to hash.
+
+    Returns
+    -------
+    str
+        Lowercase SHA-256 after normalizing CRLF and CR to LF.
+    """
+    normalized = path.read_bytes().replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return hashlib.sha256(normalized).hexdigest()
+
+
 def build_study_sessions(
     calendar_name: str,
     development_end: date,

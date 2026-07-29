@@ -1,0 +1,10 @@
+{
+  "archived_files": [
+    "method_freeze.json"
+  ],
+  "cause": "HOLDOUT_GUARD_AND_ONE_READ_RUNNER_HASHES_WERE_NOT_YET_IN_THE_METHOD_FREEZE",
+  "development_results_changed": false,
+  "remediation": "INCLUDE_BOTH_HOLDOUT_EXECUTION_FILES_IN_SOURCE_CODE_HASHES_BEFORE_ANY_ACCESS",
+  "schema_version": "phase5-pre-holdout-code-hash-omission-1.0",
+  "status": "INVALID_FOR_HOLDOUT_PRESERVED_FOR_AUDIT"
+}
