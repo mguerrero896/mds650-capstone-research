@@ -1,0 +1,12 @@
+{
+  "classification": "EXPECTED_FAIL_CLOSED_REFREEZE_GUARD",
+  "development_forecasts_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+  "development_results_sha256": "87e78fcbaff8c32adb4a58ea2f1b0531beb779449ec741fc00d08786accd687d",
+  "failure": "FROZEN_MANIFEST_DRIFT",
+  "holdout_access_occurred": false,
+  "holdout_reads": 0,
+  "method_freeze_sha256": "47726ce1603940f49f275bbc6d5c579d39a74fd94405f74026acf2f4ea289503",
+  "scientific_outputs_changed": false,
+  "status": "ARCHIVED_EXPECTED_FAILURE",
+  "variant_ledger_sha256": "f254e3b0ecf7cbdcb3dc660c2021a606fd5bf635f16bde9e61ac04583da7820f"
+}

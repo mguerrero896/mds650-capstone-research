@@ -45,6 +45,41 @@ def test_build_config_selects_only_55_missing_development_sessions() -> None:
     assert config.manifest_root == Path("D:/MDS650/manifests/full_tape")
 
 
+def test_build_holdout_config_selects_exact_ten_sessions() -> None:
+    manifest = json.loads(SESSION_MANIFEST.read_text(encoding="utf-8"))
+
+    config = _storage().build_phase5_holdout_storage_config(
+        manifest,
+        data_root=Path("D:/MDS650/data/phase5_holdout"),
+        projected_peak_additional_bytes=20 * GIB,
+    )
+
+    assert tuple(day.isoformat() for day in config.sessions) == tuple(
+        manifest["holdout"]
+    )
+    assert config.excluded_dates == frozenset(
+        date.fromisoformat(value) for value in manifest["development"]
+    )
+    assert config.raw_root == Path(
+        "D:/MDS650/data/phase5_holdout/raw/full_tape"
+    )
+    assert config.event_root == Path(
+        "D:/MDS650/data/phase5_holdout/data/option_events"
+    )
+
+
+def test_build_holdout_config_rejects_manifest_hash_mismatch() -> None:
+    manifest = json.loads(SESSION_MANIFEST.read_text(encoding="utf-8"))
+    manifest["holdout_count"] = 9
+
+    with pytest.raises(ValueError, match="SESSION_MANIFEST_HASH_MISMATCH"):
+        _storage().build_phase5_holdout_storage_config(
+            manifest,
+            data_root=Path("D:/MDS650/data/phase5_holdout"),
+            projected_peak_additional_bytes=20 * GIB,
+        )
+
+
 def test_downloader_loads_exact_missing_development_allowlist(tmp_path: Path) -> None:
     config = downloader.load_phase5_development_config(
         session_manifest_path=SESSION_MANIFEST,
@@ -56,6 +91,20 @@ def test_downloader_loads_exact_missing_development_allowlist(tmp_path: Path) ->
     assert len(config.sessions) == 55
     assert config.sessions[0] == date(2026, 3, 24)
     assert config.sessions[-1] == date(2026, 6, 10)
+    assert config.data_root == tmp_path
+    assert set(config.sessions).isdisjoint(config.excluded_dates)
+
+
+def test_downloader_loads_exact_holdout_allowlist(tmp_path: Path) -> None:
+    config = downloader.load_phase5_holdout_config(
+        session_manifest_path=SESSION_MANIFEST,
+        output_root=tmp_path,
+        projected_peak_additional_bytes=20 * GIB,
+    )
+
+    assert len(config.sessions) == 10
+    assert config.sessions[0] == date(2026, 7, 20)
+    assert config.sessions[-1] == date(2026, 7, 31)
     assert config.data_root == tmp_path
     assert set(config.sessions).isdisjoint(config.excluded_dates)
 

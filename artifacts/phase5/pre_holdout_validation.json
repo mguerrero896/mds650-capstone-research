@@ -1,0 +1,59 @@
+{
+  "schema_version": "phase5-pre-holdout-validation-1.0",
+  "status": "PASS_READY_TO_ACQUIRE_AFTER_RELEASE",
+  "spec_kit_status": "PASS_NO_CRITICAL_CONTRADICTIONS",
+  "tests": {
+    "collected": 249,
+    "passed": 249,
+    "failed": 0,
+    "skipped": 0,
+    "coverage_percent": 82.63,
+    "coverage_floor_percent": 80.0
+  },
+  "quality_gates": {
+    "pytest": true,
+    "ruff": true,
+    "mypy": true,
+    "json_schemas": true,
+    "preregistration_schema": true,
+    "secret_scan": true,
+    "personal_path_scan": true,
+    "development_determinism": true,
+    "pre_network_holdout_guard": true
+  },
+  "method_freeze": {
+    "status": "FROZEN_AFTER_DEVELOPMENT_BEFORE_HOLDOUT",
+    "manifest_sha256": "4fc2b58fd6e62bc63c3bc8473980a8af4b3fa3dd8ccaa49053c68d5dc147d64d",
+    "file_sha256": "4056db61eaff81d40fea8d61b991ab1dd2ea3a03b9a570e8329bb3ab87c2cbe0",
+    "source_hash_count": 23,
+    "contract_hash_count": 1,
+    "holdout_reads": 0
+  },
+  "scientific_hashes": {
+    "preregistration.json": "862e81f05d02a913e8d13431a6e230287c9c49f009ebd41b334a5eefc6fc419a",
+    "common_development_80d.parquet": "e5b9e04296d6dacd6c1321b760e1a253a47fcf67055a4e41b9d2c6a8b00c77da",
+    "development_stability_inputs_80d.parquet": "0009a3c27f42b98978bf1b53dc55b656e401119cd8f3c29c942591e0891a2560",
+    "development_forecasts.parquet": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+    "development_results.json": "87e78fcbaff8c32adb4a58ea2f1b0531beb779449ec741fc00d08786accd687d",
+    "variant_ledger.json": "f254e3b0ecf7cbdcb3dc660c2021a606fd5bf635f16bde9e61ac04583da7820f"
+  },
+  "selected_assets": [
+    "AAPL",
+    "AMZN",
+    "META",
+    "MSFT",
+    "NVDA",
+    "TSLA"
+  ],
+  "holdout": {
+    "status": "SEALED_NOT_ACQUIRED",
+    "release_utc": "2026-07-31T20:00:00Z",
+    "release_sydney": "2026-08-01T06:00:00+10:00",
+    "holdout_reads": 0,
+    "models_run": false,
+    "qlike_computed": false
+  },
+  "secret_values_emitted": false,
+  "personal_paths_emitted": false,
+  "manifest_sha256": "e6a972edd2bf5abe294a87cf47a9bfe6378b02c7e753afa5d3b6dea5438f469c"
+}

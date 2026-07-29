@@ -1,0 +1,2762 @@
+{
+  "delays_seconds": [
+    120,
+    300
+  ],
+  "input_hashes": {
+    "common_development_80d.parquet": "e5b9e04296d6dacd6c1321b760e1a253a47fcf67055a4e41b9d2c6a8b00c77da",
+    "development_panel_quality.json": "752565f5fd498b3ad27f23c32c5e79af33e2a3289dcd2c8245c4135fd67c8a75"
+  },
+  "manifest_sha256": "cc4d2f7429404e5ccc3ee3f6d463d74d885d0263f67c16084ebcb779a4886823",
+  "origin_count": 30650,
+  "output": {
+    "file_name": "development_stability_inputs_80d.parquet",
+    "sha256": "0009a3c27f42b98978bf1b53dc55b656e401119cd8f3c29c942591e0891a2560"
+  },
+  "provider_requests": 0,
+  "schema_version": "phase5-stability-inputs-1.0",
+  "selected_assets": [
+    "AAPL",
+    "AMZN",
+    "META",
+    "MSFT",
+    "NVDA",
+    "TSLA"
+  ],
+  "session_count": 80,
+  "source_file_count": 455,
+  "source_files": [
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-24",
+      "sha256": "6ba8830aca68e52b68f561ec48a4aa17b2398a5bc395e545d2f38b4700ed3bd7"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-24",
+      "sha256": "34b8b5adcc3dba7d114f8869c5b56edf636a71482019274d87551cb4aaaebea5"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-24",
+      "sha256": "60582b6076904e5c54a4f32d84fca65e876aa7e4553b4d847ecc9e2b0556eea1"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-24",
+      "sha256": "9af26e9cd9f6727dd429cf50cb8cca7704ef740693f6c70563533d17920443fb"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-24",
+      "sha256": "aac6df0268a01b2144610587e5b70a52dd913864ee5b5a59c6fe16791e990f29"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-24",
+      "sha256": "1802e9ff3dba8acfc402a998b1a460b6012e88fecf29afa69d6c1e634d384216"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-25",
+      "sha256": "8ade2e47ad93d8b7cb53a971c07721535953e4bf4adf75d8225836826b9025e3"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-25",
+      "sha256": "9857f31883a127954c404a3892447aa828dd96fa88f6a12afd5d29c8eaf13e2e"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-25",
+      "sha256": "4720e999f09a4e051c60c64cfe8203e95d58a94c92b12715ffdd293420c58f7c"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-25",
+      "sha256": "9e98a8748f5c8476d1541f0bd3067ee757879ca0f0a85d93fde2ea2e52e00c9b"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-25",
+      "sha256": "7b360f1f77aa08c9255bc721920438a00094604ba928a908b13727f28ceb230a"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-25",
+      "sha256": "9d9ff3c4a470adbf231bfd7f24dd868ae5bc637a3e7e944b70195f2e73695ecf"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-26",
+      "sha256": "815dea29df1dc2f947068373a86607160f8ced7d25111a8cc5ed4fd60931e7bf"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-26",
+      "sha256": "dad451c8a847e75689c98bf762748e2edd02b69630ef4c3d684c5e5bbd6e29e8"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-26",
+      "sha256": "df56f9c213c6372577858b94b130826e85f65e943ab1e174d3a6cc087c0a1f9a"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-26",
+      "sha256": "8ac3ee816aa12e40fb5d4119b0d3f0ce04d6d656c6a6bcfb928ecb7bd13981f6"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-26",
+      "sha256": "42706bd66cf4821eed904ece3bc24361f78cb6fecefd3ed96e8e0742d8e2d7a7"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-26",
+      "sha256": "8aa7e84bd748de6eb714d4f54adeee11bcb7be0941ef841f035e263154256747"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-27",
+      "sha256": "802120957f7f344d9bad98bdafe9320c61a5843c50536ba75ed560d239554fc1"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-27",
+      "sha256": "4752bee4792585a6fca8645b12b5d24d8b88f27486ecd8540a1619c1de949c5a"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-27",
+      "sha256": "dd39aa2faf61120d0975c028d84c1eadbb98c47a93cbbd31f0c88e56c5952ea0"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-27",
+      "sha256": "9c2de7985967430156a8c9ba5caa9da923a9b35a95fe9fffae98abab9335928a"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-27",
+      "sha256": "25ba2883425d5f1cc3f852675a4dfa0ac526c337bd19c145cfe09c215048b441"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-27",
+      "sha256": "f6dc5fad8ba4f80fd02ab2a2153db580ca57aff295ac749cfc3294f2325b40a9"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-30",
+      "sha256": "403b3244567267a71bb11da3eee0c03bb7a1a0caeecc305c8c29087e20ba0a04"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-30",
+      "sha256": "2e44fcc68b8acee4bd63a2e4a172a4e9259b00dd7e6fadeb7420e29071b0946f"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-30",
+      "sha256": "904b5a66359ad829e3a8e37b45048c76622c3215210302ec51a1b4542ae60a1d"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-30",
+      "sha256": "c4ef7ccb47c6ef0fa871f503d35c32e08ab03bfd57e17d3c08fd062d279ef127"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-30",
+      "sha256": "cbf044b29c671cbb47cfb10e5ce87eeb07ebac380f69a4028c7f330df5ea7e8f"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-30",
+      "sha256": "c6d0b889235dd4ec431c64bd291a47655051937b913c2632d5d4285d9b256645"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-31",
+      "sha256": "bd4aceac46244d47f4bc107726a15eeeccc5ea912267cc446dbb118d12f0ceed"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-31",
+      "sha256": "f69c01c2efa488ddb39ed5c27ccb0eeb1e199f50cdbab5014c2fe5706bede399"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-31",
+      "sha256": "79cc7516cc8d224b757580910c2933a891093d95e469a020f2543abf2c2b6514"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-31",
+      "sha256": "5df3ebab912737c33be638996d207711cc06798e9034d5364bbc6b9e3d9eacbe"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-31",
+      "sha256": "c49badbe8966c5a18f78649a3564dc8ae3090783a703d5c6354309a4d45d7c05"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-03-31",
+      "sha256": "4817162e4b9102f12eb2662714fb1f0063f475228e4d27888c8f23320396a00e"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-01",
+      "sha256": "a5fbe709ccd8028cdfc4b1ed3c16f66cc1d2d054f59ef9f31becbdb7cec8bd9e"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-01",
+      "sha256": "7e380f5a04baf435091183dbf80156ee31b8388e4d49abcaf5d97b21381618fc"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-01",
+      "sha256": "f58cedb493cefbdba5082f2b910cdca92083e258bc219de7f4acab7bef3addb1"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-01",
+      "sha256": "a757d6bc57c1e0c63e9ee08e8f22b4a5d4ebd5757e64924380528fc612b58a2c"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-01",
+      "sha256": "6b9bff9e7584a8533eade99209e78758a97d9d3a50591e5d9304ca1343f9cde5"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-01",
+      "sha256": "dbcf9cbdce77405fa696eda1374f490be5094f3d2e878ed82fb72a42d66a1ea4"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-02",
+      "sha256": "22082e2951bf50c3701716d6507d07d6ee37925e5862fe107e4c9b4012a1c4d5"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-02",
+      "sha256": "5d4b6f06dc01698fbaaf3902a23d13da3aa7de02fff67369c31060bae5f2835f"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-02",
+      "sha256": "d66daad75a656dce584d23fe132d005f7296c4533ed8ed01a4c630fbf2d56129"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-02",
+      "sha256": "a1ec154db1d76b9786884dff10767e4800ce0a4a00c7b74efb8ed7ccba1b833d"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-02",
+      "sha256": "77bd92aa18f7f6241bfa504a8d85175631994f2bc9fe1bf1ff571e876da4464b"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-02",
+      "sha256": "cbeffe604502484cf91098ef3e1d439e1fcbf3050ba7953c97947e0d45275e43"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-06",
+      "sha256": "618dd255a6da9484b37f8823ad12e604b4d6e4e946fab06827eea9d905e3970b"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-06",
+      "sha256": "3a73df37a020660c909d16df9d4a0e72fd9b789c4bc2b27d44c6ce5dc4730464"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-06",
+      "sha256": "b56a1bc0fba1ad08648e678bee7ea39fbb992eb32d66fb4853fc53e65ff8bd8b"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-06",
+      "sha256": "7339f0952a72951fd16973848a2cbf343769c932a72cc868fe586eb74b7c7f50"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-06",
+      "sha256": "c99a55c7e7fd4cc583c70026671aaae091502ed6f5d957cf91577f058b2cf202"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-06",
+      "sha256": "309b211d1e073258343c188a5348deb0b0cadf8e347efa0bb46544240522743b"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-07",
+      "sha256": "59fbbe9352c92cf7a1b4e8c8004236bf4895686380c80d9ddabc0819d3a72707"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-07",
+      "sha256": "0e75ce6346dfc0cd0be02baf543fd45a950e3cab7ed6a5dcbe036726606b2eac"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-07",
+      "sha256": "0a3b68887cb0e5aedf89208d6b08619b355a0c087ec30865416e204673686d9a"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-07",
+      "sha256": "58eb964ec9bdd09b9c6975e9f028150da7eeb50aaf85a8eaf79ef0ab32c837cb"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-07",
+      "sha256": "3166190b997c8b4eefa167dbd24a963f16d0bb56ff0cdb8de499a1aac31a8c99"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-07",
+      "sha256": "2b0b67f6c0aacb00a6bacefc25de5e2be8e45c41a925563272a9b88538d2e458"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-08",
+      "sha256": "8c01f7e3e415d44750c3dba98f9b9a2141debc610208fe685b461e9cf403e995"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-08",
+      "sha256": "ca36d4c2b6050412956ac4ef06febc650fb62b44425543d147b24ba4ec0636c5"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-08",
+      "sha256": "0ed61e5610cdd4a3eb53128eca3070762aa82832584243c5eb15fcdb8794007c"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-08",
+      "sha256": "1cb2fab102c9af7651dee9b7e5d70079bcd63a4e641cb413e41b4eb540cefea8"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-08",
+      "sha256": "275e3b81e8a02ce57fd0083357e0159ef56ff22d13d7a0a9347ee176897743a2"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-08",
+      "sha256": "cfa04612e223f5c5bfc8e4bf86c85bef036969d544e289e2426f01d14bd70b9b"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-09",
+      "sha256": "468ca21488371dab5b6f9e9bdf34a18a1f5c9bb8f665b253057845a73836458c"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-09",
+      "sha256": "f918b58b203ea125030c59a3c38c2dc3dcd64fcb182fcc81d35db51223523465"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-09",
+      "sha256": "848b3def43ae67d5723a750d9162a3b9608de4b4c4dce5f0150ebdb764a5974a"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-09",
+      "sha256": "10019e5941d685766cb68efe7c6dc01538f7f36b8b67c80de40c11e68660eae8"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-09",
+      "sha256": "2d727be712769c64aee2316b4831cd56ec288308b1118c5b66d058bfe8178978"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-09",
+      "sha256": "7e428adfe44477b73908d36c90546f229a068e96496b77c3a3e6425ae00ce16d"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-10",
+      "sha256": "4a1b151a527b12a39cee467565442568ad18c09b7c29aa06015379c7d2fb2263"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-10",
+      "sha256": "1a73646eae8ff91ecb60cb39164164b4f7bf3e99bd32b9ed8e469eb6ca748cb5"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-10",
+      "sha256": "9a6dd080b6cc11dafa0f9fc85d6c9ec7170d6496ca3644227b6c7b56b3d1efd0"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-10",
+      "sha256": "2d4e9cf97ee26cb6244d497ebb05b2681bc69a72c1de80a8e2a3d825e0c3e24d"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-10",
+      "sha256": "c40f4b531405603b5cdc1c49844140372b6a595f8e86dd38366ad82b6fd0b985"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-10",
+      "sha256": "fef27a6322b9943d96c1328a142d627401cbb7a5f6d4424d86c291233f6170c6"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-13",
+      "sha256": "6f91467b7c54928b663a5e7a43f2f577f6444861a06660142c09de32fbe1b6b9"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-13",
+      "sha256": "52823067b255baa69cb97592da6dd56d74550a86c12abc01da4c7f55ea8e8c9f"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-13",
+      "sha256": "4fa02c3fe9b3fe72102a2fdbe1d1cc529824c8e4e4d75b0c6ab6bb4d243879a7"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-13",
+      "sha256": "b1f82631a54205d2c6f9da099a136a5c05d1a2ac591949d3d47cf00cfa759d49"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-13",
+      "sha256": "6c697a0313c710acf9fcef0cce7c30c74dbcb7a8fe2da444ea96ec20fd56b9fb"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-13",
+      "sha256": "b2744fb177add9b7f54058ce49c122253b7c9408a948a837d9df0fd5f003d953"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-14",
+      "sha256": "190f528695ecb8e7689d215c321b743df3f086e66b1e2b9f3a47ffe32a34c8da"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-14",
+      "sha256": "1cbab217e36e88e7056fbef4dc1dbb8f8384dd7be6b9de3e8237487c4d219bd5"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-14",
+      "sha256": "30bb4b6f203b3d2665b48d359a7b180cbadad11ee0e57217d58b78849892315c"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-14",
+      "sha256": "c9a4e18c437fea84aef199b4fd78e78e684ddd1bc1938583036bd55f1b8cf152"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-14",
+      "sha256": "7f5a0b83934bb613a62d9c9aeb503229ba0d222e9df8f94f8894eec3af1a52fd"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-14",
+      "sha256": "12008c51002dd582f6565b6ed5702126a0a3fc89951e14dfbeeb9895fa2faaf0"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-15",
+      "sha256": "60c77f52de4be144f8460d83d3ea64c4a7be5155a6e01b751b880e18e93b1734"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-15",
+      "sha256": "c511109c45be8f954fd249bb1b4db655b6621e566c2b3846d390eaa2853a080c"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-15",
+      "sha256": "2e9c0ad6ee2947004eb66b63eda4f436c6b95a036d86af9f646c0019f88cbdd0"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-15",
+      "sha256": "70c0a2874169e17c3c86a9390e4e0a1fb37dacda88b0fafade0106c5e7367557"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-15",
+      "sha256": "c4973fbad693e7b5f1311d9faf16c905f17c56958e93578d90090b3c365f4bb3"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-15",
+      "sha256": "5d6e26b4412ccd0b80ec13bcfc927cab620eb49bc300230baefb74f38389ba63"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-16",
+      "sha256": "bb42e320793900f401dba0a95d9774d038b15ef82f76f3db1bfc1787e5520530"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-16",
+      "sha256": "78b93bc200bb68cc0d891d13a344b08ae8b190ce80529a09ed3c0a64f2b01842"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-16",
+      "sha256": "0313ee9d35eda322522bf559e4cf1a77abf3d5cdc03e52172779164a166a0b00"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-16",
+      "sha256": "81111e233cd023278acf3c6fc87bc01ce6462e3eee39d91de3443a9cfd4d58e1"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-16",
+      "sha256": "e1139860c8f50beb4a1b86a03a32bb2e5fcc0b7494e9996b89e9c415154ec279"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-16",
+      "sha256": "63970845444fc4c9ca374a9a9ccbc76199651c1c781a7ac5f6d8f46ad6d13567"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-17",
+      "sha256": "56f1ba2f3608a0b25aae37978864b318d702446610c922f03616d5e291972551"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-17",
+      "sha256": "28c385697b0ec9030c4843f8dfc2f356898f847661758697450f0746308ff3e0"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-17",
+      "sha256": "aeaa450b446378243b135590c0ba493a6c42462eb7e32932f311bd067e20f7de"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-17",
+      "sha256": "7cb48622c0c28e4e1833637df7cda38de59b7ce5445ef376ab2460c35ca4f06b"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-17",
+      "sha256": "16b201b1e806b7f3c4d6a33215a01a63e3ce43cea9dea731397d114b7d7b84b7"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-17",
+      "sha256": "d9bcc5676d5fa44fbb2befd1eb2b9651ead5551214d8fd96a315e82d16efaeb2"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-20",
+      "sha256": "bcaff1b70e8f0b5c97e2fd6786664e21366698abbd773959ce490746f9d522ef"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-20",
+      "sha256": "332112fc6269b3065f0ded6e822459e535c1cd8108e6457ef2026d540aeec168"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-20",
+      "sha256": "cec9022abce41200c903705e146d9bf64d53e195810f07a020660a6bca809b18"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-20",
+      "sha256": "3e2e451f74193de387a28d925b31c131186e28b5e1a248553a3129735872eb71"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-20",
+      "sha256": "c33f495fea0e358f074a3520b08b3295492c31e4cd8f6c90bce1570f5078b9de"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-20",
+      "sha256": "1569ef139957b3739a6dd850cd9023dccf8846574fa27c7b539f00c55e029a46"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-21",
+      "sha256": "d7bac706a2e8ee23539c624dda22c960fc1561f1f71877ae1d51be0c0917f816"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-21",
+      "sha256": "e10e1774e79cd9f099318965ed8d21ba514721243627be77ac8dc22941c28f1f"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-21",
+      "sha256": "3a0c67dd194d2e417c05b00188c442130d9948b8854fb8249e1b2ec3fa4840ce"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-21",
+      "sha256": "f78d39c56294ff27158fdf818cf3a84fcf67cfd76915df129d212b42d0ad6682"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-21",
+      "sha256": "fb0b105e30b68900c2e2d395a66a0988d0e5c2e7deba1e758ba4d849d0afb47d"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-21",
+      "sha256": "6d98eaf871faf6c954518f04b4c8bc84fd47083f3c0def6c21ad0e3734e5315b"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-22",
+      "sha256": "9afd83b5632940a242546ee22cec2a3216099e58a4a141eb3cd886aaba0ae207"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-22",
+      "sha256": "f6f91d3e220535738be8536b23f83339111cd76cadde16f8fe41b2f2fc243e04"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-22",
+      "sha256": "359d6c635e2dda8e777bb821f59c43fd1b7e66f3bb287aeb8f21143e77a40045"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-22",
+      "sha256": "eb25585d1a5ded20227e72281b7cccea1574c27254254b05df841f5fe67e5137"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-22",
+      "sha256": "33bef56f0a85029238cef2da812efa90d33407ed7672fe92babb11c8cbfd92d3"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-22",
+      "sha256": "a34e24879ea8de4e67283c92faa02b114a7fbae50cc1d73069cd4f0112464fa8"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-23",
+      "sha256": "f0f7098d2b34a959c30696537071086c3078d4d1f4faa0adae91195e6a286880"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-23",
+      "sha256": "f30cb5e88e343ec412c7d28a2874b044c73e9800e6736f2e423254e63bc20e34"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-23",
+      "sha256": "2399d71a030e8b0faea077a23c41013a6fcfc32398d6b5afec2fc2bfdabb1ca1"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-23",
+      "sha256": "f548a7f888619148c68bc2a8a988a61ae2dc89b56d30e5e69328b68aa7452ab0"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-23",
+      "sha256": "2054e1f68f664f162c0f2eb16daccce86bff613ed16d863d1c5101edfb95b3de"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-23",
+      "sha256": "5162c2c70e09f460239a20f31ab90a19f8617604e7c36f052fcbeb967ef64ec9"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-24",
+      "sha256": "bb385ea29453729a0a1fe5234c92d2c2c2605d7f848a2bcda26e7f4e2b0a9382"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-24",
+      "sha256": "04c4470e08ef402675a8ac8e3b2371a6cf647d7d3de7c5bfea0cc6868ad03a73"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-24",
+      "sha256": "5c2dc8f2d3b0304b35f9c31ea5113e2de2a6530cc326aaf506aa460922910055"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-24",
+      "sha256": "a73aa0412cba64e5257115e9df37c6321cb53b86ad0c3d803eb7a5341d26ee9a"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-24",
+      "sha256": "8c59cc16ec96fa921017834abbce424c385821c403c0fb16ad2d6497537ab976"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-24",
+      "sha256": "67d7300f81b237c08f6715761e273be4d99757645d50ec8e8ca70af1ffb0ce5f"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-27",
+      "sha256": "68587da535dd9f44e66228b9eb043c7929a78c2bc48d8f0c54e807afbbc304be"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-27",
+      "sha256": "bd293e378fbcd8d64884212a7119570a8ada413b3dbc75b53e8a3f3e65996a1e"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-27",
+      "sha256": "2535741abf555c2f353404cc70be963de4dfeced5a36a414f59f856ced691943"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-27",
+      "sha256": "4be35d81c07322d770586fd147d5044938cf5dfae83e0f5309d0fc91a215083f"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-27",
+      "sha256": "7f2547db493506e5fe3c0970f4c645a004fc66904780bfeaac5c275f7c404137"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-27",
+      "sha256": "c6c08776237e0e13f82e985c70a44b6478f7be03354bfe1c845307802baa7b6e"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-28",
+      "sha256": "dbc6a8262431d2eb70c204e0b69f027328525d082e3b17683eb26fbce15dfa4d"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-28",
+      "sha256": "2a879c8e6cb1a9186949e4de9946bd4b658a681be21fa4107e7dcb4eb112a8d5"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-28",
+      "sha256": "43dc5f8bb84d84e9d99ce486ad67ef9ee346e462cbf93d1bc2c55c4958a0d659"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-28",
+      "sha256": "a332ab2656dd907a6beb8eb6316e893bfa534a12960628ef9027f979549bad2e"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-28",
+      "sha256": "9b6fc56d78f0f65932f0f1ae19174f863f1eef35180e11fa7dad87b89707ede7"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-28",
+      "sha256": "b8688c186c04eee0ecbd6f0ad410e4135643533bc42a9ce398ca9725d3747cee"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-29",
+      "sha256": "67bd853df05e42ff136a9d716bf68d7297d5661f3a06ed935492002b187ab131"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-29",
+      "sha256": "68004cd69b20003a6c5b9a8a20c67e5e41ffefe019b474754645e6b56fdbe29a"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-29",
+      "sha256": "a2e6d620d3e70fcdeeb6708385272ab4bd181b8897d7adc2b3a3e9d7e19e286c"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-29",
+      "sha256": "dec9719121f6697caf3d5debfd10bf3280ebb35fe34c7e30cb700e6f5486f5ee"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-29",
+      "sha256": "da6e202a53841f9bf92a271330d56ed48d5a93b1d9d86bfb70cfcf8b415b3530"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-29",
+      "sha256": "cbb22680a3935198114018fc3e3687f480108856cb31a61e855467937ed9808a"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-30",
+      "sha256": "0b5c9329a8933b9eb7af65d48a8ce88e5732b45b0b7ee52eb929d5be222a88a6"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-30",
+      "sha256": "0618853f0c3d4fdbec19739b6cc1c2c1abca4712d9af300be863ff8afef0ffb4"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-30",
+      "sha256": "d3efbb8165c7233d2f73c8c971388c010e00889d05c7d837924e69636a46d863"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-30",
+      "sha256": "a499c9614a0a49480fb704a14be2713fdd40cc407328178c5dbad47e4cbb58f1"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-30",
+      "sha256": "c3c7620064d6921c5387f413071fbf7187b344635a796fda82bae5e918c8f052"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-04-30",
+      "sha256": "106544ebd1739c7eaebcedf9c273338fe41e4c088ed5981a291a4eb9cd7ef475"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-01",
+      "sha256": "35e5696dc5986fe0e499ee7d925ba27c24a1b0514854c1808e5293cf9c25822f"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-01",
+      "sha256": "2bd4dbc21afd19df2fdbe1b5da98267e68ad3ebaf5268ba26196adb6cee79823"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-01",
+      "sha256": "26625d1a23cda7cb86efd1b3879801edc2d00e8d3a96652936cb079aade47261"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-01",
+      "sha256": "46c5aecb05584a39644800f761340badca3e2aa1c6ba98d512b880200c7beeb7"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-01",
+      "sha256": "b9a7a87c25babec3daa5326419a89df1f22639331a592fd640059d38bd414f4d"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-01",
+      "sha256": "421acb31f75f50b3ba93aa22f80074b63ef87a762b9308fcf9e9598d70137b13"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-04",
+      "sha256": "c5c57dac6019786bf305606521c145e9c787e63f576e349a040e057dcfec70bf"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-04",
+      "sha256": "879d1c7e174592d64f3b409a862307e0eee1c8cbdfb30d92fbbfe92911ce75b9"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-04",
+      "sha256": "b1676020895f6f0dd383f60961c58c0fe8000d31512ff5b7348f5963052fac5a"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-04",
+      "sha256": "e3d2b93eff9aed5a66125eccb398e45596ab15f3e17546dd3fb4dda4ce344ed2"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-04",
+      "sha256": "509c9c558402a06e6790349ce86e502822ba3ad2bc6ea42321a51a4b5278fb6e"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-04",
+      "sha256": "c8a742faabeae2ef3641ad9ad735f5fc7acd7a0a2dd263d32647db1815b50ecd"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-05",
+      "sha256": "479807f0d96b1a8ca1a87403726d2577ba216bcdba81917be289d558485f1df4"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-05",
+      "sha256": "2e8a2927bd4ac74fe34d080bed54e17fbccc6675ea3fd5e08d5ce7ef49e3b4c0"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-05",
+      "sha256": "a96ba5ec7ebae563ec31f3553b03ad5c0e08ba0aa94e886d57f5fb933e143e81"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-05",
+      "sha256": "5a66da9cca818582f0427fbe40e6da4c4164cbf2f1e32b87bef043768c4a9f73"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-05",
+      "sha256": "e18659543b321d5065fff4b8bdb9846b611bc576b7e7b9dee6f3f49b8a85c4f2"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-05",
+      "sha256": "2590771b720d9815c21e36a173ee4713226e29e683b56ddf06a3d208661c8e4b"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-06",
+      "sha256": "2f80243978e2f79faf688af334e61e1287e32eb54ffdbe23947e78750fec8d51"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-06",
+      "sha256": "71367230baa868da78e918eb6808e5ead9d0d819287b011ef9ace83f89bb6214"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-06",
+      "sha256": "c45215fd0903a705617369d8909e7fb38407bebb17a410616ccf0788ef9896e5"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-06",
+      "sha256": "03f62691ec5e82719cf83ef96220eda50aaf9b0e1eead6ecdc7d6925b8acefc1"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-06",
+      "sha256": "13249f9e84987c7f4a07a9bca19e1a2ad52ed44185f63c7580b21fc3865a72b2"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-06",
+      "sha256": "e0081317c1f579f5b7ac354b3cfa6f2322cf31c13d6a36e2105261c53b0efcd9"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-07",
+      "sha256": "4003b7ee095faa6c4661428fda0f198ae47bb8a0069824d9cd593c2743ffdbf0"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-07",
+      "sha256": "dc384d2d1e3b306dcd6cf09c211b6fad0b6237c797684b44b76d8297b4dd83eb"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-07",
+      "sha256": "fdfbb227c29679b2a2c3d075db0a193cd17fd7ac8bcc502503213f8e800d5398"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-07",
+      "sha256": "42426ea582f3938bb09b3749b259a07ee19b3c07da48e600dac27d069a0caec4"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-07",
+      "sha256": "10175f89a639d33b79adaecaec73956f63721999e96a73b952f6a770bd8791bc"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-07",
+      "sha256": "9fa365411ca05035636eb67103df7d3792e0c5e5986e533c414018815ec9d99a"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-08",
+      "sha256": "c75f0a3de5a512f56fafb17de4ed9fc0f483baae95489ee23b8baa8095bd462a"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-08",
+      "sha256": "9a04cbbba4ce9fe80e6f59391c36d9ee76e89ef1cd138c6eb8b17f742ecb2568"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-08",
+      "sha256": "4faea9e505b76c659bedd51145b7ec60eaa9edfb0efbbc0d4d5d57f6073ab83c"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-08",
+      "sha256": "43c7a6c4b2b38abf9cdae5b781a67ae8739d5b21588a764cba2a826e5c663c99"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-08",
+      "sha256": "8e55d27decea1acd3dbaa36b787f0f113f74fa797abd01e0ebfaf94d9d37e30a"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-08",
+      "sha256": "2081c994082220a568e14984983ef4f64c9bbfb23ed515449bb6d4e26b2dfa66"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-11",
+      "sha256": "efaaef06f392d6e21156065170227825309ecdab5cd39e1cc4a7f8ac86cd2065"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-11",
+      "sha256": "d0ad0a8a56f6da5f4a8e3b4422e5809014108591ae4d8f840b1acb561a6cb746"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-11",
+      "sha256": "cc42229f406b7fbe988ac22289fa8f3c9e917f9996f427dadc0b3865e8f92c5e"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-11",
+      "sha256": "303de5d6352d9c82ff3ef833d58fab9329957a8813265d60b4145939f3db1260"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-11",
+      "sha256": "428f7ff41fb1b0a68cb995e5f9cc0e6aa5822e8cce5b9a89b182bb49b358b29e"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-11",
+      "sha256": "d5bb70c27518ee256a16e18043470a1dd3a3d14323bf6d5e2f660429dbf8332b"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-12",
+      "sha256": "552c5cc098946304d582e2a6ac6dd19a2c909e495aad006f085f2f40f15110c1"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-12",
+      "sha256": "a3c9933c64e509cf7d0b12e8b87154595bac60ea125daec863b6983d95543cb2"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-12",
+      "sha256": "327f61ef9725419b74051885a84c819e8570d39b0be033ddad2a52f89d460552"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-12",
+      "sha256": "4f61eeb21fa518801bb688074484ff4619344bebcb058933b09e235091adb2b4"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-12",
+      "sha256": "f0b1fca3c7477c746f30688753ac484580880a88aebda76fd6cfee17baf1e645"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-12",
+      "sha256": "9ae5c7ec8bddd53938fdae6b8ed51da303803f073dd7afe5b4643fc52915fcae"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-13",
+      "sha256": "4f98a582e3c04818d73e8df0c0341b00e8582ad7146247f580aa85f9f6213f63"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-13",
+      "sha256": "a9bbb194bb0f055f9fcf1b797ed49a5e6acaa6ef285830d05528254ffd28fc0c"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-13",
+      "sha256": "f11db03a48bec75c24ae907df973182e5037c1879ed19958f3219f1ccecdb77a"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-13",
+      "sha256": "381f1ff0f63788104fe1f70dd5a3e7ea64b21a8469b33356edf3d9ac1f90d069"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-13",
+      "sha256": "0f7565beeef423afc933ec6eb4afb6f8294ab22410aee9a69ce8fdb0ac7c3690"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-13",
+      "sha256": "9a4ff8a6223bfeaa9b50db4f9a66a823a7f56e98f878e7f3461c1b27fbdd9416"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-14",
+      "sha256": "4dbfc24d5511891a819f073da2e5ab154188717755a4129a8f2d4212dc1a0f81"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-14",
+      "sha256": "09fa4500a3353c357f36caab9e6841364f7780add37fd98da651e6de8f65860d"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-14",
+      "sha256": "c33efd2abcaaa39d513b81a7cc7b46d51508ce98b68a19373ccf61ae94f166cb"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-14",
+      "sha256": "4b17d9cef65619f2aa4a963a7adf0a342672690614a33700c06794c173fa0a5a"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-14",
+      "sha256": "3ec6b87ffb9b819aebdd3e2c5efa6d2e389e65a3ee2a87d88a351a253e503793"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-14",
+      "sha256": "8258865f396091a7f2af4711b0763bb756572266d009935617572fc8b8a60cde"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-15",
+      "sha256": "358819dde10bb7d8835b79dc2d540a65598046c560690a5e8060403fdc1f32e2"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-15",
+      "sha256": "c9795f89ff7dda4e4e3417b851d488f289ae18f4c58aa5a31218cbc32bf653bf"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-15",
+      "sha256": "47c81e856144bb021b87bd59e4f3366bdb46e230a8b837b1a2f6f6ddb2ac92ac"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-15",
+      "sha256": "1afaff8a6c90e827062e75fd89f0cacda33ea938b154b58d96c6f51ca56b1e77"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-15",
+      "sha256": "07e1f3894fb7c5f07583c272a67c8836555c72b372e2b5b624a9a00bff380269"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-15",
+      "sha256": "142db064a40afe5f44cb84e713358dcfe37859fde091e7138c30f96a6f8e7dcb"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-18",
+      "sha256": "152a378bffc58492f453abbd652defefc8be1800e793fd332b85a756e0943cb0"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-18",
+      "sha256": "111382baea5d50afb315da7d2ecc4c5bd490d69c520c47f241c9ce94a1b43a0d"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-18",
+      "sha256": "afd2a7e1eafda9680d9a2b209c16a99372258bfa9c30cdf5435d4ca847a1d75b"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-18",
+      "sha256": "c0d7973cc9539430ec2a1a73ab21692c95009257b9ba3c4a9e4759305fdafec3"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-18",
+      "sha256": "4acb57b0de76b438786214fda4936998cd751f091547974d6babde95c55ba1d1"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-18",
+      "sha256": "92eb3466c6886f6c80945cd55f444ba9ba0e3e8007711a213ae3db839114f515"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-19",
+      "sha256": "bdf4def2b3b5f9dfd6f081f32cb8220f6a39e841085bff6733e48615dc3cf7c8"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-19",
+      "sha256": "7cc81d49ae66baafd148a170442b493c78273b7c4af569185a8d03c0886f266f"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-19",
+      "sha256": "a8eb00a95063308df5e52e379eeea7c931b1564349eb916de7037bcd3b51861b"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-19",
+      "sha256": "36e94f61fe87ca75ac6575e380b0e59d544be1cfeaeffb95dfe5d090e47d93fa"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-19",
+      "sha256": "5a007855f6b6f94502e183cdfa7f12c81c8f0b444cdd8b9741efc542e4b048ce"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-19",
+      "sha256": "6ea66ba7bca5d45006f7b6224471a609e146f69c14fb60a0b68ccd58409e65df"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-20",
+      "sha256": "8029ce71ea70c8e592fb338db4547acb89882d445e333c54d689a1a0c5c53243"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-20",
+      "sha256": "c3a4e7ac0dd7891b477967d4d27e1a3443c86b924a066f70fb14783030b63152"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-20",
+      "sha256": "b8ffa3d1379b637697725ca5f9ebc7606a332ba4bf753387920648526bcdf7fb"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-20",
+      "sha256": "f604bd7434be53b5947f148a001ed882b4e235146abdf7095a88e107acc3ff94"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-20",
+      "sha256": "cfef5e12e52b3ca30bcbdccc8160b9347326ba132e7d7e70383d3d98809c1b4c"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-20",
+      "sha256": "2a8218eb04e41afd942925f9090fe5b358be90abec57902eb28263e731483414"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-21",
+      "sha256": "62875939331992bc10abbd56c02e609cea5c1b2371bd285f27421e88dd0e1e84"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-21",
+      "sha256": "75a0c5ef1713f8bc621c5e1fc8299fa648e10d928bdb5bf3d347a4affe4a47dc"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-21",
+      "sha256": "9c22a9b524092c626a372246304e62c49985d29172058bddf4089e67db129b37"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-21",
+      "sha256": "0c44a2dc25747c3ae8910b3fde69d08bc1f6a4e30bc40a276de356189a353ba9"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-21",
+      "sha256": "42e031ea54a5a24aac75267f9eb2ce66f1c1098b7f42fcac36a8e07ca774bf75"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-21",
+      "sha256": "a753a0c727d690baea7962b86c81b1e22f83db4f8bb4875a1a74093cec862e61"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-22",
+      "sha256": "e60315398ca587d3ffb5d51b7236573f50dee5e67e3f60d6cae2353ad299747e"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-22",
+      "sha256": "dd315ea74b58a9557b85b1ae2a358a580b732831469e57c361e6d57d3961439f"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-22",
+      "sha256": "7cc32892cb822b00a526dc9a467bec982104060bfd2e39d0a4570c0dd99c6885"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-22",
+      "sha256": "5bcd2a4b91fc2e0a09f5de04a57e36ede4296258ad63f240146670af00e4eb17"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-22",
+      "sha256": "54f02f90e01ae2746b4ca488744bd3f15ad02bef5a27029484e256de980bbfbd"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-22",
+      "sha256": "7a00edc07598fb9b9a695fef4c55a054fc489338937afa8aa3d3391cd8d7647a"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-26",
+      "sha256": "3ba5f607dc81235e10a00f91600cc39b57ecea716a312b2fb16f5c0c646877d0"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-26",
+      "sha256": "efd7c1ab6ac54468368e498d551c72a890b3d24dee04128340c30fc3cd8736cf"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-26",
+      "sha256": "185925c2074a6070bc4d2c15edd188df865484e89f9f270bbf5c5943a99e2682"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-26",
+      "sha256": "6433ed41b861ea091eb2fe2c8cc05dcdb2fa1e34b5de0f608ef82c9c25008eb0"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-26",
+      "sha256": "d6da76bb8418927d494ce14cd2afbb538b751d5ca6d5285df2e1fa782da6a59d"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-26",
+      "sha256": "8fd53cc757a30ede9af6a9a063e4f26f3daf8766076b21a8667c8f06ceb8025e"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-27",
+      "sha256": "c897919ade76ce0b2882de6fca7b9d87a19b76a0d92be4c72a8704221ed4009e"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-27",
+      "sha256": "d7e779dc812a96afe6d759f4f3ce04c1bd5767c7c90d3eed9ca3c0cd947be1af"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-27",
+      "sha256": "7984472275fe53af5fb368fb82fb72e8198d1ede18515674328f610174ae39c4"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-27",
+      "sha256": "03b216ca6de558351ad1ae88107aae0013da90a630d4418e7e874086ce58f364"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-27",
+      "sha256": "a71279d3b8253541a58883bceeaa800a9bacc9787fde87bea9d58e26b3424b33"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-27",
+      "sha256": "7eae6366d3a7605e07e47d2c9ed2aacc2b61799d8d7f9c156c3edb62bb24db7f"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-28",
+      "sha256": "65780f627ec99e7777fea501cbac14cf5c4d5f46e96c3e6d109ffc9aafa2ca08"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-28",
+      "sha256": "5e0f68ee07af6c0891541898fef24cb9dfa78c2dbc2e2078c4d7688e3f5c7706"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-28",
+      "sha256": "170fb59f51f07f9f28f33dac06d69335704792541125033a0460a6274fe85b8d"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-28",
+      "sha256": "936f4f64b58395194dcab18ca92ea6d10e33a438c84000e05f7f37bae209c079"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-28",
+      "sha256": "2dc0d0c164c319669d4416b2b86498c4eab8e30d15eea3110e9f277515e3267d"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-28",
+      "sha256": "a9f91a171912d25ca378beec8c6ae7d5086c1c4bcb43ecb0c628f9673eacadf5"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-29",
+      "sha256": "d0f35c7cec206bb3ffc902a225ed497fc84d1a594e266e5dd7f7f9c42858736e"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-29",
+      "sha256": "e3ba52883ba52eced1ed8cb5874ebea29da91bd1217007590a4a941b0c1a36fb"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-29",
+      "sha256": "cb1d83d5abb4fab876bdfb6d1b7b03c272c378261a483f167c9b5b7428ec5c1a"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-29",
+      "sha256": "5e8e1173531f1c27853a69d44f18cbe0a2179bdc08ce74bb536866c3d2759f80"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-29",
+      "sha256": "54df618157945db8055ef7a2a19e6f52bc0d24a58e5c603e453f101dc2a533f3"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-05-29",
+      "sha256": "b1b98ce39e47555913d61d8ecce5395a6d833aa8b2756fe595940d17d7220353"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-01",
+      "sha256": "84fd5ba00db30971dc96bcfb031f803d2f2303334d8ef4e4bf4ee9e20025884d"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-01",
+      "sha256": "bd90d3fe344945a6ad1e2447e7238221f267141fcb08e1fd054019fa44ecada9"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-01",
+      "sha256": "90493e2ab335286c7642eb1e494fc2d7f786017ca88d834245edd3dcc7d6c8f8"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-01",
+      "sha256": "e33b8dfbca9cc91d9c1bfe9dcef0502d8b34cc33588766280dd2b6db98b88dcf"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-01",
+      "sha256": "a413d3c186d6a0a871b72e6966f47f12d1072b3496ded0e46b276ba382e49cff"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-01",
+      "sha256": "6cf7e116a9634c6bad0f0834ab1150c55c8195357842ada5182720b7ba6271ae"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-02",
+      "sha256": "5d30b6edd78cbf5a3d02bc0fc12080abb241f65780dc72e97e70977685328ce5"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-02",
+      "sha256": "853307ea203f6809d80d2ad822f676fc2e22fc2886645643d2e9745174408aac"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-02",
+      "sha256": "6dd7bba76c66fccfb010a659a9d885c14e987644b0834375c58c3b709a1cf780"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-02",
+      "sha256": "0ed1a37e59864d77cbd30abd4c6ac7c3440b9737c1b6c8b862b0cc1600304041"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-02",
+      "sha256": "65b866882d282062220500a9a1df2dafdc11c2c65398663348728592ba52de1b"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-02",
+      "sha256": "54f051e933c38f6bcb5595e3b377b76bf6a10808e83dfe2f13476e97e1fff7fb"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-03",
+      "sha256": "0992ad830770449d4ff68a370f758c9f5d6d3951ab175aacd39ba3e86fc47ed3"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-03",
+      "sha256": "9af1878d46306c5a17ff000825d77ca3c87c00dc4f3d4f6c457e8d2106f364d1"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-03",
+      "sha256": "23fcabb95faed7a2b6d4cf40eaf8763b4a111873b2838247f54cce25593c4601"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-03",
+      "sha256": "e97ed9082b38254a706cd6f2db39b98905646c3b9adef6bac0880939774a34a6"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-03",
+      "sha256": "54f8a5590eed2160e177c05a26ab4071e95bdd994afe323c2cc9efdb6a02ae65"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-03",
+      "sha256": "c1a1347a599fdd6b83a3ad770e90d619ebd308069514ee8d54318309e7cdf90a"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-04",
+      "sha256": "3d2f63db1ff17eed3581bfb262f35d47ae911cae371acb42ffa4a807ac380412"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-04",
+      "sha256": "f258e3f72078ad7efdaea712643df76e98bd2acab5354b5fd01e5359f252910b"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-04",
+      "sha256": "1bcdb73a2fa71b187a9c69bffa6dc9425df314b344e2a1113c5fd36a2c988b35"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-04",
+      "sha256": "d72525f41a058c73a1151502b34fd96f9a877968004a3f17e9b924bfaf27a0e3"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-04",
+      "sha256": "a205e3d6dc712905762610581d8f5e497cbcf043ae162831f4c227dabdf379da"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-04",
+      "sha256": "ab4a6d16f67c663445b571f5ae3d2800c1f6f52f21bf988ff01a40cc5b8ef02b"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-05",
+      "sha256": "3031585c7c047ebd7b724f7e2e421beb281e1675a5829642eda9995f45b1cef7"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-05",
+      "sha256": "1d404dd5e05a70e5a74a7d4113f38e9813313b83c5fe32cad57cf470ff40eaef"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-05",
+      "sha256": "7f80d95bd0d0c8bc974d04d9cf40d75ccd8cc57c259d89fddc3bc6d09b1d6a70"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-05",
+      "sha256": "2bf22b8f22c8c1ca9dcf466a9fe8da1e3c5f96f132a4c84896de345071cea72d"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-05",
+      "sha256": "439a9cec64c818abf0ef95bdf3952efbcf4fb675ea302d9af5417d226c25e4d8"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-05",
+      "sha256": "b208b330d5446762ed22fc96c7d6e2591cdebeb591d5a2c1ff9cdeb9be890150"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-08",
+      "sha256": "f57a02e85cc95e6fa2044e403d322f6538d8f2a10d0183d86edb03953031a0e1"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-08",
+      "sha256": "0ba75698ff0d0f7949e9923cc3bafcfae5f28c71f2fd40ad45d93adc3b178a23"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-08",
+      "sha256": "17af77e895c1dd1aad50cb18e79e99d5f113b92f96eaa1e16adbd8cd441b9d02"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-08",
+      "sha256": "6ace6e7abd08722649254f68f8c63c7b864ae0ce27897569be586f2e290c1fe0"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-08",
+      "sha256": "e97ada9f43249023c17bd38e5a17ba825e4b6e1cfe246439882e35f2bab93cd2"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-08",
+      "sha256": "c23f0ef1aa9814020aa35206bb9461dab3144a751b9a91a886bc5683b0130bb5"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-09",
+      "sha256": "27cfc766b8821181c8c071b1951d96d65e7849a9e0926dd8b50be07bdb2f1c06"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-09",
+      "sha256": "814e22a1a163d226ecd9d2a826f506053d3dabd829b1bc162cebe774aa9fe73d"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-09",
+      "sha256": "9e540943634955a4054d796ee62c51b78e952e46ab622a834c1ceeea16973424"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-09",
+      "sha256": "6d940d8430d3e98d1dbdbf9e1f07a046cf936098ee56b21500a8a74b36e31976"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-09",
+      "sha256": "74c4743cb2276ef565c7c025e779f58eb586fcee49c20b300115f51881d57568"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-09",
+      "sha256": "bd056aa0b06405354a90a7047dc14ea8bd776fe4a42ad9782f4596271c012e57"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-10",
+      "sha256": "df26f9b1d5bd4ca6a826261182b954e0d73f04eb2f1286f785593564a995ebf1"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-10",
+      "sha256": "1c54e8c317b9e15beee64a352cf109decc297d2602e4e2ba9363ff39c15fe48a"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-10",
+      "sha256": "bb5c4b98a4fb0af1dfa4da1b8289873a6f0df91d4b158c4fd708d312f2af16f4"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-10",
+      "sha256": "bfbb4b8b4463756d0c91bdabd5a2827e595472e471ca420007fe2fccdd89e624"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-10",
+      "sha256": "0f5300888be8adc2d137b4f8b7ddbf5c744a812bc7bf74e7d99d22b92ff5715a"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-10",
+      "sha256": "2620982cc53207fc3c77c51991c65e9bbbad74037ec0e14ecab321c2ebcdb997"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-11",
+      "sha256": "ae6df60c1735293bb8d0d4acbbba55d1fcaf882048ae03fc192ed5f097637103"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-11",
+      "sha256": "f39db55b64e98c0a437433cc94174ca9414ae88a21183155f4ad5b208b29d538"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-11",
+      "sha256": "854e8cfc2638f254a2c38b32a61f1cb9ecac8b2e3e20d5341e63420282c22aba"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-11",
+      "sha256": "e721e77dfd209574c5183c439129ca66ea464ab1df5d4ebb862eda6bbbaea805"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-11",
+      "sha256": "2a24b2ac8124e28221c28bb1df74586032b156d80538c8030a8adc04db6aac89"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-11",
+      "sha256": "bbf1c6e40d92301b8f5f9410948e7eed6e3290d368781126afddbd8cd981e1c8"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-12",
+      "sha256": "e558b9ea68f8895ce360451ecd082b73c91bcb1b626345aa42c3d54aa49f12f8"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-12",
+      "sha256": "c7ec5cc27d29668f78f2f75bd81008fee366fcb0c403594cde82a4aeabeb5df3"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-12",
+      "sha256": "02c3255538809bb41fa01e1ad7eae51e54374ddab0469323870fd9b7f5817ebe"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-12",
+      "sha256": "54d3ba695c6dca75be6bc2bdc40682e6454df9874193a55e180f85632e9b20d5"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-12",
+      "sha256": "85a9ae2d4bfb70888b94d670759d4665ea3e124f9085c7af6fa89a9cf06f1110"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-12",
+      "sha256": "b5d59026f38dbbf7a7fe8c54f7d0f108d10007a84f5e59c6038ccfe431c690f3"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-15",
+      "sha256": "598428ee97a4fb19253caf9bd7ea69973635cf7b93b00650aebf9862cd5569b9"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-15",
+      "sha256": "3487e751e8bf47a4c00eb0553f64b3ff8e0c116b46043e77524a43d0a1b84d71"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-15",
+      "sha256": "14a88acffa03febb9c82912d15c4af9fce9534ed98e64d8d2c2050cf0a82d080"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-15",
+      "sha256": "0da76e2a0ab50da1c34b2af5cf5d8e6fe1fdf150ecea95dff61741db5c5f9766"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-15",
+      "sha256": "debc7ad2167a41c4b8035822a36dcb406fe1f571ebb5914b427216ad45c75658"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-15",
+      "sha256": "f4e67a0c77c22bbc7c41029cc3a0eff804a230d974370771c5a81071fbf8dc05"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-16",
+      "sha256": "02940bdd716a8b9764e9aa5609281effc4ebc56edd072d2d88f4724d357157c1"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-16",
+      "sha256": "4a082a4e923edfc74810e244c11cc7f605038616c3f36bed1e848d3c487ab8e0"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-16",
+      "sha256": "7f2fa4bdef82e99ee57516ebd2788806e043399ae6f2aeae893524bb8aa7f558"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-16",
+      "sha256": "1c99164a91a23162b957d6d9c4d625a3f3dffcdadc25c49a0b476147f61655e8"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-16",
+      "sha256": "b583e51991d364471362be6795d8909d38d8330cb2e849f1e10ada9f0e898e41"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-16",
+      "sha256": "fdef5424447b0e014c7912201700ea897efef3b3db4c0ba0873e6438b81ba30d"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-17",
+      "sha256": "ce7f858b41a2bee6827916087f895f024cf702ebf620d056110bf2b49f9c17e7"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-17",
+      "sha256": "7440f04b2346607ff19931c5a4469f7eefefc23eeea7cc43d1060342d5c72e49"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-17",
+      "sha256": "c40767bfbf1146c1755af4c50b45801bad8f257215d5aa88abf60130704480ce"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-17",
+      "sha256": "c1e93a289b53d3cdb9311497d111363131b93bb9b69365f06da7ba86e2aba767"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-17",
+      "sha256": "3cc11fc270ce95f4e859a6a828d6b2b3320a5e53b222a716cd0761dc206a2678"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-17",
+      "sha256": "5406333482f06e89c511c170f5750427c86db0d37f27bcb3db20bdb62c22c340"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-18",
+      "sha256": "82684e7488d80ee46d066357b154068e51bfd2b3497594a8e077699751213e36"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-18",
+      "sha256": "0763517496d0ad7bbea292b24dfab0ceadc9a33e63736429a85811717ec0ca61"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-18",
+      "sha256": "7ad64113179b9f42377bcc875c0b78f4769607c9ce47e6f9c0a491d2846b22df"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-18",
+      "sha256": "687f8e14b3437f7f17240c6f5d37103bf53c6a9fd2d15fdfac69588446498945"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-18",
+      "sha256": "c96163790a4323af396a4ae23768ef54181dbb70a4e335acb02fd2ecc306a940"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-18",
+      "sha256": "40ae7265f8778d54affced4640bf1a371a8f98c3e6bcc4e8281fc77835e6586b"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-22",
+      "sha256": "159142f346942e5ea290586e2ad39f4e7a2473695dfb31fc9cd502f34edb3500"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-22",
+      "sha256": "238e6863b1f77b75796a2302a86edb6df8b2cc21c20890a2e3e723e7d34f0250"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-22",
+      "sha256": "51523b4bfa20af4565aeecfd7b7e1a5ff7200f97acd57a7325d8e67eb3362b11"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-22",
+      "sha256": "60e0358b59d829502c847c2898a8efd8f596f86eba4144c199c53cf7046224be"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-22",
+      "sha256": "04152e5e3a20c18e95e9b600c65c2e860e0b771470737fd56ae3ef26d131b7fb"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-22",
+      "sha256": "0272891c27a9f99bcde01a867875ba614023d751aa2c789866aaa290dcadf662"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-23",
+      "sha256": "2da424d21627331b27c621bef97e52ac2b2ed403da4fd53dc3130e4c56a283b9"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-23",
+      "sha256": "464fd5ff38aabcd076576121185076d71796dd05731775d63b9758036dc7b750"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-23",
+      "sha256": "3bb0c8b00a0d706154337b2459388cb7d006687ccb93a414686d9b32651adba0"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-23",
+      "sha256": "ae6b8a009c436ec3e87188e92db3deb589f3fb6b06d1c95ef38400785d0701ec"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-23",
+      "sha256": "f0e4c10fd0afcaaf7b4a8fe5d2462e4e223c369ca133908f3924cec562b469e7"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-23",
+      "sha256": "73a5cc9abb48d61d4f31753aabb6d139ca7e0fc33b502cc07c95e2c5f0f391ba"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-24",
+      "sha256": "0d9c152e29f69b95cc93870d7f4f624bd2b0298daa70d4ace6babf55f8db0459"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-24",
+      "sha256": "3c36aef6325ca2bf3fa384add4851f652d9c4875e5d94c0f17caa90be8e35b96"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-24",
+      "sha256": "91860ad5ca656d9b5d6e36d95daca76fb1f36cd415eba7b1960bdb1f1304f8bc"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-24",
+      "sha256": "3adc56c67d861908e25568fc087d5912aefe30e41d240f555a848952e5324b9d"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-24",
+      "sha256": "8e000daf8754ed7ea5598853d30efaa3a041510bac8e905d345acfe6f6e08a80"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-24",
+      "sha256": "95323bc9c9d25e69daf5618b37f3c784f36f6f335ba191c10c4724a8f999f1c7"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-25",
+      "sha256": "b6021ea70f2db127a882a7c7d566bce112d0c26f5d4a5327fbea4a42933fe0e6"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-25",
+      "sha256": "459c623fc73dabf655a8e73f2876bdc57f9da6567964079a781d81fe20a84dcd"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-25",
+      "sha256": "2cd31d04fd77021ae597cf7c674b3ad49ed3f1362695454a634fe4feab29060c"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-25",
+      "sha256": "8f6936cb7723bbe1dcbbdbc5cf422b3dcf435dd60accadb4361d78d92192ed0c"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-25",
+      "sha256": "999fb98a1e6d8dc8b9bac1326c9040bf75966dbb9b3d2a3be3e74f8ac2c9db77"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-25",
+      "sha256": "317a86aea0b14b8ebd48ac23ca9bd485845708538b8ddb9a4a43ee2ba0b3b9c8"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-26",
+      "sha256": "9548fdc6a11a6575646434901504bda61fc1cdcc8458f2a1f6d6054461af5aae"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-26",
+      "sha256": "5d51ca76a9636fcbeab2996ce32a25574ac2faf0cd33e64dd4dae07b30a7bedb"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-26",
+      "sha256": "99a7e28ba9fdb21ee33a18ec303e1e4ee45ab4e179d22f0fa83fef9a6e1fd248"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-26",
+      "sha256": "cc2abeb835ac2861c794dbd521114cb61b828e163ab4d790a16845a2c70bab8e"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-26",
+      "sha256": "09dacf8512fb5bd8678910aee5d78f04127b4fb803baa4f64405d9b0692d0ef8"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-26",
+      "sha256": "1a40f451e1abc9667ac790770f77b73cc4a48f7daf5523f5642754e42a6d62f4"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-29",
+      "sha256": "6f87abab1da9c3507c8577ccb066d05d4cbc7cc3d6d168767a675938e1ceee6d"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-29",
+      "sha256": "7810f8b35c439cf4ec27e682444f6dd06f87528fef701e83669fcd9f24d78698"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-29",
+      "sha256": "d77abab9ed23e207dc96d1663e6148f99ffc6909728109ee01881e4993936c0b"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-29",
+      "sha256": "0d57c7024647e0cd7eea56e565e6c11cc881a5bfb700df4155324fdff5bc377d"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-29",
+      "sha256": "148d94a0c5729f032f9be4f8bd583f2250eafc8a8dddd913bfe960e7e78ec239"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-29",
+      "sha256": "d17757803144780d95ce28be6695ebd0e4e30100758d286cd9be7222dad8a402"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-30",
+      "sha256": "31c82f4fca3e515ed3f267b7a21518ad69695dcde98985d9a775495fd5a460bb"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-30",
+      "sha256": "200240714806ce9cd2b12c05802d328d7190c01de883839e5b15da7b35a987c1"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-30",
+      "sha256": "0d288f983f37dadb57a9d77d07f514e5632c96a855dbae1402e7da0ed9500c3c"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-30",
+      "sha256": "25114a9cf7b402187908884b39108f5afbde84ce7cc3cf63770a414e903e3d40"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-30",
+      "sha256": "3ec419d2f3d623c0ad5d4eeb71b7c08d33d9ba042faaabbf452865a04c3cb2f8"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-06-30",
+      "sha256": "4974cc013afc127aca4b39c6a9442186baa3a138636e93bd655776ffe5ed7fb3"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-01",
+      "sha256": "87bd1c9fdf375f74c8d0fbf6b42dbc19c1183e1c06c8ac6e512a87d8abfa4202"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-01",
+      "sha256": "20df4a4176bcfef86dcb276b39d6eafa352b6e6f807201f5e7509aad40cd986c"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-01",
+      "sha256": "bdfd597c148e9cc9da4889d4d3e8e62fe16a73c92df9b0667c42a9b7e6de326e"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-01",
+      "sha256": "4fc52215654b382408360a816d30cd8d3631159449b3403884eb377355b99c12"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-01",
+      "sha256": "d690044c045c703f21538097f6b02f5f8982781361f96ebbbb2b1b6c1e148862"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-01",
+      "sha256": "2c708ea0d10bdb811a217964ac44399d1bbe3d8a262c44a9e4bc7e059b26ab1f"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-02",
+      "sha256": "770f62d7394a6106a31d9df82cafd43823961e87aecc867ec97c149e966d218d"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-02",
+      "sha256": "ebcfd281d01549a288b37f631209eb347261560de893b245441fcf27bcc5588e"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-02",
+      "sha256": "5aab4228946eca432df5e221d050798d7bbd08002af6093875bc4c0556ec8edf"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-02",
+      "sha256": "6bacd36863729342acabaf3e7d5554146e14c3dbc5695c854db13805dc62a4e5"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-02",
+      "sha256": "c1f7012ee4b5d92cb1b574fc5b597fefcf79196b034928e1b2139ef9b1b51fac"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-02",
+      "sha256": "5f10ca128ef79858ee5db3ffe22c75acb78cd61c10d33f4c0f048a834ce23bbb"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-06",
+      "sha256": "2bef7e55a68a6d6f2fdf5b2630ace26c8f71e7e46563e39283f95eb8da176812"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-06",
+      "sha256": "5d985d65a01969ef848d23d12d66c11c630200f951362fdcca014fdfc264f4a6"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-06",
+      "sha256": "2ec718a8fefb78782c01b24adfcaea55f9e0e70c2ade8b41d1da171e989ca4de"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-06",
+      "sha256": "24ff8908b4120a42ca4417becc05993957cd31cf644fb74e3765b7face2910f7"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-06",
+      "sha256": "b36c7c6578ff4306205be860377410270e18516612084f635b06a850fe3afb8c"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-06",
+      "sha256": "ec455a34872a01633f685a1a99152f881e0f576f525f194ad651c3415657c2b6"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-07",
+      "sha256": "df2f521f2a67ca2ee62534d336c03e569769c9dc5f1e08cd0be54f89ad85afc3"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-07",
+      "sha256": "e48d7aa944e237dfeaf6c313a4603c78515abbb84350a93ac45b2306e5dde04e"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-07",
+      "sha256": "2268d83ab7115d364e6a84670a5f1bd4017ee074187724086478de0079ec2d82"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-07",
+      "sha256": "da97c83f06abcbf26fd847739908f6cbbab81e04ae0303710f0bc0a8bc5a60c3"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-07",
+      "sha256": "bbb5c85f747ebba18b5d41b7533b3911a8ead349c95bcdf17f17f9c584dfd160"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-07",
+      "sha256": "6bd4083b57c21aea98a76428122428540443b1df263dd03b52b332e143657ed5"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-08",
+      "sha256": "05435ff0c56004c23f9eecf9ee02578d6aa94186d2c68bb2a511c1adb5c16352"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-08",
+      "sha256": "686d35bc53687471e6d231978359217c50eecdb75df40e73fe28a17b01dc860c"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-08",
+      "sha256": "7e3abab271809bd70ee27e6684d12bfef53cc601687af3644de51a99ca3285f0"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-08",
+      "sha256": "2f85f636112da0926c157ef5981d80d4cbd38ace0d50343d2df43f3b911752ee"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-08",
+      "sha256": "8ea73f12e365ebe9b85872bc3662251612b841461b444aeb1f556b02b9e197f8"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-08",
+      "sha256": "1e3d86a29029ab1aec2a89a95fdf0010454cf625a9117bbe500d4344dfa3b69c"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-09",
+      "sha256": "af74fe0015b8ca76115c5b40e1132437ebbc4711a7891095e215b3c8aecd62a6"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-09",
+      "sha256": "451515c970b6efac8fbe445d55535ca6f0a42561d05de3e7d42fd5e506397f7a"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-09",
+      "sha256": "73178526c8a47419f4b421344573313c706b0ba271631557fee1e2edb584b318"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-09",
+      "sha256": "e8529c2779816136b2d9b59d24f9427386d73feb422fa90d50e435a4780e380e"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-09",
+      "sha256": "69bb1a5bf864434770babef94c41b00870fd2f48051d4806e6b051b4abb71f53"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-09",
+      "sha256": "75ad02ac9568054d0bdb6484cd7899c1875781af123176228c258e1fd8d65fbf"
+    },
+    {
+      "asset": "AAPL",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-10",
+      "sha256": "2084a0a6fb6ae47bc51ca3898a629f21fc37a1d23a2beebf82a7247e5a83eeab"
+    },
+    {
+      "asset": "AMZN",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-10",
+      "sha256": "3b4987d682899614f47e535a7ca4b3bc6e496e9316cddc426f5d7176091eecc1"
+    },
+    {
+      "asset": "META",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-10",
+      "sha256": "7c25d81ec3ebe2a9e2aaee5d836bb84048af37f81a5656712e5c1532403e8e77"
+    },
+    {
+      "asset": "MSFT",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-10",
+      "sha256": "e6ea0ea359320a44cffa56a67651ec37e810285b509c9d91200a1ad1dcd886a8"
+    },
+    {
+      "asset": "NVDA",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-10",
+      "sha256": "4cf6a49471139150a3514e847f72c423a1c61fb720dcfc5e15d7fd8a1e7d5cdf"
+    },
+    {
+      "asset": "TSLA",
+      "file_name": "events.parquet",
+      "session_date": "2026-07-10",
+      "sha256": "0aabc2f293210e504d1b34ccb3c55c70db88e7a80b635ee821bf24256f9319a7"
+    },
+    {
+      "asset": null,
+      "file_name": "events.parquet",
+      "session_date": "2026-07-13",
+      "sha256": "389bd54002416514d96a01d13aad9050c1ee719c29d88a1b946559e016c6d746"
+    },
+    {
+      "asset": null,
+      "file_name": "events.parquet",
+      "session_date": "2026-07-14",
+      "sha256": "07368d002f94c426bba45aa81e8aa3621b2f4555e3e83ce5ed86e311071fb6aa"
+    },
+    {
+      "asset": null,
+      "file_name": "events.parquet",
+      "session_date": "2026-07-15",
+      "sha256": "5cdd31159834276790f0a2103ab21d058adbfa48a127fe71bdf95ae859dda585"
+    },
+    {
+      "asset": null,
+      "file_name": "events.parquet",
+      "session_date": "2026-07-16",
+      "sha256": "d96173de9337a692f39f8fe480c63d5c19337b436096903f697cef82b73b2072"
+    },
+    {
+      "asset": null,
+      "file_name": "events.parquet",
+      "session_date": "2026-07-17",
+      "sha256": "8f4c6b37cc7ac6d489c1b0701624d122bdefcab7f111fed5a7ebba4b31b72eed"
+    }
+  ],
+  "status": "PASS_TARGET_BLIND_STABILITY_INPUTS",
+  "target_columns_read": []
+}

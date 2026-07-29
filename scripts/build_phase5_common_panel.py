@@ -200,9 +200,11 @@ def reconcile_development_sources(
 def _new_origins_and_b0(
     origins_source: pl.DataFrame,
     bars: pl.DataFrame,
+    *,
+    role: str = "DEVELOPMENT_NEW_55",
 ) -> tuple[pl.DataFrame, pl.DataFrame]:
     phase4b = import_module("run_phase4b")
-    origins = phase4b._canonicalize_origins(origins_source, "DEVELOPMENT_NEW_55")
+    origins = phase4b._canonicalize_origins(origins_source, role)
     origin_ids = set(origins["origin_id"].to_list())
     targets = phase4b._target_lookup(origins, bars)
     target_frame = pl.DataFrame(
@@ -327,6 +329,8 @@ def _new_b2(
     b0: pl.DataFrame,
     event_root: Path,
     session_hashes: Mapping[str, str],
+    *,
+    role: str = "DEVELOPMENT_NEW_55",
 ) -> pl.DataFrame:
     phase4b = import_module("run_phase4b")
     origin_key = origins.join(
@@ -345,7 +349,7 @@ def _new_b2(
                 raise FileNotFoundError(f"PHASE5_EVENT_PARTITION_MISSING:{day}:{asset}")
             aggregate = phase4b._aggregate_one_file(
                 path,
-                "DEVELOPMENT_NEW_55",
+                role,
                 day,
                 origin_key,
                 60,
@@ -468,10 +472,19 @@ def _new_components(
     event_root: Path,
     session_hashes: Mapping[str, str],
     holdout: frozenset[str],
+    *,
+    role: str = "DEVELOPMENT_NEW_55",
+    source_cohort: str = "ACQUIRED_55",
 ) -> tuple[pl.DataFrame, pl.DataFrame]:
-    origins, b0 = _new_origins_and_b0(origins_source, bars)
+    origins, b0 = _new_origins_and_b0(origins_source, bars, role=role)
     b1 = _standardize_b1(b1_source, origins, retained=False)
-    b2 = _new_b2(origins, b0, event_root, session_hashes)
+    b2 = _new_b2(
+        origins,
+        b0,
+        event_root,
+        session_hashes,
+        role=role,
+    )
     all_rows, common = build_common_panel(
         origins,
         b0,
@@ -480,8 +493,8 @@ def _new_components(
         excluded_dates=holdout,
     )
     return (
-        all_rows.with_columns(pl.lit("ACQUIRED_55").alias("source_cohort")),
-        common.with_columns(pl.lit("ACQUIRED_55").alias("source_cohort")),
+        all_rows.with_columns(pl.lit(source_cohort).alias("source_cohort")),
+        common.with_columns(pl.lit(source_cohort).alias("source_cohort")),
     )
 
 

@@ -1,0 +1,12 @@
+{
+  "classification": "PRE_HOLDOUT_METHOD_FREEZE_OMISSION",
+  "corrective_action": "Freeze target-blind 120/300-second inputs, stability code, exact strata and a disclosed post-development/pre-holdout material-reversal rule before any holdout access.",
+  "development_results_affected": false,
+  "finding_id": "PRE_HOLDOUT_STABILITY_NOT_CODE_HASHED_V7",
+  "holdout_access_occurred": false,
+  "holdout_reads": 0,
+  "impact": "The archived freeze protected the primary models and timing values but did not hash the code and sidecar required to execute every preregistered stability analysis inside the sole holdout read.",
+  "method_freeze_file_sha256": "47726ce1603940f49f275bbc6d5c579d39a74fd94405f74026acf2f4ea289503",
+  "method_freeze_manifest_sha256": "323421fd4760e3ad69c486992985d5d174bd353a030ce29fa75042b45d022333",
+  "status": "ARCHIVED_INVALID_FOR_HOLDOUT_RELEASE"
+}

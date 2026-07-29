@@ -174,3 +174,9 @@
 - [x] CHK014 Do success criteria cover preregistration hashing, PIT panel integrity, target-blind
   features, positive forecasts, deterministic inference, one-time holdout access and complete
   sign reporting? [Coverage, Spec §SC-031–SC-036]
+- [x] CHK015 Are session/volatility strata, minimum evidence, material-reversal thresholds,
+  frozen sensitivity parameters and the unchanged Holm family objectively defined before the
+  holdout read? [Measurability, Spec §FR-080–FR-081]
+- [x] CHK016 Does holdout acquisition have an exact UTC release instant, isolated storage,
+  resumable provider checkpoints, zero model/QLIKE execution, source hashes and a tested
+  pre-network fail-closed path? [Security and Reproducibility, Spec §FR-079 and §SC-035]

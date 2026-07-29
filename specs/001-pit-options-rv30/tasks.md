@@ -358,9 +358,16 @@ explicitly attributed to non-IV B0/B1Q coverage rather than optional IV missingn
 
 - [x] T189 [P] [US4] Add failing incomplete-session, pre-freeze, hash-mismatch and second-read tests in `tests/contract/test_phase5_holdout_guard.py`.
 - [x] T190 [US4] Implement the fail-closed `0 -> 1` holdout access transition in `src/mds650/holdout.py` and `scripts/run_phase5_holdout.py`.
+- [x] T190A [P] [US4] Implement and test the resumable, isolated
+  `scripts/acquire_phase5_holdout.py` path, exact ten-session allow-list, pre-network release
+  guard, provider/source hashing, common-panel seal and target-blind stability sidecar without
+  fitting models or computing QLIKE.
 - [ ] T191 [US4] After all ten sessions complete, acquire holdout provider evidence into restricted D: roots without analytical outcome reads and record `artifacts/phase5/holdout_access_ledger.json`.
 - [ ] T192 [US4] Execute the sole authorized holdout read and write `artifacts/phase5/holdout_results.json`; a second invocation MUST fail.
-- [ ] T193 [P] [US4] Report asset, session-tercile, volatility-regime, FMP +1/+2 and B2 60/120/300-second stability in `artifacts/phase5/stability_results.json`.
+- [ ] T193 [P] [US4] During the sole T192 read, report asset, frozen session-tercile,
+  development-B0 volatility-regime, FMP +1/+2 and B2 60/120/300-second stability in
+  `artifacts/phase5/stability_results.json`; reuse frozen hyperparameters without retuning and
+  apply the FR-080 material-reversal rule without expanding Holm.
 - [ ] T194 [US4] Run pytest, Ruff, Mypy, coverage, JSON Schema, secret/path and deterministic-hash gates and write `artifacts/phase5/test_report.txt`.
 - [ ] T195 [P] [US4] Reproduce the locked install and compact validation path in Colab and record sanitized parity hashes in `artifacts/phase5/colab_compatibility.json`.
 - [ ] T196 [US4] Write `reports/CODEX_PHASE5_FINAL_HANDOFF.md` with both deltas, uncertainty, Holm, all registered variants and every positive, negative or null result.
@@ -401,7 +408,8 @@ explicitly attributed to non-IV B0/B1Q coverage rather than optional IV missingn
   set before T180–T188; T180–T182 precede T183–T186.
 - T171 and T172 may run in parallel after T170 establishes the date checkpoints. T193 and T195
   may run in parallel only after T192. T191 waits for the final 2026-07-31 XNYS session to
-  complete. T192 requires T188, T189–T191 and permits exactly one analytical holdout read.
+  complete at `2026-07-31T20:00:00Z`; T190A MUST pass before T191 can make any provider request.
+  T192 requires T188, T189–T191 and permits exactly one analytical holdout read.
 - No Phase 5 task selects assets, features, models or thresholds using RV30 association, QLIKE,
   preliminary prediction quality or holdout outcomes.
 

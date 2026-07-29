@@ -32,6 +32,31 @@ _RELEASE_GATES = frozenset(
         "full_test_suite_green",
     }
 )
+FROZEN_PHASE5_SOURCE_PATHS = (
+    "scripts/acquire_phase5_holdout.py",
+    "scripts/build_b2_calibration_20d.py",
+    "scripts/build_phase5_common_panel.py",
+    "scripts/build_phase5_stability_inputs.py",
+    "scripts/download_calibration_20d.py",
+    "scripts/phase4a_common.py",
+    "scripts/phase4b_common.py",
+    "scripts/run_b1_calibration_20d.py",
+    "scripts/run_b1_closure.py",
+    "scripts/run_phase4b.py",
+    "scripts/run_phase5_development_evaluation.py",
+    "scripts/run_phase5_holdout.py",
+    "src/mds650/contracts.py",
+    "src/mds650/holdout.py",
+    "src/mds650/metrics.py",
+    "src/mds650/modeling.py",
+    "src/mds650/phase5_features.py",
+    "src/mds650/phase5_panel.py",
+    "src/mds650/phase5_storage.py",
+    "src/mds650/stability.py",
+    "src/mds650/study_design.py",
+    "src/mds650/targets.py",
+    "src/mds650/temporal_validation.py",
+)
 
 
 def _valid_self_hash(payload: Mapping[str, Any]) -> bool:

@@ -346,9 +346,13 @@ confirmatory p-values. Preserve every attempted registered variant and every res
 
 Freeze code, data, feature, model, fold, prediction and result hashes after development. The
 holdout remains blocked until all ten sessions are complete, the method-freeze hash matches and
-the full quality suite is green. One authorized transition increments `holdout_reads` from zero
-to one; every later analytical read fails. No feature, asset, threshold or method may change
-after release.
+the full quality suite is green. The frozen acquisition runner uses the isolated
+`D:\MDS650\data\phase5_holdout` root, downloads each provider source once with resumable
+checkpoints, builds the common panel and 120/300-second sidecar without fitting models or
+computing QLIKE, and emits `holdout_access_ledger.json` with `holdout_reads=0`. It fails before
+any provider call prior to `2026-07-31T20:00:00Z`. One later authorized transition increments
+`holdout_reads` from zero to one; every subsequent analytical read fails. No feature, asset,
+threshold or method may change after release.
 
 ### 5.6 Report stability and interpretation
 
@@ -356,7 +360,14 @@ Report confirmatory and challenger results by asset, session tercile, developmen
 volatility regime, FMP +1/+2 and B2 60/120/300-second cutoff. A supported edge requires a
 positive preregistered development contrast whose uncertainty excludes zero, the same sign in
 the one-time holdout and no material systematic reversal. Negative and null results remain
-first-class evidence.
+first-class evidence. Freeze session-minute bounds at 130 and 260, derive the two volatility
+cutpoints from pooled selected-asset development B0 lagged RV30 with linear tertiles, and reuse
+the selected primary hyperparameters without retuning. The confirmatory Holm family remains
+only `Delta_B1` and `Delta_B2`. A material negative requires bootstrap `ci_high < 0`; a
+systematic stratum reversal requires at least two material-negative strata with at least two
+sessions each and at least 50% of that dimension's origins. Any non-primary timing variant with
+`ci_high < 0` is a material timing reversal. All stability calculations occur within the sole
+authorized holdout read.
 
 ### Phase 5 post-design constitution check
 

@@ -1,0 +1,412 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/phase5-stability-results.schema.json",
+  "title": "Phase 5 single-read holdout stability results",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "holdout_reads",
+    "evaluated_origin_count",
+    "stability_definition",
+    "primary_strata",
+    "timing_sensitivity",
+    "reversal_assessment",
+    "confirmatory_family_expanded",
+    "outcome_reporting",
+    "method_freeze_sha256",
+    "development_stability_sha256",
+    "holdout_stability_sha256",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "phase5-stability-results-1.0"
+    },
+    "status": {
+      "const": "PASS_SINGLE_HOLDOUT_READ_STABILITY"
+    },
+    "holdout_reads": {
+      "const": 1
+    },
+    "evaluated_origin_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "stability_definition": {
+      "$ref": "#/$defs/stability_definition"
+    },
+    "primary_strata": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/stratum_contrast"
+      }
+    },
+    "timing_sensitivity": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/timing_contrast"
+      }
+    },
+    "reversal_assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "delta_b1",
+        "delta_b2"
+      ],
+      "properties": {
+        "delta_b1": {
+          "$ref": "#/$defs/reversal_result"
+        },
+        "delta_b2": {
+          "$ref": "#/$defs/reversal_result"
+        }
+      }
+    },
+    "confirmatory_family_expanded": {
+      "const": false
+    },
+    "outcome_reporting": {
+      "const": "RETAIN_ALL_POSITIVE_NEGATIVE_AND_NULL_RESULTS"
+    },
+    "method_freeze_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "development_stability_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "holdout_stability_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "manifest_sha256": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "stability_definition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "session_tercile_upper_bounds",
+        "volatility_regime",
+        "fmp_delay_minutes",
+        "b2_delay_seconds",
+        "sensitivity_hyperparameters",
+        "confirmatory_role",
+        "confirmatory_family_expanded",
+        "operationalization_timing",
+        "preregistration_scope",
+        "systematic_reversal_rule"
+      ],
+      "properties": {
+        "session_tercile_upper_bounds": {
+          "const": [
+            130.0,
+            260.0
+          ]
+        },
+        "volatility_regime": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "source",
+            "quantiles",
+            "interpolation",
+            "lower_cutpoint",
+            "upper_cutpoint",
+            "fit_scope"
+          ],
+          "properties": {
+            "source": {
+              "const": "b0_rv_30m_lag"
+            },
+            "quantiles": {
+              "const": [
+                0.3333333333333333,
+                0.6666666666666666
+              ]
+            },
+            "interpolation": {
+              "const": "linear"
+            },
+            "lower_cutpoint": {
+              "type": "number"
+            },
+            "upper_cutpoint": {
+              "type": "number"
+            },
+            "fit_scope": {
+              "const": "SELECTED_ASSET_DEVELOPMENT_PANEL_ONLY"
+            }
+          }
+        },
+        "fmp_delay_minutes": {
+          "const": [
+            1,
+            2
+          ]
+        },
+        "b2_delay_seconds": {
+          "const": [
+            60,
+            120,
+            300
+          ]
+        },
+        "sensitivity_hyperparameters": {
+          "const": "FROZEN_PRIMARY_WITHOUT_RETUNING"
+        },
+        "confirmatory_role": {
+          "const": "gamma_glm_confirmatory"
+        },
+        "confirmatory_family_expanded": {
+          "const": false
+        },
+        "operationalization_timing": {
+          "const": "AFTER_DEVELOPMENT_BEFORE_HOLDOUT"
+        },
+        "preregistration_scope": {
+          "const": "STABILITY_DIMENSIONS_PREDECLARED;MATERIAL_REVERSAL_THRESHOLD_PRE_HOLDOUT_CLARIFICATION"
+        },
+        "systematic_reversal_rule": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "minimum_sessions_per_stratum",
+            "material_negative_definition",
+            "minimum_material_negative_strata",
+            "minimum_negative_origin_share",
+            "timing_variant_rule"
+          ],
+          "properties": {
+            "minimum_sessions_per_stratum": {
+              "const": 2
+            },
+            "material_negative_definition": {
+              "const": "BOOTSTRAP_CI_HIGH_STRICTLY_BELOW_ZERO"
+            },
+            "minimum_material_negative_strata": {
+              "const": 2
+            },
+            "minimum_negative_origin_share": {
+              "const": 0.5
+            },
+            "timing_variant_rule": {
+              "const": "ANY_NONPRIMARY_VARIANT_WITH_CI_HIGH_STRICTLY_BELOW_ZERO"
+            }
+          }
+        }
+      }
+    },
+    "contrast": {
+      "type": "object",
+      "required": [
+        "model_role",
+        "contrast",
+        "definition",
+        "positive_direction",
+        "result_sign",
+        "baseline_mean_qlike",
+        "expanded_mean_qlike",
+        "p_value_raw",
+        "estimate",
+        "ci_low",
+        "ci_high",
+        "p_value_two_sided",
+        "observations",
+        "clusters",
+        "repetitions",
+        "seed",
+        "variant_id",
+        "confirmatory_family_member",
+        "p_value_holm"
+      ],
+      "properties": {
+        "model_role": {
+          "enum": [
+            "gamma_glm_confirmatory",
+            "lightgbm_robustness"
+          ]
+        },
+        "contrast": {
+          "enum": [
+            "delta_b1",
+            "delta_b2"
+          ]
+        },
+        "definition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "positive_direction": {
+          "const": "expanded_information_set_better"
+        },
+        "result_sign": {
+          "enum": [
+            "POSITIVE",
+            "NEGATIVE",
+            "ZERO"
+          ]
+        },
+        "baseline_mean_qlike": {
+          "type": "number"
+        },
+        "expanded_mean_qlike": {
+          "type": "number"
+        },
+        "p_value_raw": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "estimate": {
+          "type": "number"
+        },
+        "ci_low": {
+          "type": "number"
+        },
+        "ci_high": {
+          "type": "number"
+        },
+        "p_value_two_sided": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "observations": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "clusters": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "repetitions": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "seed": {
+          "type": "integer"
+        },
+        "variant_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "confirmatory_family_member": {
+          "const": false
+        },
+        "p_value_holm": {
+          "type": "null"
+        }
+      }
+    },
+    "stratum_contrast": {
+      "unevaluatedProperties": false,
+      "allOf": [
+        {
+          "$ref": "#/$defs/contrast"
+        },
+        {
+          "type": "object",
+          "required": [
+            "dimension",
+            "level",
+            "origin_count",
+            "session_count"
+          ],
+          "properties": {
+            "dimension": {
+              "enum": [
+                "asset",
+                "session_tercile",
+                "volatility_regime"
+              ]
+            },
+            "level": {
+              "type": "string",
+              "minLength": 1
+            },
+            "origin_count": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "session_count": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        }
+      ]
+    },
+    "timing_contrast": {
+      "unevaluatedProperties": false,
+      "allOf": [
+        {
+          "$ref": "#/$defs/contrast"
+        }
+      ]
+    },
+    "reversal_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "systematic_stratum_reversals",
+        "material_timing_reversals",
+        "pass"
+      ],
+      "properties": {
+        "systematic_stratum_reversals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "dimension",
+              "material_negative_strata",
+              "negative_origin_share"
+            ],
+            "properties": {
+              "dimension": {
+                "enum": [
+                  "asset",
+                  "session_tercile",
+                  "volatility_regime"
+                ]
+              },
+              "material_negative_strata": {
+                "type": "array",
+                "minItems": 2,
+                "items": {
+                  "type": "string"
+                }
+              },
+              "negative_origin_share": {
+                "type": "number",
+                "minimum": 0.5,
+                "maximum": 1
+              }
+            }
+          }
+        },
+        "material_timing_reversals": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "pass": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

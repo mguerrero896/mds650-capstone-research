@@ -135,6 +135,58 @@ def build_phase5_storage_config(
     )
 
 
+def build_phase5_holdout_storage_config(
+    session_manifest: Mapping[str, Any],
+    *,
+    data_root: Path,
+    projected_peak_additional_bytes: int,
+) -> Phase5StorageConfig:
+    """Derive the exact ten-session prospective holdout allow-list.
+
+    Parameters
+    ----------
+    session_manifest:
+        Frozen, self-hashed 80-development/10-holdout manifest.
+    data_root:
+        Isolated persistent root for holdout provider evidence.
+    projected_peak_additional_bytes:
+        Conservative peak bytes used by :func:`storage_preflight`.
+
+    Returns
+    -------
+    Phase5StorageConfig
+        Ten holdout sessions with every development date explicitly excluded.
+
+    Raises
+    ------
+    ValueError
+        If the manifest hash, partition sizes, order, uniqueness, or
+        disjointness is invalid.
+    """
+    unsigned = {
+        key: value for key, value in session_manifest.items() if key != "manifest_sha256"
+    }
+    if session_manifest.get("manifest_sha256") != canonical_sha256(unsigned):
+        raise ValueError("SESSION_MANIFEST_HASH_MISMATCH")
+    development = tuple(date.fromisoformat(value) for value in session_manifest["development"])
+    holdout = tuple(date.fromisoformat(value) for value in session_manifest["holdout"])
+    if (
+        len(development) != 80
+        or len(holdout) != 10
+        or tuple(sorted(set(development))) != development
+        or tuple(sorted(set(holdout))) != holdout
+        or set(development) & set(holdout)
+    ):
+        raise ValueError("STUDY_SESSION_PARTITION_INVALID")
+    return Phase5StorageConfig(
+        sessions=holdout,
+        excluded_dates=frozenset(development),
+        data_root=data_root,
+        minimum_free_bytes=MINIMUM_PHASE5_FREE_BYTES,
+        projected_peak_additional_bytes=projected_peak_additional_bytes,
+    )
+
+
 def storage_preflight(config: Phase5StorageConfig) -> dict[str, Any]:
     """Verify write access and the projected minimum free-space floor.
 

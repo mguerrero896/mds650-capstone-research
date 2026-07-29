@@ -139,3 +139,21 @@ Spec Kit consistency and preregistration gates pass.
 32. **Storage boundary** — Large licensed raw ZIPs, Parquet tables and provider caches live
    under `D:\MDS650`. Before each batch, stop if projected minimum peak free space is below
    80 GB. Do not delete raw evidence until hashes, manifests and reproducibility are verified.
+33. **Phase 5 stability freeze** — Session terciles use B0 session-minute bounds 130 and 260.
+   Volatility regimes use linear tertiles of pooled selected-asset development
+   `b0_rv_30m_lag`; the exact cutpoints are stored in the method freeze. FMP +2 and B2
+   120/300-second sensitivities refit the frozen primary specifications without retuning and
+   do not enter the two-test Holm family. A stratum is materially negative only when its
+   paired-day bootstrap `ci_high < 0`; a systematic reversal requires at least two such
+   strata, at least two sessions per stratum and at least 50% of the corresponding dimension's
+   origins. Any non-primary timing variant with `ci_high < 0` is material. These outputs are
+   generated inside the sole authorized holdout read, never by reopening the holdout. The
+   stability dimensions were preregistered, but the numerical materiality rule was
+   operationalized after development and before holdout; final reporting must disclose that
+   distinction and cannot describe the threshold as pre-development.
+34. **Written specification approval and holdout acquisition boundary** — The owner approved
+   the written 80/10, B0/B1a/B2, Gamma/LightGBM, QLIKE/bootstrap/Holm and one-read design.
+   Holdout acquisition is operationally separate from analytical access: it cannot make a
+   provider request before `2026-07-31T20:00:00Z`, runs under the isolated
+   `D:\MDS650\data\phase5_holdout` root, may construct and hash the common panel and timing
+   sidecar, and must leave `holdout_reads=0` without model fitting, QLIKE or outcome summaries.

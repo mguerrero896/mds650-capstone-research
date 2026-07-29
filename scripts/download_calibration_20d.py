@@ -34,6 +34,7 @@ import pyarrow.parquet as pq  # type: ignore[import-untyped]
 from mds650.contracts import CANDIDATE_ASSETS
 from mds650.phase5_storage import (
     Phase5StorageConfig,
+    build_phase5_holdout_storage_config,
     build_phase5_storage_config,
 )
 from mds650.phase5_storage import (
@@ -513,6 +514,23 @@ def load_phase5_development_config(
     )
 
 
+def load_phase5_holdout_config(
+    *,
+    session_manifest_path: Path,
+    output_root: Path,
+    projected_peak_additional_bytes: int,
+) -> Phase5StorageConfig:
+    """Load the frozen manifest and derive the isolated holdout allow-list."""
+    session_manifest = json.loads(
+        session_manifest_path.read_text(encoding="utf-8")
+    )
+    return build_phase5_holdout_storage_config(
+        session_manifest,
+        data_root=output_root,
+        projected_peak_additional_bytes=projected_peak_additional_bytes,
+    )
+
+
 def _sha256_file(path: Path) -> str:
     """Hash a completed archive incrementally without loading it into memory."""
     digest = hashlib.sha256()
@@ -522,8 +540,15 @@ def _sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def main(config: Phase5StorageConfig | None = None) -> None:
+def main(
+    config: Phase5StorageConfig | None = None,
+    *,
+    phase_label: str | None = None,
+) -> None:
     """Run the bounded twenty-session download and emit sanitized checkpoints."""
+    phase = phase_label or ("5_DEVELOPMENT" if config is not None else "3F")
+    if phase not in {"3F", "5_DEVELOPMENT", "5_HOLDOUT"}:
+        raise ValueError("DOWNLOAD_PHASE_LABEL_INVALID")
     out_root = OUT if config is None else config.data_root
     raw_root = RAW_ROOT if config is None else config.raw_root
     manifest_root = MANIFEST_ROOT if config is None else config.manifest_root
@@ -582,7 +607,7 @@ def main(config: Phase5StorageConfig | None = None) -> None:
         day_records.append(record)
         _atomic_json(batch_manifest_path, {
             "status": "IN_PROGRESS",
-            "phase": "5_DEVELOPMENT" if config is not None else "3F",
+            "phase": phase,
             "session_count": len(day_records),
             "authorized_session_count": len(sessions), "sessions": day_records,
             "preflight": preflight, "full_backfill": "BLOCKED", "modeling": "BLOCKED",
@@ -591,7 +616,7 @@ def main(config: Phase5StorageConfig | None = None) -> None:
         })
     _atomic_json(batch_manifest_path, {
         "status": "PASS",
-        "phase": "5_DEVELOPMENT" if config is not None else "3F",
+        "phase": phase,
         "session_count": len(day_records),
         "authorized_session_count": len(sessions),
         "sessions": day_records, "preflight": preflight,
@@ -617,10 +642,10 @@ def cli(argv: list[str] | None = None) -> None:
         return
     parser = argparse.ArgumentParser()
     parser.add_argument("--session-manifest", type=Path, required=True)
-    parser.add_argument("--reused-manifest", type=Path, required=True)
+    parser.add_argument("--reused-manifest", type=Path)
     parser.add_argument(
         "--role",
-        choices=("development_acquisition",),
+        choices=("development_acquisition", "holdout_acquisition"),
         required=True,
     )
     parser.add_argument("--output-root", type=Path, required=True)
@@ -630,13 +655,23 @@ def cli(argv: list[str] | None = None) -> None:
         default=150,
     )
     parsed = parser.parse_args(arguments)
-    config = load_phase5_development_config(
-        session_manifest_path=parsed.session_manifest,
-        reused_manifest_path=parsed.reused_manifest,
-        output_root=parsed.output_root,
-        projected_peak_additional_bytes=parsed.projected_peak_additional_gib * 1024**3,
-    )
-    main(config)
+    if parsed.role == "development_acquisition":
+        if parsed.reused_manifest is None:
+            parser.error("--reused-manifest is required for development_acquisition")
+        config = load_phase5_development_config(
+            session_manifest_path=parsed.session_manifest,
+            reused_manifest_path=parsed.reused_manifest,
+            output_root=parsed.output_root,
+            projected_peak_additional_bytes=parsed.projected_peak_additional_gib * 1024**3,
+        )
+        main(config, phase_label="5_DEVELOPMENT")
+    else:
+        config = load_phase5_holdout_config(
+            session_manifest_path=parsed.session_manifest,
+            output_root=parsed.output_root,
+            projected_peak_additional_bytes=parsed.projected_peak_additional_gib * 1024**3,
+        )
+        main(config, phase_label="5_HOLDOUT")
 
 
 if __name__ == "__main__":

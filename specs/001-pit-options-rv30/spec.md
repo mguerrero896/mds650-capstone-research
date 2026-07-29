@@ -731,13 +731,27 @@ externally, sending email, trading, or changing the frozen methods after holdout
   2026-06-18–2026-07-02; and train through 2026-07-02/test 2026-07-06–2026-07-17.
   Every boundary MUST purge and embargo at least the overlapping thirty-minute target horizon.
 - **FR-079**: The prospective holdout MUST remain `SEALED_NOT_ACQUIRED` until its sessions
-  complete and MUST be read analytically exactly once after preregistration, method freeze,
-  leakage tests, reproducibility tests and an explicit access-ledger transition. No method,
-  feature, asset or threshold may change after this read.
+  complete at `2026-07-31T20:00:00Z`. Before that instant, the acquisition command MUST fail
+  before any provider request. After completion it MAY acquire and hash provider evidence,
+  construct and seal the common panel and target-blind timing sidecar, and run quality gates,
+  but MUST NOT fit a model, compute QLIKE or summarize target outcomes. Analytical access MUST
+  occur exactly once after preregistration, method freeze, leakage tests, reproducibility tests
+  and an explicit access-ledger transition. No method, feature, asset or threshold may change
+  after this read.
 - **FR-080**: Stability MUST be reported by asset, session tercile, development-defined
   volatility regime, FMP +1/+2-minute availability and B2 60/120/300-second cutoff. Asset
   eligibility MUST use only PIT validity, coverage, missingness and temporal stability, never
-  RV30 association, QLIKE, feature importance or preliminary predictive performance.
+  RV30 association, QLIKE, feature importance or preliminary predictive performance. Session
+  terciles MUST use the frozen B0 session-minute bounds `[0,130)`, `[130,260)` and
+  `[260,end]`; volatility regimes MUST use pooled selected-asset development-only linear
+  tertiles of lagged B0 RV30. Stability uses the frozen primary hyperparameters without
+  retuning and does not expand the confirmatory Holm family. A stratum is materially negative
+  only when its paired-day bootstrap `ci_high < 0`; a systematic stratum reversal requires at
+  least two such strata within one dimension, at least two sessions per stratum and at least
+  50% of that dimension's origins. Any non-primary timing variant with `ci_high < 0` is a
+  material timing reversal. The dimensions were preregistered; this numerical materiality rule
+  is an explicitly disclosed post-development/pre-holdout method-freeze clarification and MUST
+  NOT be represented as having been frozen before development QLIKE.
 - **FR-081**: Every registered B2 variant and every positive, negative or null result MUST be
   retained. A supported edge requires the prespecified development contrast to be positive
   with uncertainty excluding zero, the one-time holdout effect to have the same sign, and no
@@ -784,7 +798,9 @@ missing provider data remains missing with an explicit reason.
   expanding folds; the paired day bootstrap is deterministic for the frozen seed and Holm
   adjustment is reproducible.
 - **SC-035**: The holdout access ledger rejects early, mismatched and second reads, then records
-  exactly one authorized analytical read after all release gates pass.
+  exactly one authorized analytical read after all release gates pass. Automated acquisition
+  tests also prove an early invocation exits with `HOLDOUT_PERIOD_INCOMPLETE` before network
+  access and that the sealed ledger remains at `holdout_reads=0`.
 - **SC-036**: Final evidence reports both information-set deltas, uncertainty, multiplicity,
   all prespecified stability strata, all registered variants and all positive, negative and
   null results without post-holdout method changes.

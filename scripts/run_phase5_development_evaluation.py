@@ -14,6 +14,7 @@ from typing import Any
 import numpy as np
 import polars as pl
 
+from mds650.holdout import FROZEN_PHASE5_SOURCE_PATHS
 from mds650.metrics import (
     holm_adjust,
     paired_day_bootstrap,
@@ -21,6 +22,13 @@ from mds650.metrics import (
     regression_metrics,
 )
 from mds650.modeling import fit_positive_model
+from mds650.stability import (
+    B2_DELAYS_SECONDS,
+    FMP_DELAYS_MINUTES,
+    SESSION_TERCILE_BOUNDS,
+    b2_sensitivity_column,
+    development_volatility_cutpoints,
+)
 from mds650.study_design import (
     B2_FEATURE_NAMES,
     canonical_sha256,
@@ -44,6 +52,11 @@ FORECASTS_PATH = PHASE5 / "development_forecasts.parquet"
 RESULTS_PATH = PHASE5 / "development_results.json"
 LEDGER_PATH = PHASE5 / "variant_ledger.json"
 METHOD_FREEZE_PATH = PHASE5 / "method_freeze.json"
+STABILITY_INPUT_PATH = Path(
+    "D:/MDS650/data/phase5_stability/development_stability_inputs_80d.parquet"
+)
+STABILITY_INPUT_MANIFEST_PATH = PHASE5 / "development_stability_input_manifest.json"
+STABILITY_VALIDATION_PATH = PHASE5 / "development_stability_validation.json"
 
 B0_FEATURES = (
     "asset",
@@ -474,6 +487,61 @@ def _validate_inputs(
     return development
 
 
+def _validate_stability_inputs(
+    development: pl.DataFrame,
+    quality: Mapping[str, Any],
+) -> dict[str, Any]:
+    manifest = _read_json(STABILITY_INPUT_MANIFEST_PATH)
+    validation = _read_json(STABILITY_VALIDATION_PATH)
+    unsigned = {key: value for key, value in manifest.items() if key != "manifest_sha256"}
+    validation_unsigned = {
+        key: value for key, value in validation.items() if key != "manifest_sha256"
+    }
+    required_columns = {
+        "origin_id",
+        *(
+            b2_sensitivity_column(feature, delay)
+            for delay in (120, 300)
+            for feature in B2_FEATURE_NAMES
+        ),
+    }
+    schema = set(pl.read_parquet_schema(STABILITY_INPUT_PATH))
+    sidecar_ids = pl.read_parquet(STABILITY_INPUT_PATH, columns=["origin_id"])
+    if (
+        manifest.get("status") != "PASS_TARGET_BLIND_STABILITY_INPUTS"
+        or manifest.get("manifest_sha256") != canonical_sha256(unsigned)
+        or manifest.get("origin_count") != development.height
+        or manifest.get("selected_assets") != sorted(quality["selected_assets"])
+        or manifest.get("delays_seconds") != [120, 300]
+        or manifest.get("target_columns_read") != []
+        or manifest.get("provider_requests") != 0
+        or manifest.get("output", {}).get("sha256") != _sha256_file(STABILITY_INPUT_PATH)
+        or validation.get("status") != "PASS"
+        or validation.get("manifest_sha256") != canonical_sha256(validation_unsigned)
+        or validation.get("holdout_reads") != 0
+        or validation.get("provider_requests") != 0
+        or validation.get("hashes", {}).get(
+            "development_stability_inputs_80d.parquet"
+        )
+        != _sha256_file(STABILITY_INPUT_PATH)
+        or any(
+            row.get("maximum_absolute_feature_difference") != 0.0
+            for row in validation.get("retained_phase4b_crosscheck", ())
+        )
+        or not required_columns <= schema
+        or any(
+            token in column.lower()
+            for column in schema
+            for token in ("rv30", "qlike", "forecast", "loss")
+        )
+        or sidecar_ids.height != development.height
+        or sidecar_ids["origin_id"].n_unique() != sidecar_ids.height
+        or set(sidecar_ids["origin_id"]) != set(development["origin_id"])
+    ):
+        raise ValueError("PHASE5_STABILITY_INPUTS_INVALID")
+    return manifest
+
+
 def main() -> None:
     """Fit development folds, retain all outcomes and freeze the method."""
     preregistration = _read_json(PREREGISTRATION_PATH)
@@ -483,6 +551,7 @@ def main() -> None:
         preregistration,
         quality,
     )
+    _validate_stability_inputs(panel, quality)
     folds = parse_fold_definitions(preregistration["outer_folds"])
     forecast_parts: list[pl.DataFrame] = []
     tuning_variants: list[dict[str, Any]] = []
@@ -606,15 +675,8 @@ def main() -> None:
     ledger["manifest_sha256"] = canonical_sha256(ledger)
     _write_json(LEDGER_PATH, ledger)
 
-    source_files = (
-        ROOT / "scripts/run_phase5_development_evaluation.py",
-        ROOT / "scripts/run_phase5_holdout.py",
-        ROOT / "src/mds650/holdout.py",
-        ROOT / "src/mds650/modeling.py",
-        ROOT / "src/mds650/metrics.py",
-        ROOT / "src/mds650/study_design.py",
-        ROOT / "src/mds650/temporal_validation.py",
-    )
+    volatility_lower, volatility_upper = development_volatility_cutpoints(panel)
+    source_files = tuple(ROOT / path for path in FROZEN_PHASE5_SOURCE_PATHS)
     method_freeze: dict[str, Any] = {
         "schema_version": "phase5-method-freeze-1.0",
         "status": "FROZEN_AFTER_DEVELOPMENT_BEFORE_HOLDOUT",
@@ -627,6 +689,34 @@ def main() -> None:
         "seed": preregistration["seed"],
         "forecast_floor": preregistration["forecast_floor"],
         "timing": preregistration["timing"],
+        "stability_definition": {
+            "session_tercile_upper_bounds": list(SESSION_TERCILE_BOUNDS),
+            "volatility_regime": {
+                "source": "b0_rv_30m_lag",
+                "quantiles": [1 / 3, 2 / 3],
+                "interpolation": "linear",
+                "lower_cutpoint": volatility_lower,
+                "upper_cutpoint": volatility_upper,
+                "fit_scope": "SELECTED_ASSET_DEVELOPMENT_PANEL_ONLY",
+            },
+            "fmp_delay_minutes": list(FMP_DELAYS_MINUTES),
+            "b2_delay_seconds": list(B2_DELAYS_SECONDS),
+            "sensitivity_hyperparameters": "FROZEN_PRIMARY_WITHOUT_RETUNING",
+            "confirmatory_role": "gamma_glm_confirmatory",
+            "confirmatory_family_expanded": False,
+            "operationalization_timing": "AFTER_DEVELOPMENT_BEFORE_HOLDOUT",
+            "preregistration_scope": (
+                "STABILITY_DIMENSIONS_PREDECLARED;"
+                "MATERIAL_REVERSAL_THRESHOLD_PRE_HOLDOUT_CLARIFICATION"
+            ),
+            "systematic_reversal_rule": {
+                "minimum_sessions_per_stratum": 2,
+                "material_negative_definition": "BOOTSTRAP_CI_HIGH_STRICTLY_BELOW_ZERO",
+                "minimum_material_negative_strata": 2,
+                "minimum_negative_origin_share": 0.5,
+                "timing_variant_rule": "ANY_NONPRIMARY_VARIANT_WITH_CI_HIGH_STRICTLY_BELOW_ZERO",
+            },
+        },
         "inference": preregistration["inference"],
         "outcome_reporting": preregistration["outcome_reporting"],
         "package_versions": {
@@ -642,8 +732,23 @@ def main() -> None:
             str(path.relative_to(ROOT)).replace("\\", "/"): source_sha256(path)
             for path in source_files
         },
+        "contract_hashes": {
+            "specs/001-pit-options-rv30/contracts/phase5-stability-results.schema.json": (
+                _sha256_file(
+                    ROOT / "specs/001-pit-options-rv30/contracts/"
+                    "phase5-stability-results.schema.json"
+                )
+            )
+        },
         "input_hashes": {
             "common_development_80d.parquet": _sha256_file(PANEL_PATH),
+            "development_stability_inputs_80d.parquet": _sha256_file(STABILITY_INPUT_PATH),
+            "development_stability_input_manifest.json": _sha256_file(
+                STABILITY_INPUT_MANIFEST_PATH
+            ),
+            "development_stability_validation.json": _sha256_file(
+                STABILITY_VALIDATION_PATH
+            ),
             "development_panel_quality.json": _sha256_file(QUALITY_PATH),
             "development_source_manifest_80d.json": _sha256_file(SOURCE_MANIFEST_PATH),
             "preregistration.json": _sha256_file(PREREGISTRATION_PATH),

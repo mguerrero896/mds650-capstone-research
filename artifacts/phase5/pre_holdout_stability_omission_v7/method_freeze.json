@@ -1,7 +1,4 @@
 {
-  "contract_hashes": {
-    "specs/001-pit-options-rv30/contracts/phase5-stability-results.schema.json": "032c6ab4f0e58ee70fc5601d8ba1a0dd0d87fe17b68ad3e49e7bf2bacaf6191d"
-  },
   "folds": [
     {
       "fold": 1,
@@ -154,13 +151,10 @@
     "common_development_80d.parquet": "e5b9e04296d6dacd6c1321b760e1a253a47fcf67055a4e41b9d2c6a8b00c77da",
     "development_panel_quality.json": "752565f5fd498b3ad27f23c32c5e79af33e2a3289dcd2c8245c4135fd67c8a75",
     "development_source_manifest_80d.json": "ad2c80fbb6f42f360bdd7a10a01b3c4fb771ef46b1ef80ab1e6e35320f04a126",
-    "development_stability_input_manifest.json": "5e07f07337177e2c785ed6f54a5d885ab2424e665c9a6d7e9ef4c0e3348914f9",
-    "development_stability_inputs_80d.parquet": "0009a3c27f42b98978bf1b53dc55b656e401119cd8f3c29c942591e0891a2560",
-    "development_stability_validation.json": "88a412232917d5ecd00b63d2aa558c876bbda46b1ae48abd92f58480c9999d4b",
     "preregistration.json": "862e81f05d02a913e8d13431a6e230287c9c49f009ebd41b334a5eefc6fc419a",
     "uv.lock": "97382a973be6cede8621050748b1409e4cb6c70591063217e05896d8b03be241"
   },
-  "manifest_sha256": "4fc2b58fd6e62bc63c3bc8473980a8af4b3fa3dd8ccaa49053c68d5dc147d64d",
+  "manifest_sha256": "323421fd4760e3ad69c486992985d5d174bd353a030ce29fa75042b45d022333",
   "outcome_reporting": "RETAIN_ALL_POSITIVE_NEGATIVE_AND_NULL_RESULTS",
   "output_hashes": {
     "development_forecasts.parquet": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
@@ -462,67 +456,13 @@
     }
   ],
   "source_code_hashes": {
-    "scripts/acquire_phase5_holdout.py": "3dcd1a11a24eb109572c37a62b0661e5e69b96e60e918a7037eaf54a03b11c1d",
-    "scripts/build_b2_calibration_20d.py": "32a27f70a644ae1d0e98e94a041c1e588f5d77ed42393139c846a76b0aacf142",
-    "scripts/build_phase5_common_panel.py": "09e7c7712646a90d731c54d33496c38d80316a5b1228d5f7bb13f9e17a7fbad4",
-    "scripts/build_phase5_stability_inputs.py": "b30a32adc6050f24dc25ae261fe31a595355a92845ab3e38b1ba0ab7ac36be50",
-    "scripts/download_calibration_20d.py": "8725fb86a0d190c5c0345f1a8b87522661b91f8cab88df906829fa8114564dfb",
-    "scripts/phase4a_common.py": "ca6b8b3d515e98bb2ef384a5d9406a2e289686d07220b817ac94d66ac65b940a",
-    "scripts/phase4b_common.py": "dc59fba9d15b457b477d16a8b81f63816da8ae2fdefb2b8e90a2004ec43418ec",
-    "scripts/run_b1_calibration_20d.py": "7fb577315fe7f7809c981fe1cb144bb037cbde6ededf2e70f4a78f56d1af1c01",
-    "scripts/run_b1_closure.py": "517525aa2f1b4ede9df44c71030ea994531a269dea5718cf0bb23600af24f1b1",
-    "scripts/run_phase4b.py": "a75ae81e7b86821693dcde4133026a703a6020d78712de07ae215cc53c4b15fd",
-    "scripts/run_phase5_development_evaluation.py": "adb3607e2d2aebe5d6a210b6746ef53e54d5880e96c4b1d8e29e0cab86261bc7",
-    "scripts/run_phase5_holdout.py": "506aa217fc95f542cbeb8eb197bf537387ff3e59c4f82c04e2fe3acf61011e86",
-    "src/mds650/contracts.py": "ee9c832a4c5e9cc3e62ae1701907325ed2b3668fa6a78d7b60b2fc6f419f7a53",
-    "src/mds650/holdout.py": "dd4f5f90a21983afec74600822485932566d30f30756dc01735f08e24f048f6a",
+    "scripts/run_phase5_development_evaluation.py": "67b6bb36b8b490d6962d54187f93168bc8d59d91d4499f423e581e22753c3f3e",
+    "scripts/run_phase5_holdout.py": "12685fae43e367d6e41038d756b2fff90206399978b79bfba69a780733d417a6",
+    "src/mds650/holdout.py": "1d5ef48368cc6c39f9b6ebe75f7d4df93b8c039e85ff16da8d161e95dbc865c8",
     "src/mds650/metrics.py": "e80eddb94f1626c21c16468db6a55de004254da157c1ce4dee9b0c65e20d1749",
     "src/mds650/modeling.py": "e91b7feda2ba1bbe1690301302229493698cbdaa1b710489caf90436313ed4ce",
-    "src/mds650/phase5_features.py": "6dd822e7e8d658d7d3c89f191552e2a21681228f226524bc9069692b9518d166",
-    "src/mds650/phase5_panel.py": "64b2f65f7805ef2c24465e5fa0cf648cda9c228a81d2cca672bc5f6cf363980c",
-    "src/mds650/phase5_storage.py": "dc56f6c7412d87d34d7adbd425676fde2dfda4b84f1457aa0bf4ebad2c6813cc",
-    "src/mds650/stability.py": "716bc6bd00d1306549138aced0fb2f3332196e83acfc4f28c29e5444d0024e7b",
     "src/mds650/study_design.py": "990c7e2a3d4012ccfe718c740c2e5eaf6eecc0f377222c650a11720fd517fcc7",
-    "src/mds650/targets.py": "ff4cdfc86260d8307b583ab194256fbac9da50ad88940f6245de9758d0f5e956",
     "src/mds650/temporal_validation.py": "56de7393f6a9dbaf61b30aaec096a3b60f5603c03f3bba17ec4cec58bd6501a7"
-  },
-  "stability_definition": {
-    "b2_delay_seconds": [
-      60,
-      120,
-      300
-    ],
-    "confirmatory_family_expanded": false,
-    "confirmatory_role": "gamma_glm_confirmatory",
-    "fmp_delay_minutes": [
-      1,
-      2
-    ],
-    "operationalization_timing": "AFTER_DEVELOPMENT_BEFORE_HOLDOUT",
-    "preregistration_scope": "STABILITY_DIMENSIONS_PREDECLARED;MATERIAL_REVERSAL_THRESHOLD_PRE_HOLDOUT_CLARIFICATION",
-    "sensitivity_hyperparameters": "FROZEN_PRIMARY_WITHOUT_RETUNING",
-    "session_tercile_upper_bounds": [
-      130.0,
-      260.0
-    ],
-    "systematic_reversal_rule": {
-      "material_negative_definition": "BOOTSTRAP_CI_HIGH_STRICTLY_BELOW_ZERO",
-      "minimum_material_negative_strata": 2,
-      "minimum_negative_origin_share": 0.5,
-      "minimum_sessions_per_stratum": 2,
-      "timing_variant_rule": "ANY_NONPRIMARY_VARIANT_WITH_CI_HIGH_STRICTLY_BELOW_ZERO"
-    },
-    "volatility_regime": {
-      "fit_scope": "SELECTED_ASSET_DEVELOPMENT_PANEL_ONLY",
-      "interpolation": "linear",
-      "lower_cutpoint": 8.143183725193782e-06,
-      "quantiles": [
-        0.3333333333333333,
-        0.6666666666666666
-      ],
-      "source": "b0_rv_30m_lag",
-      "upper_cutpoint": 1.8009348183310356e-05
-    }
   },
   "status": "FROZEN_AFTER_DEVELOPMENT_BEFORE_HOLDOUT",
   "timing": {

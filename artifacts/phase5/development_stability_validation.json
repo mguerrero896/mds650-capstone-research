@@ -1,0 +1,33 @@
+{
+  "hashes": {
+    "common_development_80d.parquet": "e5b9e04296d6dacd6c1321b760e1a253a47fcf67055a4e41b9d2c6a8b00c77da",
+    "development_stability_input_manifest.json": "cc4d2f7429404e5ccc3ee3f6d463d74d885d0263f67c16084ebcb779a4886823",
+    "development_stability_inputs_80d.parquet": "0009a3c27f42b98978bf1b53dc55b656e401119cd8f3c29c942591e0891a2560",
+    "phase4b_b2_panel_25d.parquet": "452f0756703148fa1fb9bc0c90fc72d9dd78d9b5a4480f1be18d648593ad4ff5"
+  },
+  "holdout_reads": 0,
+  "manifest_sha256": "8b21c501d5b19480a12b914e28ea698617e707e70ac6d30fa392243de0eb35e2",
+  "pit_violations": {
+    "120": 0,
+    "300": 0
+  },
+  "provider_requests": 0,
+  "retained_phase4b_crosscheck": [
+    {
+      "delay_seconds": 120,
+      "matched_origin_count": 9715,
+      "maximum_absolute_feature_difference": 0.0
+    },
+    {
+      "delay_seconds": 300,
+      "matched_origin_count": 9715,
+      "maximum_absolute_feature_difference": 0.0
+    }
+  ],
+  "schema_version": "phase5-stability-validation-1.0",
+  "sidecar_column_count": 27,
+  "sidecar_origin_count": 30650,
+  "sidecar_unique_origin_count": 30650,
+  "status": "PASS",
+  "target_like_columns": []
+}

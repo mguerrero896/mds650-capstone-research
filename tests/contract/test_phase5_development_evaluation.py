@@ -21,6 +21,9 @@ FREEZE = PHASE5 / "method_freeze.json"
 PANEL = PHASE5 / "common_development_80d.parquet"
 QUALITY = PHASE5 / "development_panel_quality.json"
 PREREGISTRATION = PHASE5 / "preregistration.json"
+STABILITY_INPUTS = Path("D:/MDS650/data/phase5_stability/development_stability_inputs_80d.parquet")
+STABILITY_MANIFEST = PHASE5 / "development_stability_input_manifest.json"
+STABILITY_VALIDATION = PHASE5 / "development_stability_validation.json"
 
 
 def _json(path: Path) -> dict[str, Any]:
@@ -123,8 +126,11 @@ def test_method_freeze_hashes_exact_development_evidence() -> None:
     assert freeze["holdout_reads"] == 0
     assert len(freeze["holdout_hyperparameters"]) == 6
     assert {
+        "scripts/build_phase5_stability_inputs.py",
+        "scripts/run_phase4b.py",
         "scripts/run_phase5_holdout.py",
         "src/mds650/holdout.py",
+        "src/mds650/stability.py",
         "src/mds650/study_design.py",
     } <= set(freeze["source_code_hashes"])
     assert all(
@@ -132,7 +138,23 @@ def test_method_freeze_hashes_exact_development_evidence() -> None:
         for relative_path, digest in freeze["source_code_hashes"].items()
     )
     assert freeze["input_hashes"]["common_development_80d.parquet"] == _sha256(PANEL)
+    assert freeze["input_hashes"]["development_stability_inputs_80d.parquet"] == _sha256(
+        STABILITY_INPUTS
+    )
+    assert freeze["input_hashes"]["development_stability_input_manifest.json"] == _sha256(
+        STABILITY_MANIFEST
+    )
+    assert freeze["input_hashes"]["development_stability_validation.json"] == _sha256(
+        STABILITY_VALIDATION
+    )
     assert freeze["input_hashes"]["preregistration.json"] == _sha256(PREREGISTRATION)
+    assert freeze["stability_definition"]["fmp_delay_minutes"] == [1, 2]
+    assert freeze["stability_definition"]["b2_delay_seconds"] == [60, 120, 300]
+    assert freeze["stability_definition"]["confirmatory_family_expanded"] is False
+    assert (
+        freeze["stability_definition"]["operationalization_timing"]
+        == "AFTER_DEVELOPMENT_BEFORE_HOLDOUT"
+    )
     assert freeze["output_hashes"]["development_forecasts.parquet"] == _sha256(FORECASTS)
     assert freeze["output_hashes"]["development_results.json"] == _sha256(RESULTS)
     assert freeze["output_hashes"]["variant_ledger.json"] == _sha256(LEDGER)
