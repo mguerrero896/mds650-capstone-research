@@ -1,14 +1,13 @@
-"""Download and filter the authorized twenty Unusual Whales sessions.
+"""Download and filter an explicitly authorized Unusual Whales session batch.
 
-This script is deliberately bounded to the Phase 3F allow-list. It streams each ZIP,
-keeps a resumable per-day manifest, validates the archive before parsing, and writes
-candidate-asset rows to date/asset Parquet partitions. It never downloads the Pilot V2
-dates or any other historical range.
+The no-argument mode retains the Phase 3F twenty-session allow-list. Phase 5
+loads its development-only allow-list from frozen, hash-validated manifests.
 """
 # ruff: noqa: E501
 
 from __future__ import annotations
 
+import argparse
 import csv
 import ctypes
 import ctypes.wintypes
@@ -18,6 +17,7 @@ import json
 import os
 import shutil
 import sqlite3
+import sys
 import tempfile
 import time as time_module
 import zipfile
@@ -34,10 +34,12 @@ import pyarrow.parquet as pq  # type: ignore[import-untyped]
 from mds650.contracts import CANDIDATE_ASSETS
 from mds650.phase5_storage import (
     Phase5StorageConfig,
+    build_phase5_storage_config,
 )
 from mds650.phase5_storage import (
     storage_preflight as phase5_storage_preflight,
 )
+from mds650.study_design import canonical_sha256
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "artifacts" / "calibration_20d"
@@ -463,6 +465,54 @@ def _load_manifest(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
 
 
+def load_phase5_development_config(
+    *,
+    session_manifest_path: Path,
+    reused_manifest_path: Path,
+    output_root: Path,
+    projected_peak_additional_bytes: int,
+) -> Phase5StorageConfig:
+    """Load the frozen manifests and derive the missing development dates.
+
+    Parameters
+    ----------
+    session_manifest_path:
+        Frozen 80-development/10-holdout session manifest.
+    reused_manifest_path:
+        Verified manifest for the 25 retained development sessions.
+    output_root:
+        Persistent Phase 5 data root.
+    projected_peak_additional_bytes:
+        Conservative additional storage required during this batch.
+
+    Returns
+    -------
+    Phase5StorageConfig
+        Validated configuration containing only the 55 missing dates.
+
+    Raises
+    ------
+    ValueError
+        If either frozen manifest is untrusted or internally inconsistent.
+    """
+    session_manifest = json.loads(session_manifest_path.read_text(encoding="utf-8"))
+    reused_manifest = json.loads(reused_manifest_path.read_text(encoding="utf-8"))
+    if reused_manifest.get("status") != "PASS":
+        raise ValueError("REUSED_SESSION_MANIFEST_NOT_PASS")
+    unsigned_reused = {
+        key: value for key, value in reused_manifest.items() if key != "manifest_sha256"
+    }
+    if reused_manifest.get("manifest_sha256") != canonical_sha256(unsigned_reused):
+        raise ValueError("REUSED_SESSION_MANIFEST_HASH_MISMATCH")
+    reused_dates = frozenset(date.fromisoformat(value) for value in reused_manifest["sessions"])
+    return build_phase5_storage_config(
+        session_manifest,
+        reused_dates=reused_dates,
+        data_root=output_root,
+        projected_peak_additional_bytes=projected_peak_additional_bytes,
+    )
+
+
 def _sha256_file(path: Path) -> str:
     """Hash a completed archive incrementally without loading it into memory."""
     digest = hashlib.sha256()
@@ -552,5 +602,42 @@ def main(config: Phase5StorageConfig | None = None) -> None:
     print(json.dumps({"status": "PASS", "sessions": len(day_records), "reused": sum(bool(x.get("reused_existing")) for x in day_records), "secret_values_emitted": False}))
 
 
+def cli(argv: list[str] | None = None) -> None:
+    """Run the legacy batch or frozen Phase 5 development acquisition.
+
+    Parameters
+    ----------
+    argv:
+        Optional command arguments. ``None`` reads the process arguments; an
+        empty list retains the legacy twenty-session behavior.
+    """
+    arguments = sys.argv[1:] if argv is None else argv
+    if not arguments:
+        main()
+        return
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--session-manifest", type=Path, required=True)
+    parser.add_argument("--reused-manifest", type=Path, required=True)
+    parser.add_argument(
+        "--role",
+        choices=("development_acquisition",),
+        required=True,
+    )
+    parser.add_argument("--output-root", type=Path, required=True)
+    parser.add_argument(
+        "--projected-peak-additional-gib",
+        type=int,
+        default=150,
+    )
+    parsed = parser.parse_args(arguments)
+    config = load_phase5_development_config(
+        session_manifest_path=parsed.session_manifest,
+        reused_manifest_path=parsed.reused_manifest,
+        output_root=parsed.output_root,
+        projected_peak_additional_bytes=parsed.projected_peak_additional_gib * 1024**3,
+    )
+    main(config)
+
+
 if __name__ == "__main__":
-    main()
+    cli()

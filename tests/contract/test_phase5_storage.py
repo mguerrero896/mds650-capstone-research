@@ -13,6 +13,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 SESSION_MANIFEST = ROOT / "artifacts" / "phase5" / "study_sessions_90.json"
+REUSED_MANIFEST = ROOT / "artifacts" / "phase5" / "reused_25_session_manifest.json"
 GIB = 1024**3
 sys.path.insert(0, str(ROOT / "scripts"))
 import build_b2_calibration_20d as b2_builder  # noqa: E402
@@ -42,6 +43,51 @@ def test_build_config_selects_only_55_missing_development_sessions() -> None:
     assert set(config.sessions).isdisjoint(config.excluded_dates)
     assert config.raw_root == Path("D:/MDS650/raw/full_tape")
     assert config.manifest_root == Path("D:/MDS650/manifests/full_tape")
+
+
+def test_downloader_loads_exact_missing_development_allowlist(tmp_path: Path) -> None:
+    config = downloader.load_phase5_development_config(
+        session_manifest_path=SESSION_MANIFEST,
+        reused_manifest_path=REUSED_MANIFEST,
+        output_root=tmp_path,
+        projected_peak_additional_bytes=150 * GIB,
+    )
+
+    assert len(config.sessions) == 55
+    assert config.sessions[0] == date(2026, 3, 24)
+    assert config.sessions[-1] == date(2026, 6, 10)
+    assert config.data_root == tmp_path
+    assert set(config.sessions).isdisjoint(config.excluded_dates)
+
+
+def test_downloader_rejects_untrusted_reused_manifest(tmp_path: Path) -> None:
+    reused = json.loads(REUSED_MANIFEST.read_text(encoding="utf-8"))
+    reused["status"] = "FAIL"
+    tampered = tmp_path / "reused.json"
+    tampered.write_text(json.dumps(reused), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="REUSED_SESSION_MANIFEST_NOT_PASS"):
+        downloader.load_phase5_development_config(
+            session_manifest_path=SESSION_MANIFEST,
+            reused_manifest_path=tampered,
+            output_root=tmp_path,
+            projected_peak_additional_bytes=150 * GIB,
+        )
+
+
+def test_downloader_rejects_reused_manifest_hash_mismatch(tmp_path: Path) -> None:
+    reused = json.loads(REUSED_MANIFEST.read_text(encoding="utf-8"))
+    reused["source_preserved"] = False
+    tampered = tmp_path / "reused.json"
+    tampered.write_text(json.dumps(reused), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="REUSED_SESSION_MANIFEST_HASH_MISMATCH"):
+        downloader.load_phase5_development_config(
+            session_manifest_path=SESSION_MANIFEST,
+            reused_manifest_path=tampered,
+            output_root=tmp_path,
+            projected_peak_additional_bytes=150 * GIB,
+        )
 
 
 def test_storage_config_rejects_holdout_date() -> None:
