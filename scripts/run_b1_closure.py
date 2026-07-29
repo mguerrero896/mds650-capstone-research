@@ -12,6 +12,7 @@ import hashlib
 import json
 import math
 import os
+import time as time_module
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, timedelta
 from pathlib import Path
@@ -77,12 +78,39 @@ def invert_iv(spot: float, strike: float, time_years: float, rate: float, divide
     return {"success": True, "iv": (lo + hi) / 2.0, "failure_reason": "MAX_ITERATIONS", "lower_bound": lower, "upper_bound": upper, "iterations": 100}
 
 
-def _request_json(client: httpx.Client, url: str, params: dict[str, str], key: str) -> tuple[int, dict[str, Any], str | None]:
+def _request_json(
+    client: httpx.Client,
+    url: str,
+    params: dict[str, str],
+    key: str,
+    *,
+    max_attempts: int = 4,
+    backoff_seconds: float = 1.0,
+) -> tuple[int, dict[str, Any], str | None]:
     safe = dict(params)
     safe["apiKey"] = key
-    response = client.get(url, params=safe)
-    payload = response.json() if response.headers.get("content-type", "").startswith("application/json") else {}
-    return response.status_code, payload if isinstance(payload, dict) else {}, response.headers.get("x-request-id") or response.headers.get("request_id")
+    for attempt in range(1, max_attempts + 1):
+        try:
+            response = client.get(url, params=safe)
+        except httpx.TransportError:
+            if attempt == max_attempts:
+                raise RuntimeError("MASSIVE_REQUEST_RETRY_EXHAUSTED") from None
+            time_module.sleep(backoff_seconds * 2 ** (attempt - 1))
+            continue
+        if (
+            response.status_code == 429 or response.status_code >= 500
+        ) and attempt < max_attempts:
+            retry_after = response.headers.get("retry-after")
+            delay = (
+                float(retry_after)
+                if retry_after and retry_after.replace(".", "", 1).isdigit()
+                else backoff_seconds * 2 ** (attempt - 1)
+            )
+            time_module.sleep(delay)
+            continue
+        payload = response.json() if response.headers.get("content-type", "").startswith("application/json") else {}
+        return response.status_code, payload if isinstance(payload, dict) else {}, response.headers.get("x-request-id") or response.headers.get("request_id")
+    raise RuntimeError("MASSIVE_REQUEST_RETRY_EXHAUSTED")
 
 
 def resolve_contracts(client: httpx.Client, key: str, asset: str, day: str, spot: float) -> list[dict[str, Any]]:
@@ -111,9 +139,8 @@ def resolve_contracts(client: httpx.Client, key: str, asset: str, day: str, spot
         pages = 1
         while next_url and next_url not in seen_urls and pages < 100:
             seen_urls.add(next_url)
-            response = client.get(next_url, params={"apiKey": key})
-            page = response.json() if response.headers.get("content-type", "").startswith("application/json") else {}
-            if response.status_code != 200 or not isinstance(page, dict):
+            page_status, page, _ = _request_json(client, next_url, {}, key)
+            if page_status != 200:
                 break
             candidates.extend(page.get("results", []))
             next_url = page.get("next_url")
@@ -173,9 +200,8 @@ def fetch_contract_day(item: tuple[str, str, dict[str, Any]], key: str) -> dict[
     while next_url and next_url not in seen_urls and safe["pages"] < 20:
         seen_urls.add(next_url)
         with httpx.Client(timeout=90, follow_redirects=True) as client:
-            response = client.get(next_url, params={"apiKey": key})
-        page = response.json() if response.headers.get("content-type", "").startswith("application/json") else {}
-        if not isinstance(page, dict):
+            page_status, page, _ = _request_json(client, next_url, {}, key)
+        if page_status != 200:
             break
         safe["pages"] += 1
         safe["results"].extend(_compact_quotes(page.get("results", [])))

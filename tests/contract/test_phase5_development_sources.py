@@ -6,6 +6,7 @@ import sys
 from datetime import UTC, date, datetime
 from pathlib import Path
 
+import httpx
 import polars as pl
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -13,6 +14,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import build_b2_calibration_20d as b2_builder  # noqa: E402
 import run_b1_calibration_20d as b1_builder  # noqa: E402
+import run_b1_closure as b1_closure  # noqa: E402
 
 
 def test_fmp_source_filters_exact_session_and_records_both_delays() -> None:
@@ -131,3 +133,39 @@ def test_b1q_origin_records_observed_quote_pit_evidence() -> None:
         [{"sip_timestamp": origin_ns + 1}],
         origin_ns,
     )["b1q_quote_not_after_origin"] is False
+
+
+def test_massive_request_retries_transient_transport_failure() -> None:
+    class FlakyClient:
+        calls = 0
+
+        def get(
+            self,
+            url: str,
+            *,
+            params: dict[str, str],
+        ) -> httpx.Response:
+            self.calls += 1
+            request = httpx.Request("GET", url, params=params)
+            if self.calls == 1:
+                raise httpx.ConnectError("transient TLS EOF", request=request)
+            return httpx.Response(
+                200,
+                json={"results": []},
+                headers={"x-request-id": "request-1"},
+                request=request,
+            )
+
+    client = FlakyClient()
+    status, payload, request_id = b1_closure._request_json(
+        client,
+        "https://api.massive.com/v3/quotes/O:AAPL",
+        {"timestamp": "2026-03-24"},
+        "secret-not-emitted",
+        backoff_seconds=0,
+    )
+
+    assert client.calls == 2
+    assert status == 200
+    assert payload == {"results": []}
+    assert request_id == "request-1"
