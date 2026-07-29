@@ -1,0 +1,11 @@
+{
+  "files": {
+    "artifacts/phase5/development_forecasts.parquet": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+    "artifacts/phase5/development_results.json": "47663be6704dd164dce0b103ae31c9be0987b30920dcd723872fc2dd9230ab0f",
+    "artifacts/phase5/method_freeze.json": "09801a7e5556fa45c598d1ab35b63092c81b51e8534987319133becfff63d620",
+    "artifacts/phase5/variant_ledger.json": "344bd8ccbc23c735d717a04f9b085a965e7211aaa15e3a70595b4c010bc7e927"
+  },
+  "runs_compared": 2,
+  "schema_version": "phase5-development-determinism-1.0",
+  "status": "PASS_IDENTICAL_SHA256"
+}

@@ -1,0 +1,14 @@
+{
+  "archived_files": [
+    "development_forecasts.parquet",
+    "development_results.json",
+    "method_freeze.json",
+    "variant_ledger.json"
+  ],
+  "cause": "POLARS_PARALLEL_FLOAT_REDUCTION_CHANGED_BOOTSTRAP_INTERVALS_BY_ONE_ULP",
+  "consequence": "METHOD_FREEZE_REJECTED_SECOND_RUN_BEFORE_HOLDOUT",
+  "forecast_sha256_was_stable": true,
+  "remediation": "DETERMINISTIC_SORTED_MATH_FSUM_PER_TRADING_DAY",
+  "schema_version": "phase5-reproducibility-failure-1.0",
+  "status": "INVALID_FOR_ACCEPTANCE_PRESERVED_FOR_AUDIT"
+}

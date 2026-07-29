@@ -53,8 +53,14 @@ def test_paired_day_bootstrap_is_clustered_and_deterministic() -> None:
         repetitions=1_000,
         seed=650,
     )
+    reversed_rows = paired_day_bootstrap(
+        differences.reverse(),
+        repetitions=1_000,
+        seed=650,
+    )
 
     assert first == second
+    assert first == reversed_rows
     assert first["estimate"] == pytest.approx(2.0)
     assert first["clusters"] == 3
     assert first["repetitions"] == 1_000

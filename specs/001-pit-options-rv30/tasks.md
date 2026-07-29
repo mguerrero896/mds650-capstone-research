@@ -350,9 +350,9 @@ explicitly attributed to non-IV B0/B1Q coverage rather than optional IV missingn
 - [x] T183 [US4] Implement the four frozen expanding folds in `src/mds650/temporal_validation.py`.
 - [x] T184 [P] [US4] Implement deterministic QLIKE, MAE/RMSE, 10,000-draw paired-day bootstrap and Holm adjustment in `src/mds650/metrics.py`.
 - [x] T185 [P] [US4] Implement confirmatory `GammaRegressor` and fixed `LGBMRegressor(objective="gamma")` training in `src/mds650/modeling.py`.
-- [ ] T186 [US4] Run common-row development forecasts and write `artifacts/phase5/development_forecasts.parquet` plus `artifacts/phase5/development_results.json` in `scripts/run_phase5_development_evaluation.py`.
-- [ ] T187 [US4] Preserve every registered feature/model/timing variant and result sign in `artifacts/phase5/variant_ledger.json`.
-- [ ] T188 [US4] Freeze code, data, feature, fold, model, prediction and result hashes in `artifacts/phase5/method_freeze.json` with `holdout_reads=0`.
+- [x] T186 [US4] Run common-row development forecasts and write `artifacts/phase5/development_forecasts.parquet` plus `artifacts/phase5/development_results.json` in `scripts/run_phase5_development_evaluation.py`.
+- [x] T187 [US4] Preserve every registered feature/model/timing variant and result sign in `artifacts/phase5/variant_ledger.json`.
+- [x] T188 [US4] Freeze code, data, feature, fold, model, prediction and result hashes in `artifacts/phase5/method_freeze.json` with `holdout_reads=0`.
 
 ## Phase 11: User Story 4 — One-time prospective holdout and final evidence (Priority: P2)
 

@@ -1,0 +1,394 @@
+{
+  "folds": [
+    {
+      "fold": 1,
+      "test_end": "2026-06-03",
+      "test_start": "2026-05-20",
+      "train_end": "2026-05-19"
+    },
+    {
+      "fold": 2,
+      "test_end": "2026-06-17",
+      "test_start": "2026-06-04",
+      "train_end": "2026-06-03"
+    },
+    {
+      "fold": 3,
+      "test_end": "2026-07-02",
+      "test_start": "2026-06-18",
+      "train_end": "2026-06-17"
+    },
+    {
+      "fold": 4,
+      "test_end": "2026-07-17",
+      "test_start": "2026-07-06",
+      "train_end": "2026-07-02"
+    }
+  ],
+  "forecast_floor": 1e-12,
+  "holdout_reads": 0,
+  "inference": {
+    "bootstrap_repetitions": 10000,
+    "cluster_unit": "XNYS_SESSION_DATE_WITH_ALL_ASSETS",
+    "confirmatory_family": [
+      "delta_b1",
+      "delta_b2"
+    ],
+    "multiplicity": "Holm"
+  },
+  "information_sets": {
+    "B0": [
+      "asset",
+      "b0_spot",
+      "b0_rv_5m_lag",
+      "b0_rv_30m_lag",
+      "b0_return_5m_lag",
+      "b0_volume_5m_lag",
+      "b0_session_minute"
+    ],
+    "B1a": [
+      "asset",
+      "b0_spot",
+      "b0_rv_5m_lag",
+      "b0_rv_30m_lag",
+      "b0_return_5m_lag",
+      "b0_volume_5m_lag",
+      "b0_session_minute",
+      "b1q_atm_iv"
+    ],
+    "B2": [
+      "asset",
+      "b0_spot",
+      "b0_rv_5m_lag",
+      "b0_rv_30m_lag",
+      "b0_return_5m_lag",
+      "b0_volume_5m_lag",
+      "b0_session_minute",
+      "b1q_atm_iv",
+      "b2_log_trade_count",
+      "b2_unique_contract_share",
+      "b2_log_mean_trade_premium",
+      "b2_log_max_trade_premium",
+      "b2_call_put_premium_imbalance_scaled",
+      "b2_execution_side_premium_imbalance",
+      "b2_repeated_contract_premium_share",
+      "b2_strike_concentration",
+      "b2_expiry_concentration"
+    ]
+  },
+  "input_hashes": {
+    "common_development_80d.parquet": "e5b9e04296d6dacd6c1321b760e1a253a47fcf67055a4e41b9d2c6a8b00c77da",
+    "development_panel_quality.json": "752565f5fd498b3ad27f23c32c5e79af33e2a3289dcd2c8245c4135fd67c8a75",
+    "development_source_manifest_80d.json": "ad2c80fbb6f42f360bdd7a10a01b3c4fb771ef46b1ef80ab1e6e35320f04a126",
+    "preregistration.json": "862e81f05d02a913e8d13431a6e230287c9c49f009ebd41b334a5eefc6fc419a",
+    "uv.lock": "97382a973be6cede8621050748b1409e4cb6c70591063217e05896d8b03be241"
+  },
+  "manifest_sha256": "2907cdbbe7953ae830d67a0c0e94f130d650091fe8d77551d8f3d3438f89002a",
+  "outcome_reporting": "RETAIN_ALL_POSITIVE_NEGATIVE_AND_NULL_RESULTS",
+  "output_hashes": {
+    "development_forecasts.parquet": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+    "development_results.json": "47663be6704dd164dce0b103ae31c9be0987b30920dcd723872fc2dd9230ab0f",
+    "variant_ledger.json": "344bd8ccbc23c735d717a04f9b085a965e7211aaa15e3a70595b4c010bc7e927"
+  },
+  "package_versions": {
+    "lightgbm": "4.7.0",
+    "numpy": "2.5.1",
+    "polars": "1.42.1",
+    "scikit-learn": "1.9.0"
+  },
+  "schema_version": "phase5-method-freeze-1.0",
+  "seed": 650,
+  "selected_assets": [
+    "AAPL",
+    "AMZN",
+    "META",
+    "MSFT",
+    "NVDA",
+    "TSLA"
+  ],
+  "selected_hyperparameters": [
+    {
+      "fold": 1,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      }
+    },
+    {
+      "fold": 1,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      }
+    },
+    {
+      "fold": 1,
+      "information_set": "B1a",
+      "model_role": "gamma_glm_confirmatory",
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      }
+    },
+    {
+      "fold": 1,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      }
+    },
+    {
+      "fold": 1,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      }
+    },
+    {
+      "fold": 1,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      }
+    },
+    {
+      "fold": 2,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      }
+    },
+    {
+      "fold": 2,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      }
+    },
+    {
+      "fold": 2,
+      "information_set": "B1a",
+      "model_role": "gamma_glm_confirmatory",
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      }
+    },
+    {
+      "fold": 2,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      }
+    },
+    {
+      "fold": 2,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      }
+    },
+    {
+      "fold": 2,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      }
+    },
+    {
+      "fold": 3,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      }
+    },
+    {
+      "fold": 3,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      }
+    },
+    {
+      "fold": 3,
+      "information_set": "B1a",
+      "model_role": "gamma_glm_confirmatory",
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      }
+    },
+    {
+      "fold": 3,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      }
+    },
+    {
+      "fold": 3,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      }
+    },
+    {
+      "fold": 3,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      }
+    },
+    {
+      "fold": 4,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      }
+    },
+    {
+      "fold": 4,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      }
+    },
+    {
+      "fold": 4,
+      "information_set": "B1a",
+      "model_role": "gamma_glm_confirmatory",
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      }
+    },
+    {
+      "fold": 4,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      }
+    },
+    {
+      "fold": 4,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      }
+    },
+    {
+      "fold": 4,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      }
+    }
+  ],
+  "source_code_hashes": {
+    "scripts/run_phase5_development_evaluation.py": "48a00dad30584e56d0e6af32bf4c21c924befd5f288ceb55115a3510069251bd",
+    "src/mds650/metrics.py": "e80eddb94f1626c21c16468db6a55de004254da157c1ce4dee9b0c65e20d1749",
+    "src/mds650/modeling.py": "e91b7feda2ba1bbe1690301302229493698cbdaa1b710489caf90436313ed4ce",
+    "src/mds650/temporal_validation.py": "56de7393f6a9dbaf61b30aaec096a3b60f5603c03f3bba17ec4cec58bd6501a7"
+  },
+  "status": "FROZEN_AFTER_DEVELOPMENT_BEFORE_HOLDOUT"
+}

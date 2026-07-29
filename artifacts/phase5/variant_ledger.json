@@ -1,0 +1,4819 @@
+{
+  "contrast_results": [
+    {
+      "baseline_mean_qlike": 0.2313823981395778,
+      "ci_high": 0.006896015937825427,
+      "ci_low": -0.00758307830079597,
+      "clusters": 40,
+      "contrast": "delta_b1",
+      "definition": "QLIKE(B0)-QLIKE(B1a)",
+      "estimate": -0.000288269454701238,
+      "expanded_mean_qlike": 0.23167066759427904,
+      "model_role": "gamma_glm_confirmatory",
+      "observations": 15548,
+      "p_value_holm": 0.9501049895010499,
+      "p_value_raw": 0.9501049895010499,
+      "p_value_two_sided": 0.9501049895010499,
+      "positive_direction": "expanded_information_set_better",
+      "repetitions": 10000,
+      "result_sign": "NEGATIVE",
+      "seed": 650
+    },
+    {
+      "baseline_mean_qlike": 0.23167066759427904,
+      "ci_high": 0.024097767094802176,
+      "ci_low": 0.003323425901685497,
+      "clusters": 40,
+      "contrast": "delta_b2",
+      "definition": "QLIKE(B1a)-QLIKE(B2)",
+      "estimate": 0.013117577107306001,
+      "expanded_mean_qlike": 0.21855309048697308,
+      "model_role": "gamma_glm_confirmatory",
+      "observations": 15548,
+      "p_value_holm": 0.011998800119988001,
+      "p_value_raw": 0.0059994000599940004,
+      "p_value_two_sided": 0.0059994000599940004,
+      "positive_direction": "expanded_information_set_better",
+      "repetitions": 10000,
+      "result_sign": "POSITIVE",
+      "seed": 650
+    },
+    {
+      "baseline_mean_qlike": 0.2102566370190068,
+      "ci_high": 0.010346095382518336,
+      "ci_low": 0.0004592406472089364,
+      "clusters": 40,
+      "contrast": "delta_b1",
+      "definition": "QLIKE(B0)-QLIKE(B1a)",
+      "estimate": 0.004830681758071913,
+      "expanded_mean_qlike": 0.2054259552609349,
+      "model_role": "lightgbm_robustness",
+      "observations": 15548,
+      "p_value_holm": null,
+      "p_value_raw": 0.024997500249975,
+      "p_value_two_sided": 0.024997500249975,
+      "positive_direction": "expanded_information_set_better",
+      "repetitions": 10000,
+      "result_sign": "POSITIVE",
+      "seed": 650
+    },
+    {
+      "baseline_mean_qlike": 0.2054259552609349,
+      "ci_high": 0.006493160278113106,
+      "ci_low": -0.001882082894427481,
+      "clusters": 40,
+      "contrast": "delta_b2",
+      "definition": "QLIKE(B1a)-QLIKE(B2)",
+      "estimate": 0.0021911878513316404,
+      "expanded_mean_qlike": 0.20323476740960328,
+      "model_role": "lightgbm_robustness",
+      "observations": 15548,
+      "p_value_holm": null,
+      "p_value_raw": 0.3213678632136786,
+      "p_value_two_sided": 0.3213678632136786,
+      "positive_direction": "expanded_information_set_better",
+      "repetitions": 10000,
+      "result_sign": "POSITIVE",
+      "seed": 650
+    }
+  ],
+  "development_variants": [
+    {
+      "information_set": "B0",
+      "mae": 4.284482862854578e-05,
+      "model_role": "gamma_glm_confirmatory",
+      "observations": 15548,
+      "qlike": 0.2313823981395778,
+      "rmse": 0.0029691544486998163
+    },
+    {
+      "information_set": "B1a",
+      "mae": 0.00011531023226947905,
+      "model_role": "gamma_glm_confirmatory",
+      "observations": 15548,
+      "qlike": 0.23167066759427904,
+      "rmse": 0.01234456569281729
+    },
+    {
+      "information_set": "B2",
+      "mae": 1.3058199698502246e-05,
+      "model_role": "gamma_glm_confirmatory",
+      "observations": 15548,
+      "qlike": 0.21855309048697308,
+      "rmse": 0.0002164183411709067
+    },
+    {
+      "information_set": "B0",
+      "mae": 7.625784069681763e-06,
+      "model_role": "lightgbm_robustness",
+      "observations": 15548,
+      "qlike": 0.2102566370190068,
+      "rmse": 1.8637237687316516e-05
+    },
+    {
+      "information_set": "B1a",
+      "mae": 7.675010366548464e-06,
+      "model_role": "lightgbm_robustness",
+      "observations": 15548,
+      "qlike": 0.2054259552609349,
+      "rmse": 1.8593677108383034e-05
+    },
+    {
+      "information_set": "B2",
+      "mae": 7.619089852586987e-06,
+      "model_role": "lightgbm_robustness",
+      "observations": 15548,
+      "qlike": 0.20323476740960328,
+      "rmse": 1.8504435509210046e-05
+    }
+  ],
+  "holdout_reads": 0,
+  "manifest_sha256": "715792b2f83ff1e375b22d5794466245bfdee3dd91a14d0e0bb73710599b04c2",
+  "outcome_reporting": "RETAIN_ALL_POSITIVE_NEGATIVE_AND_NULL_RESULTS",
+  "schema_version": "phase5-variant-ledger-1.0",
+  "timing_variants": [
+    {
+      "role": "PRIMARY",
+      "status": "RUN",
+      "variant_id": "FMP_DELAY_1_MINUTE"
+    },
+    {
+      "role": "T193_STABILITY",
+      "status": "NOT_RUN_PREREGISTERED",
+      "variant_id": "FMP_DELAY_2_MINUTES"
+    },
+    {
+      "role": "PRIMARY",
+      "status": "RUN",
+      "variant_id": "B2_DELAY_60_SECONDS"
+    },
+    {
+      "role": "T193_STABILITY",
+      "status": "NOT_RUN_PREREGISTERED",
+      "variant_id": "B2_DELAY_120_SECONDS"
+    },
+    {
+      "role": "T193_STABILITY",
+      "status": "NOT_RUN_PREREGISTERED",
+      "variant_id": "B2_DELAY_300_SECONDS"
+    }
+  ],
+  "tuning_variants": [
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.20001704108543805,
+      "variant_id": "7535d59231516967ebd5"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "alpha": 0.01,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.17190452737875983,
+      "variant_id": "34075c42408665c1c020"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.1693203009648536,
+      "variant_id": "7420da06e8947a9f9d7b"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "alpha": 1.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.199455656650408,
+      "variant_id": "2e641586a43706c8a39e"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13812405043364603,
+      "variant_id": "057312b38100a8399583"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.1373788184196425,
+      "variant_id": "2f14e94442d57939c13d"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.14056959209887027,
+      "variant_id": "effbac8c76830837d949"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.14076424693201348,
+      "variant_id": "42a2a687c1e2060d42f1"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13860869109368215,
+      "variant_id": "f600078b7320e7e6922b"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13916304360080234,
+      "variant_id": "0d89c5c551dd1fb52b15"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13995600328598326,
+      "variant_id": "294106efab7fa22bf25c"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.14585616114864056,
+      "variant_id": "904f2e815ec36610fc6a"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13964775510256094,
+      "variant_id": "21750a43d5f9893f1143"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.139417178930781,
+      "variant_id": "91dea682bf2f33a4aa13"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.14271766249736115,
+      "variant_id": "8e4f0c1415028be51797"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.14250667147036752,
+      "variant_id": "48f0759370d8f945af1c"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13967710165139435,
+      "variant_id": "9295ca383b570fb641c9"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.14283728059895157,
+      "variant_id": "e7cc44b15fa7a539786d"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.14347406445314573,
+      "variant_id": "713229df7f1364b28067"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.14915833327293088,
+      "variant_id": "f3734f522e4d3657bfe1"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B1a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1984279146014275,
+      "variant_id": "3c5dc98555c82c58e7ac"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B1a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "alpha": 0.01,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.16561848396756204,
+      "variant_id": "de75c707162d36893587"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B1a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.15816713028264648,
+      "variant_id": "bc9f7251e368f56ea19a"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B1a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "alpha": 1.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.17793155444224548,
+      "variant_id": "9d8cebd530662d0f2c17"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13752506879510812,
+      "variant_id": "748660fe8827dce7ae69"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13683627488843259,
+      "variant_id": "99fd917c56f3a2a00bac"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13762886221814744,
+      "variant_id": "15c87925e0e5b7333589"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.13671600743986065,
+      "variant_id": "457b3cfcf79eb567f535"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13828772814264828,
+      "variant_id": "9f5504c82f61c2aa3a25"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13733286987690585,
+      "variant_id": "19329be2ff76a729df86"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13688391476509323,
+      "variant_id": "b174aa383f99c883e1aa"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1408575729718795,
+      "variant_id": "83201355f9bca6647362"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13821698832185642,
+      "variant_id": "ce1801a4bb470ba3ede6"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13723943315224732,
+      "variant_id": "1e08a447c5148abc55c8"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13935241050021224,
+      "variant_id": "cf0ce127351c1e72b6bd"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.14037252446409734,
+      "variant_id": "7d0d1a5ba8521fce6a7e"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1374560511388835,
+      "variant_id": "7a61f769a776fd5addb4"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.139098548862479,
+      "variant_id": "1bd7a8a17a52ed9fa271"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13979313003822721,
+      "variant_id": "997838d7c00faca0bcb2"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.14556778536530335,
+      "variant_id": "63086cc4ba20b68450a5"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.18606911689147507,
+      "variant_id": "919bd3e91fa49fcce865"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "alpha": 0.01,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15982076448919552,
+      "variant_id": "5063a8b02ca7e8271a5a"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.15341123041200583,
+      "variant_id": "c377b77cde21e91beefa"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "alpha": 1.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1583688391219328,
+      "variant_id": "4b897a46d79947a94509"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1337206655346764,
+      "variant_id": "b2766636176dba1f214f"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.1333685478928745,
+      "variant_id": "d883e45b4b5d6a45bf5e"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13449484167752981,
+      "variant_id": "c347deef892916b02cfe"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.134708766604203,
+      "variant_id": "3d364b4e444b7403d7bc"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1355121581928278,
+      "variant_id": "7b3fd44711876de3f371"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1344268656352644,
+      "variant_id": "73e94b4b6ea632c2ff5a"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13581788677501888,
+      "variant_id": "5d2bebc0c0c95e80b94c"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13660927848740412,
+      "variant_id": "705d7d566c32ef3a1c73"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13464007304769807,
+      "variant_id": "da362766430384aabd3f"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13454453812013192,
+      "variant_id": "ed3ddb659feb027b398b"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1363887508894782,
+      "variant_id": "ed60ba74c0bcc751bfda"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13696476243387964,
+      "variant_id": "89994b258f69ac37a427"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13441431013753477,
+      "variant_id": "53e2a4b796aebae4bc79"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1348892203660396,
+      "variant_id": "e09499f93d7a5f6b22f1"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.135458570938997,
+      "variant_id": "88c7d9001aa9d5f0d61f"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.14026589076972387,
+      "variant_id": "b199032d803e5f0977fb"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.15339620259983125,
+      "variant_id": "3340a76c2b7438832961"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "alpha": 0.01,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1543456430927806,
+      "variant_id": "4780c7c409f80764f79c"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15930156532861076,
+      "variant_id": "070e5b549dee7781c7be"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "alpha": 1.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1878717829562247,
+      "variant_id": "345e6aa2aa4a015bc051"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15338206248568537,
+      "variant_id": "5bdcafe03ca4229e93f5"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15361792293442564,
+      "variant_id": "841a643fb3785162c53a"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15264887088123172,
+      "variant_id": "7907320fc14894113669"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15195361189942536,
+      "variant_id": "d89687b8023511f385c9"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1541422462020291,
+      "variant_id": "539b59f77e07e0ded129"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15414488241481317,
+      "variant_id": "5bb598b2f103548766e9"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15363640423818956,
+      "variant_id": "b978dd4a7fdcb356d5f6"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15343397390973362,
+      "variant_id": "2c317e6dd42643959e03"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15281743601629508,
+      "variant_id": "00bb7425310557e1d563"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1525697222011859,
+      "variant_id": "3fddbfc45f19da7001d9"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15234424751965928,
+      "variant_id": "5ade5c2509b7128ad205"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.15165973640717006,
+      "variant_id": "cb40ab5618d8daea768f"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1546743945600614,
+      "variant_id": "eafdc3aad6e41b8bac13"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15320015213060403,
+      "variant_id": "106a5514b9b675ba92f6"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15321996417586753,
+      "variant_id": "8cb586945234f148c07f"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15489833852095924,
+      "variant_id": "eb09100879ec153f7d8d"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B1a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1531191240638658,
+      "variant_id": "bfeec28b750a7c3be416"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B1a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "alpha": 0.01,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15311389340206344,
+      "variant_id": "57973c7e0bcddd3fe117"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B1a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.15295000094948408,
+      "variant_id": "239e6cbf130bde3f6890"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B1a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "alpha": 1.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.17062668735105618,
+      "variant_id": "2fc8c34b46f973d5ca00"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1575978895348321,
+      "variant_id": "99c2cdbde344c81db30d"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15692300905235612,
+      "variant_id": "a608efd52662b31186d8"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15588549894938436,
+      "variant_id": "13c9d32f0bcf5f79841a"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15511568451874783,
+      "variant_id": "7b1228d8361236b452ce"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1562269578012067,
+      "variant_id": "4ebb45ed12c569fe8508"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15422514418810412,
+      "variant_id": "c0c08b08b8d7624a7711"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1559150856127626,
+      "variant_id": "13d9076fc512864f8c00"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.15346329074078927,
+      "variant_id": "a3bbdc688b81cf430c25"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15599681923745995,
+      "variant_id": "a2ec2ea30e4c9bc5e532"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15491489461580935,
+      "variant_id": "ff4a4bd2ff5199004c2e"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15666925437669305,
+      "variant_id": "680c006e609b7991a44c"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1546833370117715,
+      "variant_id": "54f779b820e4c6861323"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15553240950563602,
+      "variant_id": "27da96b2d67c3d40d03e"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15350764217151563,
+      "variant_id": "42356c5317e407434d8d"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15530048805883323,
+      "variant_id": "bc0b398eecf2495db3e2"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15601942096963053,
+      "variant_id": "8f976334d132b69b2ef5"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.14605100918084257,
+      "variant_id": "610c8511c77ff0a654c4"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "alpha": 0.01,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1476889982335535,
+      "variant_id": "1d0ebbc6528707d9a0f5"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.14864230848638305,
+      "variant_id": "7929dde3df53f301455f"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "alpha": 1.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.16011335605515123,
+      "variant_id": "1aa13c81f36e69f3d93b"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15384272252851663,
+      "variant_id": "297bc0b4940aa3537def"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15394499227689293,
+      "variant_id": "c1e5008810e2e289eb4b"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15286568555643054,
+      "variant_id": "166483f97e243d6d0740"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15269418364331896,
+      "variant_id": "e29dff69c39a397c03fd"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15360547174656616,
+      "variant_id": "c1b914848c1d5d0249ec"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1536155219694155,
+      "variant_id": "722685c51bd1c50122dc"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15310006683650776,
+      "variant_id": "43d68a8b37b2a36b1e8d"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15573168285038252,
+      "variant_id": "bb4928858085fd912ef2"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15338904404615436,
+      "variant_id": "6deec34adf5a7e9e91e3"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15338915540048464,
+      "variant_id": "c18004fa653c71e6006c"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15506986694915148,
+      "variant_id": "089e685903407dd73400"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15456986445460683,
+      "variant_id": "6a3892411af3abd5ffe5"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1534278993824436,
+      "variant_id": "4b894433c79a59aeaab4"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15407298288224827,
+      "variant_id": "46e614906902f43049a0"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.15207640213795248,
+      "variant_id": "4d5e944de01957efbecf"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15701596807184928,
+      "variant_id": "693c7d670e038339d527"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.4031189271134397,
+      "variant_id": "c2cc99a61eb491df2dac"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "alpha": 0.01,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.402515099675498,
+      "variant_id": "c4c16aa5462fb3118918"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.4003240293686497,
+      "variant_id": "36e2568e8a56f06d6c02"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "alpha": 1.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.4185321290262916,
+      "variant_id": "e98e4fc7a2540c62f636"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.3516700151654941,
+      "variant_id": "83798fa3e69b925eb1c1"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3521477488416577,
+      "variant_id": "b3c3eeab15688d765802"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3614405810673122,
+      "variant_id": "d67910c0e0dc425f4080"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3667405340704177,
+      "variant_id": "1c0855c79d5749c0fa0c"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3522049965463197,
+      "variant_id": "827019cde8cffe427923"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.36741450511718027,
+      "variant_id": "8f9e46e49926e801e78f"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3616331096614474,
+      "variant_id": "a4dd1218543c307b7665"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3937620746109562,
+      "variant_id": "78fb2cc6d56156147dd2"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.35683730802797653,
+      "variant_id": "b0594e424136e3bc1a29"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.359379552493553,
+      "variant_id": "e2795dee625b74b87d10"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.37714370056566854,
+      "variant_id": "3fed68665c80cf1da6a3"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3888209514823268,
+      "variant_id": "85033269c58e77992506"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.36116582092164196,
+      "variant_id": "35839853047894eb9c3b"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.38288200583253956,
+      "variant_id": "19986d1c87806b4d7f7f"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.37587472177392484,
+      "variant_id": "6697f0dafa1d4e4a0557"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.40588819605861703,
+      "variant_id": "3c4dce6c4b5e5585061a"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B1a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.41468417658641643,
+      "variant_id": "4d274c463499dde23e50"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B1a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "alpha": 0.01,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.41855555114308796,
+      "variant_id": "6955e064f4353aab9e95"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B1a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.42069623734401895,
+      "variant_id": "b6dde187c5cae98add77"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B1a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "alpha": 1.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.4223093875982198,
+      "variant_id": "02ad9f9a64faaf574d8c"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.35800923384295436,
+      "variant_id": "0581df7789f67b47e5b1"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.35919136313258276,
+      "variant_id": "70f4c8c5fae38a7b3014"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3697889797732767,
+      "variant_id": "fb20c2f9bd28c75e20e3"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.36993004734519824,
+      "variant_id": "cca164a87bed3c614f9e"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3581137979195395,
+      "variant_id": "1c749e8acd92077d355f"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3629353804285775,
+      "variant_id": "5c0492be894734727a22"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3649476485257921,
+      "variant_id": "4c8059a02e1f475834ed"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.37821540738170806,
+      "variant_id": "34bf9d0219f0acbfbdca"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3631762221524932,
+      "variant_id": "1151a30694a6bb374970"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3631544333361412,
+      "variant_id": "6e56171262a69652bdf3"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.384016082509884,
+      "variant_id": "ba5035b11096762bd9d7"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3843694286801581,
+      "variant_id": "f313a3ee065c021347c1"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.36305789969346397,
+      "variant_id": "3dcc6bf67c130df8b8b2"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.36990067816157707,
+      "variant_id": "af6fc26225ff0ea1e5c6"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3813080993744388,
+      "variant_id": "30e581f306b437bbe892"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3970506863245384,
+      "variant_id": "680f7491e3574586bbcb"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.3784241274210936,
+      "variant_id": "2fa9bf03213438e3abcc"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "alpha": 0.01,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.38256493008732334,
+      "variant_id": "e6069554d8338fc38740"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3866034394005922,
+      "variant_id": "5625ed7827ab2792fa37"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "alpha": 1.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.39312183127861783,
+      "variant_id": "d552263239ac8c0afb72"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.35491169267259426,
+      "variant_id": "c7c7570b71b07db90bc7"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3554667069837779,
+      "variant_id": "51c30ddebaf8e0c4b8f6"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3583685393742912,
+      "variant_id": "a7307f1ed25947caf307"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.36017216351907694,
+      "variant_id": "c89463ee3f795021003f"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.3476691631628186,
+      "variant_id": "5a0e2817053771d57d5f"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3540164535070337,
+      "variant_id": "b4f90a02e2ffb40ef40f"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.35015702865128684,
+      "variant_id": "0ded68905b25272d7851"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3699731084131169,
+      "variant_id": "082301aeee4f7352d27c"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3548786175970815,
+      "variant_id": "a4966cd046ef78da3682"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3547990182811255,
+      "variant_id": "f0f06d0fc14f224445a4"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3685609643129783,
+      "variant_id": "88e10bac2983fc8feb96"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.37060899559600646,
+      "variant_id": "bd9f8f6e8ee137e7eaaf"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3506529895510965,
+      "variant_id": "91233f331bf80941c446"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.35559118613131585,
+      "variant_id": "f73c1f10e47eb60f1aac"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.36387248892731,
+      "variant_id": "e3887021baa822c36677"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.3785233736234113,
+      "variant_id": "cef30bcdeff511489bb5"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.17400062622711507,
+      "variant_id": "8acc2db657d13fd0331f"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "alpha": 0.01,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1755818581929151,
+      "variant_id": "4d3e75e801c4dc7b8986"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.16990003152154137,
+      "variant_id": "b3ac79ae36960dbdad08"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "alpha": 1.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1793909110707676,
+      "variant_id": "01b35f08445214845a81"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13302891027857397,
+      "variant_id": "9eb436c563f1ad99d361"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13272056892466713,
+      "variant_id": "0a7a492b6c67b5fba0cc"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1350648580932605,
+      "variant_id": "d12639f68502c75eb4bc"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1346251653321488,
+      "variant_id": "e9c0d264f1ed08ce2c5c"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.13158614552193956,
+      "variant_id": "28c5d713b41b02336df1"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13243038091671236,
+      "variant_id": "fed0af6238cf54c427ba"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1349918819409395,
+      "variant_id": "510dbe8cbb63398121c1"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1392075695693921,
+      "variant_id": "42ff577d0b3b142bfb77"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13324701561374303,
+      "variant_id": "8d8d6e20159b62bc838a"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13345209583962206,
+      "variant_id": "cf45ef5b4110f2e505db"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13727634138026387,
+      "variant_id": "94b21c8c68d9e4bcb3b0"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13724165793639104,
+      "variant_id": "f825a84821a2f6b6e829"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13332266724940778,
+      "variant_id": "5c6da54eeca5f95dc83e"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13557025464146266,
+      "variant_id": "2832cc3c90fd7b8613e5"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1404127655549883,
+      "variant_id": "4cb189c9b6ec4fe83f5f"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B0",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1462953250900286,
+      "variant_id": "1cf2d77a9522f258250e"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B1a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.17210441486326924,
+      "variant_id": "e595ed9a576718010a56"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B1a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "alpha": 0.01,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.16875033454374186,
+      "variant_id": "1c06f4a7510dfe2c041d"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B1a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.15929555039751506,
+      "variant_id": "f963da0d7a8e76cc55b0"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B1a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "alpha": 1.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.16581368221223675,
+      "variant_id": "5195416081b9806458e7"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.13168848570851424,
+      "variant_id": "7a1eaa2833780fddfc03"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13263203016922284,
+      "variant_id": "37e4a79d265f00e04e2b"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13692849291706774,
+      "variant_id": "98a1e7a64518bd9e5f65"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13768103929603234,
+      "variant_id": "cf07583042b46c29c305"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13179280269817023,
+      "variant_id": "0789caa5cc9e45d0c1ab"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1330870589107163,
+      "variant_id": "4756c769b963def2cd60"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13806611391745718,
+      "variant_id": "9efc8421ab283bccd535"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.14236826322739873,
+      "variant_id": "9f41e5dbedf34a97847b"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1352924207879103,
+      "variant_id": "e42942e3ffb4eb230051"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13523494442176717,
+      "variant_id": "97515a775ca03d0edaaf"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1429818779657356,
+      "variant_id": "553a12870a83499018f3"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.14399836871399962,
+      "variant_id": "06f615ce6dba00a79612"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13494366563248852,
+      "variant_id": "ab0a0374faa991318135"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13963211298063982,
+      "variant_id": "406c05653cd0ef414ae0"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.14450515898715022,
+      "variant_id": "664657e7ae1008950018"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B1a",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15467036209773288,
+      "variant_id": "f952c4fd4b1a10f98a01"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.16577839777243328,
+      "variant_id": "ea31dcfa353816169ea0"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "alpha": 0.01,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.16294589633667905,
+      "variant_id": "7c99b291cd75dcd7cb70"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.15518385075991825,
+      "variant_id": "94b85ba08eb88a7a8a53"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "alpha": 1.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15767572894667814,
+      "variant_id": "8911be48952b4ef75aed"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.13597821207666394,
+      "variant_id": "78142a86219123e0fa11"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13641405363864154,
+      "variant_id": "8d8672a292908437ee86"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.139359116466954,
+      "variant_id": "5b3e0b4ae3143fe84971"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13981454380534128,
+      "variant_id": "0cecdb32c41024a37570"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13628275036413995,
+      "variant_id": "bfbf94bd152a8a11a452"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13868467550136204,
+      "variant_id": "1ed12c65f9b08ef3a56b"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.14049053996411903,
+      "variant_id": "c6e8acd01bd8f89edc76"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.03,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1466603694858089,
+      "variant_id": "87a37b28b9a3b18998fa"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13793343691168386,
+      "variant_id": "40e46bffdb924b68801d"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1383623654362406,
+      "variant_id": "87779309be596cf29d92"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.14293357252439193,
+      "variant_id": "0ba0dda87baee3a74f1e"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.14392456146361196,
+      "variant_id": "4ecc6ba5ae5d6a09e451"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13972546571087527,
+      "variant_id": "04613620c8d74874e803"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.14301088542734994,
+      "variant_id": "16103f24c81f3787fc47"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1443085632179846,
+      "variant_id": "626df4ce0cc66b86f6da"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B2",
+      "model_role": "lightgbm_robustness",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15129260698244243,
+      "variant_id": "ced92ac773eed83ce413"
+    }
+  ]
+}

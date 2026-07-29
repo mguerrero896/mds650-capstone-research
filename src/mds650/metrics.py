@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from collections.abc import Mapping, Sequence
 
 import numpy as np
@@ -133,23 +134,25 @@ def paired_day_bootstrap(
     values = np.asarray(frame[value_column].to_numpy(), dtype=np.float64)
     if not np.isfinite(values).all():
         raise ValueError("BOOTSTRAP_NONFINITE_DIFFERENCE")
-    days = (
-        frame.group_by(date_column)
-        .agg(
-            pl.col(value_column).sum().alias("_sum"),
-            pl.len().alias("_count"),
-        )
-        .sort(date_column)
-    )
-    if days.height < 2:
+    clustered: dict[str, list[float]] = {}
+    for day, value in frame.select(date_column, value_column).iter_rows():
+        clustered.setdefault(str(day), []).append(float(value))
+    days = sorted(clustered)
+    if len(days) < 2:
         raise ValueError("BOOTSTRAP_REQUIRES_TWO_DAYS")
-    day_sums = np.asarray(days["_sum"].to_numpy(), dtype=np.float64)
-    day_counts = np.asarray(days["_count"].to_numpy(), dtype=np.float64)
+    day_sums = np.asarray(
+        [math.fsum(sorted(clustered[day])) for day in days],
+        dtype=np.float64,
+    )
+    day_counts = np.asarray(
+        [len(clustered[day]) for day in days],
+        dtype=np.float64,
+    )
     generator = np.random.default_rng(seed)
     samples = generator.integers(
         0,
-        days.height,
-        size=(repetitions, days.height),
+        len(days),
+        size=(repetitions, len(days)),
     )
     estimates = day_sums[samples].sum(axis=1) / day_counts[samples].sum(axis=1)
     lower, upper = np.quantile(estimates, [0.025, 0.975])
@@ -160,14 +163,14 @@ def paired_day_bootstrap(
         float(np.count_nonzero(estimates >= 0)) + 1.0
     ) / (repetitions + 1.0)
     return {
-        "estimate": float(values.mean()),
+        "estimate": math.fsum(day_sums) / math.fsum(day_counts),
         "ci_low": float(lower),
         "ci_high": float(upper),
         "p_value_two_sided": min(
             1.0,
             2.0 * min(probability_nonpositive, probability_nonnegative),
         ),
-        "clusters": days.height,
+        "clusters": len(days),
         "observations": frame.height,
         "repetitions": repetitions,
         "seed": seed,
