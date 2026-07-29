@@ -1,0 +1,56 @@
+{
+  "categories": [
+    {
+      "bundle_sha256": "69359a9ec0afb677b1ff3c042e9a126dd58be5d6c723ac29a1d6520725477653",
+      "bytes": 5060321380,
+      "category": "calibration_option_events",
+      "file_count": 160,
+      "index": "manifests/migration/calibration_option_events.json",
+      "index_file_sha256": "5700943c92cc2bfa5cc4b0e17b8f213558fd78cba5fe83498a7a9b0871a951e1"
+    },
+    {
+      "bundle_sha256": "470a82f7257a056998459edabc839359e628ea5298af07fb8c32be644e377ae9",
+      "bytes": 1280068594,
+      "category": "pilot_option_events",
+      "file_count": 5,
+      "index": "manifests/migration/pilot_option_events.json",
+      "index_file_sha256": "019b6f1000d40d2db387662e19269b8e91316b03a2c1d64f3056a9873e202f21"
+    },
+    {
+      "bundle_sha256": "5014610feb41d6070195ac02b29866ad13aeadcc23ea2293c18868b4c3a3e57f",
+      "bytes": 2653467932,
+      "category": "calibration_massive_cache",
+      "file_count": 1072,
+      "index": "manifests/migration/calibration_massive_cache.json",
+      "index_file_sha256": "bd6d4693663cb969e1c87949e7a93bbc95edfdec812afae3a26de3e4c9247f5a"
+    },
+    {
+      "bundle_sha256": "d55200f924ec92774a8e21c02798294e08cd91a083b638e8b8d2d77cc867dba3",
+      "bytes": 1554456504,
+      "category": "pilot_massive_cache",
+      "file_count": 519,
+      "index": "manifests/migration/pilot_massive_cache.json",
+      "index_file_sha256": "12a20b431db237b02c4a6d7e91c5b05cd59d6b25d2e23fb46050addb1b0c100e"
+    },
+    {
+      "bundle_sha256": "3e74daa77fe8ecf1bbd7a3deae333c3aa8fc812668af9aba1fa1c6811ede4f1c",
+      "bytes": 1144591,
+      "category": "retained_fmp",
+      "file_count": 2,
+      "index": "manifests/migration/retained_fmp.json",
+      "index_file_sha256": "7f5bcb9cec797aee4243c5a96307824e131f8e2d37f42099415ffe3327ec3f40"
+    }
+  ],
+  "data_root": "MDS650_DATA_ROOT",
+  "files_deleted": 0,
+  "manifest_sha256": "66e87003a073ecd2a09e54127255b20aecc60c2a51be46923edf050e1f773f10",
+  "minimum_free_bytes": 85899345920,
+  "pending_session_count": 55,
+  "personal_paths_emitted": false,
+  "projected_pending_peak_bytes": 161061273600,
+  "reused_session_count": 25,
+  "schema_version": "phase5-storage-migration-1.0",
+  "secret_values_emitted": false,
+  "source_preserved": true,
+  "status": "PASS"
+}

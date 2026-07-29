@@ -1,0 +1,267 @@
+{
+  "all_destination_hashes_match": true,
+  "all_source_hashes_match": true,
+  "entries": [
+    {
+      "bytes": 1740968640,
+      "destination": "raw/full_tape/2026-06-11/full_tape_2026-06-11.zip",
+      "destination_verified": true,
+      "session_date": "2026-06-11",
+      "sha256": "e2bf961ec15027f2e1aba8dd8bdf433b51f88e7056a5464ea13d6cbf0976f97d",
+      "source": "artifacts/calibration_20d/raw/full_tape/2026-06-11/full_tape_2026-06-11.zip",
+      "source_manifest": "artifacts/calibration_20d/download_manifest.json"
+    },
+    {
+      "bytes": 1730548455,
+      "destination": "raw/full_tape/2026-06-12/full_tape_2026-06-12.zip",
+      "destination_verified": true,
+      "session_date": "2026-06-12",
+      "sha256": "81bfe5620c87c0475ddef9f15c03b7e6d4ed79f36e612ec4bb136a19ac2f2103",
+      "source": "artifacts/calibration_20d/raw/full_tape/2026-06-12/full_tape_2026-06-12.zip",
+      "source_manifest": "artifacts/calibration_20d/download_manifest.json"
+    },
+    {
+      "bytes": 1569073138,
+      "destination": "raw/full_tape/2026-06-15/full_tape_2026-06-15.zip",
+      "destination_verified": true,
+      "session_date": "2026-06-15",
+      "sha256": "8a22c54415c79a17354c881aeb21f8c3357772ebc647fa928ed39fd40e2f5534",
+      "source": "artifacts/calibration_20d/raw/full_tape/2026-06-15/full_tape_2026-06-15.zip",
+      "source_manifest": "artifacts/calibration_20d/download_manifest.json"
+    },
+    {
+      "bytes": 1481208123,
+      "destination": "raw/full_tape/2026-06-16/full_tape_2026-06-16.zip",
+      "destination_verified": true,
+      "session_date": "2026-06-16",
+      "sha256": "2dc86846285065546f111c618e4abbcec6353c14b51c130bcad13d8cf1ed6a7a",
+      "source": "artifacts/calibration_20d/raw/full_tape/2026-06-16/full_tape_2026-06-16.zip",
+      "source_manifest": "artifacts/calibration_20d/download_manifest.json"
+    },
+    {
+      "bytes": 1647688604,
+      "destination": "raw/full_tape/2026-06-17/full_tape_2026-06-17.zip",
+      "destination_verified": true,
+      "session_date": "2026-06-17",
+      "sha256": "30f582ff5c1b4d2e6710e4d5af2bb20d9989b7fee78b47b1b55173264ca1c5f1",
+      "source": "artifacts/calibration_20d/raw/full_tape/2026-06-17/full_tape_2026-06-17.zip",
+      "source_manifest": "artifacts/calibration_20d/download_manifest.json"
+    },
+    {
+      "bytes": 1712283291,
+      "destination": "raw/full_tape/2026-06-18/full_tape_2026-06-18.zip",
+      "destination_verified": true,
+      "session_date": "2026-06-18",
+      "sha256": "68a150930f17e76b08b775bb55c17cc4421669b779e224f40af02fd187e2103a",
+      "source": "artifacts/calibration_20d/raw/full_tape/2026-06-18/full_tape_2026-06-18.zip",
+      "source_manifest": "artifacts/calibration_20d/download_manifest.json"
+    },
+    {
+      "bytes": 1526896277,
+      "destination": "raw/full_tape/2026-06-22/full_tape_2026-06-22.zip",
+      "destination_verified": true,
+      "session_date": "2026-06-22",
+      "sha256": "1151a53259fae34c071af088467a64c19c9475f1aff8e971f506512457132824",
+      "source": "artifacts/calibration_20d/raw/full_tape/2026-06-22/full_tape_2026-06-22.zip",
+      "source_manifest": "artifacts/calibration_20d/download_manifest.json"
+    },
+    {
+      "bytes": 1451536363,
+      "destination": "raw/full_tape/2026-06-23/full_tape_2026-06-23.zip",
+      "destination_verified": true,
+      "session_date": "2026-06-23",
+      "sha256": "f521c43dc086f6dd3d03aa5942fe8c40ba224800ab48c747ba5744cdf458bdde",
+      "source": "artifacts/calibration_20d/raw/full_tape/2026-06-23/full_tape_2026-06-23.zip",
+      "source_manifest": "artifacts/calibration_20d/download_manifest.json"
+    },
+    {
+      "bytes": 1554960413,
+      "destination": "raw/full_tape/2026-06-24/full_tape_2026-06-24.zip",
+      "destination_verified": true,
+      "session_date": "2026-06-24",
+      "sha256": "b1162aa100390e021be604114f971b171b95adf8707567b107505d2196eac0bf",
+      "source": "artifacts/calibration_20d/raw/full_tape/2026-06-24/full_tape_2026-06-24.zip",
+      "source_manifest": "artifacts/calibration_20d/download_manifest.json"
+    },
+    {
+      "bytes": 1586346612,
+      "destination": "raw/full_tape/2026-06-25/full_tape_2026-06-25.zip",
+      "destination_verified": true,
+      "session_date": "2026-06-25",
+      "sha256": "50a20d7d55d84a19c3863249582cdb8b631b62f62148c2e0284c6050510532b2",
+      "source": "artifacts/calibration_20d/raw/full_tape/2026-06-25/full_tape_2026-06-25.zip",
+      "source_manifest": "artifacts/calibration_20d/download_manifest.json"
+    },
+    {
+      "bytes": 1634487083,
+      "destination": "raw/full_tape/2026-06-26/full_tape_2026-06-26.zip",
+      "destination_verified": true,
+      "session_date": "2026-06-26",
+      "sha256": "36513d0b830c34474f75128b37e0977e37d33228e82982ba32e150b2a5966d28",
+      "source": "artifacts/calibration_20d/raw/full_tape/2026-06-26/full_tape_2026-06-26.zip",
+      "source_manifest": "artifacts/calibration_20d/download_manifest.json"
+    },
+    {
+      "bytes": 1543861067,
+      "destination": "raw/full_tape/2026-06-29/full_tape_2026-06-29.zip",
+      "destination_verified": true,
+      "session_date": "2026-06-29",
+      "sha256": "0c36810c6b18f7bdb907aac01b5ad208d05db94f3341dc2c92810eb4666df18e",
+      "source": "artifacts/calibration_20d/raw/full_tape/2026-06-29/full_tape_2026-06-29.zip",
+      "source_manifest": "artifacts/calibration_20d/download_manifest.json"
+    },
+    {
+      "bytes": 1363768963,
+      "destination": "raw/full_tape/2026-06-30/full_tape_2026-06-30.zip",
+      "destination_verified": true,
+      "session_date": "2026-06-30",
+      "sha256": "c0bee702066b595c4701bf96d26e139ae6e31df7eecbcefbaa8df9ede11909e3",
+      "source": "artifacts/calibration_20d/raw/full_tape/2026-06-30/full_tape_2026-06-30.zip",
+      "source_manifest": "artifacts/calibration_20d/download_manifest.json"
+    },
+    {
+      "bytes": 1536831767,
+      "destination": "raw/full_tape/2026-07-01/full_tape_2026-07-01.zip",
+      "destination_verified": true,
+      "session_date": "2026-07-01",
+      "sha256": "75de5d9fbe69dff6d8cb75e03f0b38dadb3973a099078c24ff53dd3bffc7e854",
+      "source": "artifacts/calibration_20d/raw/full_tape/2026-07-01/full_tape_2026-07-01.zip",
+      "source_manifest": "artifacts/calibration_20d/download_manifest.json"
+    },
+    {
+      "bytes": 1815998476,
+      "destination": "raw/full_tape/2026-07-02/full_tape_2026-07-02.zip",
+      "destination_verified": true,
+      "session_date": "2026-07-02",
+      "sha256": "927a58567a02edb6440dc718c038ff674d0065b95fc5f0c2e4ecd44be683a1df",
+      "source": "artifacts/calibration_20d/raw/full_tape/2026-07-02/full_tape_2026-07-02.zip",
+      "source_manifest": "artifacts/calibration_20d/download_manifest.json"
+    },
+    {
+      "bytes": 1416382418,
+      "destination": "raw/full_tape/2026-07-06/full_tape_2026-07-06.zip",
+      "destination_verified": true,
+      "session_date": "2026-07-06",
+      "sha256": "0d4b58a2eb3440044f074dd85ef3cf4ba0baae54f8cf6666f4c51cfd7988ff52",
+      "source": "artifacts/calibration_20d/raw/full_tape/2026-07-06/full_tape_2026-07-06.zip",
+      "source_manifest": "artifacts/calibration_20d/download_manifest.json"
+    },
+    {
+      "bytes": 1445209982,
+      "destination": "raw/full_tape/2026-07-07/full_tape_2026-07-07.zip",
+      "destination_verified": true,
+      "session_date": "2026-07-07",
+      "sha256": "99e1acfc45d73b6b7d05f7ce287e103fcdb4e92845cf059f270dc5a839b241d4",
+      "source": "artifacts/calibration_20d/raw/full_tape/2026-07-07/full_tape_2026-07-07.zip",
+      "source_manifest": "artifacts/calibration_20d/download_manifest.json"
+    },
+    {
+      "bytes": 1430803401,
+      "destination": "raw/full_tape/2026-07-08/full_tape_2026-07-08.zip",
+      "destination_verified": true,
+      "session_date": "2026-07-08",
+      "sha256": "5764f14ba032adee946802d71080f8c6acb36c498351734250e2bd5e7c623b1d",
+      "source": "artifacts/calibration_20d/raw/full_tape/2026-07-08/full_tape_2026-07-08.zip",
+      "source_manifest": "artifacts/calibration_20d/download_manifest.json"
+    },
+    {
+      "bytes": 1366321172,
+      "destination": "raw/full_tape/2026-07-09/full_tape_2026-07-09.zip",
+      "destination_verified": true,
+      "session_date": "2026-07-09",
+      "sha256": "35709e8577c2ee02dad8e690771985a9778c81f95d59b65bb454f8b96b24084c",
+      "source": "artifacts/calibration_20d/raw/full_tape/2026-07-09/full_tape_2026-07-09.zip",
+      "source_manifest": "artifacts/calibration_20d/download_manifest.json"
+    },
+    {
+      "bytes": 1446803464,
+      "destination": "raw/full_tape/2026-07-10/full_tape_2026-07-10.zip",
+      "destination_verified": true,
+      "session_date": "2026-07-10",
+      "sha256": "b60acd6c55712a6f84badcfa7b5064add2d59439991c31d22948802d3bcafc6b",
+      "source": "artifacts/calibration_20d/raw/full_tape/2026-07-10/full_tape_2026-07-10.zip",
+      "source_manifest": "artifacts/calibration_20d/download_manifest.json"
+    },
+    {
+      "bytes": 1446379218,
+      "destination": "raw/full_tape/2026-07-13/full_tape_2026-07-13.zip",
+      "destination_verified": true,
+      "session_date": "2026-07-13",
+      "sha256": "b052c0105e8672fa65bcbe2d1f7d178b2419399885d2810dd98f7f17d1082f49",
+      "source": "artifacts/raw/full_tape/2026-07-13/full_tape_2026-07-13.zip",
+      "source_manifest": "artifacts/pilot/pilot_manifest.json"
+    },
+    {
+      "bytes": 1308114924,
+      "destination": "raw/full_tape/2026-07-14/full_tape_2026-07-14.zip",
+      "destination_verified": true,
+      "session_date": "2026-07-14",
+      "sha256": "7fd976599a7fa09438c4ab06b1879a42a4fc82f0d801d7e9e130930185ae4122",
+      "source": "artifacts/raw/full_tape/2026-07-14/full_tape_2026-07-14.zip",
+      "source_manifest": "artifacts/pilot/pilot_manifest.json"
+    },
+    {
+      "bytes": 1553487942,
+      "destination": "raw/full_tape/2026-07-15/full_tape_2026-07-15.zip",
+      "destination_verified": true,
+      "session_date": "2026-07-15",
+      "sha256": "5c89db5cd9cb46c23cf22fffb90171e5cbe0278c79dd2af49dd278e317de5767",
+      "source": "artifacts/raw/full_tape/2026-07-15/full_tape_2026-07-15.zip",
+      "source_manifest": "artifacts/pilot/pilot_manifest.json"
+    },
+    {
+      "bytes": 1538329354,
+      "destination": "raw/full_tape/2026-07-16/full_tape_2026-07-16.zip",
+      "destination_verified": true,
+      "session_date": "2026-07-16",
+      "sha256": "ddf2336e7b94209bc690f2ffb9fb6b7ba06b41925e9558f742bda83568197979",
+      "source": "artifacts/raw/full_tape/2026-07-16/full_tape_2026-07-16.zip",
+      "source_manifest": "artifacts/pilot/pilot_manifest.json"
+    },
+    {
+      "bytes": 1740679927,
+      "destination": "raw/full_tape/2026-07-17/full_tape_2026-07-17.zip",
+      "destination_verified": true,
+      "session_date": "2026-07-17",
+      "sha256": "9996dbd5b49950998f13b25ce53104aef1b672e930a6777021568c40a26f1785",
+      "source": "artifacts/raw/full_tape/2026-07-17/full_tape_2026-07-17.zip",
+      "source_manifest": "artifacts/pilot/pilot_manifest.json"
+    }
+  ],
+  "files_deleted": 0,
+  "manifest_sha256": "a7816539dbfdb1fbcbabc398481790b552117bd57dce6b7e2b0207b3408c9c89",
+  "personal_paths_emitted": false,
+  "schema_version": "phase5-reused-25-sessions-1.0",
+  "secret_values_emitted": false,
+  "session_count": 25,
+  "sessions": [
+    "2026-06-11",
+    "2026-06-12",
+    "2026-06-15",
+    "2026-06-16",
+    "2026-06-17",
+    "2026-06-18",
+    "2026-06-22",
+    "2026-06-23",
+    "2026-06-24",
+    "2026-06-25",
+    "2026-06-26",
+    "2026-06-29",
+    "2026-06-30",
+    "2026-07-01",
+    "2026-07-02",
+    "2026-07-06",
+    "2026-07-07",
+    "2026-07-08",
+    "2026-07-09",
+    "2026-07-10",
+    "2026-07-13",
+    "2026-07-14",
+    "2026-07-15",
+    "2026-07-16",
+    "2026-07-17"
+  ],
+  "source_preserved": true,
+  "status": "PASS",
+  "unique_raw_hashes": true
+}

@@ -326,8 +326,8 @@ explicitly attributed to non-IV B0/B1Q coverage rather than optional IV missingn
 - [x] T165 Implement preregistration freezing in `scripts/freeze_phase5_preregistration.py` and generate `artifacts/phase5/study_sessions_90.json` plus `artifacts/phase5/preregistration.json` before any model or QLIKE call.
 - [x] T166 [P] Add failing D: root, write probe, 80-GB peak floor, holdout-exclusion and resumability tests in `tests/contract/test_phase5_storage.py`.
 - [x] T167 Parameterize the existing streaming downloader and builders with explicit allow-lists and roots in `scripts/download_calibration_20d.py`, `scripts/build_b2_calibration_20d.py` and `scripts/run_b1_calibration_20d.py`.
-- [ ] T168 Implement non-destructive D: preparation and verified-copy manifests in `scripts/prepare_phase5_storage.py`; never delete the retained C: evidence.
-- [ ] T169 Verify and record all 25 reusable input hashes in `artifacts/phase5/reused_25_session_manifest.json`.
+- [x] T168 Implement non-destructive D: preparation and verified-copy manifests in `scripts/prepare_phase5_storage.py`; never delete the retained C: evidence.
+- [x] T169 Verify and record all 25 reusable input hashes in `artifacts/phase5/reused_25_session_manifest.json`.
 
 ## Phase 9: User Story 2 — Eighty-session PIT development panel (Priority: P1)
 
