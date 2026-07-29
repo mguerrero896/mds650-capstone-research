@@ -29,6 +29,7 @@ class B1BuildConfig:
     output_root: Path
     cache_root: Path
     sessions: tuple[str, ...]
+    origins_path: Path | None = None
 
     def __post_init__(self) -> None:
         if not self.sessions or tuple(sorted(set(self.sessions))) != self.sessions:
@@ -147,16 +148,24 @@ def _coverage(frame: pl.DataFrame) -> dict[str, Any]:
     return {"atm_iv_component": frame["atm_iv_available"].mean(), "skew_component": frame["skew_available"].mean(), "term_structure_component": frame["term_structure_available"].mean(), "b1a": frame["b1a_complete"].mean(), "b1b": frame["b1b_complete"].mean(), "b1c": frame["b1c_complete"].mean(), "iv_success_rate": frame["iv_inversion_success_rate"].mean() if n else 0.0}
 
 
-def main(config: B1BuildConfig = DEFAULT_CONFIG) -> None:
-    """Run B1Q over all twenty origins and write coverage/failure artifacts."""
-    config.output_root.mkdir(parents=True, exist_ok=True)
-    origins = pl.read_parquet(config.output_root / "b2_calibration_origins.parquet").select(["origin_id", "asset", "session_date", "forecast_origin_utc", "spot", "session_segment"])
+def _load_origins(config: B1BuildConfig) -> pl.DataFrame:
+    """Load the explicit origin source and enforce its session allow-list."""
+    source = config.origins_path or config.output_root / "b2_calibration_origins.parquet"
+    origins = pl.read_parquet(source).select(["origin_id", "asset", "session_date", "forecast_origin_utc", "spot", "session_segment"])
     observed_sessions = tuple(
         sorted(str(value) for value in origins.get_column("session_date").unique().to_list())
     )
     if observed_sessions != config.sessions:
         raise RuntimeError("B1_ORIGIN_SESSION_ALLOWLIST_MISMATCH")
-    origins = origins.with_columns(pl.col("forecast_origin_utc").dt.timestamp("ns").alias("origin_ns"))
+    return origins.with_columns(
+        pl.col("forecast_origin_utc").dt.timestamp("ns").alias("origin_ns")
+    )
+
+
+def main(config: B1BuildConfig = DEFAULT_CONFIG) -> None:
+    """Run B1Q over all twenty origins and write coverage/failure artifacts."""
+    config.output_root.mkdir(parents=True, exist_ok=True)
+    origins = _load_origins(config)
     fmp_key, massive_key = _secret("FMP_API_KEY"), _secret("MASSIVE_API_KEY")
     rates, dividend_yields = _rates_and_dividends(fmp_key, origins, config)
     contracts = _resolve_contracts(origins, massive_key)

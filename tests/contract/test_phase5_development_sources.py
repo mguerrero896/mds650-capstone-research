@@ -6,10 +6,13 @@ import sys
 from datetime import UTC, date, datetime
 from pathlib import Path
 
+import polars as pl
+
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import build_b2_calibration_20d as b2_builder  # noqa: E402
+import run_b1_calibration_20d as b1_builder  # noqa: E402
 
 
 def test_fmp_source_filters_exact_session_and_records_both_delays() -> None:
@@ -62,3 +65,30 @@ def test_fmp_source_filters_exact_session_and_records_both_delays() -> None:
         32,
         tzinfo=UTC,
     )
+
+
+def test_b1q_reads_origins_from_explicit_fmp_source(tmp_path: Path) -> None:
+    origins_path = tmp_path / "fmp" / "origins.parquet"
+    origins_path.parent.mkdir()
+    pl.DataFrame(
+        {
+            "origin_id": ["AAPL:2026-03-24T13:35:00+00:00"],
+            "asset": ["AAPL"],
+            "session_date": ["2026-03-24"],
+            "forecast_origin_utc": [datetime(2026, 3, 24, 13, 35, tzinfo=UTC)],
+            "spot": [100.0],
+            "session_segment": ["first"],
+        }
+    ).write_parquet(origins_path)
+    config = b1_builder.B1BuildConfig(
+        output_root=tmp_path / "b1q",
+        cache_root=tmp_path / "cache",
+        sessions=("2026-03-24",),
+        origins_path=origins_path,
+    )
+
+    result = b1_builder._load_origins(config)
+
+    assert result.height == 1
+    assert result["origin_id"].to_list() == ["AAPL:2026-03-24T13:35:00+00:00"]
+    assert result["origin_ns"].to_list() == [1774359300000000000]
