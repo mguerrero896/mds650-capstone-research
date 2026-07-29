@@ -1,0 +1,48 @@
+{
+  "schema_version": "phase5-b1q-invalid-variant-1.0",
+  "status": "INVALID_FOR_ACCEPTANCE",
+  "variant_id": "B1Q_EXPIRED_TRUE_WITH_HISTORICAL_AS_OF",
+  "run_commit": "5e4e46889021704ff7b4a153ac70bd894801a9d0",
+  "corrective_commit": "49a037739f467680770a34dec8f64feb73377b83",
+  "preregistration_sha256": "ef77a20a4c0dde602e1daf29a3cbcbc698ccdb2b9acc0ce611cd0b6bc6b5273b",
+  "holdout_reads": 0,
+  "origin_count": 31240,
+  "iv_attempt_rows": 80656,
+  "observed_coverage": {
+    "b1a": 0.13517925736235595,
+    "b1b": 0.07871318822023048,
+    "b1c": 0.0,
+    "iv_success_rate": 0.853531796841656
+  },
+  "root_cause": "Historical reference requests used expired=true whenever the requested DTE bucket ended before the current wall-clock date. With as_of already selecting the historical reference universe, this returned the wrong contract set and omitted active short and medium expiries for most sessions.",
+  "acceptance_consequence": "Coverage estimates from this variant MUST NOT be used to select assets, freeze B1, fit models, compute QLIKE, or read the holdout.",
+  "replacement_rule": "Use as_of=session_date with expired=false, then retain only contracts whose expiry and DTE are valid relative to the historical session.",
+  "archived_files": [
+    {
+      "logical_path": "MDS650_DATA_ROOT/data/b1q/phase5_missing_55/invalid_expired_parameter_v1/b1_coverage_20d.json",
+      "sha256": "50c31d55bc6b67a2ee8869fb8c56911da0a07f2ac613f5f7aa79772e5c399afe"
+    },
+    {
+      "logical_path": "MDS650_DATA_ROOT/data/b1q/phase5_missing_55/invalid_expired_parameter_v1/b1_coverage_by_asset.csv",
+      "sha256": "1018bd0436eabf905e9fad0a4449dce9bd805d43107d76da4362dd846b57ee8e"
+    },
+    {
+      "logical_path": "MDS650_DATA_ROOT/data/b1q/phase5_missing_55/invalid_expired_parameter_v1/b1_coverage_by_session_segment.csv",
+      "sha256": "1ee8b73b3df2535e745a654e647baf5c00f4855f5b1498dd0ac83f26c13ce90b"
+    },
+    {
+      "logical_path": "MDS650_DATA_ROOT/data/b1q/phase5_missing_55/invalid_expired_parameter_v1/b1_iv_attempts_20d.parquet",
+      "sha256": "001b5633d3ac9a34b15d5d0fb816ef4d68c6b64d84006b4d5865015a36d644ea"
+    },
+    {
+      "logical_path": "MDS650_DATA_ROOT/data/b1q/phase5_missing_55/invalid_expired_parameter_v1/b1_iv_failures_20d.csv",
+      "sha256": "303d12693f327a64a12e7ef034bf0f35c8b74c303d0b3af0869fe7fb055c6950"
+    },
+    {
+      "logical_path": "MDS650_DATA_ROOT/data/b1q/phase5_missing_55/invalid_expired_parameter_v1/b1_origin_matrix_20d.parquet",
+      "sha256": "049d600ed492300a46967d17f0ed6391a5dde00e9e8faba14dff6deb9a9ad1f7"
+    }
+  ],
+  "secret_values_emitted": false,
+  "personal_paths_emitted": false
+}
