@@ -143,6 +143,36 @@ def _request_hash(params: dict[str, str]) -> str:
     return hashlib.sha256(json.dumps(params, sort_keys=True).encode()).hexdigest()
 
 
+def _normalize_fmp_session_rows(
+    asset: str,
+    day: date,
+    payload: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], list[str]]:
+    """Filter provider over-return and encode both preregistered delays."""
+    returned_dates = sorted({str(item.get("date", ""))[:10] for item in payload})
+    rows: list[dict[str, Any]] = []
+    for item in payload:
+        if str(item.get("date", ""))[:10] != day.isoformat():
+            continue
+        raw = _dt(str(item["date"]))
+        rows.append(
+            {
+                "asset": asset,
+                "session_date": day.isoformat(),
+                "bar_timestamp_raw_utc": raw,
+                "bar_timestamp_ny": raw.astimezone(NY),
+                "available_at_utc": raw + timedelta(minutes=1),
+                "available_at_plus_2m_utc": raw + timedelta(minutes=2),
+                "open": float(item["open"]),
+                "high": float(item["high"]),
+                "low": float(item["low"]),
+                "close": float(item["close"]),
+                "volume": float(item["volume"]),
+            }
+        )
+    return rows, returned_dates
+
+
 def _fetch_fmp_bars(config: B2BuildConfig = DEFAULT_CONFIG) -> pl.DataFrame:
     """Fetch exact-session one-minute FMP bars for the twenty sessions.
 
@@ -180,14 +210,11 @@ def _fetch_fmp_bars(config: B2BuildConfig = DEFAULT_CONFIG) -> pl.DataFrame:
                     raise RuntimeError(
                         f"FMP_20D_HTTP_OR_SCHEMA:{asset}:{day}:{response.status_code}"
                     )
-                returned_dates = sorted(
-                    {str(item.get("date", ""))[:10] for item in payload if isinstance(item, dict)}
+                session_rows, returned_dates = _normalize_fmp_session_rows(
+                    asset,
+                    day,
+                    payload,
                 )
-                exact = [
-                    item
-                    for item in payload
-                    if isinstance(item, dict) and str(item.get("date", ""))[:10] == day.isoformat()
-                ]
                 records.append(
                     {
                         "asset": asset,
@@ -198,29 +225,14 @@ def _fetch_fmp_bars(config: B2BuildConfig = DEFAULT_CONFIG) -> pl.DataFrame:
                         "provider_over_return": any(
                             value != day.isoformat() for value in returned_dates
                         ),
-                        "rows_exact": len(exact),
+                        "rows_exact": len(session_rows),
                         "request_hash": _request_hash(params),
                         "payload_sha256": hashlib.sha256(response.content).hexdigest(),
                     }
                 )
-                if not exact:
+                if not session_rows:
                     raise RuntimeError(f"FMP_20D_EXACT_SESSION_EMPTY:{asset}:{day}")
-                for item in exact:
-                    raw = _dt(str(item["date"]))
-                    rows.append(
-                        {
-                            "asset": asset,
-                            "session_date": day.isoformat(),
-                            "bar_timestamp_raw_utc": raw,
-                            "bar_timestamp_ny": raw.astimezone(NY),
-                            "available_at_utc": raw + timedelta(minutes=1),
-                            "open": float(item["open"]),
-                            "high": float(item["high"]),
-                            "low": float(item["low"]),
-                            "close": float(item["close"]),
-                            "volume": float(item["volume"]),
-                        }
-                    )
+                rows.extend(session_rows)
     frame = pl.DataFrame(rows).sort(["asset", "bar_timestamp_raw_utc"])
     frame.write_parquet(destination, compression="zstd")
     _atomic_json(
