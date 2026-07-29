@@ -661,6 +661,7 @@ def main(config: PanelBuildConfig = DEFAULT_CONFIG) -> None:
     b1_summary = _read_json(b1_summary_path)
     if (
         b1_summary.get("status") != "PASS_B1Q_20_SESSION_RECOMPUTATION"
+        or b1_summary.get("secret_values_emitted") is not False
         or any(b1_summary.get("pit_invariants", {}).values())
         or not all(b1_summary.get("nested_invariants", {}).values())
     ):
