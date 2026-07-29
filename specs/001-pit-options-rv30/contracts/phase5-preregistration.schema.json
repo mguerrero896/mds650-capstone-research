@@ -1,0 +1,385 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/phase5-preregistration.schema.json",
+  "title": "MDS650 Phase 5 preregistration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "approved_on",
+    "target",
+    "session_manifest_sha256",
+    "development_sessions",
+    "holdout_sessions",
+    "holdout_reads",
+    "information_sets",
+    "b2_feature_names",
+    "feature_design_outcome_blind",
+    "timing",
+    "missingness",
+    "estimands",
+    "outer_folds",
+    "purge_embargo_minutes",
+    "models",
+    "metrics",
+    "forecast_floor",
+    "inference",
+    "stability",
+    "asset_selection",
+    "outcome_reporting",
+    "seed",
+    "provenance",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "phase5-preregistration-1.0"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "FROZEN_BEFORE_MODEL_OR_QLIKE"
+      ]
+    },
+    "approved_on": {
+      "type": "string",
+      "format": "date",
+      "const": "2026-07-29"
+    },
+    "target": {
+      "type": "object",
+      "const": {
+        "name": "RV30",
+        "price_count": 31,
+        "return_count": 30,
+        "horizon_minutes": 30
+      }
+    },
+    "session_manifest_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "development_sessions": {
+      "type": "array",
+      "minItems": 80,
+      "maxItems": 80,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/date"
+      },
+      "allOf": [
+        {
+          "contains": {
+            "const": "2026-03-24"
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "const": "2026-07-17"
+          },
+          "minContains": 1,
+          "maxContains": 1
+        }
+      ]
+    },
+    "holdout_sessions": {
+      "type": "array",
+      "const": [
+        "2026-07-20",
+        "2026-07-21",
+        "2026-07-22",
+        "2026-07-23",
+        "2026-07-24",
+        "2026-07-27",
+        "2026-07-28",
+        "2026-07-29",
+        "2026-07-30",
+        "2026-07-31"
+      ]
+    },
+    "holdout_reads": {
+      "type": "integer",
+      "const": 0
+    },
+    "information_sets": {
+      "type": "object",
+      "const": {
+        "B0": [
+          "spot",
+          "lagged_rv_5m",
+          "lagged_rv_30m",
+          "lagged_return_5m",
+          "lagged_volume_5m",
+          "session_minute",
+          "asset_identity"
+        ],
+        "B1a_addition": [
+          "massive_atm_iv_30_60_dte"
+        ],
+        "B2_addition": [
+          "b2_log_trade_count",
+          "b2_unique_contract_share",
+          "b2_log_mean_trade_premium",
+          "b2_log_max_trade_premium",
+          "b2_call_put_premium_imbalance_scaled",
+          "b2_execution_side_premium_imbalance",
+          "b2_repeated_contract_premium_share",
+          "b2_strike_concentration",
+          "b2_expiry_concentration"
+        ]
+      }
+    },
+    "b2_feature_names": {
+      "type": "array",
+      "const": [
+        "b2_log_trade_count",
+        "b2_unique_contract_share",
+        "b2_log_mean_trade_premium",
+        "b2_log_max_trade_premium",
+        "b2_call_put_premium_imbalance_scaled",
+        "b2_execution_side_premium_imbalance",
+        "b2_repeated_contract_premium_share",
+        "b2_strike_concentration",
+        "b2_expiry_concentration"
+      ]
+    },
+    "feature_design_outcome_blind": {
+      "type": "boolean",
+      "const": true
+    },
+    "timing": {
+      "type": "object",
+      "const": {
+        "fmp_primary_delay_minutes": 1,
+        "fmp_sensitivity_delay_minutes": 2,
+        "b2_primary_delay_seconds": 60,
+        "b2_sensitivity_delay_seconds": [
+          120,
+          300
+        ],
+        "created_at_semantics": "OPERATIONAL_AVAILABILITY_PROXY_NOT_PUBLICATION_TIME"
+      }
+    },
+    "missingness": {
+      "type": "object",
+      "const": {
+        "strategy": "COMMON_COMPLETE_CASE",
+        "silent_imputation": false,
+        "artificial_balancing": false,
+        "valid_empty_activity_ratio": 0,
+        "provider_missingness_requires_reason": true
+      }
+    },
+    "estimands": {
+      "type": "object",
+      "const": {
+        "delta_b1": "QLIKE(B0)-QLIKE(B1a)",
+        "delta_b2": "QLIKE(B1a)-QLIKE(B2)",
+        "primary": "delta_b2",
+        "positive_direction": "expanded_information_set_better"
+      }
+    },
+    "outer_folds": {
+      "type": "array",
+      "const": [
+        {
+          "fold": 1,
+          "train_end": "2026-05-19",
+          "test_start": "2026-05-20",
+          "test_end": "2026-06-03"
+        },
+        {
+          "fold": 2,
+          "train_end": "2026-06-03",
+          "test_start": "2026-06-04",
+          "test_end": "2026-06-17"
+        },
+        {
+          "fold": 3,
+          "train_end": "2026-06-17",
+          "test_start": "2026-06-18",
+          "test_end": "2026-07-02"
+        },
+        {
+          "fold": 4,
+          "train_end": "2026-07-02",
+          "test_start": "2026-07-06",
+          "test_end": "2026-07-17"
+        }
+      ]
+    },
+    "purge_embargo_minutes": {
+      "type": "integer",
+      "const": 30
+    },
+    "models": {
+      "type": "object",
+      "const": {
+        "confirmatory": {
+          "name": "GammaRegressor",
+          "role": "CONFIRMATORY",
+          "link": "log_fixed_by_estimator",
+          "alpha_grid": [
+            0.0,
+            0.01,
+            0.1,
+            1.0
+          ],
+          "max_iter": 2000,
+          "tolerance": 1e-08
+        },
+        "robustness": {
+          "name": "LGBMRegressor",
+          "role": "ROBUSTNESS_CHALLENGER",
+          "objective": "gamma",
+          "grid": {
+            "num_leaves": [
+              7,
+              15
+            ],
+            "max_depth": [
+              3,
+              5
+            ],
+            "learning_rate": [
+              0.03,
+              0.05
+            ],
+            "n_estimators": [
+              200,
+              500
+            ],
+            "min_child_samples": [
+              50
+            ],
+            "reg_lambda": [
+              1.0
+            ]
+          }
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "const": {
+        "primary": "QLIKE",
+        "secondary": [
+          "MAE",
+          "RMSE"
+        ]
+      }
+    },
+    "forecast_floor": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "const": 1e-12
+    },
+    "inference": {
+      "type": "object",
+      "const": {
+        "cluster_unit": "XNYS_SESSION_DATE_WITH_ALL_ASSETS",
+        "bootstrap_repetitions": 10000,
+        "multiplicity": "Holm",
+        "confirmatory_family": [
+          "delta_b1",
+          "delta_b2"
+        ]
+      }
+    },
+    "stability": {
+      "type": "array",
+      "const": [
+        "asset",
+        "session_tercile",
+        "development_defined_volatility_regime",
+        "fmp_delay_1_vs_2_minutes",
+        "b2_delay_60_120_300_seconds"
+      ]
+    },
+    "asset_selection": {
+      "type": "object",
+      "const": {
+        "candidate_assets": [
+          "SPY",
+          "QQQ",
+          "AAPL",
+          "MSFT",
+          "NVDA",
+          "TSLA",
+          "AMZN",
+          "META"
+        ],
+        "retained_count_min": 4,
+        "retained_count_max": 6,
+        "outcome_blind": true
+      }
+    },
+    "outcome_reporting": {
+      "type": "string",
+      "enum": [
+        "RETAIN_ALL_POSITIVE_NEGATIVE_AND_NULL_RESULTS"
+      ]
+    },
+    "seed": {
+      "type": "integer",
+      "const": 650
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "branch",
+        "commit",
+        "python_version",
+        "uv_lock_sha256",
+        "design_sha256",
+        "spec_kit_commit",
+        "worktree_dirty"
+      ],
+      "properties": {
+        "branch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "python_version": {
+          "type": "string",
+          "pattern": "^3\\.12\\.[0-9]+$"
+        },
+        "uv_lock_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "design_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "spec_kit_commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "worktree_dirty": {
+          "type": "boolean"
+        }
+      }
+    },
+    "manifest_sha256": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "pattern": "^2026-[0-9]{2}-[0-9]{2}$"
+    }
+  }
+}
