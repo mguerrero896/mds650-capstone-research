@@ -48,7 +48,7 @@ EVENT_ROOT = OUT / "option_events"
 MANIFEST_ROOT = OUT / "manifests"
 MIN_FREE_BYTES = 90 * 1024**3
 PILOT_DATES = frozenset(date(2026, 7, day) for day in range(13, 18))
-SESSIONS = (
+SESSIONS: tuple[date, ...] = (
     date(2026, 6, 11), date(2026, 6, 12), date(2026, 6, 15), date(2026, 6, 16),
     date(2026, 6, 17), date(2026, 6, 18), date(2026, 6, 22), date(2026, 6, 23),
     date(2026, 6, 24), date(2026, 6, 25), date(2026, 6, 26), date(2026, 6, 29),
