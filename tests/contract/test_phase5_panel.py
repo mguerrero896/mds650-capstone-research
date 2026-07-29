@@ -7,7 +7,7 @@ from datetime import UTC, datetime, timedelta
 import polars as pl
 import pytest
 
-from mds650.phase5_panel import build_common_panel
+from mds650.phase5_panel import build_common_panel, target_sha256
 from mds650.study_design import B2_FEATURE_NAMES
 
 
@@ -79,6 +79,29 @@ def test_common_panel_uses_identical_nested_origin_rows() -> None:
     assert common["origin_id"].to_list() == ["AAPL|2026-03-24|13:35"]
     assert common["target_price_count"].to_list() == [31]
     assert common["target_future_close_count"].to_list() == [30]
+    assert all_rows["exclusion_reason"].to_list() == [
+        "NONE",
+        "B1A_MISSING_OR_PIT_FAILURE",
+    ]
+    assert target_sha256(common) == target_sha256(
+        common.select(
+            [
+                "origin_id",
+                "rv30",
+                "target_price_count",
+                "target_future_close_count",
+                "target_validity",
+            ]
+        )
+    )
+
+
+def test_target_hash_changes_when_rv30_changes() -> None:
+    origins, *_ = _inputs()
+
+    assert target_sha256(origins) != target_sha256(
+        origins.with_columns((pl.col("rv30") + 0.001).alias("rv30"))
+    )
 
 
 def test_common_panel_rejects_future_b2_state() -> None:

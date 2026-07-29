@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 from collections.abc import Iterable
 
 import polars as pl
@@ -15,6 +17,13 @@ _B0_PREDICTORS = (
     "b0_return_5m_lag",
     "b0_volume_5m_lag",
     "b0_session_minute",
+)
+_TARGET_COLUMNS = (
+    "origin_id",
+    "rv30",
+    "target_price_count",
+    "target_future_close_count",
+    "target_validity",
 )
 
 
@@ -32,6 +41,36 @@ def _reject_duplicate_origins(frame: pl.DataFrame) -> None:
 def _join_new_columns(left: pl.DataFrame, right: pl.DataFrame) -> pl.DataFrame:
     additions = ["origin_id", *[column for column in right.columns if column not in left.columns]]
     return left.join(right.select(additions), on="origin_id", how="left")
+
+
+def target_sha256(frame: pl.DataFrame) -> str:
+    """Hash canonical RV30 target rows independently of predictor columns.
+
+    Parameters
+    ----------
+    frame:
+        Frame containing the canonical target columns.
+
+    Returns
+    -------
+    str
+        Lowercase SHA-256 digest.
+
+    Raises
+    ------
+    ValueError
+        If a target column is missing or an origin repeats.
+    """
+    _require_columns(frame, "targets", _TARGET_COLUMNS)
+    _reject_duplicate_origins(frame)
+    payload = frame.select(_TARGET_COLUMNS).sort("origin_id").to_dicts()
+    encoded = json.dumps(
+        payload,
+        allow_nan=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
 
 
 def build_common_panel(
@@ -169,5 +208,16 @@ def build_common_panel(
         b0_complete.fill_null(False).alias("b0_complete"),
         b1a_common_complete.fill_null(False).alias("b1a_common_complete"),
         b2_complete.fill_null(False).alias("common_complete"),
+    ).with_columns(
+        pl.when(~pl.col("target_complete"))
+        .then(pl.lit("TARGET_INVALID_OR_MISSING_31_PRICES"))
+        .when(~pl.col("b0_complete"))
+        .then(pl.lit("B0_MISSING_OR_PIT_FAILURE"))
+        .when(~pl.col("b1a_common_complete"))
+        .then(pl.lit("B1A_MISSING_OR_PIT_FAILURE"))
+        .when(~pl.col("common_complete"))
+        .then(pl.lit("B2_MISSING_OR_PIT_FAILURE"))
+        .otherwise(pl.lit("NONE"))
+        .alias("exclusion_reason")
     )
     return panel, panel.filter(pl.col("common_complete"))
