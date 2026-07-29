@@ -2,13 +2,21 @@
 
 from __future__ import annotations
 
+import json
+import sys
 from datetime import UTC, datetime, timedelta
+from pathlib import Path
 
 import polars as pl
 import pytest
 
 from mds650.phase5_panel import build_common_panel, target_sha256
 from mds650.study_design import B2_FEATURE_NAMES
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+
+import build_phase5_common_panel as panel_builder  # noqa: E402
 
 
 def _inputs() -> tuple[pl.DataFrame, pl.DataFrame, pl.DataFrame, pl.DataFrame]:
@@ -102,6 +110,101 @@ def test_target_hash_changes_when_rv30_changes() -> None:
     assert target_sha256(origins) != target_sha256(
         origins.with_columns((pl.col("rv30") + 0.001).alias("rv30"))
     )
+
+
+def test_source_reconciliation_is_exactly_25_plus_55_without_holdout() -> None:
+    sessions = json.loads(
+        (ROOT / "artifacts/phase5/study_sessions_90.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    reused = json.loads(
+        (ROOT / "artifacts/phase5/reused_25_session_manifest.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    missing = sorted(set(sessions["development"]) - set(reused["sessions"]))
+
+    result = panel_builder.reconcile_development_sources(
+        sessions,
+        reused,
+        missing,
+    )
+
+    assert result["status"] == "PASS"
+    assert result["reused_session_count"] == 25
+    assert result["acquired_session_count"] == 55
+    assert result["development_session_count"] == 80
+    assert result["holdout_overlap"] == []
+
+    with pytest.raises(ValueError, match="PHASE5_DEVELOPMENT_SOURCE_MISMATCH"):
+        panel_builder.reconcile_development_sources(
+            sessions,
+            reused,
+            [*missing[:-1], sessions["holdout"][0]],
+        )
+
+
+def test_quality_asset_selection_is_target_blind() -> None:
+    assets = ["AAPL", "AMZN", "MSFT", "NVDA"]
+    rows = []
+    for asset in assets:
+        for minute in (60, 195, 330):
+            rows.append(
+                {
+                    "asset": asset,
+                    "session_date": "2026-03-24",
+                    "b0_session_minute": minute,
+                    "b0_spot": 100.0,
+                    "b0_available_at_utc": datetime(
+                        2026,
+                        3,
+                        24,
+                        13,
+                        35,
+                        tzinfo=UTC,
+                    ),
+                    "forecast_origin_utc": datetime(
+                        2026,
+                        3,
+                        24,
+                        13,
+                        35,
+                        tzinfo=UTC,
+                    ),
+                    "b1q_atm_iv": 0.2,
+                    "b1a_complete": True,
+                    "b1q_pit_evidence_valid": True,
+                    "b1q_quote_not_after_origin": True,
+                    "rv30": 0.001,
+                    **{name: 0.0 for name in B2_FEATURE_NAMES},
+                }
+            )
+    frame = pl.DataFrame(rows)
+
+    first = panel_builder.select_quality_assets(frame, required_sessions=1)
+    second = panel_builder.select_quality_assets(
+        frame.with_columns((pl.col("rv30") * 999).alias("rv30")),
+        required_sessions=1,
+    )
+
+    assert first["selected_assets"] == assets
+    assert second["selected_assets"] == assets
+    assert first["selection_uses_predictive_outcomes"] is False
+
+    with pytest.raises(
+        ValueError,
+        match="PHASE5_FEWER_THAN_FOUR_QUALITY_ASSETS",
+    ):
+        panel_builder.select_quality_assets(
+            frame.with_columns(
+                pl.when(pl.col("asset") == "NVDA")
+                .then(False)
+                .otherwise(pl.col("b1a_complete"))
+                .alias("b1a_complete")
+            ),
+            required_sessions=1,
+        )
 
 
 def test_common_panel_rejects_future_b2_state() -> None:
