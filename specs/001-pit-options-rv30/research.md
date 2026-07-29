@@ -156,13 +156,40 @@ post-availability must be documented in v1.
 
 ## Decision 12: Pre-registered evaluation and natural prevalence
 
-The sole primary contrast is `Delta_Q = QLIKE(B1) - QLIKE(B2)`. Uncertainty is a bootstrap
-by trading day, keeping all assets from a day together. Primary, secondary and robustness
-analyses, Holm or Benjamini-Hochberg correction, and volatility/earnings/session/asset-market
-regimes are frozen before final-test inspection. Minimum detectable effect is estimated using
-simulation, bootstrap, pilot or training data only. Event/no-event origins preserve natural
-prevalence; any training-only weighting is documented and never applied to validation/final
-testing.
+The primary contrast is `Delta_B2 = QLIKE(B1a) - QLIKE(B2)` and the key secondary contrast is
+`Delta_B1 = QLIKE(B0) - QLIKE(B1a)`. Uncertainty is a paired bootstrap by trading day, keeping
+all assets and origins from a day together. Holm correction covers these two confirmatory
+comparisons. Volatility/session/asset and timing-sensitivity strata are frozen before final-test
+inspection. Minimum detectable effect is estimated using simulation, bootstrap, pilot or
+training data only. Event/no-event origins preserve natural prevalence; any training-only
+weighting is documented and never applied to validation/final testing.
+
+## Decision 13: Use a 90-session champion–challenger design
+
+**Decision**: Use eighty XNYS development sessions and ten prospective holdout sessions.
+Reuse the existing twenty-five sessions after hash validation and acquire only fifty-five
+missing development sessions. Freeze a compact nine-feature B2 information set without
+consulting RV30 or QLIKE. Use Gamma GLM as the confirmatory positive-mean model, LightGBM with
+Gamma objective as a fixed robustness challenger, QLIKE as primary loss, a paired whole-day
+bootstrap and Holm correction. Read the holdout analytically once after method freeze.
+
+**Rationale**: Twenty-five sessions are sufficient engineering evidence but too short for
+credible temporal stability and model comparison. The 80/10 split supplies four expanding
+development folds and an independent prospective check while reusing all valid evidence.
+Gamma GLM is a parsimonious distribution-aligned confirmatory model; LightGBM tests nonlinear
+robustness without allowing model shopping. The compact B2 registry reduces collinearity and
+multiple-testing exposure while preserving distinct activity mechanisms.
+
+**Alternatives considered**:
+
+- Treat the current twenty-five sessions as final: rejected because stability and prospective
+  validation would be weak.
+- Use all candidate B2 fields: rejected because aliases, algebraic redundancy and target-blind
+  dimensionality control favor the compact registry.
+- Select the best model or feature set by QLIKE: rejected because it would optimize the
+  specification to the observed sign.
+- Use FMP `+2 minutes` as primary: rejected; `+1 minute` is the approved conservative research
+  assumption and `+2 minutes` remains a sensitivity.
 
 ## Decision 10: Week-4 evidence recovery
 

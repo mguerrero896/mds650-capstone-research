@@ -1,15 +1,20 @@
 <!--
 Sync Impact Report
-- Version change: template (unratified) -> 1.0.0
-- Modified principles: replaced all five placeholders with evidence, scope, testing,
-  reproducibility/security, and statistical-validity principles.
-- Added sections: Data, Licensing & Security; Research Workflow & Quality Gates.
-- Removed sections: none; all template sections were retained with concrete names.
-- Templates requiring updates: .specify/templates/plan-template.md reviewed and aligned;
-  spec, tasks and checklist templates reviewed and require no governance edits.
-- Deferred: the requested Downloads source folder is not present; its provenance must be
-  resolved before any claim based only on that folder is treated as verified.
---> 
+- Version change: 1.0.0 -> 2.0.0
+- Modified principles:
+  - II. Frozen Objective, Benchmarks and Scope: B1a is the primary ordinary-option benchmark;
+    earnings move from mandatory primary controls to gated diagnostic stability analysis.
+  - V. Statistical Validity and Honest Interpretation: exact confirmatory comparisons,
+    prospective one-read holdout, paired-day bootstrap, Holm and complete sign reporting added.
+- Added sections: none.
+- Removed sections: none.
+- Templates reviewed: .specify/templates/plan-template.md, spec-template.md and
+  tasks-template.md remain generic and require no edits.
+- Dependent artifacts updated: specs/001-pit-options-rv30/{spec,plan,tasks,data-model,
+  quickstart}.md, contracts/benchmark-evaluation-contract.md,
+  docs/methodology_decisions.md.
+- Deferred: clean-install parity evidence on Google Colab remains an implementation gate.
+-->
 # MDS650 Research Pipeline Constitution
 
 ## Core Principles
@@ -23,13 +28,17 @@ Raw provider responses MUST remain immutable and separate from normalized analyt
 ### II. Frozen Objective, Benchmarks and Scope
 The primary target is only the realized variance accumulated during the thirty minutes
 following each five-minute forecast origin. B0 contains underlying and market controls,
-B1 adds validated point-in-time ordinary option state, and B2 adds unusual-option activity.
-The primary scientific comparison is B2 versus B1. The eight candidate assets MUST be
+B1a adds validated point-in-time ATM implied volatility, and B2 adds the preregistered
+trade-derived option-activity features. B1b adds skew and B1c adds term structure only as
+enriched robustness benchmarks. The primary scientific comparison is B2 versus B1a; B1a
+versus B0 is the key secondary confirmatory comparison. The eight candidate assets MUST be
 audited together and only four to six MAY be frozen, using coverage and data quality only;
-predictive performance MUST NOT influence asset selection. Earnings controls are mandatory.
-News is optional and requires its own timestamp, coverage and reproducibility gate. Massive
-is restricted to directed contract validation and MUST NOT be used for a full historical
-OPRA quote download.
+predictive performance MUST NOT influence asset selection. Earnings MUST remain outside the
+primary B0/B1a/B2 comparison; ex-ante BMO/AMC timing MAY be used only in predeclared
+diagnostic stability analysis after its own point-in-time gate. Actual EPS and revenue are
+prohibited predictors. News is optional and requires its own timestamp, coverage and
+reproducibility gate. Massive is restricted to directed historical contract/quote extraction
+and MUST NOT be used for a full historical OPRA quote download.
 
 ### III. Tests First and Fail-Closed Data Contracts
 Tests MUST be written before production backfill or modeling. Unit, sanitized-contract,
@@ -49,11 +58,15 @@ scope.
 
 ### V. Statistical Validity and Honest Interpretation
 Model comparisons MUST use common expanding walk-forward splits, a final untouched test
-period and purging/embargo of at least the thirty-minute target horizon. QLIKE is the
-primary loss; MAE and daily paired uncertainty are secondary. Multiple testing, regime
-stability, cross-asset consistency and effect-size thresholds MUST be recorded before the
-final test. Option execution proxies MUST NOT be described as trader intent, opening flow,
-causality or profitability without independent evidence.
+period read analytically once, and purging/embargo of at least the thirty-minute target
+horizon. QLIKE is the primary loss; MAE and RMSE are descriptive secondary metrics.
+Uncertainty MUST use a paired whole-day cluster bootstrap that keeps all assets and origins
+from a date together, and Holm MUST cover the two confirmatory information-set comparisons.
+Feature definitions, models, grids, folds, seeds, stability strata and effect-size protocol
+MUST be preregistered before loss computation. Positive, negative and null registered results
+MUST all be retained; no method may be selected or revised to obtain a favorable sign.
+Option execution proxies MUST NOT be described as trader intent, opening flow, causality or
+profitability without independent evidence.
 
 ## Data, Licensing and Security
 
@@ -69,7 +82,7 @@ reported and no claim may be presented as verified solely from that missing mate
 The project MUST execute the following sequence before implementation: Spec Kit constitution,
 specification, clarification, plan, requirements checklist, tasks and cross-artifact analysis.
 The first production action after those gates is the test suite and small authenticated audit,
-not historical backfill. Stop conditions are mandatory when B1 is infeasible, fewer than four
+not historical backfill. Stop conditions are mandatory when B1a is infeasible, fewer than four
 assets meet quality thresholds, provider windows do not overlap sufficiently, material
 timestamps cannot be established point-in-time, or provider licenses prohibit the evidence
 package.
@@ -84,4 +97,4 @@ Report and the last-amended date. Spec, plan, checklist and task reviews MUST in
 constitution compliance check. No implementation may proceed with unresolved constitution
 violations; a violation requires an explicit amendment before work continues.
 
-**Version**: 1.0.0 | **Ratified**: 2026-07-20 | **Last Amended**: 2026-07-20
+**Version**: 2.0.0 | **Ratified**: 2026-07-20 | **Last Amended**: 2026-07-29

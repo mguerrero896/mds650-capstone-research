@@ -4,20 +4,58 @@
 
 **Created**: 2026-07-20
 
-**Status**: Recovery specification revision; implementation blocked pending coherence gates
+**Status**: Phase 5 design approved; Spec Kit consistency and preregistration gates remain
+required before acquisition, modeling or QLIKE
 
 **Input**: User description: "Evaluate whether unusual options activity provides incremental out-of-sample information for forecasting the next 30 minutes of realized variance, using authenticated provider audits, a point-in-time pilot, and a Spec-Driven Development workflow."
+
+## Clarifications
+
+### Session 2026-07-21
+
+- Q: Should the primary panel require no-operation origins? → A: No; retain every valid origin and preserve natural prevalence.
+- Q: Does any eligible option trade define unusual activity? → A: No; it defines only `option_activity_present`, an operational availability proxy.
+- Q: When may `unusual_event` be calculated? → A: Only after at least 15 prior sessions support trailing, leakage-safe calibration.
+- Q: How must Massive quotes be selected? → A: Last SIP quote with `sip_timestamp <= origin`, using nanosecond `timestamp.lte` and descending order.
+- Q: What is authorized now? → A: Pilot V2 correction only; backfill, models, QLIKE, final test, asset freeze and Word remain blocked.
+
+### Session 2026-07-22
+
+- Q: What additional work is authorized after the Phase 3E repair? → A: Exactly the twenty
+  pre-Pilot-V2 sessions from 2026-06-11 through 2026-07-10 for leakage-safe B2 calibration,
+  B1Q stability, quality-only role evidence and literature closure. Larger backfill, models,
+  tuning, QLIKE, final testing, definitive asset freeze, Word/PowerPoint edits, publication and
+  email remain blocked.
+- Q: What status may the Pilot V2 binary label receive after this history is fit? → A:
+  `CALIBRATED_SECONDARY_EXPLORATORY`; continuous B2 features remain primary and the label is not
+  used for predictive selection.
+
+### Session 2026-07-29
+
+- Q: What sample design is approved? → A: Ninety XNYS sessions: eighty development sessions
+  and ten prospective holdout sessions read analytically only once after method freeze.
+- Q: What model and inference contract is approved? → A: Gamma GLM is confirmatory,
+  LightGBM is a fixed nonlinear robustness challenger, QLIKE is primary, uncertainty uses
+  paired whole-day cluster bootstrap, and Holm covers the two confirmatory comparisons.
+- Q: What information sets are approved? → A: Nested B0, B1a and B2, with the compact
+  target-blind nine-feature B2 definition frozen before RV30 or QLIKE is consulted.
+- Q: Which FMP timing convention governs the primary study? → A:
+  `available_at = timestamp_raw + 1 minute` is the explicit conservative research
+  assumption; `+2 minutes` is a prespecified sensitivity, not provider-confirmed semantics.
+- Q: Has the written design been approved? → A: Yes; negative, null and positive registered
+  results must all be retained and reported without optimizing for a favorable sign.
 
 ## User Scenarios & Testing *(mandatory)*
 
 ### Recovery iteration boundary
 
-This iteration is specification-only. It may inspect and classify the existing
-`artifacts/api_audit/exploratory_v0/provider_audit_manifest.json`, write contracts,
-schemas, acceptance criteria and planned tests, and rerun Spec Kit coherence gates. It
-MUST NOT implement provider connectors, make provider requests, backfill, normalize data,
-build a pilot dataset, fit models, or create a productive notebook. Existing source files
-are historical baseline evidence and are not authorization to execute those activities.
+This Pilot V2 correction may reuse the five already downloaded Full Tape ZIPs and their
+filtered Parquet derivatives without re-downloading matching hashes. It may correct B2
+feature construction, run bounded per-origin B1 probes, correct FMP/common-history probes,
+and emit Pilot V2 evidence. It MUST NOT run full historical backfill, fit or tune models,
+run QLIKE/final evaluation, freeze assets definitively, generate final Word documents, or
+download an additional 20-session extension. Pilot V1 is invalid for acceptance, while its
+raw data and valid RV30 targets remain reusable.
 
 ### Clarifications
 
@@ -26,9 +64,48 @@ are historical baseline evidence and are not authorization to execute those acti
 - All eight candidates are audited together; four to six may be frozen only by coverage,
   quality and common-overlap criteria.
 - The preserved v0 manifest is exploratory evidence, not an accepted v1 audit.
+- Pilot V1 is `INVALID_FOR_ACCEPTANCE`; its raw data is `VALID_AND_REUSABLE`, its RV30
+  target is `VALID`, and Pilot V2 correction is authorized.
+- `option_activity_present` means at least one eligible option trade under the operational
+  availability proxy; it does not mean unusual activity. `unusual_event` is secondary and
+  remains `NOT_CALIBRATED` before trailing history is available. After the authorized Phase 3F
+  history is fit, the Pilot V2 application may emit
+  `CALIBRATED_SECONDARY_EXPLORATORY`; it never becomes the primary continuous B2 design.
+- The primary panel retains every valid five-minute origin and preserves natural prevalence;
+  the pilot need not contain an origin without any option operation.
 - Literature verification is Phase 3B and runs in parallel with Phase 3A provider audit;
   all ten studies must be verified before freezing variables, benchmarks, models, metrics,
   validation or methodological claims.
+
+## B1 Feasibility and Common-History Closure
+
+This controlled phase accepts Pilot V2 for data engineering only. It may complete B1
+feasibility on the existing 2,840 origins, verify common-history evidence for all eight
+candidates, and finish the ten-study literature matrix. It MUST NOT download the proposed
+twenty-session extension, run a full backfill, train or tune models, run QLIKE/final testing,
+freeze assets definitively, modify Word deliverables, publish externally or send email.
+
+The frozen input state is: `PILOT_V2_RV30=ACCEPTED_FOR_DATA_ENGINEERING`,
+`PILOT_V2_B2_CONTINUOUS_FEATURES=ACCEPTED_PROVISIONALLY`,
+`B2_UNUSUAL_EVENT_LABEL=NOT_CALIBRATED`, `B1A_ATM_IV=INCOMPLETE`,
+`B1B_SKEW=INCOMPLETE`, `B1C_TERM_STRUCTURE=INCOMPLETE`,
+`COMMON_HISTORY_ALL_ASSETS=NOT_ESTABLISHED`, `LITERATURE_MATRIX=MUST_BE_COMPLETED`,
+`BACKFILL=BLOCKED`, `MODELING=BLOCKED` and `FINAL_TEST=BLOCKED`.
+
+## B1Q Integration Repair and Earnings Contract Closure
+
+This controlled phase repairs the discrepancy between successful controlled
+Massive traces and zero full-matrix coverage for SPY, QQQ, META and TSLA. It
+freezes corporate events by instrument type: individual equities may use ex-ante
+FMP `date` and BMO/AMC `time`, while ETFs have `earnings_applicable=false` and
+no synthetic earnings events. Dividend and distribution inputs remain separate
+point-in-time inputs for IV only.
+
+The phase MUST use bucket-scoped historical contract queries, auditable cache
+keys, row-level controlled-versus-pipeline reconciliation, a sequential
+mutually-exclusive first-failure waterfall and an explicit `INVALID_DTE`
+diagnosis. It MUST NOT download the twenty-session extension, train models, run
+QLIKE, freeze assets or modify Word/PowerPoint deliverables.
 
 ### User Story 1 - Establish authenticated data feasibility (Priority: P1)
 
@@ -57,23 +134,24 @@ produces an explicit stop condition.
 
 ### User Story 2 - Build a point-in-time pilot (Priority: P1)
 
-As the data researcher, I need a small pilot with event and no-event forecast origins so
-that joins, timezones, deduplication, missingness and the 30-minute target can be audited at
-row level before a full backfill.
+As the data researcher, I need a small pilot containing every valid five-minute origin with
+continuous option-activity features so that joins, timezones, deduplication, missingness and
+the 30-minute target can be audited at row level before a full backfill.
 
 **Why this priority**: The pilot is the smallest independent proof that the research data
 model preserves the information available at each forecast origin.
 
 **Independent Test**: Reconstruct the pilot from immutable raw responses and verify the
-profile report, row-trace sample, duplicate keys, timezone conversions, event/no-event
-coverage and deterministic target values without using future predictors. The pilot is
-not authorized in this recovery iteration.
+profile report, row-trace sample, duplicate keys, timezone conversions, continuous
+option-activity coverage and deterministic target values without using future predictors.
+The Pilot V2 correction is authorized, but downstream backfill and modeling remain blocked.
 
 **Acceptance Scenarios**:
 
-1. **Given** a bounded historical window containing events and quiet periods, **When** the
-   pilot is assembled, **Then** it contains all eight candidates, five-minute origins with
-   and without events, UTC plus `America/New_York` timestamps, and documented source keys.
+1. **Given** a bounded historical window, **When** the pilot is assembled, **Then** it
+   contains all eight candidates and every valid five-minute origin with UTC plus
+   `America/New_York` timestamps, documented source keys, and natural option-activity
+   prevalence. It is not required to contain an origin without an operation.
 2. **Given** a forecast origin at time `t`, **When** the target is calculated, **Then** it
    uses the fully observed origin close and the next thirty consecutive one-minute closes,
    yielding exactly thirty one-minute log returns.
@@ -109,8 +187,8 @@ metrics, result, limitation and project implication.
 
 ### User Story 4 - Compare nested benchmarks and publish reproducible evidence (Priority: P2)
 
-As the research evaluator, I need a common out-of-sample comparison of B0, B1 and B2 plus
-an auditable notebook and manifest so that incremental information from unusual activity is
+As the research evaluator, I need a common out-of-sample comparison of B0, B1a and B2 plus
+an auditable notebook and manifest so that incremental information from trade-derived activity is
 tested without leakage, silent sample changes or live-trading claims.
 
 **Why this priority**: This is the scientific decision the capstone is meant to answer, but
@@ -118,16 +196,16 @@ it depends on the feasibility and pilot gates from Stories 1 and 2.
 
 **Independent Test**: Re-run the local pipeline and the Colab orchestration on the frozen
 configuration, inspect the validation status and manifest, and reproduce the primary B2 vs
-B1 QLIKE comparison on the untouched final period.
+B1a QLIKE comparison on the one-time prospective holdout.
 
 **Acceptance Scenarios**:
 
-1. **Given** B1 ordinary option state passes its point-in-time gate, **When** B0, B1 and B2
+1. **Given** B1a ATM-IV state passes its point-in-time gate, **When** B0, B1a and B2
    are evaluated on common expanding walk-forward splits, **Then** B2 is compared directly
-   with B1 using QLIKE as the primary loss.
-2. **Given** B1 is infeasible under authenticated coverage, **When** the gate is evaluated,
-   **Then** the project stops the requested B2-vs-B1 claim and records B2-vs-B0 only as a
-   declared fallback comparison.
+   with B1a using QLIKE as the primary loss.
+2. **Given** B1a is infeasible under authenticated coverage, **When** the gate is evaluated,
+   **Then** the project stops the requested B2-vs-B1a claim and returns
+   `REVISE_RESEARCH_DESIGN`; it does not silently promote B2 versus B0.
 3. **Given** model results are produced, **When** the final report is generated, **Then** it
    includes daily paired uncertainty, effect size, asset/regime consistency, purging and
    embargo details, and explicitly avoids causal, directional-intent or profitability claims.
@@ -199,12 +277,14 @@ B1 QLIKE comparison on the untouched final period.
   coverage, timestamp integrity, regular-session completeness, event frequency, contract
   resolution and provider overlap criteria; predictive metrics MUST be excluded from the
   selection rule.
-- **FR-009**: Earnings publication controls MUST be included in every benchmark where the
-  timestamp is usable point-in-time; general news MUST remain out of scope until its own
-  timestamp, coverage and reproducibility gate passes.
-- **FR-010**: The pilot MUST cover all eight candidates, contain event and no-event
-  five-minute origins, and include a row-level trace from normalized values to source
-  response identifiers.
+- **FR-009**: Earnings MUST remain excluded from the primary B0/B1a/B2 comparison. Ex-ante
+  BMO/AMC timing variables MAY appear only in predeclared diagnostic stability analysis after
+  their point-in-time contract passes; actual EPS/revenue values are prohibited. General news
+  remains out of scope until its own timestamp, coverage and reproducibility gate passes.
+- **FR-010**: The primary panel MUST retain every valid five-minute origin for all eight
+  candidates and include a row-level trace from normalized values to source response
+  identifiers. It MUST preserve natural prevalence and MUST NOT require an origin without
+  an option operation.
 - **FR-011**: The target MUST use the fully observed close at forecast origin t and the next thirty consecutive one-minute closes, producing exactly thirty one-minute log returns.
   For asset `i`, `r(i,t+j) = ln[C(i,t+j) / C(i,t+j-1)]`, for `j = 1,...,30`, and
   `RV(i,t:t+30) = Σ[j=1 to 30] {r(i,t+j)}²`. Any missing one of the 31 required closes,
@@ -213,10 +293,12 @@ B1 QLIKE comparison on the untouched final period.
   future event revision or future option state may enter predictors.
 - **FR-012**: Deduplication keys MUST be documented for each component and duplicate/failure
   counts MUST be reported rather than silently discarded.
-- **FR-013**: B0 MUST contain underlying and market controls; B1 MUST add only authenticated
-  point-in-time IV, skew and term structure; B2 MUST add unusual-activity variables.
-- **FR-014**: The primary scientific comparison MUST be B2 versus B1; if B1 is infeasible,
-  the run MUST stop that claim and explicitly declare the fallback comparison.
+- **FR-013**: B0 MUST contain underlying and market controls; B1a MUST add only authenticated
+  point-in-time ATM IV; B1b/B1c MAY add skew/term structure as robustness levels; B2 MUST add
+  only the frozen trade-derived activity variables to B1a.
+- **FR-014**: The primary scientific comparison MUST be B2 versus B1a; if B1a is infeasible,
+  the run MUST stop that claim and return `REVISE_RESEARCH_DESIGN` rather than silently
+  substituting B2 versus B0.
 - **FR-015**: The evaluation MUST use common chronological expanding splits, a final intact
   test period, purging and embargo at least thirty minutes, QLIKE as primary loss and daily
   paired uncertainty with asset/regime breakdowns.
@@ -263,11 +345,172 @@ B1 QLIKE comparison on the untouched final period.
   `invalid_response`; SPY and QQQ MUST NOT inherit a corporate earnings contract for a
   company.
 - **FR-029**: The primary evaluation MUST be predeclared as
-  `Delta_Q = QLIKE(B1) - QLIKE(B2)`, with day-clustered paired bootstrap keeping all
-  observed assets on each trading day together. Primary, secondary and robustness analyses,
-  Holm or Benjamini-Hochberg use, regimes and the minimum detectable effect protocol MUST
+  `Delta_B2 = QLIKE(B1a) - QLIKE(B2)`, with
+  `Delta_B1 = QLIKE(B0) - QLIKE(B1a)` as the key secondary confirmatory contrast and a
+  day-clustered paired bootstrap keeping all observed assets and origins on each trading day
+  together. Primary, secondary and robustness analyses, Holm over these two comparisons,
+  regimes and the minimum detectable effect protocol MUST
   be frozen before final-test inspection. The minimum detectable effect MUST be estimated
   from simulation, bootstrap, pilot or training data only.
+
+- **FR-030**: B2 MUST use continuous option-activity variables computed from eligible
+  contract-level rows, not a trade-presence indicator. `option_activity_present` is an
+  operational-availability proxy and MUST NOT be called unusual activity. Provider
+  cumulative fields (`volume`, `ask_vol`, `bid_vol`, `mid_vol`, `no_side_vol`) are excluded
+  until their point-in-time semantics are independently proven.
+- **FR-031**: `unusual_event` MUST remain secondary. Before a trailing history of at least 15
+  prior sessions (preferably 20 or more) supports asset- and time-of-day-specific percentile/MAD
+  rules without future information, its status MUST be `NOT_CALIBRATED`. After the authorized
+  Phase 3F history is fit and applied without leakage, the Pilot V2 application status MUST be
+  `CALIBRATED_SECONDARY_EXPLORATORY`; the continuous B2 variables remain primary.
+- **FR-032**: Massive B1 extraction MUST select the last quote with `sip_timestamp <= t`
+  for each contract and origin using a nanosecond `timestamp.lte` query, descending order
+  and limit one. A missing result MUST be classified by a bounded range retry rather than
+  represented by a zero quote.
+- **FR-033**: FMP OHLCV requests MUST filter locally to the requested local session and
+  record provider-over-return dates. Earnings MUST use the symbol-specific endpoint that
+  exposes `date`, `time` and BMO/AMC semantics when available; actual EPS/revenue values
+  MUST NOT enter predictors.
+- **FR-034**: Common-history V2 MUST resolve a historical Massive contract using `as_of`
+  and date-relative expiry/strike before querying quotes; current contracts MUST NOT be
+  reused for old months. Each month MUST record FMP, UW and Massive component passes.
+- **FR-035**: Pilot V2 MUST write new artifacts under `artifacts/pilot_v2/` and preserve
+  all V1 artifacts, including the invalid common-history probe and invalidated B2 outputs.
+- **FR-036**: B1 feasibility MUST evaluate every one of the 2,840 valid origins using a
+  cached contract-day Massive quote route (`B1Q`) and a diagnostically separate Full Tape
+  route (`B1T`). Contract-day responses MUST be reused through checkpoints; one request per
+  origin and contract is prohibited.
+- **FR-037**: B1Q MUST resolve historical contracts with `as_of`, select short/medium/long
+  DTE buckets (7–21, 30–60, 90–180 days) and target moneyness (0.95, 0.975, 1.00, 1.025,
+  1.05), then perform a local as-of join selecting the last valid quote with
+  `sip_timestamp <= forecast_origin`. Primary filters are bid > 0, ask > bid, quote age
+  <= 60 seconds and relative spread <= 25%; 300 seconds/50% are sensitivity filters.
+- **FR-038**: B1T MUST use only existing Full Tape rows with `created_at <= origin-60s`,
+  valid NBBO, contract validity and expiry after the origin. It MUST be labeled a dependent
+  fallback/sensitivity route and MUST NOT be treated as independent of B2.
+- **FR-039**: Each B1Q and B1T origin MUST expose separate component availability and nested
+  benchmark completeness. Components MUST be `atm_iv_available`, `skew_available` and
+  `term_structure_available`; nested fields MUST be `b1a_complete = atm_iv_available`,
+  `b1b_complete = atm_iv_available AND skew_available` and `b1c_complete = atm_iv_available
+  AND skew_available AND term_structure_available`. Quote/contract counts, age/spread
+  diagnostics, interpolation flags, IV success rate and missing reason remain required.
+  Black–Scholes–Merton remains an explicitly documented approximation for American options.
+- **FR-040**: B1 coverage MUST be reported by asset, date, session tercile, DTE, moneyness,
+  route and threshold (50%, 60%, 70%, 80%). A twenty-session extension may be proposed only
+  when B1a reaches global coverage >=70%, asset coverage >=50%, every session tercile >=40%,
+  valid PIT and no close-only concentration; B1b/B1c may remain robustness levels.
+- **FR-041**: Common-history closure MUST test SPY, QQQ, AAPL, MSFT, NVDA, TSLA, AMZN and META
+  for January/July 2024, January/July 2025 and January/July 2026 using exact FMP sessions,
+  observed UW file evidence and date-relative Massive contracts/quotes. Six monthly points
+  MUST NOT be described as daily continuity; earliest/latest dates and common assets per date
+  MUST be reported.
+- **FR-042**: The literature matrix MUST contain ten independently verified studies with
+  traceable DOI/stable URL, exact models, benchmark, temporal validation, leakage controls,
+  metrics, result, limitation and project implication. Unverified or invented citations MUST
+  be excluded from methodological claims.
+- **FR-043**: The twenty-session calibration request MUST remain a proposal only. If accepted,
+  it MUST use the twenty trading sessions immediately before 13 July 2026, exclude the five
+  Pilot V2 sessions, preserve natural prevalence and remain training/calibration-only.
+
+## B1 Forensic Validation and Asset-Coverage Decision
+
+This repair gate follows the invalid nested-coverage evidence. It MUST archive the prior
+result, prove nested monotonicity, diagnose B1Q failure stages, audit SPY/QQQ/META/TSLA and
+decide whether a twenty-session request is admissible. It MUST NOT download those sessions,
+run models, QLIKE, tuning, full backfill, final testing, definitive asset freezing or Word
+changes.
+
+- **FR-044**: The prior result MUST be preserved at
+  `artifacts/b1_full_origin/invalid_nested_coverage_v1.json`; invalid evidence MUST NOT be
+  deleted or overwritten.
+- **FR-045**: Each origin and route MUST expose `atm_iv_available`, `skew_available`,
+  `term_structure_available`, `b1a_complete`, `b1b_complete` and `b1c_complete` separately.
+- **FR-046**: The pipeline MUST fail closed unless `b1c_complete` implies `b1b_complete`,
+  `b1b_complete` implies `b1a_complete`, and coverage is monotone globally, by asset, date,
+  session tercile and route (`B1Q` and `B1T`).
+- **FR-047**: B1Q MUST emit a failure waterfall for the 17 required stages from forecast
+  origins through nested B1c, with exact failure codes and totals reconciling to 2,840 origins.
+- **FR-048**: Controlled diagnostics MUST cover AAPL, SPY, META and TSLA at opening, midday
+  and closing origins, including spot, New York/UTC timestamps, as-of contract identity,
+  quote timestamps, bid/ask, age, spread, rate, dividend assumption, IV result and failure code.
+- **FR-049**: IV attempts MUST persist asset, origin, contract, call/put, spot, strike, DTE,
+  pre-origin rate/dividend inputs, midpoint, age, spread, success, failure code and IV. q=0
+  is permitted only when no pre-origin dividend is known and the assumption is recorded.
+- **FR-050**: After controlled diagnostics pass, B1Q coverage MUST be recomputed for
+  components and nested benchmarks globally, by asset/date/session tercile, ETF versus
+  equity, DTE bucket and quote/spread sensitivity without predictive selection.
+- **FR-051**: The twenty-session availability probe MUST inspect exact FMP sessions, UW file
+  existence/size and one historical Massive ATM contract/quote per candidate session without
+  downloading Full Tape ZIP contents; availability MUST NOT be called PIT proof.
+- **FR-052**: Literature evidence MUST include full-text status, evidence location, page,
+  section/table/figure, exact supported claim and verification notes; Crossref-only metadata
+  MUST NOT be labeled full-text verification.
+- **FR-053**: B1Q contract resolution MUST query each DTE bucket using the historical origin
+  date and retain cache keys containing provider, asset, session date, expiry, strike, option
+  type and contract.
+- **FR-054**: Controlled and full-matrix observations MUST reconcile by asset/date/origin/
+  contract and record the first divergent stage.
+- **FR-055**: The primary failure waterfall MUST contain exactly one first-failure code per
+  origin and preserve additional failures separately.
+- **FR-056**: Earnings MUST be applicable only to individual equities; SPY and QQQ MUST receive
+  no synthetic corporate earnings events.
+
+## Phase 3F — Twenty-Session Historical Calibration and Method Freeze
+
+This controlled phase is authorized only after the repaired Phase 3E gates. It downloads and
+processes exactly the twenty pre-Pilot-V2 sessions 2026-06-11 through 2026-07-10, excluding
+2026-07-13 through 2026-07-17. It calibrates continuous B2 activity and evaluates B1Q stability;
+it MUST NOT run a full backfill, predictive models, tuning, QLIKE, final testing, definitive
+asset freezing, Word/PowerPoint edits or external publication.
+
+- **FR-057**: Before any provider request, the run MUST record available storage, require at
+  least 90 GB free, verify write access and verify a per-session resumable checkpoint design.
+  Secret checks MUST report presence only and all manifests MUST contain no secret values or
+  personal paths.
+- **FR-058**: The download set MUST contain exactly the twenty configured sessions and no Pilot
+  V2 date. Each session MUST be streamed to an immutable ZIP, hashed with SHA-256, CRC-tested,
+  schema-checked and given an independent manifest; a valid completed session MUST be reused by
+  hash rather than downloaded again.
+- **FR-059**: Legacy cache files without explicit keys MUST remain retained as
+  `LEGACY_CACHE_READ_ONLY` and MUST NOT be read by Phase 3F. Active cache keys MUST include
+  provider, asset, session date, expiry, strike, option type, contract, route and schema version;
+  duplicate active keys or hash collisions MUST fail the run.
+- **FR-060**: The twenty-session panel MUST retain every valid five-minute origin with UTC and
+  America/New_York timestamps, conservative FMP availability, natural option-activity
+  prevalence and no silent interpolation or balancing. RV30 MAY be recomputed only as a contract
+  check; no predictive evaluation is permitted.
+- **FR-061**: B2 features MUST use only eligible Full Tape rows satisfying
+  `created_at <= forecast_origin - 60 seconds`; 15-second and zero-second cutoffs are
+  sensitivities. Provider cumulative fields without PIT proof MUST be excluded, open interest
+  MUST be treated as prior-session information, and `created_at` MUST remain an
+  `operational_availability_proxy`, not publication time.
+- **FR-062**: Primary B2 normalization MUST be by asset and 30-minute time band using only the
+  twenty sessions as historical information. It MUST use median/MAD, IQR and asset-level
+  fallbacks with explicit fallback labels, compute robust z-scores for five log-transformed core
+  features, define the score as the median of the three largest positive z-scores, and set the
+  secondary `unusual_event` threshold at the historical 95th percentile without RV30 selection.
+- **FR-063**: Sensitivities MUST include asset-only and exact-five-minute normalization,
+  60-minute bands, 90/95/97.5 percentiles and 15/0-second cutoffs. The primary definition
+  remains 30-minute bands, 95th percentile and 60 seconds; results MUST NOT be selected by
+  association with RV30.
+- **FR-064**: Calibration parameters MUST be estimated only from the twenty pre-Pilot-V2
+  sessions and then applied unchanged to Pilot V2. The output MUST include calibration bounds,
+  sample size, fallback, cutoff and source hashes for every Pilot V2 origin.
+- **FR-065**: B1Q MUST be recomputed for all twenty sessions using the repaired nested predicates
+  and the existing PIT quote contract. B1T MUST remain diagnostic-only. Global, asset, date,
+  session-tercile, route and instrument invariants MUST be asserted and fail closed.
+- **FR-066**: Quality roles MUST be recommended only from coverage, IV success, FMP/Full Tape
+  completeness, Massive PIT validity, integration consistency and stable missingness. RV30,
+  QLIKE, correlations, feature importance and any predictive result MUST be excluded.
+- **FR-067**: The literature evidence ledger MUST contain source-text coordinates or an explicit
+  limited-claim status for all ten studies before any method-freeze recommendation. Metadata-only
+  evidence MUST NOT support a strong methodological claim.
+- **FR-068**: Storage, download, decompression, filtering, aggregation, memory, retries,
+  failures and resumability MUST be measured for twenty sessions and used only to update
+  feasibility estimates; Phase 3F MUST NOT authorize a larger backfill automatically.
+- **FR-069**: The phase MUST emit the required calibration, B1, telemetry, quality, literature,
+  test and evidence-index artifacts under `artifacts/calibration_20d/` and `docs/`, while
+  preserving all V1/V2 artifacts and recording one of the four explicit final recommendations.
 
 ### Pre-registered evaluation strata
 
@@ -278,9 +521,9 @@ none may replace the single primary `Delta_Q` comparison. Training-only subsampl
 weighting, if ever used for a continuous target, must be documented while validation and
 final testing preserve the natural event prevalence:
 
-> Construct event and no-event forecast origins while preserving their natural prevalence.
-> Any training-only subsampling or weighting must be explicitly documented, and validation
-> and final testing must preserve the natural distribution.
+> Construct the full valid forecast-origin panel while preserving natural option-activity
+> prevalence. Any training-only subsampling or weighting must be explicitly documented, and
+> validation and final testing must preserve the natural distribution.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -300,10 +543,10 @@ final testing preserve the natural event prevalence:
 - **OptionQuote**: consolidated bid/ask observation with timestamp, bid, ask and conditions;
   absence is distinct from zero.
 - **ForecastOrigin**: asset and five-minute origin with the predictor availability cutoff,
-  event/no-event indicator and source trace.
+  `option_activity_present`, secondary `unusual_event` status and source trace.
 - **RealizedVarianceTarget**: thirty-minute future target, its one-minute close inputs,
   computation version and validity flags.
-- **BenchmarkRun**: frozen B0/B1/B2 configuration, split dates, purge/embargo, model,
+- **BenchmarkRun**: frozen B0/B1a/B2 configuration, split dates, purge/embargo, model,
   metrics, uncertainty and asset/regime coverage.
 - **ExecutionManifest**: sanitized run configuration, package versions, hashes, tests,
   evidence paths, decisions and stop-condition status.
@@ -319,21 +562,22 @@ final testing preserve the natural event prevalence:
   exact threshold is recorded in the frozen configuration.
 - **SC-003**: The audit records a complete pagination trace and exact blocker string for every
   provider/component failure; no partial response is labeled complete.
-- **SC-004**: The pilot reconstructs at least one event and one no-event origin for every
-  candidate and passes deterministic recomputation of the thirty-minute target on a traced
-  row sample.
+- **SC-004**: The pilot retains every valid five-minute origin for every candidate, passes
+  deterministic recomputation of the thirty-minute target on a traced row sample, and
+  reports natural option-activity prevalence without artificial balancing or a requirement
+  for no-operation origins.
 - **SC-005**: At least four and at most six assets pass the predeclared quality/coverage gate;
   if fewer pass, modeling does not start.
 - **SC-006**: Every predictor in the pilot has `available_at` no later than its forecast
   origin, or is excluded with a recorded reason.
 - **SC-007**: The literature matrix contains ten independently verifiable studies in the
   specified date range with all required fields populated or explicitly marked unavailable.
-- **SC-008**: B0, B1 and B2 use identical eligible origins and chronological splits; the final
-  test period remains untouched until the evaluation is frozen.
-- **SC-009**: Any claim of incremental value requires lower B2 QLIKE than B1 on the final
-  period, a 95% daily paired uncertainty interval for `QLIKE(B1)-QLIKE(B2)` above zero, a
-  predeclared minimum detectable effect, and consistency across the majority of frozen
-  assets and declared regimes.
+- **SC-008**: B0, B1a and B2 use identical eligible origins, target hashes and chronological
+  splits; the prospective holdout remains untouched until the development method is frozen.
+- **SC-009**: Any claim of incremental B2 value requires lower B2 QLIKE than B1a in
+  development, a 95% paired whole-day interval for `QLIKE(B1a)-QLIKE(B2)` above zero, the same
+  sign on the one-time holdout, Holm-adjusted confirmatory inference and no material systematic
+  reversal across the prespecified stability strata.
 - **SC-010**: A fresh local run and the Colab orchestration produce matching configuration,
   schema, quality and validation-manifest results without notebook-only state.
 - **SC-011**: All mandatory test classes run before any production backfill; a schema or
@@ -344,6 +588,48 @@ final testing preserve the natural event prevalence:
   Colab, Windows, Polars, PyArrow, DuckDB, LightGBM, scikit-learn, SHAP, Optuna, Pydantic,
   Ruff, Mypy and Pytest before runtime/dependency mutation is approved; version choice MUST
   be compatibility-first, not novelty-first.
+- **SC-014**: B1Q and B1T produce complete per-origin artifacts for all 2,840 origins, with
+  route, threshold, asset and session-segment coverage plus explicit missing reasons; no
+  route is selected using predictive performance.
+- **SC-015**: The all-assets common-history artifact contains 48 asset-date records, exact
+  component pass fields, candidate common-window calculations and an explicit statement that
+  monthly probes do not prove daily continuity.
+- **SC-016**: Each of ten literature rows resolves to a real source and passes field-level
+  verification; unverifiable rows cannot support frozen variables, benchmarks or claims.
+- **SC-017**: The extension request is emitted only when all stated B1a, PIT, common-history,
+  resumability, test and storage-margin gates pass; the request itself does not download data.
+- **SC-018**: Invalid nested-coverage evidence is archived and every recomputed route passes
+  monotonicity assertions globally and across every declared subgroup.
+- **SC-019**: The B1Q failure waterfall reconciles all 2,840 origins without unexplained false
+  values or unclassified losses.
+- **SC-020**: The controlled four-asset diagnostic contains 12 traced cases (four assets by
+  three session origins) with exact request/response and failure evidence, without secrets.
+- **SC-021**: The twenty-session availability artifact contains exactly 20 session records,
+  excludes the five Pilot V2 dates, downloads no Full Tape ZIP payload and does not claim PIT
+  from Range/Content-Range alone.
+- **SC-022**: Every literature row has an explicit evidence status and location; unresolved
+  claims cannot support benchmark or methodological decisions.
+- **SC-023**: The repaired B1Q matrix reconciles controlled/full observations, explains
+  INVALID_DTE and passes sequential first-failure and nested monotonicity assertions.
+- **SC-024**: The earnings contract classifies equities and ETFs correctly and keeps
+  dividends/distributions separate from earnings.
+- **SC-025**: The calibration manifest contains exactly twenty configured session records,
+  excludes all five Pilot V2 dates, records a SHA-256 and independent checkpoint for each valid
+  day, and reports no secret values or personal paths.
+- **SC-026**: The B2 calibration panel preserves all valid origins, uses natural prevalence,
+  passes the 60/15/0-second cutoff checks, and has no eligible row with `created_at` after its
+  cutoff.
+- **SC-027**: Calibration parameters are reproducible from the twenty-session history, expose
+  MAD/IQR/asset fallback usage, and apply unchanged to Pilot V2 without future or RV30-based
+  threshold selection.
+- **SC-028**: The twenty-session B1Q artifact passes nested monotonicity globally and across
+  every declared asset/date/session-tercile/route/instrument subgroup and reports explicit IV
+  failure reasons.
+- **SC-029**: Storage telemetry contains real per-day bytes, timings, memory and retry/failure
+  values plus mean/P95 projections for 3/6/12 months, with no automatic backfill authorization.
+- **SC-030**: The final calibration recommendation is one of
+  `AUTHORIZE_METHOD_FREEZE_AND_BACKFILL_PLAN`, `REVISE_CALIBRATION`, `REVISE_SCOPE` or
+  `STOP_PROJECT`, and remains blocked from models, QLIKE and final testing.
 
 ## Assumptions
 
@@ -367,3 +653,138 @@ final testing preserve the natural event prevalence:
   require recent verified studies.
 - The modular local package is authoritative and Colab is limited to orchestration,
   presentation and sanitized export.
+
+## Phase 4B implementation contract
+
+The retained 25-session development dataset MUST be repaired locally before any staged
+backfill. Primary FMP availability MUST select the latest underlying bar whose raw timestamp
+plus one minute is no later than the forecast origin; plus two minutes is a prespecified
+sensitivity. Both conventions MUST preserve the existing origin IDs, 31 target prices and
+30 RV30 returns. The source timestamp, availability timestamp and feature age MUST be retained.
+
+Unusual Whales features MUST use separate five-minute half-open windows
+`[origin - delay - 5m, origin - delay)` for delays 60, 120 and 300 seconds, and MUST require
+`max(executed_at, created_at) <= origin - delay` before aggregation. `created_at` MUST remain
+labelled an operational availability proxy and MUST NOT be called publication time.
+
+The canonical B2 field is `b2_within_bin_iv_change`. Its missingness and observation count MUST
+be preserved; it is optional and MUST NOT remove a primary B2 row. Known aliases, exact duplicate
+predictors and deterministic algebraic identities MUST be rejected by the feature registry, while
+high correlation alone MUST remain diagnostic rather than an automatic deletion rule.
+
+Phase 4B MUST emit nested B0, B0+B1Q, B0+B1Q+B2-core and exact-intersection matrices with
+deterministic ordering, identical target values on common origins and explicit exclusion reasons.
+Every session checkpoint MUST carry configuration, input, schema, request and output hashes and
+fail closed on corruption or duplicate output. A ten-session XNYS prospective holdout MUST be
+sealed strictly after the Phase 4B seal timestamp, marked `SEALED_NOT_ACQUIRED`, and blocked from
+reads until method freeze and human approval. No new provider request, backfill, model, tuning or
+performance metric is allowed in Phase 4B.
+
+## Phase 5 — Ninety-Session Preregistered RV30 Evaluation
+
+This approved phase supersedes earlier acquisition and modeling prohibitions only after its
+Spec Kit consistency report has zero critical contradictions and its preregistration has been
+written and SHA-256 hashed. It does not authorize selecting specifications for a favorable
+result, reading an incomplete holdout session, deleting retained provider evidence, publishing
+externally, sending email, trading, or changing the frozen methods after holdout access.
+
+- **FR-070**: The study sample MUST contain exactly eighty XNYS development sessions from
+  2026-03-24 through 2026-07-17 and ten prospective holdout sessions on 2026-07-20 through
+  2026-07-24 and 2026-07-27 through 2026-07-31. The twenty-five retained sessions MUST be
+  reused only after hash verification; fifty-five additional development sessions are required.
+- **FR-071**: The canonical information sets MUST be nested on identical eligible origins:
+  B0 contains PIT underlying and market state; B1a adds Massive-reconstructed ATM IV; B2 adds
+  exactly the nine frozen trade-derived features listed in the approved design. B1b and B1c
+  remain enriched robustness benchmarks and MUST NOT be imputed to force coverage.
+- **FR-072**: The nine primary B2 features MUST be
+  `b2_log_trade_count`, `b2_unique_contract_share`, `b2_log_mean_trade_premium`,
+  `b2_log_max_trade_premium`, `b2_call_put_premium_imbalance_scaled`,
+  `b2_execution_side_premium_imbalance`, `b2_repeated_contract_premium_share`,
+  `b2_strike_concentration` and `b2_expiry_concentration`. Their definitions MUST be frozen
+  without consulting RV30, QLIKE or predictive results; provider cumulative fields remain
+  excluded.
+- **FR-073**: Primary B2 eligibility MUST use the half-open window ending sixty seconds before
+  the forecast origin and require both `executed_at` and `created_at` no later than that end.
+  Cutoffs of 120 and 300 seconds are prespecified sensitivities. `created_at` remains an
+  operational availability proxy, never publication time or evidence of trader intention.
+- **FR-074**: One canonical row MUST represent one asset at one valid five-minute forecast
+  origin. B0, B1a, B2 and RV30 comparisons MUST share identical `origin_id` values and target
+  hashes. Missing B1a or B2 inputs MUST receive an explicit reason and MUST NOT be silently
+  imputed, interpolated, balanced or converted to zero except for a mathematically defined
+  zero-denominator activity ratio.
+- **FR-075**: The confirmatory model MUST be Gamma GLM with its log link and strictly positive
+  forecasts. LightGBM with a frozen Gamma objective and grid MUST remain a challenger robustness
+  analysis and MUST NOT replace the confirmatory model because of a favorable outcome. All
+  preprocessing and tuning MUST be fit on training history only.
+- **FR-076**: The confirmatory estimands MUST be
+  `Delta_B1 = QLIKE(B0) - QLIKE(B1a)` and
+  `Delta_B2 = QLIKE(B1a) - QLIKE(B2)`, where positive values favor the expanded information
+  set and `Delta_B2` is primary. QLIKE is the primary loss; MAE and RMSE are secondary
+  descriptive metrics.
+- **FR-077**: Uncertainty MUST use a paired whole-day cluster bootstrap that keeps all assets
+  and forecast origins from a trading date together. Holm correction MUST apply to the two
+  confirmatory information-set comparisons. Bootstrap repetitions, random seeds, model grids,
+  forecast floor and fold dates MUST be frozen before QLIKE is computed.
+- **FR-078**: Development evaluation MUST use four expanding chronological outer folds:
+  train through 2026-05-19/test 2026-05-20–2026-06-03; train through
+  2026-06-03/test 2026-06-04–2026-06-17; train through 2026-06-17/test
+  2026-06-18–2026-07-02; and train through 2026-07-02/test 2026-07-06–2026-07-17.
+  Every boundary MUST purge and embargo at least the overlapping thirty-minute target horizon.
+- **FR-079**: The prospective holdout MUST remain `SEALED_NOT_ACQUIRED` until its sessions
+  complete and MUST be read analytically exactly once after preregistration, method freeze,
+  leakage tests, reproducibility tests and an explicit access-ledger transition. No method,
+  feature, asset or threshold may change after this read.
+- **FR-080**: Stability MUST be reported by asset, session tercile, development-defined
+  volatility regime, FMP +1/+2-minute availability and B2 60/120/300-second cutoff. Asset
+  eligibility MUST use only PIT validity, coverage, missingness and temporal stability, never
+  RV30 association, QLIKE, feature importance or preliminary predictive performance.
+- **FR-081**: Every registered B2 variant and every positive, negative or null result MUST be
+  retained. A supported edge requires the prespecified development contrast to be positive
+  with uncertainty excluding zero, the one-time holdout effect to have the same sign, and no
+  material systematic reversal in the prespecified stability strata.
+- **FR-082**: Raw ZIPs, Parquet data and provider caches MUST reside under the configured
+  `D:\MDS650` data roots. The run MUST stop before another acquisition batch if projected
+  minimum free space during the peak is below 80 GB. No raw evidence may be deleted before
+  hashes, manifests and reproducibility are independently verified.
+
+### Frozen compact B2 formulas
+
+For each eligible five-minute window:
+
+1. `b2_log_trade_count = log1p(option_trade_count_5m)`.
+2. `b2_unique_contract_share = unique_contract_count_5m / option_trade_count_5m`.
+3. `b2_log_mean_trade_premium =
+   log1p(total_premium_5m / option_trade_count_5m)`.
+4. `b2_log_max_trade_premium = log1p(max_trade_premium_5m)`.
+5. `b2_call_put_premium_imbalance_scaled =
+   (call_premium_5m - put_premium_5m) /
+   (call_premium_5m + put_premium_5m)`.
+6. `b2_execution_side_premium_imbalance =
+   ask_side_premium_share - bid_side_premium_share`.
+7. `b2_repeated_contract_premium_share =
+   repeated_contract_premium / total_premium_5m`.
+8. `b2_strike_concentration =
+   maximum eligible trade count at one strike / option_trade_count_5m`.
+9. `b2_expiry_concentration =
+   maximum eligible trade count at one expiry / option_trade_count_5m`.
+
+A zero denominator yields documented zero only for a valid window with no eligible activity;
+missing provider data remains missing with an explicit reason.
+
+- **SC-031**: A frozen preregistration records the exact 80/10 session arrays, nine B2 features,
+  two nested estimands, model grids, folds, seeds, missingness policy, inference contract and
+  `holdout_reads=0`; its SHA-256 hash is recorded before any model fit or QLIKE computation.
+- **SC-032**: The development panel contains exactly eighty unique sessions, no holdout dates,
+  unique deterministic origin IDs, matching RV30 hashes across B0/B1a/B2 and no predictor later
+  than its origin.
+- **SC-033**: Automated tests prove that the nine B2 columns reproduce their frozen formulas
+  from eligible raw aggregates and that neither RV30 nor any loss or forecast column enters
+  feature construction.
+- **SC-034**: Gamma GLM and LightGBM produce finite strictly positive forecasts under identical
+  expanding folds; the paired day bootstrap is deterministic for the frozen seed and Holm
+  adjustment is reproducible.
+- **SC-035**: The holdout access ledger rejects early, mismatched and second reads, then records
+  exactly one authorized analytical read after all release gates pass.
+- **SC-036**: Final evidence reports both information-set deltas, uncertainty, multiplicity,
+  all prespecified stability strata, all registered variants and all positive, negative and
+  null results without post-holdout method changes.

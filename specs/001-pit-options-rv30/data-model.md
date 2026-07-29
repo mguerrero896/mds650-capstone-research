@@ -144,7 +144,7 @@ sequence if supplied.
 | `origin_start_utc` | timestamp | End of five-minute origin interval; exact origin close is `C(i,t)` |
 | `origin_start_ny` | timestamp | NY rendering |
 | `predictor_cutoff_utc` | timestamp | Latest admissible `available_at` |
-| `event_presence` | boolean | Event within configured origin window |
+| `option_activity_present` | boolean | At least one eligible trade; never an unusualness label |
 | `source_trace_ids` | list[string] | All source response references |
 
 Deduplication key: `(asset, origin_start_utc)`.
@@ -174,14 +174,16 @@ ambiguous. No interpolation, forward-fill or calendar-days-times-390 shortcut is
 | Field | Type | Rule |
 |---|---|---|
 | `benchmark_id` | string | Frozen configuration identifier |
-| `benchmark_level` | enum | `B0`, `B1`, `B2` |
+| `benchmark_level` | enum | `B0`, `B1a`, `B2`; `B1b`/`B1c` robustness only |
 | `eligible_origin_hash` | string | Same origins across nested benchmarks |
 | `split_definition` | object | Expanding chronological splits |
 | `purge_minutes`, `embargo_minutes` | integer | Both at least 30 for primary target |
 | `model_name`, `model_version` | string | Exact model specification |
 | `primary_loss` | enum | `QLIKE` |
-| `secondary_metrics` | list[string] | MAE and declared robustness metrics |
-| `uncertainty_method` | string | Daily paired bootstrap or declared alternative |
+| `secondary_metrics` | list[string] | MAE and RMSE |
+| `uncertainty_method` | string | Paired whole-day cluster bootstrap |
+| `multiplicity_method` | enum | `holm_two_confirmatory_comparisons` |
+| `model_role` | enum | `gamma_glm_confirmatory`, `lightgbm_robustness` |
 | `effect_size_threshold` | decimal | Frozen before final test |
 | `asset_regime_coverage` | object | Coverage and consistency results |
 | `decision_status` | enum | `incremental`, `null`, `inconclusive`, `blocked` |
@@ -191,3 +193,69 @@ ambiguous. No interpolation, forward-fill or calendar-days-times-390 shortcut is
 The manifest links the audit, pilot, benchmark, tests, configuration, package versions, raw
 hashes, source folder status, secret-presence gate, licensing status and exact blocker strings.
 It MUST be safe to share without provider tokens or raw licensed payloads.
+
+## StudySessionManifest
+
+| Field | Type | Rule |
+|---|---|---|
+| `calendar` | enum | `XNYS` |
+| `development_sessions` | list[date] | Exactly 80 dates, 2026-03-24 through 2026-07-17 |
+| `holdout_sessions` | list[date] | Exactly 10 dates, 2026-07-20 through 2026-07-31 |
+| `reused_sessions` | list[date] | Exactly 25 hash-verified retained dates |
+| `acquisition_sessions` | list[date] | Exactly 55 development dates absent from retained evidence |
+| `disjoint` | boolean | Must be true |
+| `manifest_sha256` | string | Lowercase 64-character SHA-256 |
+
+Development and holdout arrays are ordered, unique and disjoint. A holdout date is never a
+valid development acquisition input.
+
+## PreregistrationManifest
+
+| Field | Type | Rule |
+|---|---|---|
+| `status` | enum | `FROZEN_BEFORE_MODEL_OR_QLIKE`, then `METHOD_FROZEN` |
+| `session_manifest_sha256` | string | Must match StudySessionManifest |
+| `b2_feature_names` | list[string] | Exactly the nine names in FR-072 |
+| `estimands` | object | Exact `Delta_B1` and `Delta_B2` definitions |
+| `outer_folds` | list[object] | Exactly four ordered expanding folds |
+| `models` | object | Frozen Gamma GLM and LightGBM roles/grids |
+| `seed` | integer | 650 |
+| `bootstrap_repetitions` | integer | 10,000 |
+| `multiplicity` | enum | `holm_two_confirmatory_comparisons` |
+| `holdout_reads` | integer | Zero before release |
+| `preregistration_sha256` | string | Computed over canonical content excluding this field |
+
+## CompactB2FeatureRow
+
+| Field | Type | Rule |
+|---|---|---|
+| `origin_id` | string | Foreign key to ForecastOrigin |
+| `window_start_utc`, `window_end_utc` | timestamp | Five-minute half-open window ending at origin minus delay |
+| `delay_seconds` | enum | 60 primary; 120 and 300 sensitivity |
+| `eligible_trade_count` | integer | Reconstructed locally |
+| `b2_log_trade_count` | float | `log1p(eligible_trade_count)` |
+| `b2_unique_contract_share` | float | Unique contracts divided by eligible trades |
+| `b2_log_mean_trade_premium` | float | `log1p(total premium / eligible trades)` |
+| `b2_log_max_trade_premium` | float | `log1p(maximum eligible premium)` |
+| `b2_call_put_premium_imbalance_scaled` | float | Signed call/put premium ratio |
+| `b2_execution_side_premium_imbalance` | float | Ask-side share minus bid-side share |
+| `b2_repeated_contract_premium_share` | float | Repeated-contract premium divided by total premium |
+| `b2_strike_concentration` | float | Maximum one-strike trade share |
+| `b2_expiry_concentration` | float | Maximum one-expiry trade share |
+| `source_hashes` | list[string] | Full Tape evidence hashes |
+
+A zero denominator yields documented zero only when it represents no eligible activity; it
+never masks missing provider data. RV30, loss and forecast fields are prohibited inputs.
+
+## HoldoutAccessLedger
+
+| Field | Type | Rule |
+|---|---|---|
+| `status` | enum | `SEALED_NOT_ACQUIRED`, `ACQUIRED_NOT_READ`, `READ_ONCE` |
+| `holdout_sessions` | list[date] | Must match StudySessionManifest |
+| `method_freeze_sha256` | string | Must match the frozen development method |
+| `last_session_complete` | boolean | Must be true before read |
+| `holdout_reads` | integer | Transition `0 -> 1` only |
+| `authorized_at_utc` | timestamp/null | Recorded on the sole read |
+
+Any early, mismatched or second analytical read fails closed.
