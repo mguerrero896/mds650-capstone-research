@@ -13,6 +13,7 @@ import json
 import math
 import os
 import time as time_module
+from bisect import bisect_right
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, timedelta
 from pathlib import Path
@@ -225,10 +226,25 @@ def _compact_quotes(rows: Any) -> list[dict[str, Any]]:
 
 def latest_quote(cache: dict[str, Any], origin_ns: int) -> dict[str, Any] | None:
     """Select the last valid SIP quote at or before an origin."""
-    rows = [row for row in cache.get("results", []) if isinstance(row, dict) and isinstance(row.get("sip_timestamp"), int) and row["sip_timestamp"] <= origin_ns]
-    if not rows:
+    rows = cache.get("results", [])
+    timestamps = cache.get("_sip_timestamps")
+    if not isinstance(timestamps, list):
+        rows = sorted(
+            (
+                row
+                for row in rows
+                if isinstance(row, dict)
+                and isinstance(row.get("sip_timestamp"), int)
+            ),
+            key=lambda row: row["sip_timestamp"],
+        )
+        timestamps = [row["sip_timestamp"] for row in rows]
+        cache["results"] = rows
+        cache["_sip_timestamps"] = timestamps
+    index = bisect_right(timestamps, origin_ns) - 1
+    if index < 0:
         return None
-    row = max(rows, key=lambda value: value["sip_timestamp"])
+    row = rows[index]
     bid, ask = row.get("bid_price"), row.get("ask_price")
     if not isinstance(bid, int | float) or not isinstance(ask, int | float) or bid <= 0 or ask <= bid:
         return {"missing_reason": "INVALID_SPREAD", "sip_timestamp": row["sip_timestamp"]}

@@ -173,6 +173,64 @@ def test_massive_request_retries_transient_transport_failure() -> None:
     assert request_id == "request-1"
 
 
+def test_b1q_fetch_retains_paths_instead_of_quote_payloads(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    cache_path = tmp_path / "quote.json"
+    cache_path.write_text("{}", encoding="utf-8")
+    monkeypatch.setattr(
+        b1_builder.closure,
+        "fetch_contract_day",
+        lambda job, key: {
+            "http_status": 200,
+            "cache_path": str(cache_path),
+            "source_request_hash": "abc",
+            "results": [{"sip_timestamp": 999}],
+        },
+    )
+    config = b1_builder.B1BuildConfig(
+        output_root=tmp_path / "output",
+        cache_root=tmp_path / "cache",
+        sessions=("2026-03-24",),
+    )
+
+    result = b1_builder._fetch_quotes(
+        {
+            ("AAPL", "2026-03-24"): [
+                {
+                    "contract": "O:AAPL260417C00100000",
+                    "expiry": "2026-04-17",
+                    "strike": 100.0,
+                    "option_type": "call",
+                }
+            ]
+        },
+        "secret-not-emitted",
+        config,
+    )
+
+    assert result[
+        ("AAPL", "2026-03-24", "O:AAPL260417C00100000")
+    ] == (cache_path, "abc")
+
+
+def test_latest_quote_builds_a_sorted_asof_index() -> None:
+    cache = {
+        "results": [
+            {"sip_timestamp": 1_003, "bid_price": 1.0, "ask_price": 1.2},
+            {"sip_timestamp": 999, "bid_price": 0.8, "ask_price": 1.0},
+            {"sip_timestamp": 1_001, "bid_price": 0.9, "ask_price": 1.1},
+        ]
+    }
+
+    quote = b1_closure.latest_quote(cache, 1_002)
+
+    assert quote is not None
+    assert quote["sip_timestamp"] == 1_001
+    assert cache["_sip_timestamps"] == [999, 1_001, 1_003]
+
+
 def test_fmp_list_request_retries_and_rejects_non_list_payload() -> None:
     calls = 0
 

@@ -9,6 +9,7 @@ import time as time_module
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from datetime import date, timedelta
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -176,12 +177,12 @@ def _fetch_quotes(
     contracts: dict[tuple[str, str], list[dict[str, Any]]],
     massive_key: str,
     config: B1BuildConfig = DEFAULT_CONFIG,
-) -> dict[tuple[str, str, str], dict[str, Any]]:
+) -> dict[tuple[str, str, str], tuple[Path, str]]:
     """Fetch each resolved contract-day once into the V2-only cache."""
     config.cache_root.mkdir(parents=True, exist_ok=True)
     closure.CACHE = config.cache_root
     jobs = [(asset, day, contract) for (asset, day), values in contracts.items() for contract in values]
-    output: dict[tuple[str, str, str], dict[str, Any]] = {}
+    output: dict[tuple[str, str, str], tuple[Path, str]] = {}
     with ThreadPoolExecutor(max_workers=8) as executor:
         futures = {executor.submit(closure.fetch_contract_day, job, massive_key): job for job in jobs}
         for future in as_completed(futures):
@@ -191,8 +192,25 @@ def _fetch_quotes(
                 raise RuntimeError(
                     f"B1Q_QUOTE_CACHE_HTTP_FAILURE:{asset}:{day}"
                 )
-            output[(asset, day, contract["contract"])] = cache
+            cache_path = Path(str(cache.get("cache_path", "")))
+            source_hash = cache.get("source_request_hash")
+            if not cache_path.is_file() or not isinstance(source_hash, str):
+                raise RuntimeError(f"B1Q_QUOTE_CACHE_EVIDENCE_MISSING:{asset}:{day}")
+            output[(asset, day, contract["contract"])] = (
+                cache_path,
+                source_hash,
+            )
     return output
+
+
+@lru_cache(maxsize=64)
+def _load_quote_cache(path: Path) -> dict[str, Any]:
+    """Load one contract-day cache with bounded process memory."""
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict) or payload.get("http_status") != 200:
+        raise RuntimeError(f"B1Q_QUOTE_CACHE_INVALID:{path.name}")
+    payload["results"] = closure._compact_quotes(payload.get("results", []))
+    return payload
 
 
 def _first_failure(iv_rows: list[dict[str, Any]], summary: dict[str, Any]) -> str:
@@ -261,7 +279,9 @@ def main(config: B1BuildConfig = DEFAULT_CONFIG) -> None:
     fmp_key, massive_key = _secret("FMP_API_KEY"), _secret("MASSIVE_API_KEY")
     rates, dividend_yields = _rates_and_dividends(fmp_key, origins, config)
     contracts = _resolve_contracts(origins, massive_key)
-    quote_caches = _fetch_quotes(contracts, massive_key, config)
+    quote_cache_refs = _fetch_quotes(contracts, massive_key, config)
+    _load_quote_cache.cache_clear()
+    origins = origins.sort(["asset", "session_date", "forecast_origin_utc"])
     rows: list[dict[str, Any]] = []
     attempt_rows: list[dict[str, Any]] = []
     failures: list[dict[str, Any]] = []
@@ -271,9 +291,12 @@ def main(config: B1BuildConfig = DEFAULT_CONFIG) -> None:
         dividend_yield = dividend_yields.get((asset, day), 0.0)
         iv_rows: list[dict[str, Any]] = []
         for contract in contracts.get((asset, day), []):
-            cache = quote_caches[(asset, day, contract["contract"])]
+            cache_path, source_hash = quote_cache_refs[
+                (asset, day, contract["contract"])
+            ]
+            cache = _load_quote_cache(cache_path)
             quote = closure.latest_quote(cache, int(origin["origin_ns"]))
-            attempt: dict[str, Any] = {**contract, "asset": asset, "session_date": day, "origin_id": origin["origin_id"], "forecast_origin_utc": origin["forecast_origin_utc"].isoformat(), "forecast_origin_ns": int(origin["origin_ns"]), "spot": float(origin["spot"]), "moneyness": float(contract["strike"]) / float(origin["spot"]), "rate": rate, "rate_source_date": rate_source_date, "dividend_yield": dividend_yield, "dividend_assumption": "PRE_ORIGIN_TRAILING_DECLARATIONS" if dividend_yield > 0 else "NO_PRE_ORIGIN_DIVIDEND_Q_ZERO", "source_request_hash": cache.get("source_request_hash"), "iv_success": False, "iv": None, "failure_reason": "NO_QUOTE_BEFORE_ORIGIN"}
+            attempt: dict[str, Any] = {**contract, "asset": asset, "session_date": day, "origin_id": origin["origin_id"], "forecast_origin_utc": origin["forecast_origin_utc"].isoformat(), "forecast_origin_ns": int(origin["origin_ns"]), "spot": float(origin["spot"]), "moneyness": float(contract["strike"]) / float(origin["spot"]), "rate": rate, "rate_source_date": rate_source_date, "dividend_yield": dividend_yield, "dividend_assumption": "PRE_ORIGIN_TRAILING_DECLARATIONS" if dividend_yield > 0 else "NO_PRE_ORIGIN_DIVIDEND_Q_ZERO", "source_request_hash": source_hash, "iv_success": False, "iv": None, "failure_reason": "NO_QUOTE_BEFORE_ORIGIN"}
             if quote:
                 attempt["sip_timestamp"] = quote.get("sip_timestamp")
                 attempt["failure_reason"] = quote.get(
