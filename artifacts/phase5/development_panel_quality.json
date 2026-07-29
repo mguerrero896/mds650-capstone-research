@@ -1,0 +1,329 @@
+{
+  "by_asset": [
+    {
+      "asset": "AAPL",
+      "b0_source_coverage": 1.0,
+      "b1a_coverage": 0.973943661971831,
+      "b2_source_coverage": 1.0,
+      "minimum_tercile_b1a_coverage": 0.926,
+      "origins": 5680,
+      "quality_pass": true,
+      "sessions": 80
+    },
+    {
+      "asset": "AMZN",
+      "b0_source_coverage": 1.0,
+      "b1a_coverage": 0.9778169014084507,
+      "b2_source_coverage": 1.0,
+      "minimum_tercile_b1a_coverage": 0.9375,
+      "origins": 5680,
+      "quality_pass": true,
+      "sessions": 80
+    },
+    {
+      "asset": "META",
+      "b0_source_coverage": 1.0,
+      "b1a_coverage": 0.9772887323943662,
+      "b2_source_coverage": 1.0,
+      "minimum_tercile_b1a_coverage": 0.9355,
+      "origins": 5680,
+      "quality_pass": true,
+      "sessions": 80
+    },
+    {
+      "asset": "MSFT",
+      "b0_source_coverage": 1.0,
+      "b1a_coverage": 0.9783450704225352,
+      "b2_source_coverage": 1.0,
+      "minimum_tercile_b1a_coverage": 0.94,
+      "origins": 5680,
+      "quality_pass": true,
+      "sessions": 80
+    },
+    {
+      "asset": "NVDA",
+      "b0_source_coverage": 1.0,
+      "b1a_coverage": 0.8904929577464789,
+      "b2_source_coverage": 1.0,
+      "minimum_tercile_b1a_coverage": 0.6995,
+      "origins": 5680,
+      "quality_pass": true,
+      "sessions": 80
+    },
+    {
+      "asset": "QQQ",
+      "b0_source_coverage": 1.0,
+      "b1a_coverage": 0.7904929577464789,
+      "b2_source_coverage": 1.0,
+      "minimum_tercile_b1a_coverage": 0.516,
+      "origins": 5680,
+      "quality_pass": true,
+      "sessions": 80
+    },
+    {
+      "asset": "SPY",
+      "b0_source_coverage": 1.0,
+      "b1a_coverage": 0.6334507042253521,
+      "b2_source_coverage": 1.0,
+      "minimum_tercile_b1a_coverage": 0.233,
+      "origins": 5680,
+      "quality_pass": false,
+      "sessions": 80
+    },
+    {
+      "asset": "TSLA",
+      "b0_source_coverage": 1.0,
+      "b1a_coverage": 0.9130281690140845,
+      "b2_source_coverage": 1.0,
+      "minimum_tercile_b1a_coverage": 0.7635,
+      "origins": 5680,
+      "quality_pass": true,
+      "sessions": 80
+    }
+  ],
+  "by_session_tercile": [
+    {
+      "asset": "AAPL",
+      "b1a_coverage": 0.926,
+      "origins": 2000,
+      "session_tercile": "first"
+    },
+    {
+      "asset": "AAPL",
+      "b1a_coverage": 1.0,
+      "origins": 1600,
+      "session_tercile": "last"
+    },
+    {
+      "asset": "AAPL",
+      "b1a_coverage": 1.0,
+      "origins": 2080,
+      "session_tercile": "middle"
+    },
+    {
+      "asset": "AMZN",
+      "b1a_coverage": 0.9375,
+      "origins": 2000,
+      "session_tercile": "first"
+    },
+    {
+      "asset": "AMZN",
+      "b1a_coverage": 0.999375,
+      "origins": 1600,
+      "session_tercile": "last"
+    },
+    {
+      "asset": "AMZN",
+      "b1a_coverage": 1.0,
+      "origins": 2080,
+      "session_tercile": "middle"
+    },
+    {
+      "asset": "META",
+      "b1a_coverage": 0.9355,
+      "origins": 2000,
+      "session_tercile": "first"
+    },
+    {
+      "asset": "META",
+      "b1a_coverage": 1.0,
+      "origins": 1600,
+      "session_tercile": "last"
+    },
+    {
+      "asset": "META",
+      "b1a_coverage": 1.0,
+      "origins": 2080,
+      "session_tercile": "middle"
+    },
+    {
+      "asset": "MSFT",
+      "b1a_coverage": 0.94,
+      "origins": 2000,
+      "session_tercile": "first"
+    },
+    {
+      "asset": "MSFT",
+      "b1a_coverage": 1.0,
+      "origins": 1600,
+      "session_tercile": "last"
+    },
+    {
+      "asset": "MSFT",
+      "b1a_coverage": 0.9985576923076923,
+      "origins": 2080,
+      "session_tercile": "middle"
+    },
+    {
+      "asset": "NVDA",
+      "b1a_coverage": 0.6995,
+      "origins": 2000,
+      "session_tercile": "first"
+    },
+    {
+      "asset": "NVDA",
+      "b1a_coverage": 1.0,
+      "origins": 1600,
+      "session_tercile": "last"
+    },
+    {
+      "asset": "NVDA",
+      "b1a_coverage": 0.9899038461538462,
+      "origins": 2080,
+      "session_tercile": "middle"
+    },
+    {
+      "asset": "QQQ",
+      "b1a_coverage": 0.516,
+      "origins": 2000,
+      "session_tercile": "first"
+    },
+    {
+      "asset": "QQQ",
+      "b1a_coverage": 0.99,
+      "origins": 1600,
+      "session_tercile": "last"
+    },
+    {
+      "asset": "QQQ",
+      "b1a_coverage": 0.9009615384615385,
+      "origins": 2080,
+      "session_tercile": "middle"
+    },
+    {
+      "asset": "SPY",
+      "b1a_coverage": 0.233,
+      "origins": 2000,
+      "session_tercile": "first"
+    },
+    {
+      "asset": "SPY",
+      "b1a_coverage": 0.98625,
+      "origins": 1600,
+      "session_tercile": "last"
+    },
+    {
+      "asset": "SPY",
+      "b1a_coverage": 0.7471153846153846,
+      "origins": 2080,
+      "session_tercile": "middle"
+    },
+    {
+      "asset": "TSLA",
+      "b1a_coverage": 0.7635,
+      "origins": 2000,
+      "session_tercile": "first"
+    },
+    {
+      "asset": "TSLA",
+      "b1a_coverage": 1.0,
+      "origins": 1600,
+      "session_tercile": "last"
+    },
+    {
+      "asset": "TSLA",
+      "b1a_coverage": 0.9899038461538462,
+      "origins": 2080,
+      "session_tercile": "middle"
+    }
+  ],
+  "common_complete_origins": 38573,
+  "criteria": {
+    "b0_source_coverage": 1.0,
+    "b2_source_coverage": 1.0,
+    "minimum_asset_b1a_coverage": 0.5,
+    "minimum_session_tercile_b1a_coverage": 0.4,
+    "required_sessions": 80,
+    "retained_count_max": 6,
+    "retained_count_min": 4
+  },
+  "duplicate_origins": 0,
+  "future_b0_rows": 0,
+  "future_b2_rows": 0,
+  "holdout_overlap": [],
+  "nominal_origins": 45440,
+  "ranking": [
+    {
+      "asset": "MSFT",
+      "b0_source_coverage": 1.0,
+      "b1a_coverage": 0.9783450704225352,
+      "b2_source_coverage": 1.0,
+      "minimum_tercile_b1a_coverage": 0.94,
+      "origins": 5680,
+      "quality_pass": true,
+      "sessions": 80
+    },
+    {
+      "asset": "AMZN",
+      "b0_source_coverage": 1.0,
+      "b1a_coverage": 0.9778169014084507,
+      "b2_source_coverage": 1.0,
+      "minimum_tercile_b1a_coverage": 0.9375,
+      "origins": 5680,
+      "quality_pass": true,
+      "sessions": 80
+    },
+    {
+      "asset": "META",
+      "b0_source_coverage": 1.0,
+      "b1a_coverage": 0.9772887323943662,
+      "b2_source_coverage": 1.0,
+      "minimum_tercile_b1a_coverage": 0.9355,
+      "origins": 5680,
+      "quality_pass": true,
+      "sessions": 80
+    },
+    {
+      "asset": "AAPL",
+      "b0_source_coverage": 1.0,
+      "b1a_coverage": 0.973943661971831,
+      "b2_source_coverage": 1.0,
+      "minimum_tercile_b1a_coverage": 0.926,
+      "origins": 5680,
+      "quality_pass": true,
+      "sessions": 80
+    },
+    {
+      "asset": "TSLA",
+      "b0_source_coverage": 1.0,
+      "b1a_coverage": 0.9130281690140845,
+      "b2_source_coverage": 1.0,
+      "minimum_tercile_b1a_coverage": 0.7635,
+      "origins": 5680,
+      "quality_pass": true,
+      "sessions": 80
+    },
+    {
+      "asset": "NVDA",
+      "b0_source_coverage": 1.0,
+      "b1a_coverage": 0.8904929577464789,
+      "b2_source_coverage": 1.0,
+      "minimum_tercile_b1a_coverage": 0.6995,
+      "origins": 5680,
+      "quality_pass": true,
+      "sessions": 80
+    },
+    {
+      "asset": "QQQ",
+      "b0_source_coverage": 1.0,
+      "b1a_coverage": 0.7904929577464789,
+      "b2_source_coverage": 1.0,
+      "minimum_tercile_b1a_coverage": 0.516,
+      "origins": 5680,
+      "quality_pass": true,
+      "sessions": 80
+    }
+  ],
+  "selected_assets": [
+    "AAPL",
+    "AMZN",
+    "META",
+    "MSFT",
+    "NVDA",
+    "TSLA"
+  ],
+  "selection_uses_predictive_outcomes": false,
+  "status": "PASS",
+  "target_sha256_all": "753642916f5146df688369581c55af81fc86dd58ae3a2fc6a13ded8a1511a6cb",
+  "target_sha256_common": "4eb4ab086800f75f873fc56e01fb831151fbd79a29c3aea578c7fbd48897f889"
+}
