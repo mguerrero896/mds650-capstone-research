@@ -332,12 +332,12 @@ explicitly attributed to non-IV B0/B1Q coverage rather than optional IV missingn
 ## Phase 9: User Story 2 — Eighty-session PIT development panel (Priority: P1)
 
 - [ ] T170 [US2] Acquire only the 55 missing development Full Tape sessions resumably into `D:\MDS650\raw` and write per-session manifests under `D:\MDS650\manifests`.
-- [ ] T171 [P] [US2] Build exact-session FMP B0 sources for the 55 missing dates in `D:\MDS650\data\fmp` using +1 primary and +2 sensitivity availability.
+- [x] T171 [P] [US2] Build exact-session FMP B0 sources for the 55 missing dates in `D:\MDS650\data\fmp` using +1 primary and +2 sensitivity availability.
 - [ ] T172 [P] [US2] Build Massive B1Q contract-day caches and origin ATM-IV rows for the 55 missing dates in `D:\MDS650\cache\massive` and `D:\MDS650\data\b1q`.
 - [ ] T173 [US2] Reconcile 25 reused plus 55 new sessions and emit `artifacts/phase5/development_source_manifest_80d.json` with no holdout dates.
-- [ ] T174 [P] [US2] Add failing exact-formula, zero-denominator, target-blind and cutoff tests in `tests/unit/test_phase5_features.py`.
-- [ ] T175 [US2] Implement only the nine frozen compact B2 formulas by reusing Phase 4B eligibility logic in `src/mds650/phase5_features.py`.
-- [ ] T176 [P] [US2] Add failing unique-origin, PIT, common-row, target-hash, missing-reason and no-holdout tests in `tests/contract/test_phase5_panel.py`.
+- [x] T174 [P] [US2] Add failing exact-formula, zero-denominator, target-blind and cutoff tests in `tests/unit/test_phase5_features.py`.
+- [x] T175 [US2] Implement only the nine frozen compact B2 formulas by reusing Phase 4B eligibility logic in `src/mds650/phase5_features.py`.
+- [x] T176 [P] [US2] Add failing unique-origin, PIT, common-row, target-hash, missing-reason and no-holdout tests in `tests/contract/test_phase5_panel.py`.
 - [ ] T177 [US2] Build `artifacts/phase5/common_development_80d.parquet` from identical B0/B1a/B2/RV30 origins in `scripts/build_phase5_common_panel.py`.
 - [ ] T178 [US2] Write coverage, missingness, timestamp and session-segment diagnostics to `artifacts/phase5/development_panel_quality.json`, freeze four to six eligible assets using quality/PIT rules only, and fail when fewer than four pass.
 
