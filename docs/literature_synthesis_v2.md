@@ -7,9 +7,9 @@ intraday realised-volatility forecasting and benchmark comparisons.
 
 ## Verification boundary
 
-Nine primary-source retrieval attempts were made for the ten DOI records using
-publisher, working-paper or open-access routes. Five rows currently have
-`VERIFIED_FULL_TEXT` evidence (LIT-001, LIT-002, LIT-003, LIT-006 and LIT-010); two are
+Ten primary-source retrieval attempts were made for the ten DOI records using
+publisher, working-paper or open-access routes. Six rows currently have
+`VERIFIED_FULL_TEXT` evidence (LIT-001, LIT-002, LIT-003, LIT-006, LIT-008 and LIT-010); one is
 `VERIFIED_ABSTRACT_ONLY` and three are
 `VERIFIED_PUBLISHER_METADATA_ONLY`. The ledger therefore does **not** support
 strong claims for every study. Exact numerical claims are permitted only for
@@ -46,6 +46,11 @@ specific ML model dominates in this project, or that a vendor timestamp is PIT.
 Those claims remain outside the evidence base. HAR and QLIKE are therefore
 motivated as candidates, not frozen methods.
 
-Status: **PARTIAL / insufficient for a strong final methodology claim**. At least
-six full-text rows must be verified, with page/section/table evidence, before the
-literature gate can become YES.
+Status: **MINIMUM_FULL_TEXT_THRESHOLD_MET / remaining-claim limits active**. Six
+full-text rows now have page/section/table evidence, satisfying the minimum
+literature gate. The remaining abstract/metadata rows cannot support frozen
+variables, exact numerical rankings or final methodology claims.
+
+The Phase 4A helper separately reports `sufficient_for_strong_all_claims=false`
+until eight rows have full text. That is a preferred stronger threshold, not a
+contradiction of this six-row minimum gate.

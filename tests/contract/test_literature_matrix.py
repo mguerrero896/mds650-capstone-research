@@ -90,8 +90,8 @@ def test_matrix_has_unique_stable_identifiers_and_no_generic_superiority_claim()
     assert "hard to beat" not in text
 
 
-def test_lit008_excludes_table_counts_without_full_text_evidence() -> None:
-    """Keep the abstract-only coherent-HAR row within its evidence boundary."""
+def test_lit008_excludes_unrecovered_table_counts() -> None:
+    """Keep coherent-HAR claims within the retained evidence boundary."""
     row = next(row for row in _rows() if row["study_id"] == "LIT-008")
     assert "99%" not in row["result"]
     assert "87%" not in row["result"]
