@@ -15,12 +15,13 @@ are validated.
 ## 1. Financial Modeling Prep (FMP)
 
 - Base URL: `https://financialmodelingprep.com`
-- Auth: canonical documented form is query param `?apikey=YOUR_KEY` (`&apikey=`
-  if other params exist). The corrected auditor uses this form.
-- Do NOT use `Authorization: Bearer` with FMP — not supported.
+- Auth: FMP documents both query `?apikey=YOUR_KEY` (`&apikey=` if other
+  parameters exist) and header `apikey: YOUR_KEY`. Phase 5 uses the query form
+  so the sanitized request manifest can record the non-secret parameters.
+- Do NOT use `Authorization: Bearer` with FMP — it is not a documented form.
 - Example (1-minute intraday bars):
-  `GET https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL`
-  with header `apikey: YOUR_KEY`. Newer "stable" paths live under
+  `GET https://financialmodelingprep.com/stable/historical-chart/1min?symbol=AAPL&apikey=YOUR_KEY`.
+  Newer "stable" paths live under
   `/stable/...` (e.g. `/stable/earnings-calendar`).
 - Error semantics: 401 = bad/missing key; 403 = endpoint not in plan
   (earnings calendar and long history are premium-tier datasets).
