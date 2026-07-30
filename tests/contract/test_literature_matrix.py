@@ -73,6 +73,15 @@ def test_matrix_schema_and_verification_fields_are_nonempty() -> None:
             assert row[field].strip(), f"empty {field} for {row['study_id']}"
 
 
+def test_matrix_rows_match_the_contract_width() -> None:
+    """Reject CSV rows that would silently shift methodological fields."""
+    with MATRIX.open(encoding="utf-8", newline="") as handle:
+        rows = list(csv.reader(handle))
+    assert rows
+    header_width = len(rows[0])
+    assert all(len(row) == header_width for row in rows[1:])
+
+
 def test_matrix_has_unique_stable_identifiers_and_no_generic_superiority_claim() -> None:
     rows = _rows()
     assert len({row["doi_or_stable_url"] for row in rows}) == len(rows)
