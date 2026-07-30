@@ -1,0 +1,5 @@
+claim,source,evidence_location,evidence_strength,application
+RV30 requires 31 prices and 30 returns,src/mds650/targets.py; tests/unit/test_target.py,function and tests,VERIFIED_LOCAL_CONTRACT,primary target
+created_at is not documented as publication time,artifacts/pit/uw_created_at_semantics_v1.json,status/documentation fields,AUTHENTICATED_LIMITATION,proxy only
+overlapping targets require purge/embargo and day clustering,docs/temporal_validation_protocol_v2.md,protocol,PROJECT_DESIGN_REQUIREMENT,future validation
+"recent empirical studies name HAR, regularisation and tree candidates",docs/literature_evidence_ledger_v2.csv,study rows and evidence notes,MIXED; exact claims only full text,"candidate dossier, not selection"

@@ -90,6 +90,14 @@ def test_matrix_has_unique_stable_identifiers_and_no_generic_superiority_claim()
     assert "hard to beat" not in text
 
 
+def test_lit008_excludes_table_counts_without_full_text_evidence() -> None:
+    """Keep the abstract-only coherent-HAR row within its evidence boundary."""
+    row = next(row for row in _rows() if row["study_id"] == "LIT-008")
+    assert "99%" not in row["result"]
+    assert "87%" not in row["result"]
+    assert "exact table counts are excluded" in row["result"]
+
+
 def test_matrix_collectively_names_required_models() -> None:
     text = MATRIX.read_text(encoding="utf-8")
     for label, token in REQUIRED_MODEL_TOKENS.items():

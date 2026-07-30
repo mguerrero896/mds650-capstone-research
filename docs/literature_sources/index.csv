@@ -1,0 +1,11 @@
+study_id,category,primary_source,publication_year,verification_status,claim_scope
+LIT-001,intraday_realized_volatility,https://doi.org/10.1093/jjfinec/nbae014,2024,verified_primary_article,HAR reconciliation and QLIKE/MCS claims
+LIT-002,intraday_realized_volatility,https://doi.org/10.1002/for.3146,2024,verified_primary_article_and_full_text_table,Signed-jump deep-learning comparison
+LIT-003,ordinary_option_state,https://doi.org/10.1080/14697688.2025.2454623,2025,verified_primary_article,Option-surface features versus HAR
+LIT-004,benchmark_comparison,https://doi.org/10.1016/j.irfa.2024.103286,2024,verified_primary_record_metadata_only,ML/HAR horizon comparison remains metadata-level
+LIT-005,benchmark_comparison,https://doi.org/10.1287/mnsc.2023.01520,2025,verified_primary_record_with_full_text_followup,Automated volatility forecasting
+LIT-006,benchmark_comparison,https://doi.org/10.17016/FEDS.2025.061,2025,verified_primary_working_paper,Econometric and ML regime comparison
+LIT-007,benchmark_comparison,https://doi.org/10.1016/j.iref.2024.05.008,2024,verified_primary_record_with_full_text_followup,Cross-market shrinkage HAR
+LIT-008,benchmark_comparison,https://doi.org/10.1002/for.70114,2026,verified_primary_record_with_full_text_followup,Coherent HAR and QLIKE evaluation
+LIT-009,unusual_options_flow,https://doi.org/10.1016/j.jeconom.2025.106131,2026,verified_primary_publisher_record,Option-flow informed-trading decomposition only
+LIT-010,benchmark_comparison,https://doi.org/10.1002/for.70107,2026,verified_primary_article,Machine-learning RV forecasting in WTI
