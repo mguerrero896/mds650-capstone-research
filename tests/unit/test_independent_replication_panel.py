@@ -58,3 +58,22 @@ def test_persisted_origins_match_builder() -> None:
         "origin_id", "asset", "session_date", "forecast_origin_utc", "role"
     )
     assert persisted.equals(expected)
+
+
+def test_fmp_manifest_filters_provider_over_return_and_keeps_b0_warmup_only() -> None:
+    fmp = json.loads(
+        (ROOT / "artifacts/independent_replication/fmp_manifest.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    b0 = json.loads(
+        (ROOT / "artifacts/independent_replication/b0_training_manifest.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert fmp["status"] == "PASS_FMP_EXACT_SESSION"
+    assert fmp["record_count"] == 720
+    assert all(record["requested_date"] in record["returned_dates"] for record in fmp["records"])
+    assert b0["status"] == "PASS_B0_WARMUP_ONLY"
+    assert b0["target_outcome_read"] is False
+    assert b0["target_dates_read"] == []

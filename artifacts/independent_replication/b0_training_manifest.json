@@ -1,0 +1,27 @@
+{
+  "b0_features": [
+    "b0v2_log_spot",
+    "b0v2_underlying_return_5m",
+    "b0v2_underlying_rv_5m",
+    "b0v2_underlying_rv_30m",
+    "b0v2_log_dollar_volume_5m",
+    "b0v2_spy_return_5m",
+    "b0v2_spy_rv_30m",
+    "b0v2_qqq_return_5m",
+    "b0v2_qqq_rv_30m",
+    "b0v2_session_sine",
+    "b0v2_session_cosine",
+    "b0v2_asset_identity"
+  ],
+  "b0_sha256": "093891d12f727838d5d1dffda4e58bd92a0d4635ccb931c57c4f3f0ec47af775",
+  "manifest_sha256": "41743ffcc2710b31de28df483008f5fa22b193e967d8a6d50b521ffceebed269",
+  "origin_count": 25920,
+  "personal_paths_emitted": false,
+  "schema_version": "b2-independent-replication-b0-training-1.0",
+  "secret_values_emitted": false,
+  "session_count": 60,
+  "status": "PASS_B0_WARMUP_ONLY",
+  "target_dates_read": [],
+  "target_outcome_read": false,
+  "valid_target_count": 25920
+}
