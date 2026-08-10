@@ -1,0 +1,18 @@
+{
+  "attempt_count": 384912,
+  "attempts_sha256": "46d00be7de97e86a87726ab1bb5052795778928255d09956d1f1878fdf12cdd5",
+  "b1v2a_coverage": 0.9161235257603972,
+  "dte_bucket": "30-60",
+  "feature_sha256": "dc5f411da505a33b579639754a69e42ad42fbff0d13d0d8deba093590c50f485",
+  "manifest_sha256": "f21478d138c12da1414ce4c9e1dee9f4401de77ecf33c9d073415cb739e72ed1",
+  "origin_count": 38664,
+  "personal_paths_emitted": false,
+  "quote_age_seconds": 60,
+  "relative_spread_max": 0.25,
+  "route": "B1Q_MASSIVE",
+  "schema_version": "b2-independent-replication-b1-1.0",
+  "secret_values_emitted": false,
+  "status": "PASS_B1V2A_TARGET_FREE",
+  "success_count": 380377,
+  "target_outcome_read": false
+}
