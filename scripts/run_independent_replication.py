@@ -10,7 +10,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -196,7 +196,7 @@ def read_target_once() -> None:
             "target_read_count": 1,
             "target_dates": list(window["target_dates"]),
             "target_outcome_read": True,
-            "started_at_utc": datetime.now().astimezone().isoformat(),
+            "started_at_utc": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
             "secret_values_emitted": False,
             "personal_paths_emitted": False,
         }
