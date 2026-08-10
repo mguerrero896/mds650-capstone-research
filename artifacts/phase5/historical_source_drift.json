@@ -1,0 +1,40 @@
+{
+  "schema_version": "phase5-historical-source-drift-1.0",
+  "status": "ACKNOWLEDGED_POST_HOLDOUT_SOURCE_DRIFT",
+  "phase5_method_freeze_rewritten": false,
+  "phase6_requires_independent_source_freeze": true,
+  "mismatch_count": 6,
+  "records": [
+    {
+      "path": "scripts/build_b2_calibration_20d.py",
+      "frozen_sha256": "32a27f70a644ae1d0e98e94a041c1e588f5d77ed42393139c846a76b0aacf142",
+      "current_sha256": "465ce6a345ffc917474398aeda3f288e01e6644dab53d8f2bcb7751d330974d1"
+    },
+    {
+      "path": "scripts/download_calibration_20d.py",
+      "frozen_sha256": "8725fb86a0d190c5c0345f1a8b87522661b91f8cab88df906829fa8114564dfb",
+      "current_sha256": "223a01287afb0afcd14e866c34ccf0c0d680408c3550293d109f7d5a47afe83f"
+    },
+    {
+      "path": "scripts/run_b1_calibration_20d.py",
+      "frozen_sha256": "7fb577315fe7f7809c981fe1cb144bb037cbde6ededf2e70f4a78f56d1af1c01",
+      "current_sha256": "fbf25d6b6a75c859cd68450db09b8b5305a845283678152e9f8fc8d0e1d1dd18"
+    },
+    {
+      "path": "scripts/run_b1_closure.py",
+      "frozen_sha256": "517525aa2f1b4ede9df44c71030ea994531a269dea5718cf0bb23600af24f1b1",
+      "current_sha256": "85ef1f439f248003c5a910782699e4332ecf054626b3ce56782a539b27e4ea55"
+    },
+    {
+      "path": "scripts/run_phase4b.py",
+      "frozen_sha256": "a75ae81e7b86821693dcde4133026a703a6020d78712de07ae215cc53c4b15fd",
+      "current_sha256": "c17f9aa8d6d5141bcab52922b80e3e9fe2e7c4b627ff43e0582c47f53d30baac"
+    },
+    {
+      "path": "scripts/run_phase5_holdout.py",
+      "frozen_sha256": "506aa217fc95f542cbeb8eb197bf537387ff3e59c4f82c04e2fe3acf61011e86",
+      "current_sha256": "0a20ffa8c2e9da47639e39c0f0d87d5690d8075ffac8c908fe83d4283fa4febb"
+    }
+  ],
+  "manifest_sha256": "f354939e621f2b67982e4258b6ca5c1acca8b5764c79490c761b4f5a2fe5b02a"
+}

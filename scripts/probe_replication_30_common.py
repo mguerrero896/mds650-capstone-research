@@ -78,6 +78,12 @@ def _fmp_day(client: httpx.Client, key: str, asset: str, day: date) -> dict[str,
     }
 
 
+def _spot_proxy(record: dict[str, object]) -> float | None:
+    """Return a numeric FMP spot proxy for the Massive probe."""
+    value = record.get("spot_proxy")
+    return float(value) if isinstance(value, (int, float)) else None
+
+
 def _origin_ns(day: date) -> int:
     """Return 12:00 New York as UTC nanoseconds."""
     local = datetime(day.year, day.month, day.day, 12, tzinfo=NEW_YORK)
@@ -183,7 +189,13 @@ def main() -> None:
         for day in dates:
             fmp = {asset: _fmp_day(client, fmp_key, asset, day) for asset in ASSETS}
             massive = {
-                asset: _massive_day(client, massive_key, asset, day, fmp[asset]["spot_proxy"])
+                asset: _massive_day(
+                    client,
+                    massive_key,
+                    asset,
+                    day,
+                    _spot_proxy(fmp[asset]),
+                )
                 for asset in ASSETS
             }
             records.append(

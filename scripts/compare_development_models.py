@@ -143,8 +143,12 @@ def _session_tercile() -> pl.Expr:
 def _with_regime(
     training: pl.DataFrame, testing: pl.DataFrame
 ) -> tuple[pl.DataFrame, dict[str, float]]:
-    lower = float(training["b0_rv_30m_lag"].quantile(1 / 3))
-    upper = float(training["b0_rv_30m_lag"].quantile(2 / 3))
+    lower_raw = training["b0_rv_30m_lag"].quantile(1 / 3)
+    upper_raw = training["b0_rv_30m_lag"].quantile(2 / 3)
+    if not isinstance(lower_raw, (int, float)) or not isinstance(upper_raw, (int, float)):
+        raise RuntimeError("DEVELOPMENT_VOLATILITY_CUTPOINTS_MISSING")
+    lower = float(lower_raw)
+    upper = float(upper_raw)
     if not np.isfinite([lower, upper]).all() or lower >= upper:
         raise RuntimeError("DEVELOPMENT_VOLATILITY_CUTPOINTS_INVALID")
     classified = testing.with_columns(
@@ -198,6 +202,14 @@ def _forecast_block(
     )
 
 
+def _required_mean(frame: pl.DataFrame, column: str) -> float:
+    """Return a numeric mean and reject empty or malformed contrast columns."""
+    value = frame[column].mean()
+    if not isinstance(value, (int, float)):
+        raise RuntimeError(f"DEVELOPMENT_CONTRAST_MEAN_MISSING:{column}")
+    return float(value)
+
+
 def _contrast(
     frame: pl.DataFrame,
     *,
@@ -226,8 +238,8 @@ def _contrast(
         "definition": f"QLIKE({baseline})-QLIKE({expanded})",
         "positive_direction": "expanded_information_set_better",
         "result_sign": "POSITIVE" if estimate > 0 else "NEGATIVE" if estimate < 0 else "ZERO",
-        "baseline_mean_qlike": float(paired["baseline_loss"].mean()),
-        "expanded_mean_qlike": float(paired["expanded_loss"].mean()),
+        "baseline_mean_qlike": _required_mean(paired, "baseline_loss"),
+        "expanded_mean_qlike": _required_mean(paired, "expanded_loss"),
         **inference,
     }
 

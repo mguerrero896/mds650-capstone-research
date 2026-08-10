@@ -24,6 +24,30 @@ PROJECTED_PEAK_BYTES = 150 * GIB
 DOWNLOADER: Any = importlib.import_module("download_calibration_20d")
 
 
+def _required_int(value: Any, field: str) -> int:
+    """Return a numeric manifest field or fail closed."""
+    if isinstance(value, bool):
+        raise RuntimeError(f"ACQUISITION_FIELD_INVALID:{field}")
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float):
+        return int(value)
+    if isinstance(value, str):
+        return int(value)
+    raise RuntimeError(f"ACQUISITION_FIELD_INVALID:{field}")
+
+
+def _required_float(value: Any, field: str) -> float:
+    """Return a numeric manifest field or fail closed."""
+    if isinstance(value, bool):
+        raise RuntimeError(f"ACQUISITION_FIELD_INVALID:{field}")
+    if isinstance(value, (int, float)):
+        return float(value)
+    if isinstance(value, str):
+        return float(value)
+    raise RuntimeError(f"ACQUISITION_FIELD_INVALID:{field}")
+
+
 def _json(path: Path) -> dict[str, Any]:
     """Load one JSON object."""
     payload = json.loads(path.read_text(encoding="utf-8"))
@@ -171,10 +195,12 @@ def main() -> None:
             "role": "warmup" if day_text in set(window["warmup_dates"]) else "target",
             "completed_at_utc": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
             "raw_sha256": str(download["sha256"]),
-            "raw_bytes": int(download["bytes"]),
+            "raw_bytes": _required_int(download.get("bytes"), "bytes"),
             "http_status": download.get("http_status"),
-            "download_attempts": int(download["attempts"]),
-            "download_seconds": float(download["download_seconds"]),
+            "download_attempts": _required_int(download.get("attempts"), "attempts"),
+            "download_seconds": _required_float(
+                download.get("download_seconds"), "download_seconds"
+            ),
             "reused_raw_archive": bool(download["reused_raw_archive"]),
             "rows_seen": int(filtered["rows_seen"]),
             "rows_retained": int(filtered["rows_retained"]),
