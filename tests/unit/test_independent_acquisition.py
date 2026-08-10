@@ -55,6 +55,25 @@ def test_invalid_acquisition_role_fails_closed() -> None:
         acquisition._selected_dates({"all_dates": []}, "unexpected")
 
 
+def test_exclusion_requires_stable_provider_incident(tmp_path: Path) -> None:
+    incident = tmp_path / "2025-04-04_crc_failure.json"
+    incident.write_text(
+        json.dumps(
+            {
+                "status": "BLOCKED_PROVIDER_ARCHIVE_CORRUPT",
+                "provider_artifact_stable_across_retries": True,
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    assert acquisition._validated_exclusions(
+        ["2025-04-04"], [date(2025, 4, 4)], tmp_path
+    ) == {date(2025, 4, 4)}
+    with pytest.raises(RuntimeError, match="REPLICATION_EXCLUSION_NOT_PROVIDER_BLOCKED"):
+        acquisition._validated_exclusions(["2025-04-03"], [date(2025, 4, 3)], tmp_path)
+
+
 def test_manifest_hash_drift_blocks_acquisition_resume() -> None:
     with pytest.raises(RuntimeError, match="REPLICATION_PROVIDER_MANIFEST_HASH_INVALID"):
         acquisition._validate_acquisition_manifest(

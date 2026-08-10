@@ -190,6 +190,51 @@ def _selected_dates(window: Mapping[str, Any], role: str) -> list[date]:
     return [item for item in all_dates if item in set(selected)]
 
 
+def _validated_exclusions(
+    values: list[str], allowed_dates: list[date], incident_root: Path = INCIDENT_ROOT
+) -> set[date]:
+    """Validate explicit date exclusions against stable provider incidents.
+
+    Parameters
+    ----------
+    values:
+        ISO dates explicitly requested for exclusion.
+    allowed_dates:
+        Dates in the frozen acquisition allow-list.
+    incident_root:
+        Sanitized provider-incident directory.
+
+    Returns
+    -------
+    set[datetime.date]
+        Dates whose prior stable provider-archive incident justifies exclusion.
+
+    Raises
+    ------
+    RuntimeError
+        If a date is outside the frozen window or lacks the exact stable
+        provider-archive blocker required for an exclusion.
+    """
+    allowed = set(allowed_dates)
+    excluded: set[date] = set()
+    for value in values:
+        try:
+            day = date.fromisoformat(value)
+        except ValueError as exc:
+            raise RuntimeError(f"REPLICATION_EXCLUSION_DATE_INVALID:{value}") from exc
+        if day not in allowed:
+            raise RuntimeError(f"REPLICATION_EXCLUSION_OUTSIDE_WINDOW:{value}")
+        try:
+            _raise_if_provider_archive_blocked(value, incident_root)
+        except RuntimeError as exc:
+            if str(exc) == f"REPLICATION_PROVIDER_ARCHIVE_BLOCKED:{value}":
+                excluded.add(day)
+                continue
+            raise
+        raise RuntimeError(f"REPLICATION_EXCLUSION_NOT_PROVIDER_BLOCKED:{value}")
+    return excluded
+
+
 def _parquet_files(day: date, config: Phase5StorageConfig) -> list[dict[str, Any]]:
     """Return hashed Parquet partitions for one completed day."""
     rows: list[dict[str, Any]] = []
@@ -250,6 +295,16 @@ def main() -> None:
             "IN_PROGRESS until all dates pass."
         ),
     )
+    parser.add_argument(
+        "--exclude-session",
+        action="append",
+        default=[],
+        metavar="YYYY-MM-DD",
+        help=(
+            "Exclude only a date with a stable provider-archive incident; "
+            "never changes frozen counts."
+        ),
+    )
     arguments = parser.parse_args()
     window = _json(WINDOW)
     method_freeze = _json(METHOD_FREEZE)
@@ -263,6 +318,8 @@ def main() -> None:
         raise RuntimeError("REPLICATION_STORAGE_PREFLIGHT_INVALID")
     dates = _selected_dates(window, "all")
     selected_dates = _selected_dates(window, arguments.role)
+    exclusions = _validated_exclusions(arguments.exclude_session, dates)
+    selected_dates = [item for item in selected_dates if item not in exclusions]
     config = Phase5StorageConfig(
         sessions=tuple(dates),
         excluded_dates=frozenset(),

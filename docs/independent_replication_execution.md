@@ -44,6 +44,10 @@ When a provider archive blocks a warm-up date, the acquisition script may be
 run with `--role target` to materialize only the frozen target bodies. This
 mode never marks the 90-session manifest `PASS`, never bypasses the blocked
 date, and cannot build features, read RV30, calculate QLIKE or fit a model.
+The remaining warm-up bodies may be resumed with `--role warmup
+--exclude-session YYYY-MM-DD` only when that date has the exact stable provider
+archive incident; the exclusion is explicit, hash-audited and leaves the
+frozen window incomplete.
 
 The independent model parameters are frozen in
 `artifacts/independent_replication/parameter_freeze.json`. They are the
