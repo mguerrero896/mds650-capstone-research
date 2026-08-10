@@ -43,6 +43,34 @@ def test_fmp_historical_ranges_are_chunked_without_truncation() -> None:
     assert len(rows) == 2
 
 
+def test_contract_day_cache_loader_reads_each_contract_once(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """One asset-day reuses each quote cache across all forecast origins."""
+    calls: list[str] = []
+
+    def fake_json(path: Path) -> dict[str, Any]:
+        calls.append(str(path))
+        return {"cache_path": str(path)}
+
+    monkeypatch.setattr(b1_script, "_json", fake_json)
+    contracts = [
+        {"contract": "O:AAPL250415C00100000"},
+        {"contract": "O:AAPL250415P00100000"},
+    ]
+    cache_paths = {
+        ("AAPL", "2025-03-03", row["contract"]): f"D:/cache/{index}.json"
+        for index, row in enumerate(contracts)
+    }
+
+    loaded = b1_script._load_contract_day_caches(
+        "AAPL", "2025-03-03", contracts, cache_paths
+    )
+
+    assert calls == [str(Path("D:/cache/0.json")), str(Path("D:/cache/1.json"))]
+    assert sorted(loaded) == sorted(row["contract"] for row in contracts)
+
+
 def test_historical_contract_resolution_records_expired_fallback(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

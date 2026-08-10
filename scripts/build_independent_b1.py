@@ -222,6 +222,21 @@ def _fmp_date_range_rows(
     return rows
 
 
+def _load_contract_day_caches(
+    asset: str,
+    day: str,
+    day_contracts: list[dict[str, Any]],
+    cache_paths: dict[tuple[str, str, str], str],
+) -> dict[str, dict[str, Any]]:
+    """Load each contract-day quote cache once for all origins in that day."""
+    return {
+        str(contract["contract"]): _json(
+            Path(cache_paths[(asset, day, str(contract["contract"]))])
+        )
+        for contract in day_contracts
+    }
+
+
 def _rates_and_dividends(
     client: httpx.Client,
     fmp_key: str,
@@ -374,73 +389,80 @@ def build_b1() -> None:
             del futures, batch
             gc.collect()
     attempts: list[dict[str, Any]] = []
-    origin_rows = origins.sort(["asset", "session_date", "forecast_origin_utc"]).to_dicts()
-    for origin in origin_rows:
-        asset, day = str(origin["asset"]), str(origin["session_date"])
-        spot = float(
-            spots.filter((pl.col("asset") == asset) & (pl.col("session_date") == day))["spot"][0]
-        )
-        origin_ns = int(origin["forecast_origin_utc"].timestamp() * 1_000_000_000)
+    spot_by_day = {
+        (str(row["asset"]), str(row["session_date"])): float(row["spot"] or 0.0)
+        for row in spots.iter_rows(named=True)
+    }
+    origins_by_day: dict[tuple[str, str], list[dict[str, Any]]] = {}
+    for origin in origins.sort(["asset", "session_date", "forecast_origin_utc"]).to_dicts():
+        key = (str(origin["asset"]), str(origin["session_date"]))
+        origins_by_day.setdefault(key, []).append(origin)
+    for (asset, day), day_origins in origins_by_day.items():
+        spot = spot_by_day[(asset, day)]
         rate = _prior_rate(rates, day)
         if rate is None:
             raise RuntimeError(f"MISSING_RATE_BEFORE_ORIGIN:{asset}:{day}")
-        for contract in contracts.get((asset, day), []):
-            cache = json.loads(
-                Path(cache_paths[(asset, day, contract["contract"])]).read_text(encoding="utf-8")
-            )
-            quote = b1.latest_quote(cache, origin_ns)
-            failure: str | None = "NO_QUOTE_BEFORE_ORIGIN"
-            iv_result: dict[str, Any] = {"success": False}
-            if quote is not None and quote.get("sip_timestamp", origin_ns + 1) > origin_ns:
-                raise RuntimeError("MASSIVE_QUOTE_AFTER_ORIGIN")
-            if quote is not None and "midpoint" not in quote:
-                failure = str(quote.get("missing_reason") or "INVALID_SPREAD")
-            elif quote is not None and quote["quote_age_seconds"] > 60:
-                failure = "STALE_QUOTE"
-            elif quote is not None and quote["relative_spread"] > 0.25:
-                failure = "INVALID_SPREAD"
-            elif quote is not None:
-                iv_result = b1.invert_iv(
-                    spot,
-                    float(contract["strike"]),
-                    float(contract["dte"]) / 365.0,
-                    rate,
-                    float(dividend_yields[(asset, day)]),
-                    float(quote["midpoint"]),
-                    str(contract["option_type"]),
+        day_contracts = contracts.get((asset, day), [])
+        day_caches = _load_contract_day_caches(asset, day, day_contracts, cache_paths)
+        for origin in day_origins:
+            origin_ns = int(origin["forecast_origin_utc"].timestamp() * 1_000_000_000)
+            for contract in day_contracts:
+                cache = day_caches[str(contract["contract"])]
+                quote = b1.latest_quote(cache, origin_ns)
+                failure: str | None = "NO_QUOTE_BEFORE_ORIGIN"
+                iv_result: dict[str, Any] = {"success": False}
+                if quote is not None and quote.get("sip_timestamp", origin_ns + 1) > origin_ns:
+                    raise RuntimeError("MASSIVE_QUOTE_AFTER_ORIGIN")
+                if quote is not None and "midpoint" not in quote:
+                    failure = str(quote.get("missing_reason") or "INVALID_SPREAD")
+                elif quote is not None and quote["quote_age_seconds"] > 60:
+                    failure = "STALE_QUOTE"
+                elif quote is not None and quote["relative_spread"] > 0.25:
+                    failure = "INVALID_SPREAD"
+                elif quote is not None:
+                    iv_result = b1.invert_iv(
+                        spot,
+                        float(contract["strike"]),
+                        float(contract["dte"]) / 365.0,
+                        rate,
+                        float(dividend_yields[(asset, day)]),
+                        float(quote["midpoint"]),
+                        str(contract["option_type"]),
+                    )
+                    failure = (
+                        None
+                        if iv_result.get("success")
+                        else str(iv_result.get("failure_reason") or "IV_NO_CONVERGENCE")
+                    )
+                attempts.append(
+                    {
+                        "origin_id": origin["origin_id"],
+                        "asset": asset,
+                        "session_date": day,
+                        "forecast_origin_utc": origin["forecast_origin_utc"],
+                        "contract": contract["contract"],
+                        "expiry": contract["expiry"],
+                        "option_type": contract["option_type"],
+                        "dte": int(contract["dte"]),
+                        "moneyness": float(contract["moneyness"]),
+                        "sip_timestamp_ns": int(quote["sip_timestamp"]) if quote else None,
+                        "bid": float(quote["bid"]) if quote and "bid" in quote else None,
+                        "ask": float(quote["ask"]) if quote and "ask" in quote else None,
+                        "implied_volatility": (
+                            iv_result.get("iv") if iv_result.get("success") else None
+                        ),
+                        "quote_age_seconds": quote.get("quote_age_seconds") if quote else None,
+                        "relative_spread": quote.get("relative_spread") if quote else None,
+                        "rate": rate,
+                        "dividend_yield": dividend_yields[(asset, day)],
+                        "q_label": q_labels[(asset, day)],
+                        "success": bool(iv_result.get("success")),
+                        "failure_code": failure,
+                        "iterations": iv_result.get("iterations"),
+                        "lower_bound": iv_result.get("lower_bound"),
+                        "upper_bound": iv_result.get("upper_bound"),
+                    }
                 )
-                failure = (
-                    None
-                    if iv_result.get("success")
-                    else str(iv_result.get("failure_reason") or "IV_NO_CONVERGENCE")
-                )
-            attempts.append(
-                {
-                    "origin_id": origin["origin_id"],
-                    "asset": asset,
-                    "session_date": day,
-                    "forecast_origin_utc": origin["forecast_origin_utc"],
-                    "contract": contract["contract"],
-                    "expiry": contract["expiry"],
-                    "option_type": contract["option_type"],
-                    "dte": int(contract["dte"]),
-                    "moneyness": float(contract["moneyness"]),
-                    "sip_timestamp_ns": int(quote["sip_timestamp"]) if quote else None,
-                    "bid": float(quote["bid"]) if quote and "bid" in quote else None,
-                    "ask": float(quote["ask"]) if quote and "ask" in quote else None,
-                    "implied_volatility": iv_result.get("iv") if iv_result.get("success") else None,
-                    "quote_age_seconds": quote.get("quote_age_seconds") if quote else None,
-                    "relative_spread": quote.get("relative_spread") if quote else None,
-                    "rate": rate,
-                    "dividend_yield": dividend_yields[(asset, day)],
-                    "q_label": q_labels[(asset, day)],
-                    "success": bool(iv_result.get("success")),
-                    "failure_code": failure,
-                    "iterations": iv_result.get("iterations"),
-                    "lower_bound": iv_result.get("lower_bound"),
-                    "upper_bound": iv_result.get("upper_bound"),
-                }
-            )
     attempts_frame = pl.DataFrame(attempts, infer_schema_length=None, strict=False)
     DERIVED_ROOT.mkdir(parents=True, exist_ok=True)
     attempts_frame.write_parquet(ATTEMPTS_PATH, compression="zstd")
