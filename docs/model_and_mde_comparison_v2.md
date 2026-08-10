@@ -62,6 +62,11 @@ independent block remains required.
 - Variant ledger: `artifacts/methodology/development_model_variant_ledger.json`.
 - OOS reads: `0` in this comparison.
 - Independent acquisition and evaluation are separate from these artifacts.
+- Determinism check: two consecutive executions produced identical SHA-256
+  hashes for all five outputs; the comparison JSON hash is
+  `65ef1ea2cde50eee5cc2babdf0d76d495e3eef68f54d5d701dc2bc7282e53d3b` and the
+  variant-ledger hash is
+  `2bd97475a66b202a3c0e2441e6e99912252e29a8114687e539ee8006379afea3`.
 
 ## RL/DL decision
 
