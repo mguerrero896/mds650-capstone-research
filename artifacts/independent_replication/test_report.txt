@@ -26,7 +26,7 @@ uv run python scripts/report_independent_replication_30d.py
 result=PASS_INDEPENDENT_REPLICATION_REPORT; stability_rows=72; exit=0
 
 evidence_hash_check
-result=PASS_INDEPENDENT_EVIDENCE_HASHES; evidence_rows=20; target_read_count=1; exit=0
+result=PASS_INDEPENDENT_EVIDENCE_HASHES; evidence_rows=22; target_read_count=1; exit=0
 
 storage_preflight
 volume=D:
