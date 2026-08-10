@@ -9,7 +9,13 @@ The minimum detectable effect (MDE) is a planning quantity: the smallest paired 
 
 ## Existing training audit
 
-Phase 5 development is frozen as `PASS_DEVELOPMENT_ONLY`: 15,548 common origins, 93,288 frozen forecast rows, 40 session clusters, six outcome assets, Gamma GLM and LightGBM. The Phase 5 method freeze records `holdout_reads=0`. Phase 6 training-only MDE uses 11,841 training origins, 35,523 forecast rows and 60 initial-training sessions with `oos_read_count=0` in its training ledger.
+The original Phase 5 development artifact remains `PASS_DEVELOPMENT_ONLY` with
+15,548 common origins and 93,288 frozen forecast rows. The current
+generalization comparison derives 233,220 paired forecast rows from those same
+origins so that all five registered model families are evaluated on the same
+B0/B1/B2 panel. Both artifacts record zero independent/OOS reads. Phase 6
+training-only MDE uses 11,841 training origins, 35,523 forecast rows and 60
+initial-training sessions with `oos_read_count=0` in its training ledger.
 
 The development-only comparison required for this goal is now complete in a
 separate, target-preserving ledger. It executes persistence, HAR-RV, Ridge,
