@@ -192,7 +192,11 @@ def _rates_and_dividends(
     """Load only information available by each origin and label q=0 assumptions."""
     rate_response = client.get(
         "https://financialmodelingprep.com/stable/treasury-rates",
-        params={"from": first_day, "to": last_day, "apikey": fmp_key},
+        params={
+            "from": (date.fromisoformat(first_day) - timedelta(days=365)).isoformat(),
+            "to": last_day,
+            "apikey": fmp_key,
+        },
     )
     if rate_response.status_code != 200 or not isinstance(rate_response.json(), list):
         raise RuntimeError(f"FMP_TREASURY_HTTP_OR_SCHEMA:{rate_response.status_code}")
@@ -229,11 +233,11 @@ def _rates_and_dividends(
                 value = float(event.get("adjDividend") or event.get("dividend") or 0.0)
             except (TypeError, ValueError):
                 continue
-            if cutoff - timedelta(days=365) <= event_day <= cutoff and value > 0:
+            if cutoff - timedelta(days=365) <= event_day < cutoff and value > 0:
                 values.append(value)
         if values and spot > 0:
             dividend_yields[(asset, day)] = sum(values) / spot
-            q_labels[(asset, day)] = "FMP_DIVIDENDS_EVENT_DATE_LE_CUTOFF"
+            q_labels[(asset, day)] = "FMP_DIVIDENDS_EVENT_DATE_LT_SESSION_DATE"
         else:
             dividend_yields[(asset, day)] = 0.0
             q_labels[(asset, day)] = "Q_ZERO_ASSUMPTION_NO_KNOWN_PRIOR_DIVIDEND"
@@ -241,8 +245,8 @@ def _rates_and_dividends(
 
 
 def _prior_rate(rates: dict[str, float], day: str) -> float | None:
-    """Return the latest available Treasury rate on or before ``day``."""
-    eligible = [key for key in rates if key <= day]
+    """Return the latest date-level Treasury rate strictly before ``day``."""
+    eligible = [key for key in rates if key < day]
     return rates[max(eligible)] if eligible else None
 
 
@@ -278,6 +282,8 @@ def build_b1() -> None:
             "status": "PASS_HISTORICAL_CONTRACTS_RESOLVED",
             "route": "MASSIVE_REFERENCE_AS_OF",
             "dte_bucket": "30-60",
+            "rate_availability_rule": "latest FMP treasury date strictly before session date",
+            "dividend_availability_rule": "FMP dividend event date strictly before session date",
             "records": [
                 {
                     "asset": asset,
