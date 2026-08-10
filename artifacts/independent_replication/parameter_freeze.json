@@ -1,0 +1,55 @@
+{
+  "manifest_sha256": "230d043384857288d33c0b27a051aa9f7a32fef3953012de4e98960bc6f70d8e",
+  "no_new_tuning_after_acquisition": true,
+  "parameters": {
+    "B0v2:gamma_glm_confirmatory": {
+      "alpha": 0.0,
+      "max_iter": 2000,
+      "tol": 1e-08
+    },
+    "B0v2:lightgbm_robustness": {
+      "learning_rate": 0.03,
+      "max_depth": 3,
+      "min_child_samples": 50,
+      "n_estimators": 200,
+      "num_leaves": 15,
+      "reg_lambda": 1.0
+    },
+    "B1v2a:gamma_glm_confirmatory": {
+      "alpha": 0.1,
+      "max_iter": 2000,
+      "tol": 1e-08
+    },
+    "B1v2a:lightgbm_robustness": {
+      "learning_rate": 0.03,
+      "max_depth": 3,
+      "min_child_samples": 50,
+      "n_estimators": 200,
+      "num_leaves": 15,
+      "reg_lambda": 1.0
+    },
+    "B2v2:gamma_glm_confirmatory": {
+      "alpha": 0.1,
+      "max_iter": 2000,
+      "tol": 1e-08
+    },
+    "B2v2:lightgbm_robustness": {
+      "learning_rate": 0.03,
+      "max_depth": 3,
+      "min_child_samples": 50,
+      "n_estimators": 200,
+      "num_leaves": 15,
+      "reg_lambda": 1.0
+    }
+  },
+  "personal_paths_emitted": false,
+  "schema_version": "b2-independent-replication-parameter-freeze-1.0",
+  "secret_values_emitted": false,
+  "selection_rule": "PHASE6_FOLD_1_SELECTED_VARIANT_BY_INFORMATION_SET_AND_ROLE",
+  "source_hashes": {
+    "method_freeze": "79682a761751a899df3b3822f10ff33054f86bc3f65d2f29cbe810a4c068528f",
+    "phase6_oos_variant_ledger": "05bd9056a08dd60a95ff7641bf9ed5a3e620faa020da127ee0b34f198180ff63"
+  },
+  "status": "FROZEN_BEFORE_INDEPENDENT_TARGET_OUTCOME_READ",
+  "target_outcome_read": false
+}
