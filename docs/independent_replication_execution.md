@@ -32,6 +32,11 @@ with immutable per-day ZIP and Parquet checkpoints on `D:`. The B2 cutoff is
 `created_at <= forecast_origin - 60 seconds`; `created_at` remains an
 operational availability proxy, not publication time.
 
+When a provider archive blocks a warm-up date, the acquisition script may be
+run with `--role target` to materialize only the frozen target bodies. This
+mode never marks the 90-session manifest `PASS`, never bypasses the blocked
+date, and cannot build features, read RV30, calculate QLIKE or fit a model.
+
 The independent model parameters are frozen in
 `artifacts/independent_replication/parameter_freeze.json`. They are the
 selected variants from Phase 6 fold 1, chosen before target access and reused

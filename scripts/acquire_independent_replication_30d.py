@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import importlib
 import json
 from collections.abc import Mapping
@@ -150,6 +151,45 @@ def _checkpoint_valid(record: Mapping[str, Any], config: Phase5StorageConfig) ->
     return record.get("checkpoint_sha256") == canonical_sha256(unsigned)
 
 
+def _selected_dates(window: Mapping[str, Any], role: str) -> list[date]:
+    """Return an explicit acquisition subset without changing the frozen window.
+
+    Parameters
+    ----------
+    window:
+        Frozen independent-replication window manifest.
+    role:
+        ``all`` for normal resumable acquisition, or one of ``warmup`` and
+        ``target`` for bounded body acquisition while another role is blocked.
+
+    Returns
+    -------
+    list[datetime.date]
+        Dates in the frozen manifest order.
+
+    Raises
+    ------
+    ValueError
+        If ``role`` is unsupported or the selected list is not a subset of the
+        frozen all-date allow-list.
+    """
+    if role not in {"all", "warmup", "target"}:
+        raise ValueError(f"REPLICATION_ROLE_INVALID:{role}")
+    all_values = window.get("all_dates")
+    if not isinstance(all_values, list):
+        raise ValueError("REPLICATION_WINDOW_DATES_INVALID")
+    all_dates = [date.fromisoformat(str(value)) for value in all_values]
+    if role == "all":
+        return all_dates
+    values = window.get(f"{role}_dates")
+    if not isinstance(values, list):
+        raise ValueError(f"REPLICATION_{role.upper()}_DATES_INVALID")
+    selected = [date.fromisoformat(str(value)) for value in values]
+    if any(item not in all_dates for item in selected):
+        raise ValueError(f"REPLICATION_{role.upper()}_DATES_OUTSIDE_WINDOW")
+    return [item for item in all_dates if item in set(selected)]
+
+
 def _parquet_files(day: date, config: Phase5StorageConfig) -> list[dict[str, Any]]:
     """Return hashed Parquet partitions for one completed day."""
     rows: list[dict[str, Any]] = []
@@ -200,6 +240,17 @@ def _write_manifest(
 
 def main() -> None:
     """Run or resume one-day-at-a-time acquisition with hash checkpoints."""
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--role",
+        choices=("all", "warmup", "target"),
+        default="all",
+        help=(
+            "Acquire only the selected frozen role; the manifest remains "
+            "IN_PROGRESS until all dates pass."
+        ),
+    )
+    arguments = parser.parse_args()
     window = _json(WINDOW)
     method_freeze = _json(METHOD_FREEZE)
     storage = _json(STORAGE_PREFLIGHT)
@@ -210,7 +261,8 @@ def main() -> None:
     projected_peak = int(storage["projected_peak_additional_bytes"])
     if projected_peak <= 0 or storage.get("free_space_pass") is not True:
         raise RuntimeError("REPLICATION_STORAGE_PREFLIGHT_INVALID")
-    dates = [date.fromisoformat(value) for value in window["all_dates"]]
+    dates = _selected_dates(window, "all")
+    selected_dates = _selected_dates(window, arguments.role)
     config = Phase5StorageConfig(
         sessions=tuple(dates),
         excluded_dates=frozenset(),
@@ -228,7 +280,12 @@ def main() -> None:
         for row in prior.get("records", []):
             if isinstance(row, dict) and isinstance(row.get("session_date"), str):
                 existing[str(row["session_date"])] = row
-    for session_date in dates:
+        for row in existing.values():
+            schema_fields = row.get("schema_fields")
+            if isinstance(schema_fields, list):
+                expected_fields = {str(field) for field in schema_fields}
+                break
+    for session_date in selected_dates:
         day_text = session_date.isoformat()
         _raise_if_provider_archive_blocked(day_text)
         checkpoint = CHECKPOINT_ROOT / f"{day_text}.json"
@@ -301,6 +358,7 @@ def main() -> None:
         print(
             json.dumps(
                 {
+                    "role": arguments.role,
                     "session_date": day_text,
                     "completed": len(ordered),
                     "total": len(dates),
