@@ -1,0 +1,21 @@
+{
+  "schema_version": "b2-independent-replication-evaluation-incident-1.0",
+  "status": "QUARANTINED_PRE_RESULT_OUTPUT",
+  "failure_code": "BOOTSTRAP_REPETITIONS_CONTRACT_NAME_MISMATCH",
+  "cause": "The independent freeze names the field repetitions while the shared evaluator requires bootstrap_repetitions and seed.",
+  "target_outcome_read": true,
+  "qlike_results_written": false,
+  "quarantined_outputs": [
+    {
+      "relative_path": "D:/MDS650/independent_replication_30/derived/_failed_attempts/20260811_bootstrap_contract/independent_predictions.parquet",
+      "sha256": "9EFF5F614DF42850B421CE22150EEB8C14C1EF425FA01B4649895143C6481D60"
+    },
+    {
+      "relative_path": "D:/MDS650/independent_replication_30/derived/_failed_attempts/20260811_bootstrap_contract/independent_timing_predictions.parquet",
+      "sha256": "E68810DC7975EA2DC78C04C4391A21C5A67956EE9BAA4BC3C1CD9B08E9529070"
+    }
+  ],
+  "corrective_action": "Normalize the frozen field name in the evaluator without changing repetitions, seed, models, information sets or target data.",
+  "secret_values_emitted": false,
+  "personal_paths_emitted": false
+}

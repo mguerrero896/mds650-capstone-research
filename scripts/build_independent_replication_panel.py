@@ -38,6 +38,7 @@ ROOT = Path(__file__).resolve().parents[1]
 ARTIFACT_ROOT = ROOT / "artifacts" / "independent_replication"
 WINDOW_PATH = ARTIFACT_ROOT / "window_manifest.json"
 ACQUISITION_PATH = ARTIFACT_ROOT / "acquisition_manifest.json"
+INCIDENT_ROOT = ARTIFACT_ROOT / "acquisition_incidents"
 DATA_ROOT = Path("D:/MDS650/independent_replication_30")
 RAW_FMP_ROOT = DATA_ROOT / "raw" / "fmp"
 DERIVED_ROOT = DATA_ROOT / "derived"
@@ -102,7 +103,7 @@ def _window() -> dict[str, Any]:
 
 def _validate_acquisition_complete(
     manifest: Mapping[str, Any], expected_dates: list[str]
-) -> None:
+) -> set[str]:
     """Fail closed before B2 writes when any Full Tape day is incomplete.
 
     Parameters
@@ -115,7 +116,8 @@ def _validate_acquisition_complete(
     Raises
     ------
     RuntimeError
-        If the manifest is not a complete, sanitized PASS for every date.
+        If the manifest is not a complete, sanitized PASS, or an explicitly
+        incident-adjusted manifest with a stable provider exclusion.
     """
     records_value = manifest.get("records")
     records = (
@@ -124,14 +126,29 @@ def _validate_acquisition_complete(
         else []
     )
     dates = [str(row.get("session_date")) for row in records]
+    status = str(manifest.get("status"))
+    excluded = sorted(str(item) for item in manifest.get("excluded_provider_sessions", []))
+    missing = sorted(set(expected_dates) - set(dates))
     if (
-        manifest.get("status") != "PASS"
-        or manifest.get("completed_count") != len(expected_dates)
-        or len(records) != len(expected_dates)
+        status not in {"PASS", "PASS_WITH_PROVIDER_INCIDENT"}
+        or manifest.get("completed_count") != len(records)
         or dates != sorted(set(dates))
-        or dates != sorted(expected_dates)
+        or any(day not in expected_dates for day in dates)
+        or (status == "PASS" and (missing or len(records) != len(expected_dates)))
+        or (status == "PASS_WITH_PROVIDER_INCIDENT" and missing != excluded)
+        or (status == "PASS_WITH_PROVIDER_INCIDENT" and not excluded)
     ):
         raise RuntimeError("REPLICATION_B2_ACQUISITION_INCOMPLETE")
+    for day in excluded:
+        incident = INCIDENT_ROOT / f"{day}_crc_failure.json"
+        if not incident.is_file():
+            raise RuntimeError(f"REPLICATION_PROVIDER_INCIDENT_MISSING:{day}")
+        payload = _load_json(incident)
+        if (
+            payload.get("status") != "BLOCKED_PROVIDER_ARCHIVE_CORRUPT"
+            or payload.get("provider_artifact_stable_across_retries") is not True
+        ):
+            raise RuntimeError(f"REPLICATION_PROVIDER_INCIDENT_INVALID:{day}")
     for row in records:
         if (
             row.get("status") != "PASS"
@@ -143,6 +160,7 @@ def _validate_acquisition_complete(
             raise RuntimeError(
                 f"REPLICATION_B2_ACQUISITION_RECORD_INVALID:{row.get('session_date')}"
             )
+    return set(excluded)
 
 
 def _origins(window: dict[str, Any]) -> pl.DataFrame:
@@ -347,7 +365,7 @@ def build_b0_training() -> None:
 def build_b2() -> None:
     """Aggregate all Full Tape rows and normalize B2 without reading RV30."""
     window = _window()
-    _validate_acquisition_complete(
+    excluded_dates = _validate_acquisition_complete(
         _load_json(ACQUISITION_PATH), [str(item) for item in window["all_dates"]]
     )
     if not ORIGINS_PATH.exists():
@@ -367,6 +385,8 @@ def build_b2() -> None:
     ]
     expected_dates = [str(item) for item in window["all_dates"]]
     for day in expected_dates:
+        if day in excluded_dates:
+            continue
         origins_day = origins.filter(pl.col("session_date") == day)
         paths = [
             event_root / f"date={day}" / f"asset={asset}" / "events.parquet"
@@ -395,10 +415,12 @@ def build_b2() -> None:
             path.parent.mkdir(parents=True, exist_ok=True)
             activity.write_parquet(path, compression="zstd")
     primary_paths = sorted((B2_ROOT / "primary_5m_60s").glob("date=*.parquet"))
-    if len(primary_paths) != len(expected_dates):
+    if len(primary_paths) != len(expected_dates) - len(excluded_dates):
         raise RuntimeError("REPLICATION_B2_CHECKPOINT_COUNT_INVALID")
+    b2_origins = origins.filter(~pl.col("session_date").is_in(sorted(excluded_dates)))
     primary = build_b2v2_from_activity(
-        pl.scan_parquet([str(path) for path in primary_paths]).collect(engine="streaming"), origins
+        pl.scan_parquet([str(path) for path in primary_paths]).collect(engine="streaming"),
+        b2_origins,
     )
     primary.write_parquet(B2_PRIMARY_PATH, compression="zstd")
     _write_json(
@@ -409,6 +431,10 @@ def build_b2() -> None:
             "origin_count": primary.height,
             "complete_origin_count": primary.filter(pl.col("b2v2_complete")).height,
             "session_count": primary["session_date"].n_unique(),
+            "excluded_provider_sessions": sorted(excluded_dates),
+            "availability_status": (
+                "PASS_WITH_PROVIDER_INCIDENT" if excluded_dates else "PASS"
+            ),
             "primary_cutoff": "created_at <= forecast_origin - 60 seconds",
             "sensitivity_specs": list(B2_SPECS),
             "b2_sha256": sha256_file(B2_PRIMARY_PATH),

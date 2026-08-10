@@ -100,3 +100,28 @@ def test_b2_rejects_incomplete_acquisition_before_writing_partitions() -> None:
             },
             ["2025-02-25", "2025-04-04"],
         )
+
+
+def test_b2_incident_adjustment_requires_stable_incident(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(panel, "INCIDENT_ROOT", tmp_path)
+    with pytest.raises(RuntimeError, match="REPLICATION_PROVIDER_INCIDENT_MISSING"):
+        panel._validate_acquisition_complete(
+            {
+                "status": "PASS_WITH_PROVIDER_INCIDENT",
+                "completed_count": 1,
+                "excluded_provider_sessions": ["2025-04-04"],
+                "records": [
+                    {
+                        "status": "PASS",
+                        "session_date": "2025-02-25",
+                        "http_status": 200,
+                        "duplicate_event_ids": 0,
+                        "secret_values_emitted": False,
+                        "personal_paths_emitted": False,
+                    }
+                ],
+            },
+            ["2025-02-25", "2025-04-04"],
+        )

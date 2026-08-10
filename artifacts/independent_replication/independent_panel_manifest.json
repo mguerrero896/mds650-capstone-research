@@ -1,0 +1,20 @@
+{
+  "asset_count": 6,
+  "complete_origin_count": 27065,
+  "complete_panel_sha256": "040213cc75d363cd955dee8207f54441068ce529173071b418d3f043ebc6ad28",
+  "excluded_provider_sessions": [
+    "2025-04-04"
+  ],
+  "manifest_sha256": "9117a19d5f21c8bd0678f8e97e9ba179a0e0154da8047afd6aff83b0fb34f2e8",
+  "origin_count": 38664,
+  "panel_sha256": "0e5a73aab9bb11a8bfc7363ad32d49261523ab6d36e9a9ce057d3323910b5ef7",
+  "personal_paths_emitted": false,
+  "provider_gap_rows_explicitly_missing": true,
+  "schema_version": "b2-independent-replication-panel-1.0",
+  "secret_values_emitted": false,
+  "session_count": 90,
+  "status": "PASS_COMMON_PANEL_AFTER_SINGLE_TARGET_READ",
+  "target_complete_origin_count": 11664,
+  "target_read_count": 1,
+  "warmup_complete_origin_count": 15401
+}

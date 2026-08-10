@@ -123,7 +123,7 @@ def _window() -> dict[str, Any]:
 
 
 def _validate_acquisition(window: dict[str, Any]) -> dict[str, Any]:
-    """Require all ninety immutable Full Tape partitions before evaluation."""
+    """Require all dates or an explicitly hashed provider-incident exception."""
     manifest = _json(ACQUISITION)
     _assert_hashed(manifest, ACQUISITION.name)
     records_value = manifest.get("records")
@@ -133,14 +133,27 @@ def _validate_acquisition(window: dict[str, Any]) -> dict[str, Any]:
         else []
     )
     dates = [str(row.get("session_date")) for row in records]
+    excluded = sorted(str(item) for item in manifest.get("excluded_provider_sessions", []))
+    expected_dates = {str(day) for day in window["all_dates"]}
+    missing = sorted(expected_dates - set(dates))
     if (
-        manifest.get("status") != "PASS"
-        or manifest.get("completed_count") != 90
-        or len(records) != 90
+        manifest.get("status") not in {"PASS", "PASS_WITH_PROVIDER_INCIDENT"}
+        or manifest.get("completed_count") != len(records)
         or dates != sorted(set(dates))
-        or set(dates) != set(str(day) for day in window["all_dates"])
+        or any(day not in expected_dates for day in dates)
+        or (manifest.get("status") == "PASS" and (missing or len(records) != 90))
+        or (manifest.get("status") == "PASS_WITH_PROVIDER_INCIDENT" and missing != excluded)
+        or (manifest.get("status") == "PASS_WITH_PROVIDER_INCIDENT" and not excluded)
     ):
         raise RuntimeError("UW_FULL_TAPE_ACQUISITION_INCOMPLETE")
+    for day in excluded:
+        incident = ARTIFACT / "acquisition_incidents" / f"{day}_crc_failure.json"
+        payload = _json(incident)
+        if (
+            payload.get("status") != "BLOCKED_PROVIDER_ARCHIVE_CORRUPT"
+            or payload.get("provider_artifact_stable_across_retries") is not True
+        ):
+            raise RuntimeError(f"UW_PROVIDER_INCIDENT_INVALID:{day}")
     for row in records:
         if (
             row.get("status") != "PASS"
@@ -236,6 +249,35 @@ def read_target_once() -> None:
     print(json.dumps({"status": "TARGET_READ_COMPLETE", "origins": target.height}))
 
 
+def _add_provider_gap_rows(
+    b2: pl.DataFrame, origins: pl.DataFrame, excluded_dates: list[str]
+) -> pl.DataFrame:
+    """Represent provider gaps explicitly without imputing option activity."""
+    if not excluded_dates:
+        return b2
+    gap_origins = origins.filter(pl.col("session_date").is_in(excluded_dates)).select(
+        "origin_id", "asset", "session_date", "forecast_origin_utc"
+    )
+    if gap_origins.is_empty():
+        return b2
+    expressions: list[pl.Expr] = []
+    for column in b2.columns:
+        if column in gap_origins.columns:
+            expressions.append(pl.col(column))
+        elif column == "b2v2_cutoff_utc":
+            expressions.append(
+                (
+                    pl.col("forecast_origin_utc") - pl.duration(seconds=60)
+                ).alias(column)
+            )
+        elif column == "b2v2_complete":
+            expressions.append(pl.lit(False).alias(column))
+        else:
+            expressions.append(pl.lit(None, dtype=b2.schema[column]).alias(column))
+    gap = gap_origins.select(expressions)
+    return pl.concat([b2, gap], how="vertical_relaxed").sort("origin_id")
+
+
 def _build_panel() -> pl.DataFrame:
     """Join warm-up and target rows into the common B0/B1/B2 panel."""
     access = _json(TARGET_ACCESS)
@@ -246,7 +288,13 @@ def _build_panel() -> pl.DataFrame:
     b0 = pl.concat([pl.read_parquet(B0_WARMUP), pl.read_parquet(B0_TARGET)], how="vertical_relaxed")
     b0 = b0.sort("origin_id")
     b1 = pl.read_parquet(B1).sort("origin_id")
-    b2 = pl.read_parquet(B2).sort("origin_id")
+    acquisition = _json(ACQUISITION)
+    excluded_dates = sorted(
+        str(item) for item in acquisition.get("excluded_provider_sessions", [])
+    )
+    b2 = _add_provider_gap_rows(
+        pl.read_parquet(B2).sort("origin_id"), origins, excluded_dates
+    )
     panel, complete = build_phase6_common_panel(origins, b0, b1, b2)
     panel = panel.sort(["session_date", "forecast_origin_utc", "asset"])
     complete = complete.sort(["session_date", "forecast_origin_utc", "asset"])
@@ -267,6 +315,8 @@ def _build_panel() -> pl.DataFrame:
             "panel_sha256": _sha(PANEL),
             "complete_panel_sha256": _sha(COMPLETE_PANEL),
             "target_read_count": 1,
+            "excluded_provider_sessions": excluded_dates,
+            "provider_gap_rows_explicitly_missing": bool(excluded_dates),
             "secret_values_emitted": False,
             "personal_paths_emitted": False,
         },
@@ -446,12 +496,19 @@ def _b2_sensitivity_panels(
     """Build target-free normalized B2 timing variants from cached activity."""
     output: dict[str, pl.DataFrame] = {}
     activity_root = DERIVED / "b2_activity"
+    acquisition = _json(ACQUISITION)
+    excluded_dates = sorted(
+        str(item) for item in acquisition.get("excluded_provider_sessions", [])
+    )
+    expected_partition_count = len(_json(WINDOW)["all_dates"]) - len(excluded_dates)
+    b2_origins = origins.filter(~pl.col("session_date").is_in(excluded_dates))
     for spec in spec_names:
         paths = sorted((activity_root / spec).glob("date=*.parquet"))
-        if len(paths) != 90:
+        if len(paths) != expected_partition_count:
             raise RuntimeError(f"INDEPENDENT_B2_SENSITIVITY_PARTITIONS:{spec}")
         activity = pl.scan_parquet([str(path) for path in paths]).collect(engine="streaming")
-        b2 = build_b2v2_from_activity(activity, origins)
+        b2 = build_b2v2_from_activity(activity, b2_origins)
+        b2 = _add_provider_gap_rows(b2, origins, excluded_dates)
         replacements = b2.select(
             *KEYS,
             *B2V2_FEATURES,
@@ -517,8 +574,16 @@ def evaluate_replication() -> None:
     PREDICTIONS.parent.mkdir(parents=True, exist_ok=True)
     primary.write_parquet(PREDICTIONS, compression="zstd")
     timing.write_parquet(TIMING_PREDICTIONS, compression="zstd")
+    frozen_inference = dict(method["inference"])
+    repetition_value: Any = frozen_inference.get(
+        "bootstrap_repetitions", frozen_inference.get("repetitions")
+    )
+    if repetition_value is None:
+        raise RuntimeError("INDEPENDENT_BOOTSTRAP_REPETITIONS_MISSING")
+    frozen_inference["bootstrap_repetitions"] = int(repetition_value)
+    frozen_inference["seed"] = int(frozen_inference.get("seed", SEED))
     eval_method = {
-        "inference": method["inference"],
+        "inference": frozen_inference,
         "training_mde": _json(ROOT / "artifacts" / "phase6" / "method_freeze.json")["training_mde"],
     }
     results = evaluate_phase6(primary, eval_method, timing_predictions=timing)

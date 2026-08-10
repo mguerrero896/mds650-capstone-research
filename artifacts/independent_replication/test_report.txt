@@ -1,0 +1,35 @@
+INDEPENDENT_REPLICATION_TEST_REPORT
+status=PASS
+target=RV30
+target_read_count=1
+target_sessions=30
+provider_incident=2025-04-04 warm-up archive CRC failure; explicit exclusion; no imputation
+
+commands
+uv run pytest -q
+result=379 passed; 1 known sklearn ElasticNet convergence warning; exit=0
+
+uv run ruff check src tests scripts
+result=All checks passed; exit=0
+
+uv run mypy src
+result=Success: no issues found in 32 source files; exit=0
+
+uv run coverage run -m pytest -q
+uv run coverage report --fail-under=80
+result=TOTAL 83%; threshold=80%; exit=0
+
+uv run python -m jsonschema -i artifacts/phase6/preregistration.json specs/001-pit-options-rv30/contracts/phase6-preregistration.schema.json
+result=valid; exit=0; warning=jsonschema CLI deprecation only
+
+uv run python scripts/report_independent_replication_30d.py
+result=PASS_INDEPENDENT_REPLICATION_REPORT; stability_rows=72; exit=0
+
+evidence_hash_check
+result=PASS_INDEPENDENT_EVIDENCE_HASHES; evidence_rows=20; target_read_count=1; exit=0
+
+storage_preflight
+volume=D:
+free_gib=563.06
+minimum_required_gib=80
+result=PASS

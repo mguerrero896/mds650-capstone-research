@@ -1,0 +1,25 @@
+{
+  "availability_status": "PASS_WITH_PROVIDER_INCIDENT",
+  "b2_sha256": "a840fc9a1b307d6aa165a04c78cd28724438bb08ff7a9d5f16428949fc592f3a",
+  "complete_origin_count": 29592,
+  "excluded_provider_sessions": [
+    "2025-04-04"
+  ],
+  "manifest_sha256": "83182724db18959306f94f1859288ce65a5099096cc4b69380a72f26b0af094f",
+  "origin_count": 38232,
+  "personal_paths_emitted": false,
+  "primary_cutoff": "created_at <= forecast_origin - 60 seconds",
+  "rv30_or_qlike_columns_present": false,
+  "schema_version": "b2-independent-replication-b2-1.0",
+  "secret_values_emitted": false,
+  "sensitivity_specs": [
+    "primary_5m_60s",
+    "window_15m_60s",
+    "window_30m_60s",
+    "latency_5m_120s",
+    "latency_5m_300s"
+  ],
+  "session_count": 89,
+  "status": "PASS_B2_TARGET_FREE",
+  "target_outcome_read": false
+}

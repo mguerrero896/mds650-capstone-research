@@ -24,7 +24,7 @@ def test_acquisition_manifest_is_sanitized_and_reproducible() -> None:
     if not path.exists():
         return
     manifest = json.loads(path.read_text(encoding="utf-8"))
-    assert manifest["status"] in {"IN_PROGRESS", "PASS"}
+    assert manifest["status"] in {"IN_PROGRESS", "PASS", "PASS_WITH_PROVIDER_INCIDENT"}
     if "method_freeze_sha256" not in manifest:
         pause = ROOT / "artifacts/independent_replication/acquisition_pause.json"
         assert pause.exists()

@@ -113,11 +113,17 @@ def _validate_acquisition_manifest(
         else []
     )
     dates = [str(row.get("session_date")) for row in records]
+    status = str(manifest.get("status"))
+    excluded = sorted(str(item) for item in manifest.get("excluded_provider_sessions", []))
+    missing = sorted(set(expected_dates) - set(dates))
     if (
-        manifest.get("status") not in {"IN_PROGRESS", "PASS"}
+        status not in {"IN_PROGRESS", "PASS", "PASS_WITH_PROVIDER_INCIDENT"}
         or manifest.get("completed_count") != len(records)
         or len(dates) != len(set(dates))
         or any(day not in expected_dates for day in dates)
+        or (status == "PASS" and missing)
+        or (status == "PASS_WITH_PROVIDER_INCIDENT" and missing != excluded)
+        or (status == "PASS_WITH_PROVIDER_INCIDENT" and not excluded)
     ):
         raise RuntimeError("REPLICATION_PROVIDER_MANIFEST_INVALID")
     for row in records:
@@ -256,18 +262,36 @@ def _write_manifest(
     records: list[dict[str, Any]],
     window: Mapping[str, Any],
     method_freeze: Mapping[str, Any],
+    excluded_dates: set[date] | frozenset[date] = frozenset(),
 ) -> None:
     """Write the sanitized resumable acquisition manifest."""
+    expected_dates = {str(item) for item in window["all_dates"]}
+    present_dates = {str(row["session_date"]) for row in records}
+    excluded = sorted(item.isoformat() for item in excluded_dates)
+    missing = sorted(expected_dates - present_dates)
+    if excluded and missing == excluded:
+        status = "PASS_WITH_PROVIDER_INCIDENT"
+    elif not missing:
+        status = "PASS"
+    else:
+        status = "IN_PROGRESS"
     payload: dict[str, Any] = {
         "schema_version": "b2-independent-replication-acquisition-1.0",
-        "status": (
-            "IN_PROGRESS"
-            if len(records) < int(window["warmup_count"]) + int(window["target_count"])
-            else "PASS"
-        ),
+        "status": status,
         "warmup_count": window["warmup_count"],
         "target_count": window["target_count"],
         "completed_count": len(records),
+        "excluded_provider_sessions": excluded,
+        "provider_incident_paths": [
+            f"artifacts/independent_replication/acquisition_incidents/{item}_crc_failure.json"
+            for item in excluded
+        ],
+        "protocol_deviation": (
+            "Provider archive unavailable; excluded session remains missing and is never "
+            "treated as a no-event session."
+            if excluded
+            else None
+        ),
         "records": records,
         "raw_location": "MDS650_DATA_ROOT/independent_replication_30/raw/full_tape",
         "derived_location": "MDS650_DATA_ROOT/independent_replication_30/data/option_events",
@@ -291,8 +315,8 @@ def main() -> None:
         choices=("all", "warmup", "target"),
         default="all",
         help=(
-            "Acquire only the selected frozen role; the manifest remains "
-            "IN_PROGRESS until all dates pass."
+            "Acquire only the selected frozen role; a stable provider incident "
+            "may produce PASS_WITH_PROVIDER_INCIDENT."
         ),
     )
     parser.add_argument(
@@ -319,6 +343,9 @@ def main() -> None:
     dates = _selected_dates(window, "all")
     selected_dates = _selected_dates(window, arguments.role)
     exclusions = _validated_exclusions(arguments.exclude_session, dates)
+    warmup_dates = {date.fromisoformat(str(item)) for item in window["warmup_dates"]}
+    if exclusions - warmup_dates:
+        raise RuntimeError("REPLICATION_PROVIDER_EXCLUSION_TARGET_NOT_ALLOWED")
     selected_dates = [item for item in selected_dates if item not in exclusions]
     config = Phase5StorageConfig(
         sessions=tuple(dates),
@@ -355,7 +382,7 @@ def main() -> None:
                     for item in dates
                     if item.isoformat() in existing
                 ]
-                _write_manifest(ordered, window, method_freeze)
+                _write_manifest(ordered, window, method_freeze, exclusions)
                 continue
             raise RuntimeError(f"REPLICATION_CHECKPOINT_INVALID:{day_text}")
         storage_preflight(config)
@@ -411,7 +438,7 @@ def main() -> None:
         checkpoint_part.replace(checkpoint)
         existing[day_text] = record
         ordered = [existing[item.isoformat()] for item in dates if item.isoformat() in existing]
-        _write_manifest(ordered, window, method_freeze)
+        _write_manifest(ordered, window, method_freeze, exclusions)
         print(
             json.dumps(
                 {
@@ -423,7 +450,12 @@ def main() -> None:
                 }
             )
         )
-    _write_manifest([existing[item.isoformat()] for item in dates], window, method_freeze)
+    _write_manifest(
+        [existing[item.isoformat()] for item in dates if item.isoformat() in existing],
+        window,
+        method_freeze,
+        exclusions,
+    )
 
 
 if __name__ == "__main__":

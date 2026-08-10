@@ -94,3 +94,26 @@ def test_manifest_hash_drift_blocks_acquisition_resume() -> None:
             },
             ["2025-04-03"],
         )
+
+
+def test_incident_adjusted_manifest_allows_only_declared_missing_date() -> None:
+    payload = {
+        "status": "PASS_WITH_PROVIDER_INCIDENT",
+        "completed_count": 1,
+        "excluded_provider_sessions": ["2025-04-04"],
+        "records": [
+            {
+                "status": "PASS",
+                "session_date": "2025-04-03",
+                "duplicate_event_ids": 0,
+                "secret_values_emitted": False,
+                "personal_paths_emitted": False,
+            }
+        ],
+    }
+    payload["manifest_sha256"] = acquisition.canonical_sha256(
+        {key: value for key, value in payload.items() if key != "manifest_sha256"}
+    )
+    acquisition._validate_acquisition_manifest(
+        payload, ["2025-04-03", "2025-04-04"]
+    )
