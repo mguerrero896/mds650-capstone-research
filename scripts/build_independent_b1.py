@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, timedelta
 from pathlib import Path
 from typing import Any
@@ -303,9 +304,32 @@ def build_b1() -> None:
         (asset, day, contract) for (asset, day), values in contracts.items() for contract in values
     ]
     cache_paths: dict[tuple[str, str, str], str] = {}
-    for job in jobs:
-        cache_result = b1.fetch_contract_day(job, massive_key)
-        cache_paths[(job[0], job[1], job[2]["contract"])] = str(cache_result["cache_path"])
+    print(
+        json.dumps(
+            {
+                "contract_day_jobs": len(jobs),
+                "cached_files": len(list(CACHE_ROOT.glob("*.json"))),
+                "workers": 8,
+            }
+        ),
+        flush=True,
+    )
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        futures = {executor.submit(b1.fetch_contract_day, job, massive_key): job for job in jobs}
+        for index, future in enumerate(as_completed(futures), start=1):
+            job = futures[future]
+            cache_result = future.result()
+            cache_paths[(job[0], job[1], job[2]["contract"])] = str(cache_result["cache_path"])
+            if index % 25 == 0 or index == len(futures):
+                print(
+                    json.dumps(
+                        {
+                            "quote_jobs_completed": index,
+                            "quote_jobs_total": len(futures),
+                        }
+                    ),
+                    flush=True,
+                )
     attempts: list[dict[str, Any]] = []
     origin_rows = origins.sort(["asset", "session_date", "forecast_origin_utc"]).to_dicts()
     for origin in origin_rows:
