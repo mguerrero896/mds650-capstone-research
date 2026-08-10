@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -14,6 +15,32 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import build_independent_b1 as b1_script  # noqa: E402
 import run_b1_closure as b1  # noqa: E402
+
+
+def test_fmp_historical_ranges_are_chunked_without_truncation() -> None:
+    """Broad FMP requests are split so the provider's range cap is observable."""
+    calls: list[tuple[str, str]] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        start = request.url.params["from"]
+        end = request.url.params["to"]
+        calls.append((start, end))
+        return httpx.Response(200, json=[{"date": start, "month3": 4.0}], request=request)
+
+    transport = httpx.MockTransport(handler)
+    with httpx.Client(transport=transport) as client:
+        rows = b1_script._fmp_date_range_rows(
+            client,
+            "https://example.test/treasury-rates",
+            "secret",
+            date(2024, 1, 1),
+            date(2024, 3, 15),
+            {},
+            "TEST_FMP",
+        )
+
+    assert calls == [("2024-01-01", "2024-03-01"), ("2024-03-02", "2024-03-15")]
+    assert len(rows) == 2
 
 
 def test_historical_contract_resolution_records_expired_fallback(

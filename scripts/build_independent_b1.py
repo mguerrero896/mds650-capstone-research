@@ -184,6 +184,44 @@ def _spot_by_day(bars: pl.DataFrame, origins: pl.DataFrame) -> pl.DataFrame:
     )
 
 
+def _fmp_date_range_rows(
+    client: httpx.Client,
+    endpoint: str,
+    key: str,
+    start: date,
+    end: date,
+    base_params: dict[str, str],
+    label: str,
+) -> list[dict[str, Any]]:
+    """Fetch a bounded FMP date range in chunks and preserve only row objects.
+
+    FMP may silently cap a broad historical range.  Chunking keeps the rate and
+    dividend inputs available strictly before each forecast session instead of
+    accepting a truncated response that would masquerade as missing data.
+    """
+    rows: list[dict[str, Any]] = []
+    cursor = start
+    while cursor <= end:
+        chunk_end = min(cursor + timedelta(days=60), end)
+        response = client.get(
+            endpoint,
+            params={
+                **base_params,
+                "from": cursor.isoformat(),
+                "to": chunk_end.isoformat(),
+                "apikey": key,
+            },
+        )
+        if response.status_code != 200:
+            raise RuntimeError(f"{label}_HTTP:{response.status_code}:{cursor}:{chunk_end}")
+        payload = response.json()
+        if not isinstance(payload, list):
+            raise RuntimeError(f"{label}_SCHEMA:{cursor}:{chunk_end}")
+        rows.extend(row for row in payload if isinstance(row, dict))
+        cursor = chunk_end + timedelta(days=1)
+    return rows
+
+
 def _rates_and_dividends(
     client: httpx.Client,
     fmp_key: str,
@@ -192,17 +230,17 @@ def _rates_and_dividends(
     last_day: str,
 ) -> tuple[dict[str, float], dict[tuple[str, str], float], dict[tuple[str, str], str]]:
     """Load only information available by each origin and label q=0 assumptions."""
-    rate_response = client.get(
+    first_date = date.fromisoformat(first_day)
+    last_date = date.fromisoformat(last_day)
+    rate_rows = _fmp_date_range_rows(
+        client,
         "https://financialmodelingprep.com/stable/treasury-rates",
-        params={
-            "from": (date.fromisoformat(first_day) - timedelta(days=365)).isoformat(),
-            "to": last_day,
-            "apikey": fmp_key,
-        },
+        fmp_key,
+        first_date - timedelta(days=365),
+        last_date,
+        {},
+        "FMP_TREASURY",
     )
-    if rate_response.status_code != 200 or not isinstance(rate_response.json(), list):
-        raise RuntimeError(f"FMP_TREASURY_HTTP_OR_SCHEMA:{rate_response.status_code}")
-    rate_rows = [row for row in rate_response.json() if isinstance(row, dict)]
     rates = {
         str(row["date"]): float(row["month3"]) / 100.0
         for row in rate_rows
@@ -210,18 +248,15 @@ def _rates_and_dividends(
     }
     dividend_rows: dict[str, list[dict[str, Any]]] = {}
     for asset in ASSETS:
-        response = client.get(
+        dividend_rows[asset] = _fmp_date_range_rows(
+            client,
             "https://financialmodelingprep.com/stable/dividends",
-            params={
-                "symbol": asset,
-                "from": (date.fromisoformat(first_day) - timedelta(days=365)).isoformat(),
-                "to": last_day,
-                "apikey": fmp_key,
-            },
+            fmp_key,
+            first_date - timedelta(days=365),
+            last_date,
+            {"symbol": asset},
+            f"FMP_DIVIDENDS:{asset}",
         )
-        if response.status_code != 200 or not isinstance(response.json(), list):
-            raise RuntimeError(f"FMP_DIVIDENDS_HTTP_OR_SCHEMA:{asset}:{response.status_code}")
-        dividend_rows[asset] = [row for row in response.json() if isinstance(row, dict)]
     dividend_yields: dict[tuple[str, str], float] = {}
     q_labels: dict[tuple[str, str], str] = {}
     for row in spots.iter_rows(named=True):
