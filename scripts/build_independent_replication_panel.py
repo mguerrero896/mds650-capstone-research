@@ -13,6 +13,7 @@ import hashlib
 import json
 import os
 import time
+from collections.abc import Mapping
 from datetime import date, timedelta
 from pathlib import Path
 from typing import Any
@@ -97,6 +98,51 @@ def _window() -> dict[str, Any]:
     if len(window.get("warmup_dates", [])) != 60 or len(window.get("target_dates", [])) != 30:
         raise RuntimeError("REPLICATION_WINDOW_ROLE_COUNTS_INVALID")
     return window
+
+
+def _validate_acquisition_complete(
+    manifest: Mapping[str, Any], expected_dates: list[str]
+) -> None:
+    """Fail closed before B2 writes when any Full Tape day is incomplete.
+
+    Parameters
+    ----------
+    manifest:
+        Sanitized independent-acquisition manifest.
+    expected_dates:
+        Ordered frozen session allow-list.
+
+    Raises
+    ------
+    RuntimeError
+        If the manifest is not a complete, sanitized PASS for every date.
+    """
+    records_value = manifest.get("records")
+    records = (
+        [row for row in records_value if isinstance(row, Mapping)]
+        if isinstance(records_value, list)
+        else []
+    )
+    dates = [str(row.get("session_date")) for row in records]
+    if (
+        manifest.get("status") != "PASS"
+        or manifest.get("completed_count") != len(expected_dates)
+        or len(records) != len(expected_dates)
+        or dates != sorted(set(dates))
+        or dates != sorted(expected_dates)
+    ):
+        raise RuntimeError("REPLICATION_B2_ACQUISITION_INCOMPLETE")
+    for row in records:
+        if (
+            row.get("status") != "PASS"
+            or row.get("http_status") != 200
+            or row.get("duplicate_event_ids") != 0
+            or row.get("secret_values_emitted") is not False
+            or row.get("personal_paths_emitted") is not False
+        ):
+            raise RuntimeError(
+                f"REPLICATION_B2_ACQUISITION_RECORD_INVALID:{row.get('session_date')}"
+            )
 
 
 def _origins(window: dict[str, Any]) -> pl.DataFrame:
@@ -301,6 +347,9 @@ def build_b0_training() -> None:
 def build_b2() -> None:
     """Aggregate all Full Tape rows and normalize B2 without reading RV30."""
     window = _window()
+    _validate_acquisition_complete(
+        _load_json(ACQUISITION_PATH), [str(item) for item in window["all_dates"]]
+    )
     if not ORIGINS_PATH.exists():
         build_origins()
     origins = pl.read_parquet(ORIGINS_PATH)

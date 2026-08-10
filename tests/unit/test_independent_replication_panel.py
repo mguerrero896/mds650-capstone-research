@@ -8,6 +8,7 @@ from datetime import date
 from pathlib import Path
 
 import polars as pl
+import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -87,3 +88,15 @@ def test_massive_bounds_use_dst_and_early_close_calendar() -> None:
     assert winter_close - winter_open == 6.5 * 60 * 60 * 1_000_000_000
     assert summer_close - summer_open == 6.5 * 60 * 60 * 1_000_000_000
     assert early_close - early_open == 3.5 * 60 * 60 * 1_000_000_000
+
+
+def test_b2_rejects_incomplete_acquisition_before_writing_partitions() -> None:
+    with pytest.raises(RuntimeError, match="REPLICATION_B2_ACQUISITION_INCOMPLETE"):
+        panel._validate_acquisition_complete(
+            {
+                "status": "IN_PROGRESS",
+                "completed_count": 31,
+                "records": [],
+            },
+            ["2025-02-25", "2025-04-04"],
+        )
