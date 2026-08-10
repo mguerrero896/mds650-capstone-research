@@ -8,6 +8,7 @@ the local join always selects the last SIP quote at or before that origin.
 from __future__ import annotations
 
 import argparse
+import gc
 import json
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -315,21 +316,28 @@ def build_b1() -> None:
         flush=True,
     )
     with ThreadPoolExecutor(max_workers=8) as executor:
-        futures = {executor.submit(b1.fetch_contract_day, job, massive_key): job for job in jobs}
-        for index, future in enumerate(as_completed(futures), start=1):
-            job = futures[future]
-            cache_result = future.result()
-            cache_paths[(job[0], job[1], job[2]["contract"])] = str(cache_result["cache_path"])
-            if index % 25 == 0 or index == len(futures):
-                print(
-                    json.dumps(
-                        {
-                            "quote_jobs_completed": index,
-                            "quote_jobs_total": len(futures),
-                        }
-                    ),
-                    flush=True,
-                )
+        for batch_start in range(0, len(jobs), 32):
+            batch = jobs[batch_start : batch_start + 32]
+            futures = {
+                executor.submit(b1.fetch_contract_day, job, massive_key): job for job in batch
+            }
+            for offset, future in enumerate(as_completed(futures), start=1):
+                job = futures[future]
+                cache_result = future.result()
+                cache_paths[(job[0], job[1], job[2]["contract"])] = str(cache_result["cache_path"])
+                index = batch_start + offset
+                if index % 25 == 0 or index == len(jobs):
+                    print(
+                        json.dumps(
+                            {
+                                "quote_jobs_completed": index,
+                                "quote_jobs_total": len(jobs),
+                            }
+                        ),
+                        flush=True,
+                    )
+            del futures, batch
+            gc.collect()
     attempts: list[dict[str, Any]] = []
     origin_rows = origins.sort(["asset", "session_date", "forecast_origin_utc"]).to_dicts()
     for origin in origin_rows:
