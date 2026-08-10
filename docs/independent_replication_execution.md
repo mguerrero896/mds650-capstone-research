@@ -1,3 +1,9 @@
+---
+title: Independent RV30 replication execution contract
+type: research
+created: 2026-08-10
+---
+
 # Independent RV30 replication execution contract
 
 Status: `ACQUISITION_IN_PROGRESS`; no independent target outcome has been read.
