@@ -1,0 +1,47 @@
+{
+  "schema_version": "b1-independent-coverage-summary-1.0",
+  "status": "PASS_B1V2A_TARGET_FREE",
+  "generated_at": "2026-08-10",
+  "route": "B1Q_MASSIVE",
+  "source_manifest": "artifacts/independent_replication/b1_manifest.json",
+  "source_manifest_sha256": "f21478d138c12da1414ce4c9e1dee9f4401de77ecf33c9d073415cb739e72ed1",
+  "source_feature_path": "MDS650_DATA_ROOT/independent_replication_30/derived/b1/b1v2a_90d.parquet",
+  "source_feature_sha256": "dc5f411da505a33b579639754a69e42ad42fbff0d13d0d8deba093590c50f485",
+  "origin_count": 38664,
+  "unique_origin_count": 38664,
+  "assets": ["AAPL", "AMZN", "META", "MSFT", "NVDA", "TSLA"],
+  "target_outcome_read": false,
+  "future_quote_rows": 0,
+  "duplicate_origins": 0,
+  "global": {
+    "b1a_complete": 35421,
+    "b1b_complete": 35188,
+    "b1c_complete": 0,
+    "b1a_coverage": 0.9161235257603972,
+    "b1b_coverage": 0.910097248086075,
+    "b1c_coverage": 0.0
+  },
+  "by_asset": [
+    {"asset": "AAPL", "rows": 6444, "b1a_coverage": 0.9162011173184358, "b1b_coverage": 0.914649286157666, "b1c_coverage": 0.0},
+    {"asset": "AMZN", "rows": 6444, "b1a_coverage": 0.9162011173184358, "b1b_coverage": 0.9062693978895097, "b1c_coverage": 0.0},
+    {"asset": "META", "rows": 6444, "b1a_coverage": 0.9162011173184358, "b1b_coverage": 0.914649286157666, "b1c_coverage": 0.0},
+    {"asset": "MSFT", "rows": 6444, "b1a_coverage": 0.9158907510862818, "b1b_coverage": 0.9034761018001242, "b1c_coverage": 0.0},
+    {"asset": "NVDA", "rows": 6444, "b1a_coverage": 0.9160459342023588, "b1b_coverage": 0.9053382991930478, "b1c_coverage": 0.0},
+    {"asset": "TSLA", "rows": 6444, "b1a_coverage": 0.9162011173184358, "b1b_coverage": 0.9162011173184358, "b1c_coverage": 0.0}
+  ],
+  "by_session_tercile": [
+    {"session_tercile": "first", "rows": 13500, "b1a_coverage": 0.7597777777777778, "b1b_coverage": 0.7555555555555555, "b1c_coverage": 0.0},
+    {"session_tercile": "middle", "rows": 13950, "b1a_coverage": 1.0, "b1b_coverage": 0.9926881720430107, "b1c_coverage": 0.0},
+    {"session_tercile": "last", "rows": 11214, "b1a_coverage": 1.0, "b1b_coverage": 0.9934011057606563, "b1c_coverage": 0.0}
+  ],
+  "by_role": [
+    {"role": "warmup", "rows": 25920, "b1a_coverage": 0.9165509259259259, "b1b_coverage": 0.9109567901234568, "b1c_coverage": 0.0},
+    {"role": "target", "rows": 12744, "b1a_coverage": 0.9152542372881356, "b1b_coverage": 0.9083490269930948, "b1c_coverage": 0.0}
+  ],
+  "missing_reason_counts": [
+    {"reason": "B1V2A_HISTORY_OR_STATE_MISSING", "rows": 3243},
+    {"reason": null, "rows": 35421}
+  ],
+  "secret_values_emitted": false,
+  "personal_paths_emitted": false
+}
