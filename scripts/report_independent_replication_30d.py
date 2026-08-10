@@ -159,6 +159,7 @@ def _build_evidence_rows() -> list[dict[str, Any]]:
         ("development_contrasts", ROOT / "artifacts/methodology/development_contrasts_v2.json"),
         ("development_report", ROOT / "docs/model_and_mde_comparison_v2.md"),
         ("development_stability_report", ROOT / "docs/development_stability_audit_v2.md"),
+        ("execution_contract", ROOT / "docs/independent_replication_execution.md"),
         ("stability_flattened", STABILITY),
         ("test_report", ARTIFACT / "test_report.txt"),
         ("human_report", REPORT),
