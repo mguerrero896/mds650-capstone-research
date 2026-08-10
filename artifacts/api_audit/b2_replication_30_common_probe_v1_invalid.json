@@ -1,0 +1,5144 @@
+{
+  "fmp_pass_sessions": 30,
+  "full_tape_downloaded": false,
+  "massive_pass_sessions": 0,
+  "pit_claim": false,
+  "records": [
+    {
+      "date": "2025-05-21",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-21"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 202.05
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-21"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 201.11
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-21"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 635.06
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-21"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 452.37
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-21"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 131.74
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-21"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 513.05
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-21"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 582.97
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-21"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 334.6
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1747843200000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1747843200000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1747843200000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1747843200000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1747843200000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1747843200000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1747843200000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1747843200000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-05-22",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-22"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 201.34
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-22"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 203.07
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-22"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 636.48
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-22"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 454.89
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-22"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 132.8
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-22"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 514.01
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-22"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 583.03
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-22"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 341.03
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1747929600000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1747929600000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1747929600000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1747929600000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1747929600000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1747929600000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1747929600000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1747929600000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-05-23",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-23"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 195.23
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-23"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 200.99
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-23"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 627.23
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-23"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 450.25
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-23"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 131.3
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-23"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 509.29
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-23"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 579.16
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-23"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 339.3
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748016000000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748016000000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748016000000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748016000000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748016000000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748016000000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748016000000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748016000000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-05-27",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-27"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 200.17
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-27"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 205.94
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-27"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 642.2
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-27"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 460.69
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-27"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 135.49
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-27"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 521.21
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-27"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 591.05
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-27"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 362.75
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748361600000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748361600000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748361600000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748361600000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748361600000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748361600000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748361600000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748361600000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-05-28",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-28"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 200.38
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-28"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 204.78
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-28"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 643.75
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-28"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 457.41
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-28"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 134.83
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-28"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 518.94
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-28"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 587.69
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-28"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 356.76
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748448000000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748448000000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748448000000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748448000000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748448000000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748448000000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748448000000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748448000000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-05-29",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-29"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 199.94
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-29"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 205.67
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-29"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 645.14
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-29"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 458.56
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-29"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 139.18
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-29"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 519.96
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-29"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 589.99
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-29"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 358.37
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748534400000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748534400000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748534400000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748534400000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748534400000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748534400000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748534400000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748534400000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-05-30",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-30"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 200.71
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-30"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 204.66
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-30"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 646.88
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-30"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 459.63
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-30"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 134.86
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-30"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 519.12
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-30"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 589.46
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-05-30"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 345.78
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748620800000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748620800000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748620800000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748620800000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748620800000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748620800000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748620800000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748620800000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-06-02",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-02"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 201.8
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-02"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 206.68
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-02"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 671.12
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-02"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 461.97
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-02"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 137.37
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-02"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 523.18
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-02"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 592.63
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-02"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 342.71
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748880000000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748880000000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748880000000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748880000000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748880000000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748880000000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748880000000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748880000000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-06-03",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-03"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 203.31
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-03"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 205.78
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-03"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 667.17
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-03"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 463.17
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-03"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 141.24
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-03"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 527.42
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-03"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 596.11
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-03"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 344.44
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748966400000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748966400000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748966400000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748966400000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748966400000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748966400000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748966400000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1748966400000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-06-04",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-04"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 202.89
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-04"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 207.21
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-04"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 688.09
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-04"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 463.8
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-04"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 141.85
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-04"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 528.77
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-04"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 595.89
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-04"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 332.21
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749052800000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749052800000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749052800000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749052800000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749052800000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749052800000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749052800000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749052800000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-06-05",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-05"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 200.54
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-05"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 207.93
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-05"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 684.42
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-05"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 467.67
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-05"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 139.94
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-05"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 524.7
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-05"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 593.0
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-05"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 284.73
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749139200000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749139200000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749139200000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749139200000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749139200000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749139200000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749139200000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749139200000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-06-06",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-06"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 203.93
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-06"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 213.53
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-06"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 697.68
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-06"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 470.12
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-06"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 141.69
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-06"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 529.85
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-06"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 599.04
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-06"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 295.19
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749225600000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749225600000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749225600000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749225600000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749225600000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749225600000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749225600000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749225600000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-06-09",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-09"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 201.49
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-09"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 216.94
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-09"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 694.04
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-09"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 472.76
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-09"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 142.6
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-09"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 530.69
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-09"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 599.59
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-09"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 308.71
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749484800000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749484800000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749484800000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749484800000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749484800000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749484800000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749484800000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749484800000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-06-10",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-10"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 202.72
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-10"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 217.56
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-10"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 702.5
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-10"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 470.94
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-10"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 143.96
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-10"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 534.27
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-10"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 603.03
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-10"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 326.15
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749571200000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749571200000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749571200000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749571200000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749571200000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749571200000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749571200000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749571200000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-06-11",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-11"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 198.82
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-11"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 213.19
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-11"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 694.38
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-11"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 472.9
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-11"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 142.85
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-11"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 532.37
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-11"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 601.42
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-11"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 326.39
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749657600000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749657600000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749657600000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749657600000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749657600000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749657600000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749657600000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749657600000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-06-12",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-12"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 199.19
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-12"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 213.23
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-12"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 693.62
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-12"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 479.03
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-12"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 145.0
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-12"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 533.68
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-12"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 603.69
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-12"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 319.19
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749744000000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749744000000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749744000000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749744000000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749744000000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749744000000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749744000000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749744000000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-06-13",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-13"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 196.46
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-13"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 212.1
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-13"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 682.9
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-13"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 474.96
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-13"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 141.94
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-13"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 526.92
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-13"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 596.93
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-13"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 325.37
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749830400000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749830400000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749830400000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749830400000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749830400000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749830400000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749830400000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1749830400000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-06-16",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-16"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 198.4
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-16"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 216.16
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-16"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 702.05
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-16"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 479.05
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-16"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 144.68
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-16"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 534.25
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-16"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 602.72
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-16"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 329.09
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750089600000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750089600000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750089600000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750089600000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750089600000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750089600000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750089600000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750089600000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-06-17",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-17"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 195.59
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-17"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 214.81
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-17"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 697.14
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-17"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 478.04
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-17"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 144.03
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-17"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 529.0
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-17"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 597.55
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-17"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 316.28
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750176000000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750176000000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750176000000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750176000000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750176000000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750176000000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750176000000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750176000000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-06-18",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-18"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 196.26
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-18"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 212.56
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-18"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 695.54
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-18"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 480.33
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-18"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 145.48
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-18"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 528.97
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-18"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 597.46
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-18"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 322.14
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750262400000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750262400000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750262400000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750262400000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750262400000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750262400000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750262400000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750262400000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-06-20",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-20"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 200.92
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-20"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 209.61
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-20"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 682.42
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-20"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 477.24
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-20"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 143.77
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-20"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 526.71
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-20"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 594.27
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-20"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 322.02
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750435200000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750435200000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750435200000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750435200000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750435200000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750435200000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750435200000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750435200000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-06-23",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-23"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 201.56
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-23"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 208.39
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-23"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 698.5
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-23"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 485.92
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-23"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 144.18
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-23"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 531.7
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-23"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 600.07
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-23"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 348.71
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750694400000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750694400000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750694400000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750694400000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750694400000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750694400000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750694400000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750694400000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-06-24",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-24"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 200.3
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-24"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 212.78
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-24"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 712.18
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-24"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 490.12
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-24"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 147.83
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-24"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 539.73
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-24"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 606.76
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-24"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 340.48
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750780800000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750780800000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750780800000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750780800000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750780800000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750780800000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750780800000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750780800000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-06-25",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-25"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 201.6
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-25"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 212.12
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-25"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 708.68
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-25"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 492.42
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-25"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 154.3
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-25"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 541.17
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-25"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 607.08
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-25"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 327.59
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750867200000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750867200000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750867200000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750867200000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750867200000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750867200000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750867200000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750867200000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-06-26",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-26"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 201.01
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-26"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 217.13
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-26"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 726.23
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-26"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 497.43
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-26"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 155.08
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-26"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 546.22
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-26"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 611.89
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-26"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 325.72
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750953600000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750953600000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750953600000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750953600000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750953600000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750953600000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750953600000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1750953600000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-06-27",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-27"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 201.04
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-27"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 223.16
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-27"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 733.61
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-27"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 495.89
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-27"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 157.77
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-27"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 548.21
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-27"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 614.85
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-27"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 323.73
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751040000000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751040000000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751040000000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751040000000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751040000000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751040000000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751040000000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751040000000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-06-30",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-30"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 205.11
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-30"
+          ],
+          "rows_exact_session": 389,
+          "spot_proxy": 219.33
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-30"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 738.07
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-30"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 497.26
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-30"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 157.9
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-30"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 551.65
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-30"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 617.9
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-06-30"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 317.63
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751299200000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751299200000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751299200000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751299200000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751299200000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751299200000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751299200000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751299200000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-07-01",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-01"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 207.75
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-01"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 220.46
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-01"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 719.15
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-01"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 492.1
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-01"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 153.27
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-01"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 546.96
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-01"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 617.54
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-01"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 300.66
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751385600000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751385600000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751385600000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751385600000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751385600000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751385600000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751385600000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751385600000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-07-02",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-02"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 212.35
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-02"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 219.91
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-02"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 713.17
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-02"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 491.02
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-02"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 157.24
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-02"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 550.81
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-02"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 620.38
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-02"
+          ],
+          "rows_exact_session": 390,
+          "spot_proxy": 315.65
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751472000000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751472000000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751472000000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751472000000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751472000000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751472000000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751472000000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751472000000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    },
+    {
+      "date": "2025-07-03",
+      "fmp": {
+        "AAPL": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-03"
+          ],
+          "rows_exact_session": 210,
+          "spot_proxy": 213.58
+        },
+        "AMZN": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-03"
+          ],
+          "rows_exact_session": 210,
+          "spot_proxy": 223.31
+        },
+        "META": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-03"
+          ],
+          "rows_exact_session": 210,
+          "spot_proxy": 718.6
+        },
+        "MSFT": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-03"
+          ],
+          "rows_exact_session": 210,
+          "spot_proxy": 498.56
+        },
+        "NVDA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-03"
+          ],
+          "rows_exact_session": 210,
+          "spot_proxy": 159.27
+        },
+        "QQQ": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-03"
+          ],
+          "rows_exact_session": 210,
+          "spot_proxy": 556.22
+        },
+        "SPY": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-03"
+          ],
+          "rows_exact_session": 210,
+          "spot_proxy": 625.36
+        },
+        "TSLA": {
+          "exact_session_pass": true,
+          "http_status": 200,
+          "returned_dates": [
+            "2025-07-03"
+          ],
+          "rows_exact_session": 210,
+          "spot_proxy": 315.2
+        }
+      },
+      "fmp_all_assets_pass": true,
+      "full_tape_downloaded": false,
+      "massive": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751558400000000000,
+          "underlying_ticker": null
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751558400000000000,
+          "underlying_ticker": null
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751558400000000000,
+          "underlying_ticker": null
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751558400000000000,
+          "underlying_ticker": null
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751558400000000000,
+          "underlying_ticker": null
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751558400000000000,
+          "underlying_ticker": null
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751558400000000000,
+          "underlying_ticker": null
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "pass": false,
+          "quote_http_status": null,
+          "quote_pass": false,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "timestamp_lte_ns": 1751558400000000000,
+          "underlying_ticker": null
+        }
+      },
+      "massive_all_assets_pass": false,
+      "secret_values_emitted": false
+    }
+  ],
+  "schema_version": "b2-replication-30-common-probe-1.0",
+  "secret_values_emitted": false,
+  "session_count": 30,
+  "status": "FAIL_METADATA_ONLY",
+  "window_end": "2025-07-03",
+  "window_start": "2025-05-21"
+}

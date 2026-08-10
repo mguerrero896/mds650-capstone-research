@@ -1,0 +1,12 @@
+{
+  "asset_count": 6,
+  "manifest_sha256": "b0caa821cd39e40e27ede1ff762d861edff1e542b41a459edd31e96e6016c166",
+  "origin_count": 38664,
+  "origin_table_sha256": "f28c7f8a28e7fad47c3062259b6f2e146f44ca1831a1a162f64d96eb44c4aecf",
+  "personal_paths_emitted": false,
+  "schema_version": "b2-independent-replication-origins-1.0",
+  "secret_values_emitted": false,
+  "session_count": 90,
+  "status": "PASS_ORIGINS_NO_OUTCOME_READ",
+  "target_outcome_read": false
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": "b2-independent-replication-acquisition-pause-1.0",
+  "status": "PAUSED_FOR_CAUSAL_TRAINING_DESIGN",
+  "completed_warmup_sessions": 3,
+  "target_outcome_read": false,
+  "reason": "Twenty warm-up sessions are insufficient for a causal B2-complete training sample; the window was expanded to sixty warm-up sessions before the thirty scored targets.",
+  "raw_checkpoints_preserved": true,
+  "partial_download_preserved_for_resume": true,
+  "secret_values_emitted": false,
+  "personal_paths_emitted": false
+}

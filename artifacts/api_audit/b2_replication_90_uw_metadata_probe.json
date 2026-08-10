@@ -1,0 +1,914 @@
+{
+  "full_tape_downloaded": false,
+  "metadata_pass_count": 90,
+  "note": "Range/Content-Range proves file metadata availability only; it is not row-level PIT evidence.",
+  "pit_claim": false,
+  "records": [
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1220865123,
+      "content_range_present": true,
+      "date": "2025-02-25",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1099766823,
+      "content_range_present": true,
+      "date": "2025-02-26",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1236475917,
+      "content_range_present": true,
+      "date": "2025-02-27",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1264852633,
+      "content_range_present": true,
+      "date": "2025-02-28",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1214957300,
+      "content_range_present": true,
+      "date": "2025-03-03",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1322195843,
+      "content_range_present": true,
+      "date": "2025-03-04",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1066077088,
+      "content_range_present": true,
+      "date": "2025-03-05",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1180407286,
+      "content_range_present": true,
+      "date": "2025-03-06",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1315412188,
+      "content_range_present": true,
+      "date": "2025-03-07",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1292166759,
+      "content_range_present": true,
+      "date": "2025-03-10",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1160185652,
+      "content_range_present": true,
+      "date": "2025-03-11",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1054025170,
+      "content_range_present": true,
+      "date": "2025-03-12",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1061055749,
+      "content_range_present": true,
+      "date": "2025-03-13",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1107833137,
+      "content_range_present": true,
+      "date": "2025-03-14",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 978446968,
+      "content_range_present": true,
+      "date": "2025-03-17",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 887332139,
+      "content_range_present": true,
+      "date": "2025-03-18",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 929613865,
+      "content_range_present": true,
+      "date": "2025-03-19",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 953267084,
+      "content_range_present": true,
+      "date": "2025-03-20",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1037866142,
+      "content_range_present": true,
+      "date": "2025-03-21",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1019932765,
+      "content_range_present": true,
+      "date": "2025-03-24",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 843253906,
+      "content_range_present": true,
+      "date": "2025-03-25",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 988529526,
+      "content_range_present": true,
+      "date": "2025-03-26",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 979358396,
+      "content_range_present": true,
+      "date": "2025-03-27",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1141636846,
+      "content_range_present": true,
+      "date": "2025-03-28",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1018961836,
+      "content_range_present": true,
+      "date": "2025-03-31",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 914470031,
+      "content_range_present": true,
+      "date": "2025-04-01",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 955873453,
+      "content_range_present": true,
+      "date": "2025-04-02",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1316735655,
+      "content_range_present": true,
+      "date": "2025-04-03",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1641349757,
+      "content_range_present": true,
+      "date": "2025-04-04",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1327987701,
+      "content_range_present": true,
+      "date": "2025-04-07",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1419566853,
+      "content_range_present": true,
+      "date": "2025-04-08",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1539181163,
+      "content_range_present": true,
+      "date": "2025-04-09",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1392059713,
+      "content_range_present": true,
+      "date": "2025-04-10",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1221208988,
+      "content_range_present": true,
+      "date": "2025-04-11",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1058992807,
+      "content_range_present": true,
+      "date": "2025-04-14",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 883568607,
+      "content_range_present": true,
+      "date": "2025-04-15",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1109920851,
+      "content_range_present": true,
+      "date": "2025-04-16",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1053691705,
+      "content_range_present": true,
+      "date": "2025-04-17",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 979951335,
+      "content_range_present": true,
+      "date": "2025-04-21",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1081106933,
+      "content_range_present": true,
+      "date": "2025-04-22",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1214449925,
+      "content_range_present": true,
+      "date": "2025-04-23",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1069133002,
+      "content_range_present": true,
+      "date": "2025-04-24",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1225330354,
+      "content_range_present": true,
+      "date": "2025-04-25",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 995097400,
+      "content_range_present": true,
+      "date": "2025-04-28",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 905125630,
+      "content_range_present": true,
+      "date": "2025-04-29",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1023736420,
+      "content_range_present": true,
+      "date": "2025-04-30",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1140438734,
+      "content_range_present": true,
+      "date": "2025-05-01",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1256729941,
+      "content_range_present": true,
+      "date": "2025-05-02",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 901473175,
+      "content_range_present": true,
+      "date": "2025-05-05",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 933472439,
+      "content_range_present": true,
+      "date": "2025-05-06",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 977046790,
+      "content_range_present": true,
+      "date": "2025-05-07",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1195492084,
+      "content_range_present": true,
+      "date": "2025-05-08",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1110282056,
+      "content_range_present": true,
+      "date": "2025-05-09",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1238156737,
+      "content_range_present": true,
+      "date": "2025-05-12",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1252274556,
+      "content_range_present": true,
+      "date": "2025-05-13",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1141757280,
+      "content_range_present": true,
+      "date": "2025-05-14",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1101281938,
+      "content_range_present": true,
+      "date": "2025-05-15",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1157998319,
+      "content_range_present": true,
+      "date": "2025-05-16",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 961044405,
+      "content_range_present": true,
+      "date": "2025-05-19",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 945432809,
+      "content_range_present": true,
+      "date": "2025-05-20",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1210382921,
+      "content_range_present": true,
+      "date": "2025-05-21",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1032093477,
+      "content_range_present": true,
+      "date": "2025-05-22",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1084849862,
+      "content_range_present": true,
+      "date": "2025-05-23",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 996119371,
+      "content_range_present": true,
+      "date": "2025-05-27",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 898482191,
+      "content_range_present": true,
+      "date": "2025-05-28",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1005242049,
+      "content_range_present": true,
+      "date": "2025-05-29",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1151592545,
+      "content_range_present": true,
+      "date": "2025-05-30",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 917539955,
+      "content_range_present": true,
+      "date": "2025-06-02",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 971587559,
+      "content_range_present": true,
+      "date": "2025-06-03",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 929325763,
+      "content_range_present": true,
+      "date": "2025-06-04",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1258823578,
+      "content_range_present": true,
+      "date": "2025-06-05",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1149708725,
+      "content_range_present": true,
+      "date": "2025-06-06",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 964665077,
+      "content_range_present": true,
+      "date": "2025-06-09",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 969939390,
+      "content_range_present": true,
+      "date": "2025-06-10",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1072884555,
+      "content_range_present": true,
+      "date": "2025-06-11",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 929072083,
+      "content_range_present": true,
+      "date": "2025-06-12",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1235810769,
+      "content_range_present": true,
+      "date": "2025-06-13",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 966606975,
+      "content_range_present": true,
+      "date": "2025-06-16",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 963433599,
+      "content_range_present": true,
+      "date": "2025-06-17",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 940587275,
+      "content_range_present": true,
+      "date": "2025-06-18",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1184825972,
+      "content_range_present": true,
+      "date": "2025-06-20",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1159822396,
+      "content_range_present": true,
+      "date": "2025-06-23",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1045447008,
+      "content_range_present": true,
+      "date": "2025-06-24",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 988155339,
+      "content_range_present": true,
+      "date": "2025-06-25",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1009076209,
+      "content_range_present": true,
+      "date": "2025-06-26",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1254486529,
+      "content_range_present": true,
+      "date": "2025-06-27",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1019968680,
+      "content_range_present": true,
+      "date": "2025-06-30",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1102037750,
+      "content_range_present": true,
+      "date": "2025-07-01",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 1022594510,
+      "content_range_present": true,
+      "date": "2025-07-02",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    },
+    {
+      "bytes_sampled": 1,
+      "bytes_total": 798023075,
+      "content_range_present": true,
+      "date": "2025-07-03",
+      "file_metadata_pass": true,
+      "full_tape_downloaded": false,
+      "http_status": 206,
+      "secret_values_emitted": false
+    }
+  ],
+  "schema_version": "b2-replication-30-uw-metadata-probe-1.0",
+  "secret_values_emitted": false,
+  "session_count": 90,
+  "status": "PASS_METADATA_ONLY",
+  "window_end": "2025-07-03",
+  "window_start": "2025-02-25"
+}

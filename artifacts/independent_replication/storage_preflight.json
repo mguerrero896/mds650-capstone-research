@@ -1,0 +1,14 @@
+{
+  "data_root": "MDS650_DATA_ROOT",
+  "free_bytes_before": 753387962368,
+  "free_space_pass": true,
+  "minimum_free_bytes": 85899345920,
+  "parquet_bytes_estimate": 17684834557,
+  "personal_paths_emitted": false,
+  "projected_free_bytes_at_peak": 602673872308,
+  "projected_peak_additional_bytes": 150714090060,
+  "raw_and_parquet_path": "MDS650_DATA_ROOT/independent_replication_30",
+  "raw_bytes_metadata_estimate": 98249080874,
+  "schema_version": "b2-replication-30-storage-preflight-1.0",
+  "secret_values_emitted": false
+}

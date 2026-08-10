@@ -1,0 +1,48 @@
+{
+  "descriptive_metrics": [
+    "MAE",
+    "RMSE"
+  ],
+  "inference": {
+    "bootstrap": "paired_by_XNYS_session_date_with_all_assets",
+    "mde_source": "training_only_frozen_before_target_outcome",
+    "multiplicity": "Holm",
+    "repetitions": 10000
+  },
+  "information_sets": [
+    "B0v2",
+    "B1v2a",
+    "B2v2"
+  ],
+  "manifest_sha256": "479b1e7a579b524bab627de7b0f06af86d4015796d6d40a8e2a799c33f956c2c",
+  "model_roles": {
+    "confirmatory": "gamma_glm_confirmatory",
+    "robustness": "lightgbm_robustness"
+  },
+  "no_new_tuning_after_acquisition": true,
+  "personal_paths_emitted": false,
+  "primary_metric": "QLIKE",
+  "schema_version": "b2-independent-replication-method-freeze-1.0",
+  "secret_values_emitted": false,
+  "source_hashes": {
+    "lockfile": "97382a973be6cede8621050748b1409e4cb6c70591063217e05896d8b03be241",
+    "phase6_method_freeze": "e66a9e5206f29c9a877f31d4650944644eb6328a0d04bc13cf22ab377b2f0c9b",
+    "phase6_training_mde": "90d7a6bfbe51a86ff73f8f9b8710f125215716b10026dafdf771adbd996e60e4",
+    "window_manifest": "684dec2d9f821a2d980133ca9e6028332d92f379a436eef466decb410d1fc7fa"
+  },
+  "status": "FROZEN_BEFORE_TARGET_OUTCOME_READ",
+  "target": {
+    "horizon_minutes": 30,
+    "name": "RV30",
+    "price_count": 31,
+    "return_count": 30
+  },
+  "target_count": 30,
+  "target_outcome_read": false,
+  "timing": {
+    "b2_cutoff": "created_at <= forecast_origin - 60 seconds",
+    "natural_prevalence": true,
+    "purge_embargo_minutes": 30
+  },
+  "warmup_count": 60
+}
