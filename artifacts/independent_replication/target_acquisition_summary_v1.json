@@ -1,0 +1,43 @@
+{
+  "schema_version": "b2-independent-replication-target-acquisition-summary-1.0",
+  "status": "TARGET_BODY_ACQUISITION_PASS_WARMUP_INCOMPLETE",
+  "target_body_acquisition": {
+    "expected_sessions": 30,
+    "completed_sessions": 30,
+    "date_start": "2025-05-21",
+    "date_end": "2025-07-03",
+    "all_target_dates_present": true,
+    "http_statuses": [200],
+    "schema_fingerprint_count": 1,
+    "parquet_partitions_per_session": 8,
+    "duplicate_event_ids_total": 0,
+    "rows_seen_total": 225810612,
+    "rows_retained_total": 84200233,
+    "raw_bytes_total": 31233185187,
+    "parquet_bytes_total": 4884998863
+  },
+  "integrity": {
+    "manifest_hash_valid": true,
+    "all_target_checkpoints_valid": true,
+    "secret_values_emitted": false,
+    "personal_paths_emitted": false,
+    "acquisition_manifest_sha256": "f81c40f1c5497c5912ade365524d194c8e05164edadded66c3de5c6f5ea61bf3",
+    "window_manifest_sha256": "7e92bf22779c42ba496f81654a7843a432ce6eafe04912307fc00126e462bf98",
+    "method_freeze_sha256": "479b1e7a579b524bab627de7b0f06af86d4015796d6d40a8e2a799c33f956c2c",
+    "metadata_probe_sha256": "38D29A8338DE3FB41EF6ACE8B601D71DFDED674D1B3465BBDA5D14230C46FA63"
+  },
+  "analytical_gate": {
+    "target_outcome_read": false,
+    "rv30_read": false,
+    "qlike_read": false,
+    "model_fit_on_target": false,
+    "pit_status": "NOT_ESTABLISHED_BY_RANGE_METADATA",
+    "full_window_manifest_status": "IN_PROGRESS",
+    "warmup_blocker": "2025-04-04 provider archive remains stable-corrupt across two body downloads; no retry was performed after the refresh probe."
+  },
+  "storage": {
+    "root": "D:/MDS650/independent_replication_30",
+    "free_space_gib_observed_after_completion": 597.18,
+    "minimum_free_space_gib": 80.0
+  }
+}

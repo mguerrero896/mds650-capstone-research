@@ -11,16 +11,24 @@ Status: `ACQUISITION_IN_PROGRESS`; no independent target outcome has been read.
 ## Current acquisition gate (2026-08-10)
 
 The provider metadata probe reports the 90 planned historical dates as
-available, but the local body acquisition is not complete: 31 of 90 sessions
-have passed immutable ZIP/Parquet/hash validation and the manifest still has
-status `IN_PROGRESS`. The completed records end on 2025-04-25, before the 30
-target dates (2025-05-21 through 2025-07-03). The 2025-04-04 warm-up archive is
-quarantined after two identical CRC failures; a fresh one-byte Range probe
-returned the same ETag and byte count. This is an explicit provider-archive
-block, not a silently skipped date. The evidence is recorded in
+available, but the local body acquisition is not complete: 61 of 90 sessions
+have passed immutable ZIP/Parquet/hash validation and the manifest remains
+`IN_PROGRESS`. This consists of 31 warm-up sessions through 2025-04-25 and all
+30 target dates from 2025-05-21 through 2025-07-03. The 2025-04-04 warm-up
+archive is quarantined after two identical CRC failures; a fresh one-byte Range
+probe returned the same ETag and byte count. This is an explicit
+provider-archive block, not a silently skipped date. The evidence is recorded in
 `artifacts/independent_replication/acquisition_manifest.json`,
 `artifacts/independent_replication/acquisition_incidents/2025-04-04_crc_failure.json`,
 and `artifacts/independent_replication/acquisition_incidents/2025-04-04_refresh_probe.json`.
+
+The bounded `--role target` continuation completed all 30 target bodies on
+2026-08-10. The target summary is recorded in
+`artifacts/independent_replication/target_acquisition_summary_v1.json`:
+30/30 target checkpoints are valid, all target responses were HTTP 200, one
+schema fingerprint was observed, eight Parquet partitions were produced per
+session, and duplicate event IDs were zero. The 90-session manifest remains
+`IN_PROGRESS` because the warm-up archive is still missing.
 
 Until the provider replaces that archive (or the frozen window is formally
 re-authorized), the target gate remains closed and no B2 feature build, RV30
