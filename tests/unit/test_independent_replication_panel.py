@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import build_independent_replication_panel as panel  # noqa: E402
+from run_b1_closure import _session_bounds_ns  # noqa: E402
 
 
 def test_replication_origins_are_frozen_and_outcome_free() -> None:
@@ -77,3 +78,12 @@ def test_fmp_manifest_filters_provider_over_return_and_keeps_b0_warmup_only() ->
     assert b0["status"] == "PASS_B0_WARMUP_ONLY"
     assert b0["target_outcome_read"] is False
     assert b0["target_dates_read"] == []
+
+
+def test_massive_bounds_use_dst_and_early_close_calendar() -> None:
+    winter_open, winter_close = _session_bounds_ns("2025-01-02")
+    summer_open, summer_close = _session_bounds_ns("2025-07-02")
+    early_open, early_close = _session_bounds_ns("2025-07-03")
+    assert winter_close - winter_open == 6.5 * 60 * 60 * 1_000_000_000
+    assert summer_close - summer_open == 6.5 * 60 * 60 * 1_000_000_000
+    assert early_close - early_open == 3.5 * 60 * 60 * 1_000_000_000
