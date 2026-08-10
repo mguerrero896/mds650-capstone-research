@@ -1,0 +1,30 @@
+{
+  "schema_version": "b2-independent-replication-acquisition-incident-1.0",
+  "status": "BLOCKED_PROVIDER_ARCHIVE_CORRUPT",
+  "session_date": "2025-04-04",
+  "failure_code": "FULL_TAPE_ZIP_CRC_FAILURE",
+  "raw_relative_path": "raw/full_tape/2025-04-04/full_tape_2025-04-04.zip",
+  "raw_bytes": 1641349757,
+  "raw_sha256": "5F0CFA3CF710EAC12220E46079543AA2587F5E6A7F23081E7416DE620DA86F88",
+  "quarantine_relative_paths": [
+    "raw/full_tape/_quarantine_crc_failure/2025-04-04/full_tape_2025-04-04.zip.corrupt",
+    "raw/full_tape/_quarantine_crc_failure/2025-04-04/full_tape_2025-04-04.retry2.zip.corrupt"
+  ],
+  "checkpoint_written": false,
+  "partitions_written": 0,
+  "observed_at_utc": "2026-08-10T08:08:49.7142850Z",
+  "redownload_attempts": 2,
+  "redownload_sha256s": [
+    "5F0CFA3CF710EAC12220E46079543AA2587F5E6A7F23081E7416DE620DA86F88",
+    "5F0CFA3CF710EAC12220E46079543AA2587F5E6A7F23081E7416DE620DA86F88"
+  ],
+  "provider_etag": "\"465a2bec524e01227e0465162a972a4c\"",
+  "provider_content_range_total_bytes": 1641349757,
+  "decompressed_bytes_read_before_crc_failure": 352321536,
+  "declared_uncompressed_bytes": 356701854,
+  "range_probe_matched_local_bytes": true,
+  "provider_artifact_stable_across_retries": true,
+  "action": "quarantine_both_copies_and_require_provider_replacement",
+  "secret_values_emitted": false,
+  "personal_paths_emitted": false
+}
