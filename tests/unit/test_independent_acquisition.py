@@ -33,3 +33,25 @@ def test_stable_crc_incident_blocks_automatic_redownload(tmp_path: Path) -> None
 
 def test_missing_provider_incident_does_not_block(tmp_path: Path) -> None:
     acquisition._raise_if_provider_archive_blocked("2025-04-03", tmp_path)
+
+
+def test_manifest_hash_drift_blocks_acquisition_resume() -> None:
+    with pytest.raises(RuntimeError, match="REPLICATION_PROVIDER_MANIFEST_HASH_INVALID"):
+        acquisition._validate_acquisition_manifest(
+            {
+                "status": "PASS",
+                "completed_count": 1,
+                "records": [
+                    {
+                        "status": "PASS",
+                        "session_date": "2025-04-03",
+                        "http_status": 200,
+                        "duplicate_event_ids": 0,
+                        "secret_values_emitted": False,
+                        "personal_paths_emitted": False,
+                    }
+                ],
+                "manifest_sha256": "not-the-real-hash",
+            },
+            ["2025-04-03"],
+        )

@@ -85,6 +85,50 @@ def _raise_if_provider_archive_blocked(
         raise RuntimeError(f"REPLICATION_PROVIDER_ARCHIVE_BLOCKED:{session_date}")
 
 
+def _validate_acquisition_manifest(
+    manifest: Mapping[str, Any], expected_dates: list[str]
+) -> None:
+    """Validate an in-progress manifest before resuming acquisition.
+
+    Parameters
+    ----------
+    manifest:
+        Sanitized resumable acquisition manifest.
+    expected_dates:
+        Frozen session allow-list.
+
+    Raises
+    ------
+    RuntimeError
+        If the manifest hash, status, count, dates or sanitization flags drift.
+    """
+    unsigned = {key: value for key, value in manifest.items() if key != "manifest_sha256"}
+    if manifest.get("manifest_sha256") != canonical_sha256(unsigned):
+        raise RuntimeError("REPLICATION_PROVIDER_MANIFEST_HASH_INVALID")
+    records_value = manifest.get("records")
+    records = (
+        [row for row in records_value if isinstance(row, Mapping)]
+        if isinstance(records_value, list)
+        else []
+    )
+    dates = [str(row.get("session_date")) for row in records]
+    if (
+        manifest.get("status") not in {"IN_PROGRESS", "PASS"}
+        or manifest.get("completed_count") != len(records)
+        or len(dates) != len(set(dates))
+        or any(day not in expected_dates for day in dates)
+    ):
+        raise RuntimeError("REPLICATION_PROVIDER_MANIFEST_INVALID")
+    for row in records:
+        if (
+            row.get("status") != "PASS"
+            or row.get("duplicate_event_ids") != 0
+            or row.get("secret_values_emitted") is not False
+            or row.get("personal_paths_emitted") is not False
+        ):
+            raise RuntimeError(f"REPLICATION_PROVIDER_RECORD_INVALID:{row.get('session_date')}")
+
+
 def _checkpoint_valid(record: Mapping[str, Any], config: Phase5StorageConfig) -> bool:
     """Verify one checkpoint and all immutable output hashes."""
     if record.get("status") != "PASS" or record.get("secret_values_emitted") is not False:
@@ -180,6 +224,7 @@ def main() -> None:
     existing: dict[str, dict[str, Any]] = {}
     if OUT.exists():
         prior = _json(OUT)
+        _validate_acquisition_manifest(prior, [item.isoformat() for item in dates])
         for row in prior.get("records", []):
             if isinstance(row, dict) and isinstance(row.get("session_date"), str):
                 existing[str(row["session_date"])] = row
