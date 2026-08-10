@@ -71,38 +71,62 @@ def _resolve_medium(
 ) -> list[dict[str, Any]]:
     """Resolve one medium-DTE contract grid as of one historical session."""
     requested = date.fromisoformat(day)
-    params = {
+    base_params = {
         "underlying_ticker": asset,
         "as_of": day,
-        "expired": "false",
         "expiration_date.gte": (requested + timedelta(days=LOW_DTE)).isoformat(),
         "expiration_date.lte": (requested + timedelta(days=HIGH_DTE)).isoformat(),
         "strike_price.gte": f"{spot * 0.90:.6f}",
         "strike_price.lte": f"{spot * 1.10:.6f}",
         "limit": "1000",
     }
-    status, payload, request_id = b1._request_json(
-        client,
-        "https://api.massive.com/v3/reference/options/contracts",
-        params,
-        key,
+    endpoint = "https://api.massive.com/v3/reference/options/contracts"
+
+    def fetch(expired: str) -> tuple[list[dict[str, Any]], str | None, int, dict[str, Any]]:
+        """Fetch and fully paginate one explicit expired-parameter route."""
+        params = {**base_params, "expired": expired}
+        status, payload, request_id = b1._request_json(client, endpoint, params, key)
+        if status != 200:
+            raise RuntimeError(f"MASSIVE_CONTRACT_REFERENCE_HTTP_{status}:{asset}:{day}")
+        first_rows = payload.get("results", [])
+        if not isinstance(first_rows, list):
+            raise RuntimeError("MASSIVE_CONTRACT_RESULTS_NOT_LIST")
+        candidates = list(first_rows)
+        next_url = payload.get("next_url")
+        seen_urls: set[str] = set()
+        pages = 1
+        while next_url:
+            if not isinstance(next_url, str) or next_url in seen_urls:
+                raise RuntimeError("MASSIVE_CONTRACT_PAGINATION_REPEATED")
+            seen_urls.add(next_url)
+            page_status, page, _ = b1._request_json(client, next_url, {}, key)
+            if page_status != 200:
+                raise RuntimeError(f"MASSIVE_CONTRACT_PAGE_HTTP_{page_status}:{asset}:{day}")
+            page_rows = page.get("results", [])
+            if not isinstance(page_rows, list):
+                raise RuntimeError("MASSIVE_CONTRACT_RESULTS_NOT_LIST")
+            candidates.extend(page_rows)
+            next_url = page.get("next_url")
+            pages += 1
+        return candidates, request_id, pages, {
+            "expired": expired,
+            "http_status": status,
+            "request_id": request_id,
+            "pages": pages,
+            "candidate_rows": len(candidates),
+            "params_sanitized": params,
+        }
+
+    candidates, request_id, pages, first_attempt = fetch("true")
+    attempts = [first_attempt]
+    if not candidates:
+        candidates, request_id, pages, fallback_attempt = fetch("false")
+        attempts.append(fallback_attempt)
+    expired_behavior = (
+        "EXPIRED_TRUE_NON_EMPTY"
+        if first_attempt["candidate_rows"]
+        else "EXPIRED_TRUE_EMPTY_FALLBACK_FALSE"
     )
-    if status != 200:
-        raise RuntimeError(f"MASSIVE_CONTRACT_REFERENCE_HTTP_{status}:{asset}:{day}")
-    candidates = list(payload.get("results", []))
-    next_url = payload.get("next_url")
-    seen_urls: set[str] = set()
-    pages = 1
-    while next_url:
-        if next_url in seen_urls:
-            raise RuntimeError("MASSIVE_CONTRACT_PAGINATION_REPEATED")
-        seen_urls.add(next_url)
-        page_status, page, _ = b1._request_json(client, next_url, {}, key)
-        if page_status != 200:
-            raise RuntimeError(f"MASSIVE_CONTRACT_PAGE_HTTP_{page_status}:{asset}:{day}")
-        candidates.extend(page.get("results", []))
-        next_url = page.get("next_url")
-        pages += 1
     selected: dict[tuple[str, float], dict[str, Any]] = {}
     for row in candidates:
         try:
@@ -133,6 +157,8 @@ def _resolve_medium(
                     "moneyness": moneyness,
                     "reference_request_id": request_id,
                     "reference_pages": pages,
+                    "reference_attempts": attempts,
+                    "expired_parameter_behavior": expired_behavior,
                 }
     return list({row["contract"]: row for row in selected.values()}.values())
 
@@ -245,6 +271,26 @@ def build_b1() -> None:
                 str(spot_row["session_date"]),
                 float(spot_row["spot"]),
             )
+    _write_json(
+        CONTRACTS_PATH,
+        {
+            "schema_version": "b2-independent-replication-contract-resolution-1.0",
+            "status": "PASS_HISTORICAL_CONTRACTS_RESOLVED",
+            "route": "MASSIVE_REFERENCE_AS_OF",
+            "dte_bucket": "30-60",
+            "records": [
+                {
+                    "asset": asset,
+                    "session_date": day,
+                    "contracts": values,
+                }
+                for (asset, day), values in sorted(contracts.items())
+            ],
+            "target_outcome_read": False,
+            "secret_values_emitted": False,
+            "personal_paths_emitted": False,
+        },
+    )
     CACHE_ROOT.mkdir(parents=True, exist_ok=True)
     b1.CACHE = CACHE_ROOT
     jobs = [
