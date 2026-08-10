@@ -1,0 +1,747 @@
+{
+  "all_variants_retained": true,
+  "manifest_sha256": "cd27608d5be227f527889b9d933e2ffdc37ce4e841021cb91fa5a1f988827efd",
+  "oos_reads": 0,
+  "schema_version": "development-model-variant-ledger-1.0",
+  "variants": [
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B0",
+      "model_name": "persistence",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.17729854826614483,
+      "variant_id": "d6fb4b3552b3fdefebcb"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B0",
+      "model_name": "har_rv",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.255745436853323,
+      "variant_id": "8a8da071fa6efcf22624"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B0",
+      "model_name": "ridge",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "alpha": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.25430483920041724,
+      "variant_id": "1f5bfd53a87a2c21d12b"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B1a",
+      "model_name": "persistence",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.17729854826614483,
+      "variant_id": "bba535af888f67bb2347"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B1a",
+      "model_name": "har_rv",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.25456992509462056,
+      "variant_id": "8311680d9ac7501e9d2e"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B1a",
+      "model_name": "ridge",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "alpha": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.2530237774090985,
+      "variant_id": "94d9ba88f0d04cddf9f1"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B2",
+      "model_name": "persistence",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.17729854826614483,
+      "variant_id": "5d3e5c026e4a7d525865"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B2",
+      "model_name": "har_rv",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.23354699696127487,
+      "variant_id": "d3c3d1024583372fa8fd"
+    },
+    {
+      "failure_reason": null,
+      "fold": 1,
+      "information_set": "B2",
+      "model_name": "ridge",
+      "n_fit": 11372,
+      "n_validation": 3730,
+      "parameters": {
+        "alpha": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.2320300847500557,
+      "variant_id": "3e3ff31b9c05e7f1b3c2"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B0",
+      "model_name": "persistence",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.22819240215970144,
+      "variant_id": "d6fb4b3552b3fdefebcb"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B0",
+      "model_name": "har_rv",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.1702439702979662,
+      "variant_id": "8a8da071fa6efcf22624"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B0",
+      "model_name": "ridge",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "alpha": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.17016439787451307,
+      "variant_id": "1f5bfd53a87a2c21d12b"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B1a",
+      "model_name": "persistence",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.22819240215970144,
+      "variant_id": "bba535af888f67bb2347"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B1a",
+      "model_name": "har_rv",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.1744709663510227,
+      "variant_id": "8311680d9ac7501e9d2e"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B1a",
+      "model_name": "ridge",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "alpha": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.17442504822724522,
+      "variant_id": "94d9ba88f0d04cddf9f1"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B2",
+      "model_name": "persistence",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.22819240215970144,
+      "variant_id": "5d3e5c026e4a7d525865"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B2",
+      "model_name": "har_rv",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.16341894463350748,
+      "variant_id": "d3c3d1024583372fa8fd"
+    },
+    {
+      "failure_reason": null,
+      "fold": 2,
+      "information_set": "B2",
+      "model_name": "ridge",
+      "n_fit": 15102,
+      "n_validation": 3883,
+      "parameters": {
+        "alpha": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.16338082310203825,
+      "variant_id": "3e3ff31b9c05e7f1b3c2"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B0",
+      "model_name": "persistence",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.3720854238969661,
+      "variant_id": "d6fb4b3552b3fdefebcb"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B0",
+      "model_name": "har_rv",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.5256371953213935,
+      "variant_id": "8a8da071fa6efcf22624"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B0",
+      "model_name": "ridge",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "alpha": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.52564263775536,
+      "variant_id": "1f5bfd53a87a2c21d12b"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B1a",
+      "model_name": "persistence",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.3720854238969661,
+      "variant_id": "bba535af888f67bb2347"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B1a",
+      "model_name": "har_rv",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.5427622469884198,
+      "variant_id": "8311680d9ac7501e9d2e"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B1a",
+      "model_name": "ridge",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "alpha": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.5428236796527569,
+      "variant_id": "94d9ba88f0d04cddf9f1"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B2",
+      "model_name": "persistence",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.3720854238969661,
+      "variant_id": "5d3e5c026e4a7d525865"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B2",
+      "model_name": "har_rv",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.47806787509001075,
+      "variant_id": "d3c3d1024583372fa8fd"
+    },
+    {
+      "failure_reason": null,
+      "fold": 3,
+      "information_set": "B2",
+      "model_name": "ridge",
+      "n_fit": 18985,
+      "n_validation": 3900,
+      "parameters": {
+        "alpha": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.4781510802437235,
+      "variant_id": "3e3ff31b9c05e7f1b3c2"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B0",
+      "model_name": "persistence",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.18294426526550675,
+      "variant_id": "d6fb4b3552b3fdefebcb"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B0",
+      "model_name": "har_rv",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.2586719234386382,
+      "variant_id": "8a8da071fa6efcf22624"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B0",
+      "model_name": "ridge",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "alpha": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.2587409850278392,
+      "variant_id": "1f5bfd53a87a2c21d12b"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B1a",
+      "model_name": "persistence",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.18294426526550675,
+      "variant_id": "bba535af888f67bb2347"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B1a",
+      "model_name": "har_rv",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.24960871953841277,
+      "variant_id": "8311680d9ac7501e9d2e"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B1a",
+      "model_name": "ridge",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "alpha": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.24961556162076223,
+      "variant_id": "94d9ba88f0d04cddf9f1"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B2",
+      "model_name": "persistence",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.18294426526550675,
+      "variant_id": "5d3e5c026e4a7d525865"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B2",
+      "model_name": "har_rv",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {},
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.2210933766541174,
+      "variant_id": "d3c3d1024583372fa8fd"
+    },
+    {
+      "failure_reason": null,
+      "fold": 4,
+      "information_set": "B2",
+      "model_name": "ridge",
+      "n_fit": 22885,
+      "n_validation": 3897,
+      "parameters": {
+        "alpha": 1.0
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.2211447042213593,
+      "variant_id": "3e3ff31b9c05e7f1b3c2"
+    },
+    {
+      "fold": 1,
+      "information_set": "B0",
+      "model_name": "gamma_glm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_gamma_glm_B0_1"
+    },
+    {
+      "fold": 1,
+      "information_set": "B0",
+      "model_name": "lightgbm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_lightgbm_B0_1"
+    },
+    {
+      "fold": 1,
+      "information_set": "B1a",
+      "model_name": "gamma_glm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_gamma_glm_B1a_1"
+    },
+    {
+      "fold": 1,
+      "information_set": "B1a",
+      "model_name": "lightgbm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_lightgbm_B1a_1"
+    },
+    {
+      "fold": 1,
+      "information_set": "B2",
+      "model_name": "gamma_glm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_gamma_glm_B2_1"
+    },
+    {
+      "fold": 1,
+      "information_set": "B2",
+      "model_name": "lightgbm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_lightgbm_B2_1"
+    },
+    {
+      "fold": 2,
+      "information_set": "B0",
+      "model_name": "gamma_glm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_gamma_glm_B0_2"
+    },
+    {
+      "fold": 2,
+      "information_set": "B0",
+      "model_name": "lightgbm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_lightgbm_B0_2"
+    },
+    {
+      "fold": 2,
+      "information_set": "B1a",
+      "model_name": "gamma_glm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_gamma_glm_B1a_2"
+    },
+    {
+      "fold": 2,
+      "information_set": "B1a",
+      "model_name": "lightgbm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_lightgbm_B1a_2"
+    },
+    {
+      "fold": 2,
+      "information_set": "B2",
+      "model_name": "gamma_glm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_gamma_glm_B2_2"
+    },
+    {
+      "fold": 2,
+      "information_set": "B2",
+      "model_name": "lightgbm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_lightgbm_B2_2"
+    },
+    {
+      "fold": 3,
+      "information_set": "B0",
+      "model_name": "gamma_glm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_gamma_glm_B0_3"
+    },
+    {
+      "fold": 3,
+      "information_set": "B0",
+      "model_name": "lightgbm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_lightgbm_B0_3"
+    },
+    {
+      "fold": 3,
+      "information_set": "B1a",
+      "model_name": "gamma_glm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_gamma_glm_B1a_3"
+    },
+    {
+      "fold": 3,
+      "information_set": "B1a",
+      "model_name": "lightgbm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_lightgbm_B1a_3"
+    },
+    {
+      "fold": 3,
+      "information_set": "B2",
+      "model_name": "gamma_glm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_gamma_glm_B2_3"
+    },
+    {
+      "fold": 3,
+      "information_set": "B2",
+      "model_name": "lightgbm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_lightgbm_B2_3"
+    },
+    {
+      "fold": 4,
+      "information_set": "B0",
+      "model_name": "gamma_glm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_gamma_glm_B0_4"
+    },
+    {
+      "fold": 4,
+      "information_set": "B0",
+      "model_name": "lightgbm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_lightgbm_B0_4"
+    },
+    {
+      "fold": 4,
+      "information_set": "B1a",
+      "model_name": "gamma_glm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_gamma_glm_B1a_4"
+    },
+    {
+      "fold": 4,
+      "information_set": "B1a",
+      "model_name": "lightgbm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_lightgbm_B1a_4"
+    },
+    {
+      "fold": 4,
+      "information_set": "B2",
+      "model_name": "gamma_glm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_gamma_glm_B2_4"
+    },
+    {
+      "fold": 4,
+      "information_set": "B2",
+      "model_name": "lightgbm",
+      "selected": true,
+      "source_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+      "status": "REUSED_FROZEN_PHASE5_DEVELOPMENT",
+      "variant_id": "REUSED_PHASE5_lightgbm_B2_4"
+    },
+    {
+      "fold": null,
+      "information_set": null,
+      "model_name": "elastic_net",
+      "reason": "Ridge is the preregistered linear challenger for this development gate; Elastic Net remains available for a separately registered extension.",
+      "selected": false,
+      "status": "REGISTERED_NOT_RUN_RUNTIME_BUDGET",
+      "variant_id": "REGISTERED_NOT_RUN"
+    }
+  ],
+  "volatility_regime_cutpoints": [
+    {
+      "fold": 1,
+      "lower": 7.18309501794701e-06,
+      "upper": 1.5310478908753624e-05
+    },
+    {
+      "fold": 2,
+      "lower": 7.1908871274701105e-06,
+      "upper": 1.5442736429498172e-05
+    },
+    {
+      "fold": 3,
+      "lower": 7.542169893836899e-06,
+      "upper": 1.676308650548389e-05
+    },
+    {
+      "fold": 4,
+      "lower": 8.014084255206874e-06,
+      "upper": 1.7657760762518866e-05
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "schema_version": "b2-edge-generalization-audit-1.0",
+  "audit_date": "2026-08-10",
+  "scope": "DEVELOPMENT_AND_SEALED_PHASE6_EVIDENCE_ONLY",
+  "mde": {
+    "definition": "TRAINING_ONLY_PAIRED_SESSION_80_PERCENT_POWER_PLANNING_QUANTITY",
+    "phase6_delta_b1v2": 0.021685775175972016,
+    "phase6_delta_b2v2": 0.005035098377136471,
+    "not_economic_threshold": true,
+    "not_redefined_after_outcomes": true
+  },
+  "phase5_development": {
+    "status": "PASS_DEVELOPMENT_ONLY",
+    "origins": 15548,
+    "forecast_rows": 93288,
+    "session_clusters": 40,
+    "assets": ["AAPL", "AMZN", "META", "MSFT", "NVDA", "TSLA"],
+    "models_present": ["GammaRegressor", "LGBMRegressor"],
+    "models_missing_for_generalization_cycle": ["persistence", "HAR_RV", "Ridge", "ElasticNet"],
+    "holdout_reads": 0,
+    "artifact_sha256": {
+      "development_results.json": "87e78fcbaff8c32adb4a58ea2f1b0531beb779449ec741fc00d08786accd687d",
+      "variant_ledger.json": "f254e3b0ecf7cbdcb3dc660c2021a606fd5bf635f16bde9e61ac04583da7820f",
+      "method_freeze.json": "4056db61eaff81d40fea8d61b991ab1dd2ea3a03b9a570e8329bb3ab87c2cbe0"
+    }
+  },
+  "phase6_training": {
+    "status": "TRAINING_ONLY",
+    "origins": 11841,
+    "forecast_rows": 35523,
+    "training_sessions": 60,
+    "oos_read_count": 0,
+    "artifact_sha256": "90d7a6bfbe51a86ff73f8f9b8710f125215716b10026dafdf771adbd996e60e4"
+  },
+  "phase6_sealed_results": {
+    "decision": "TARGETED_B2V2_REPLICATION_CONFIRMED",
+    "global_gamma_delta_b1v2": 0.011802813503413103,
+    "global_gamma_delta_b2v2": 0.004439122531545663,
+    "global_lightgbm_delta_b1v2": 0.005972303753241447,
+    "global_lightgbm_delta_b2v2": 0.001700455967573624,
+    "oos_read_count": 1,
+    "artifact_sha256": "4bcfcb3a917ebb011ab13278bf4a4cac9331f6bda79fcce25f7e4fb7e70da259"
+  },
+  "decision": "RUN_DEVELOPMENT_CANDIDATE_COMPARISON_THEN_SELECT_DISJOINT_REPLICATION_WINDOW"
+}
