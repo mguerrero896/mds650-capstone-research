@@ -1,0 +1,20 @@
+{
+  "schema_version": "b2-independent-replication-provider-refresh-probe-1.1",
+  "status": "PROVIDER_ARTIFACT_UNCHANGED",
+  "session_date": "2025-04-04",
+  "endpoint": "/api/option-trades/full-tape/2025-04-04",
+  "request_method": "GET",
+  "http_status": 206,
+  "content_range": "bytes 0-0/1641349757",
+  "content_length": 1,
+  "etag": "\"465a2bec524e01227e0465162a972a4c\"",
+  "last_modified": "Sat, 05 Apr 2025 04:59:24 GMT",
+  "bytes_received": 1,
+  "etag_changed_from_crc_incident": false,
+  "size_changed_from_crc_incident": false,
+  "full_download_performed": false,
+  "observed_at_utc": "2026-08-10T10:24:09.8045669Z",
+  "prior_incident": "artifacts/independent_replication/acquisition_incidents/2025-04-04_crc_failure.json",
+  "secret_values_emitted": false,
+  "personal_paths_emitted": false
+}
