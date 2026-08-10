@@ -215,7 +215,11 @@ def main() -> None:
         }
         record["checkpoint_sha256"] = canonical_sha256(record)
         checkpoint.parent.mkdir(parents=True, exist_ok=True)
-        checkpoint.write_text(json.dumps(record, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        checkpoint_part = checkpoint.with_suffix(checkpoint.suffix + ".part")
+        checkpoint_part.write_text(
+            json.dumps(record, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+        checkpoint_part.replace(checkpoint)
         existing[day_text] = record
         ordered = [existing[item.isoformat()] for item in dates if item.isoformat() in existing]
         _write_manifest(ordered, window, method_freeze)
