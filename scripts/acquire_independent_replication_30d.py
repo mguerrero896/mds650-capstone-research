@@ -17,6 +17,7 @@ WINDOW = ROOT / "artifacts" / "independent_replication" / "window_manifest.json"
 METHOD_FREEZE = ROOT / "artifacts" / "independent_replication" / "method_freeze.json"
 STORAGE_PREFLIGHT = ROOT / "artifacts" / "independent_replication" / "storage_preflight.json"
 OUT = ROOT / "artifacts" / "independent_replication" / "acquisition_manifest.json"
+INCIDENT_ROOT = ROOT / "artifacts" / "independent_replication" / "acquisition_incidents"
 DATA_ROOT = Path("D:/MDS650/independent_replication_30")
 CHECKPOINT_ROOT = DATA_ROOT / "manifests" / "full_tape"
 MINIMUM_FREE_BYTES = 80 * GIB
@@ -54,6 +55,34 @@ def _json(path: Path) -> dict[str, Any]:
     if not isinstance(payload, dict):
         raise RuntimeError(f"JSON_OBJECT_REQUIRED:{path.name}")
     return payload
+
+
+def _raise_if_provider_archive_blocked(
+    session_date: str, incident_root: Path = INCIDENT_ROOT
+) -> None:
+    """Prevent automatic re-downloads of a stable corrupt provider archive.
+
+    Parameters
+    ----------
+    session_date:
+        ISO session date being considered for acquisition.
+    incident_root:
+        Directory containing sanitized provider incident manifests.
+
+    Raises
+    ------
+    RuntimeError
+        If a prior stable CRC failure is recorded for this date.
+    """
+    incident_path = incident_root / f"{session_date}_crc_failure.json"
+    if not incident_path.is_file():
+        return
+    incident = _json(incident_path)
+    if (
+        incident.get("status") == "BLOCKED_PROVIDER_ARCHIVE_CORRUPT"
+        and incident.get("provider_artifact_stable_across_retries") is True
+    ):
+        raise RuntimeError(f"REPLICATION_PROVIDER_ARCHIVE_BLOCKED:{session_date}")
 
 
 def _checkpoint_valid(record: Mapping[str, Any], config: Phase5StorageConfig) -> bool:
@@ -156,6 +185,7 @@ def main() -> None:
                 existing[str(row["session_date"])] = row
     for session_date in dates:
         day_text = session_date.isoformat()
+        _raise_if_provider_archive_blocked(day_text)
         checkpoint = CHECKPOINT_ROOT / f"{day_text}.json"
         if checkpoint.exists():
             candidate = _json(checkpoint)
