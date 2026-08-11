@@ -26,6 +26,13 @@ evaluation or interpretation followed, but the current GBrain source must no
 longer be treated as target-blind. Do not query or resynchronize that source
 until a path-allowlisted replacement is established and verified.
 
+On the same date, a broad text search intended to locate zero-activity timing
+references matched frozen evaluation and independent-replication artefacts and
+rendered snippets in the terminal. The search was stopped once the scope breach
+was visible. No model was run, no metric was recomputed and no conclusion was
+drawn from those snippets. This is a third OOS-access event for the same
+operator context.
+
 ## Containment
 
 - No model, QLIKE calculation, forecast evaluation, tuning, result
@@ -36,6 +43,8 @@ until a path-allowlisted replacement is established and verified.
 - The current target-blind artefacts remain evidence of their own bounded build
   scope; they must not be relabelled as proving that this later operator context
   had zero OOS exposure.
+- The third event does not widen the permitted scope: the affected operator may
+  only perform containment, documentation and non-interpretive hygiene work.
 - Any remaining target-blind B1Q implementation must be performed by a fresh,
   unexposed executor that is explicitly prohibited from opening OOS-sealed
   paths. Its work must be independently reviewed before integration.
