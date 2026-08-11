@@ -1,0 +1,24 @@
+{
+  "b2_features": [
+    "b2_log_trade_count",
+    "b2_unique_contract_share",
+    "b2_log_mean_trade_premium",
+    "b2_log_max_trade_premium",
+    "b2_call_put_premium_imbalance_scaled",
+    "b2_execution_side_premium_imbalance",
+    "b2_repeated_contract_premium_share",
+    "b2_strike_concentration",
+    "b2_expiry_concentration"
+  ],
+  "b2_sha256": "3b7e9cf3355823033fbd0ba40cfee369d50199ddfa9925599c74dc53d00d5980",
+  "manifest_sha256": "55822cc0dc46dd39e09bf01d78aad0e68d4bb17ea66bd121a79c71807d54a0a5",
+  "max_created_at_after_cutoff": 0,
+  "origin_count": 25920,
+  "personal_paths_emitted": false,
+  "primary_cutoff": "created_at <= forecast_origin - 60 seconds",
+  "schema_version": "b2-confirmation-direct-b2-1.0",
+  "secret_values_emitted": false,
+  "session_count": 60,
+  "status": "PASS_B2_TARGET_FREE",
+  "target_outcome_read": false
+}

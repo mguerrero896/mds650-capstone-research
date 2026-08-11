@@ -1,0 +1,25 @@
+{
+  "b0_features": [
+    "b0v2_log_spot",
+    "b0v2_underlying_return_5m",
+    "b0v2_underlying_rv_5m",
+    "b0v2_underlying_rv_30m",
+    "b0v2_log_dollar_volume_5m",
+    "b0v2_spy_return_5m",
+    "b0v2_spy_rv_30m",
+    "b0v2_qqq_return_5m",
+    "b0v2_qqq_rv_30m",
+    "b0v2_session_sine",
+    "b0v2_session_cosine",
+    "b0v2_asset_identity"
+  ],
+  "manifest_sha256": "909bee638954e108851568626130237bb05b557125b9ba460ebd961a91c6ff40",
+  "origin_count": 25920,
+  "personal_paths_emitted": false,
+  "predictor_sha256": "5d4c9151a3afac2e2f31046d68cbbbfb36e797965a84f58c570cf655ebef593e",
+  "rv30_non_null": 0,
+  "schema_version": "b2-confirmation-b0-predictors-1.0",
+  "secret_values_emitted": false,
+  "status": "PASS_B0_TARGET_FREE",
+  "target_outcome_read": false
+}

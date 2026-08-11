@@ -1,0 +1,14 @@
+{
+  "b1_complete_count": 23760,
+  "b2_finite_count": 23760,
+  "independent_samples_read": true,
+  "manifest_sha256": "420c5deee0cbc3c9cd0cfeaaf8ddf216c3ae025c24f0f1d14efc399dfd0c9e6a",
+  "origin_count": 23760,
+  "panel_sha256": "23961b59c2ab534a4daf47c9499e5a1801dc60577b8138fb3f8761f8c25269ab",
+  "personal_paths_emitted": false,
+  "schema_version": "b2-confirmation-panel-1.0",
+  "secret_values_emitted": false,
+  "status": "PASS_PANEL_READY_FOR_FROZEN_EVALUATION",
+  "target_outcome_read": true,
+  "valid_rv30_count": 23760
+}

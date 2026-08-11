@@ -18,7 +18,7 @@
     {
       "path": "scripts/run_b1_calibration_20d.py",
       "frozen_sha256": "7fb577315fe7f7809c981fe1cb144bb037cbde6ededf2e70f4a78f56d1af1c01",
-      "current_sha256": "fbf25d6b6a75c859cd68450db09b8b5305a845283678152e9f8fc8d0e1d1dd18"
+      "current_sha256": "29ac794da8ce8c0d8732c6b45db11019e68030c774e15144fbba4cb2998900a3"
     },
     {
       "path": "scripts/run_b1_closure.py",
@@ -36,5 +36,5 @@
       "current_sha256": "0a20ffa8c2e9da47639e39c0f0d87d5690d8075ffac8c908fe83d4283fa4febb"
     }
   ],
-  "manifest_sha256": "f354939e621f2b67982e4258b6ca5c1acca8b5764c79490c761b4f5a2fe5b02a"
+  "manifest_sha256": "f30528ad09d581370bb652ebfc92f81beb9779a6151035d6fcd4510de67d6c28"
 }

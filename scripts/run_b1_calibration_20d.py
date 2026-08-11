@@ -19,7 +19,7 @@ import run_b1_closure as closure
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "artifacts" / "calibration_20d"
-CACHE = OUT / "massive_b1q_cache_v2"
+CACHE = OUT / "massive_b1q_cache_v4"
 ASSETS = closure.ASSETS
 SESSIONS = tuple(sorted({str(row) for row in pl.read_parquet(OUT / "b2_calibration_origins.parquet").get_column("session_date").unique().to_list()}))
 
@@ -97,6 +97,17 @@ def _market_input_window(config: B1BuildConfig) -> tuple[date, date]:
     return first - timedelta(days=365), last
 
 
+def _date_windows(first: date, last: date) -> tuple[tuple[date, date], ...]:
+    """Split an inclusive date range into contiguous 31-day requests."""
+    windows: list[tuple[date, date]] = []
+    start = first
+    while start <= last:
+        end = min(start + timedelta(days=30), last)
+        windows.append((start, end))
+        start = end + timedelta(days=1)
+    return tuple(windows)
+
+
 def _rates_and_dividends(
     fmp_key: str,
     origins: pl.DataFrame,
@@ -106,15 +117,19 @@ def _rates_and_dividends(
     first, last = _market_input_window(config)
     rates: dict[str, float] = {}
     with httpx.Client(timeout=90.0) as client:
-        payload = _fmp_list_request(
-            client,
-            "https://financialmodelingprep.com/stable/treasury-rates",
-            {"from": first.isoformat(), "to": last.isoformat()},
-            fmp_key,
-        )
-        for row in payload:
-            if isinstance(row, dict) and row.get("date") and row.get("month3") is not None:
-                rates[str(row["date"])] = float(row["month3"]) / 100.0
+        for window_start, window_end in _date_windows(first, last):
+            payload = _fmp_list_request(
+                client,
+                "https://financialmodelingprep.com/stable/treasury-rates",
+                {"from": window_start.isoformat(), "to": window_end.isoformat()},
+                fmp_key,
+            )
+            for row in payload:
+                if row.get("date") and row.get("month3") is not None:
+                    observed = str(row["date"])
+                    if not window_start.isoformat() <= observed <= window_end.isoformat():
+                        raise RuntimeError("FMP_TREASURY_RATE_OUTSIDE_REQUEST_WINDOW")
+                    rates[observed] = float(row["month3"]) / 100.0
     if not rates:
         raise RuntimeError("FMP_TREASURY_RATES_EMPTY")
     dividends: dict[str, list[dict[str, Any]]] = {}
@@ -138,7 +153,7 @@ def _rates_and_dividends(
         for item in dividends.get(asset, []):
             try:
                 declared = date.fromisoformat(str(item.get("declarationDate")))
-                if cutoff - timedelta(days=365) <= declared <= cutoff:
+                if cutoff - timedelta(days=365) <= declared < cutoff:
                     total += float(item.get("adjDividend") or item.get("dividend") or 0.0)
             except (TypeError, ValueError):
                 continue
@@ -147,7 +162,7 @@ def _rates_and_dividends(
 
 
 def _rate_for(day: str, rates: dict[str, float]) -> float:
-    """Select the latest Treasury rate not after the origin date."""
+    """Select the latest Treasury rate strictly before the origin date."""
     return _rate_observation_for(day, rates)[1]
 
 
@@ -155,21 +170,82 @@ def _rate_observation_for(
     day: str,
     rates: dict[str, float],
 ) -> tuple[str, float]:
-    """Return the latest pre-origin Treasury observation date and value."""
-    candidates = [key for key in rates if key <= day]
+    """Return the latest strictly pre-origin Treasury observation and value."""
+    candidates = [key for key in rates if key < day]
     if not candidates:
         raise RuntimeError(f"B1Q_RATE_NOT_AVAILABLE:{day}")
     source_date = max(candidates)
     return source_date, rates[source_date]
 
 
-def _resolve_contracts(origins: pl.DataFrame, massive_key: str) -> dict[tuple[str, str], list[dict[str, Any]]]:
-    """Resolve historical contracts once per asset/session across DTE buckets."""
+def _atomic_json(path: Path, payload: dict[str, Any]) -> None:
+    """Persist a resumable provider cache without exposing partial JSON."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".part")
+    temporary.write_text(
+        json.dumps(payload, separators=(",", ":"), default=str),
+        encoding="utf-8",
+    )
+    for attempt in range(5):
+        try:
+            temporary.replace(path)
+            return
+        except PermissionError:
+            if attempt == 4:
+                raise
+            time_module.sleep(0.05 * 2**attempt)
+
+
+def _resolve_contracts(
+    origins: pl.DataFrame,
+    massive_key: str,
+    config: B1BuildConfig = DEFAULT_CONFIG,
+) -> dict[tuple[str, str], list[dict[str, Any]]]:
+    """Resolve and checkpoint historical contracts once per asset/session."""
     spots = origins.group_by(["asset", "session_date"]).agg(pl.col("spot").first()).sort(["asset", "session_date"])
+    cache_path = config.cache_root / "resolved_contracts_phase6_strict_v3.json"
+    if cache_path.exists():
+        payload = json.loads(cache_path.read_text(encoding="utf-8"))
+        if (
+            not isinstance(payload, dict)
+            or payload.get("schema_version") != "b1q-contract-grid-3.0"
+            or not isinstance(payload.get("records"), list)
+        ):
+            raise RuntimeError("B1Q_CONTRACT_CACHE_INVALID")
+    else:
+        payload = {"schema_version": "b1q-contract-grid-3.0", "records": []}
+    records = payload["records"]
+    cached = {
+        (str(row.get("asset")), str(row.get("session_date"))): row
+        for row in records
+        if isinstance(row, dict)
+    }
+    if len(cached) != len(records):
+        raise RuntimeError("B1Q_CONTRACT_CACHE_DUPLICATE")
     result: dict[tuple[str, str], list[dict[str, Any]]] = {}
     with httpx.Client(timeout=90.0, follow_redirects=True) as client:
         for row in spots.iter_rows(named=True):
-            result[(str(row["asset"]), str(row["session_date"]))] = closure.resolve_contracts(client, massive_key, str(row["asset"]), str(row["session_date"]), float(row["spot"]))
+            asset, day, spot = str(row["asset"]), str(row["session_date"]), float(row["spot"])
+            key = (asset, day)
+            old = cached.get(key)
+            if old is not None:
+                if float(old.get("spot", -1.0)) != spot or not isinstance(
+                    old.get("contracts"), list
+                ):
+                    raise RuntimeError(f"B1Q_CONTRACT_CACHE_MISMATCH:{asset}:{day}")
+                result[key] = old["contracts"]
+                continue
+            contracts = closure.resolve_contracts(client, massive_key, asset, day, spot)
+            record = {
+                "asset": asset,
+                "session_date": day,
+                "spot": spot,
+                "contracts": contracts,
+            }
+            records.append(record)
+            cached[key] = record
+            result[key] = contracts
+            _atomic_json(cache_path, payload)
     return result
 
 
@@ -177,27 +253,80 @@ def _fetch_quotes(
     contracts: dict[tuple[str, str], list[dict[str, Any]]],
     massive_key: str,
     config: B1BuildConfig = DEFAULT_CONFIG,
-) -> dict[tuple[str, str, str], tuple[Path, str]]:
-    """Fetch each resolved contract-day once into the V2-only cache."""
+) -> tuple[
+    dict[tuple[str, str, str], tuple[Path, str]],
+    dict[str, int],
+]:
+    """Fetch each resolved contract-day once into the V4 ordered-event cache."""
     config.cache_root.mkdir(parents=True, exist_ok=True)
     closure.CACHE = config.cache_root
-    jobs = [(asset, day, contract) for (asset, day), values in contracts.items() for contract in values]
+    unique_jobs: dict[tuple[str, str, str], tuple[str, str, dict[str, Any]]] = {}
+    for (asset, day), values in contracts.items():
+        for contract in values:
+            key = (asset, day, str(contract["contract"]))
+            unique_jobs.setdefault(key, (asset, day, contract))
+    jobs = list(unique_jobs.values())
     output: dict[tuple[str, str, str], tuple[Path, str]] = {}
-    with ThreadPoolExecutor(max_workers=8) as executor:
+    transient_retries: dict[tuple[str, str, str], int] = {}
+    audit = {
+        "contract_day_jobs": len(jobs),
+        "pagination_explicit": 0,
+        "pagination_inferred_terminal_partial": 0,
+        "cache_hits": 0,
+        "network_fetches": 0,
+        "pages": 0,
+        "provider_duplicate_rows_removed": 0,
+    }
+    # Massive occasionally emits transient 502s under high parallelism.  A
+    # bounded four-worker pool plus spaced retries keeps the request contract
+    # unchanged while avoiding a false coverage failure caused by pressure.
+    with ThreadPoolExecutor(max_workers=4) as executor:
         job_iterator = iter(jobs)
         pending = {}
-        for _ in range(min(16, len(jobs))):
+        for _ in range(min(8, len(jobs))):
             job = next(job_iterator)
             pending[executor.submit(closure.fetch_contract_day, job, massive_key)] = job
         while pending:
             completed, _ = wait(pending, return_when=FIRST_COMPLETED)
             for future in completed:
                 asset, day, contract = pending.pop(future)
-                cache = future.result()
+                job_key = (asset, day, str(contract["contract"]))
+                try:
+                    cache = future.result()
+                except RuntimeError as error:
+                    message = str(error)
+                    attempts = transient_retries.get(job_key, 0)
+                    if (
+                        ("MASSIVE_QUOTE_HTTP_502" in message or "MASSIVE_QUOTE_HTTP_503" in message)
+                        and attempts < 4
+                    ):
+                        transient_retries[job_key] = attempts + 1
+                        time_module.sleep(min(30, 5 * 2**attempts))
+                        pending[executor.submit(closure.fetch_contract_day, (asset, day, contract), massive_key)] = (
+                            asset,
+                            day,
+                            contract,
+                        )
+                        continue
+                    raise
                 if cache.get("http_status") != 200:
                     raise RuntimeError(
                         f"B1Q_QUOTE_CACHE_HTTP_FAILURE:{asset}:{day}"
                     )
+                pagination = cache.get("pagination_complete")
+                if pagination is True:
+                    audit["pagination_explicit"] += 1
+                elif pagination == "INFERRED_TERMINAL_PARTIAL_PAGE":
+                    audit["pagination_inferred_terminal_partial"] += 1
+                else:
+                    raise RuntimeError(
+                        f"B1Q_QUOTE_PAGINATION_UNVERIFIED:{asset}:{day}"
+                    )
+                audit["cache_hits" if cache.get("cache_hit") else "network_fetches"] += 1
+                audit["pages"] += int(cache.get("pages", 0))
+                audit["provider_duplicate_rows_removed"] += int(
+                    cache.get("provider_duplicate_rows_removed", 0)
+                )
                 cache_path = Path(str(cache.get("cache_path", "")))
                 source_hash = cache.get("source_request_hash")
                 if not cache_path.is_file() or not isinstance(source_hash, str):
@@ -219,13 +348,20 @@ def _fetch_quotes(
                         massive_key,
                     )
                 ] = job
-    return output
+    if (
+        len(output) != len(jobs)
+        or audit["pagination_explicit"]
+        + audit["pagination_inferred_terminal_partial"]
+        != len(jobs)
+    ):
+        raise RuntimeError("B1Q_QUOTE_CACHE_AUDIT_INCOMPLETE")
+    return output, audit
 
 
 @lru_cache(maxsize=32)
 def _load_quote_cache(path: Path) -> dict[str, Any]:
     """Load one contract-day cache with bounded process memory."""
-    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload = closure._read_cache_payload(path)
     if not isinstance(payload, dict) or payload.get("http_status") != 200:
         raise RuntimeError(f"B1Q_QUOTE_CACHE_INVALID:{path.name}")
     payload["results"] = closure._compact_quotes(payload.get("results", []))
@@ -297,8 +433,10 @@ def main(config: B1BuildConfig = DEFAULT_CONFIG) -> None:
     origins = _load_origins(config)
     fmp_key, massive_key = _secret("FMP_API_KEY"), _secret("MASSIVE_API_KEY")
     rates, dividend_yields = _rates_and_dividends(fmp_key, origins, config)
-    contracts = _resolve_contracts(origins, massive_key)
-    quote_cache_refs = _fetch_quotes(contracts, massive_key, config)
+    contracts = _resolve_contracts(origins, massive_key, config)
+    quote_cache_refs, quote_cache_audit = _fetch_quotes(
+        contracts, massive_key, config
+    )
     _load_quote_cache.cache_clear()
     origins = origins.sort(["asset", "session_date", "forecast_origin_utc"])
     rows: list[dict[str, Any]] = []
@@ -354,7 +492,7 @@ def main(config: B1BuildConfig = DEFAULT_CONFIG) -> None:
     global_cov = _coverage(frame)
     by_date = {str(row["session_date"]): _coverage(frame.filter(pl.col("session_date") == row["session_date"])) for row in frame.select("session_date").unique().iter_rows(named=True)}
     by_route = {"B1Q": global_cov, "B1T": {"status": "DIAGNOSTIC_ONLY", "coverage": None}}
-    summary = {"status": "PASS_B1Q_20_SESSION_RECOMPUTATION", "origins": frame.height, "iv_attempt_rows": len(attempt_rows), "global": global_cov, "by_date": by_date, "by_route": by_route, "nested_invariants": {"b1c_implies_b1b": bool(frame.filter(pl.col("b1c_complete") & ~pl.col("b1b_complete")).height == 0), "b1b_implies_b1a": bool(frame.filter(pl.col("b1b_complete") & ~pl.col("b1a_complete")).height == 0), "coverage_b1c_le_b1b": global_cov["b1c"] <= global_cov["b1b"], "coverage_b1b_le_b1a": global_cov["b1b"] <= global_cov["b1a"]}, "pit_invariants": {"future_quote_rows": frame.filter(~pl.col("b1q_quote_not_after_origin") & pl.col("b1q_max_sip_timestamp_ns").is_not_null()).height, "b1a_without_pit_evidence": frame.filter(pl.col("b1a_complete") & ~pl.col("b1q_pit_evidence_valid")).height, "future_rate_source_rows": frame.filter(pl.col("rate_source_date") > pl.col("session_date")).height}, "primary_quote_age_seconds": 60, "primary_relative_spread": 0.25, "b1t_independent": False, "modeling": "BLOCKED", "qlike": "BLOCKED", "secret_values_emitted": False}
+    summary = {"status": "PASS_B1Q_20_SESSION_RECOMPUTATION", "scope": "B2_CONFIRMATION_60_SESSIONS", "session_count": frame["session_date"].n_unique(), "origins": frame.height, "iv_attempt_rows": len(attempt_rows), "global": global_cov, "by_date": by_date, "by_route": by_route, "nested_invariants": {"b1c_implies_b1b": bool(frame.filter(pl.col("b1c_complete") & ~pl.col("b1b_complete")).height == 0), "b1b_implies_b1a": bool(frame.filter(pl.col("b1b_complete") & ~pl.col("b1a_complete")).height == 0), "coverage_b1c_le_b1b": global_cov["b1c"] <= global_cov["b1b"], "coverage_b1b_le_b1a": global_cov["b1b"] <= global_cov["b1a"]}, "pit_invariants": {"future_quote_rows": frame.filter(~pl.col("b1q_quote_not_after_origin") & pl.col("b1q_max_sip_timestamp_ns").is_not_null()).height, "b1a_without_pit_evidence": frame.filter(pl.col("b1a_complete") & ~pl.col("b1q_pit_evidence_valid")).height, "future_rate_source_rows": frame.filter(pl.col("rate_source_date") >= pl.col("session_date")).height}, "quote_cache_audit": quote_cache_audit, "contract_resolution_schema": "b1q-contract-grid-3.0", "primary_quote_age_seconds": 60, "primary_relative_spread": 0.25, "b1t_independent": False, "modeling": "BLOCKED", "qlike": "BLOCKED", "secret_values_emitted": False}
     _assert_invariants(frame, summary)
     (config.output_root / "b1_coverage_20d.json").write_text(json.dumps(summary, indent=2, default=str), encoding="utf-8")
     pl.DataFrame(failures, infer_schema_length=None, strict=False).write_csv(config.output_root / "b1_iv_failures_20d.csv")

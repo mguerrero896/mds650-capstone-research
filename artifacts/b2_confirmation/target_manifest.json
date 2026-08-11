@@ -1,0 +1,12 @@
+{
+  "manifest_sha256": "d54040c2635c0f22e23618c6e8957c7e0fa9cc39849b388bd125526a30faf4d3",
+  "origin_count": 25920,
+  "personal_paths_emitted": false,
+  "schema_version": "b2-confirmation-rv30-target-1.0",
+  "secret_values_emitted": false,
+  "status": "PASS_RV30_TARGET_31_CLOSES_30_RETURNS",
+  "target_definition": "C(i,t) plus C(i,t+1)..C(i,t+30), exactly 30 one-minute log returns",
+  "target_outcome_read": true,
+  "target_sha256": "79b48ba84e89c782a80e7a34ad53c97dc8b768b2ff519a657ae8cb212f73a1c7",
+  "valid_target_count": 25920
+}

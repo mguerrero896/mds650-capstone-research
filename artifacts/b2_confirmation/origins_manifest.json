@@ -1,0 +1,12 @@
+{
+  "asset_count": 6,
+  "manifest_sha256": "0ab21dbb1e75d1a5c86d7ff007d4a5843691984f0ec18cde4fc2e422e71975c3",
+  "origin_count": 25920,
+  "origin_sha256": "426a7202c543a30e518302f97b96e59ba6007e34f9f7feb7856fa7aa95142835",
+  "personal_paths_emitted": false,
+  "schema_version": "b2-confirmation-origins-1.0",
+  "secret_values_emitted": false,
+  "session_count": 60,
+  "status": "PASS_ORIGINS_TARGET_FREE",
+  "target_outcome_read": false
+}

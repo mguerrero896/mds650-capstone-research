@@ -1,0 +1,16 @@
+{
+  "eligible_origin_count": 23760,
+  "excluded_origin_count": 2160,
+  "excluded_reason_policy": "B1 requires finite spot; no rows are imputed or silently dropped",
+  "exclusion_reason_counts": {
+    "B0V2_UNDERLYING_HISTORY_MISSING": 2160
+  },
+  "manifest_sha256": "affc2fc92f6d438fc8f2ac0614e69289f97efb8fedf3d971b89258d537887235",
+  "origin_sha256": "31a61ffb5d6574c2f1b2609e33173454d5ba02bf48cbdbd067049dfed705b7dd",
+  "personal_paths_emitted": false,
+  "schema_version": "b2-confirmation-b1-input-1.0",
+  "secret_values_emitted": false,
+  "status": "PASS_B1_INPUT_MISSINGNESS_EXPLICIT",
+  "target_outcome_read": false,
+  "total_origin_count": 25920
+}
