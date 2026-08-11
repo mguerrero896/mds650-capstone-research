@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/target-blind-common-predictor-manifest-v22.schema.json",
+  "title": "MDS650 Target-Blind Common Predictor Manifest v2.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "scope",
+    "no_target_or_metric_payload_read",
+    "model_fit_performed",
+    "safe_to_reconcile_existing_results",
+    "source_hashes",
+    "builder_hashes",
+    "timing_rules",
+    "output",
+    "summary",
+    "source_commit",
+    "output_locations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "target-blind-common-predictor-manifest-v2.2"
+    },
+    "status": {
+      "enum": [
+        "PASS_TARGET_BLIND_INPUTS_RECONCILIATION_REMAINS_BLOCKED",
+        "FAIL_TARGET_BLIND_INPUTS"
+      ]
+    },
+    "scope": {
+      "const": "offline_target_blind_predictor_construction_only"
+    },
+    "no_target_or_metric_payload_read": {
+      "const": true
+    },
+    "model_fit_performed": {
+      "const": false
+    },
+    "safe_to_reconcile_existing_results": {
+      "const": "NO"
+    },
+    "source_hashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "origins_sha256",
+        "fmp_bars_sha256",
+        "b1q_source_sha256",
+        "b2_primary_inputs_sha256",
+        "b2_availability_sidecar_sha256",
+        "massive_reselection_sensitivity_v21_sha256"
+      ],
+      "properties": {
+        "origins_sha256": { "$ref": "#/$defs/sha256" },
+        "fmp_bars_sha256": { "$ref": "#/$defs/sha256" },
+        "b1q_source_sha256": { "$ref": "#/$defs/sha256" },
+        "b2_primary_inputs_sha256": { "$ref": "#/$defs/sha256" },
+        "b2_availability_sidecar_sha256": { "$ref": "#/$defs/sha256" },
+        "massive_reselection_sensitivity_v21_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "builder_hashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["script_sha256", "panel_module_sha256"],
+      "properties": {
+        "script_sha256": { "$ref": "#/$defs/sha256" },
+        "panel_module_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "timing_rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fmp_primary_delay_minutes",
+        "fmp_sensitivity_delay_minutes",
+        "b1q_primary_state",
+        "massive_reselection_sensitivity_cutoff_seconds",
+        "b2_primary_variant",
+        "b2_created_at_rule"
+      ],
+      "properties": {
+        "fmp_primary_delay_minutes": { "const": 1 },
+        "fmp_sensitivity_delay_minutes": { "const": 2 },
+        "b1q_primary_state": { "const": "SIP_ASOF_ORIGIN_MAX_AGE_60S" },
+        "massive_reselection_sensitivity_cutoff_seconds": {
+          "const": [60, 300]
+        },
+        "b2_primary_variant": { "const": "primary_5m_60s" },
+        "b2_created_at_rule": {
+          "const": "OPERATIONAL_AVAILABILITY_PROXY_ORIGIN_MINUS_60_SECONDS"
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["panel_sha256", "row_count", "common_complete_row_count"],
+      "properties": {
+        "panel_sha256": { "$ref": "#/$defs/sha256" },
+        "row_count": { "type": "integer", "minimum": 1 },
+        "common_complete_row_count": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "schema_version",
+        "status",
+        "scope",
+        "no_target_or_metric_payload_read",
+        "model_fit_performed",
+        "row_count",
+        "completion_counts",
+        "completion_rates"
+      ],
+      "properties": {
+        "schema_version": { "type": "string" },
+        "status": { "type": "string" },
+        "scope": { "type": "string" },
+        "no_target_or_metric_payload_read": { "const": true },
+        "model_fit_performed": { "const": false },
+        "row_count": { "type": "integer", "minimum": 1 },
+        "completion_counts": { "type": "object" },
+        "completion_rates": { "type": "object" }
+      }
+    },
+    "source_commit": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{40}$"
+    },
+    "output_locations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["panel", "common_complete"],
+      "properties": {
+        "panel": { "type": "string", "pattern": "^D:/MDS650/" },
+        "common_complete": { "type": "string", "pattern": "^D:/MDS650/" }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

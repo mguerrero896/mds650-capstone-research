@@ -49,3 +49,63 @@ OOS_PAYLOAD_READ=0
 **Reversal condition:** a canonical input hash mismatch, a new raw/canonical
 count mismatch, or independent evidence that invalidates the recorded Full Tape
 timestamp interpretation.
+
+## Decision 38 — v2.2 common predictor input panel
+
+**Status:** accepted for target-blind engineering only; result reconciliation
+and model evaluation remain prohibited.
+
+**Evidence:**
+`artifacts/target_blind_v22/target_blind_common_predictor_manifest_v22.json`,
+`docs/target_blind_common_predictor_panel_v22.md`, and the D-resident Parquet
+outputs named in that manifest.
+
+**Decision:** build a new B0/B1Q/B2 predictor panel from immutable acquired
+sources, apply the v2.2 primary availability mask before B2 completeness, and
+omit all outcome-like fields from the output schema.
+
+**Observed input result:** 77,328 origin rows were preserved. B0 is
+predictor-complete for 70,668 rows, B1a for 70,556 and B2/common for 62,266.
+All 451 primary delayed-trade sidecar exclusions remain separately represented,
+including rows whose first overall exclusion is an earlier B0/B1 failure.
+
+**Permitted claims:**
+
+- A successor study has a deterministic, hash-bound, target-free common input
+  panel.
+- Delayed B2 source records cannot re-enter the B2 predictor subset as zeros.
+- B1 nested features preserve the implication B1c => B1b => B1a.
+
+**Forbidden claims:**
+
+- Any result, positive edge, null result, predictive ranking or causal
+  interpretation.
+- That Massive SIP time proves client receipt time.
+- That UW `created_at` proves publication or receipt time.
+- Reconciliation of pre-v2.2 sealed output.
+
+**Consequences:**
+
+```text
+TARGET_BLIND_COMMON_PREDICTOR_PANEL=PASS
+SAFE_TO_RECONCILE_EXISTING_RESULTS=NO
+SAFE_TO_OPEN_OR_EVALUATE_OOS=NO
+MODEL_FIT_PERFORMED=NO
+```
+
+## Decision 39 — successor confirmation pre-method-freeze seal
+
+**Status:** sealed, target-blind and not authorized for OOS.
+
+**Evidence:**
+`artifacts/target_blind_v22/next_confirmation_preregistration_v2.json` and
+`specs/001-pit-options-rv30/contracts/target-blind-confirmation-preregistration-v22.schema.json`.
+
+**Decision:** bind the corrected common-panel output hash, all source and
+builder hashes, information-set fields and the fixed FMP/Massive/UW timing
+claim boundary before a successor method freeze. The seal forbids model fitting,
+tuning, metric computation, result reconciliation and OOS access.
+
+**Consequence:** future work can freeze a method against this exact data-input
+identity, but it cannot select a model or make any B1/B2 performance claim
+until the separate method-freeze and OOS-access gates have passed.
