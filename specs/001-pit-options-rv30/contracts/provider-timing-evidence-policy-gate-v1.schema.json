@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/provider-timing-evidence-policy-gate-v1.schema.json",
+  "title": "MDS650 Evidence-Scoped Provider-Timing Policy Gate v1.0",
+  "description": "A target-blind, fail-closed policy record that keeps sealed-result reconciliation and OOS access closed while separating registered-assumption evidence from future acquisition and prospective-capture timing prerequisites.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "existing_evidence_under_registered_assumptions",
+    "existing_sealed_result_reconciliation",
+    "model_fit_performed",
+    "new_historical_acquisition",
+    "no_oos_or_predictive_artifacts_read",
+    "no_provider_http_requests_performed",
+    "no_target_or_metric_payload_read",
+    "oos_access",
+    "personal_paths_emitted",
+    "policy_resolution",
+    "policy_sha256",
+    "prospective_capture",
+    "schema_version",
+    "scope",
+    "secret_values_emitted",
+    "source_evidence",
+    "status",
+    "timing_claim_boundary"
+  ],
+  "properties": {
+    "schema_version": { "const": "provider-timing-evidence-policy-gate-v1.0" },
+    "status": { "const": "PASS_EVIDENCE_SCOPED_POLICY_FAIL_CLOSED" },
+    "scope": { "const": "offline_target_blind_provider_timing_policy_only" },
+    "policy_resolution": {
+      "const": "LITERAL_RECONCILIATION_NO_REMAINS_CURRENT_FOR_SEALED_PRE_V22_RESULTS"
+    },
+    "existing_evidence_under_registered_assumptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "does_not_authorize_sealed_result_reconciliation",
+        "interpretation_scope",
+        "status"
+      ],
+      "properties": {
+        "status": { "const": "VALID_UNDER_REGISTERED_TIMING_ASSUMPTIONS" },
+        "interpretation_scope": { "const": "FROZEN_CANONICAL_EVIDENCE_ONLY" },
+        "does_not_authorize_sealed_result_reconciliation": { "const": true }
+      }
+    },
+    "existing_sealed_result_reconciliation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reason_codes", "safe_to_reconcile_existing_results", "status"],
+      "properties": {
+        "status": { "const": "BLOCKED" },
+        "safe_to_reconcile_existing_results": { "const": "NO" },
+        "reason_codes": {
+          "type": "array",
+          "prefixItems": [
+            { "const": "V22_SIDECAR_REQUIRES_NEW_TARGET_BLIND_PANEL" },
+            { "const": "V23_SOURCE_BOUND_PANEL_DOES_NOT_RECONCILE_SEALED_LEGACY_RESULTS" }
+          ],
+          "minItems": 2,
+          "maxItems": 2,
+          "items": false
+        }
+      }
+    },
+    "oos_access": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required_before_any_access",
+        "safe_to_open_or_evaluate_oos",
+        "status"
+      ],
+      "properties": {
+        "status": { "const": "BLOCKED" },
+        "safe_to_open_or_evaluate_oos": { "const": "NO" },
+        "required_before_any_access": {
+          "const": "SEPARATE_METHOD_FREEZE_AND_EXPLICIT_HUMAN_AUTHORIZATION"
+        }
+      }
+    },
+    "new_historical_acquisition": { "$ref": "#/$defs/futureGateHistorical" },
+    "prospective_capture": { "$ref": "#/$defs/futureGateProspective" },
+    "timing_claim_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fmp", "massive", "universal_provider_latency_claim", "unusual_whales"],
+      "properties": {
+        "fmp": {
+          "const": "REGISTERED_PLUS_1_MINUTE_WITH_PLUS_2_MINUTE_SENSITIVITY"
+        },
+        "massive": { "const": "SIP_EVENT_TIME_TECHNICAL_ONLY" },
+        "unusual_whales": { "const": "CREATED_AT_PROXY_ONLY" },
+        "universal_provider_latency_claim": { "const": "NOT_SUPPORTED" }
+      }
+    },
+    "no_provider_http_requests_performed": { "const": true },
+    "no_target_or_metric_payload_read": { "const": true },
+    "no_oos_or_predictive_artifacts_read": { "const": true },
+    "model_fit_performed": { "const": false },
+    "secret_values_emitted": { "const": false },
+    "personal_paths_emitted": { "const": false },
+    "source_evidence": {
+      "type": "array",
+      "minItems": 14,
+      "maxItems": 14,
+      "items": { "$ref": "#/$defs/evidence" }
+    },
+    "policy_sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "sha256OrNull": {
+      "anyOf": [
+        { "$ref": "#/$defs/sha256" },
+        { "type": "null" }
+      ]
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file_sha256", "logical_path", "role", "semantic_sha256"],
+      "properties": {
+        "role": { "type": "string", "pattern": "^[A-Z0-9_]+$" },
+        "logical_path": { "type": "string", "pattern": "^(artifacts|docs)/[A-Za-z0-9._/-]+$" },
+        "file_sha256": { "$ref": "#/$defs/sha256" },
+        "semantic_sha256": { "$ref": "#/$defs/sha256OrNull" }
+      }
+    },
+    "futureGateHistorical": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "current_authorization",
+        "not_oos_authorization",
+        "status",
+        "timing_precondition"
+      ],
+      "properties": {
+        "status": { "const": "GO_AFTER_DATE_LEVEL_PIT_PREFLIGHT" },
+        "current_authorization": { "const": "NO" },
+        "timing_precondition": { "const": "DATE_LEVEL_PIT_PREFLIGHT" },
+        "not_oos_authorization": { "const": true }
+      }
+    },
+    "futureGateProspective": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "current_authorization",
+        "not_oos_authorization",
+        "status",
+        "timing_precondition"
+      ],
+      "properties": {
+        "status": { "const": "GO_AFTER_RECEIPT_LOGGER_VALIDATED" },
+        "current_authorization": { "const": "NO" },
+        "timing_precondition": { "const": "VALIDATED_RECEIPT_LOGGER" },
+        "not_oos_authorization": { "const": true }
+      }
+    }
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "existing_evidence_under_registered_assumptions": {
+    "does_not_authorize_sealed_result_reconciliation": true,
+    "interpretation_scope": "FROZEN_CANONICAL_EVIDENCE_ONLY",
+    "status": "VALID_UNDER_REGISTERED_TIMING_ASSUMPTIONS"
+  },
+  "existing_sealed_result_reconciliation": {
+    "reason_codes": [
+      "V22_SIDECAR_REQUIRES_NEW_TARGET_BLIND_PANEL",
+      "V23_SOURCE_BOUND_PANEL_DOES_NOT_RECONCILE_SEALED_LEGACY_RESULTS"
+    ],
+    "safe_to_reconcile_existing_results": "NO",
+    "status": "BLOCKED"
+  },
+  "model_fit_performed": false,
+  "new_historical_acquisition": {
+    "current_authorization": "NO",
+    "not_oos_authorization": true,
+    "status": "GO_AFTER_DATE_LEVEL_PIT_PREFLIGHT",
+    "timing_precondition": "DATE_LEVEL_PIT_PREFLIGHT"
+  },
+  "no_oos_or_predictive_artifacts_read": true,
+  "no_provider_http_requests_performed": true,
+  "no_target_or_metric_payload_read": true,
+  "oos_access": {
+    "required_before_any_access": "SEPARATE_METHOD_FREEZE_AND_EXPLICIT_HUMAN_AUTHORIZATION",
+    "safe_to_open_or_evaluate_oos": "NO",
+    "status": "BLOCKED"
+  },
+  "personal_paths_emitted": false,
+  "policy_resolution": "LITERAL_RECONCILIATION_NO_REMAINS_CURRENT_FOR_SEALED_PRE_V22_RESULTS",
+  "policy_sha256": "05da11e4f24c73d1cb8f01fee6daf6da75040a6ae0399f8bcc9cbb03647933a7",
+  "prospective_capture": {
+    "current_authorization": "NO",
+    "not_oos_authorization": true,
+    "status": "GO_AFTER_RECEIPT_LOGGER_VALIDATED",
+    "timing_precondition": "VALIDATED_RECEIPT_LOGGER"
+  },
+  "schema_version": "provider-timing-evidence-policy-gate-v1.0",
+  "scope": "offline_target_blind_provider_timing_policy_only",
+  "secret_values_emitted": false,
+  "source_evidence": [
+    {
+      "file_sha256": "fcbf161b57fb943224e48de6bb8f72e989e157d6cd12d649861535cc88c9ebdf",
+      "logical_path": "docs/provider_timing_gate_amendment_v1.md",
+      "role": "PROVIDER_TIMING_GATE_AMENDMENT_V1",
+      "semantic_sha256": null
+    },
+    {
+      "file_sha256": "918aa29ae06f28c175e8dc88285070311da55009f949371aa30ea31ffa583431",
+      "logical_path": "docs/methodology_decisions.md",
+      "role": "METHODOLOGY_DECISIONS",
+      "semantic_sha256": null
+    },
+    {
+      "file_sha256": "0ce28772089168d3cbf65c532350a08cb1f76af9f54a2268e8cc37011a4d273a",
+      "logical_path": "docs/pit_reconciliation_gate_v21_addendum_20260812.md",
+      "role": "PIT_RECONCILIATION_ADDENDUM_V21",
+      "semantic_sha256": null
+    },
+    {
+      "file_sha256": "ed29ce9211559a5f5084cbac2cb02df105027177d2b113c9e90f9d82f93f1b54",
+      "logical_path": "docs/confirmation_protocol_v2_sourcebound.md",
+      "role": "CONFIRMATION_PROTOCOL_V2_SOURCEBOUND",
+      "semantic_sha256": null
+    },
+    {
+      "file_sha256": "d71b1b8908e110ab53382c2c2e50c7c86218007e56fd0aea7318c6de78e56d17",
+      "logical_path": "docs/provider_timing_pit_contract_v22.md",
+      "role": "PIT_CONTRACT_V22",
+      "semantic_sha256": null
+    },
+    {
+      "file_sha256": "94d57eee44b7d85629f54376218dde0dcf702dc324626acadbf9cb4de81ff652",
+      "logical_path": "docs/pit_v22_decision_ledger.md",
+      "role": "PIT_V22_DECISION_LEDGER",
+      "semantic_sha256": null
+    },
+    {
+      "file_sha256": "046f867f6e79aa06eb6c923789e94661bea5686afd8ef110ef1e9e337bc6571c",
+      "logical_path": "artifacts/provider_timing_v21/pit_reconciliation_gate_v21_20260812.json",
+      "role": "PIT_RECONCILIATION_GATE_V21",
+      "semantic_sha256": "ba2afa8a5b6471561db0d363d47109393065f8a9f9c65e5a7f4c340abf303452"
+    },
+    {
+      "file_sha256": "62c0e6cd3444482f0d79348bcc812a77c7c66b0bfb2c26e989c4b9a4ae9bac3c",
+      "logical_path": "artifacts/provider_timing_v21/massive_reselection_sensitivity_v21_recomputed_20260812.json",
+      "role": "MASSIVE_RESELECTION_V21",
+      "semantic_sha256": "2379d54838885a1a19014c434595b07da9796a1c5996ea08806c1bbd87a44bcd"
+    },
+    {
+      "file_sha256": "6c4b863de9f866f3d7829ce5c7fdacbd3b916cdc5626e2311ebd46fb58b23be1",
+      "logical_path": "artifacts/provider_timing_v21/uw_anomaly_evidence_v21.json",
+      "role": "UW_ANOMALY_V21",
+      "semantic_sha256": "83d0813dc6f9c809ca5c5eb247f737b13c7e4d8eefe3ac1fb5831fcd3889dc14"
+    },
+    {
+      "file_sha256": "1d30e12cf2be35e2509079e22b0c9df8dc48e9b9e76f1ff566b320d9d22a98b0",
+      "logical_path": "artifacts/provider_timing_v21/official_docs_audit_v1_20260812.json",
+      "role": "OFFICIAL_DOCS_AUDIT_V1",
+      "semantic_sha256": "b8bdd43a0842b1d3941151e3fb801dc86ec172a3d63bec619ed0bcac7b2857af"
+    },
+    {
+      "file_sha256": "9e1717bb059e938b32280a0b11a26247fe19e5c3f934359fe04e79733f9ec585",
+      "logical_path": "artifacts/provider_timing_v22/b2_availability_manifest_v22.json",
+      "role": "B2_AVAILABILITY_MANIFEST_V22",
+      "semantic_sha256": "de3951a0dca73632c8fcbe0b92899c045d7096bf3eed81cf55f958f1009892de"
+    },
+    {
+      "file_sha256": "803ec776afe24d6550c5acc85e971e8a812e4d187e3ccc13c3d35eab915914f8",
+      "logical_path": "artifacts/target_blind_v23_sourcebound_20260812/target_blind_common_predictor_manifest_v23.json",
+      "role": "TARGET_BLIND_MANIFEST_V23",
+      "semantic_sha256": null
+    },
+    {
+      "file_sha256": "59d0ef1fd2cd438a925e3c0114eb31711e05dc6178c9e37e198f6c219610f89d",
+      "logical_path": "artifacts/target_blind_v23_sourcebound_20260812/next_confirmation_preregistration_v3.json",
+      "role": "CONFIRMATION_PREREGISTRATION_V3",
+      "semantic_sha256": "8ca462bd6624426233be339f0e08e40fedfcce74fa6f50c41aaec01e499dce08"
+    },
+    {
+      "file_sha256": "9f3640b40f4355eafe00fa5f15d4f024f53b5ea5c53de8abcf65bcef18316153",
+      "logical_path": "artifacts/target_blind_v23_sourcebound_20260812/confirmation_readiness_v2.json",
+      "role": "CONFIRMATION_READINESS_V2",
+      "semantic_sha256": "368c9dc4c4ec6c5c0e196c9ab78ff0edd0cd37ecf060e57bfd891817ece453ba"
+    }
+  ],
+  "status": "PASS_EVIDENCE_SCOPED_POLICY_FAIL_CLOSED",
+  "timing_claim_boundary": {
+    "fmp": "REGISTERED_PLUS_1_MINUTE_WITH_PLUS_2_MINUTE_SENSITIVITY",
+    "massive": "SIP_EVENT_TIME_TECHNICAL_ONLY",
+    "universal_provider_latency_claim": "NOT_SUPPORTED",
+    "unusual_whales": "CREATED_AT_PROXY_ONLY"
+  }
+}
