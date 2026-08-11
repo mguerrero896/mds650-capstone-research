@@ -1,0 +1,122 @@
+[
+  {
+    "claim_class": "UNVERIFIED",
+    "claim_key": "fmp_bar_start_or_close",
+    "evidence_locator": "fmp_faq_intraday_timezone",
+    "field_or_topic": "one-minute bar label",
+    "permitted_conclusion": "Do not claim whether the raw bar label marks start or close.",
+    "provider": "FMP"
+  },
+  {
+    "claim_class": "UNVERIFIED",
+    "claim_key": "fmp_completed_bar_latency",
+    "evidence_locator": "fmp_faq_intraday_timezone",
+    "field_or_topic": "completed-bar API latency",
+    "permitted_conclusion": "Do not claim a numeric completed-bar availability latency.",
+    "provider": "FMP"
+  },
+  {
+    "claim_class": "UNVERIFIED",
+    "claim_key": "fmp_dst_behavior",
+    "evidence_locator": "fmp_faq_intraday_timezone",
+    "field_or_topic": "DST conversion behavior",
+    "permitted_conclusion": "Do not claim provider-documented DST conversion behavior.",
+    "provider": "FMP"
+  },
+  {
+    "claim_class": "UNVERIFIED",
+    "claim_key": "fmp_exact_iana_timezone",
+    "evidence_locator": "fmp_faq_intraday_timezone",
+    "field_or_topic": "exact IANA timezone",
+    "permitted_conclusion": "Do not claim an exact provider IANA timezone implementation.",
+    "provider": "FMP"
+  },
+  {
+    "claim_class": "PROVIDER_DOCUMENTED",
+    "claim_key": "fmp_intraday_exchange_region_timezone",
+    "evidence_locator": "fmp_faq_intraday_timezone",
+    "field_or_topic": "intraday endpoint timezone",
+    "permitted_conclusion": "FMP documents endpoint time zones at the exchange country or region level.",
+    "provider": "FMP"
+  },
+  {
+    "claim_class": "STUDY_CONSERVATIVE_RULE",
+    "claim_key": "fmp_plus_one_minute",
+    "evidence_locator": "study_contract_v21",
+    "field_or_topic": "research availability convention",
+    "permitted_conclusion": "Use raw timestamp plus one minute as a conservative rule.",
+    "provider": "FMP"
+  },
+  {
+    "claim_class": "STUDY_CONSERVATIVE_RULE",
+    "claim_key": "massive_shifted_asof_selection",
+    "evidence_locator": "massive_reselection_sensitivity_v21",
+    "field_or_topic": "source-time sensitivity",
+    "permitted_conclusion": "Reselect the last SIP quote no later than each shifted cutoff.",
+    "provider": "Massive"
+  },
+  {
+    "claim_class": "STUDY_CONSERVATIVE_RULE",
+    "claim_key": "uw_created_at_operational_proxy",
+    "evidence_locator": "study_contract_v21",
+    "field_or_topic": "B2 cutoff",
+    "permitted_conclusion": "Treat created_at only as an operational availability proxy.",
+    "provider": "Unusual Whales"
+  },
+  {
+    "claim_class": "PAYLOAD_OBSERVED",
+    "claim_key": "uw_full_tape_created_at_field",
+    "evidence_locator": "acquired_full_tape_schema_v21",
+    "field_or_topic": "persisted Full Tape created_at field",
+    "permitted_conclusion": "Acquired Full Tape partitions contain a UTC created_at field.",
+    "provider": "Unusual Whales"
+  },
+  {
+    "claim_class": "UNVERIFIED",
+    "claim_key": "uw_full_tape_created_at_semantics",
+    "evidence_locator": "uw_full_tape_rest_and_openapi",
+    "field_or_topic": "Full Tape created_at semantics",
+    "permitted_conclusion": "Do not transfer Kafka field semantics to Full Tape REST solely from a field-name match.",
+    "provider": "Unusual Whales"
+  },
+  {
+    "claim_class": "PROVIDER_DOCUMENTED_REST",
+    "claim_key": "uw_full_tape_endpoint",
+    "evidence_locator": "uw_full_tape_rest_and_openapi",
+    "field_or_topic": "historical Full Tape endpoint",
+    "permitted_conclusion": "The documented endpoint returns a ZIP of transactions for a date.",
+    "provider": "Unusual Whales"
+  },
+  {
+    "claim_class": "PROVIDER_DOCUMENTED_KAFKA",
+    "claim_key": "uw_kafka_created_at",
+    "evidence_locator": "uw_kafka_option_trade",
+    "field_or_topic": "Kafka created_at",
+    "permitted_conclusion": "Kafka defines created_at as trade-record creation time in Unix milliseconds.",
+    "provider": "Unusual Whales"
+  },
+  {
+    "claim_class": "PROVIDER_DOCUMENTED_KAFKA",
+    "claim_key": "uw_kafka_executed_at",
+    "evidence_locator": "uw_kafka_option_trade",
+    "field_or_topic": "Kafka executed_at",
+    "permitted_conclusion": "Kafka defines executed_at as trade execution time in Unix milliseconds.",
+    "provider": "Unusual Whales"
+  },
+  {
+    "claim_class": "NOT_PERMITTED_WITHOUT_AVAILABILITY_SIDECAR",
+    "claim_key": "uw_zero_activity_semantics",
+    "evidence_locator": "b2_traceability_v21",
+    "field_or_topic": "true absence of activity",
+    "permitted_conclusion": "Do not interpret zero as no activity where source availability is confounded.",
+    "provider": "Unusual Whales"
+  },
+  {
+    "claim_class": "PAYLOAD_OBSERVED",
+    "claim_key": "uw_zero_coding_availability",
+    "evidence_locator": "b2_traceability_v21",
+    "field_or_topic": "canonical B2 zero",
+    "permitted_conclusion": "A numeric B2 zero is a coding state, not automatically no activity.",
+    "provider": "Unusual Whales"
+  }
+]

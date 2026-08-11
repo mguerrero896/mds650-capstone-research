@@ -171,3 +171,16 @@ Spec Kit consistency and preregistration gates pass.
    as `SUPPORTED_CONSERVATIVE_ASSUMPTION`. The historical UW Full Tape audit is `PROXY_ONLY`:
    observed `created_at - executed_at` fields do not become publication or client-receipt time.
    This amendment supersedes a single absolute timing NO-GO without changing canonical results.
+36. **Provider timing gate amendment v2.1 (2026-08-12)** — A target-blind offline audit
+   verified the target-free forecast-origin sidecar against the XNYS calendar: all 77,328
+   origins were inside session bounds, including 432 origins in the two early-close sessions.
+   Massive B1Q raw-cache re-selection passed for 2,308,176 attempts and 32,238 cache
+   identities: no identity failures, no future quote selection and quote existence was
+   non-increasing for origin, origin-minus-60 seconds and origin-minus-300 seconds. Thirty-one
+   early-close cache envelopes carrying post-close SIP rows were explicitly filtered before
+   as-of selection; 329 other overextended early-close requests were retained as visible
+   warnings. The B2 gate is nevertheless `FAIL_ZERO_ACTIVITY_NOT_DISAMBIGUATED`: 61 of 5,400
+   canonical variant/session/asset sidecar rows are zero-coded while record-creation delay is
+   observed. Therefore `SAFE_TO_RECONCILE_EXISTING_RESULTS=NO`. The audit establishes neither
+   Unusual Whales publication/client-receipt time nor an economic or predictive claim; no
+   sealed result, model or QLIKE output was read or changed.

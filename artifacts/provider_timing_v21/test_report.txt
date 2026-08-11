@@ -1,0 +1,42 @@
+Provider Timing PIT v2.1 — Verification Report
+Generated: 2026-08-12
+Scope: offline, target-blind amendment using acquired provider inputs only.
+
+PASS  uv run coverage run --source=mds650.provider_timing_v21 -m pytest -q tests/unit/test_provider_timing_v21.py
+      20 passed
+PASS  uv run coverage report --fail-under=80
+      82% total coverage; 80% minimum gate
+PASS  uv run ruff check .
+      All checks passed
+PASS  uv run mypy --show-error-codes
+      Success: no issues found in 37 source files
+PASS  Compact audit rerun using --reuse-incidents-csv and --reuse-massive-json
+      Deterministic pit_timing_audit_v21.json SHA-256:
+      904DD6FA802C5A6A9CFE9F2864612E5E75C0C2AE9FC0375B480DF3F9BB880954
+PASS  Renderer deterministic rerun
+      Deterministic pit_claim_matrix_v21.json SHA-256:
+      02F501A7DF6CA02517F3BADF2B42877A5C93F5332DE8F2EB98ABCAC32151D9A7
+PASS  JSON parse and compact-contract validation
+      7 JSON files parsed; cutoff sequence [0, 60, 300]; no future quote;
+      monotonic quote-existence assertion true
+PASS  Sanitization scan of new compact outputs
+      14 output files; no personal path or credential assignment pattern
+PASS  Sealed-path tracked-diff check from 9914bb46f42fb1efab7db941267a767c6a3de7b7
+      No tracked difference in sealed canonical-validation, phase6,
+      independent-replication, or prior final-handoff paths
+
+NOT RUN BY DESIGN  Full repository pytest
+Reason: the PIT v2.1 scope prohibits re-reading sealed OOS/canonical payloads;
+test discovery may access those inputs. The new target-free unit suite is the
+strict executable gate for this amendment.
+
+NOT RUN BY DESIGN  scripts/verify_provider_timing_v21.py
+Reason: it byte-reads sealed canonical artifacts for checksum verification. The
+tracked-diff check above proves the amendment did not modify those paths without
+opening their payloads.
+
+GATE RESULT
+  Forecast-origin session bounds: PASS
+  Massive source-time cache audit: PASS
+  B2 activity availability: FAIL_ZERO_ACTIVITY_NOT_DISAMBIGUATED
+  SAFE_TO_RECONCILE_EXISTING_RESULTS: NO
