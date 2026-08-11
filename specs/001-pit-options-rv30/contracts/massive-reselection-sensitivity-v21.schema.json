@@ -1,0 +1,194 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/massive-reselection-sensitivity-v21.schema.json",
+  "title": "Massive B1Q Reselection Sensitivity v2.1",
+  "description": "Sanitized, target-blind aggregate evidence for reselecting the last cached Massive quote at origin, origin minus 60 seconds, and origin minus 300 seconds.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "asset_day_group_count",
+    "attempt_group_count",
+    "attempt_identity_failures",
+    "cache_envelope_decode_count",
+    "cache_identity_failures",
+    "cache_scope_warnings",
+    "contract_day_group_count",
+    "iv_coverage_not_required_monotonic",
+    "max_pending_attempt_rows",
+    "no_provider_http_requests_performed",
+    "no_targets_or_predictive_metrics_read",
+    "quote_age_reference",
+    "quote_existence_coverage_monotonic_nonincreasing",
+    "recomputed_result_sha256",
+    "schema_version",
+    "scope",
+    "selection_rule",
+    "status",
+    "summary_by_cutoff",
+    "summary_by_cutoff_asset",
+    "technical_iv_definition"
+  ],
+  "properties": {
+    "asset_day_group_count": { "$ref": "#/$defs/counter" },
+    "attempt_group_count": { "$ref": "#/$defs/counter" },
+    "attempt_identity_failures": { "$ref": "#/$defs/counterMap" },
+    "cache_envelope_decode_count": { "$ref": "#/$defs/counter" },
+    "cache_identity_failures": { "$ref": "#/$defs/counterMap" },
+    "cache_scope_warnings": { "$ref": "#/$defs/counterMap" },
+    "contract_day_group_count": { "$ref": "#/$defs/counter" },
+    "iv_coverage_not_required_monotonic": { "const": true },
+    "max_pending_attempt_rows": { "$ref": "#/$defs/counter" },
+    "no_provider_http_requests_performed": { "const": true },
+    "no_targets_or_predictive_metrics_read": { "const": true },
+    "quote_age_reference": {
+      "const": "reported_relative_to_original_origin_and_shifted_cutoff"
+    },
+    "quote_existence_coverage_monotonic_nonincreasing": { "const": true },
+    "recomputed_result_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "schema_version": { "const": "provider-timing-v2.1" },
+    "scope": { "const": "existing_target_free_b1_attempts_and_existing_massive_v4_cache" },
+    "selection_rule": {
+      "const": "last_quote_by_sip_timestamp_then_sequence_at_or_before_origin_minus_delay"
+    },
+    "status": {
+      "enum": ["PASS", "FAIL_CACHE_IDENTITY_OR_MONOTONICITY"]
+    },
+    "summary_by_cutoff": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "prefixItems": [
+        { "$ref": "#/$defs/globalSummary0" },
+        { "$ref": "#/$defs/globalSummary60" },
+        { "$ref": "#/$defs/globalSummary300" }
+      ],
+      "items": false
+    },
+    "summary_by_cutoff_asset": {
+      "type": "array",
+      "minItems": 3,
+      "items": { "$ref": "#/$defs/assetSummary" }
+    },
+    "technical_iv_definition": {
+      "const": "recomputed_BSM_from_reselected_midpoint_and_existing_PIT_inputs"
+    }
+  },
+  "$defs": {
+    "counter": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "counterMap": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[A-Z][A-Z0-9_]*$" },
+      "additionalProperties": { "$ref": "#/$defs/counter" }
+    },
+    "probability": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "nullableNonnegativeNumber": {
+      "type": ["number", "null"],
+      "minimum": 0
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "asset",
+        "attempt_count",
+        "cache_resolved_attempt_count",
+        "cutoff_delay_seconds",
+        "future_quote_count",
+        "invalid_selected_nbbo_count",
+        "invalid_selected_spread_count",
+        "iv_available_rate",
+        "iv_failure_reason_counts",
+        "iv_success_count",
+        "iv_success_rate_given_technical_attempt",
+        "median_quote_age_from_cutoff_seconds",
+        "median_quote_age_seconds",
+        "no_quote_at_or_before_cutoff_count",
+        "quote_coverage_rate",
+        "relative_spread_exceeds_25pct_count",
+        "selected_quote_count",
+        "technical_iv_attempt_count"
+      ],
+      "properties": {
+        "asset": {
+          "type": ["string", "null"],
+          "pattern": "^[A-Z][A-Z0-9.-]{0,15}$"
+        },
+        "attempt_count": { "$ref": "#/$defs/counter" },
+        "cache_resolved_attempt_count": { "$ref": "#/$defs/counter" },
+        "cutoff_delay_seconds": { "enum": [0, 60, 300] },
+        "future_quote_count": { "$ref": "#/$defs/counter" },
+        "invalid_selected_nbbo_count": { "$ref": "#/$defs/counter" },
+        "invalid_selected_spread_count": { "$ref": "#/$defs/counter" },
+        "iv_available_rate": { "$ref": "#/$defs/probability" },
+        "iv_failure_reason_counts": { "$ref": "#/$defs/counterMap" },
+        "iv_success_count": { "$ref": "#/$defs/counter" },
+        "iv_success_rate_given_technical_attempt": { "$ref": "#/$defs/probability" },
+        "median_quote_age_from_cutoff_seconds": {
+          "$ref": "#/$defs/nullableNonnegativeNumber"
+        },
+        "median_quote_age_seconds": { "$ref": "#/$defs/nullableNonnegativeNumber" },
+        "no_quote_at_or_before_cutoff_count": { "$ref": "#/$defs/counter" },
+        "quote_coverage_rate": { "$ref": "#/$defs/probability" },
+        "relative_spread_exceeds_25pct_count": { "$ref": "#/$defs/counter" },
+        "selected_quote_count": { "$ref": "#/$defs/counter" },
+        "technical_iv_attempt_count": { "$ref": "#/$defs/counter" }
+      }
+    },
+    "globalSummary0": {
+      "allOf": [
+        { "$ref": "#/$defs/summary" },
+        {
+          "properties": {
+            "asset": { "const": null },
+            "cutoff_delay_seconds": { "const": 0 }
+          }
+        }
+      ]
+    },
+    "globalSummary60": {
+      "allOf": [
+        { "$ref": "#/$defs/summary" },
+        {
+          "properties": {
+            "asset": { "const": null },
+            "cutoff_delay_seconds": { "const": 60 }
+          }
+        }
+      ]
+    },
+    "globalSummary300": {
+      "allOf": [
+        { "$ref": "#/$defs/summary" },
+        {
+          "properties": {
+            "asset": { "const": null },
+            "cutoff_delay_seconds": { "const": 300 }
+          }
+        }
+      ]
+    },
+    "assetSummary": {
+      "allOf": [
+        { "$ref": "#/$defs/summary" },
+        {
+          "properties": {
+            "asset": {
+              "type": "string",
+              "pattern": "^[A-Z][A-Z0-9.-]{0,15}$"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

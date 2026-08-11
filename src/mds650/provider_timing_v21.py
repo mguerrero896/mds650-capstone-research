@@ -30,6 +30,7 @@ REGULAR_RELATIVE_SPREAD_LIMIT: Final[float] = 0.25
 RECORD_DELAY_SECONDS: Final[int] = 300
 EXTREME_RECORD_DELAY_SECONDS: Final[int] = 3_600
 DEFAULT_MASSIVE_CUTOFFS_SECONDS: Final[tuple[int, ...]] = (0, 60, 300)
+MASSIVE_QUOTE_PAGE_LIMIT: Final[int] = 50_000
 VALID_MASSIVE_CACHE_STATES: Final[frozenset[str]] = frozenset(
     {
         "OK",
@@ -151,10 +152,12 @@ class _SensitivityAccumulator:
     no_quote_count: int = 0
     future_quote_count: int = 0
     invalid_selected_spread_count: int = 0
+    invalid_selected_nbbo_count: int = 0
     relative_spread_exceeds_limit_count: int = 0
     technical_iv_attempt_count: int = 0
     iv_success_count: int = 0
     iv_failure_count: int = 0
+    iv_failure_reason_counts: Counter[str] = field(default_factory=Counter)
     age_from_origin: array[float] = field(default_factory=lambda: array("d"))
     age_from_cutoff: array[float] = field(default_factory=lambda: array("d"))
 
@@ -176,7 +179,13 @@ class _SensitivityAccumulator:
         age_cutoff = (cutoff_ns - sip_timestamp) / NANOSECONDS_PER_SECOND
         self.age_from_origin.append(age_origin)
         self.age_from_cutoff.append(age_cutoff)
-        if bid <= 0.0 or ask <= bid:
+        if (
+            not math.isfinite(bid)
+            or not math.isfinite(ask)
+            or bid <= 0.0
+            or ask <= bid
+        ):
+            self.invalid_selected_nbbo_count += 1
             self.invalid_selected_spread_count += 1
             return
         midpoint = (bid + ask) / 2.0
@@ -189,6 +198,12 @@ class _SensitivityAccumulator:
             self.iv_success_count += 1
         else:
             self.iv_failure_count += 1
+            failure_reason = (
+                str(iv_result.get("failure_reason", "IV_NO_CONVERGENCE"))
+                if iv_result is not None
+                else "IV_NO_CONVERGENCE"
+            )
+            self.iv_failure_reason_counts[failure_reason] += 1
 
     def as_row(self, *, cutoff_delay_seconds: int, asset: str | None) -> dict[str, Any]:
         """Return a deterministic, sanitized metric row."""
@@ -202,6 +217,7 @@ class _SensitivityAccumulator:
             "no_quote_at_or_before_cutoff_count": self.no_quote_count,
             "future_quote_count": self.future_quote_count,
             "invalid_selected_spread_count": self.invalid_selected_spread_count,
+            "invalid_selected_nbbo_count": self.invalid_selected_nbbo_count,
             "relative_spread_exceeds_25pct_count": self.relative_spread_exceeds_limit_count,
             "technical_iv_attempt_count": self.technical_iv_attempt_count,
             "iv_success_count": self.iv_success_count,
@@ -209,6 +225,7 @@ class _SensitivityAccumulator:
             "iv_success_rate_given_technical_attempt": _rate(
                 self.iv_success_count, self.technical_iv_attempt_count
             ),
+            "iv_failure_reason_counts": dict(sorted(self.iv_failure_reason_counts.items())),
             "median_quote_age_seconds": _median_array(self.age_from_origin),
             "median_quote_age_from_cutoff_seconds": _median_array(self.age_from_cutoff),
         }
@@ -926,9 +943,15 @@ def audit_massive_reselection(
     cache_index = _massive_cache_index(cache_root)
     global_accumulators = {delay: _SensitivityAccumulator() for delay in cutoffs}
     asset_accumulators: dict[tuple[int, str], _SensitivityAccumulator] = {}
-    identity_failures: Counter[str] = Counter()
+    cache_identity_failures: Counter[str] = Counter()
+    attempt_identity_failures: Counter[str] = Counter()
     cache_scope_warnings: Counter[str] = Counter()
-    processed_group_keys: set[tuple[str, str, str, str]] = set()
+    processing_counts = {
+        "asset_day_group_count": 0,
+        "contract_day_group_count": 0,
+        "cache_envelope_decode_count": 0,
+        "max_pending_attempt_rows": 0,
+    }
     required_columns = [
         "asset",
         "session_date",
@@ -945,19 +968,42 @@ def audit_massive_reselection(
     reader = pq.ParquetFile(attempts_path)
     if not set(required_columns).issubset(reader.schema_arrow.names):
         raise ValueError("TIMING_V21_B1_ATTEMPT_COLUMNS_MISSING")
-    for batch in reader.iter_batches(batch_size=batch_size, columns=required_columns):
-        grouped_rows: dict[tuple[str, str, str, str], list[dict[str, Any]]] = defaultdict(list)
-        for row in pa.Table.from_batches([batch]).to_pylist():
-            key = (
-                str(row["asset"]),
-                str(row["session_date"]),
-                str(row["contract"]),
-                str(row["source_request_hash"]),
-            )
-            grouped_rows[key].append(row)
-        for group_key in sorted(grouped_rows):
-            rows = grouped_rows[group_key]
-            asset, session_date, contract, source_request_hash = group_key
+    def _asset_accumulator(delay: int, asset: str) -> _SensitivityAccumulator:
+        return asset_accumulators.setdefault((delay, asset), _SensitivityAccumulator())
+
+    def _record_attempt_count(*, asset: str) -> None:
+        for delay in cutoffs:
+            global_accumulators[delay].attempt_count += 1
+            _asset_accumulator(delay, asset).attempt_count += 1
+
+    def _process_asset_day(
+        *, asset: str, session_date: str, rows: list[dict[str, Any]]
+    ) -> None:
+        """Process one contiguous asset-day, decoding each cache once."""
+        processing_counts["asset_day_group_count"] += 1
+        processing_counts["max_pending_attempt_rows"] = max(
+            processing_counts["max_pending_attempt_rows"], len(rows)
+        )
+        by_contract: dict[str, dict[str, list[dict[str, Any]]]] = defaultdict(
+            lambda: defaultdict(list)
+        )
+        for row in rows:
+            by_contract[str(row["contract"])][str(row["source_request_hash"])].append(row)
+        for contract in sorted(by_contract):
+            by_source_hash = by_contract[contract]
+            processing_counts["contract_day_group_count"] += 1
+            contract_rows = [
+                row
+                for source_hash in sorted(by_source_hash)
+                for row in by_source_hash[source_hash]
+            ]
+            for _row in contract_rows:
+                _record_attempt_count(asset=asset)
+            if len(by_source_hash) != 1:
+                attempt_identity_failures["ATTEMPT_SOURCE_HASH_AMBIGUOUS"] += 1
+                continue
+            source_request_hash, resolved_rows = next(iter(by_source_hash.items()))
+            processing_counts["cache_envelope_decode_count"] += 1
             cache_state, quotes = _load_and_validate_massive_cache(
                 cache_index=cache_index,
                 cache_root=cache_root,
@@ -966,23 +1012,16 @@ def audit_massive_reselection(
                 contract=contract,
                 source_request_hash=source_request_hash,
             )
-            if group_key not in processed_group_keys:
-                processed_group_keys.add(group_key)
-                if cache_state not in VALID_MASSIVE_CACHE_STATES:
-                    identity_failures[cache_state] += 1
-                elif cache_state != "OK":
-                    cache_scope_warnings[cache_state] += 1
-            for row in rows:
+            if cache_state not in VALID_MASSIVE_CACHE_STATES:
+                cache_identity_failures[cache_state] += 1
+                continue
+            if cache_state != "OK":
+                cache_scope_warnings[cache_state] += 1
+            for row in resolved_rows:
                 origin_ns = int(row["forecast_origin_ns"])
                 for delay in cutoffs:
                     global_acc = global_accumulators[delay]
-                    asset_acc = asset_accumulators.setdefault(
-                        (delay, asset), _SensitivityAccumulator()
-                    )
-                    global_acc.attempt_count += 1
-                    asset_acc.attempt_count += 1
-                    if cache_state not in VALID_MASSIVE_CACHE_STATES:
-                        continue
+                    asset_acc = _asset_accumulator(delay, asset)
                     global_acc.cache_resolved_attempt_count += 1
                     asset_acc.cache_resolved_attempt_count += 1
                     cutoff_ns = origin_ns - delay * NANOSECONDS_PER_SECOND
@@ -1004,6 +1043,31 @@ def audit_massive_reselection(
                         quote=selected,
                         iv_result=iv_result,
                     )
+
+    closed_asset_days: set[tuple[str, str]] = set()
+    current_asset_day: tuple[str, str] | None = None
+    current_rows: list[dict[str, Any]] = []
+    for batch in reader.iter_batches(batch_size=batch_size, columns=required_columns):
+        for row in pa.Table.from_batches([batch]).to_pylist():
+            asset_day = (str(row["asset"]), str(row["session_date"]))
+            if current_asset_day is None:
+                current_asset_day = asset_day
+            elif asset_day != current_asset_day:
+                _process_asset_day(
+                    asset=current_asset_day[0],
+                    session_date=current_asset_day[1],
+                    rows=current_rows,
+                )
+                closed_asset_days.add(current_asset_day)
+                if asset_day in closed_asset_days:
+                    raise ValueError("TIMING_V21_ATTEMPT_ASSET_DAY_NONCONTIGUOUS")
+                current_asset_day = asset_day
+                current_rows = []
+            current_rows.append(row)
+    if current_asset_day is not None:
+        _process_asset_day(
+            asset=current_asset_day[0], session_date=current_asset_day[1], rows=current_rows
+        )
     global_rows = [
         global_accumulators[delay].as_row(cutoff_delay_seconds=delay, asset=None)
         for delay in cutoffs
@@ -1021,7 +1085,11 @@ def audit_massive_reselection(
         "schema_version": "provider-timing-v2.1",
         "status": (
             "PASS"
-            if not identity_failures and quote_coverage_monotonic
+            if (
+                not cache_identity_failures
+                and not attempt_identity_failures
+                and quote_coverage_monotonic
+            )
             else "FAIL_CACHE_IDENTITY_OR_MONOTONICITY"
         ),
         "scope": "existing_target_free_b1_attempts_and_existing_massive_v4_cache",
@@ -1034,8 +1102,10 @@ def audit_massive_reselection(
         "technical_iv_definition": (
             "recomputed_BSM_from_reselected_midpoint_and_existing_PIT_inputs"
         ),
-        "attempt_group_count": len(processed_group_keys),
-        "cache_identity_failures": dict(sorted(identity_failures.items())),
+        "attempt_group_count": processing_counts["contract_day_group_count"],
+        **processing_counts,
+        "cache_identity_failures": dict(sorted(cache_identity_failures.items())),
+        "attempt_identity_failures": dict(sorted(attempt_identity_failures.items())),
         "cache_scope_warnings": dict(sorted(cache_scope_warnings.items())),
         "summary_by_cutoff": global_rows,
         "summary_by_cutoff_asset": asset_rows,
@@ -1382,6 +1452,8 @@ def _load_and_validate_massive_cache(
     rows = payload.get("results")
     if not isinstance(rows, list):
         return "CACHE_RESULTS_INVALID", _EMPTY_PREPARED_QUOTES
+    if not _massive_pagination_verified(payload=payload, rows=rows):
+        return "CACHE_PAGINATION_UNVERIFIED", _EMPTY_PREPARED_QUOTES
     try:
         quotes = _prepare_quotes(rows)
     except ValueError:
@@ -1477,6 +1549,26 @@ def _massive_request_parameters_status(
     return "INVALID", bounds
 
 
+def _massive_pagination_verified(*, payload: Mapping[str, Any], rows: Sequence[Any]) -> bool:
+    """Return whether cache pagination is explicit or safely inferable.
+
+    Older v4 cache envelopes can omit ``pagination_complete``. They are accepted
+    only when their pre-deduplication row count proves a terminal partial page;
+    an explicit incomplete flag never qualifies.
+    """
+    pagination_complete = payload.get("pagination_complete")
+    if pagination_complete is True or pagination_complete == "INFERRED_TERMINAL_PARTIAL_PAGE":
+        return True
+    if pagination_complete is not None:
+        return False
+    removed = payload.get("provider_duplicate_rows_removed", 0)
+    if isinstance(removed, bool) or not isinstance(removed, int) or removed < 0:
+        return False
+    removed_count: int = int(removed)
+    original_count = len(rows) + removed_count
+    return original_count == 0 or original_count % MASSIVE_QUOTE_PAGE_LIMIT != 0
+
+
 def _prepare_quotes(quotes: Iterable[Mapping[str, Any]]) -> _PreparedQuotes:
     prepared: list[tuple[int, int, float, float]] = []
     seen: set[tuple[int, int]] = set()
@@ -1509,12 +1601,19 @@ def _iv_from_reselected_quote(
     *, row: Mapping[str, Any], quote: tuple[int, int, float, float]
 ) -> dict[str, Any] | None:
     _, _, bid, ask = quote
-    if bid <= 0.0 or ask <= bid:
-        return None
+    if (
+        not math.isfinite(bid)
+        or not math.isfinite(ask)
+        or bid <= 0.0
+        or ask <= bid
+    ):
+        return {"success": False, "failure_reason": "INVALID_SELECTED_NBBO"}
     midpoint = (bid + ask) / 2.0
     relative_spread = (ask - bid) / midpoint
+    if not math.isfinite(midpoint) or not math.isfinite(relative_spread):
+        return {"success": False, "failure_reason": "IV_INPUT_INVALID"}
     if relative_spread > REGULAR_RELATIVE_SPREAD_LIMIT:
-        return None
+        return {"success": False, "failure_reason": "RELATIVE_SPREAD_EXCEEDS_LIMIT"}
     return _invert_iv(
         spot=float(row["spot"]),
         strike=float(row["strike"]),
@@ -1536,6 +1635,18 @@ def _invert_iv(
     midpoint: float,
     option_type: str,
 ) -> dict[str, Any]:
+    if option_type not in {"call", "put"}:
+        return {"success": False, "failure_reason": "INVALID_OPTION_TYPE"}
+    if (
+        not all(
+            math.isfinite(value)
+            for value in (spot, strike, time_years, rate, dividend, midpoint)
+        )
+        or spot <= 0.0
+        or strike <= 0.0
+        or time_years <= 0.0
+    ):
+        return {"success": False, "failure_reason": "IV_INPUT_INVALID"}
     lower = max(
         0.0,
         (spot * math.exp(-dividend * time_years) - strike * math.exp(-rate * time_years))

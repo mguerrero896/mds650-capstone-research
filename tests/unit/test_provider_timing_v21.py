@@ -14,6 +14,7 @@ from pathlib import Path
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
+from jsonschema import Draft202012Validator
 
 from mds650.provider_timing_v21 import (
     B2_FEATURE_COLUMNS,
@@ -24,11 +25,28 @@ from mds650.provider_timing_v21 import (
     audit_massive_reselection,
     audit_uw_session_asset_incidents,
     build_pit_claim_matrix_v21,
+    canonical_sha256,
     reselect_last_quote_asof,
     timestamp_array_to_ns,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
+RECOMPUTED_MASSIVE_RESELECTION_ARTIFACT = (
+    ROOT
+    / "artifacts"
+    / "provider_timing_v21"
+    / "massive_reselection_sensitivity_v21_recomputed_20260812.json"
+)
+RECOMPUTED_MASSIVE_RESELECTION_SCHEMA = (
+    ROOT
+    / "specs"
+    / "001-pit-options-rv30"
+    / "contracts"
+    / "massive-reselection-sensitivity-v21.schema.json"
+)
+RECOMPUTED_MASSIVE_RESELECTION_ADDENDUM = (
+    ROOT / "docs" / "provider_timing_b1q_reselection_v21_addendum_20260812.md"
+)
 sys.path.insert(0, str(ROOT / "scripts"))
 audit_script = importlib.import_module("audit_provider_timing_v21")
 renderer_script = importlib.import_module("render_provider_timing_v21_docs")
@@ -478,6 +496,269 @@ def test_massive_reselection_rejects_duplicate_and_never_backfills_invalid_quote
     assert selected["sip_timestamp"] == origin_ns - 10_000_000_000
 
 
+def test_recomputed_massive_reselection_artifact_is_schema_valid_and_self_hashed() -> None:
+    """The promoted target-blind result must match its contract and canonical digest."""
+    assert RECOMPUTED_MASSIVE_RESELECTION_SCHEMA.is_file()
+    assert RECOMPUTED_MASSIVE_RESELECTION_ARTIFACT.is_file()
+    schema = json.loads(RECOMPUTED_MASSIVE_RESELECTION_SCHEMA.read_text(encoding="utf-8"))
+    document = json.loads(RECOMPUTED_MASSIVE_RESELECTION_ARTIFACT.read_text(encoding="utf-8"))
+
+    Draft202012Validator.check_schema(schema)
+    errors = sorted(
+        Draft202012Validator(schema).iter_errors(document), key=lambda error: list(error.path)
+    )
+    assert not errors, "\n".join(error.message for error in errors)
+    assert document["status"] == "PASS"
+    unsigned = dict(document)
+    recorded_hash = unsigned.pop("recomputed_result_sha256")
+    assert recorded_hash == canonical_sha256(unsigned)
+    assert [row["cutoff_delay_seconds"] for row in document["summary_by_cutoff"]] == [0, 60, 300]
+    asset_cutoffs: dict[str, list[int]] = {}
+    for row in document["summary_by_cutoff_asset"]:
+        asset_cutoffs.setdefault(row["asset"], []).append(row["cutoff_delay_seconds"])
+    assert asset_cutoffs
+    assert all(sorted(cutoffs) == [0, 60, 300] for cutoffs in asset_cutoffs.values())
+
+
+def test_recomputed_massive_reselection_artifact_and_addendum_emit_no_secrets_or_paths() -> None:
+    """The promoted technical evidence must be portable and secret-free."""
+    assert RECOMPUTED_MASSIVE_RESELECTION_ARTIFACT.is_file()
+    assert RECOMPUTED_MASSIVE_RESELECTION_ADDENDUM.is_file()
+    artifact_bytes = RECOMPUTED_MASSIVE_RESELECTION_ARTIFACT.read_bytes()
+    serialized = artifact_bytes.decode("utf-8")
+    addendum = RECOMPUTED_MASSIVE_RESELECTION_ADDENDUM.read_text(encoding="utf-8")
+
+    assert not re.search(
+        r"(?i)(api[_-]?key|authorization|bearer|password|secret)\\s*[:=]", serialized
+    )
+    assert not re.search(r"(?i)[a-z]:[\\\\/]|/users/|/home/", serialized)
+    assert not re.search(
+        r"(?i)(api[_-]?key|authorization|bearer|password|secret)\\s*[:=]", addendum
+    )
+    assert not re.search(r"(?i)[a-z]:[\\\\/]|/users/|/home/", addendum)
+    payload = json.loads(serialized)
+    assert payload["recomputed_result_sha256"] in addendum
+    assert hashlib.sha256(artifact_bytes).hexdigest() in addendum
+    assert "artifacts/provider_timing_v21/" in addendum
+
+
+def test_massive_reselection_decodes_each_contract_day_once_across_tiny_batches(
+    tmp_path: Path,
+) -> None:
+    """One target-free contract-day must use one cache decoder despite tiny batches."""
+    origin_ns = 1_750_000_000_000_000_000
+    contract = "O:AAPL250117C00100000"
+    source_hash = _fixture_source_hash(contract)
+    attempts_path = tmp_path / "attempts.parquet"
+    _write_attempt_rows(
+        attempts_path,
+        rows=[
+            _attempt_row(origin_ns=origin_ns, source_hash=source_hash, contract=contract),
+            _attempt_row(
+                origin_ns=origin_ns + 60_000_000_000,
+                source_hash=source_hash,
+                contract=contract,
+            ),
+        ],
+    )
+    cache_root = tmp_path / "cache"
+    cache_root.mkdir()
+    _write_cache(
+        cache_root / "unused.json",
+        source_hash=source_hash,
+        quotes=[
+            _quote(origin_ns - 10_000_000_000, 1),
+            _quote(origin_ns + 50_000_000_000, 2),
+        ],
+    )
+
+    audit = audit_massive_reselection(
+        attempts_path=attempts_path,
+        cache_root=cache_root,
+        cutoffs_seconds=(0,),
+        batch_size=1,
+    )
+
+    assert audit["status"] == "PASS"
+    assert audit["asset_day_group_count"] == 1
+    assert audit["contract_day_group_count"] == 1
+    assert audit["cache_envelope_decode_count"] == 1
+    assert audit["max_pending_attempt_rows"] == 2
+
+
+def test_massive_reselection_rejects_explicitly_unverified_pagination(tmp_path: Path) -> None:
+    """A cache that declares pagination incomplete must fail before selection."""
+    origin_ns = 1_750_000_000_000_000_000
+    contract = "O:AAPL250117C00100000"
+    source_hash = _fixture_source_hash(contract)
+    attempts_path = tmp_path / "attempts.parquet"
+    _write_attempts(
+        attempts_path,
+        origin_ns=origin_ns,
+        source_hash=source_hash,
+        contract=contract,
+    )
+    cache_root = tmp_path / "cache"
+    cache_root.mkdir()
+    cache_path = _write_cache(
+        cache_root / "unused.json",
+        source_hash=source_hash,
+        quotes=[_quote(origin_ns - 10_000_000_000, 1)],
+    )
+    payload = json.loads(cache_path.read_text(encoding="utf-8"))
+    payload["pagination_complete"] = False
+    cache_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    audit = audit_massive_reselection(
+        attempts_path=attempts_path,
+        cache_root=cache_root,
+        cutoffs_seconds=(0,),
+    )
+
+    assert audit["status"] == "FAIL_CACHE_IDENTITY_OR_MONOTONICITY"
+    assert audit["cache_identity_failures"] == {"CACHE_PAGINATION_UNVERIFIED": 1}
+    assert audit["summary_by_cutoff"][0]["selected_quote_count"] == 0
+
+
+def test_massive_reselection_classifies_nonfinite_nbbo_before_iv(tmp_path: Path) -> None:
+    """NaN NBBO cannot enter midpoint, spread, or IV calculations."""
+    origin_ns = 1_750_000_000_000_000_000
+    contract = "O:AAPL250117C00100000"
+    source_hash = _fixture_source_hash(contract)
+    attempts_path = tmp_path / "attempts.parquet"
+    _write_attempts(
+        attempts_path,
+        origin_ns=origin_ns,
+        source_hash=source_hash,
+        contract=contract,
+    )
+    cache_root = tmp_path / "cache"
+    cache_root.mkdir()
+    _write_cache(
+        cache_root / "unused.json",
+        source_hash=source_hash,
+        quotes=[
+            {
+                "sip_timestamp": origin_ns - 10_000_000_000,
+                "sequence_number": 1,
+                "bid_price": float("nan"),
+                "ask_price": 3.75,
+            }
+        ],
+    )
+
+    audit = audit_massive_reselection(
+        attempts_path=attempts_path,
+        cache_root=cache_root,
+        cutoffs_seconds=(0,),
+    )
+    summary = audit["summary_by_cutoff"][0]
+
+    assert audit["status"] == "PASS"
+    assert summary["invalid_selected_nbbo_count"] == 1
+    assert summary["technical_iv_attempt_count"] == 0
+    assert summary["iv_success_count"] == 0
+
+
+def test_massive_reselection_reports_invalid_option_type_explicitly(tmp_path: Path) -> None:
+    """An unsupported option type must not be treated as a put during BSM inversion."""
+    origin_ns = 1_750_000_000_000_000_000
+    contract = "O:AAPL250117C00100000"
+    source_hash = _fixture_source_hash(contract)
+    attempts_path = tmp_path / "attempts.parquet"
+    _write_attempt_rows(
+        attempts_path,
+        rows=[
+            _attempt_row(
+                origin_ns=origin_ns,
+                source_hash=source_hash,
+                contract=contract,
+                option_type="unsupported",
+            )
+        ],
+    )
+    cache_root = tmp_path / "cache"
+    cache_root.mkdir()
+    _write_cache(
+        cache_root / "unused.json",
+        source_hash=source_hash,
+        quotes=[_quote(origin_ns - 10_000_000_000, 1)],
+    )
+
+    audit = audit_massive_reselection(
+        attempts_path=attempts_path,
+        cache_root=cache_root,
+        cutoffs_seconds=(0,),
+    )
+
+    assert audit["status"] == "PASS"
+    assert audit["summary_by_cutoff"][0]["iv_failure_reason_counts"] == {
+        "INVALID_OPTION_TYPE": 1
+    }
+
+
+def test_massive_reselection_rejects_ambiguous_attempt_source_hash(tmp_path: Path) -> None:
+    """A contract-day with conflicting request hashes must not choose either cache join."""
+    origin_ns = 1_750_000_000_000_000_000
+    contract = "O:AAPL250117C00100000"
+    source_hash = _fixture_source_hash(contract)
+    attempts_path = tmp_path / "attempts.parquet"
+    _write_attempt_rows(
+        attempts_path,
+        rows=[
+            _attempt_row(origin_ns=origin_ns, source_hash=source_hash, contract=contract),
+            _attempt_row(
+                origin_ns=origin_ns + 60_000_000_000,
+                source_hash="f" * 64,
+                contract=contract,
+            ),
+        ],
+    )
+    cache_root = tmp_path / "cache"
+    cache_root.mkdir()
+    _write_cache(
+        cache_root / "unused.json",
+        source_hash=source_hash,
+        quotes=[_quote(origin_ns - 10_000_000_000, 1)],
+    )
+
+    audit = audit_massive_reselection(
+        attempts_path=attempts_path,
+        cache_root=cache_root,
+        cutoffs_seconds=(0,),
+    )
+
+    assert audit["status"] == "FAIL_CACHE_IDENTITY_OR_MONOTONICITY"
+    assert audit["attempt_identity_failures"] == {"ATTEMPT_SOURCE_HASH_AMBIGUOUS": 1}
+    assert audit["summary_by_cutoff"][0]["selected_quote_count"] == 0
+
+
+def test_massive_reselection_fails_closed_when_asset_day_reappears(tmp_path: Path) -> None:
+    """The bounded asset-day stream must reject a non-contiguous reappearance."""
+    origin_ns = 1_750_000_000_000_000_000
+    contract = "O:AAPL250117C00100000"
+    source_hash = _fixture_source_hash(contract)
+    first = _attempt_row(origin_ns=origin_ns, source_hash=source_hash, contract=contract)
+    middle = {
+        **first,
+        "asset": "MSFT",
+        "session_date": "2025-01-03",
+        "contract": "O:MSFT250117C00100000",
+    }
+    attempts_path = tmp_path / "attempts.parquet"
+    _write_attempt_rows(attempts_path, rows=[first, middle, first])
+    cache_root = tmp_path / "cache"
+    cache_root.mkdir()
+
+    with pytest.raises(ValueError, match="TIMING_V21_ATTEMPT_ASSET_DAY_NONCONTIGUOUS"):
+        audit_massive_reselection(
+            attempts_path=attempts_path,
+            cache_root=cache_root,
+            cutoffs_seconds=(0,),
+            batch_size=1,
+        )
+
+
 def test_v21_outputs_are_path_and_secret_free(tmp_path: Path) -> None:
     """Sanitized v2.1 summaries cannot leak local roots or credential-like values."""
     event_root = tmp_path / "events"
@@ -807,6 +1088,51 @@ def _write_attempts(
         ),
         path,
     )
+
+
+def _attempt_row(
+    *,
+    origin_ns: int,
+    source_hash: str,
+    contract: str,
+    session_date: str = "2025-01-02",
+    option_type: str = "call",
+) -> dict[str, object]:
+    """Return one target-free B1 attempt row for multi-row fixtures."""
+    return {
+        "asset": "AAPL",
+        "session_date": session_date,
+        "contract": contract,
+        "source_request_hash": source_hash,
+        "forecast_origin_ns": origin_ns,
+        "spot": 100.0,
+        "strike": 100.0,
+        "dte": 30,
+        "rate": 0.01,
+        "dividend_yield": 0.0,
+        "option_type": option_type,
+    }
+
+
+def _write_attempt_rows(path: Path, *, rows: list[dict[str, object]]) -> None:
+    """Write a target-free B1 attempt fixture with deterministic field order."""
+    assert rows
+    columns = {
+        "asset": pa.array([str(row["asset"]) for row in rows]),
+        "session_date": pa.array([str(row["session_date"]) for row in rows]),
+        "contract": pa.array([str(row["contract"]) for row in rows]),
+        "source_request_hash": pa.array([str(row["source_request_hash"]) for row in rows]),
+        "forecast_origin_ns": pa.array(
+            [int(row["forecast_origin_ns"]) for row in rows], type=pa.int64()
+        ),
+        "spot": pa.array([float(row["spot"]) for row in rows]),
+        "strike": pa.array([float(row["strike"]) for row in rows]),
+        "dte": pa.array([int(row["dte"]) for row in rows], type=pa.int64()),
+        "rate": pa.array([float(row["rate"]) for row in rows]),
+        "dividend_yield": pa.array([float(row["dividend_yield"]) for row in rows]),
+        "option_type": pa.array([str(row["option_type"]) for row in rows]),
+    }
+    pq.write_table(pa.table(columns), path)
 
 
 def _quote(sip_timestamp: int, sequence_number: int) -> dict[str, int | float]:
