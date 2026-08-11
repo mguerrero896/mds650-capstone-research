@@ -39,6 +39,25 @@ SCHEMA_PATH = (
     / "contracts"
     / "target-blind-common-predictor-manifest-v24.schema.json"
 )
+V24_RUNTIME_PATHS = (
+    ROOT / "src" / "mds650" / "target_blind_sourcebound_v24.py",
+    ROOT / "scripts" / "build_target_blind_common_panel_v24.py",
+)
+
+
+def test_v24_runtime_sources_do_not_hide_type_or_lint_failures() -> None:
+    """The v2.4 type boundary stays explicit and bootstrap lint exemptions stay scoped."""
+    expected_noqa_counts = {
+        ROOT / "src" / "mds650" / "target_blind_sourcebound_v24.py": 0,
+        ROOT / "scripts" / "build_target_blind_common_panel_v24.py": 4,
+    }
+    for path in V24_RUNTIME_PATHS:
+        source = path.read_text(encoding="utf-8")
+        assert "type: ignore" not in source
+        assert source.count("# noqa") == expected_noqa_counts[path]
+    assert "E402 exemptions below are deliberately limited" in V24_RUNTIME_PATHS[1].read_text(
+        encoding="utf-8"
+    )
 
 
 def test_v24_explicit_allowlists_cover_only_registered_b0_b1_b2_and_panel_columns() -> None:

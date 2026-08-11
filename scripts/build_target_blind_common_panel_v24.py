@@ -21,6 +21,8 @@ import polars as pl
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
+# Direct script invocation must bootstrap ``src`` before sibling imports. The
+# E402 exemptions below are deliberately limited to that bootstrap block.
 from build_target_blind_common_panel_v22 import (  # noqa: E402
     B1_ORIGINS,
     B1_SOURCE,

@@ -12,12 +12,12 @@ import json
 import os
 import re
 import uuid
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Iterable, Mapping
+from importlib import import_module
 from pathlib import Path
-from typing import Any
+from typing import Any, Protocol, cast
 
 import polars as pl
-from jsonschema import Draft202012Validator  # type: ignore[import-untyped]
 
 from mds650.phase6 import (
     B0V2_FEATURES,
@@ -29,6 +29,35 @@ from mds650.phase6 import (
 from mds650.target_blind_panel_v22 import (
     KEY_COLUMNS,
 )
+
+
+class _JsonSchemaValidator(Protocol):
+    """Small typed surface used from the untyped jsonschema runtime package."""
+
+    def iter_errors(self, instance: object) -> Iterable[object]:
+        """Yield schema violations for one JSON-compatible instance."""
+
+
+class _Draft202012ValidatorFactory(Protocol):
+    """Typed boundary for the two Draft 2020-12 operations used by v2.4."""
+
+    def __call__(self, schema: Mapping[str, object]) -> _JsonSchemaValidator:
+        """Construct a validator for one schema object."""
+
+    def check_schema(self, schema: Mapping[str, object]) -> None:
+        """Raise when one schema object is invalid."""
+
+
+def _load_draft202012_validator() -> _Draft202012ValidatorFactory:
+    """Load jsonschema at runtime behind the explicit, narrow typed contract."""
+    module = import_module("jsonschema")
+    candidate = cast(object, getattr(module, "Draft202012Validator", None))
+    if not callable(candidate) or not callable(getattr(candidate, "check_schema", None)):
+        raise RuntimeError("TARGET_BLIND_V24_JSONSCHEMA_VALIDATOR_UNAVAILABLE")
+    return cast(_Draft202012ValidatorFactory, candidate)
+
+
+_DRAFT202012_VALIDATOR = _load_draft202012_validator()
 
 _SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 _FORBIDDEN_TOKENS = frozenset(
@@ -305,8 +334,8 @@ def validate_sourcebound_manifest_v24(manifest: Mapping[str, Any], schema_path: 
     """Validate the v2.4 JSON Schema and semantic manifest self-hash."""
     try:
         schema = json.loads(schema_path.read_text(encoding="utf-8"))
-        Draft202012Validator.check_schema(schema)
-        errors = list(Draft202012Validator(schema).iter_errors(manifest))
+        _DRAFT202012_VALIDATOR.check_schema(schema)
+        errors = list(_DRAFT202012_VALIDATOR(schema).iter_errors(manifest))
     except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise ValueError("TARGET_BLIND_V24_OUTPUT_MANIFEST_SCHEMA_UNREADABLE") from exc
     if errors:
