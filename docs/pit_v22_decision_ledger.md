@@ -202,3 +202,37 @@ SAFE_TO_RECONCILE_EXISTING_RESULTS=NO
 SAFE_TO_OPEN_OR_EVALUATE_OOS=NO
 MODEL_FIT_PERFORMED=NO
 ```
+
+## Decision 42 — official provider-documentation timing boundary
+
+**Status:** accepted as target-blind documentation evidence; no timing-semantics
+upgrade and no evaluation authorization.
+
+**Evidence:**
+`artifacts/provider_timing_v21/official_docs_audit_v1_20260812.json`,
+`specs/001-pit-options-rv30/contracts/provider-timing-official-docs-audit-v1.schema.json`
+and `docs/provider_timing_official_docs_audit_v1_20260812.md`.
+
+**Decision:** record the positive scope of the official documentation without
+filling omissions by inference. Massive documents SIP quote-event time and
+nanosecond precision, but not historical customer delivery latency. FMP
+documents a timestamp-formatted OHLCV field, but not its timezone, bar boundary
+or availability. Unusual Whales labels Flow Alerts `created_at` as a general
+UTC timestamp, but does not document it as historical publication or receipt.
+
+**Historical-source clarification:** this is not a finding that FMP or Unusual
+Whales lack history. The registered 90-session probes establish FMP session
+availability and UW Full Tape file-metadata availability; row-level PIT timing
+remains a separate question.
+
+**Consequence:** retain the registered FMP `+1/+2` conservative rules, UW
+`created_at` operational proxy, Massive technical as-of condition, and both
+fail-closed gates. The audit adds a source-bound limitation record; it does not
+authorize reconciliation, model fitting, QLIKE, or OOS access.
+
+```text
+PROVIDER_DOCUMENTATION_LIMITATIONS_AUDIT=PASS
+SAFE_TO_RECONCILE_EXISTING_RESULTS=NO
+SAFE_TO_OPEN_OR_EVALUATE_OOS=NO
+MODEL_FIT_PERFORMED=NO
+```

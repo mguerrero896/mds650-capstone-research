@@ -1,0 +1,65 @@
+{
+  "SAFE_TO_OPEN_OR_EVALUATE_OOS": "NO",
+  "SAFE_TO_RECONCILE_EXISTING_RESULTS": "NO",
+  "fmp": {
+    "bar_boundary_documented": false,
+    "conclusion": "CONSERVATIVE_STUDY_ASSUMPTION_NOT_PROVIDER_CONFIRMATION",
+    "documented_response_timestamp_field": "date",
+    "documented_response_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+    "endpoint": "/stable/historical-chart/1min",
+    "historical_delivery_availability_documented": false,
+    "provider_semantics_status": "UNVERIFIED",
+    "source_url": "https://site.financialmodelingprep.com/developer/docs/stable/intraday-1-min",
+    "study_rules": [
+      "timestamp_raw_plus_1_minute",
+      "timestamp_raw_plus_2_minutes"
+    ],
+    "timezone_documented": false
+  },
+  "historical_source_availability": {
+    "fmp": {
+      "evidence_artifact": "artifacts/api_audit/b2_replication_90_common_probe.json",
+      "evidence_sha256": "97c3b57707a953629ff57e485cde918e52ecdd1777a246e84072b5c4150771dc",
+      "historical_availability_status": "PASS_90_OF_90_SESSIONS",
+      "session_count": 90
+    },
+    "status": "PASS_SEPARATE_FROM_PIT_TIMESTAMP_SEMANTICS",
+    "unusual_whales": {
+      "evidence_artifact": "artifacts/api_audit/b2_replication_90_uw_metadata_probe.json",
+      "evidence_sha256": "244690e15054f518e5d12083e6b81d2bcbfcd8f5f009304f4127cbb5c1c4a3f3",
+      "full_tape_downloaded": false,
+      "historical_availability_status": "PASS_90_OF_90_FILE_METADATA",
+      "row_level_pit_claim": false,
+      "session_count": 90
+    }
+  },
+  "manifest_sha256": "b8bdd43a0842b1d3941151e3fb801dc86ec172a3d63bec619ed0bcac7b2857af",
+  "massive": {
+    "as_of_event_time_selection_supported": true,
+    "conclusion": "AS_OF_QUOTE_EVENT_TIME_DOES_NOT_PROVE_HISTORICAL_CUSTOMER_DELIVERY_LATENCY",
+    "endpoint": "/v3/quotes/{optionsTicker}",
+    "historic_rest_customer_delivery_latency_documented": false,
+    "sequence_number_documented_unique_per_ticker": true,
+    "sip_timestamp_documented_as_exchange_quote_received_by_sip": true,
+    "sip_timestamp_status": "EVENT_TIME_TECHNICAL_ONLY",
+    "sip_timestamp_unit": "nanoseconds_since_unix_epoch",
+    "source_url": "https://massive.com/docs/rest/options/quotes"
+  },
+  "no_provider_data_requests_performed": true,
+  "no_targets_or_predictive_artifacts_read": true,
+  "observed_on_utc": "2026-08-12",
+  "personal_paths_emitted": false,
+  "schema_version": "provider-timing-official-docs-audit-v1.0",
+  "secret_values_emitted": false,
+  "status": "PASS_LIMITATIONS_RECORDED_NO_PIT_SEMANTICS_UPGRADE",
+  "unusual_whales": {
+    "conclusion": "CREATED_AT_MUST_NOT_BE_CALLED_PUBLICATION_OR_RECEIPT_TIME",
+    "created_at_status": "PROXY_ONLY",
+    "executed_at_documented_for_current_day_option_trades": true,
+    "flow_alert_created_at_documentation": "GENERAL_UTC_TIMESTAMP_ONLY",
+    "flow_alerts_source_url": "https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.flow_alerts",
+    "full_tape_source_url": "https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.full_tape",
+    "historic_full_tape_created_at_publication_or_receipt_documented": false,
+    "option_trades_source_url": "https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.index"
+  }
+}

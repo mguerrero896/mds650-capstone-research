@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/provider-timing-official-docs-audit-v1.schema.json",
+  "title": "Provider Timing Official Documentation Audit v1",
+  "description": "A source-bound, target-blind record of what official provider documentation does and does not establish about timing semantics.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "SAFE_TO_OPEN_OR_EVALUATE_OOS",
+    "SAFE_TO_RECONCILE_EXISTING_RESULTS",
+    "fmp",
+    "historical_source_availability",
+    "manifest_sha256",
+    "massive",
+    "no_provider_data_requests_performed",
+    "no_targets_or_predictive_artifacts_read",
+    "observed_on_utc",
+    "personal_paths_emitted",
+    "schema_version",
+    "secret_values_emitted",
+    "status",
+    "unusual_whales"
+  ],
+  "properties": {
+    "SAFE_TO_OPEN_OR_EVALUATE_OOS": { "const": "NO" },
+    "SAFE_TO_RECONCILE_EXISTING_RESULTS": { "const": "NO" },
+    "manifest_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "no_provider_data_requests_performed": { "const": true },
+    "no_targets_or_predictive_artifacts_read": { "const": true },
+    "observed_on_utc": { "type": "string", "format": "date" },
+    "personal_paths_emitted": { "const": false },
+    "schema_version": { "const": "provider-timing-official-docs-audit-v1.0" },
+    "secret_values_emitted": { "const": false },
+    "status": { "const": "PASS_LIMITATIONS_RECORDED_NO_PIT_SEMANTICS_UPGRADE" },
+    "historical_source_availability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fmp", "status", "unusual_whales"],
+      "properties": {
+        "status": { "const": "PASS_SEPARATE_FROM_PIT_TIMESTAMP_SEMANTICS" },
+        "fmp": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["evidence_artifact", "evidence_sha256", "historical_availability_status", "session_count"],
+          "properties": {
+            "evidence_artifact": { "const": "artifacts/api_audit/b2_replication_90_common_probe.json" },
+            "evidence_sha256": { "const": "97c3b57707a953629ff57e485cde918e52ecdd1777a246e84072b5c4150771dc" },
+            "historical_availability_status": { "const": "PASS_90_OF_90_SESSIONS" },
+            "session_count": { "const": 90 }
+          }
+        },
+        "unusual_whales": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["evidence_artifact", "evidence_sha256", "full_tape_downloaded", "historical_availability_status", "row_level_pit_claim", "session_count"],
+          "properties": {
+            "evidence_artifact": { "const": "artifacts/api_audit/b2_replication_90_uw_metadata_probe.json" },
+            "evidence_sha256": { "const": "244690e15054f518e5d12083e6b81d2bcbfcd8f5f009304f4127cbb5c1c4a3f3" },
+            "full_tape_downloaded": { "const": false },
+            "historical_availability_status": { "const": "PASS_90_OF_90_FILE_METADATA" },
+            "row_level_pit_claim": { "const": false },
+            "session_count": { "const": 90 }
+          }
+        }
+      }
+    },
+    "fmp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bar_boundary_documented",
+        "conclusion",
+        "documented_response_timestamp_field",
+        "documented_response_timestamp_format",
+        "endpoint",
+        "historical_delivery_availability_documented",
+        "provider_semantics_status",
+        "source_url",
+        "study_rules",
+        "timezone_documented"
+      ],
+      "properties": {
+        "bar_boundary_documented": { "const": false },
+        "conclusion": { "const": "CONSERVATIVE_STUDY_ASSUMPTION_NOT_PROVIDER_CONFIRMATION" },
+        "documented_response_timestamp_field": { "const": "date" },
+        "documented_response_timestamp_format": { "const": "YYYY-MM-DD HH:mm:ss" },
+        "endpoint": { "const": "/stable/historical-chart/1min" },
+        "historical_delivery_availability_documented": { "const": false },
+        "provider_semantics_status": { "const": "UNVERIFIED" },
+        "source_url": { "const": "https://site.financialmodelingprep.com/developer/docs/stable/intraday-1-min" },
+        "study_rules": {
+          "type": "array",
+          "prefixItems": [
+            { "const": "timestamp_raw_plus_1_minute" },
+            { "const": "timestamp_raw_plus_2_minutes" }
+          ],
+          "items": false
+        },
+        "timezone_documented": { "const": false }
+      }
+    },
+    "unusual_whales": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "conclusion",
+        "created_at_status",
+        "executed_at_documented_for_current_day_option_trades",
+        "flow_alert_created_at_documentation",
+        "flow_alerts_source_url",
+        "full_tape_source_url",
+        "historic_full_tape_created_at_publication_or_receipt_documented",
+        "option_trades_source_url"
+      ],
+      "properties": {
+        "conclusion": { "const": "CREATED_AT_MUST_NOT_BE_CALLED_PUBLICATION_OR_RECEIPT_TIME" },
+        "created_at_status": { "const": "PROXY_ONLY" },
+        "executed_at_documented_for_current_day_option_trades": { "const": true },
+        "flow_alert_created_at_documentation": { "const": "GENERAL_UTC_TIMESTAMP_ONLY" },
+        "flow_alerts_source_url": { "const": "https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.flow_alerts" },
+        "full_tape_source_url": { "const": "https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.full_tape" },
+        "historic_full_tape_created_at_publication_or_receipt_documented": { "const": false },
+        "option_trades_source_url": { "const": "https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.index" }
+      }
+    },
+    "massive": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "as_of_event_time_selection_supported",
+        "conclusion",
+        "endpoint",
+        "historic_rest_customer_delivery_latency_documented",
+        "sequence_number_documented_unique_per_ticker",
+        "sip_timestamp_documented_as_exchange_quote_received_by_sip",
+        "sip_timestamp_status",
+        "sip_timestamp_unit",
+        "source_url"
+      ],
+      "properties": {
+        "as_of_event_time_selection_supported": { "const": true },
+        "conclusion": { "const": "AS_OF_QUOTE_EVENT_TIME_DOES_NOT_PROVE_HISTORICAL_CUSTOMER_DELIVERY_LATENCY" },
+        "endpoint": { "const": "/v3/quotes/{optionsTicker}" },
+        "historic_rest_customer_delivery_latency_documented": { "const": false },
+        "sequence_number_documented_unique_per_ticker": { "const": true },
+        "sip_timestamp_documented_as_exchange_quote_received_by_sip": { "const": true },
+        "sip_timestamp_status": { "const": "EVENT_TIME_TECHNICAL_ONLY" },
+        "sip_timestamp_unit": { "const": "nanoseconds_since_unix_epoch" },
+        "source_url": { "const": "https://massive.com/docs/rest/options/quotes" }
+      }
+    }
+  }
+}
