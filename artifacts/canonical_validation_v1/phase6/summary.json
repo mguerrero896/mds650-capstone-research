@@ -1,0 +1,29 @@
+{
+  "block": "phase6",
+  "causal_audit_sha256": "cf736ca53f8c1d63f1550ca0097d7e0c20a81df3c3a8ba83a1f083e5ff1c9641",
+  "information_sets": [
+    "B0v2",
+    "B1v2a",
+    "B2v2"
+  ],
+  "input_hashes": {
+    "common_panel.parquet": "8ba5f0c8e736d27fe78e1887cc4cfc37e2dfbd7f3b6546d1ddf1fe75a782da32",
+    "method_freeze.json": "e66a9e5206f29c9a877f31d4650944644eb6328a0d04bc13cf22ab377b2f0c9b",
+    "oos_predictions.parquet": "5f9b503d56e1a7449384d938627963617afbee4963b18dcdae8478b36ff7b24a",
+    "preregistration.json": "9495276cccd23e9f8525907df2bb9113ea343141827ea6bb181ab403f38247c5"
+  },
+  "logical_prediction_path": "MDS650_DATA_ROOT/canonical_validation_v1/phase6/predictions.parquet",
+  "model_roles": [
+    "gamma_glm_confirmatory",
+    "har_rv_fixed_extension",
+    "ridge_fixed_extension",
+    "elastic_net_fixed_extension",
+    "lightgbm_robustness"
+  ],
+  "personal_paths_emitted": false,
+  "prediction_rows": 584640,
+  "prediction_sha256": "45c773e2b0f7526f465691fd8199697391a87f0a06ee91b4ee5fdbfef9ef9335",
+  "schema_version": "1.0",
+  "secret_values_emitted": false,
+  "status": "PASS_CANONICAL_VALIDATION"
+}

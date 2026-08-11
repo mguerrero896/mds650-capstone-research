@@ -386,8 +386,13 @@ def forecast_canonical_fold(
         "rv30",
         *features,
     }
+    # Volatility regimes are assigned from each fold's training distribution to
+    # evaluation rows only.  They are a reporting stratum, not a training input;
+    # requiring the label on the earlier panel would falsely reject a valid
+    # target-blind training fold.
+    training_required = required - {"volatility_regime"}
     if (
-        not required <= set(training.columns)
+        not training_required <= set(training.columns)
         or not required <= set(testing.columns)
         or training.is_empty()
         or testing.is_empty()

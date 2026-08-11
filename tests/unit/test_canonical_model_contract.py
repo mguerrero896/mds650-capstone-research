@@ -83,6 +83,26 @@ def test_fixed_extensions_cannot_select_from_testing_rows() -> None:
     ) == {"alpha": 0.01, "l1_ratio": 0.5}
 
 
+def test_training_does_not_require_evaluation_only_volatility_regime() -> None:
+    """Training remains valid before a fold-specific evaluation stratum exists."""
+
+    training = _frame(datetime(2025, 1, 2, 14, 30, tzinfo=UTC), 120).drop(
+        "volatility_regime"
+    )
+    testing = _frame(datetime(2025, 1, 3, 14, 30, tzinfo=UTC), 10)
+
+    result = forecast_canonical_fold(
+        training,
+        testing,
+        role="ridge_fixed_extension",
+        information_set="B0v2",
+        phase6_frozen=_frozen_parameters(),
+        fold=1,
+    )
+
+    assert result.height == testing.height
+
+
 def test_canonical_fold_rejects_test_before_training() -> None:
     training = _frame(datetime(2025, 1, 3, 14, 30, tzinfo=UTC), 20)
     testing = _frame(datetime(2025, 1, 2, 14, 30, tzinfo=UTC), 5)

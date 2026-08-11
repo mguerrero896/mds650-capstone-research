@@ -155,7 +155,8 @@ At minimum, the finished package must contain:
 
 - `artifacts/canonical_validation_v1/causal_audit.parquet` and summary JSON;
 - `artifacts/canonical_validation_v1/origin_set_audit.json`;
-- `artifacts/canonical_validation_v1/predictions.parquet` and metrics/contrast/stability JSON;
+- `MDS650_DATA_ROOT/canonical_validation_v1/<block>/predictions.parquet` and repository
+  metrics/contrast/stability JSON;
 - `artifacts/canonical_validation_v1/model_variant_ledger.json`;
 - `artifacts/canonical_validation_v1/evidence_index.csv` and source snapshot hashes;
 - `docs/canonical_validation_conclusion.md`, `docs/canonical_claims_and_limitations.md`, and
@@ -165,7 +166,9 @@ At minimum, the finished package must contain:
 - versioned report, presentation, tables and figures.
 
 All published artifacts must be sanitized: no secrets, provider payloads, personal paths or
-commercial raw data are committed.
+commercial raw data are committed.  Derived forecast Parquet is stored under the configured
+Samsung-backed data root rather than the repository drive; repository manifests retain its
+relative logical location and SHA-256 only.
 
 ## Verification and completion rules
 
