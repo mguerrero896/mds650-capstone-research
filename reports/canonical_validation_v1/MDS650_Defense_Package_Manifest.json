@@ -1,0 +1,41 @@
+{
+  "all_signs_retained": true,
+  "claim_eligibility": {
+    "delta_b1v2": "MODEL_FAMILY_DEPENDENT",
+    "delta_b2v2": "MODEL_FAMILY_DEPENDENT"
+  },
+  "input_hashes": {
+    "artifacts/canonical_validation_v1/contrasts.json": "6340052e0149d54f0e1e92c9f1cd8d0dd419f64cffc883bf294814f046177a28",
+    "artifacts/canonical_validation_v1/report_manifest.json": "ece6415528462eea9398d0d1a046192add050dbed246c96d78761b8ff7ffb128"
+  },
+  "input_paths": [
+    "artifacts/canonical_validation_v1/report_manifest.json",
+    "artifacts/canonical_validation_v1/contrasts.json"
+  ],
+  "output_hashes": {
+    "MDS650_Canonical_RV30_Defense_Report.html": "ec12e5eedf76c2758b51d02827c4500471c13d6b8d93959f0f4826e29c73ff38",
+    "MDS650_Canonical_RV30_Defense_Report.md": "ceabacbd9e2f9329ab8802f0874cdc1953919b1998f5504e9b5a780649635843",
+    "MDS650_Canonical_RV30_Defense_Slides.md": "3889273f680d0a6f716115299c7d02f9fb578d4387bf05288fe365b1bc9aaefd",
+    "figures/canonical_design_flow.svg": "0a632ca67443a5ea66cca4791ce1c6ef63d6bd254fbaed7a29655471301af287",
+    "figures/canonical_qlike_contrasts.svg": "e44784d79cd35d96a457401bf9299bca2984155441ff894ae38b665ff58e2adf",
+    "tables/canonical_registered_contrasts.csv": "91c232103d946035edc149f6be71957e128490fddb6153a19dfff83e8bf2e790"
+  },
+  "output_paths": [
+    "MDS650_Canonical_RV30_Defense_Report.md",
+    "MDS650_Canonical_RV30_Defense_Report.html",
+    "MDS650_Canonical_RV30_Defense_Slides.md",
+    "tables/canonical_registered_contrasts.csv",
+    "figures/canonical_qlike_contrasts.svg",
+    "figures/canonical_design_flow.svg",
+    "MDS650_Defense_Package_Manifest.json"
+  ],
+  "personal_paths_emitted": false,
+  "registered_models": [
+    "gamma_glm_confirmatory",
+    "lightgbm_robustness"
+  ],
+  "schema_version": "1.0",
+  "secret_values_emitted": false,
+  "source_status": "PASS_CANONICAL_REPORT",
+  "status": "PASS_CANONICAL_DEFENSE_PACKAGE"
+}

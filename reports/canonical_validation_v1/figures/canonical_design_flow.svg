@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="220" viewBox="0 0 1120 220">
+<style>text{font-family:Arial,sans-serif;fill:#172033}.title{font-size:19px;font-weight:bold}.head{font-size:14px;font-weight:bold}.body{font-size:11px}</style>
+<rect width="100%" height="100%" fill="white"/>
+<text x="20" y="28" class="title">Canonical RV30 design: evidence before conclusion</text>
+<defs><marker id="arrow" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0, 9 3.5, 0 7" fill="#123c69"/></marker></defs>
+<rect x="22" y="78" width="180" height="90" rx="8" fill="#eef5fb" stroke="#123c69"/>
+<text x="34" y="108" class="head">PIT data contract</text>
+<text x="34" y="133" class="body">provider timestamps and availability</text>
+<line x1="206" y1="123" x2="238" y2="123" stroke="#123c69" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="242" y="78" width="180" height="90" rx="8" fill="#eef5fb" stroke="#123c69"/>
+<text x="254" y="108" class="head">Shared forecast origins</text>
+<text x="254" y="133" class="body">same B0/B1a/B2 origin IDs</text>
+<line x1="426" y1="123" x2="458" y2="123" stroke="#123c69" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="462" y="78" width="180" height="90" rx="8" fill="#eef5fb" stroke="#123c69"/>
+<text x="474" y="108" class="head">RV30 target</text>
+<text x="474" y="133" class="body">31 closes, 30 log returns</text>
+<line x1="646" y1="123" x2="678" y2="123" stroke="#123c69" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="682" y="78" width="180" height="90" rx="8" fill="#eef5fb" stroke="#123c69"/>
+<text x="694" y="108" class="head">Nested QLIKE tests</text>
+<text x="694" y="133" class="body">B0 -&gt; B1a -&gt; B2</text>
+<line x1="866" y1="123" x2="898" y2="123" stroke="#123c69" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="902" y="78" width="180" height="90" rx="8" fill="#eef5fb" stroke="#123c69"/>
+<text x="914" y="108" class="head">Bounded conclusion</text>
+<text x="914" y="133" class="body">daily bootstrap, Holm, frozen MDE</text>
+</svg>

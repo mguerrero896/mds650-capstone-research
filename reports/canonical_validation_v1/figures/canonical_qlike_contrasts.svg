@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="426" viewBox="0 0 1200 426">
+<style>text{font-family:Arial,sans-serif;fill:#172033}.title{font-size:20px;font-weight:bold}.label{font-size:12px}.value{font-size:12px;font-weight:bold}</style>
+<rect width="100%" height="100%" fill="white"/>
+<text x="24" y="32" class="title">Registered QLIKE contrasts: all signs retained</text>
+<text x="24" y="54" class="label">Positive bars favour the expanded information set; zero is the vertical reference.</text>
+<line x1="570" y1="68" x2="570" y2="408" stroke="#34495e" stroke-width="2"/>
+<text x="20" y="101" class="label">phase6 | gamma_glm_confirmatory | delta_b1v2</text>
+<rect x="570.00" y="86" width="52.92" height="20" fill="#167a49"/>
+<text x="578.00" y="101" class="value">+0.01180281</text>
+<text x="20" y="143" class="label">phase6 | gamma_glm_confirmatory | delta_b2v2</text>
+<rect x="570.00" y="128" width="19.90" height="20" fill="#167a49"/>
+<text x="578.00" y="143" class="value">+0.00443912</text>
+<text x="20" y="185" class="label">phase6 | lightgbm_robustness | delta_b1v2</text>
+<rect x="570.00" y="170" width="26.78" height="20" fill="#167a49"/>
+<text x="578.00" y="185" class="value">+0.00597230</text>
+<text x="20" y="227" class="label">phase6 | lightgbm_robustness | delta_b2v2</text>
+<rect x="570.00" y="212" width="7.62" height="20" fill="#167a49"/>
+<text x="578.00" y="227" class="value">+0.00170046</text>
+<text x="20" y="269" class="label">independent_replication | gamma_glm_confirmatory | delta_b1v2</text>
+<rect x="180.00" y="254" width="390.00" height="20" fill="#b34036"/>
+<text x="105.00" y="269" class="value">-0.08698073</text>
+<text x="20" y="311" class="label">independent_replication | gamma_glm_confirmatory | delta_b2v2</text>
+<rect x="570.00" y="296" width="147.58" height="20" fill="#167a49"/>
+<text x="578.00" y="311" class="value">+0.03291534</text>
+<text x="20" y="353" class="label">independent_replication | lightgbm_robustness | delta_b1v2</text>
+<rect x="570.00" y="338" width="24.83" height="20" fill="#167a49"/>
+<text x="578.00" y="353" class="value">+0.00553712</text>
+<text x="20" y="395" class="label">independent_replication | lightgbm_robustness | delta_b2v2</text>
+<rect x="561.92" y="380" width="8.08" height="20" fill="#b34036"/>
+<text x="486.92" y="395" class="value">-0.00180221</text>
+</svg>

@@ -3,8 +3,11 @@
 from __future__ import annotations
 
 import json
+import shutil
 import sys
 from pathlib import Path
+
+import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "artifacts" / "canonical_validation_v1"
@@ -73,3 +76,17 @@ def test_defense_package_rerun_is_hash_stable(tmp_path: Path) -> None:
 
     assert first["output_hashes"] == second["output_hashes"]
     assert second["status"] == "REUSED_HASH_VERIFIED"
+
+
+def test_defense_package_rejects_unsanitized_source_manifest(tmp_path: Path) -> None:
+    """A source that declares path or secret leakage cannot enter the package."""
+
+    source = tmp_path / "source"
+    shutil.copytree(SOURCE, source)
+    manifest_path = source / "report_manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["personal_paths_emitted"] = True
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+    with pytest.raises(RuntimeError, match="CANONICAL_DEFENSE_INPUT_INVALID"):
+        defense.build_defense_package(source, tmp_path / "output")
