@@ -1,0 +1,69 @@
+{
+  "block": "independent_replication",
+  "personal_paths_emitted": false,
+  "rows": [
+    {
+      "block": "independent_replication",
+      "expected_origin_count": 11664,
+      "fold": 1,
+      "model_role": "gamma_glm_confirmatory",
+      "shared_origin_count": 11664,
+      "status": "PASS",
+      "volatility_regime_cutpoints": {
+        "lower": 1.2179262842489837e-05,
+        "upper": 3.4554262001682057e-05
+      }
+    },
+    {
+      "block": "independent_replication",
+      "expected_origin_count": 11664,
+      "fold": 1,
+      "model_role": "har_rv_fixed_extension",
+      "shared_origin_count": 11664,
+      "status": "PASS",
+      "volatility_regime_cutpoints": {
+        "lower": 1.2179262842489837e-05,
+        "upper": 3.4554262001682057e-05
+      }
+    },
+    {
+      "block": "independent_replication",
+      "expected_origin_count": 11664,
+      "fold": 1,
+      "model_role": "ridge_fixed_extension",
+      "shared_origin_count": 11664,
+      "status": "PASS",
+      "volatility_regime_cutpoints": {
+        "lower": 1.2179262842489837e-05,
+        "upper": 3.4554262001682057e-05
+      }
+    },
+    {
+      "block": "independent_replication",
+      "expected_origin_count": 11664,
+      "fold": 1,
+      "model_role": "elastic_net_fixed_extension",
+      "shared_origin_count": 11664,
+      "status": "PASS",
+      "volatility_regime_cutpoints": {
+        "lower": 1.2179262842489837e-05,
+        "upper": 3.4554262001682057e-05
+      }
+    },
+    {
+      "block": "independent_replication",
+      "expected_origin_count": 11664,
+      "fold": 1,
+      "model_role": "lightgbm_robustness",
+      "shared_origin_count": 11664,
+      "status": "PASS",
+      "volatility_regime_cutpoints": {
+        "lower": 1.2179262842489837e-05,
+        "upper": 3.4554262001682057e-05
+      }
+    }
+  ],
+  "schema_version": "1.0",
+  "secret_values_emitted": false,
+  "status": "PASS"
+}
