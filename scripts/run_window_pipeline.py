@@ -13,6 +13,7 @@ import math
 import os
 import time
 from bisect import bisect_left, bisect_right
+from collections.abc import Mapping
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -20,7 +21,7 @@ from uuid import uuid4
 
 import httpx
 import polars as pl
-from exchange_calendars import get_calendar
+from exchange_calendars import get_calendar  # type: ignore[import-untyped]
 
 from mds650.asset_selection import AssetQuality, freeze_assets
 from mds650.config import ResearchSettings
@@ -227,10 +228,18 @@ def _write_pilot(
     }
     counts: dict[str, int] = {}
     for name, values in tables.items():
-        rows = [
-            value.model_dump(mode="json") if hasattr(value, "model_dump") else dict(value)
-            for value in values
-        ]
+        rows: list[dict[str, Any]] = []
+        for value in values:
+            model_dump = getattr(value, "model_dump", None)
+            if callable(model_dump):
+                dumped = model_dump(mode="json")
+                if not isinstance(dumped, dict):
+                    raise TypeError("WINDOW_PIPELINE_MODEL_DUMP_NOT_MAPPING")
+                rows.append(dumped)
+            elif isinstance(value, Mapping):
+                rows.append(dict(value))
+            else:
+                raise TypeError("WINDOW_PIPELINE_ROW_NOT_MAPPING")
         frame = pl.DataFrame(rows, strict=False)
         frame.write_parquet(output / f"{name}.parquet")
         counts[name] = frame.height

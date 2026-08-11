@@ -7,7 +7,7 @@ from datetime import date
 from pathlib import Path
 
 import httpx
-from exchange_calendars import get_calendar
+from exchange_calendars import get_calendar  # type: ignore[import-untyped]
 from run_window_pipeline import ASSETS, END, START, _request
 
 RUN_ID = "29db8e70-0686-4585-86d5-dfabc00295cf"

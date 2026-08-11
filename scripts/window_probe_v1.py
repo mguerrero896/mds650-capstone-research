@@ -21,7 +21,9 @@ import json
 import os
 import sys
 import time
+from collections.abc import Mapping
 from pathlib import Path
+from typing import Any
 
 import httpx
 
@@ -29,7 +31,7 @@ UTC = dt.UTC
 TODAY = dt.datetime.now(UTC).date()
 OUT_DIR = Path("artifacts/api_audit") / f"window_probe_{TODAY:%Y%m%d}"
 SLEEP_S = 0.35
-RECORDS: list[dict] = []
+RECORDS: list[dict[str, Any]] = []
 
 
 def _need(name: str) -> str:
@@ -40,7 +42,12 @@ def _need(name: str) -> str:
 
 
 def _get(
-    client: httpx.Client, provider: str, purpose: str, url: str, headers: dict, params: dict
+    client: httpx.Client,
+    provider: str,
+    purpose: str,
+    url: str,
+    headers: Mapping[str, str],
+    params: Mapping[str, Any],
 ) -> tuple[int, int]:
     """One bounded GET. Returns (status, row_count). Records evidence, no secrets."""
     time.sleep(SLEEP_S)
@@ -86,7 +93,7 @@ def _get(
     return status, rows
 
 
-def probe_uw(client: httpx.Client, key: str) -> dict:
+def probe_uw(client: httpx.Client, key: str) -> dict[str, Any]:
     """Binary-search the oldest ENTITLED day for flow-alerts (403 boundary)."""
     headers = {"Authorization": f"Bearer {key}", "Accept": "application/json"}
     url = "https://api.unusualwhales.com/api/option-trades/flow-alerts"
@@ -123,7 +130,7 @@ def probe_uw(client: httpx.Client, key: str) -> dict:
     }
 
 
-def probe_fmp(client: httpx.Client, key: str) -> dict:
+def probe_fmp(client: httpx.Client, key: str) -> dict[str, Any]:
     """Find how far back 1-min bars return non-empty data (plan depth)."""
     headers = {"apikey": key}
     depths = [7, 30, 90, 180, 365, 730]
@@ -148,11 +155,11 @@ def probe_fmp(client: httpx.Client, key: str) -> dict:
     return {"per_depth": results, "deepest_nonempty_days": deepest_nonempty}
 
 
-def probe_massive(client: httpx.Client, key: str) -> dict:
+def probe_massive(client: httpx.Client, key: str) -> dict[str, Any]:
     """Spot-check deep options reference + quotes and 2015 stock minute bars."""
     headers = {"Authorization": f"Bearer {key}"}
     base = os.environ.get("MDS650_MASSIVE_BASE_URL", "https://api.massive.com")
-    out: dict = {}
+    out: dict[str, Any] = {}
     status, rows = _get(
         client,
         "massive",

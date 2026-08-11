@@ -55,7 +55,7 @@ select = ["E", "F", "I", "B", "UP", "SIM"]
 [tool.mypy]
 python_version = "3.12"
 strict = true
-packages = ["mds650"]
+files = ["src/mds650", "scripts"]
 mypy_path = "src"
 exclude = "(^|/)(tests|notebooks)/"
 

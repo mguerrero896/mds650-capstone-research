@@ -12,12 +12,12 @@ from __future__ import annotations
 # ruff: noqa: E501
 import hashlib
 import json
-from datetime import timedelta
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
 
-import exchange_calendars as xcals
+import exchange_calendars as xcals  # type: ignore[import-untyped]
 import polars as pl
 from phase4a_common import build_origin_id
 from phase4b_common import (
@@ -154,9 +154,19 @@ def _target_lookup(origins: pl.DataFrame, bars: pl.DataFrame) -> dict[str, dict[
         by_timestamp = {item["bar_timestamp_raw_utc"]: item for item in values}
         anchor_time = row["forecast_origin_utc"] - timedelta(minutes=1)
         anchor = by_timestamp.get(anchor_time)
-        future = [by_timestamp.get(anchor_time + timedelta(minutes=i)) for i in range(1, 31)]
-        valid = anchor is not None and all(item is not None for item in future)
-        rv = compute_realized_variance(float(anchor["close"]), [float(item["close"]) for item in future]) if valid else None
+        future = [
+            by_timestamp.get(anchor_time + timedelta(minutes=index))
+            for index in range(1, 31)
+        ]
+        future_rows = [item for item in future if item is not None]
+        valid = anchor is not None and len(future_rows) == 30
+        rv = (
+            compute_realized_variance(
+                float(anchor["close"]), [float(item["close"]) for item in future_rows]
+            )
+            if valid and anchor is not None
+            else None
+        )
         lookup[row["origin_id"]] = {
             "origin_id": row["origin_id"],
             "rv30": rv,
@@ -204,15 +214,23 @@ def _tail_returns(values: list[dict[str, Any]], count: int) -> list[float] | Non
 def build_b0_variants(origins: pl.DataFrame, bars: pl.DataFrame) -> tuple[pl.DataFrame, pl.DataFrame]:
     """Build +1 and +2 as-of B0 snapshots without changing targets/origins."""
     indexed: dict[tuple[str, str], list[dict[str, Any]]] = {}
-    for row in bars.iter_rows(named=True):
-        indexed.setdefault((row["asset"], str(row["session_date"])), []).append(row)
+    for bar_row in bars.iter_rows(named=True):
+        indexed.setdefault((bar_row["asset"], str(bar_row["session_date"])), []).append(bar_row)
     rows: list[dict[str, Any]] = []
     for origin_row in origins.iter_rows(named=True):
         origin = origin_row["forecast_origin_utc"]
         values = indexed.get((origin_row["asset"], origin_row["session_date"]), [])
         target = {key: origin_row[key] for key in ("rv30", "target_future_close_count", "target_price_count", "target_validity")}
-        row: dict[str, Any] = {**{key: origin_row[key] for key in ("origin_id", "asset", "session_date", "forecast_origin_utc", "sample_role")}, **target}
-        row["b0_session_minute"] = int((origin.astimezone(ET).hour - 9) * 60 + origin.astimezone(ET).minute - 30)
+        feature_row: dict[str, Any] = {
+            **{
+                key: origin_row[key]
+                for key in ("origin_id", "asset", "session_date", "forecast_origin_utc", "sample_role")
+            },
+            **target,
+        }
+        feature_row["b0_session_minute"] = int(
+            (origin.astimezone(ET).hour - 9) * 60 + origin.astimezone(ET).minute - 30
+        )
         for delay, prefix in ((1, "b0"), (2, "b0_plus2")):
             candidates = [item for item in values if item["bar_timestamp_raw_utc"] + timedelta(minutes=delay) <= origin]
             source = candidates[-1] if candidates else None
@@ -221,7 +239,7 @@ def build_b0_variants(origins: pl.DataFrame, bars: pl.DataFrame) -> tuple[pl.Dat
             prior = [item for item in values if source_ts is not None and item["bar_timestamp_raw_utc"] <= source_ts]
             rv5_returns = _tail_returns(prior, 5)
             rv30_returns = _tail_returns(prior, 30)
-            row.update(
+            feature_row.update(
                 {
                     f"{prefix}_spot": float(source["close"]) if source else None,
                     f"{prefix}_rv_5m_lag": sum(x * x for x in rv5_returns) if rv5_returns else None,
@@ -234,10 +252,10 @@ def build_b0_variants(origins: pl.DataFrame, bars: pl.DataFrame) -> tuple[pl.Dat
                     f"{prefix}_availability_valid": bool(available_at and available_at <= origin),
                 }
             )
-        row["b0_fmp_available_at_1m"] = row["b0_available_at_utc"]
-        row["b0_fmp_available_at_2m"] = row["b0_plus2_available_at_utc"]
-        row["b0_fmp_bar_availability"] = "CONSERVATIVE_RESEARCH_ASSUMPTION"
-        rows.append(row)
+        feature_row["b0_fmp_available_at_1m"] = feature_row["b0_available_at_utc"]
+        feature_row["b0_fmp_available_at_2m"] = feature_row["b0_plus2_available_at_utc"]
+        feature_row["b0_fmp_bar_availability"] = "CONSERVATIVE_RESEARCH_ASSUMPTION"
+        rows.append(feature_row)
     result = pl.DataFrame(rows, strict=False).sort("origin_id")
     common_columns = [
         "origin_id", "asset", "session_date", "forecast_origin_utc", "sample_role", "rv30",
@@ -625,6 +643,8 @@ def seal_holdout(origins: pl.DataFrame) -> dict[str, Any]:
     """Seal ten future XNYS sessions without reading their payloads."""
     calendar = xcals.get_calendar("XNYS")
     max_origin = origins["forecast_origin_utc"].max()
+    if not isinstance(max_origin, datetime):
+        raise RuntimeError("PROSPECTIVE_HOLDOUT_ORIGIN_TIMESTAMP_INVALID")
     seal_timestamp = max_origin + timedelta(seconds=1)
     start_date = seal_timestamp.astimezone(ET).date() + timedelta(days=1)
     sessions = calendar.sessions_in_range(start_date, start_date + timedelta(days=60))
@@ -677,7 +697,15 @@ def write_handoff(
         and int(b0_plus2["b0_plus2_availability_valid"].sum()) > 0
         and variant_target_hashes["plus1"] == variant_target_hashes["plus2"]
     )
-    window_pass = all(row["window_width_seconds"] == 300 for row in [{"window_width_seconds": b2_meta["window_width_seconds"]}]) and float(b2_panel.filter(pl.col("b2_cutoff_seconds") == 300)["b2_option_activity_present"].mean()) > 0
+    window_width_seconds = b2_meta.get("window_width_seconds")
+    activity_mean = b2_panel.filter(pl.col("b2_cutoff_seconds") == 300)[
+        "b2_option_activity_present"
+    ].mean()
+    if not isinstance(window_width_seconds, (int, float)) or not isinstance(
+        activity_mean, (int, float)
+    ):
+        raise RuntimeError("PHASE4B_WINDOW_METADATA_INVALID")
+    window_pass = window_width_seconds == 300 and float(activity_mean) > 0
     pilot_rows = matrices["b2"].filter(pl.col("sample_role") == "PILOT").height
     pilot_strict = pilot_rows == origins.filter(pl.col("sample_role") == "PILOT").height
     feature_pass = row_sets["identity_audit"]["exact_duplicate_predictors"] == []

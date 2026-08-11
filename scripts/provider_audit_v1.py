@@ -20,7 +20,7 @@ from uuid import uuid4
 from zoneinfo import ZoneInfo
 
 import httpx
-from exchange_calendars import get_calendar
+from exchange_calendars import get_calendar  # type: ignore[import-untyped]
 
 from mds650.config import ResearchSettings
 from mds650.storage import write_immutable_raw
@@ -380,6 +380,12 @@ def _run() -> dict[str, Any]:
     """Run all bounded probes and return the sanitized manifest."""
     settings = ResearchSettings()
     settings.require_provider_secrets()
+    if (
+        settings.fmp_api_key is None
+        or settings.unusualwhales_api_key is None
+        or settings.massive_api_key is None
+    ):
+        raise RuntimeError("PROVIDER_AUDIT_REQUIRED_SECRET_MISSING")
     keys = {
         "fmp": settings.fmp_api_key.get_secret_value(),
         "unusual_whales": settings.unusualwhales_api_key.get_secret_value(),
