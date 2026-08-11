@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/pit-reconciliation-gate-v21.schema.json",
+  "title": "PIT v2.1 Reconciliation Gate",
+  "description": "Target-blind consolidation of legacy UW v2.1 diagnostics, corrected UW v2.2 availability masking, FMP study conventions, and Massive technical reselection evidence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "PIT_V21",
+    "SAFE_TO_OPEN_OR_EVALUATE_OOS",
+    "SAFE_TO_RECONCILE_EXISTING_RESULTS",
+    "aggregation_sha256",
+    "blocking_reasons",
+    "corrected_uw_b2_availability_sidecar_v22",
+    "edge_conclusion",
+    "fmp_bar_availability",
+    "legacy_uw_b2_raw_diagnostic",
+    "massive_b1q_reselection",
+    "no_oos_or_predictive_artifacts_read",
+    "no_provider_http_requests_performed",
+    "no_targets_or_predictive_metrics_read",
+    "personal_paths_emitted",
+    "schema_version",
+    "secret_values_emitted",
+    "source_evidence",
+    "status"
+  ],
+  "properties": {
+    "PIT_V21": { "const": "CONDITIONAL_NOT_CLOSED" },
+    "SAFE_TO_OPEN_OR_EVALUATE_OOS": { "const": "NO" },
+    "SAFE_TO_RECONCILE_EXISTING_RESULTS": { "const": "NO" },
+    "aggregation_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "blocking_reasons": {
+      "type": "array",
+      "prefixItems": [
+        { "const": "SEALED_RESULTS_RECONCILIATION_PROHIBITED" },
+        { "const": "NEW_TARGET_BLIND_COMMON_PANEL_REQUIRED" }
+      ],
+      "minItems": 2,
+      "maxItems": 2,
+      "items": false
+    },
+    "corrected_uw_b2_availability_sidecar_v22": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "conclusion",
+        "corrected_panel_preparation",
+        "primary_excluded_row_count",
+        "status"
+      ],
+      "properties": {
+        "conclusion": { "const": "SIDE_CAR_MASK_READY_NEW_TARGET_BLIND_PANEL_REQUIRED" },
+        "corrected_panel_preparation": {
+          "const": "PASS_MASK_READY_REQUIRES_NEW_TARGET_BLIND_PANEL_BUILD"
+        },
+        "primary_excluded_row_count": { "const": 451 },
+        "status": { "const": "PASS_WITH_EXCLUSIONS" }
+      }
+    },
+    "edge_conclusion": { "const": "NOT_EVALUATED_TARGET_BLIND" },
+    "fmp_bar_availability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "baseline_study_rule",
+        "conclusion",
+        "provider_semantics_status",
+        "sensitivity_study_rule"
+      ],
+      "properties": {
+        "baseline_study_rule": { "const": "timestamp_raw_plus_1_minute" },
+        "conclusion": {
+          "const": "CONSERVATIVE_STUDY_ASSUMPTION_NOT_PROVIDER_CONFIRMATION"
+        },
+        "provider_semantics_status": { "const": "UNVERIFIED" },
+        "sensitivity_study_rule": { "const": "timestamp_raw_plus_2_minutes" }
+      }
+    },
+    "legacy_uw_b2_raw_diagnostic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["conclusion", "failure_reason", "source_gate", "status"],
+      "properties": {
+        "conclusion": { "const": "B2_ZERO_CANNOT_BE_INTERPRETED_AS_CONFIRMED_NO_ACTIVITY" },
+        "failure_reason": { "const": "ZERO_CONFOUNDED_BY_OBSERVED_CREATED_AT_DELAY" },
+        "source_gate": { "const": "FAIL" },
+        "status": { "const": "FAIL_ZERO_CONFOUNDED_BY_OBSERVED_CREATED_AT_DELAY" }
+      }
+    },
+    "massive_b1q_reselection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["conclusion", "selection_rule", "source_status", "status"],
+      "properties": {
+        "conclusion": {
+          "const": "TECHNICAL_CACHE_RESELECTION_PASS_NOT_HISTORICAL_DELIVERY_LATENCY_PROOF"
+        },
+        "selection_rule": {
+          "const": "last_quote_by_sip_timestamp_then_sequence_at_or_before_origin_minus_delay"
+        },
+        "source_status": { "const": "PASS" },
+        "status": { "const": "PASS_TECHNICAL_TARGET_FREE" }
+      }
+    },
+    "no_oos_or_predictive_artifacts_read": { "const": true },
+    "no_provider_http_requests_performed": { "const": true },
+    "no_targets_or_predictive_metrics_read": { "const": true },
+    "personal_paths_emitted": { "const": false },
+    "schema_version": { "const": "pit-reconciliation-gate-v2.1" },
+    "secret_values_emitted": { "const": false },
+    "source_evidence": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "prefixItems": [
+        { "$ref": "#/$defs/massiveEvidence" },
+        { "$ref": "#/$defs/uwEvidence" },
+        { "$ref": "#/$defs/pitContractEvidence" },
+        { "$ref": "#/$defs/ledgerEvidence" },
+        { "$ref": "#/$defs/v22ManifestEvidence" },
+        { "$ref": "#/$defs/v22ContractEvidence" }
+      ],
+      "items": false
+    },
+    "status": { "const": "CONDITIONAL_NOT_CLOSED" }
+  },
+  "$defs": {
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file_sha256", "logical_path", "role", "semantic_sha256"],
+      "properties": {
+        "file_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "logical_path": {
+          "type": "string",
+          "pattern": "^(artifacts|docs)/[A-Za-z0-9._/-]+$"
+        },
+        "role": { "type": "string", "pattern": "^[A-Z0-9_]+$" },
+        "semantic_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "massiveEvidence": {
+      "allOf": [
+        { "$ref": "#/$defs/evidence" },
+        {
+          "properties": {
+            "logical_path": {
+              "const": "artifacts/provider_timing_v21/massive_reselection_sensitivity_v21_recomputed_20260812.json"
+            },
+            "role": { "const": "MASSIVE_RESELECTION" },
+            "semantic_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+          }
+        }
+      ]
+    },
+    "uwEvidence": {
+      "allOf": [
+        { "$ref": "#/$defs/evidence" },
+        {
+          "properties": {
+            "logical_path": { "const": "artifacts/provider_timing_v21/uw_anomaly_evidence_v21.json" },
+            "role": { "const": "UW_ANOMALY" },
+            "semantic_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+          }
+        }
+      ]
+    },
+    "pitContractEvidence": {
+      "allOf": [
+        { "$ref": "#/$defs/evidence" },
+        {
+          "properties": {
+            "logical_path": { "const": "docs/provider_timing_pit_contract_v21.md" },
+            "role": { "const": "PIT_CONTRACT" },
+            "semantic_sha256": { "const": null }
+          }
+        }
+      ]
+    },
+    "ledgerEvidence": {
+      "allOf": [
+        { "$ref": "#/$defs/evidence" },
+        {
+          "properties": {
+            "logical_path": { "const": "docs/pit_v21_decision_ledger.md" },
+            "role": { "const": "PIT_DECISION_LEDGER" },
+            "semantic_sha256": { "const": null }
+          }
+        }
+      ]
+    },
+    "v22ManifestEvidence": {
+      "allOf": [
+        { "$ref": "#/$defs/evidence" },
+        {
+          "properties": {
+            "logical_path": {
+              "const": "artifacts/provider_timing_v22/b2_availability_manifest_v22.json"
+            },
+            "role": { "const": "UW_AVAILABILITY_MANIFEST_V22" },
+            "semantic_sha256": { "const": null }
+          }
+        }
+      ]
+    },
+    "v22ContractEvidence": {
+      "allOf": [
+        { "$ref": "#/$defs/evidence" },
+        {
+          "properties": {
+            "logical_path": { "const": "docs/provider_timing_pit_contract_v22.md" },
+            "role": { "const": "PIT_CONTRACT_V22" },
+            "semantic_sha256": { "const": null }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "PIT_V21": "CONDITIONAL_NOT_CLOSED",
+  "SAFE_TO_OPEN_OR_EVALUATE_OOS": "NO",
+  "SAFE_TO_RECONCILE_EXISTING_RESULTS": "NO",
+  "aggregation_sha256": "ba2afa8a5b6471561db0d363d47109393065f8a9f9c65e5a7f4c340abf303452",
+  "blocking_reasons": [
+    "SEALED_RESULTS_RECONCILIATION_PROHIBITED",
+    "NEW_TARGET_BLIND_COMMON_PANEL_REQUIRED"
+  ],
+  "corrected_uw_b2_availability_sidecar_v22": {
+    "conclusion": "SIDE_CAR_MASK_READY_NEW_TARGET_BLIND_PANEL_REQUIRED",
+    "corrected_panel_preparation": "PASS_MASK_READY_REQUIRES_NEW_TARGET_BLIND_PANEL_BUILD",
+    "primary_excluded_row_count": 451,
+    "status": "PASS_WITH_EXCLUSIONS"
+  },
+  "edge_conclusion": "NOT_EVALUATED_TARGET_BLIND",
+  "fmp_bar_availability": {
+    "baseline_study_rule": "timestamp_raw_plus_1_minute",
+    "conclusion": "CONSERVATIVE_STUDY_ASSUMPTION_NOT_PROVIDER_CONFIRMATION",
+    "provider_semantics_status": "UNVERIFIED",
+    "sensitivity_study_rule": "timestamp_raw_plus_2_minutes"
+  },
+  "legacy_uw_b2_raw_diagnostic": {
+    "conclusion": "B2_ZERO_CANNOT_BE_INTERPRETED_AS_CONFIRMED_NO_ACTIVITY",
+    "failure_reason": "ZERO_CONFOUNDED_BY_OBSERVED_CREATED_AT_DELAY",
+    "source_gate": "FAIL",
+    "status": "FAIL_ZERO_CONFOUNDED_BY_OBSERVED_CREATED_AT_DELAY"
+  },
+  "massive_b1q_reselection": {
+    "conclusion": "TECHNICAL_CACHE_RESELECTION_PASS_NOT_HISTORICAL_DELIVERY_LATENCY_PROOF",
+    "selection_rule": "last_quote_by_sip_timestamp_then_sequence_at_or_before_origin_minus_delay",
+    "source_status": "PASS",
+    "status": "PASS_TECHNICAL_TARGET_FREE"
+  },
+  "no_oos_or_predictive_artifacts_read": true,
+  "no_provider_http_requests_performed": true,
+  "no_targets_or_predictive_metrics_read": true,
+  "personal_paths_emitted": false,
+  "schema_version": "pit-reconciliation-gate-v2.1",
+  "secret_values_emitted": false,
+  "source_evidence": [
+    {
+      "file_sha256": "62c0e6cd3444482f0d79348bcc812a77c7c66b0bfb2c26e989c4b9a4ae9bac3c",
+      "logical_path": "artifacts/provider_timing_v21/massive_reselection_sensitivity_v21_recomputed_20260812.json",
+      "role": "MASSIVE_RESELECTION",
+      "semantic_sha256": "2379d54838885a1a19014c434595b07da9796a1c5996ea08806c1bbd87a44bcd"
+    },
+    {
+      "file_sha256": "6c4b863de9f866f3d7829ce5c7fdacbd3b916cdc5626e2311ebd46fb58b23be1",
+      "logical_path": "artifacts/provider_timing_v21/uw_anomaly_evidence_v21.json",
+      "role": "UW_ANOMALY",
+      "semantic_sha256": "83d0813dc6f9c809ca5c5eb247f737b13c7e4d8eefe3ac1fb5831fcd3889dc14"
+    },
+    {
+      "file_sha256": "986d464f25c0002ec06a447537a07c3f5579a9c21b993b563c8cffc4afa06e51",
+      "logical_path": "docs/provider_timing_pit_contract_v21.md",
+      "role": "PIT_CONTRACT",
+      "semantic_sha256": null
+    },
+    {
+      "file_sha256": "e0d8881e2e7deb981182fd9bf77e42886c2445706c1dce8c317e0288d27391a9",
+      "logical_path": "docs/pit_v21_decision_ledger.md",
+      "role": "PIT_DECISION_LEDGER",
+      "semantic_sha256": null
+    },
+    {
+      "file_sha256": "9e1717bb059e938b32280a0b11a26247fe19e5c3f934359fe04e79733f9ec585",
+      "logical_path": "artifacts/provider_timing_v22/b2_availability_manifest_v22.json",
+      "role": "UW_AVAILABILITY_MANIFEST_V22",
+      "semantic_sha256": null
+    },
+    {
+      "file_sha256": "d71b1b8908e110ab53382c2c2e50c7c86218007e56fd0aea7318c6de78e56d17",
+      "logical_path": "docs/provider_timing_pit_contract_v22.md",
+      "role": "PIT_CONTRACT_V22",
+      "semantic_sha256": null
+    }
+  ],
+  "status": "CONDITIONAL_NOT_CLOSED"
+}
