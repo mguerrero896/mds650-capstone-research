@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/target-blind-common-predictor-manifest-v24.schema.json",
+  "title": "MDS650 Target-Blind Common Predictor Manifest v2.4",
+  "description": "Fail-closed source-bound target-blind predictor identity with explicit B0/B1/B2 allowlists and null-only B2 exclusions.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "SAFE_TO_OPEN_OR_EVALUATE_OOS",
+    "builder_hashes",
+    "column_contract",
+    "input_provenance",
+    "manifest_sha256",
+    "model_fit_performed",
+    "no_target_or_metric_payload_read",
+    "output",
+    "output_locations",
+    "safe_to_reconcile_existing_results",
+    "schema_version",
+    "scope",
+    "source_commit",
+    "source_hashes",
+    "status",
+    "summary",
+    "timing_rules"
+  ],
+  "properties": {
+    "schema_version": { "const": "target-blind-common-predictor-manifest-v2.4" },
+    "status": { "const": "PASS_TARGET_BLIND_INPUTS_RECONCILIATION_REMAINS_BLOCKED" },
+    "scope": { "const": "offline_target_blind_predictor_construction_only" },
+    "no_target_or_metric_payload_read": { "const": true },
+    "model_fit_performed": { "const": false },
+    "safe_to_reconcile_existing_results": { "const": "NO" },
+    "SAFE_TO_OPEN_OR_EVALUATE_OOS": { "const": "NO" },
+    "manifest_sha256": { "$ref": "#/$defs/sha256" },
+    "input_provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "availability_sidecar_status",
+        "edge_conclusion",
+        "primary_excluded_row_count",
+        "reconciliation_gate_status"
+      ],
+      "properties": {
+        "availability_sidecar_status": { "const": "PASS_WITH_EXCLUSIONS" },
+        "edge_conclusion": { "const": "NOT_EVALUATED_TARGET_BLIND" },
+        "primary_excluded_row_count": { "const": 451 },
+        "reconciliation_gate_status": { "const": "CONDITIONAL_NOT_CLOSED" }
+      }
+    },
+    "timing_rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "b1q_primary_state",
+        "b2_created_at_rule",
+        "b2_primary_variant",
+        "fmp_primary_delay_minutes",
+        "fmp_sensitivity_delay_minutes",
+        "massive_reselection_sensitivity_cutoff_seconds"
+      ],
+      "properties": {
+        "fmp_primary_delay_minutes": { "const": 1 },
+        "fmp_sensitivity_delay_minutes": { "const": 2 },
+        "b1q_primary_state": { "const": "SIP_ASOF_ORIGIN_MAX_AGE_60S" },
+        "massive_reselection_sensitivity_cutoff_seconds": { "const": [60, 300] },
+        "b2_primary_variant": { "const": "primary_5m_60s" },
+        "b2_created_at_rule": {
+          "const": "OPERATIONAL_AVAILABILITY_PROXY_ORIGIN_MINUS_60_SECONDS"
+        }
+      }
+    },
+    "column_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "b0_allowlist",
+        "b1_allowlist",
+        "b2_allowlist",
+        "b2_exclusion_encoding",
+        "forbidden_input_path_guard",
+        "panel_allowlist"
+      ],
+      "properties": {
+        "b0_allowlist": { "$ref": "#/$defs/nonEmptyUniqueStrings" },
+        "b1_allowlist": { "$ref": "#/$defs/nonEmptyUniqueStrings" },
+        "b2_allowlist": { "$ref": "#/$defs/nonEmptyUniqueStrings" },
+        "panel_allowlist": { "$ref": "#/$defs/nonEmptyUniqueStrings" },
+        "forbidden_input_path_guard": { "const": "ENFORCED" },
+        "b2_exclusion_encoding": {
+          "const": "ALL_B2_FEATURES_NULL_WITH_ELIGIBILITY_FLAG_AND_REASON"
+        }
+      }
+    },
+    "source_hashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "b1q_source_sha256",
+        "b2_availability_manifest_v22_sha256",
+        "b2_availability_sidecar_sha256",
+        "b2_primary_inputs_sha256",
+        "fmp_bars_sha256",
+        "massive_reselection_recomputed_v21_sha256",
+        "origins_sha256",
+        "pit_reconciliation_gate_v21_sha256"
+      ],
+      "properties": {
+        "origins_sha256": { "$ref": "#/$defs/sha256" },
+        "fmp_bars_sha256": { "$ref": "#/$defs/sha256" },
+        "b1q_source_sha256": { "$ref": "#/$defs/sha256" },
+        "b2_primary_inputs_sha256": { "$ref": "#/$defs/sha256" },
+        "b2_availability_sidecar_sha256": { "$ref": "#/$defs/sha256" },
+        "massive_reselection_recomputed_v21_sha256": { "$ref": "#/$defs/sha256" },
+        "b2_availability_manifest_v22_sha256": { "$ref": "#/$defs/sha256" },
+        "pit_reconciliation_gate_v21_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "builder_hashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "base_panel_module_sha256",
+        "panel_module_sha256",
+        "provenance_module_sha256",
+        "script_sha256"
+      ],
+      "properties": {
+        "script_sha256": { "$ref": "#/$defs/sha256" },
+        "panel_module_sha256": { "$ref": "#/$defs/sha256" },
+        "base_panel_module_sha256": { "$ref": "#/$defs/sha256" },
+        "provenance_module_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "common_complete_row_count",
+        "common_complete_sha256",
+        "panel_sha256",
+        "row_count"
+      ],
+      "properties": {
+        "panel_sha256": { "$ref": "#/$defs/sha256" },
+        "common_complete_sha256": { "$ref": "#/$defs/sha256" },
+        "row_count": { "type": "integer", "minimum": 1 },
+        "common_complete_row_count": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "completion_counts",
+        "completion_rates",
+        "model_fit_performed",
+        "no_target_or_metric_payload_read",
+        "row_count",
+        "schema_version",
+        "scope",
+        "status"
+      ],
+      "properties": {
+        "completion_counts": { "type": "object" },
+        "completion_rates": { "type": "object" },
+        "model_fit_performed": { "const": false },
+        "no_target_or_metric_payload_read": { "const": true },
+        "row_count": { "type": "integer", "minimum": 1 },
+        "schema_version": { "const": "target-blind-common-predictor-panel-v2.4" },
+        "scope": { "const": "offline_target_blind_predictor_construction_only" },
+        "status": { "const": "PASS_TARGET_BLIND_INPUTS_RECONCILIATION_REMAINS_BLOCKED" }
+      }
+    },
+    "source_commit": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "output_locations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["common_complete", "panel"],
+      "properties": {
+        "panel": { "type": "string", "pattern": "^D:/MDS650/" },
+        "common_complete": { "type": "string", "pattern": "^D:/MDS650/" }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "nonEmptyUniqueStrings": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}
