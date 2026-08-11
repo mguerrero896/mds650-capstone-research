@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "uw-anomaly-evidence-v2.1",
+  "title": "MDS650 UW anomaly evidence v2.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "scope",
+    "no_provider_http_requests_performed",
+    "no_targets_or_predictive_metrics_read",
+    "no_model_or_oos_artifacts_read",
+    "session_dates",
+    "raw_assets",
+    "canonical_variants",
+    "source_incidents",
+    "canonical_rows",
+    "activity_availability_gate",
+    "activity_availability_gate_reasons",
+    "artifact_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "uw-anomaly-evidence-v2.1"},
+    "scope": {"const": "offline_existing_full_tape_timestamps_and_canonical_b2_only"},
+    "no_provider_http_requests_performed": {"const": true},
+    "no_targets_or_predictive_metrics_read": {"const": true},
+    "no_model_or_oos_artifacts_read": {"const": true},
+    "session_dates": {"type": "array", "items": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"}, "uniqueItems": true},
+    "raw_assets": {"type": "array", "items": {"type": "string", "pattern": "^[A-Z0-9._-]+$"}, "uniqueItems": true},
+    "canonical_variants": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9_]+$"}, "uniqueItems": true},
+    "source_incidents": {"type": "array", "items": {"$ref": "#/$defs/source_incident"}},
+    "canonical_rows": {"type": "array", "items": {"$ref": "#/$defs/canonical_row"}},
+    "activity_availability_gate": {"enum": ["PASS", "FAIL"]},
+    "activity_availability_gate_reasons": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "artifact_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "$defs": {
+    "source_incident": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["session_date", "asset", "source_partition_ref", "source_status", "source_temporal_state", "provider_cause_status", "source_row_count", "timestamp_schema", "timestamp_unit", "valid_timestamp_pair_count", "negative_lag_count", "lag_seconds_min", "lag_seconds_p50", "lag_seconds_p95", "lag_seconds_p99", "lag_seconds_max", "lag_over_300_seconds_count", "min_created_at_utc", "regular_session_close_utc", "source_metadata_sha256", "source_incident_sha256"],
+      "properties": {
+        "session_date": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+        "asset": {"type": "string", "pattern": "^[A-Z0-9._-]+$"},
+        "source_partition_ref": {"type": "string", "pattern": "^date=[0-9]{4}-[0-9]{2}-[0-9]{2}/asset=[A-Z0-9._-]+/events\\.parquet$"},
+        "source_status": {"enum": ["SOURCE_AVAILABLE", "SOURCE_UNAVAILABLE", "SOURCE_EMPTY", "SOURCE_INVALID"]},
+        "source_temporal_state": {"enum": ["SOURCE_UNAVAILABLE", "SOURCE_EMPTY", "SOURCE_INVALID", "SOURCE_AVAILABLE_NO_DELAY_TAIL_OBSERVED", "LONG_CREATED_AT_DELAY_TAIL_OBSERVED", "SESSION_WIDE_CREATED_AT_DELAY_OBSERVED"]},
+        "provider_cause_status": {"const": "UNRESOLVED_OBSERVED_TIMING_ONLY"},
+        "source_row_count": {"type": "integer", "minimum": 0},
+        "timestamp_schema": {"type": ["string", "null"]},
+        "timestamp_unit": {"type": ["string", "null"]},
+        "valid_timestamp_pair_count": {"type": "integer", "minimum": 0},
+        "negative_lag_count": {"type": "integer", "minimum": 0},
+        "lag_seconds_min": {"type": ["number", "null"]},
+        "lag_seconds_p50": {"type": ["number", "null"]},
+        "lag_seconds_p95": {"type": ["number", "null"]},
+        "lag_seconds_p99": {"type": ["number", "null"]},
+        "lag_seconds_max": {"type": ["number", "null"]},
+        "lag_over_300_seconds_count": {"type": "integer", "minimum": 0},
+        "min_created_at_utc": {"type": ["string", "null"]},
+        "regular_session_close_utc": {"type": ["string", "null"]},
+        "source_metadata_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "source_incident_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "canonical_row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canonical_variant", "session_date", "asset", "canonical_matrix_ref", "row_presence_status", "canonical_value_coding", "availability_indicator_status", "canonical_file_sha256", "observed_origin_count", "canonical_row_coding_counts", "source_status", "source_temporal_state", "zero_interpretation", "zero_can_mean_no_activity", "canonical_row_sha256"],
+      "properties": {
+        "canonical_variant": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "session_date": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+        "asset": {"type": "string", "pattern": "^[A-Z0-9._-]+$"},
+        "canonical_matrix_ref": {"type": "string", "pattern": "^[a-z0-9_]+/date=[0-9]{4}-[0-9]{2}-[0-9]{2}\\.parquet$"},
+        "row_presence_status": {"enum": ["PRESENT", "MISSING", "EXCLUDED"]},
+        "canonical_value_coding": {"enum": ["ZERO", "MISSING", "EXCLUDED", "NONZERO", "MIXED"]},
+        "availability_indicator_status": {"enum": ["INDICATOR_PRESENT", "INDICATOR_ABSENT"]},
+        "canonical_file_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "observed_origin_count": {"type": "integer", "minimum": 0},
+        "canonical_row_coding_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["ZERO", "MISSING", "EXCLUDED", "NONZERO"],
+          "properties": {
+            "ZERO": {"type": "integer", "minimum": 0},
+            "MISSING": {"type": "integer", "minimum": 0},
+            "EXCLUDED": {"type": "integer", "minimum": 0},
+            "NONZERO": {"type": "integer", "minimum": 0}
+          }
+        },
+        "source_status": {"enum": ["SOURCE_AVAILABLE", "SOURCE_UNAVAILABLE", "SOURCE_EMPTY", "SOURCE_INVALID"]},
+        "source_temporal_state": {"enum": ["SOURCE_UNAVAILABLE", "SOURCE_EMPTY", "SOURCE_INVALID", "SOURCE_AVAILABLE_NO_DELAY_TAIL_OBSERVED", "LONG_CREATED_AT_DELAY_TAIL_OBSERVED", "SESSION_WIDE_CREATED_AT_DELAY_OBSERVED"]},
+        "zero_interpretation": {"enum": ["NOT_APPLICABLE", "SOURCE_UNAVAILABLE", "CONFOUNDED_BY_DELAY", "ZERO_NOT_PROVIDER_ACTIVITY_CONFIRMATION"]},
+        "zero_can_mean_no_activity": {"const": false},
+        "canonical_row_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    }
+  }
+}
