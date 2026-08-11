@@ -12,10 +12,17 @@ interactive terminal. The document was not intentionally opened, parsed,
 copied or used for analysis; nevertheless, the terminal output constitutes an
 OOS access event for the operator context that issued the search.
 
+A second overly broad source allow-list search later rendered result-bearing
+strings from an evaluation/reporting script. It was stopped immediately. No
+numeric result, interpretation, model fit, metric calculation, provider call or
+decision was made from that output. This is a second OOS-access event for the
+same operator context and does not weaken the containment requirement.
+
 ## Containment
 
 - No model, QLIKE calculation, forecast evaluation, tuning, result
-  reconciliation or provider request was run after the event.
+  reconciliation or provider request was run by the affected operator after
+  either event.
 - The affected operator must not use, repeat, interpret or act on the rendered
   material.
 - The current target-blind artefacts remain evidence of their own bounded build
