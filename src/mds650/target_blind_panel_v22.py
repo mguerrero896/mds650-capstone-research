@@ -31,8 +31,75 @@ KEY_COLUMNS: tuple[str, ...] = (
     "session_date",
     "forecast_origin_utc",
 )
-_FORBIDDEN_EXACT = frozenset({"rv30", "qlike", "target", "prediction", "outcome"})
-_FORBIDDEN_PREFIXES = ("rv30_", "target_", "prediction_", "outcome_")
+_FORBIDDEN_EXACT = frozenset(
+    {
+        "rv30",
+        "qlike",
+        "target",
+        "prediction",
+        "outcome",
+        "forecast",
+        "loss",
+        "metric",
+        "evaluation",
+        "model",
+        "label",
+        "score",
+    }
+)
+_FORBIDDEN_PREFIXES = (
+    "rv30_",
+    "target_",
+    "prediction_",
+    "outcome_",
+    "loss_",
+    "metric_",
+    "evaluation_",
+    "model_",
+    "label_",
+    "score_",
+)
+_FORBIDDEN_SUFFIXES = (
+    "_rv30",
+    "_target",
+    "_prediction",
+    "_outcome",
+    "_qlike",
+    "_loss",
+    "_metric",
+    "_evaluation",
+    "_model",
+    "_label",
+    "_score",
+)
+_SAFE_FORECAST_COLUMNS = frozenset({"forecast_origin_utc", "forecast_origin_ns"})
+_B0_PANEL_ADDITIONS: tuple[str, ...] = (
+    *B0V2_FEATURES,
+    "b0v2_max_predictor_available_at_utc",
+    "b0v2_predictor_missing_reason",
+)
+_B1_PANEL_ADDITIONS: tuple[str, ...] = (
+    "forecast_origin_ns",
+    "max_sip_timestamp_ns",
+    *B1V2A_FEATURES,
+    *B1V2B_FEATURES,
+    *B1V2C_FEATURES,
+    "b1v2a_complete",
+    "b1v2b_complete",
+    "b1v2c_complete",
+    "b1q_source_time_rule",
+    "b1v2_predictor_missing_reason",
+)
+_B2_PANEL_ADDITIONS: tuple[str, ...] = (
+    *B2V2_FEATURES,
+    "b2v2_complete",
+    "b2v2_cutoff_utc",
+    "b2v2_max_created_at_utc",
+    "b2v2_availability_status",
+    "b2v2_availability_eligible",
+    "b2v2_corrected_pit_complete",
+    "b2v2_predictor_missing_reason",
+)
 
 
 def build_target_blind_b0_v22(
@@ -426,6 +493,8 @@ def build_target_blind_common_predictor_panel_v22(
             "b1v2a_complete",
             "b1v2b_complete",
             "b1v2c_complete",
+            "b1q_source_time_rule",
+            "b1v2_predictor_missing_reason",
         ),
     )
     _require_columns(
@@ -442,6 +511,11 @@ def build_target_blind_common_predictor_panel_v22(
         ),
     )
     _assert_key_alignment({"origins": origins, "b0": b0, "b1": b1, "b2": b2})
+    if b2.filter(
+        ~pl.col("b2v2_availability_eligible").fill_null(False)
+        & pl.any_horizontal([pl.col(feature).is_not_null() for feature in B2V2_FEATURES])
+    ).height:
+        raise ValueError("TARGET_BLIND_V22_B2_EXCLUDED_FEATURE_VALUE")
     if b0.filter(
         pl.col("b0v2_max_predictor_available_at_utc").is_not_null()
         & (pl.col("b0v2_max_predictor_available_at_utc") > pl.col("forecast_origin_utc"))
@@ -470,8 +544,11 @@ def build_target_blind_common_predictor_panel_v22(
         raise ValueError("TARGET_BLIND_V22_B1_NESTED_INVARIANT_FAILURE")
 
     panel = origins.select(*KEY_COLUMNS)
-    for source in (b0, b1, b2):
-        additions = [column for column in source.columns if column not in KEY_COLUMNS]
+    for source, additions in (
+        (b0, _B0_PANEL_ADDITIONS),
+        (b1, _B1_PANEL_ADDITIONS),
+        (b2, _B2_PANEL_ADDITIONS),
+    ):
         panel = panel.join(
             source.select("origin_id", *additions),
             on="origin_id",
@@ -641,7 +718,16 @@ def _assert_target_blind_columns(frames: Mapping[str, pl.DataFrame]) -> None:
     for label, frame in frames.items():
         for column in frame.columns:
             normalised = column.lower()
-            if normalised in _FORBIDDEN_EXACT or normalised.startswith(_FORBIDDEN_PREFIXES):
+            forbidden_forecast = (
+                normalised.startswith("forecast_")
+                and normalised not in _SAFE_FORECAST_COLUMNS
+            )
+            if (
+                normalised in _FORBIDDEN_EXACT
+                or normalised.startswith(_FORBIDDEN_PREFIXES)
+                or normalised.endswith(_FORBIDDEN_SUFFIXES)
+                or forbidden_forecast
+            ):
                 raise ValueError(f"TARGET_BLIND_V22_FORBIDDEN_COLUMN:{label}:{column}")
 
 
