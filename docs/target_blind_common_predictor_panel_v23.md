@@ -47,7 +47,7 @@ commit identity that does not contain the code or dependency lock which
 generated it. Unrelated user-owned worktree changes, including Graphify, are
 outside this narrow builder-source check.
 
-## Precommit run retained but not accepted
+## Retained noncanonical runs
 
 `D:/MDS650/phase6/derived/target_blind_v23/` and
 `artifacts/target_blind_v23/` contain a preliminary local build made before the
@@ -58,11 +58,18 @@ not be overwritten, reconciled, or used for evaluation.
 
 The first acceptable replay is written only after a committed build under:
 
-`D:/MDS650/phase6/derived/target_blind_v23_committed_20260812/`
+`D:/MDS650/phase6/derived/target_blind_v23_sourcebound_20260812/`
 
 and its repository artefacts under:
 
-`artifacts/target_blind_v23_committed_20260812/`.
+`artifacts/target_blind_v23_sourcebound_20260812/`.
+
+`D:/MDS650/phase6/derived/target_blind_v23_committed_20260812/` and
+`artifacts/target_blind_v23_committed_20260812/` remain as an interim,
+source-committed replay. They are retained but are not canonical because their
+manifest used the repository `HEAD` at execution time rather than the stable
+commit that last changed the guarded runtime sources. The source-bound replay
+fixes that idempotence issue without overwriting either retained run.
 
 ## Verification
 

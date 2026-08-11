@@ -23,7 +23,7 @@ def test_v23_defaults_bind_promoted_evidence_records() -> None:
     )
     assert args.availability_manifest.name == "b2_availability_manifest_v22.json"
     assert args.reconciliation_gate.name == "pit_reconciliation_gate_v21_20260812.json"
-    assert args.output_root.as_posix().endswith("target_blind_v23_committed_20260812")
+    assert args.output_root.as_posix().endswith("target_blind_v23_sourcebound_20260812")
 
 
 def test_v23_writer_retains_identical_bytes_and_rejects_drift(tmp_path: Path) -> None:
@@ -81,6 +81,27 @@ def test_v23_committed_source_guard_covers_transitive_runtime_dependencies() -> 
     }
 
     assert expected <= set(builder._BUILDER_SOURCE_PATHS)
+
+
+def test_v23_source_commit_is_pinned_to_runtime_source_history(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Artefact commits cannot change the commit identity of an unchanged builder."""
+    calls: list[list[str]] = []
+
+    class Completed:
+        """Minimum completed-process record for the local Git history call."""
+
+        stdout = "a" * 40 + "\n"
+
+    def fake_run(args: list[str], **_: object) -> Completed:
+        calls.append(args)
+        return Completed()
+
+    monkeypatch.setattr(builder.subprocess, "run", fake_run)
+
+    assert builder._source_commit() == "a" * 40
+    assert calls == [["git", "log", "-1", "--format=%H", "--", *builder._BUILDER_SOURCE_PATHS]]
 
 
 def test_v23_manifest_schema_preserves_closed_evaluation_boundary(tmp_path: Path) -> None:

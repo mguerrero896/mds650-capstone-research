@@ -37,8 +37,8 @@ from mds650.target_blind_provenance_v23 import (  # noqa: E402
     validate_target_blind_provenance_v23,
 )
 
-DERIVED_ROOT = Path(r"D:\MDS650\phase6\derived\target_blind_v23_committed_20260812")
-ARTIFACT_ROOT = ROOT / "artifacts" / "target_blind_v23_committed_20260812"
+DERIVED_ROOT = Path(r"D:\MDS650\phase6\derived\target_blind_v23_sourcebound_20260812")
+ARTIFACT_ROOT = ROOT / "artifacts" / "target_blind_v23_sourcebound_20260812"
 MASSIVE_RESELECTION = (
     ROOT
     / "artifacts"
@@ -211,15 +211,23 @@ def _validate_output_manifest(manifest: Mapping[str, Any], schema_path: Path) ->
 
 
 def _source_commit() -> str:
-    """Return the local commit identity without contacting a remote."""
+    """Return the latest commit that changed a guarded runtime source.
+
+    Artifact-only commits can follow a successful build.  Pinning to ``HEAD``
+    would then make an otherwise byte-identical replay appear different even
+    though its executable sources and locked environment are unchanged.
+    """
     completed = subprocess.run(
-        ["git", "rev-parse", "HEAD"],
+        ["git", "log", "-1", "--format=%H", "--", *_BUILDER_SOURCE_PATHS],
         cwd=ROOT,
         check=True,
         capture_output=True,
         text=True,
     )
-    return completed.stdout.strip()
+    source_commit = completed.stdout.strip()
+    if len(source_commit) != 40:
+        raise ValueError("TARGET_BLIND_V23_BUILDER_SOURCE_HISTORY_UNAVAILABLE")
+    return source_commit
 
 
 def require_committed_builder_source() -> None:
