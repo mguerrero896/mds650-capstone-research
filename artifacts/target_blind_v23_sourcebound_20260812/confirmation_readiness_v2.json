@@ -1,0 +1,37 @@
+{
+  "bound_artifact_integrity": {
+    "availability_sidecar_sha256_observed": "de3951a0dca73632c8fcbe0b92899c045d7096bf3eed81cf55f958f1009892de",
+    "common_complete_sha256_observed": "5acc720cd873784c178e2444385cfc221cfdbf36b4510e090afd3885febae085",
+    "failure_codes": [],
+    "panel_manifest_sha256_observed": "803ec776afe24d6550c5acc85e971e8a812e4d187e3ccc13c3d35eab915914f8",
+    "panel_sha256_observed": "e0a119aa34754ae8a2fdb58805ee5b356f74a9d830f21d16f18a436f83e13a0f",
+    "status": "PASS"
+  },
+  "common_subset_validation": {
+    "common_complete_row_count": 62266,
+    "failure_codes": [],
+    "panel_row_count": 77328,
+    "status": "PASS"
+  },
+  "model_fit_performed": false,
+  "no_target_or_metric_payload_read": true,
+  "provider_timing_boundary": {
+    "failure_codes": [],
+    "provider_docs_audit_sha256": "b8bdd43a0842b1d3941151e3fb801dc86ec172a3d63bec619ed0bcac7b2857af",
+    "status": "PASS_LIMITATIONS_RETAINED"
+  },
+  "readiness_sha256": "368c9dc4c4ec6c5c0e196c9ab78ff0edd0cd37ecf060e57bfd891817ece453ba",
+  "ready_for_successor_method_freeze": "YES",
+  "required_before_any_oos_access": [
+    "successor_method_freeze_bound_to_this_v2_readiness_snapshot",
+    "independent_provider_evidence_or_prospectively_operated_receipt_logger",
+    "zero_oos_read_access_ledger_at_method_freeze",
+    "explicit_human_authorization_for_one_oos_access"
+  ],
+  "safe_to_acquire_new_sample": "NO",
+  "safe_to_open_or_evaluate_oos": "NO",
+  "safe_to_reconcile_existing_results": "NO",
+  "schema_version": "confirmation-readiness-v2.0",
+  "scope": "offline_source_bound_target_blind_readiness_only",
+  "status": "PASS_SOURCE_BOUND_METHOD_FREEZE_PREPARATION"
+}

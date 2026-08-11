@@ -236,3 +236,30 @@ SAFE_TO_RECONCILE_EXISTING_RESULTS=NO
 SAFE_TO_OPEN_OR_EVALUATE_OOS=NO
 MODEL_FIT_PERFORMED=NO
 ```
+
+## Decision 43 — source-bound readiness v2 prepares method freeze only
+
+**Status:** accepted target-blind operational readiness; no scientific outcome
+or timing-semantics upgrade.
+
+**Evidence:**
+`artifacts/target_blind_v23_sourcebound_20260812/confirmation_readiness_v2.json`,
+`docs/confirmation_readiness_v2_sourcebound_20260812.md` and
+`specs/001-pit-options-rv30/contracts/confirmation-readiness-v2.schema.json`.
+
+**Decision:** the v2.3 panel, complete subset, B2 availability sidecar and v3
+preregistration are internally source-bound. This supports preparation of a
+successor method freeze but does not reconcile any sealed legacy result.
+
+**Consequence:** FMP and UW historical source availability is recognized
+separately from the unresolved PIT timestamp semantics. Keep all three safety
+gates closed until a future method freeze and the independently required timing
+evidence are complete.
+
+```text
+READY_FOR_SUCCESSOR_METHOD_FREEZE=YES
+SAFE_TO_RECONCILE_EXISTING_RESULTS=NO
+SAFE_TO_OPEN_OR_EVALUATE_OOS=NO
+SAFE_TO_ACQUIRE_NEW_SAMPLE=NO
+MODEL_FIT_PERFORMED=NO
+```
