@@ -1,0 +1,128 @@
+{
+  "bound_panel": {
+    "builder_hashes": {
+      "panel_module_sha256": "c9455b7d4753a4c346813de3fbf94304f6e43c4c4c723752d310fcaabe2f7389",
+      "provenance_module_sha256": "92ebde3203bf85d27b790ce0b56a8080abd77902fe67bd1dea12f1edb7540eae",
+      "script_sha256": "d2082d9c0a106f762a99b3dd9b640fd7f2af9b966fecc1121b28c1f039c63c18"
+    },
+    "common_complete_row_count": 62266,
+    "common_complete_sha256": "5acc720cd873784c178e2444385cfc221cfdbf36b4510e090afd3885febae085",
+    "input_provenance": {
+      "availability_sidecar_status": "PASS_WITH_EXCLUSIONS",
+      "edge_conclusion": "NOT_EVALUATED_TARGET_BLIND",
+      "primary_excluded_row_count": 451,
+      "reconciliation_gate_status": "CONDITIONAL_NOT_CLOSED"
+    },
+    "panel_builder_source_commit": "95f0fa15d7b4e26b22f9b1b35d43070e5bf99806",
+    "panel_manifest_sha256": "803ec776afe24d6550c5acc85e971e8a812e4d187e3ccc13c3d35eab915914f8",
+    "panel_sha256": "e0a119aa34754ae8a2fdb58805ee5b356f74a9d830f21d16f18a436f83e13a0f",
+    "row_count": 77328,
+    "source_hashes": {
+      "b1q_source_sha256": "cb23c96203c410193219b73b5ac9985e0d5df18621ac5099551d415eab725856",
+      "b2_availability_manifest_v22_sha256": "9e1717bb059e938b32280a0b11a26247fe19e5c3f934359fe04e79733f9ec585",
+      "b2_availability_sidecar_sha256": "de3951a0dca73632c8fcbe0b92899c045d7096bf3eed81cf55f958f1009892de",
+      "b2_primary_inputs_sha256": "a3466e656ce6bc0397c2bed1f24472a5523f3ae8ffc986312f340d4b9f6c782b",
+      "fmp_bars_sha256": "07d1dcf4c87d206bb1ede55b82802467eb6af2d289d11c46ff12a2f9bb886a02",
+      "massive_reselection_recomputed_v21_sha256": "62c0e6cd3444482f0d79348bcc812a77c7c66b0bfb2c26e989c4b9a4ae9bac3c",
+      "origins_sha256": "636cc90d287aa634f7533d643d52dbbb2bea4c7295111163f9552944c7c1a880",
+      "pit_reconciliation_gate_v21_sha256": "046f867f6e79aa06eb6c923789e94661bea5686afd8ef110ef1e9e337bc6571c"
+    },
+    "timing_rules": {
+      "b1q_primary_state": "SIP_ASOF_ORIGIN_MAX_AGE_60S",
+      "b2_created_at_rule": "OPERATIONAL_AVAILABILITY_PROXY_ORIGIN_MINUS_60_SECONDS",
+      "b2_primary_variant": "primary_5m_60s",
+      "fmp_primary_delay_minutes": 1,
+      "fmp_sensitivity_delay_minutes": 2,
+      "massive_reselection_sensitivity_cutoff_seconds": [
+        60,
+        300
+      ]
+    }
+  },
+  "fixed_claim_boundary": {
+    "fmp": "TIMESTAMP_RAW_PLUS_1_MINUTE_CONSERVATIVE_STUDY_ASSUMPTION",
+    "massive": "SIP_ASOF_ORIGIN_PRIMARY_WITH_60_300_SECOND_RESELECTION_SENSITIVITIES",
+    "unusual_whales": "CREATED_AT_OPERATIONAL_AVAILABILITY_PROXY_NOT_PUBLICATION_OR_RECEIPT"
+  },
+  "forbidden_before_successor_method_freeze": [
+    "reconcile_or_read_pre_v22_sealed_results",
+    "inspect_or_read_oos_outcomes_or_predictions",
+    "fit_or_tune_a_model",
+    "compute_qlike_or_any_predictive_metric",
+    "change_assets_features_or_methods_for_a_favorable_sign",
+    "add_rl_or_deep_learning",
+    "modify_canonical_input_hashes"
+  ],
+  "information_sets": {
+    "B0": [
+      "b0v2_log_spot",
+      "b0v2_underlying_return_5m",
+      "b0v2_underlying_rv_5m",
+      "b0v2_underlying_rv_30m",
+      "b0v2_log_dollar_volume_5m",
+      "b0v2_spy_return_5m",
+      "b0v2_spy_rv_30m",
+      "b0v2_qqq_return_5m",
+      "b0v2_qqq_rv_30m",
+      "b0v2_session_sine",
+      "b0v2_session_cosine",
+      "b0v2_asset_identity"
+    ],
+    "B1a_addition": [
+      "b1v2_atm_iv_30_60_dte",
+      "b1v2_atm_iv_change_5m",
+      "b1v2_atm_iv_change_30m"
+    ],
+    "B1b_addition": [
+      "b1v2_skew_symmetric_moneyness",
+      "b1v2_skew_change_30m"
+    ],
+    "B1c_addition": [
+      "b1v2_term_short_to_medium",
+      "b1v2_term_medium_to_long",
+      "b1v2_term_short_to_medium_change_30m",
+      "b1v2_term_medium_to_long_change_30m"
+    ],
+    "B2_addition": [
+      "b2v2_z_log_trade_count",
+      "b2v2_z_unique_contract_share",
+      "b2v2_z_log_mean_trade_premium",
+      "b2v2_z_log_max_trade_premium",
+      "b2v2_deviation_call_put_premium_imbalance",
+      "b2v2_deviation_execution_side_premium_imbalance",
+      "b2v2_z_repeated_contract_premium_share",
+      "b2v2_z_strike_concentration",
+      "b2v2_z_expiry_concentration"
+    ]
+  },
+  "method_template_v22_preregistration_sha256": "8de28f3dbbb355751cad599d639346c6f773f6b76bdc141258481756a5930500",
+  "method_template_v22_sha256": "a8d536fd342156847cc6df8721a3a196d586abd24a0647319388c7ac769bbaf0",
+  "method_template_v22_source_commit": "9f9446b5e44db86c06aebf42e30dace9b06dd446",
+  "model_fit_performed": false,
+  "no_target_or_metric_payload_read": true,
+  "preregistration_sha256": "8ca462bd6624426233be339f0e08e40fedfcce74fa6f50c41aaec01e499dce08",
+  "purpose": "bind_source_bound_target_blind_inputs_before_successor_method_freeze",
+  "required_before_any_oos_access": [
+    "validate_bound_panel_and_source_hashes",
+    "verify_zero_oos_reads_at_method_freeze",
+    "freeze_temporal_splits_estimands_uncertainty_and_multiplicity_without_outcomes",
+    "document_literature_evidence_by_the_literature_owner",
+    "explicit_human_authorization_for_one_oos_access"
+  ],
+  "safe_to_open_or_evaluate_oos": "NO",
+  "safe_to_reconcile_existing_results": "NO",
+  "schema_version": "target-blind-confirmation-preregistration-v3.0",
+  "sealed_result_reconciliation": "BLOCKED",
+  "source_commit": "2803df81513410131fe89152885dfc7e73a358ee",
+  "status": "SEALED_SOURCE_BOUND_PRE_METHOD_FREEZE_NOT_AUTHORIZED_FOR_OOS",
+  "successor_method_freeze_minimum_contents": [
+    "bound_panel_sha256",
+    "temporal_train_validation_holdout_definition",
+    "B1a_primary_and_B1b_B1c_robustness_role",
+    "B0_B1a_and_B2_nested_contrasts",
+    "QLIKE_primary_MAE_RMSE_secondary",
+    "paired_day_cluster_bootstrap_and_Holm_policy",
+    "MDE_estimated_from_development_only",
+    "no_recalibration_no_feature_search_after_holdout_access"
+  ]
+}
