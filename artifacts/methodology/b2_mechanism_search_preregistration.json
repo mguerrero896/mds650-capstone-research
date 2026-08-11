@@ -1,0 +1,104 @@
+{
+  "base_models": [
+    "gamma_glm",
+    "har_rv",
+    "ridge",
+    "elastic_net",
+    "lightgbm"
+  ],
+  "inference": {
+    "bootstrap_repetitions": 10000,
+    "bootstrap_unit": "XNYS_SESSION_DATE_WITH_ALL_ASSETS",
+    "family": "all_base_models_x_all_mechanism_variants",
+    "mde": 0.005035098377136471,
+    "mde_source": "artifacts/phase6/method_freeze.json:training_mde.delta_b2v2",
+    "multiple_comparisons": "Holm",
+    "primary_metric": "QLIKE",
+    "seed": 650
+  },
+  "information_sets": {
+    "B1": [
+      "asset",
+      "b0_spot",
+      "b0_rv_5m_lag",
+      "b0_rv_30m_lag",
+      "b0_return_5m_lag",
+      "b0_volume_5m_lag",
+      "b0_session_minute",
+      "b1q_atm_iv"
+    ],
+    "B2_increment": [
+      "b2_log_trade_count",
+      "b2_unique_contract_share",
+      "b2_log_mean_trade_premium",
+      "b2_log_max_trade_premium",
+      "b2_call_put_premium_imbalance_scaled",
+      "b2_execution_side_premium_imbalance",
+      "b2_repeated_contract_premium_share",
+      "b2_strike_concentration",
+      "b2_expiry_concentration"
+    ]
+  },
+  "manifest_sha256": "f63b9221ea1060605dc0c9f3ac4f08381244ea8749b4b2af6b19f9a300890148",
+  "mechanism_variants": [
+    "global_ridge",
+    "asset_ridge",
+    "hour_ridge",
+    "regime_ridge",
+    "global_elastic_net"
+  ],
+  "oos_guard": {
+    "blocks_must_be_disjoint_from_all_observed_samples": true,
+    "minimum_sessions_per_block": 30,
+    "new_blocks_required_after_freeze": 2,
+    "oos_read_count": 0,
+    "selection_must_not_read_oos": true
+  },
+  "personal_paths_emitted": false,
+  "placebos_and_sensitivities": {
+    "placebo": "PERMUTE_CROSSFIT_RESIDUAL_TARGET_WITHIN_TRAINING_ONLY",
+    "primary_b2_window": "5_MINUTES_AS_IN_PANEL",
+    "temporal_sensitivity": "ONE_SESSION_LAGGED_B2_BY_ASSET_AND_ORIGIN_MINUTE"
+  },
+  "residual_contract": {
+    "b2_only_predictors": true,
+    "base_model_fit_is_expanding_and_purged": true,
+    "cross_fit_blocks": 3,
+    "cross_fit_minimum_prior_sessions": 20,
+    "elastic_net_alpha": 0.01,
+    "elastic_net_l1_ratio": 0.5,
+    "forecast_floor": 1e-12,
+    "ridge_alpha": 1.0,
+    "target": "cross_fitted_rv30_minus_b1_forecast"
+  },
+  "retention_rule": {
+    "at_least_four_of_six_asset_estimates_positive": true,
+    "at_most_one_asset_interval_wholly_negative": true,
+    "bootstrap_ci_low_above_zero": true,
+    "estimate_at_least_mde": true,
+    "holm_p_below_0_05": true,
+    "lag_sensitivity_not_wholly_negative": true,
+    "placebo_not_positive_and_significant": true,
+    "primary_estimate_positive": true
+  },
+  "schema_version": "b2-mechanism-search-preregistration-1.0",
+  "secret_values_emitted": false,
+  "selection_sample": {
+    "asset_universe": [
+      "AAPL",
+      "AMZN",
+      "META",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "date_end": "2026-07-17",
+    "date_start": "2026-03-24",
+    "independent_samples_read": false,
+    "independent_samples_used_for_selection": false,
+    "panel": "artifacts/phase5/common_development_80d.parquet",
+    "panel_sha256": "e5b9e04296d6dacd6c1321b760e1a253a47fcf67055a4e41b9d2c6a8b00c77da",
+    "session_count": 80
+  },
+  "status": "FROZEN_DEVELOPMENT_ONLY_BEFORE_MECHANISM_FIT"
+}

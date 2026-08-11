@@ -60,6 +60,31 @@ historical blocks, exceeds the MDE and survives Holm correction.  The evidence
 does **not** justify the stronger claim of a universal model-independent edge,
 because LightGBM deteriorates and some asset/regime slices are mixed.
 
+## Why Gamma and LightGBM diverge
+
+The development-only mechanism audit did not select a positive result after
+searching the residual learner. All 25 residual candidates were recorded, but
+zero passed the frozen retention rule; the signed residual corrections were
+unstable and repeatedly reached the forecast floor. The direct B2 protocol was
+therefore frozen before the new blocks, rather than choosing a residual variant
+after seeing them.
+
+The divergence is also consistent with measurable data and model diagnostics:
+
+- B2 feature redundancy reached absolute Pearson correlation 0.8651 and the
+  largest train/test PSI was 0.6204 for expiry concentration.
+- Global correlations with the B1 residual were small; the largest absolute
+  value was 0.0570 in the LightGBM diagnostic.
+- Development calibration showed much larger Gamma forecast-to-actual ratios
+  (median about 6.7 for B1 and 9.0 for residual variants) than LightGBM (median
+  about 0.89 for B1 and 1.01 for residual variants), while Gamma's QLIKE
+  contrast improved on the independent blocks and LightGBM's worsened.
+
+These observations support a model-dependent result: Gamma's smooth positive
+mean structure benefits from the B2 signal under this loss, while the shallow
+tree challenger is more sensitive to feature drift, redundancy and interaction
+thresholds. They do not prove a causal mechanism or authorize RL/DL.
+
 The nine B2 variables were constructed before any RV30 or QLIKE read for the
 new blocks, using `created_at <= forecast_origin - 60 seconds`; no balancing or
 future provider fields were used.  RL and deep neural networks were not used:

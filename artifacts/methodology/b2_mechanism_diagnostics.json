@@ -1,0 +1,9 @@
+{
+  "calibration_path": "artifacts/methodology/b2_mechanism_calibration.csv",
+  "diagnostics_path": "artifacts/methodology/b2_mechanism_diagnostics.json",
+  "drift_path": "artifacts/methodology/b2_mechanism_drift.csv",
+  "interactions_path": "artifacts/methodology/b2_mechanism_interactions.csv",
+  "max_abs_b2_pair_correlation": 0.8651225906828843,
+  "max_psi": 0.6204304032110908,
+  "redundancy_path": "artifacts/methodology/b2_mechanism_redundancy.csv"
+}
