@@ -147,9 +147,10 @@ def _log_linear_pipeline(
     model_name: str,
     parameters: Mapping[str, float | int],
     seed: int,
+    categorical_columns: Sequence[str],
 ) -> Pipeline:
     features = tuple(feature_columns)
-    categorical = [name for name in features if name == "asset"]
+    categorical = [name for name in features if name in set(categorical_columns)]
     numeric = [name for name in features if name not in categorical]
     if not numeric:
         raise ValueError("DEVELOPMENT_NUMERIC_FEATURES_REQUIRED")
@@ -184,12 +185,15 @@ def fit_development_candidate(
     parameters: Mapping[str, float | int],
     seed: int = SEED,
     forecast_floor: float = FORECAST_FLOOR,
+    categorical_columns: Sequence[str] | None = None,
 ) -> FittedDevelopmentCandidate:
     """Fit one candidate using training rows only.
 
     ``har_rv`` is a log-linear HAR-RV benchmark with the registered B0/B1/B2
     additions supplied as exogenous controls; it never sees the target column
     as a predictor. Ridge and Elastic Net use the same information-set columns.
+    ``categorical_columns`` defaults to the legacy ``asset`` role when present
+    and supports a differently named frozen asset identifier.
     """
     features = tuple(feature_columns)
     allowed_models = {"persistence", "har_rv", "ridge", "elastic_net", "gamma_glm", "lightgbm"}
@@ -200,6 +204,13 @@ def fit_development_candidate(
         raise ValueError(f"DEVELOPMENT_MODEL_COLUMNS_MISSING:{','.join(sorted(missing))}")
     if "rv30" in features or not features:
         raise ValueError("DEVELOPMENT_TARGET_IN_FEATURES_OR_EMPTY")
+    categorical = (
+        tuple(categorical_columns)
+        if categorical_columns is not None
+        else (("asset",) if "asset" in features else ())
+    )
+    if not set(categorical) <= set(features):
+        raise ValueError("DEVELOPMENT_CATEGORICAL_FEATURE_INVALID")
     target = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
     if not np.isfinite(target).all() or (target <= 0).any():
         raise ValueError("DEVELOPMENT_TARGET_INVALID")
@@ -214,7 +225,7 @@ def fit_development_candidate(
         fitted = fit_positive_model(
             frame,
             feature_columns=features,
-            categorical_columns=("asset",) if "asset" in features else (),
+            categorical_columns=categorical,
             target_column="rv30",
             role=role,
             parameters=parameters,
@@ -224,9 +235,11 @@ def fit_development_candidate(
         return FittedDevelopmentCandidate(model_name, features, fitted, False, forecast_floor)
     if model_name not in {"har_rv", "ridge", "elastic_net"}:
         raise ValueError(f"UNKNOWN_DEVELOPMENT_MODEL:{model_name}")
-    numeric = frame.select([name for name in features if name != "asset"]).to_numpy()
+    numeric = frame.select([name for name in features if name not in categorical]).to_numpy()
     if not np.isfinite(numeric).all():
         raise ValueError("DEVELOPMENT_FEATURE_INVALID")
-    estimator = _log_linear_pipeline(features, model_name, parameters, seed)
+    estimator = _log_linear_pipeline(
+        features, model_name, parameters, seed, categorical
+    )
     estimator.fit(frame.select(features).to_pandas(), np.log(np.maximum(target, forecast_floor)))
     return FittedDevelopmentCandidate(model_name, features, estimator, True, forecast_floor)
