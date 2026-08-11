@@ -157,3 +157,48 @@ SAFE_TO_RECONCILE_EXISTING_RESULTS=NO
 SAFE_TO_OPEN_OR_EVALUATE_OOS=NO
 MODEL_FIT_PERFORMED=NO
 ```
+
+## Decision 41 — claims-and-limitations ledger
+
+**Status:** accepted as a target-blind presentation boundary; not an
+evaluation, method-freeze or OOS authorization.
+
+**Evidence:**
+`artifacts/target_blind_v22/pit_v22_claim_ledger_v1.json`,
+`specs/001-pit-options-rv30/contracts/pit-v22-claim-ledger-v1.schema.json`
+and `docs/pit_v22_claims_and_limitations.md`.
+
+**Decision:** bind exactly eight pre-registered PIT and input-readiness claims
+to their source hashes, with fixed claim identifiers and a self-hash. The
+ledger must label the B1-versus-B0, B2-versus-B1 and stability questions as
+`NOT_EVALUATED_AFTER_PIT_CORRECTION` until a successor method freeze and a
+separate OOS-access authorization are complete.
+
+**Reason:** input coverage, operational readiness and conservative timing rules
+are useful evidence, but none establishes predictive improvement. A fixed,
+machine-readable presentation boundary prevents those categories from being
+silently relabelled as a positive or negative research result.
+
+**Permitted claims:**
+
+- The corrected B0/B1Q/B2 input panel and its availability exclusions have
+  target-blind evidence.
+- UW `created_at` remains proxy-only, while FMP `+1/+2` minutes and Massive
+  SIP selection remain explicitly conservative research rules.
+- Existing pre-v2.2 results cannot be reconciled with the corrected panel.
+
+**Forbidden claims:**
+
+- That the project has established a predictive or economic edge.
+- That a data-availability count proves an effect size, a QLIKE result or
+  cross-asset stability.
+- Any interpretation of sealed pre-v2.2 OOS material.
+
+**Consequences:**
+
+```text
+PIT_V22_CLAIM_LEDGER_STATUS=PASS_TARGET_BLIND_CLAIMS_NO_EVALUATION
+SAFE_TO_RECONCILE_EXISTING_RESULTS=NO
+SAFE_TO_OPEN_OR_EVALUATE_OOS=NO
+MODEL_FIT_PERFORMED=NO
+```

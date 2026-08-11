@@ -124,3 +124,16 @@ common-panel rebuild under the proxy-limited contract.
 **READY_FOR_RESULT_RECONCILIATION:** no.
 
 **READY_FOR_OOS_OR_MODEL_EVALUATION:** no.
+
+## PIT v2.2 claim-and-limitations ledger
+
+`artifacts/target_blind_v22/pit_v22_claim_ledger_v1.json` and
+`docs/pit_v22_claims_and_limitations.md` bind the only claims that the current
+target-blind evidence supports. The ledger is self-hashing and schema-bound;
+it permits exactly the eight registered claims and explicitly labels the three
+scientific questions as `NOT_EVALUATED_AFTER_PIT_CORRECTION`.
+
+It therefore prevents a readiness, coverage or timing statement from being
+presented as evidence that B1 improves B0, B2 improves B1, or that either
+effect is stable. Those questions remain closed until the separate successor
+method-freeze and explicit OOS-access gates are passed.

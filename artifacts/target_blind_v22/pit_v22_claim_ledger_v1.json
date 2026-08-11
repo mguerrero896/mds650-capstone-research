@@ -1,0 +1,222 @@
+{
+  "claim_ledger_sha256": "a7dcb76316c577e12cdcb085628922c85fa69b0a6b6819eb17fc4a9d05a3f25c",
+  "claims": [
+    {
+      "allowed_presentation_context": "data_engineering_and_pit_readiness",
+      "claim_id": "PITV22-C001",
+      "claim_text": "The corrected B0/B1Q/B2 predictor construction preserved 77328 forecast origins and 62266 common-complete origins across 6 outcome assets.",
+      "evidence": [
+        {
+          "path": "artifacts/target_blind_v22/target_blind_common_predictor_manifest_v22.json",
+          "sha256": "6403e1b121c694b4c02708ecb35edfa30f53f4c715fa4ba9a45596245a8fccc0"
+        },
+        {
+          "path": "artifacts/target_blind_v22/confirmation_readiness_v1.json",
+          "sha256": "87a1577fc5dd34a4bd57bed57140113322a7eb42e0f3a6c46879a6ff9a6ccfd0"
+        }
+      ],
+      "limitation": "These are input-coverage counts, not predictive metrics.",
+      "status": "SUPPORTED_TARGET_BLIND"
+    },
+    {
+      "allowed_presentation_context": "timing_assumption",
+      "claim_id": "PITV22-C002",
+      "claim_text": "Unusual Whales created_at is retained only as an operational availability proxy at the registered cutoff.",
+      "evidence": [
+        {
+          "path": "docs/provider_timing_pit_contract_v21.md",
+          "sha256": "986d464f25c0002ec06a447537a07c3f5579a9c21b993b563c8cffc4afa06e51"
+        },
+        {
+          "path": "docs/provider_timing_claim_matrix_v21.md",
+          "sha256": "75d2f353049e386b07d00a547e3697907e0fff27be63498df8b79f8867d04797"
+        }
+      ],
+      "limitation": "It is not provider-proven publication time or client receipt time.",
+      "status": "PROXY_ONLY"
+    },
+    {
+      "allowed_presentation_context": "timing_assumption",
+      "claim_id": "PITV22-C003",
+      "claim_text": "FMP plus one minute (with plus two minutes sensitivity) and Massive SIP as-of selection remain conservative study rules.",
+      "evidence": [
+        {
+          "path": "docs/provider_timing_pit_contract_v21.md",
+          "sha256": "986d464f25c0002ec06a447537a07c3f5579a9c21b993b563c8cffc4afa06e51"
+        },
+        {
+          "path": "docs/provider_timing_claim_matrix_v21.md",
+          "sha256": "75d2f353049e386b07d00a547e3697907e0fff27be63498df8b79f8867d04797"
+        }
+      ],
+      "limitation": "They do not prove provider or client-side message receipt latency.",
+      "status": "STUDY_CONSERVATIVE_RULE"
+    },
+    {
+      "allowed_presentation_context": "data_quality_and_pit_readiness",
+      "claim_id": "PITV22-C004",
+      "claim_text": "The primary B2 availability sidecar marks 451 of 77328 rows as excluded rather than treating delayed source records as zero activity.",
+      "evidence": [
+        {
+          "path": "artifacts/provider_timing_v22/b2_availability_manifest_v22.json",
+          "sha256": "9e1717bb059e938b32280a0b11a26247fe19e5c3f934359fe04e79733f9ec585"
+        },
+        {
+          "path": "artifacts/provider_timing_v22/b2_availability_summary_v22.json",
+          "sha256": "970c56523ac387c6d68840b0d8ac8a5444d010556a2189633f0a32c50e3dc9bf"
+        },
+        {
+          "path": "artifacts/target_blind_v22/target_blind_common_predictor_manifest_v22.json",
+          "sha256": "6403e1b121c694b4c02708ecb35edfa30f53f4c715fa4ba9a45596245a8fccc0"
+        }
+      ],
+      "limitation": "The correction changes eligibility only; it does not validate performance.",
+      "status": "SUPPORTED_TARGET_BLIND"
+    },
+    {
+      "allowed_presentation_context": "methodological_limitation",
+      "claim_id": "PITV22-C005",
+      "claim_text": "Pre-v2.2 sealed results are not eligible for reconciliation.",
+      "evidence": [
+        {
+          "path": "artifacts/target_blind_v22/target_blind_common_predictor_manifest_v22.json",
+          "sha256": "6403e1b121c694b4c02708ecb35edfa30f53f4c715fa4ba9a45596245a8fccc0"
+        },
+        {
+          "path": "artifacts/target_blind_v22/confirmation_readiness_v1.json",
+          "sha256": "87a1577fc5dd34a4bd57bed57140113322a7eb42e0f3a6c46879a6ff9a6ccfd0"
+        },
+        {
+          "path": "artifacts/provider_timing_v22/b2_availability_manifest_v22.json",
+          "sha256": "9e1717bb059e938b32280a0b11a26247fe19e5c3f934359fe04e79733f9ec585"
+        },
+        {
+          "path": "artifacts/provider_timing_v22/b2_availability_summary_v22.json",
+          "sha256": "970c56523ac387c6d68840b0d8ac8a5444d010556a2189633f0a32c50e3dc9bf"
+        },
+        {
+          "path": "artifacts/target_blind_v22/target_blind_common_predictor_manifest_v22.json",
+          "sha256": "6403e1b121c694b4c02708ecb35edfa30f53f4c715fa4ba9a45596245a8fccc0"
+        }
+      ],
+      "limitation": "No prior sign, metric or ranking may be carried into a corrected claim.",
+      "status": "BLOCKED_RECONCILIATION"
+    },
+    {
+      "allowed_presentation_context": "research_question_status",
+      "claim_id": "PITV22-C006",
+      "claim_text": "Whether B1 improves B0 for RV30 is not yet evaluated after PIT v2.2.",
+      "evidence": [
+        {
+          "path": "artifacts/target_blind_v22/target_blind_common_predictor_manifest_v22.json",
+          "sha256": "6403e1b121c694b4c02708ecb35edfa30f53f4c715fa4ba9a45596245a8fccc0"
+        },
+        {
+          "path": "artifacts/target_blind_v22/confirmation_readiness_v1.json",
+          "sha256": "87a1577fc5dd34a4bd57bed57140113322a7eb42e0f3a6c46879a6ff9a6ccfd0"
+        },
+        {
+          "path": "artifacts/provider_timing_v22/b2_availability_manifest_v22.json",
+          "sha256": "9e1717bb059e938b32280a0b11a26247fe19e5c3f934359fe04e79733f9ec585"
+        },
+        {
+          "path": "artifacts/provider_timing_v22/b2_availability_summary_v22.json",
+          "sha256": "970c56523ac387c6d68840b0d8ac8a5444d010556a2189633f0a32c50e3dc9bf"
+        },
+        {
+          "path": "artifacts/target_blind_v22/target_blind_common_predictor_manifest_v22.json",
+          "sha256": "6403e1b121c694b4c02708ecb35edfa30f53f4c715fa4ba9a45596245a8fccc0"
+        }
+      ],
+      "limitation": "A successor method freeze and authorized evaluation are required.",
+      "status": "NOT_EVALUATED_AFTER_PIT_CORRECTION"
+    },
+    {
+      "allowed_presentation_context": "research_question_status",
+      "claim_id": "PITV22-C007",
+      "claim_text": "Whether B2 adds incremental value over B1 is not yet evaluated after PIT v2.2.",
+      "evidence": [
+        {
+          "path": "artifacts/target_blind_v22/target_blind_common_predictor_manifest_v22.json",
+          "sha256": "6403e1b121c694b4c02708ecb35edfa30f53f4c715fa4ba9a45596245a8fccc0"
+        },
+        {
+          "path": "artifacts/target_blind_v22/confirmation_readiness_v1.json",
+          "sha256": "87a1577fc5dd34a4bd57bed57140113322a7eb42e0f3a6c46879a6ff9a6ccfd0"
+        },
+        {
+          "path": "artifacts/provider_timing_v22/b2_availability_manifest_v22.json",
+          "sha256": "9e1717bb059e938b32280a0b11a26247fe19e5c3f934359fe04e79733f9ec585"
+        },
+        {
+          "path": "artifacts/provider_timing_v22/b2_availability_summary_v22.json",
+          "sha256": "970c56523ac387c6d68840b0d8ac8a5444d010556a2189633f0a32c50e3dc9bf"
+        },
+        {
+          "path": "artifacts/target_blind_v22/target_blind_common_predictor_manifest_v22.json",
+          "sha256": "6403e1b121c694b4c02708ecb35edfa30f53f4c715fa4ba9a45596245a8fccc0"
+        }
+      ],
+      "limitation": "The target-blind ledger contains no loss or model output.",
+      "status": "NOT_EVALUATED_AFTER_PIT_CORRECTION"
+    },
+    {
+      "allowed_presentation_context": "research_question_status",
+      "claim_id": "PITV22-C008",
+      "claim_text": "Stability by asset, session segment, volatility regime and latency assumption is not yet evaluated after PIT v2.2.",
+      "evidence": [
+        {
+          "path": "artifacts/target_blind_v22/target_blind_common_predictor_manifest_v22.json",
+          "sha256": "6403e1b121c694b4c02708ecb35edfa30f53f4c715fa4ba9a45596245a8fccc0"
+        },
+        {
+          "path": "artifacts/target_blind_v22/confirmation_readiness_v1.json",
+          "sha256": "87a1577fc5dd34a4bd57bed57140113322a7eb42e0f3a6c46879a6ff9a6ccfd0"
+        },
+        {
+          "path": "docs/provider_timing_pit_contract_v21.md",
+          "sha256": "986d464f25c0002ec06a447537a07c3f5579a9c21b993b563c8cffc4afa06e51"
+        },
+        {
+          "path": "docs/provider_timing_claim_matrix_v21.md",
+          "sha256": "75d2f353049e386b07d00a547e3697907e0fff27be63498df8b79f8867d04797"
+        }
+      ],
+      "limitation": "No corrected forecasts, contrasts or stability payloads were read.",
+      "status": "NOT_EVALUATED_AFTER_PIT_CORRECTION"
+    }
+  ],
+  "evaluation_questions": [
+    {
+      "question_id": "Q1_B1_VERSUS_B0",
+      "reason": "A corrected successor evaluation has not been authorised or run.",
+      "status": "NOT_EVALUATED_AFTER_PIT_CORRECTION"
+    },
+    {
+      "question_id": "Q2_B2_INCREMENTAL_OVER_B1",
+      "reason": "Pre-v2.2 sealed results are not eligible for reconciliation.",
+      "status": "NOT_EVALUATED_AFTER_PIT_CORRECTION"
+    },
+    {
+      "question_id": "Q3_STABILITY_BY_ASSET_TIME_REGIME_AND_LATENCY",
+      "reason": "No corrected model/evaluation payload has been read.",
+      "status": "NOT_EVALUATED_AFTER_PIT_CORRECTION"
+    }
+  ],
+  "model_fit_performed": false,
+  "next_required_gate": "SUCCESSOR_METHOD_FREEZE_AND_EXPLICIT_OOS_ACCESS_AUTHORIZATION",
+  "no_target_or_metric_payload_read": true,
+  "safe_to_open_or_evaluate_oos": "NO",
+  "safe_to_reconcile_existing_results": "NO",
+  "schema_version": "pit-v22-claim-ledger-v1.0",
+  "scope": "target_blind_pit_and_readiness_claims_only",
+  "source_hashes": {
+    "availability_manifest": "9e1717bb059e938b32280a0b11a26247fe19e5c3f934359fe04e79733f9ec585",
+    "availability_summary": "970c56523ac387c6d68840b0d8ac8a5444d010556a2189633f0a32c50e3dc9bf",
+    "claim_matrix_v21": "75d2f353049e386b07d00a547e3697907e0fff27be63498df8b79f8867d04797",
+    "confirmation_readiness": "87a1577fc5dd34a4bd57bed57140113322a7eb42e0f3a6c46879a6ff9a6ccfd0",
+    "panel_manifest": "6403e1b121c694b4c02708ecb35edfa30f53f4c715fa4ba9a45596245a8fccc0",
+    "pit_contract_v21": "986d464f25c0002ec06a447537a07c3f5579a9c21b993b563c8cffc4afa06e51"
+  },
+  "status": "PASS_TARGET_BLIND_CLAIMS_NO_EVALUATION"
+}

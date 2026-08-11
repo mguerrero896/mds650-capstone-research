@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/pit-v22-claim-ledger-v1.schema.json",
+  "title": "MDS650 PIT v2.2 Claim Ledger v1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "scope",
+    "no_target_or_metric_payload_read",
+    "model_fit_performed",
+    "safe_to_reconcile_existing_results",
+    "safe_to_open_or_evaluate_oos",
+    "source_hashes",
+    "claims",
+    "evaluation_questions",
+    "next_required_gate",
+    "claim_ledger_sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "pit-v22-claim-ledger-v1.0" },
+    "status": { "const": "PASS_TARGET_BLIND_CLAIMS_NO_EVALUATION" },
+    "scope": { "const": "target_blind_pit_and_readiness_claims_only" },
+    "no_target_or_metric_payload_read": { "const": true },
+    "model_fit_performed": { "const": false },
+    "safe_to_reconcile_existing_results": { "const": "NO" },
+    "safe_to_open_or_evaluate_oos": { "const": "NO" },
+    "source_hashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "panel_manifest",
+        "confirmation_readiness",
+        "availability_manifest",
+        "availability_summary",
+        "pit_contract_v21",
+        "claim_matrix_v21"
+      ],
+      "properties": {
+        "panel_manifest": { "$ref": "#/$defs/sha256" },
+        "confirmation_readiness": { "$ref": "#/$defs/sha256" },
+        "availability_manifest": { "$ref": "#/$defs/sha256" },
+        "availability_summary": { "$ref": "#/$defs/sha256" },
+        "pit_contract_v21": { "$ref": "#/$defs/sha256" },
+        "claim_matrix_v21": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "prefixItems": [
+        {
+          "allOf": [
+            { "$ref": "#/$defs/claim" },
+            { "properties": { "claim_id": { "const": "PITV22-C001" } } }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/$defs/claim" },
+            { "properties": { "claim_id": { "const": "PITV22-C002" } } }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/$defs/claim" },
+            { "properties": { "claim_id": { "const": "PITV22-C003" } } }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/$defs/claim" },
+            { "properties": { "claim_id": { "const": "PITV22-C004" } } }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/$defs/claim" },
+            { "properties": { "claim_id": { "const": "PITV22-C005" } } }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/$defs/claim" },
+            { "properties": { "claim_id": { "const": "PITV22-C006" } } }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/$defs/claim" },
+            { "properties": { "claim_id": { "const": "PITV22-C007" } } }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/$defs/claim" },
+            { "properties": { "claim_id": { "const": "PITV22-C008" } } }
+          ]
+        }
+      ],
+      "items": false
+    },
+    "evaluation_questions": {
+      "type": "array",
+      "minItems": 3,
+      "items": { "$ref": "#/$defs/evaluationQuestion" }
+    },
+    "next_required_gate": {
+      "const": "SUCCESSOR_METHOD_FREEZE_AND_EXPLICIT_OOS_ACCESS_AUTHORIZATION"
+    },
+    "claim_ledger_sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claim_id",
+        "status",
+        "claim_text",
+        "limitation",
+        "allowed_presentation_context",
+        "evidence"
+      ],
+      "properties": {
+        "claim_id": { "type": "string", "pattern": "^PITV22-C00[1-8]$" },
+        "status": {
+          "enum": [
+            "SUPPORTED_TARGET_BLIND",
+            "PROXY_ONLY",
+            "STUDY_CONSERVATIVE_RULE",
+            "BLOCKED_RECONCILIATION",
+            "NOT_EVALUATED_AFTER_PIT_CORRECTION"
+          ]
+        },
+        "claim_text": { "type": "string", "minLength": 1 },
+        "limitation": { "type": "string", "minLength": 1 },
+        "allowed_presentation_context": { "type": "string", "minLength": 1 },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/evidence" }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^(artifacts|docs)/[A-Za-z0-9_./-]+$"
+        },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "evaluationQuestion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["question_id", "status", "reason"],
+      "properties": {
+        "question_id": {
+          "enum": [
+            "Q1_B1_VERSUS_B0",
+            "Q2_B2_INCREMENTAL_OVER_B1",
+            "Q3_STABILITY_BY_ASSET_TIME_REGIME_AND_LATENCY"
+          ]
+        },
+        "status": { "const": "NOT_EVALUATED_AFTER_PIT_CORRECTION" },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

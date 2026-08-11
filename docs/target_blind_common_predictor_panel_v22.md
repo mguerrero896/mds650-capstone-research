@@ -82,6 +82,10 @@ temporal split, B0/B1/B2 contrasts, uncertainty procedure and multiplicity
 policy before any outcome or OOS evaluation is accessed. The pre-method-freeze
 seal is `artifacts/target_blind_v22/next_confirmation_preregistration_v2.json`.
 
+The evidence-bound presentation status is separately recorded in
+`docs/pit_v22_claims_and_limitations.md`. It permits only target-blind coverage
+and timing statements; it does not report, imply or estimate a B1/B2 result.
+
 ## Reproduction
 
 Run from the repository root without credentials:

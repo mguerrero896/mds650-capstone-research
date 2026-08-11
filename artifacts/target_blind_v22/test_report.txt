@@ -81,3 +81,41 @@ Confirmation readiness v1 extension
 The full pytest suite was deliberately not used as evidence for this extension:
 some collection paths are allowed to inspect historical evaluation artefacts,
 whereas this target-blind closure must preserve zero sealed-OOS reads.
+
+PIT v2.2 claim-ledger extension
+--------------------------------
+
+13. `uv run pytest -q --cov=mds650.pit_v22_claim_ledger --cov-report=term-missing`
+    over `test_pit_v22_claim_ledger.py` plus the eight v2.1/v2.2 target-blind
+    readiness, panel, preregistration, availability and provider-timing test
+    modules.
+    Result: 84 scoped tests passed; `mds650.pit_v22_claim_ledger` coverage was
+    89.33% (required minimum 80%). The contract tests prove that an extra or
+    duplicate claim identifier is rejected and that unsafe/malformed evidence
+    fails closed.
+
+14. `uv run ruff check .` and `uv run mypy --show-error-codes`.
+    Result: all Ruff checks passed; Mypy reported no issues in 41 source files.
+
+15. `uv run python scripts/build_pit_v22_claim_ledger.py` and JSON Schema
+    validation with `pit-v22-claim-ledger-v1.schema.json`.
+    Result: `PASS_TARGET_BLIND_CLAIMS_NO_EVALUATION`; reconciliation and OOS
+    access remained `NO`. The installed jsonschema CLI emitted only its own
+    deprecation warning.
+
+16. Deterministic claim-ledger rerun.
+    Result: two consecutive local builds produced identical SHA-256 values:
+    - JSON ledger:
+      `3147f5ff7dc343c01620224f152305f02b91f52c873c6f813d97217eafa92adc`
+    - human-readable ledger:
+      `5066f606830066e6c1d433add83c782d2cfe046b1f980af035288f7bd305c207`
+
+17. `uv run python scripts/verify_provider_timing_v21.py`, scoped
+    personal-path/secret-assignment scan and `git diff --check`.
+    Result: provider-timing integrity reported `status=PASS`; no canonical hash
+    mismatch, protected tracked change, personal-path file or secret-assignment
+    file was reported. The working diff was whitespace-clean.
+
+The global pytest suite remains deliberately excluded from this record because
+its historical evaluation collection paths are outside the permitted
+target-blind scope.
