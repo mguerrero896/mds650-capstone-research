@@ -18,6 +18,14 @@ numeric result, interpretation, model fit, metric calculation, provider call or
 decision was made from that output. This is a second OOS-access event for the
 same operator context and does not weaken the containment requirement.
 
+A subsequent project-scoped GBrain synchronization was invoked with
+`--no-extract --no-embed` to register newly committed target-blind files. Its
+status output nevertheless identified a result-bearing conclusion document as
+an imported file. The document contents were not rendered or queried, and no
+evaluation or interpretation followed, but the current GBrain source must no
+longer be treated as target-blind. Do not query or resynchronize that source
+until a path-allowlisted replacement is established and verified.
+
 ## Containment
 
 - No model, QLIKE calculation, forecast evaluation, tuning, result
@@ -31,6 +39,9 @@ same operator context and does not weaken the containment requirement.
 - Any remaining target-blind B1Q implementation must be performed by a fresh,
   unexposed executor that is explicitly prohibited from opening OOS-sealed
   paths. Its work must be independently reviewed before integration.
+- The existing `mds650-research` GBrain source is not an eligible target-blind
+  retrieval source after the synchronization event. It must be replaced by an
+  allowlisted source before any semantic query is used in a target-blind task.
 
 ## Consequence
 
