@@ -1,0 +1,189 @@
+{
+  "personal_paths_emitted": false,
+  "rows": [
+    {
+      "block": "phase6",
+      "feature": "b2v2_z_log_trade_count",
+      "max_abs_pairwise_correlation": 0.6549133776452082,
+      "max_correlation_partner": "b2v2_z_log_max_trade_premium",
+      "observations": 62667,
+      "status": "TARGET_BLIND_DESCRIPTIVE",
+      "unique_values": 62154,
+      "zero_share": 9.574417157355546e-05
+    },
+    {
+      "block": "phase6",
+      "feature": "b2v2_z_unique_contract_share",
+      "max_abs_pairwise_correlation": 0.3200261064292754,
+      "max_correlation_partner": "b2v2_z_log_trade_count",
+      "observations": 62667,
+      "status": "TARGET_BLIND_DESCRIPTIVE",
+      "unique_values": 62327,
+      "zero_share": 0.0
+    },
+    {
+      "block": "phase6",
+      "feature": "b2v2_z_log_mean_trade_premium",
+      "max_abs_pairwise_correlation": 0.8705772663574978,
+      "max_correlation_partner": "b2v2_z_log_max_trade_premium",
+      "observations": 62667,
+      "status": "TARGET_BLIND_DESCRIPTIVE",
+      "unique_values": 62334,
+      "zero_share": 0.0
+    },
+    {
+      "block": "phase6",
+      "feature": "b2v2_z_log_max_trade_premium",
+      "max_abs_pairwise_correlation": 0.8705772663574978,
+      "max_correlation_partner": "b2v2_z_log_mean_trade_premium",
+      "observations": 62667,
+      "status": "TARGET_BLIND_DESCRIPTIVE",
+      "unique_values": 62217,
+      "zero_share": 0.0
+    },
+    {
+      "block": "phase6",
+      "feature": "b2v2_deviation_call_put_premium_imbalance",
+      "max_abs_pairwise_correlation": 0.20100901645672709,
+      "max_correlation_partner": "b2v2_z_repeated_contract_premium_share",
+      "observations": 62667,
+      "status": "TARGET_BLIND_DESCRIPTIVE",
+      "unique_values": 62334,
+      "zero_share": 0.0
+    },
+    {
+      "block": "phase6",
+      "feature": "b2v2_deviation_execution_side_premium_imbalance",
+      "max_abs_pairwise_correlation": 0.050333925201330884,
+      "max_correlation_partner": "b2v2_deviation_call_put_premium_imbalance",
+      "observations": 62667,
+      "status": "TARGET_BLIND_DESCRIPTIVE",
+      "unique_values": 62334,
+      "zero_share": 7.978680964462955e-05
+    },
+    {
+      "block": "phase6",
+      "feature": "b2v2_z_repeated_contract_premium_share",
+      "max_abs_pairwise_correlation": 0.528251520139401,
+      "max_correlation_partner": "b2v2_z_log_trade_count",
+      "observations": 62667,
+      "status": "TARGET_BLIND_DESCRIPTIVE",
+      "unique_values": 62334,
+      "zero_share": 0.0
+    },
+    {
+      "block": "phase6",
+      "feature": "b2v2_z_strike_concentration",
+      "max_abs_pairwise_correlation": 0.27335402802065634,
+      "max_correlation_partner": "b2v2_z_log_trade_count",
+      "observations": 62667,
+      "status": "TARGET_BLIND_DESCRIPTIVE",
+      "unique_values": 62326,
+      "zero_share": 0.0
+    },
+    {
+      "block": "phase6",
+      "feature": "b2v2_z_expiry_concentration",
+      "max_abs_pairwise_correlation": 0.3512627924750689,
+      "max_correlation_partner": "b2v2_z_log_trade_count",
+      "observations": 62667,
+      "status": "TARGET_BLIND_DESCRIPTIVE",
+      "unique_values": 62330,
+      "zero_share": 1.595736192892591e-05
+    },
+    {
+      "block": "independent_replication",
+      "feature": "b2v2_z_log_trade_count",
+      "max_abs_pairwise_correlation": 0.8865511513942032,
+      "max_correlation_partner": "b2v2_z_unique_contract_share",
+      "observations": 11664,
+      "status": "TARGET_BLIND_DESCRIPTIVE",
+      "unique_values": 11635,
+      "zero_share": 0.0004286694101508916
+    },
+    {
+      "block": "independent_replication",
+      "feature": "b2v2_z_unique_contract_share",
+      "max_abs_pairwise_correlation": 0.8865511513942032,
+      "max_correlation_partner": "b2v2_z_log_trade_count",
+      "observations": 11664,
+      "status": "TARGET_BLIND_DESCRIPTIVE",
+      "unique_values": 11663,
+      "zero_share": 0.0
+    },
+    {
+      "block": "independent_replication",
+      "feature": "b2v2_z_log_mean_trade_premium",
+      "max_abs_pairwise_correlation": 0.7594074937854116,
+      "max_correlation_partner": "b2v2_z_log_max_trade_premium",
+      "observations": 11664,
+      "status": "TARGET_BLIND_DESCRIPTIVE",
+      "unique_values": 11664,
+      "zero_share": 0.0
+    },
+    {
+      "block": "independent_replication",
+      "feature": "b2v2_z_log_max_trade_premium",
+      "max_abs_pairwise_correlation": 0.7594074937854117,
+      "max_correlation_partner": "b2v2_z_log_mean_trade_premium",
+      "observations": 11664,
+      "status": "TARGET_BLIND_DESCRIPTIVE",
+      "unique_values": 11641,
+      "zero_share": 0.0
+    },
+    {
+      "block": "independent_replication",
+      "feature": "b2v2_deviation_call_put_premium_imbalance",
+      "max_abs_pairwise_correlation": 0.1173748287183149,
+      "max_correlation_partner": "b2v2_z_repeated_contract_premium_share",
+      "observations": 11664,
+      "status": "TARGET_BLIND_DESCRIPTIVE",
+      "unique_values": 11664,
+      "zero_share": 0.0
+    },
+    {
+      "block": "independent_replication",
+      "feature": "b2v2_deviation_execution_side_premium_imbalance",
+      "max_abs_pairwise_correlation": 0.07026371041180274,
+      "max_correlation_partner": "b2v2_deviation_call_put_premium_imbalance",
+      "observations": 11664,
+      "status": "TARGET_BLIND_DESCRIPTIVE",
+      "unique_values": 11664,
+      "zero_share": 0.0
+    },
+    {
+      "block": "independent_replication",
+      "feature": "b2v2_z_repeated_contract_premium_share",
+      "max_abs_pairwise_correlation": 0.31008126128447777,
+      "max_correlation_partner": "b2v2_z_unique_contract_share",
+      "observations": 11664,
+      "status": "TARGET_BLIND_DESCRIPTIVE",
+      "unique_values": 11664,
+      "zero_share": 0.0
+    },
+    {
+      "block": "independent_replication",
+      "feature": "b2v2_z_strike_concentration",
+      "max_abs_pairwise_correlation": 0.3672262678024196,
+      "max_correlation_partner": "b2v2_z_unique_contract_share",
+      "observations": 11664,
+      "status": "TARGET_BLIND_DESCRIPTIVE",
+      "unique_values": 11664,
+      "zero_share": 0.0
+    },
+    {
+      "block": "independent_replication",
+      "feature": "b2v2_z_expiry_concentration",
+      "max_abs_pairwise_correlation": 0.20009368662633883,
+      "max_correlation_partner": "b2v2_z_unique_contract_share",
+      "observations": 11664,
+      "status": "TARGET_BLIND_DESCRIPTIVE",
+      "unique_values": 11664,
+      "zero_share": 0.0
+    }
+  ],
+  "schema_version": "1.0",
+  "secret_values_emitted": false,
+  "status": "PASS",
+  "target_read": false
+}
