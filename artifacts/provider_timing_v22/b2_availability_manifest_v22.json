@@ -1,0 +1,67 @@
+{
+  "b2_availability_sidecar_status": "PASS_WITH_EXCLUSIONS",
+  "corrected_pit_panel_preparation": "PASS_MASK_READY_REQUIRES_NEW_TARGET_BLIND_PANEL_BUILD",
+  "expected_origins_sha256": "636cc90d287aa634f7533d643d52dbbb2bea4c7295111163f9552944c7c1a880",
+  "generation_mode": "deterministic_target_blind_rebuild",
+  "limitations": [
+    "Unusual Whales created_at remains an operational availability proxy, not provider-proven publication or receipt time.",
+    "The sidecar does not repair, rerun, or validate sealed model or evaluation results.",
+    "Excluded rows require a new target-blind common-panel build before any future confirmation protocol can proceed."
+  ],
+  "model_or_metric_payload_read": false,
+  "oos_payload_read": false,
+  "safe_to_reconcile_existing_results": "NO",
+  "schema_version": "2.2",
+  "scope": "target_blind_offline_no_provider_requests",
+  "sealed_result_reconciliation": "BLOCKED",
+  "sidecar_sha256": "de3951a0dca73632c8fcbe0b92899c045d7096bf3eed81cf55f958f1009892de",
+  "sidecar_storage": "D-resident derived artefact",
+  "summary": {
+    "canonical_raw_count_mismatch_count": 0,
+    "eligible_row_count": 384392,
+    "excluded_row_count": 2248,
+    "primary_delayed_raw_zero_exclusion_count": 451,
+    "row_count": 386640,
+    "row_status_counts": {
+      "PIT_EXCLUDED_DELAYED_RAW_WINDOW_TRADES": 2227,
+      "PIT_EXCLUDED_SOURCE_DELAY_CONTEXT_ZERO": 21,
+      "PIT_USABLE_ELIGIBLE_ACTIVITY": 378009,
+      "PIT_USABLE_ELIGIBLE_ACTIVITY_DELAY_CONTEXT": 5312,
+      "PIT_USABLE_ZERO_NO_DELAY_INCIDENT": 1071
+    },
+    "schema_version": "2.2",
+    "variant_totals": [
+      {
+        "canonical_variant": "latency_5m_120s",
+        "eligible_row_count": 76874,
+        "excluded_row_count": 454,
+        "row_count": 77328
+      },
+      {
+        "canonical_variant": "latency_5m_300s",
+        "eligible_row_count": 76863,
+        "excluded_row_count": 465,
+        "row_count": 77328
+      },
+      {
+        "canonical_variant": "primary_5m_60s",
+        "eligible_row_count": 76877,
+        "excluded_row_count": 451,
+        "row_count": 77328
+      },
+      {
+        "canonical_variant": "window_15m_60s",
+        "eligible_row_count": 76887,
+        "excluded_row_count": 441,
+        "row_count": 77328
+      },
+      {
+        "canonical_variant": "window_30m_60s",
+        "eligible_row_count": 76891,
+        "excluded_row_count": 437,
+        "row_count": 77328
+      }
+    ]
+  },
+  "traceability_sha256": "da6f022e108879bdd75be1e6351d42deb0e5b22e93ea5e3297c301249796dc21"
+}

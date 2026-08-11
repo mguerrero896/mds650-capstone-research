@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b2-availability-manifest-v22.schema.json",
+  "title": "MDS650 B2 Availability Manifest v2.2",
+  "type": "object",
+  "required": [
+    "b2_availability_sidecar_status",
+    "corrected_pit_panel_preparation",
+    "expected_origins_sha256",
+    "generation_mode",
+    "limitations",
+    "model_or_metric_payload_read",
+    "oos_payload_read",
+    "safe_to_reconcile_existing_results",
+    "schema_version",
+    "scope",
+    "sealed_result_reconciliation",
+    "sidecar_sha256",
+    "sidecar_storage",
+    "summary",
+    "traceability_sha256"
+  ],
+  "properties": {
+    "b2_availability_sidecar_status": {
+      "const": "PASS_WITH_EXCLUSIONS"
+    },
+    "corrected_pit_panel_preparation": {
+      "const": "PASS_MASK_READY_REQUIRES_NEW_TARGET_BLIND_PANEL_BUILD"
+    },
+    "expected_origins_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "generation_mode": {
+      "const": "deterministic_target_blind_rebuild"
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "model_or_metric_payload_read": {
+      "const": false
+    },
+    "oos_payload_read": {
+      "const": false
+    },
+    "safe_to_reconcile_existing_results": {
+      "const": "NO"
+    },
+    "schema_version": {
+      "const": "2.2"
+    },
+    "scope": {
+      "const": "target_blind_offline_no_provider_requests"
+    },
+    "sealed_result_reconciliation": {
+      "const": "BLOCKED"
+    },
+    "sidecar_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "sidecar_storage": {
+      "const": "D-resident derived artefact"
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "canonical_raw_count_mismatch_count",
+        "eligible_row_count",
+        "excluded_row_count",
+        "primary_delayed_raw_zero_exclusion_count",
+        "row_count",
+        "row_status_counts",
+        "schema_version",
+        "variant_totals"
+      ],
+      "properties": {
+        "canonical_raw_count_mismatch_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "eligible_row_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "excluded_row_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "primary_delayed_raw_zero_exclusion_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "row_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "row_status_counts": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "schema_version": {
+          "const": "2.2"
+        },
+        "variant_totals": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "canonical_variant",
+              "eligible_row_count",
+              "excluded_row_count",
+              "row_count"
+            ],
+            "properties": {
+              "canonical_variant": {
+                "type": "string",
+                "minLength": 1
+              },
+              "eligible_row_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "excluded_row_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "row_count": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "traceability_sha256": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

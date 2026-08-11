@@ -1,0 +1,24 @@
+{
+  "canonical_input_hashes": {
+    "b2_availability_sidecar": "de3951a0dca73632c8fcbe0b92899c045d7096bf3eed81cf55f958f1009892de",
+    "expected_origins": "636cc90d287aa634f7533d643d52dbbb2bea4c7295111163f9552944c7c1a880",
+    "v21_traceability": "da6f022e108879bdd75be1e6351d42deb0e5b22e93ea5e3297c301249796dc21"
+  },
+  "manifest_sha256": "2e50e5a2856baa0499b0cac90271416099eeca9dcb439b71b4bad55abc36435d",
+  "oos_payload_read": false,
+  "purpose": "preflight_only_for_successor_target_blind_common_panel",
+  "registered_b2_contract": {
+    "availability_field": "eligible_for_corrected_pit_panel",
+    "created_at_semantics": "OPERATIONAL_AVAILABILITY_PROXY_NOT_PUBLICATION_OR_RECEIPT",
+    "primary_variant": "primary_5m_60s",
+    "use_of_rv30_or_qlike": false
+  },
+  "required_before_any_result_evaluation": [
+    "successor_target_blind_panel_hash",
+    "successor_method_freeze_hash",
+    "zero_oos_reads_at_freeze",
+    "explicit_human_authorization_for_oos_access"
+  ],
+  "schema_version": "next-confirmation-preflight-1.0",
+  "status": "DRAFT_NOT_AUTHORIZING_OOS_OR_MODEL_EXECUTION"
+}

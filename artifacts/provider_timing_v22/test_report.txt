@@ -1,0 +1,48 @@
+MDS650 Provider Timing v2.2 — target-blind verification report
+
+Scope of the v2.2 builder and targeted tests: offline local validation only.
+Those operations make no provider call or download and open no RV30,
+prediction, QLIKE, model or sealed-OOS payload.
+
+PASS  uv run pytest -q --cov=mds650.b2_availability_v22 --cov-report=term-missing tests/unit/test_b2_availability_v22.py tests/unit/test_provider_timing_v21.py
+      29 passed; b2_availability_v22 coverage = 80.62% (project threshold = 80%).
+      The repository-wide pytest suite was intentionally not run in this closure:
+      collection contains Phase 5/6 evaluation and holdout paths outside the
+      target-blind, no-OOS-read scope. This is a scope guard, not a passing
+      full-suite claim.
+
+PASS  uv run ruff check .
+      All checks passed.
+
+PASS  uv run mypy --show-error-codes
+      Success: no issues found in 38 source files.
+      The standalone v2.2 builder also passes `uv run mypy --show-error-codes
+      scripts/build_b2_availability_v22.py`.
+
+PASS  uv run python -m jsonschema -i artifacts/provider_timing_v22/b2_availability_manifest_v22.json specs/001-pit-options-rv30/contracts/b2-availability-manifest-v22.schema.json
+      Manifest conforms to the v2.2 schema. The installed jsonschema CLI emitted
+      only its own deprecation notice; it did not report a validation failure.
+
+PASS  next_confirmation_preregistration_v1.json self-hash validation
+      SHA-256 = 2e50e5a2856baa0499b0cac90271416099eeca9dcb439b71b4bad55abc36435d.
+
+PASS  deterministic rebuild
+      The D-resident sidecar plus all four compact evidence files reproduced
+      byte-identically on a second build. Sidecar SHA-256 =
+      de3951a0dca73632c8fcbe0b92899c045d7096bf3eed81cf55f958f1009892de.
+
+PASS  known primary incident assertion
+      2025-10-20 contains exactly 432
+      PIT_EXCLUDED_DELAYED_RAW_WINDOW_TRADES rows; total primary exclusions = 451.
+
+PASS  sanitized-output scan
+      No personal path or credential-pattern match in v2.2 sanitized artefacts,
+      contract, ledger, protocol or handoff.
+
+PONYTAIL AUDIT  Lean within this remediation scope. No new dependency, factory,
+wrapper, configuration layer or speculative abstraction was introduced. The
+versioned provider-timing modules remain retained as audit evidence and are not
+safe deletion candidates.
+
+Result: B2_AVAILABILITY_SIDECAR=PASS_WITH_EXCLUSIONS;
+SAFE_TO_RECONCILE_EXISTING_RESULTS=NO.
