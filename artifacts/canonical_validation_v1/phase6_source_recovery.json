@@ -1,0 +1,28 @@
+{
+  "artifacts": [
+    {
+      "artifact": "scripts/finalize_phase6_evidence.py",
+      "current_sha256": null,
+      "expected_sha256": "b15381f4d6afd1c0f8205e137e8917508a0fb53e186465afa8f4a5be8cf2c06e",
+      "frozen_blob": "b6cd4c30cb4d9c696b4a50438c3154ddf465de2a",
+      "recovered_sha256": "b15381f4d6afd1c0f8205e137e8917508a0fb53e186465afa8f4a5be8cf2c06e",
+      "recovery_ref": "refs/mds650/phase6-frozen/scripts--finalize_phase6_evidence.py",
+      "status": "PASS"
+    },
+    {
+      "artifact": "src/mds650/phase6.py",
+      "current_sha256": "2a3c44b5cb04b37d8cf8c8dca950b40fa1ee44adda4eceb278028de9ab0ca80f",
+      "expected_sha256": "9346fdcf7cd148fa697478c3e5f1a8317896afba65e301f87322115777d59f96",
+      "frozen_blob": "eae0ff2075a84a94c1e15896fcdfa8341391969e",
+      "recovered_sha256": "9346fdcf7cd148fa697478c3e5f1a8317896afba65e301f87322115777d59f96",
+      "recovery_ref": "refs/mds650/phase6-frozen/src--mds650--phase6.py",
+      "status": "PASS"
+    }
+  ],
+  "audited_source_count": 2,
+  "personal_paths_emitted": false,
+  "schema_version": "1.0",
+  "scope": "FROZEN_SOURCE_MISMATCH_RECOVERY_ONLY",
+  "secret_values_emitted": false,
+  "status": "PASS"
+}
