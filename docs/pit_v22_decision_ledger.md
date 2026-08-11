@@ -109,3 +109,51 @@ tuning, metric computation, result reconciliation and OOS access.
 **Consequence:** future work can freeze a method against this exact data-input
 identity, but it cannot select a model or make any B1/B2 performance claim
 until the separate method-freeze and OOS-access gates have passed.
+
+## Decision 40 — confirmation-readiness operational gate
+
+**Status:** accepted as an offline target-blind readiness check; not an
+acquisition, method-freeze or OOS authorization.
+
+**Evidence:**
+`artifacts/target_blind_v22/confirmation_readiness_v1.json`,
+`specs/001-pit-options-rv30/contracts/confirmation-readiness-v1.schema.json`
+and `docs/confirmation_readiness_v1.md`.
+
+**Decision:** require a self-hashing gate to verify the full target-blind panel
+hash, B2 availability-sidecar hash, preregistration self-hash, exact
+common-complete subset, target-free coverage and all fixed FMP/Massive/UW
+timing labels. For a newly requested acquisition, require a separate exact
+session plan, provider/PIT preflight, conservative storage peak, secret-name
+presence and an explicit non-secret cost-authorization reference.
+
+**Reason:** the prior v2.2 prerequisite list described the intended controls
+but did not emit one machine-readable state separating a sound target-blind
+input identity from operational permission to acquire more data.
+
+**Permitted claims:**
+
+- The corrected target-blind input identity is ready to enter a separately
+  authorised confirmation method freeze when the readiness hash passes.
+- A future acquisition cannot silently proceed if its operational inputs are
+  absent or the projected free-space floor falls below 80 GiB.
+- Passing operational inputs alone remains insufficient: an exact session plan
+  and date-level provider/PIT preflight are separately required.
+
+**Forbidden claims:**
+
+- The readiness gate demonstrates predictive value, an economic edge or a
+  provider entitlement.
+- A named environment variable proves a credential value is valid.
+- An operational acquisition preflight authorises OOS access, model fit or
+  reconciliation of sealed pre-v2.2 results.
+
+**Consequences:**
+
+```text
+READY_FOR_CONFIRMATION=YES
+SAFE_TO_ACQUIRE_NEW_SAMPLE=NO_UNTIL_EXACT_ACQUISITION_PREFLIGHT_PASSES
+SAFE_TO_RECONCILE_EXISTING_RESULTS=NO
+SAFE_TO_OPEN_OR_EVALUATE_OOS=NO
+MODEL_FIT_PERFORMED=NO
+```

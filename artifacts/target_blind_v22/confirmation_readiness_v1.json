@@ -1,0 +1,61 @@
+{
+  "acquisition_preflight": {
+    "cost_status": "NOT_APPLICABLE",
+    "credentials_status": "NOT_APPLICABLE",
+    "data_root_label": "MDS650_DATA_ROOT",
+    "observed_free_bytes": 485610029056,
+    "status": "NOT_APPLICABLE",
+    "storage_status": "OBSERVED_NOT_USED_FOR_ACQUISITION",
+    "write_probe_pass": null
+  },
+  "acquisition_preflight_requirements": [
+    "exact_session_allowlist_and_holdout_exclusion",
+    "provider_entitlement_and_date_level_pit_preflight",
+    "projected_peak_storage_bytes",
+    "named_secret_presence_without_secret_emission",
+    "explicit_cost_authorization_reference"
+  ],
+  "bound_artifact_integrity": {
+    "availability_sidecar_sha256_expected": "de3951a0dca73632c8fcbe0b92899c045d7096bf3eed81cf55f958f1009892de",
+    "availability_sidecar_sha256_observed": "de3951a0dca73632c8fcbe0b92899c045d7096bf3eed81cf55f958f1009892de",
+    "failure_codes": [],
+    "panel_sha256_expected": "d9f6c7690c5952a1c0e69087f9c8643c9b0496927fe863456d23648f268cd236",
+    "panel_sha256_observed": "d9f6c7690c5952a1c0e69087f9c8643c9b0496927fe863456d23648f268cd236",
+    "status": "PASS"
+  },
+  "common_subset_validation": {
+    "common_complete_row_count": 62266,
+    "common_complete_sha256_observed": "40aee9c6e6893de213d5358ac6b2d77af8c08db73b05a24d6374b1ecd6de79d2",
+    "failure_codes": [],
+    "panel_row_count": 77328,
+    "status": "PASS"
+  },
+  "coverage_observation": {
+    "asset_count": 6,
+    "classification": "OBSERVED_TARGET_BLIND_COVERAGE_NOT_MODEL_EVALUATED",
+    "common_complete_origin_count": 62266,
+    "common_complete_rate": 0.8052193254707222,
+    "origin_count": 77328,
+    "status": "PASS"
+  },
+  "model_fit_performed": false,
+  "no_target_or_metric_payload_read": true,
+  "pit_claim_boundary": {
+    "failure_codes": [],
+    "status": "PASS"
+  },
+  "readiness_sha256": "475c072883cae4ac5da0335eebb78a8c0b26e3edb0c3db114ed068be1a201184",
+  "ready_for_confirmation": "YES",
+  "required_before_any_oos_access": [
+    "separate_successor_method_freeze",
+    "zero_oos_read_access_ledger_at_freeze",
+    "literature_owner_verification",
+    "explicit_human_authorization_for_one_oos_access"
+  ],
+  "safe_to_acquire_new_sample": "NO",
+  "safe_to_open_or_evaluate_oos": "NO",
+  "safe_to_reconcile_existing_results": "NO",
+  "schema_version": "confirmation-readiness-v1.0",
+  "scope": "offline_target_blind_readiness_only",
+  "status": "PASS_READY_FOR_CONFIRMATION_ACQUISITION_NOT_REQUESTED"
+}

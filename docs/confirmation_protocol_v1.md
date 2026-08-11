@@ -91,6 +91,31 @@ its builder-hash fields, and
 new preregistration binds the corrected panel only; it intentionally remains a
 pre-method-freeze seal and does not authorize OOS access.
 
+## Offline readiness snapshot v1
+
+`scripts/audit_confirmation_readiness_v1.py` now provides a single,
+self-hashing readiness report at
+`artifacts/target_blind_v22/confirmation_readiness_v1.json`. It validates the
+full target-blind panel hash, B2 sidecar hash, preregistration self-hash,
+exact common-subset identity, registered timing labels and target-blind coverage
+before any later method freeze.
+
+The initial snapshot is intentionally:
+
+```text
+READY_FOR_CONFIRMATION=YES
+SAFE_TO_ACQUIRE_NEW_SAMPLE=NO
+SAFE_TO_RECONCILE_EXISTING_RESULTS=NO
+SAFE_TO_OPEN_OR_EVALUATE_OOS=NO
+```
+
+The `YES` state is limited to target-blind confirmation readiness. It does not
+relabel prior results, authorise an acquisition or permit model fitting. An
+exact future acquisition must additionally supply a session allow-list,
+provider/PIT preflight, conservative projected peak storage, named-secret
+presence and a non-secret explicit cost-authorization reference. The complete
+contract and commands are in `docs/confirmation_readiness_v1.md`.
+
 ## Decision
 
 **READY_FOR_CONFIRMATION:** yes, for an explicitly authorized target-blind

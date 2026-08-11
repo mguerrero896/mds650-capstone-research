@@ -49,3 +49,35 @@ SAFE_TO_RECONCILE_EXISTING_RESULTS=NO
 SAFE_TO_OPEN_OR_EVALUATE_OOS=NO
 MODEL_FIT_PERFORMED=NO
 ```
+
+Confirmation readiness v1 extension
+-----------------------------------
+
+8. `uv run pytest -q --cov=mds650.confirmation_readiness_v1 --cov-report=term-missing tests/unit/test_confirmation_readiness_v1.py tests/unit/test_target_blind_panel_v22.py tests/unit/test_build_target_blind_common_panel_v22.py tests/unit/test_target_blind_confirmation_prereg_v22.py tests/unit/test_b2_availability_v22.py tests/unit/test_provider_timing_v21.py tests/unit/test_provider_timing_v2.py tests/unit/test_provider_timing_docs.py`
+   Result: 76 scoped tests passed. `mds650.confirmation_readiness_v1` coverage
+   was 89.51% (required minimum 80%). The suite covers hash binding, exact
+   common-subset identity, target-field rejection, PIT-boundary drift, storage
+   failures, named-secret absence and the rule that operational inputs alone do
+   not authorize an acquisition. It also validates the generated readiness
+   report against its committed JSON Schema.
+
+9. `uv run ruff check .` and `uv run mypy --show-error-codes`
+   Result: all Ruff checks passed; Mypy reported no issues in 40 source files.
+
+10. `uv run python scripts/audit_confirmation_readiness_v1.py` and JSON Schema
+    validation with `confirmation-readiness-v1.schema.json`.
+    Result: `PASS_READY_FOR_CONFIRMATION_ACQUISITION_NOT_REQUESTED`; the report
+    retained `SAFE_TO_ACQUIRE_NEW_SAMPLE=NO` and
+    `SAFE_TO_OPEN_OR_EVALUATE_OOS=NO`.
+
+11. Deterministic readiness rerun.
+    Result: two consecutive local runs produced the same artifact-file
+    SHA-256: `87a1577fc5dd34a4bd57bed57140113322a7eb42e0f3a6c46879a6ff9a6ccfd0`.
+
+12. `uv run python scripts/verify_provider_timing_v21.py`
+    Result: `status=PASS`; no canonical hash mismatch, protected tracked
+    change, secret assignment or personal-path file was reported.
+
+The full pytest suite was deliberately not used as evidence for this extension:
+some collection paths are allowed to inspect historical evaluation artefacts,
+whereas this target-blind closure must preserve zero sealed-OOS reads.

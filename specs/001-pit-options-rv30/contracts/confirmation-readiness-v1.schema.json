@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/confirmation-readiness-v1.schema.json",
+  "title": "MDS650 Confirmation Readiness v1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "scope",
+    "no_target_or_metric_payload_read",
+    "model_fit_performed",
+    "safe_to_reconcile_existing_results",
+    "safe_to_open_or_evaluate_oos",
+    "ready_for_confirmation",
+    "safe_to_acquire_new_sample",
+    "bound_artifact_integrity",
+    "common_subset_validation",
+    "pit_claim_boundary",
+    "coverage_observation",
+    "acquisition_preflight",
+    "required_before_any_oos_access",
+    "acquisition_preflight_requirements",
+    "readiness_sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "confirmation-readiness-v1.0" },
+    "status": {
+      "enum": [
+        "PASS_READY_FOR_CONFIRMATION_ACQUISITION_NOT_REQUESTED",
+        "BLOCKED_CONFIRMATION_ACQUISITION_PREFLIGHT_INCOMPLETE",
+        "FAIL_CONFIRMATION_READINESS"
+      ]
+    },
+    "scope": { "const": "offline_target_blind_readiness_only" },
+    "no_target_or_metric_payload_read": { "const": true },
+    "model_fit_performed": { "const": false },
+    "safe_to_reconcile_existing_results": { "const": "NO" },
+    "safe_to_open_or_evaluate_oos": { "const": "NO" },
+    "ready_for_confirmation": { "enum": ["YES", "NO"] },
+    "safe_to_acquire_new_sample": { "enum": ["YES", "NO"] },
+    "bound_artifact_integrity": { "$ref": "#/$defs/boundArtifactIntegrity" },
+    "common_subset_validation": { "$ref": "#/$defs/commonSubsetValidation" },
+    "pit_claim_boundary": { "$ref": "#/$defs/statusWithFailures" },
+    "coverage_observation": { "$ref": "#/$defs/coverageObservation" },
+    "acquisition_preflight": { "$ref": "#/$defs/acquisitionPreflight" },
+    "required_before_any_oos_access": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    },
+    "acquisition_preflight_requirements": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    },
+    "readiness_sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "nullableSha256": {
+      "anyOf": [
+        { "$ref": "#/$defs/sha256" },
+        { "type": "null" }
+      ]
+    },
+    "statusWithFailures": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "failure_codes"],
+      "properties": {
+        "status": { "enum": ["PASS", "FAIL"] },
+        "failure_codes": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "boundArtifactIntegrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "failure_codes",
+        "panel_sha256_expected",
+        "panel_sha256_observed",
+        "availability_sidecar_sha256_expected",
+        "availability_sidecar_sha256_observed"
+      ],
+      "properties": {
+        "status": { "enum": ["PASS", "FAIL"] },
+        "failure_codes": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "panel_sha256_expected": { "$ref": "#/$defs/nullableSha256" },
+        "panel_sha256_observed": { "$ref": "#/$defs/nullableSha256" },
+        "availability_sidecar_sha256_expected": { "$ref": "#/$defs/nullableSha256" },
+        "availability_sidecar_sha256_observed": { "$ref": "#/$defs/nullableSha256" }
+      }
+    },
+    "commonSubsetValidation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "failure_codes",
+        "panel_row_count",
+        "common_complete_row_count",
+        "common_complete_sha256_observed"
+      ],
+      "properties": {
+        "status": { "enum": ["PASS", "FAIL"] },
+        "failure_codes": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "panel_row_count": { "type": ["integer", "null"], "minimum": 0 },
+        "common_complete_row_count": { "type": ["integer", "null"], "minimum": 0 },
+        "common_complete_sha256_observed": { "$ref": "#/$defs/nullableSha256" }
+      }
+    },
+    "coverageObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": { "enum": ["PASS", "FAIL"] },
+        "failure_codes": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "classification": { "type": "string" },
+        "asset_count": { "type": "integer", "minimum": 1 },
+        "origin_count": { "type": "integer", "minimum": 1 },
+        "common_complete_origin_count": { "type": "integer", "minimum": 1 },
+        "common_complete_rate": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "acquisitionPreflight": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "credentials_status",
+        "cost_status",
+        "storage_status",
+        "data_root_label",
+        "observed_free_bytes",
+        "write_probe_pass"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "NOT_APPLICABLE",
+            "BLOCKED_EXACT_PLAN_AND_PROVIDER_PIT_REQUIRED"
+          ]
+        },
+        "operational_inputs_pass": { "type": "boolean" },
+        "credentials_status": { "type": "string" },
+        "missing_credential_names": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "cost_status": { "type": "string" },
+        "cost_authorization_reference_present": { "type": "boolean" },
+        "storage_status": { "type": "string" },
+        "data_root_label": { "const": "MDS650_DATA_ROOT" },
+        "observed_free_bytes": { "type": ["integer", "null"], "minimum": 0 },
+        "projected_peak_additional_bytes": { "type": ["integer", "null"], "minimum": 1 },
+        "projected_minimum_free_bytes": { "type": ["integer", "null"] },
+        "minimum_free_bytes": { "type": "integer", "minimum": 1 },
+        "write_probe_pass": { "type": ["boolean", "null"] }
+      }
+    }
+  }
+}
