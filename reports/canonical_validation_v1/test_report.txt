@@ -1,0 +1,37 @@
+Canonical RV30 defense package quality gate
+
+Scope
+- Offline rendering only; no provider call, download, feature redesign, model fit, tuning,
+  QLIKE re-evaluation, or holdout access occurred in this package step.
+- Canonical input contract: artifacts/canonical_validation_v1/report_manifest.json =
+  PASS_CANONICAL_REPORT; contrasts.json = PASS; zero unpaired rows; all signs retained.
+
+Commands and results
+1. uv run pytest tests/contract/test_canonical_defense_package.py -q
+   PASS: 4 passed.
+2. uv run python scripts/build_canonical_defense_package.py --source
+   artifacts/canonical_validation_v1 --output reports/canonical_validation_v1
+   PASS: REUSED_HASH_VERIFIED.
+3. uv run ruff check scripts/build_canonical_defense_package.py
+   tests/contract/test_canonical_defense_package.py
+   PASS: all checks passed.
+4. uv run mypy scripts/build_canonical_defense_package.py
+   PASS: success; no issues in 1 source file.
+5. uv run pytest -q -rA
+   PASS: 333 collected; 321 passed; 12 explicitly skipped.
+   - 10 skips require MDS650_EVIDENCE_ROOT with hashed external research artifacts.
+   - 2 skips require absent Phase 4A artifacts; they are not treated as passes.
+6. uv run ruff check src tests scripts
+   PASS: all checks passed.
+7. uv run mypy
+   PASS: success; no issues in 34 source files.
+8. uv run coverage run -m pytest -q && uv run coverage report
+   PASS: 80% total coverage, meeting the configured 80% threshold.
+9. Structural validation: JSON manifest parsed; both SVG figures parsed as XML; sensitive-text
+   scan found no personal path or named API-key variable.
+   PASS_DEFENSE_PACKAGE_STRUCTURAL_VALIDATION.
+
+Manifest
+- reports/canonical_validation_v1/MDS650_Defense_Package_Manifest.json
+- SHA-256: e1469f47639307aa74e9961be52d6b71f62a287168d4710d8f178e0c58f9566d
+- Claim eligibility: MODEL_FAMILY_DEPENDENT for delta_b1v2 and delta_b2v2.
