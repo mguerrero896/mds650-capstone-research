@@ -1,0 +1,97 @@
+{
+  "SAFE_TO_OPEN_OR_EVALUATE_OOS": "NO",
+  "builder_hashes": {
+    "panel_module_sha256": "c9455b7d4753a4c346813de3fbf94304f6e43c4c4c723752d310fcaabe2f7389",
+    "provenance_module_sha256": "92ebde3203bf85d27b790ce0b56a8080abd77902fe67bd1dea12f1edb7540eae",
+    "script_sha256": "1a9f4547ec41eef4a4a72c855b2f11723401804131c4162d72b63e908418e3f9"
+  },
+  "input_provenance": {
+    "availability_sidecar_status": "PASS_WITH_EXCLUSIONS",
+    "edge_conclusion": "NOT_EVALUATED_TARGET_BLIND",
+    "primary_excluded_row_count": 451,
+    "reconciliation_gate_status": "CONDITIONAL_NOT_CLOSED"
+  },
+  "model_fit_performed": false,
+  "no_target_or_metric_payload_read": true,
+  "output": {
+    "common_complete_row_count": 62266,
+    "common_complete_sha256": "5acc720cd873784c178e2444385cfc221cfdbf36b4510e090afd3885febae085",
+    "panel_sha256": "e0a119aa34754ae8a2fdb58805ee5b356f74a9d830f21d16f18a436f83e13a0f",
+    "row_count": 77328
+  },
+  "output_locations": {
+    "common_complete": "D:/MDS650/phase6/derived/target_blind_v23_committed_20260812/target_blind_common_complete_v23.parquet",
+    "panel": "D:/MDS650/phase6/derived/target_blind_v23_committed_20260812/target_blind_common_predictors_v23.parquet"
+  },
+  "safe_to_reconcile_existing_results": "NO",
+  "schema_version": "target-blind-common-predictor-manifest-v2.3",
+  "scope": "offline_target_blind_predictor_construction_only",
+  "source_commit": "695266f10eeee1c9756630fec1c6362d04e8c016",
+  "source_hashes": {
+    "b1q_source_sha256": "cb23c96203c410193219b73b5ac9985e0d5df18621ac5099551d415eab725856",
+    "b2_availability_manifest_v22_sha256": "9e1717bb059e938b32280a0b11a26247fe19e5c3f934359fe04e79733f9ec585",
+    "b2_availability_sidecar_sha256": "de3951a0dca73632c8fcbe0b92899c045d7096bf3eed81cf55f958f1009892de",
+    "b2_primary_inputs_sha256": "a3466e656ce6bc0397c2bed1f24472a5523f3ae8ffc986312f340d4b9f6c782b",
+    "fmp_bars_sha256": "07d1dcf4c87d206bb1ede55b82802467eb6af2d289d11c46ff12a2f9bb886a02",
+    "massive_reselection_recomputed_v21_sha256": "62c0e6cd3444482f0d79348bcc812a77c7c66b0bfb2c26e989c4b9a4ae9bac3c",
+    "origins_sha256": "636cc90d287aa634f7533d643d52dbbb2bea4c7295111163f9552944c7c1a880",
+    "pit_reconciliation_gate_v21_sha256": "046f867f6e79aa06eb6c923789e94661bea5686afd8ef110ef1e9e337bc6571c"
+  },
+  "status": "PASS_TARGET_BLIND_INPUTS_RECONCILIATION_REMAINS_BLOCKED",
+  "summary": {
+    "asset_count": 6,
+    "b2_availability": {
+      "corrected_pit_complete_row_count": 68237,
+      "eligible_row_count": 76877,
+      "excluded_row_count": 451,
+      "row_status_counts": {
+        "PIT_EXCLUDED_DELAYED_RAW_WINDOW_TRADES": 451,
+        "PIT_USABLE_ELIGIBLE_ACTIVITY": 75810,
+        "PIT_USABLE_ELIGIBLE_ACTIVITY_DELAY_CONTEXT": 1061,
+        "PIT_USABLE_ZERO_NO_DELAY_INCIDENT": 6
+      }
+    },
+    "completion_counts": {
+      "b0v2_predictor_complete": 70668,
+      "b1v2a_predictor_complete": 70556,
+      "b1v2b_predictor_complete": 69479,
+      "b1v2c_predictor_complete": 69475,
+      "b2v2_predictor_complete": 62266,
+      "common_predictor_complete": 62266
+    },
+    "completion_rates": {
+      "b0v2_predictor_complete": 0.9138733705772812,
+      "b1v2a_predictor_complete": 0.9124249948272295,
+      "b1v2b_predictor_complete": 0.8984973101593213,
+      "b1v2c_predictor_complete": 0.8984455824539623,
+      "b2v2_predictor_complete": 0.8052193254707222,
+      "common_predictor_complete": 0.8052193254707222
+    },
+    "exclusion_reason_counts": {
+      "B0V2_PREDICTOR_MISSING_OR_PIT_FAILURE": 6660,
+      "B1V2A_PREDICTOR_MISSING_OR_PIT_FAILURE": 112,
+      "B2V2_DELAYED_OR_UNAVAILABLE_ACTIVITY": 413,
+      "B2V2_NORMALIZATION_HISTORY_INSUFFICIENT": 7877,
+      "NONE": 62266
+    },
+    "model_fit_performed": false,
+    "no_target_or_metric_payload_read": true,
+    "row_count": 77328,
+    "safe_to_reconcile_existing_results": "NO",
+    "schema_version": "target-blind-common-predictor-panel-v2.2",
+    "scope": "offline_target_blind_predictor_construction_only",
+    "session_count": 180,
+    "status": "PASS_TARGET_BLIND_INPUTS_RECONCILIATION_REMAINS_BLOCKED"
+  },
+  "timing_rules": {
+    "b1q_primary_state": "SIP_ASOF_ORIGIN_MAX_AGE_60S",
+    "b2_created_at_rule": "OPERATIONAL_AVAILABILITY_PROXY_ORIGIN_MINUS_60_SECONDS",
+    "b2_primary_variant": "primary_5m_60s",
+    "fmp_primary_delay_minutes": 1,
+    "fmp_sensitivity_delay_minutes": 2,
+    "massive_reselection_sensitivity_cutoff_seconds": [
+      60,
+      300
+    ]
+  }
+}

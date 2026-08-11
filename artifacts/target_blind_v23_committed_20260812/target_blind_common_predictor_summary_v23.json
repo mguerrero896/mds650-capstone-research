@@ -1,0 +1,45 @@
+{
+  "asset_count": 6,
+  "b2_availability": {
+    "corrected_pit_complete_row_count": 68237,
+    "eligible_row_count": 76877,
+    "excluded_row_count": 451,
+    "row_status_counts": {
+      "PIT_EXCLUDED_DELAYED_RAW_WINDOW_TRADES": 451,
+      "PIT_USABLE_ELIGIBLE_ACTIVITY": 75810,
+      "PIT_USABLE_ELIGIBLE_ACTIVITY_DELAY_CONTEXT": 1061,
+      "PIT_USABLE_ZERO_NO_DELAY_INCIDENT": 6
+    }
+  },
+  "completion_counts": {
+    "b0v2_predictor_complete": 70668,
+    "b1v2a_predictor_complete": 70556,
+    "b1v2b_predictor_complete": 69479,
+    "b1v2c_predictor_complete": 69475,
+    "b2v2_predictor_complete": 62266,
+    "common_predictor_complete": 62266
+  },
+  "completion_rates": {
+    "b0v2_predictor_complete": 0.9138733705772812,
+    "b1v2a_predictor_complete": 0.9124249948272295,
+    "b1v2b_predictor_complete": 0.8984973101593213,
+    "b1v2c_predictor_complete": 0.8984455824539623,
+    "b2v2_predictor_complete": 0.8052193254707222,
+    "common_predictor_complete": 0.8052193254707222
+  },
+  "exclusion_reason_counts": {
+    "B0V2_PREDICTOR_MISSING_OR_PIT_FAILURE": 6660,
+    "B1V2A_PREDICTOR_MISSING_OR_PIT_FAILURE": 112,
+    "B2V2_DELAYED_OR_UNAVAILABLE_ACTIVITY": 413,
+    "B2V2_NORMALIZATION_HISTORY_INSUFFICIENT": 7877,
+    "NONE": 62266
+  },
+  "model_fit_performed": false,
+  "no_target_or_metric_payload_read": true,
+  "row_count": 77328,
+  "safe_to_reconcile_existing_results": "NO",
+  "schema_version": "target-blind-common-predictor-panel-v2.2",
+  "scope": "offline_target_blind_predictor_construction_only",
+  "session_count": 180,
+  "status": "PASS_TARGET_BLIND_INPUTS_RECONCILIATION_REMAINS_BLOCKED"
+}
