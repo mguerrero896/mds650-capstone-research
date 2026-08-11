@@ -1,0 +1,4 @@
+buffer_seconds,candidate_trade_count,eligible_trade_count,eligible_trade_retention_share,interpretation,origin_count,origins_with_candidate_activity,origins_with_eligible_activity
+60,208072824,206802148,0.9938931188822621,Exact shifted B2 windows are not expected to be monotonic across buffers.,77328,77322,76871
+120,207674156,206379715,0.9937669615472038,Exact shifted B2 windows are not expected to be monotonic across buffers.,77328,77322,76868
+300,206477704,205248953,0.9940489894250277,Exact shifted B2 windows are not expected to be monotonic across buffers.,77328,76248,75804

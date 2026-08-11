@@ -1,0 +1,17 @@
+{
+  "access_mode": "official_documentation_http_archive",
+  "archive_record_sha256": "1b6ca1dcc99145cdbcb2d7e2a0bfa34ea391a48df3f38a68ce9e4eb9d9cd895d",
+  "documented_excerpt": "sip_timestamp is nanosecond SIP receipt time; sequence_number is increasing and unique per ticker.",
+  "documented_nonclaims": [
+    "No REST response-arrival time is defined.",
+    "No client-receipt time is defined."
+  ],
+  "official_domain": "massive.com",
+  "provider": "Massive",
+  "reviewed_on_utc": "2026-08-11",
+  "source_content_hash_status": "HTTP_200_BODY_SHA256",
+  "source_content_sha256": "069d36a78a92dd5a8dd7821041c028a9e8b0b29bb2797f2872f2e0536d928bf3",
+  "source_id": "massive_options_quotes",
+  "title": "Quotes | Options REST API",
+  "url": "https://massive.com/docs/rest/options/trades-quotes/quotes"
+}

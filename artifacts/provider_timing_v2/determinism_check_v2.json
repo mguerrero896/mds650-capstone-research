@@ -1,0 +1,29 @@
+{
+  "deterministic": true,
+  "expected_artifact_sha256": {
+    "massive_quote_audit_v2.json": "ee1ec59829eed6c4a3ecf6e35a2b4a96c25d61736fc52657ba8d6d6956f95d95",
+    "official_sources/fmp_1min_endpoint.json": "94d44cb70da9439702fc914ebf4ab3235ffa55502fc9f07eb3064982e3e6bcb7",
+    "official_sources/fmp_cycle_times.json": "cdf1541af9678fc1e115661ba358a0ca498305e5b898af520c2de5e8a4a55528",
+    "official_sources/massive_options_quotes.json": "085f4f72a80257a175250f99bdfb343eeae7c6fff43ed8bb406bf7ccd3678a3b",
+    "official_sources/uw_option_trade.json": "b4f964e611d359f8602e0ce5f1ac15e036b1474dbd8c5947913151803d07a4ec",
+    "pit_claim_matrix_v2.json": "8bcad3d8af15010f4e92bfec6a0c2b21df2ccb3660539e74ba020198c0ca0b26",
+    "pit_timing_audit_v2.json": "b39ba223c2957a3f50a3ce5a8cecf313931c08c3e7fe4f3336e2698b86290130",
+    "uw_b2_retention_by_asset.csv": "864f4ab8f92233b560ad4b48bbb11cf20c219893cfceaea511c421234db35f3e",
+    "uw_b2_retention_by_buffer.csv": "0b1787ddeeef5b98eb62f69504c42e89994ea14609baa4201b59f994bf0f18a0"
+  },
+  "expected_file_count": 9,
+  "replay_artifact_sha256": {
+    "massive_quote_audit_v2.json": "ee1ec59829eed6c4a3ecf6e35a2b4a96c25d61736fc52657ba8d6d6956f95d95",
+    "official_sources/fmp_1min_endpoint.json": "94d44cb70da9439702fc914ebf4ab3235ffa55502fc9f07eb3064982e3e6bcb7",
+    "official_sources/fmp_cycle_times.json": "cdf1541af9678fc1e115661ba358a0ca498305e5b898af520c2de5e8a4a55528",
+    "official_sources/massive_options_quotes.json": "085f4f72a80257a175250f99bdfb343eeae7c6fff43ed8bb406bf7ccd3678a3b",
+    "official_sources/uw_option_trade.json": "b4f964e611d359f8602e0ce5f1ac15e036b1474dbd8c5947913151803d07a4ec",
+    "pit_claim_matrix_v2.json": "8bcad3d8af15010f4e92bfec6a0c2b21df2ccb3660539e74ba020198c0ca0b26",
+    "pit_timing_audit_v2.json": "b39ba223c2957a3f50a3ce5a8cecf313931c08c3e7fe4f3336e2698b86290130",
+    "uw_b2_retention_by_asset.csv": "864f4ab8f92233b560ad4b48bbb11cf20c219893cfceaea511c421234db35f3e",
+    "uw_b2_retention_by_buffer.csv": "0b1787ddeeef5b98eb62f69504c42e89994ea14609baa4201b59f994bf0f18a0"
+  },
+  "replay_file_count": 9,
+  "schema_version": "provider-timing-v2-determinism-1.0",
+  "scope": "compact_sanitized_artifacts_only"
+}

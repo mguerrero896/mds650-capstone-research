@@ -1,0 +1,62 @@
+{
+  "iv_attempts": {
+    "future_sip_timestamp_count": 0,
+    "negative_quote_age_count": 0,
+    "origin_sip_pair_count": 2308176,
+    "origin_timestamp_missing_count": 0,
+    "quote_age_maximum_sensitivity": [
+      {
+        "interpretation": "quote_freshness_data_quality_filter_not_provider_rest_latency",
+        "maximum_age_seconds": 60,
+        "retained_quote_count": 2299377,
+        "retained_quote_share": 0.9961878990163662
+      },
+      {
+        "interpretation": "quote_freshness_data_quality_filter_not_provider_rest_latency",
+        "maximum_age_seconds": 300,
+        "retained_quote_count": 2306877,
+        "retained_quote_share": 0.9994372179591158
+      }
+    ],
+    "row_count": 2308176,
+    "sip_timestamp_missing_count": 0,
+    "source_time_delay_sensitivity": [
+      {
+        "delay_seconds": 0,
+        "interpretation": "study_source_time_delay_sensitivity_not_provider_rest_latency",
+        "retained_quote_count": 2308176,
+        "retained_quote_share": 1.0
+      },
+      {
+        "delay_seconds": 60,
+        "interpretation": "study_source_time_delay_sensitivity_not_provider_rest_latency",
+        "retained_quote_count": 8799,
+        "retained_quote_share": 0.0038121009836338303
+      },
+      {
+        "delay_seconds": 300,
+        "interpretation": "study_source_time_delay_sensitivity_not_provider_rest_latency",
+        "retained_quote_count": 1299,
+        "retained_quote_share": 0.0005627820408842306
+      }
+    ],
+    "stored_quote_age_mismatch_count": 0,
+    "stored_quote_age_missing_count": 3
+  },
+  "no_provider_http_requests_performed": true,
+  "no_targets_or_predictive_metrics_read": true,
+  "origin_matrix": {
+    "future_sip_timestamp_count": 0,
+    "origin_timestamp_non_null_count": 77328,
+    "reported_pit_evidence_false_or_missing_count": 0,
+    "reported_quote_not_after_origin_false_or_missing_count": 0,
+    "row_count": 77328,
+    "selected_quote_timestamp_count": 77328,
+    "selected_quote_timestamp_missing_count": 0
+  },
+  "provider_rest_arrival_time": "UNVERIFIED",
+  "schema_version": "provider-timing-v2.0",
+  "scope": "existing_target_free_b1_quote_provenance",
+  "selected_quote_future_free": true,
+  "source_timestamp_semantics": "sip_timestamp_is_provider_documented_SIP_receipt_time"
+}

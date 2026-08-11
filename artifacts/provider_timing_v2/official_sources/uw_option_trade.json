@@ -1,0 +1,18 @@
+{
+  "access_mode": "official_documentation_http_archive",
+  "archive_record_sha256": "8d2f6bc99a206d85a6d2e0ad05fbe7c509d1cc5107d38b317fa9111e9e06db38",
+  "documented_excerpt": "executed_at is trade execution time; created_at is trade-record creation time, both Unix milliseconds.",
+  "documented_nonclaims": [
+    "No publication time is defined.",
+    "No client-receipt time is defined.",
+    "No trader-intention inference is defined."
+  ],
+  "official_domain": "api.unusualwhales.com",
+  "provider": "Unusual Whales",
+  "reviewed_on_utc": "2026-08-11",
+  "source_content_hash_status": "HTTP_200_BODY_SHA256",
+  "source_content_sha256": "e1940f9ac46154a54c71ac5b367ba0b26cc98e1bb2a2dda45619fedd18647513",
+  "source_id": "uw_option_trade",
+  "title": "OptionTrade - Kafka Streaming",
+  "url": "https://api.unusualwhales.com/docs/kafka/types/OptionTrade"
+}

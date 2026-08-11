@@ -1,0 +1,16 @@
+{
+  "access_mode": "official_browser_documentation_review",
+  "archive_record_sha256": "37d6c803a87c9320d828c4de3d99535a3eb9cb3cb08491e18351f0ab64fa6573",
+  "documented_excerpt": "The 1 Min Interval Stock Chart is labelled Real-Time.",
+  "documented_nonclaims": [
+    "The page does not state a numeric completed-bar availability latency."
+  ],
+  "official_domain": "site.financialmodelingprep.com",
+  "provider": "FMP",
+  "reviewed_on_utc": "2026-08-11",
+  "source_content_hash_status": "DIRECT_HTTP_ARCHIVE_403_BROWSER_REVIEWED",
+  "source_content_sha256": null,
+  "source_id": "fmp_cycle_times",
+  "title": "Cycle Times - FMP API",
+  "url": "https://site.financialmodelingprep.com/developer/docs/cycle-times-stable"
+}

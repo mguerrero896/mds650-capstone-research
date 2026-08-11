@@ -1,0 +1,18 @@
+{
+  "access_mode": "official_browser_documentation_review",
+  "archive_record_sha256": "07cb0f6c5260032f06a748a1efb6e6956ef3cf5baa0bc728bf2ccdbc11e31b06",
+  "documented_excerpt": "Retrieve real-time or historical stock data in one-minute intervals, including OHLC and volume.",
+  "documented_nonclaims": [
+    "No raw date timezone is stated.",
+    "No bar-start or bar-close label semantics are stated.",
+    "No completed-bar REST availability SLA is stated."
+  ],
+  "official_domain": "site.financialmodelingprep.com",
+  "provider": "FMP",
+  "reviewed_on_utc": "2026-08-11",
+  "source_content_hash_status": "DIRECT_HTTP_ARCHIVE_403_BROWSER_REVIEWED",
+  "source_content_sha256": null,
+  "source_id": "fmp_1min_endpoint",
+  "title": "1 Min Interval Stock Chart API",
+  "url": "https://site.financialmodelingprep.com/developer/docs/stable/intraday-1-min"
+}
