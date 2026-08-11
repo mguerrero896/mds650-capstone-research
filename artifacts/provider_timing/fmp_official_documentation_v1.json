@@ -1,0 +1,24 @@
+{
+  "archive_type": "sanitized_official_documentation_citation_record",
+  "interpretation": "The official documentation supports the endpoint and one-minute OHLCV scope, but does not support an exact timestamp-label or provider-latency claim.",
+  "not_stated_by_documentation": [
+    "timezone carried by the response timestamp",
+    "whether the response timestamp labels interval start or interval close",
+    "provider publication latency for a completed minute bar"
+  ],
+  "official_sources": [
+    {
+      "observed_statement": "The official page describes real-time or historical one-minute OHLCV data through the historical-chart/1min endpoint.",
+      "title": "FMP 1 Min Interval Stock Chart API",
+      "url": "https://site.financialmodelingprep.com/developer/docs/stable/intraday-1-min"
+    },
+    {
+      "observed_statement": "The official index lists the one-minute intraday chart endpoint and identifies open, high, low, close and volume for each minute.",
+      "title": "FMP official documentation index",
+      "url": "https://site.financialmodelingprep.com/developer/docs"
+    }
+  ],
+  "personal_paths_emitted": false,
+  "retrieved_on": "2026-08-11",
+  "secret_values_emitted": false
+}

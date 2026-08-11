@@ -1,0 +1,31 @@
+Provider Timing Semantics Audit v1 — Validation Report
+
+Scope
+-----
+Offline analysis of existing sanitized/filtered Unusual Whales Full Tape data,
+FMP documentation classification, and fixture-only validation of the future
+prospective measurement infrastructure. No provider HTTP request, target read,
+model training, QLIKE calculation, or canonical-result modification occurred.
+
+Quality gates
+-------------
+PASS  11 targeted provider-timing tests.
+PASS  Full pytest suite.
+PASS  Ruff for src, tests, and scripts.
+PASS  Mypy: no issues in 35 source files.
+PASS  Coverage: 80 percent total, satisfying the configured floor.
+PASS  JSON Schema and JSON parse validation for provider-timing artifacts.
+PASS  Sanitized artifact/docs scan: no provider secret or personal filesystem path.
+PASS  Canonical-result paths unchanged from HEAD.
+PASS  Deterministic rerun: five required output files are byte-identical by SHA-256.
+PASS  PowerShell prospective replay validated without a live capture.
+
+Boundaries retained
+--------------------
+UNVERIFIED  FMP bar-label semantics.
+NOT_SUPPORTED  Provider-confirmed FMP latency.
+PROXY_ONLY  Historical UW created_at minus executed_at timing evidence.
+PENDING_PROSPECTIVE_MEASUREMENT_NOT_BLOCKING  Client-receipt measurement.
+
+See provider_timing_semantics_audit_v1.json and determinism_check_v1.json for
+machine-readable evidence.

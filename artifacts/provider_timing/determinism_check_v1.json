@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "audit_name": "provider_timing_semantics_audit_v1",
+  "status": "PASS",
+  "method": "two offline runs over the same immutable filtered Full Tape inputs; SHA-256 compared byte-for-byte",
+  "all_identical": true,
+  "files": [
+    {
+      "file": "fmp_official_documentation_v1.json",
+      "primary_sha256": "a8e35ceefd3d28e7ab5bf5533dccc6784142b74635db63a4665710f55f6e30ee",
+      "rerun_sha256": "a8e35ceefd3d28e7ab5bf5533dccc6784142b74635db63a4665710f55f6e30ee",
+      "identical": true
+    },
+    {
+      "file": "provider_timing_semantics_audit_v1.json",
+      "primary_sha256": "ae20b5bbbbcf68c5c27776e5a373012e70bfad09f67e657227ccfb139e9446e1",
+      "rerun_sha256": "ae20b5bbbbcf68c5c27776e5a373012e70bfad09f67e657227ccfb139e9446e1",
+      "identical": true
+    },
+    {
+      "file": "uw_historical_latency_by_asset.csv",
+      "primary_sha256": "392bc2c5fef3a9b16195b014de52ae840b8dee9f9338f77634a1a39e7d5150d9",
+      "rerun_sha256": "392bc2c5fef3a9b16195b014de52ae840b8dee9f9338f77634a1a39e7d5150d9",
+      "identical": true
+    },
+    {
+      "file": "uw_historical_latency_by_session.csv",
+      "primary_sha256": "0a3a7f796124807f4204a099b0b59c1bf987ff4c4073403a0c6f057dbb4791a1",
+      "rerun_sha256": "0a3a7f796124807f4204a099b0b59c1bf987ff4c4073403a0c6f057dbb4791a1",
+      "identical": true
+    },
+    {
+      "file": "uw_historical_latency_summary.csv",
+      "primary_sha256": "584afe271935ed03e1bc49b2f55c0a2209977ac32296ccaa63d057791a04c076",
+      "rerun_sha256": "584afe271935ed03e1bc49b2f55c0a2209977ac32296ccaa63d057791a04c076",
+      "identical": true
+    }
+  ],
+  "scope_limit": "This establishes deterministic artifact generation only. It does not prove provider publication latency or client receipt time."
+}

@@ -19,17 +19,21 @@ Spec Kit consistency and preregistration gates pass.
    acceptance result. The repeated eight-asset depth probes are retained and classified as an
    idempotency defect.
 5. **Timestamp policy** — FMP bar start/close semantics, exact origin close, last valid origin,
-   early-close and halt handling must be proven before pilot work. Missing prices fail closed;
-   interpolation is forbidden. Market completeness uses an exchange calendar, not 390 times
-   calendar days.
+   early-close and halt handling remain unverified as provider facts. Existing canonical evidence
+   is retained under its registered conservative timing rules; any *new* historical sample requires
+   a date-level PIT preflight. Missing prices fail closed; interpolation is forbidden. Market
+   completeness uses an exchange calendar, not 390 times calendar days.
 6. **Unusual Whales** — Canonical aliases are `ivStart -> iv_start` and `ivEnd -> iv_end`.
    `event_iv_fields_present` is separate from `ordinary_option_state_pit_verified`; alert
    fields do not prove a historical ordinary option-state series. Document `created_at`,
-   `start_time` and `end_time` independently. Do not assert `executed_at` without raw proof.
-   The official OptionTrade schema defines `created_at` as the time the trade record was
-   created, not as publication or historical availability. The official term-structure and historical risk-reversal endpoints may establish field
-   coverage, but a market date without an independent publication/availability timestamp keeps
-   `ordinary_option_state_pit_verified=false` and cannot unlock B1.
+   `start_time` and `end_time` independently. The retained Full Tape files now provide raw
+   `executed_at` and `created_at` field coverage, but their delta remains a provider-field
+   diagnostic only: it does not establish customer receipt or publication time. The official
+   OptionTrade schema defines `created_at` as time the trade record was created, not as
+   publication or historical availability. The official term-structure and historical risk-reversal
+   endpoints may establish field coverage, but a market date without an independent
+   publication/availability timestamp keeps `ordinary_option_state_pit_verified=false` and
+   cannot unlock B1.
 7. **Earnings applicability** — Require `returned_symbol == requested_symbol`; use
    `applicable`, `not_applicable`, `unsupported` or `invalid_response`. ETFs do not inherit a
    company earnings contract.
@@ -49,18 +53,19 @@ Spec Kit consistency and preregistration gates pass.
     retention. A historical REST response containing only a trading date is therefore not
     sufficient for retrospective PIT acceptance. A prospective stream capture could satisfy
     the availability gate only after a separate licensed capture and replay audit.
-12. **FMP bar-label evidence** — FMP's official intraday guidance says each response object is
-    one minute, uses exchange-local timestamps, and that a new point appears after the one-minute
-    candle closes, but it does not specify whether `date` labels the interval start or interval close.
-    A bounded AAPL 1-minute/5-minute probe is consistent with start-grid labels (78/78 versus
-    0/78 close-grid labels), but remains internal consistency rather than contractual proof. The retained authenticated
-    samples show regular-session labels from `09:30` through `15:59` (and early-close labels
-    through `12:59`), which is consistent with start-labelled bars but is not sufficient to accept
-    the convention. The twenty-session engineering panel therefore uses
-    `available_at = timestamp_raw + 1 minute` as a conservative research assumption and keeps
-    `FMP_BAR_SEMANTICS_UNRESOLVED`; no RV30 acceptance or final evaluation may rely on this
-    assumption without labelling it and reporting the +2-minute sensitivity. Source:
-    `https://site.financialmodelingprep.com/how-to/how-to-get-stock-intraday-data-with-fmp-apis`.
+12. **FMP bar-label evidence** — The current official FMP documentation identifies the
+    `historical-chart/1min` endpoint and one-minute OHLCV scope, but does not document the
+    response timestamp timezone, whether `date` labels interval start or close, or completed-bar
+    publication latency. A bounded AAPL 1-minute/5-minute probe is consistent with start-grid
+    labels (78/78 versus 0/78 close-grid labels), but remains internal consistency rather than
+    contractual proof. The retained authenticated samples show regular-session labels from `09:30`
+    through `15:59` (and early-close labels through `12:59`), which is consistent with
+    start-labelled bars but is not sufficient to accept the convention. The engineering panel
+    therefore uses `available_at = timestamp_raw + 1 minute` as a conservative research
+    assumption and keeps `FMP_BAR_SEMANTICS_UNRESOLVED`; report the +2-minute sensitivity and
+    never describe either rule as provider-confirmed latency. Sources:
+    `https://site.financialmodelingprep.com/developer/docs/stable/intraday-1-min` and
+    `https://site.financialmodelingprep.com/developer/docs`.
 13. **B1 closure routes** — `B1Q` (Massive quotes) is the preferred ordinary-option-state
     route because it is independent of trade occurrence. `B1T` (Full Tape) is a diagnostic
     fallback and sensitivity route only; it shares source provenance with B2 and cannot be
@@ -157,3 +162,12 @@ Spec Kit consistency and preregistration gates pass.
    provider request before `2026-07-31T20:00:00Z`, runs under the isolated
    `D:\MDS650\data\phase5_holdout` root, may construct and hash the common panel and timing
    sidecar, and must leave `holdout_reads=0` without model fitting, QLIKE or outcome summaries.
+35. **Provider timing gate amendment v1 (2026-08-11)** — Existing canonical evidence is
+   `VALID_UNDER_REGISTERED_TIMING_ASSUMPTIONS` and its scientific reconciliation is
+   `CONDITIONAL_GO_NOW`. A new historical sample remains
+   `GO_AFTER_DATE_LEVEL_PIT_PREFLIGHT`; a new prospective sample remains
+   `GO_AFTER_RECEIPT_LOGGER_VALIDATED`; and any universal provider-latency claim is
+   `NOT_SUPPORTED`. The static FMP rule is `timestamp + 1 minute` with `+2 minutes` sensitivity
+   as `SUPPORTED_CONSERVATIVE_ASSUMPTION`. The historical UW Full Tape audit is `PROXY_ONLY`:
+   observed `created_at - executed_at` fields do not become publication or client-receipt time.
+   This amendment supersedes a single absolute timing NO-GO without changing canonical results.

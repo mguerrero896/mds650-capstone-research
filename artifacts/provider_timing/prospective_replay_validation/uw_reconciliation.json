@@ -1,0 +1,13 @@
+{
+  "client_receipt_time_proven": false,
+  "duplicate_full_tape_identifier_count": 0,
+  "full_tape_record_count": 1,
+  "matched_count": 1,
+  "personal_paths_emitted": false,
+  "publication_time_proven": false,
+  "receipt_record_count": 1,
+  "schema_version": "provider-timing-uw-reconciliation-1.0",
+  "secret_values_emitted": false,
+  "status": "REPLAY_ONLY_NOT_LIVE",
+  "unmatched_receipt_count": 0
+}

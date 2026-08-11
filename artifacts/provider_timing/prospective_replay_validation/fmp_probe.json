@@ -1,0 +1,14 @@
+{
+  "fmp_bar_label_semantics": "UNVERIFIED",
+  "fmp_provider_confirmed_latency": "NOT_SUPPORTED",
+  "fmp_research_availability_rule": "SUPPORTED_CONSERVATIVE_ASSUMPTION",
+  "live_market_capture_performed": false,
+  "personal_paths_emitted": false,
+  "publication_latency_proven": false,
+  "replay_record_count": 1,
+  "research_assumption_primary_seconds": 60,
+  "research_assumption_sensitivity_seconds": 120,
+  "schema_version": "provider-timing-fmp-replay-1.0",
+  "secret_values_emitted": false,
+  "status": "PENDING_PROSPECTIVE_MEASUREMENT_NOT_BLOCKING"
+}

@@ -1,0 +1,178 @@
+{
+  "evidence_date": "2026-08-11",
+  "fmp": {
+    "archive_type": "sanitized_official_documentation_citation_record",
+    "fmp_bar_label_semantics": "UNVERIFIED",
+    "fmp_provider_confirmed_latency": "NOT_SUPPORTED",
+    "fmp_research_availability_rule": "SUPPORTED_CONSERVATIVE_ASSUMPTION",
+    "interpretation": "The official documentation supports the endpoint and one-minute OHLCV scope, but does not support an exact timestamp-label or provider-latency claim.",
+    "live_probe_status": "PENDING_PROSPECTIVE_MEASUREMENT_NOT_BLOCKING",
+    "not_stated_by_documentation": [
+      "timezone carried by the response timestamp",
+      "whether the response timestamp labels interval start or interval close",
+      "provider publication latency for a completed minute bar"
+    ],
+    "official_sources": [
+      {
+        "observed_statement": "The official page describes real-time or historical one-minute OHLCV data through the historical-chart/1min endpoint.",
+        "title": "FMP 1 Min Interval Stock Chart API",
+        "url": "https://site.financialmodelingprep.com/developer/docs/stable/intraday-1-min"
+      },
+      {
+        "observed_statement": "The official index lists the one-minute intraday chart endpoint and identifies open, high, low, close and volume for each minute.",
+        "title": "FMP official documentation index",
+        "url": "https://site.financialmodelingprep.com/developer/docs"
+      }
+    ],
+    "personal_paths_emitted": false,
+    "primary_availability_delay_seconds": 60,
+    "retrieved_on": "2026-08-11",
+    "secret_values_emitted": false,
+    "sensitivity_availability_delay_seconds": 120
+  },
+  "gates": {
+    "EXISTING_CANONICAL_EVIDENCE": "VALID_UNDER_REGISTERED_TIMING_ASSUMPTIONS",
+    "EXISTING_SCIENTIFIC_RECONCILIATION": "CONDITIONAL_GO_NOW",
+    "NEW_HISTORICAL_SAMPLE": "GO_AFTER_DATE_LEVEL_PIT_PREFLIGHT",
+    "NEW_PROSPECTIVE_SAMPLE": "GO_AFTER_RECEIPT_LOGGER_VALIDATED",
+    "UNIVERSAL_PROVIDER_LATENCY_CLAIM": "NOT_SUPPORTED"
+  },
+  "manifest_sha256": "6d19165764e3ada3db66c49b434cbc58e13f3c4691c743810239096c9c0bfe62",
+  "no_provider_http_requests_performed": true,
+  "no_targets_or_predictive_metrics_read": true,
+  "personal_paths_emitted": false,
+  "schema_version": "provider-timing-semantics-audit-1.0",
+  "scope": "offline_existing_provider_evidence_only",
+  "secret_values_emitted": false,
+  "unusual_whales": {
+    "cohort_stability": {
+      "cohort_count": 2,
+      "comparisons": [
+        {
+          "assessment": "DESCRIPTIVE_ONLY_NOT_A_PUBLICATION_LATENCY_PROOF",
+          "baseline_cohort": "independent_replication_30",
+          "comparison_cohort": "phase6",
+          "latency_p50_absolute_difference_seconds": 0.0003100000000000047,
+          "latency_p95_absolute_difference_seconds": 0.2882384500000015,
+          "within_60_seconds_share_absolute_difference": 0.00017671943404773405
+        }
+      ],
+      "interpretation": "Cohort comparisons describe stability of provider-field deltas only; they do not verify universal provider latency or client receipt time."
+    },
+    "cohorts": {
+      "independent_replication_30": {
+        "both_timestamps_completeness": 1.0,
+        "both_timestamps_count": 286706702,
+        "created_at_completeness": 1.0,
+        "created_at_missing_count": 0,
+        "created_at_non_null_count": 286706702,
+        "executed_at_completeness": 1.0,
+        "executed_at_missing_count": 0,
+        "executed_at_non_null_count": 286706702,
+        "latency_max_seconds": 2038.201887,
+        "latency_min_seconds": 0.029177,
+        "latency_p1_seconds": 0.0401519,
+        "latency_p50_seconds": 0.075893,
+        "latency_p5_seconds": 0.047586,
+        "latency_p90_seconds": 0.35367899999999997,
+        "latency_p95_seconds": 2.0570577500000002,
+        "latency_p99_seconds": 12.02919775,
+        "latency_within_120_seconds_count": 285573007,
+        "latency_within_120_seconds_share": 0.9960458022359031,
+        "latency_within_300_seconds_count": 286129870,
+        "latency_within_300_seconds_share": 0.9979880763303538,
+        "latency_within_60_seconds_count": 285172032,
+        "latency_within_60_seconds_share": 0.9946472475554478,
+        "negative_latency_count": 0,
+        "negative_latency_share": 0.0,
+        "percentile_method": "deterministic_hash_sample",
+        "quantile_sample_count": 87546,
+        "row_count": 286706702
+      },
+      "phase6": {
+        "both_timestamps_completeness": 1.0,
+        "both_timestamps_count": 532896281,
+        "created_at_completeness": 1.0,
+        "created_at_missing_count": 0,
+        "created_at_non_null_count": 532896281,
+        "executed_at_completeness": 1.0,
+        "executed_at_missing_count": 0,
+        "executed_at_non_null_count": 532896281,
+        "latency_max_seconds": 23995.22314,
+        "latency_min_seconds": 0.029368,
+        "latency_p1_seconds": 0.04011697,
+        "latency_p50_seconds": 0.075583,
+        "latency_p5_seconds": 0.047446,
+        "latency_p90_seconds": 0.2874877000000005,
+        "latency_p95_seconds": 1.7688192999999988,
+        "latency_p99_seconds": 6.745064419999993,
+        "latency_within_120_seconds_count": 530180410,
+        "latency_within_120_seconds_share": 0.9949035654838807,
+        "latency_within_300_seconds_count": 530358161,
+        "latency_within_300_seconds_share": 0.9952371219494399,
+        "latency_within_60_seconds_count": 529949646,
+        "latency_within_60_seconds_share": 0.9944705281214,
+        "negative_latency_count": 0,
+        "negative_latency_share": 0.0,
+        "percentile_method": "deterministic_hash_sample",
+        "quantile_sample_count": 162098,
+        "row_count": 532896281
+      }
+    },
+    "global": {
+      "both_timestamps_completeness": 1.0,
+      "both_timestamps_count": 819602983,
+      "created_at_completeness": 1.0,
+      "created_at_missing_count": 0,
+      "created_at_non_null_count": 819602983,
+      "executed_at_completeness": 1.0,
+      "executed_at_missing_count": 0,
+      "executed_at_non_null_count": 819602983,
+      "latency_max_seconds": 23995.22314,
+      "latency_min_seconds": 0.029177,
+      "latency_p1_seconds": 0.040132,
+      "latency_p50_seconds": 0.0756855,
+      "latency_p5_seconds": 0.047493150000000005,
+      "latency_p90_seconds": 0.309732700000001,
+      "latency_p95_seconds": 1.8593374999999983,
+      "latency_p99_seconds": 8.414489600000007,
+      "latency_within_120_seconds_count": 815753417,
+      "latency_within_120_seconds_share": 0.9953031332488452,
+      "latency_within_300_seconds_count": 816488031,
+      "latency_within_300_seconds_share": 0.9961994379417723,
+      "latency_within_60_seconds_count": 815121678,
+      "latency_within_60_seconds_share": 0.9945323466447169,
+      "negative_latency_count": 0,
+      "negative_latency_share": 0.0,
+      "percentile_method": "deterministic_hash_sample",
+      "quantile_sample_count": 249644,
+      "row_count": 819602983
+    },
+    "historical_uw_classification": "PROXY_ONLY",
+    "input": {
+      "cohorts": {
+        "independent_replication_30": {
+          "file_count": 712,
+          "row_count": 286706702
+        },
+        "phase6": {
+          "file_count": 1440,
+          "row_count": 532896281
+        }
+      },
+      "logical_file_manifest_sha256": "0113da6c4241536e1a782d0788eafceefe4d1795ec55422dea0cf2b55192eb1e"
+    },
+    "interpretation_boundary": "created_at_minus_executed_at_measures_provider_fields_only; it does not prove client_receipt_time_or_publication_time",
+    "manifest_sha256": "1503f7b9ed8302e17fa8a3d18f952b6919edd4af8256a2849e388ed9e5a6bdac",
+    "no_targets_or_predictive_metrics_read": true,
+    "personal_paths_emitted": false,
+    "quantile_method": {
+      "global_and_cohort_and_asset": "deterministic_hash_sample",
+      "sample_size_target": 250000,
+      "session": "exact_per_session"
+    },
+    "schema_version": "provider-timing-semantics-1.0",
+    "scope": "existing_filtered_unusual_whales_full_tape_only",
+    "secret_values_emitted": false
+  }
+}
