@@ -7,7 +7,7 @@ import json
 import os
 import time as time_module
 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import date, timedelta
 from functools import lru_cache
 from pathlib import Path
@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "artifacts" / "calibration_20d"
 CACHE = OUT / "massive_b1q_cache_v4"
 ASSETS = closure.ASSETS
-SESSIONS = tuple(sorted({str(row) for row in pl.read_parquet(OUT / "b2_calibration_origins.parquet").get_column("session_date").unique().to_list()}))
+DEFAULT_ORIGINS_PATH = OUT / "b2_calibration_origins.parquet"
 
 
 @dataclass(frozen=True)
@@ -34,15 +34,51 @@ class B1BuildConfig:
     origins_path: Path | None = None
 
     def __post_init__(self) -> None:
-        if not self.sessions or tuple(sorted(set(self.sessions))) != self.sessions:
+        if self.sessions and tuple(sorted(set(self.sessions))) != self.sessions:
+            raise ValueError("B1_SESSION_ALLOWLIST_INVALID")
+        if not self.sessions and self.origins_path is None:
             raise ValueError("B1_SESSION_ALLOWLIST_INVALID")
 
 
 DEFAULT_CONFIG = B1BuildConfig(
     output_root=OUT,
     cache_root=CACHE,
-    sessions=SESSIONS,
+    sessions=(),
+    origins_path=DEFAULT_ORIGINS_PATH,
 )
+
+
+def _authorized_sessions(config: B1BuildConfig) -> tuple[str, ...]:
+    """Resolve the explicit session allow-list only when execution needs it.
+
+    The module must remain importable in a clean checkout that intentionally
+    omits commercial pilot Parquet.  Reading the authorized origin source is an
+    execution concern, never an import-time side effect.
+    """
+    if config.sessions:
+        return config.sessions
+    source = config.origins_path
+    if source is None or not source.is_file():
+        raise RuntimeError("B1_ORIGIN_SOURCE_MISSING")
+    sessions = tuple(
+        sorted(
+            str(value)
+            for value in pl.read_parquet(source)
+            .get_column("session_date")
+            .unique()
+            .to_list()
+        )
+    )
+    if not sessions:
+        raise RuntimeError("B1_ORIGIN_SESSION_ALLOWLIST_EMPTY")
+    return sessions
+
+
+def _with_authorized_sessions(config: B1BuildConfig) -> B1BuildConfig:
+    """Return an execution config whose session allow-list is explicit."""
+    if config.sessions:
+        return config
+    return replace(config, sessions=_authorized_sessions(config))
 
 
 def _secret(name: str) -> str:
@@ -92,8 +128,9 @@ def _fmp_list_request(
 
 def _market_input_window(config: B1BuildConfig) -> tuple[date, date]:
     """Return the trailing-year PIT input window for rates and dividends."""
-    first = min(date.fromisoformat(day) for day in config.sessions)
-    last = max(date.fromisoformat(day) for day in config.sessions)
+    sessions = _authorized_sessions(config)
+    first = min(date.fromisoformat(day) for day in sessions)
+    last = max(date.fromisoformat(day) for day in sessions)
     return first - timedelta(days=365), last
 
 
@@ -420,7 +457,7 @@ def _load_origins(config: B1BuildConfig) -> pl.DataFrame:
     observed_sessions = tuple(
         sorted(str(value) for value in origins.get_column("session_date").unique().to_list())
     )
-    if observed_sessions != config.sessions:
+    if observed_sessions != _authorized_sessions(config):
         raise RuntimeError("B1_ORIGIN_SESSION_ALLOWLIST_MISMATCH")
     return origins.with_columns(
         pl.col("forecast_origin_utc").dt.timestamp("ns").alias("origin_ns")
@@ -429,6 +466,7 @@ def _load_origins(config: B1BuildConfig) -> pl.DataFrame:
 
 def main(config: B1BuildConfig = DEFAULT_CONFIG) -> None:
     """Run B1Q over all twenty origins and write coverage/failure artifacts."""
+    config = _with_authorized_sessions(config)
     config.output_root.mkdir(parents=True, exist_ok=True)
     origins = _load_origins(config)
     fmp_key, massive_key = _secret("FMP_API_KEY"), _secret("MASSIVE_API_KEY")

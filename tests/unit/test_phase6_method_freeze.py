@@ -8,6 +8,7 @@ from pathlib import Path
 import polars as pl
 import pytest
 
+from mds650.phase6 import build_phase6_preregistration
 from mds650.phase6_evaluation import (
     estimate_training_mde,
     phase6_information_sets,
@@ -21,6 +22,49 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import freeze_phase6_method as freezer  # noqa: E402
 
 
+def _frozen_preregistration() -> dict[str, object]:
+    """Build a self-contained frozen contract without commercial artifacts."""
+    hash_value = "0" * 64
+    return build_phase6_preregistration(
+        {
+            "branch": "test-phase6-method-freeze",
+            "repository_commit": "0" * 40,
+            "python_version": "3.12.0",
+            "uv_lock_sha256": hash_value,
+            "design_sha256": hash_value,
+            "spec_sha256": hash_value,
+            "plan_sha256": hash_value,
+            "tasks_sha256": hash_value,
+            "analysis_sha256": hash_value,
+            "phase6_source_sha256": hash_value,
+            "schema_sha256": hash_value,
+            "worktree_dirty": False,
+        }
+    )
+
+
+def _training_forecast_fixture() -> pl.DataFrame:
+    """Return paired, variable training losses for deterministic MDE testing."""
+    rows: list[dict[str, object]] = []
+    for index in range(12):
+        day = f"2025-01-{index + 1:02d}"
+        for information_set, loss in (
+            ("B0v2", 1.0),
+            ("B1v2a", 0.99 - index / 10_000),
+            ("B2v2", 0.98 - index / 5_000),
+        ):
+            rows.append(
+                {
+                    "origin_id": f"AAPL:{day}:14:35",
+                    "session_date": day,
+                    "fold": 101,
+                    "information_set": information_set,
+                    "qlike_loss": loss,
+                }
+            )
+    return pl.DataFrame(rows)
+
+
 def test_training_mde_is_deterministic_and_positive() -> None:
     effects = [-0.03, -0.01, 0.0, 0.01, 0.02, 0.04] * 10
 
@@ -32,9 +76,7 @@ def test_training_mde_is_deterministic_and_positive() -> None:
 
 
 def test_training_mde_from_frozen_forecasts_is_bitwise_deterministic() -> None:
-    forecasts = pl.read_parquet(
-        ROOT / "artifacts/phase6/training_mde_oof_forecasts.parquet"
-    )
+    forecasts = _training_forecast_fixture()
 
     estimates = {
         repr(training_mde_from_forecasts(forecasts, draws=10_000, seed=650))
@@ -51,11 +93,7 @@ def test_training_mde_rejects_uninformative_samples(effects: list[float]) -> Non
 
 
 def test_training_oof_forecasts_never_read_registered_oos_dates() -> None:
-    preregistration = json.loads(
-        (ROOT / "artifacts/phase6/preregistration.json").read_text(
-            encoding="utf-8"
-        )
-    )
+    preregistration = _frozen_preregistration()
     training_dates = preregistration["folds"][0]["train_dates"]
     rows = []
     features = phase6_information_sets()["B2v2"]
@@ -99,11 +137,7 @@ def test_training_oof_forecasts_never_read_registered_oos_dates() -> None:
 
 
 def test_method_freeze_rejects_any_oos_read(tmp_path: Path) -> None:
-    preregistration = json.loads(
-        (ROOT / "artifacts/phase6/preregistration.json").read_text(
-            encoding="utf-8"
-        )
-    )
+    preregistration = _frozen_preregistration()
     preregistration["oos_read_count"] = 1
     prereg_path = tmp_path / "preregistration.json"
     prereg_path.write_text(json.dumps(preregistration), encoding="utf-8")

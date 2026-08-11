@@ -187,6 +187,7 @@ def test_b1q_fetch_retains_paths_instead_of_quote_payloads(
             "cache_path": str(cache_path),
             "source_request_hash": "abc",
             "results": [{"sip_timestamp": 999}],
+            "pagination_complete": "INFERRED_TERMINAL_PARTIAL_PAGE",
         },
     )
     config = b1_builder.B1BuildConfig(
@@ -195,7 +196,7 @@ def test_b1q_fetch_retains_paths_instead_of_quote_payloads(
         sessions=("2026-03-24",),
     )
 
-    result = b1_builder._fetch_quotes(
+    paths, audit = b1_builder._fetch_quotes(
         {
             ("AAPL", "2026-03-24"): [
                 {
@@ -210,9 +211,10 @@ def test_b1q_fetch_retains_paths_instead_of_quote_payloads(
         config,
     )
 
-    assert result[
+    assert paths[
         ("AAPL", "2026-03-24", "O:AAPL260417C00100000")
     ] == (cache_path, "abc")
+    assert audit["pagination_inferred_terminal_partial"] == 1
 
 
 def test_latest_quote_builds_a_sorted_asof_index() -> None:

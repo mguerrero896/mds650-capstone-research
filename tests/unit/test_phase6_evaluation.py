@@ -1,14 +1,17 @@
 from __future__ import annotations
 
-import json
 from datetime import UTC, datetime, timedelta
-from pathlib import Path
 from typing import Any
 
 import polars as pl
 import pytest
 
-from mds650.phase6 import B0V2_FEATURES, B1V2A_FEATURES, B2V2_FEATURES
+from mds650.phase6 import (
+    B0V2_FEATURES,
+    B1V2A_FEATURES,
+    B2V2_FEATURES,
+    build_phase6_preregistration,
+)
 from mds650.phase6_evaluation import (
     add_training_volatility_regime,
     authorize_phase6_oos,
@@ -22,17 +25,26 @@ from mds650.phase6_evaluation import (
 )
 from mds650.temporal_validation import FoldDefinition
 
-ROOT = Path(__file__).resolve().parents[2]
-
 
 def _preregistration() -> dict[str, Any]:
-    payload = json.loads(
-        (ROOT / "artifacts/phase6/preregistration.json").read_text(
-            encoding="utf-8"
-        )
+    """Return a production-shaped contract without commercial evidence files."""
+    hash_value = "0" * 64
+    return build_phase6_preregistration(
+        {
+            "branch": "test-phase6-evaluation",
+            "repository_commit": "0" * 40,
+            "python_version": "3.12.0",
+            "uv_lock_sha256": hash_value,
+            "design_sha256": hash_value,
+            "spec_sha256": hash_value,
+            "plan_sha256": hash_value,
+            "tasks_sha256": hash_value,
+            "analysis_sha256": hash_value,
+            "phase6_source_sha256": hash_value,
+            "schema_sha256": hash_value,
+            "worktree_dirty": False,
+        }
     )
-    assert isinstance(payload, dict)
-    return payload
 
 
 def _valid_panel(preregistration: dict[str, Any]) -> pl.DataFrame:

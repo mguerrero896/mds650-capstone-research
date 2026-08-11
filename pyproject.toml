@@ -37,9 +37,11 @@ packages = ["src/mds650"]
 [tool.pytest.ini_options]
 addopts = "-q --strict-markers"
 testpaths = ["tests"]
+pythonpath = ["."]
 markers = [
   "live: bounded authenticated provider probe; never a backfill",
   "e2e: fixture-only end-to-end pipeline test",
+  "evidence: requires an explicit MDS650_EVIDENCE_ROOT with hashed research artifacts",
 ]
 
 [tool.ruff]

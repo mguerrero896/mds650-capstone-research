@@ -7,18 +7,36 @@ from datetime import timedelta
 from pathlib import Path
 
 import polars as pl
+import pytest
+from tests.evidence import require_evidence_root
 
-ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "artifacts" / "phase4b"
+pytestmark = pytest.mark.evidence
+
+
+def _out() -> Path:
+    """Return the explicit evidence package for historical Phase 4B checks."""
+    root = require_evidence_root(
+        "artifacts/phase4b/b0_plus1_25d.parquet",
+        "artifacts/phase4b/b0_plus2_25d.parquet",
+        "artifacts/phase4b/b2_panel_25d.parquet",
+        "artifacts/phase4b/b2_core_complete_25d.parquet",
+        "artifacts/phase4b/feature_registry_v1.json",
+        "artifacts/phase4b/matrix_row_sets_v1.json",
+        "artifacts/phase4b/checkpoint_restart_v1.json",
+        "artifacts/phase4b/prospective_10_session_manifest.json",
+        "artifacts/phase4b/pilot_strict_core_diagnostics.json",
+    )
+    return root / "artifacts" / "phase4b"
 
 
 def _json(name: str) -> dict:
-    return json.loads((OUT / name).read_text(encoding="utf-8"))
+    return json.loads((_out() / name).read_text(encoding="utf-8"))
 
 
 def test_fmp_variants_are_asof_and_target_identical() -> None:
-    plus1 = pl.read_parquet(OUT / "b0_plus1_25d.parquet")
-    plus2 = pl.read_parquet(OUT / "b0_plus2_25d.parquet")
+    out = _out()
+    plus1 = pl.read_parquet(out / "b0_plus1_25d.parquet")
+    plus2 = pl.read_parquet(out / "b0_plus2_25d.parquet")
     assert plus1.height == plus2.height == 14200
     assert plus1["origin_id"].to_list() == plus2["origin_id"].to_list()
     target_columns = ["origin_id", "rv30", "target_price_count", "target_future_close_count"]
@@ -34,7 +52,7 @@ def test_fmp_variants_are_asof_and_target_identical() -> None:
 
 
 def test_uw_windows_are_exactly_five_minutes_and_nonempty_at_300_seconds() -> None:
-    panel = pl.read_parquet(OUT / "b2_panel_25d.parquet")
+    panel = pl.read_parquet(_out() / "b2_panel_25d.parquet")
     assert panel.select(
         (pl.col("b2_window_end") - pl.col("b2_window_start") == timedelta(minutes=5)).all()
     ).item()
@@ -50,7 +68,7 @@ def test_uw_windows_are_exactly_five_minutes_and_nonempty_at_300_seconds() -> No
 
 def test_optional_iv_does_not_define_b2_core_and_aliases_are_absent() -> None:
     registry = _json("feature_registry_v1.json")
-    matrix = pl.read_parquet(OUT / "b2_core_complete_25d.parquet")
+    matrix = pl.read_parquet(_out() / "b2_core_complete_25d.parquet")
     assert registry["aliases"]["implied_volatility_change_within_bin"] == "within_bin_iv_change"
     assert registry["identity_audit"]["exact_duplicate_predictors"] == []
     assert "b2_implied_volatility_change_within_bin" not in matrix.columns

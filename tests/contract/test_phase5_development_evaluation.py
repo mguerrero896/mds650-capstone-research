@@ -4,26 +4,46 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import subprocess
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 import polars as pl
+import pytest
+from tests.evidence import require_evidence_root
 
-from mds650.study_design import canonical_sha256, source_sha256
+from mds650.study_design import canonical_sha256
 
-ROOT = Path(__file__).resolve().parents[2]
-PHASE5 = ROOT / "artifacts" / "phase5"
-FORECASTS = PHASE5 / "development_forecasts.parquet"
-RESULTS = PHASE5 / "development_results.json"
-LEDGER = PHASE5 / "variant_ledger.json"
-FREEZE = PHASE5 / "method_freeze.json"
-PANEL = PHASE5 / "common_development_80d.parquet"
-QUALITY = PHASE5 / "development_panel_quality.json"
-PREREGISTRATION = PHASE5 / "preregistration.json"
-STABILITY_INPUTS = Path("D:/MDS650/data/phase5_stability/development_stability_inputs_80d.parquet")
-STABILITY_MANIFEST = PHASE5 / "development_stability_input_manifest.json"
-STABILITY_VALIDATION = PHASE5 / "development_stability_validation.json"
+pytestmark = pytest.mark.evidence
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+PHASE5_FREEZE_SOURCE_COMMIT = "cb8448de7281540e7efdec7fa94c3fa5ebed3248"
+
+
+def _phase5() -> Path:
+    """Return the explicitly mounted, non-versioned Phase 5 evidence root."""
+    root = require_evidence_root(
+        "artifacts/phase5/development_forecasts.parquet",
+        "artifacts/phase5/development_results.json",
+        "artifacts/phase5/variant_ledger.json",
+        "artifacts/phase5/method_freeze.json",
+        "artifacts/phase5/common_development_80d.parquet",
+        "artifacts/phase5/development_panel_quality.json",
+        "artifacts/phase5/preregistration.json",
+        "artifacts/phase5/development_stability_input_manifest.json",
+        "artifacts/phase5/development_stability_validation.json",
+    )
+    return root / "artifacts" / "phase5"
+
+
+def _stability_inputs() -> Path:
+    """Return the configured bulk-data location without spilling onto C:."""
+    data_root = Path(os.environ.get("MDS650_DATA_ROOT", "D:/MDS650"))
+    path = data_root / "data" / "phase5_stability" / "development_stability_inputs_80d.parquet"
+    if not path.is_file():
+        pytest.fail("MDS650_EVIDENCE_STABILITY_INPUT_MISSING")
+    return path
 
 
 def _json(path: Path) -> dict[str, Any]:
@@ -38,11 +58,26 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _source_sha256_at_freeze(relative_path: str) -> str:
+    """Hash the Git snapshot explicitly bound to the Phase 5 method freeze."""
+    result = subprocess.run(
+        ["git", "show", f"{PHASE5_FREEZE_SOURCE_COMMIT}:{relative_path}"],
+        cwd=REPOSITORY_ROOT,
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode:
+        pytest.fail("PHASE5_FREEZE_SOURCE_SNAPSHOT_MISSING")
+    normalized = result.stdout.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return hashlib.sha256(normalized).hexdigest()
+
+
 def test_development_forecasts_are_positive_paired_and_holdout_free() -> None:
-    forecasts = pl.read_parquet(FORECASTS)
-    preregistration = _json(PREREGISTRATION)
-    selected_assets = _json(QUALITY)["selected_assets"]
-    expected = pl.read_parquet(PANEL).filter(
+    phase5 = _phase5()
+    forecasts = pl.read_parquet(phase5 / "development_forecasts.parquet")
+    preregistration = _json(phase5 / "preregistration.json")
+    selected_assets = _json(phase5 / "development_panel_quality.json")["selected_assets"]
+    expected = pl.read_parquet(phase5 / "common_development_80d.parquet").filter(
         pl.col("asset").is_in(selected_assets)
         & pl.any_horizontal(
             [
@@ -74,7 +109,7 @@ def test_development_forecasts_are_positive_paired_and_holdout_free() -> None:
 
 
 def test_results_retain_both_nested_contrasts_and_all_signs() -> None:
-    results = _json(RESULTS)
+    results = _json(_phase5() / "development_results.json")
     contrasts = results["contrasts"]
 
     assert results["status"] == "PASS_DEVELOPMENT_ONLY"
@@ -95,7 +130,7 @@ def test_results_retain_both_nested_contrasts_and_all_signs() -> None:
 
 
 def test_variant_ledger_preserves_grid_primary_and_timing_variants() -> None:
-    ledger = _json(LEDGER)
+    ledger = _json(_phase5() / "variant_ledger.json")
 
     assert ledger["outcome_reporting"] == ("RETAIN_ALL_POSITIVE_NEGATIVE_AND_NULL_RESULTS")
     assert len(ledger["tuning_variants"]) == 4 * 3 * (4 + 16)
@@ -120,7 +155,8 @@ def test_variant_ledger_preserves_grid_primary_and_timing_variants() -> None:
 
 
 def test_method_freeze_hashes_exact_development_evidence() -> None:
-    freeze = _json(FREEZE)
+    phase5 = _phase5()
+    freeze = _json(phase5 / "method_freeze.json")
 
     assert freeze["status"] == "FROZEN_AFTER_DEVELOPMENT_BEFORE_HOLDOUT"
     assert freeze["holdout_reads"] == 0
@@ -134,20 +170,24 @@ def test_method_freeze_hashes_exact_development_evidence() -> None:
         "src/mds650/study_design.py",
     } <= set(freeze["source_code_hashes"])
     assert all(
-        digest == source_sha256(ROOT / relative_path)
+        digest == _source_sha256_at_freeze(relative_path)
         for relative_path, digest in freeze["source_code_hashes"].items()
     )
-    assert freeze["input_hashes"]["common_development_80d.parquet"] == _sha256(PANEL)
+    assert freeze["input_hashes"]["common_development_80d.parquet"] == _sha256(
+        phase5 / "common_development_80d.parquet"
+    )
     assert freeze["input_hashes"]["development_stability_inputs_80d.parquet"] == _sha256(
-        STABILITY_INPUTS
+        _stability_inputs()
     )
     assert freeze["input_hashes"]["development_stability_input_manifest.json"] == _sha256(
-        STABILITY_MANIFEST
+        phase5 / "development_stability_input_manifest.json"
     )
     assert freeze["input_hashes"]["development_stability_validation.json"] == _sha256(
-        STABILITY_VALIDATION
+        phase5 / "development_stability_validation.json"
     )
-    assert freeze["input_hashes"]["preregistration.json"] == _sha256(PREREGISTRATION)
+    assert freeze["input_hashes"]["preregistration.json"] == _sha256(
+        phase5 / "preregistration.json"
+    )
     assert freeze["stability_definition"]["fmp_delay_minutes"] == [1, 2]
     assert freeze["stability_definition"]["b2_delay_seconds"] == [60, 120, 300]
     assert freeze["stability_definition"]["confirmatory_family_expanded"] is False
@@ -155,9 +195,15 @@ def test_method_freeze_hashes_exact_development_evidence() -> None:
         freeze["stability_definition"]["operationalization_timing"]
         == "AFTER_DEVELOPMENT_BEFORE_HOLDOUT"
     )
-    assert freeze["output_hashes"]["development_forecasts.parquet"] == _sha256(FORECASTS)
-    assert freeze["output_hashes"]["development_results.json"] == _sha256(RESULTS)
-    assert freeze["output_hashes"]["variant_ledger.json"] == _sha256(LEDGER)
+    assert freeze["output_hashes"]["development_forecasts.parquet"] == _sha256(
+        phase5 / "development_forecasts.parquet"
+    )
+    assert freeze["output_hashes"]["development_results.json"] == _sha256(
+        phase5 / "development_results.json"
+    )
+    assert freeze["output_hashes"]["variant_ledger.json"] == _sha256(
+        phase5 / "variant_ledger.json"
+    )
     assert freeze["manifest_sha256"] == canonical_sha256(
         {key: value for key, value in freeze.items() if key != "manifest_sha256"}
     )

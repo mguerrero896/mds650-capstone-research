@@ -7,24 +7,49 @@ import json
 from datetime import UTC, date, datetime
 from pathlib import Path
 
+import exchange_calendars as xcals
 import polars as pl
 
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "scripts" / "build_b2_confirmation_inputs.py"
-PROBE = ROOT / "artifacts" / "api_audit" / "new_blocks_availability_probe_v2.json"
+def _target_blind_probe(tmp_path: Path) -> Path:
+    """Create 60 normal XNYS sessions without historical provider evidence."""
+    calendar = xcals.get_calendar("XNYS")
+    sessions = calendar.sessions_in_range("2025-01-02", "2025-05-31")
+    dates = [
+        session.date().isoformat()
+        for session in sessions
+        if (calendar.session_close(session) - calendar.session_open(session)).total_seconds()
+        == 390 * 60
+    ][:60]
+    assert len(dates) == 60
+    path = tmp_path / "target_blind_probe.json"
+    path.write_text(
+        json.dumps(
+            {
+                "blocks": {"block_a": dates[:30], "block_b": dates[30:]},
+                "pit_claim": False,
+                "full_tape_downloaded": False,
+            }
+        ),
+        encoding="utf-8",
+    )
+    return path
 
 
-def _module():
+def _module(probe_path: Path | None = None):
     spec = importlib.util.spec_from_file_location("b2_confirmation_inputs", SCRIPT)
     if spec is None or spec.loader is None:
         raise AssertionError("SCRIPT_IMPORT_SPEC_MISSING")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
+    if probe_path is not None:
+        module.PROBE = probe_path
     return module
 
 
-def test_origin_allowlist_is_60_sessions_and_25920_rows() -> None:
-    module = _module()
+def test_origin_allowlist_is_60_sessions_and_25920_rows(tmp_path: Path) -> None:
+    module = _module(_target_blind_probe(tmp_path))
     dates = module._dates()
     assert len(dates) == 60
     assert dates == tuple(sorted(set(dates)))
@@ -33,8 +58,10 @@ def test_origin_allowlist_is_60_sessions_and_25920_rows() -> None:
     assert frame["origin_id"].n_unique() == frame.height
 
 
-def test_probe_and_script_are_explicitly_target_blind_before_target_stage() -> None:
-    payload = json.loads(PROBE.read_text(encoding="utf-8"))
+def test_probe_and_script_are_explicitly_target_blind_before_target_stage(
+    tmp_path: Path,
+) -> None:
+    payload = json.loads(_target_blind_probe(tmp_path).read_text(encoding="utf-8"))
     assert payload["pit_claim"] is False
     assert payload["full_tape_downloaded"] is False
     source = SCRIPT.read_text(encoding="utf-8")
@@ -42,14 +69,16 @@ def test_probe_and_script_are_explicitly_target_blind_before_target_stage() -> N
     assert "target_outcome_read\": False" in source
 
 
-def test_b1_input_preserves_early_origin_missingness() -> None:
+def test_b1_input_preserves_early_origin_missingness(tmp_path: Path) -> None:
     module = _module()
+    module.ARTIFACT_ROOT = tmp_path / "artifacts"
+    module.B1_ORIGINS = tmp_path / "derived" / "b1_origins_60d.parquet"
     eligible, excluded, reasons = module._prepare_b1_origins()
     assert eligible.height == 23_760
     assert excluded.height == 2_160
     assert reasons == {"B0V2_UNDERLYING_HISTORY_MISSING": 2_160}
     manifest = json.loads(
-        (ROOT / "artifacts" / "b2_confirmation" / "b1_input_manifest.json").read_text(
+        (module.ARTIFACT_ROOT / "b1_input_manifest.json").read_text(
             encoding="utf-8"
         )
     )
