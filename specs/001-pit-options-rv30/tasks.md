@@ -385,13 +385,13 @@ frozen development protocol without reading any holdout path.
 - [x] T197 [US4] Update the corrected-development specification, plan, data model, contracts,
   quickstart and decision record under `specs/001-pit-options-rv30/` and write
   `docs/recovery/corrected_development_spec_analysis.md`.
-- [ ] T198 [P] [US4] Add failing contract tests for the corrected-development release schema,
+- [x] T198 [P] [US4] Add failing contract tests for the corrected-development release schema,
   immutable source bindings, literal legacy/OOS gates and no secret/personal-path output in
   `tests/contract/test_corrected_development_release.py`.
-- [ ] T199 [P] [US4] Add failing unit tests for exact 80-session isolation, zero holdout overlap,
+- [x] T199 [P] [US4] Add failing unit tests for exact 80-session isolation, zero holdout overlap,
   duplicate/future predictor rejection, B2 all-null exclusion encoding and no target during
   predictor construction in `tests/unit/test_corrected_development_gate.py`.
-- [ ] T200 [US4] Implement the immutable release-state validator and canonical self-hash logic
+- [x] T200 [US4] Implement the immutable release-state validator and canonical self-hash logic
   in `src/mds650/corrected_development_release.py` using
   `contracts/corrected-development-release-v1.schema.json`.
 - [ ] T201 [US4] Implement `scripts/build_corrected_development_release.py` to bind only the
