@@ -33,6 +33,22 @@ point-in-time inputs using the documented BSM approximation. This is a
 mechanical availability diagnostic, not a claim that the option is European or
 that the resulting IV is an economic forecast.
 
+## Supersession of the legacy age-only diagnostic
+
+`artifacts/provider_timing_v2/pit_timing_audit_v2.json` remains immutable as
+historical evidence. Its `massive.iv_attempts.source_time_delay_sensitivity`
+field is an age-threshold diagnostic on the quote originally selected at the
+forecast origin: it counts whether that quote's age is at least the stated
+delay. It does **not** reselect the last quote at `forecast_origin - delay`.
+
+Consequently, it MUST NOT support any B1Q source-time-delay coverage,
+availability, or latency claim. For the 0-, 60-, and 300-second cutoff
+sensitivities, this v2.1 bound artifact is the controlling evidence because it
+performs the required as-of reselection. Quote age relative to the original
+origin and freshness relative to the delayed cutoff remain separate diagnostic
+quantities. Neither quantity proves Massive REST publication or client receipt
+latency.
+
 ## Integrity checks and observed counters
 
 - 1,080 contiguous asset-day groups were streamed.

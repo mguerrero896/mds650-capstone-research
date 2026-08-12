@@ -45,7 +45,16 @@ One forecast origin is an asset at a valid five-minute XNYS market-time origin. 
 - **Provider documentation:** [Massive Quotes](https://massive.com/docs/rest/options/trades-quotes/quotes) defines `sip_timestamp` as the nanosecond timestamp when SIP received a quote from the exchange. `sequence_number` is increasing and unique per option ticker, but need not be sequential.
 - **Payload observation:** the existing v4 cache records sanitized `timestamp.lte`, `sort`, `order`, `limit`, `sip_timestamp`, `sequence_number`, bid and ask fields. The cache audit reports schema and request-upper-bound violations separately.
 - **Study rule:** select the last `(sip_timestamp, sequence_number)` quote whose `sip_timestamp <= forecast_origin`. This source-time rule prevents a future SIP quote from entering an origin, but it does not establish when a Massive REST response reached this project.
-- **Availability sensitivities:** source-time delays and maximum quote-age filters are conservative feasibility sensitivities. They are not labelled as measured Massive REST or client latency.
+- **Availability sensitivities:** a 60- or 300-second source-time delay MUST
+  reselect the last cache quote at or before `forecast_origin - delay`; it is
+  not a post-hoc age threshold on the quote selected at the original origin.
+  The controlling target-blind evidence is
+  `artifacts/provider_timing_v21/massive_reselection_sensitivity_v21_recomputed_20260812.json`.
+  Maximum quote-age filters are separate conservative feasibility diagnostics.
+  Neither is labelled as measured Massive REST or client latency. The retained
+  `source_time_delay_sensitivity` field in
+  `artifacts/provider_timing_v2/pit_timing_audit_v2.json` is legacy age-only
+  diagnostic evidence and MUST NOT be used for a delayed-cutoff claim.
 
 ### Existing selected-quote evidence
 
