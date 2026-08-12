@@ -468,3 +468,37 @@ UW_PUBLICATION_TIME_PROVEN=false
 PROSPECTIVE_CAPTURE=NOT_AUTHORIZED
 UW_HARD_PIT_BLOCK=REMAINS
 ```
+
+## Decision 48 — post-hardening date-level PIT status revalidation
+
+**Status:** accepted as a successor target-blind status record; it supplements
+and does not overwrite the prior v2 status artifact.
+
+**Evidence:**
+`artifacts/preflight/revalidated_20260812/date_level_pit_preflight_status_v2_current.json`
+(file SHA-256 `66f6581ccd43a32a52d32df96379ea5428d947d0ad494bf288f1cb252da3a2ca`,
+semantic SHA-256
+`sha256:652bc6c3588d9d830a32658a4c5a4e480194bf1130dd0d569102cf2286e48d48`),
+emitted from source commit
+`d2dea002efc38be215bef329f3b6197ff98792ff`.
+
+**Decision:** before constructing its operation plan, the preflight now rereads
+the immutable FMP and UW 90-session metadata probes, verifies their exact file
+SHA-256 identities and their registered `PASS_METADATA_ONLY` fields. The
+revalidated status retains zero provider requests and the same four evidence
+blocks.
+
+**Reason:** a hard-coded availability label alone could become stale after an
+artifact replacement. Binding the artifact bytes makes historical availability
+reproducible while preserving the separate unresolved PIT semantics.
+
+**Consequences:**
+
+```text
+FMP_HISTORICAL_AVAILABILITY=PASS_90_OF_90_SESSIONS
+UW_HISTORICAL_AVAILABILITY=PASS_90_OF_90_FILE_METADATA
+DATE_LEVEL_PIT_PREFLIGHT_V2=FAILED_CLOSED
+NETWORK_ATTEMPTS_SENT=0
+SAFE_TO_RECONCILE_EXISTING_RESULTS=NO
+SAFE_TO_OPEN_OR_EVALUATE_OOS=NO
+```
