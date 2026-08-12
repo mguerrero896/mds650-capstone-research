@@ -375,6 +375,31 @@ def test_successful_fmp_observation_remains_date_bounded_and_not_a_pit_completio
     assert assessment.disposition is module.OperationDisposition.DATE_BOUNDED_ONLY_NO_PIT_CLAIM
 
 
+def test_historical_availability_pass_does_not_override_the_pit_network_gate() -> None:
+    """Availability and timestamp semantics remain distinct, fail-closed states."""
+    module = _module()
+    availability = module.current_historical_source_availability()
+    operation_plan = _operation_plan()
+
+    assert availability.status is module.HistoricalAvailabilityStatus.PASS_SEPARATE_FROM_PIT
+    assert (
+        availability.fmp_status is module.ProviderHistoricalAvailability.FMP_PASS_90_OF_90_SESSIONS
+    )
+    assert (
+        availability.unusual_whales_status
+        is module.ProviderHistoricalAvailability.UW_PASS_90_OF_90_FILE_METADATA
+    )
+    assert availability.fmp_evidence_sha256 == (
+        "97c3b57707a953629ff57e485cde918e52ecdd1777a246e84072b5c4150771dc"
+    )
+    assert availability.unusual_whales_evidence_sha256 == (
+        "244690e15054f518e5d12083e6b81d2bcbfcd8f5f009304f4127cbb5c1c4a3f3"
+    )
+    assert operation_plan.historical_availability == availability
+    assert operation_plan.network_gate.execution_permitted is False
+    assert operation_plan.network_gate.status is module.NetworkGateStatus.NETWORK_BLOCKED
+
+
 def test_atomic_attempt_ledger_counts_each_retry_inside_the_inclusive_global_cap() -> None:
     module = _module()
     ledger = module.AttemptLedger()

@@ -114,6 +114,19 @@ class NetworkGateStatus(StrEnum):
     NETWORK_BLOCKED = "NETWORK_BLOCKED"
 
 
+class HistoricalAvailabilityStatus(StrEnum):
+    """Availability status deliberately separate from point-in-time semantics."""
+
+    PASS_SEPARATE_FROM_PIT = "PASS_SEPARATE_FROM_PIT_TIMESTAMP_SEMANTICS"
+
+
+class ProviderHistoricalAvailability(StrEnum):
+    """Evidence-bound historical availability findings for the two source providers."""
+
+    FMP_PASS_90_OF_90_SESSIONS = "PASS_90_OF_90_SESSIONS"
+    UW_PASS_90_OF_90_FILE_METADATA = "PASS_90_OF_90_FILE_METADATA"
+
+
 class ContractEvidenceStatus(StrEnum):
     """Current evidence constraints that prohibit any provider transport."""
 
@@ -245,6 +258,46 @@ class NetworkGate:
 
 
 @dataclass(frozen=True, slots=True)
+class HistoricalSourceAvailability:
+    """Immutable availability findings that cannot upgrade the PIT execution gate.
+
+    Notes
+    -----
+    The two hashes identify the evidence bound in the official-docs audit. They
+    establish only observed historical source availability and intentionally do
+    not claim FMP bar-label semantics, Unusual Whales row-level availability,
+    provider publication, or customer receipt timing.
+    """
+
+    status: HistoricalAvailabilityStatus
+    fmp_status: ProviderHistoricalAvailability
+    unusual_whales_status: ProviderHistoricalAvailability
+    fmp_evidence_sha256: str
+    unusual_whales_evidence_sha256: str
+
+    def __post_init__(self) -> None:
+        """Reject a status combination that could silently upgrade PIT evidence.
+
+        Raises
+        ------
+        PitPreflightV2Error
+            If a provider availability status or evidence hash does not match
+            the registered target-blind evidence boundary.
+        """
+        if (
+            self.status is not HistoricalAvailabilityStatus.PASS_SEPARATE_FROM_PIT
+            or self.fmp_status is not ProviderHistoricalAvailability.FMP_PASS_90_OF_90_SESSIONS
+            or self.unusual_whales_status
+            is not ProviderHistoricalAvailability.UW_PASS_90_OF_90_FILE_METADATA
+            or self.fmp_evidence_sha256
+            != "97c3b57707a953629ff57e485cde918e52ecdd1777a246e84072b5c4150771dc"
+            or self.unusual_whales_evidence_sha256
+            != "244690e15054f518e5d12083e6b81d2bcbfcd8f5f009304f4127cbb5c1c4a3f3"
+        ):
+            raise PitPreflightV2Error("PREFLIGHT_V2_HISTORICAL_AVAILABILITY_INVALID")
+
+
+@dataclass(frozen=True, slots=True)
 class OperationPlan:
     """Deterministic initial plan with a hard no-network gate."""
 
@@ -254,6 +307,7 @@ class OperationPlan:
     max_attempts_per_logical_request: int
     http_attempt_cap: int
     contract_selection_rule_id: str | None
+    historical_availability: HistoricalSourceAvailability
     network_gate: NetworkGate
 
 
@@ -587,7 +641,34 @@ def build_operation_plan(
         max_attempts_per_logical_request=MAX_ATTEMPTS_PER_LOGICAL_REQUEST,
         http_attempt_cap=GLOBAL_HTTP_ATTEMPT_CAP,
         contract_selection_rule_id=None,
+        historical_availability=current_historical_source_availability(),
         network_gate=current_network_gate(),
+    )
+
+
+def current_historical_source_availability() -> HistoricalSourceAvailability:
+    """Return registered availability evidence without upgrading PIT semantics.
+
+    Returns
+    -------
+    HistoricalSourceAvailability
+        The two verified 90-session historical availability findings bound to
+        the evidence hashes recorded in the official-docs audit.
+
+    Notes
+    -----
+    This function is intentionally static and target-blind. A positive return
+    cannot authorize network transport, reconcile existing results, or assert
+    timestamp, publication, or receipt semantics.
+    """
+    return HistoricalSourceAvailability(
+        status=HistoricalAvailabilityStatus.PASS_SEPARATE_FROM_PIT,
+        fmp_status=ProviderHistoricalAvailability.FMP_PASS_90_OF_90_SESSIONS,
+        unusual_whales_status=(ProviderHistoricalAvailability.UW_PASS_90_OF_90_FILE_METADATA),
+        fmp_evidence_sha256=("97c3b57707a953629ff57e485cde918e52ecdd1777a246e84072b5c4150771dc"),
+        unusual_whales_evidence_sha256=(
+            "244690e15054f518e5d12083e6b81d2bcbfcd8f5f009304f4127cbb5c1c4a3f3"
+        ),
     )
 
 
