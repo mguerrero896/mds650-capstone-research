@@ -424,3 +424,47 @@ NETWORK_PERMITTED=false
 SAFE_TO_RECONCILE_EXISTING_RESULTS=NO
 SAFE_TO_OPEN_OR_EVALUATE_OOS=NO
 ```
+
+## Decision 47 — UW receipt logger remains replay-only until a live protocol is validated
+
+**Status:** accepted as a scope clarification for the existing local receipt
+utilities. It prevents their replay tests from being represented as evidence of
+historical publication time or prospective customer receipt.
+
+**Evidence:** `src/mds650/provider_timing.py`,
+`scripts/log_uw_option_trade_receipts.py`,
+`scripts/reconcile_uw_live_vs_full_tape.py`, and
+`tests/unit/test_uw_receipt_logger.py`.
+
+**Decision:** retain the current logger only as a sanitizing/reconciliation
+utility for supplied replay records. Its replay output may preserve
+`executed_at`, `created_at`, a local supplied receipt timestamp and an immutable
+message hash, but it must report `REPLAY_ONLY_NOT_LIVE` and
+`publication_time_proven=false`. No live transport, receipt clock or provider
+availability relationship has been validated.
+
+**Reason:** a replayed fixture can test schema, deduplication and hashing but
+cannot establish when an authenticated client actually received an option-trade
+record. Calling `created_at` or a replay timestamp a publication timestamp
+would reintroduce the exact UW PIT error that v2.1 prevents.
+
+**Permitted claims:**
+
+- The replay logger has local test coverage for sanitized records and matching
+  identifiers.
+- The future prospective protocol has a defined implementation boundary.
+
+**Forbidden claims:**
+
+- That the current logger validates a live feed, Full Tape visibility,
+  customer receipt time or B2 PIT availability.
+- That it changes the UW hard block or authorizes prospective capture.
+
+**Consequences:**
+
+```text
+UW_RECEIPT_LOGGER=REPLAY_ONLY_NOT_LIVE
+UW_PUBLICATION_TIME_PROVEN=false
+PROSPECTIVE_CAPTURE=NOT_AUTHORIZED
+UW_HARD_PIT_BLOCK=REMAINS
+```
