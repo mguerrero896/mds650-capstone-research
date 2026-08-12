@@ -40,6 +40,7 @@ def test_release_manifest_is_schema_valid_deterministic_and_legacy_oos_closed() 
     kwargs = {
         "prepared": prepared,
         "source_hashes": _source_hashes(),
+        "output_hashes": _output_hashes(),
         "source_locations": {
             "predictor_panel": "D:/MDS650/phase6/derived/target_blind_v24/panel.parquet",
             "corrected_panel": "D:/MDS650/phase6/derived/corrected_development_v1/panel.parquet",
@@ -58,6 +59,7 @@ def test_release_manifest_is_schema_valid_deterministic_and_legacy_oos_closed() 
     assert first["gates"]["safe_to_open_or_evaluate_oos"] == "NO"
     assert first["no_target_or_metric_payload_read_during_predictor_build"] is True
     assert first["model_fit_performed"] is False
+    assert first["output"] == _output_hashes()
     validate_corrected_development_release(first, SCHEMA_PATH)
 
     schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
@@ -76,6 +78,7 @@ def test_release_rejects_gate_escalation_and_personal_or_secret_like_paths() -> 
     release = build_corrected_development_release(
         prepared=prepared,
         source_hashes=_source_hashes(),
+        output_hashes=_output_hashes(),
         source_locations={
             "predictor_panel": "D:/MDS650/phase6/derived/target_blind_v24/panel.parquet",
             "corrected_panel": "D:/MDS650/phase6/derived/corrected_development_v1/panel.parquet",
@@ -140,4 +143,13 @@ def _source_hashes() -> dict[str, str]:
         "pit_reconciliation_gate_sha256": "c" * 64,
         "massive_reselection_sha256": "d" * 64,
         "development_source_manifest_sha256": "e" * 64,
+    }
+
+
+def _output_hashes() -> dict[str, int | str]:
+    return {
+        "panel_sha256": "f" * 64,
+        "common_complete_sha256": "0" * 64,
+        "panel_row_count": 80,
+        "common_complete_row_count": 80,
     }

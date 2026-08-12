@@ -12,6 +12,7 @@
     "scope",
     "development_sessions",
     "source_hashes",
+    "output",
     "b2_exclusions",
     "gates",
     "no_target_or_metric_payload_read_during_predictor_build",
@@ -68,6 +69,22 @@
         "development_source_manifest_sha256": { "$ref": "#/$defs/sha256" },
         "target_binding_sha256": { "$ref": "#/$defs/sha256" },
         "method_freeze_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "panel_sha256",
+        "common_complete_sha256",
+        "panel_row_count",
+        "common_complete_row_count"
+      ],
+      "properties": {
+        "panel_sha256": { "$ref": "#/$defs/sha256" },
+        "common_complete_sha256": { "$ref": "#/$defs/sha256" },
+        "panel_row_count": { "type": "integer", "minimum": 0 },
+        "common_complete_row_count": { "type": "integer", "minimum": 0 }
       }
     },
     "b2_exclusions": {

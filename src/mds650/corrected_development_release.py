@@ -171,6 +171,7 @@ def build_corrected_development_release(
     *,
     prepared: PreparedCorrectedDevelopmentPanel,
     source_hashes: Mapping[str, str],
+    output_hashes: Mapping[str, str | int],
     source_locations: Mapping[str, str],
     release_id: str,
 ) -> dict[str, Any]:
@@ -183,6 +184,9 @@ def build_corrected_development_release(
         :func:`prepare_corrected_development_panel`.
     source_hashes:
         Five SHA-256 records mandated by the corrected-release contract.
+    output_hashes:
+        SHA-256 identities and row counts of the newly written target-free
+        predictor and common-complete Parquet outputs.
     source_locations:
         Logical D: locations for input and newly written predictor outputs.
         They are validated but intentionally omitted from the manifest so the
@@ -202,6 +206,7 @@ def build_corrected_development_release(
     """
     _assert_release_id(release_id)
     _assert_source_hashes(source_hashes)
+    _assert_output_hashes(output_hashes, prepared)
     _assert_safe_logical_locations(source_locations)
     manifest: dict[str, Any] = {
         "artifact_type": "corrected-development-release-v1",
@@ -211,6 +216,12 @@ def build_corrected_development_release(
         "scope": "corrected_development_only_no_oos_no_legacy_reconciliation",
         "development_sessions": list(prepared.development_sessions),
         "source_hashes": {key: source_hashes[key] for key in REQUIRED_SOURCE_HASH_KEYS},
+        "output": {
+            "panel_sha256": output_hashes["panel_sha256"],
+            "common_complete_sha256": output_hashes["common_complete_sha256"],
+            "panel_row_count": output_hashes["panel_row_count"],
+            "common_complete_row_count": output_hashes["common_complete_row_count"],
+        },
         "b2_exclusions": {
             "excluded_origin_count": prepared.b2_excluded_origin_count,
             "encoding": "ALL_NINE_B2_FEATURES_NULL_WITH_ELIGIBILITY_FLAG_AND_REASON",
@@ -378,6 +389,28 @@ def _assert_source_hashes(source_hashes: Mapping[str, str]) -> None:
         for key in REQUIRED_SOURCE_HASH_KEYS
     ):
         raise ValueError("CORRECTED_DEVELOPMENT_SOURCE_HASH_INVALID")
+
+
+def _assert_output_hashes(
+    output_hashes: Mapping[str, str | int], prepared: PreparedCorrectedDevelopmentPanel
+) -> None:
+    required = {
+        "panel_sha256",
+        "common_complete_sha256",
+        "panel_row_count",
+        "common_complete_row_count",
+    }
+    if set(output_hashes) != required:
+        raise ValueError("CORRECTED_DEVELOPMENT_OUTPUT_HASH_KEYS_INVALID")
+    for key in ("panel_sha256", "common_complete_sha256"):
+        value = output_hashes[key]
+        if not isinstance(value, str) or _SHA256_PATTERN.fullmatch(value) is None:
+            raise ValueError("CORRECTED_DEVELOPMENT_OUTPUT_HASH_INVALID")
+    if (
+        output_hashes["panel_row_count"] != prepared.panel.height
+        or output_hashes["common_complete_row_count"] != prepared.common.height
+    ):
+        raise ValueError("CORRECTED_DEVELOPMENT_OUTPUT_ROW_COUNT_MISMATCH")
 
 
 def _assert_safe_logical_locations(source_locations: Mapping[str, str]) -> None:
