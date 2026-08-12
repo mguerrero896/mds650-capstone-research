@@ -92,5 +92,11 @@ recorded. The subsequent workflow is: retain the registered timing contract;
 record date-level evidence without OOS or metric payloads; then obtain separate
 human authorization before any acquisition. This recheck alone does not call a
 provider and does not authorize acquisition, OOS access, reconciliation, model
-fitting, or metric evaluation. No provider-side date-level runner is declared by
-this protocol because none is implemented or authorized here.
+fitting, or metric evaluation. The v2 status emitter may document that the
+hard gate remains closed, but is deliberately not a provider-side runner and
+cannot send a request:
+
+```powershell
+$commit = 'd1c4efcccd415227db7856f477e9f278b666b772'
+uv run --offline python scripts/emit_date_level_pit_preflight_status_v2.py --source-commit $commit
+```

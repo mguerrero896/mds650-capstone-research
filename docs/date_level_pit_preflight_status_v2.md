@@ -27,7 +27,7 @@ Use the commit that introduced the status emitter. The command is idempotent
 only while the bound source, schemas and inputs remain byte-identical.
 
 ```powershell
-$commit = '<sealed-source-commit>'
+$commit = 'd1c4efcccd415227db7856f477e9f278b666b772'
 uv run --offline python scripts/emit_date_level_pit_preflight_status_v2.py --source-commit $commit
 ```
 
@@ -36,3 +36,9 @@ readiness, not permission to acquire historical data or evaluate models. Before
 network activity can be considered, the four listed contract evidence states
 must change through admissible provider documentation or a separately validated
 protocol; authorization, credentials or storage capacity do not override them.
+
+The current immutable output is
+`artifacts/preflight/date_level_pit_preflight_status_v2_current.json` (file
+SHA-256 `945908ba718bea18fe85f3cb4297495d08e7e2b3158619c1bc4ae5b543642683`,
+semantic SHA-256
+`sha256:f7089333dba0dd65d5a901f8fdfb64983fc5d976afd856594426b6918de5943d`).

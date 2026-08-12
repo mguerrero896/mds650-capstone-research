@@ -321,3 +321,60 @@ SAFE_TO_RECONCILE_EXISTING_RESULTS=NO
 SAFE_TO_OPEN_OR_EVALUATE_OOS=NO
 MODEL_FIT_PERFORMED=NO
 ```
+
+## Decision 45 — executable fail-closed date-level PIT status
+
+**Status:** accepted as a target-blind operational-status record. It confirms
+that current compatibility planning is controlled, not that a provider call,
+acquisition or scientific evaluation is authorized.
+
+**Evidence:**
+`artifacts/preflight/date_level_pit_preflight_status_v2_current.json`
+(file SHA-256 `945908ba718bea18fe85f3cb4297495d08e7e2b3158619c1bc4ae5b543642683`,
+semantic SHA-256
+`sha256:f7089333dba0dd65d5a901f8fdfb64983fc5d976afd856594426b6918de5943d`),
+`specs/001-pit-options-rv30/contracts/date-level-pit-preflight-status-v2.schema.json`,
+and `docs/date_level_pit_preflight_status_v2.md`.
+
+**Decision:** turn the already source-bound calendar plan, documentation-based
+endpoint catalog and bounded request budget into a deterministic current-status
+artifact. It preserves the distinction between historical source availability
+and PIT validity:
+
+- FMP historical sessions: `PASS_90_OF_90_SESSIONS`.
+- UW Full Tape file metadata: `PASS_90_OF_90_FILE_METADATA`.
+- PIT execution: `FAILED_CLOSED`, with `network_attempts_sent=0`.
+
+The artifact binds 119 initial logical operations and an inclusive 343-attempt
+future cap, while requiring the following unresolved evidence statuses before
+any network transport: FMP exact session/PIT semantics, UW documented Full Tape
+execution semantics, Massive contract-selection rule and Massive quote-as-of
+parameter semantics.
+
+**Reason:** historical files and date-bounded endpoints are necessary but not
+sufficient to prove what was available at a forecast origin. An executable
+zero-network record prevents that distinction from being relaxed by credentials,
+storage capacity or a generic authorization flag.
+
+**Permitted claims:**
+
+- Current historical-source availability is documented separately from the
+  unresolved PIT timing semantics.
+- The next preflight state can be reproduced from exact source hashes without
+  a provider call.
+
+**Forbidden claims:**
+
+- That FMP or UW history proves publication/receipt timing or opens B2.
+- That a current `FAILED_CLOSED` record approves acquisition, reconciliation,
+  OOS access, model fitting, QLIKE or an edge claim.
+
+**Consequences:**
+
+```text
+DATE_LEVEL_PIT_PREFLIGHT_V2=FAILED_CLOSED
+NETWORK_ATTEMPTS_SENT=0
+SAFE_TO_RECONCILE_EXISTING_RESULTS=NO
+SAFE_TO_OPEN_OR_EVALUATE_OOS=NO
+READY_FOR_CONFIRMATION=YES_WITH_HARD_PIT_BLOCKS
+```
