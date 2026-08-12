@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/confirmation-readiness-v3.schema.json",
+  "title": "MDS650 Source-Bound Confirmation Readiness v3.0",
+  "description": "A reproducible target-blind readiness record for a frozen v4 method. All operational gates remain closed.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "scope",
+    "method_freeze_status",
+    "target_blind_ready",
+    "no_target_or_metric_payload_read",
+    "model_fit_performed",
+    "no_provider_network_calls_performed",
+    "claim_boundary",
+    "safe_to_reconcile_existing_results",
+    "safe_to_open_or_evaluate_oos",
+    "safe_to_acquire_new_historical_sample",
+    "safe_to_start_prospective_capture",
+    "gate_statuses",
+    "bound_artifact_integrity",
+    "preflight_workflow",
+    "required_before_any_oos_access",
+    "forbidden_runtime_actions",
+    "artifact_schema",
+    "builder_script_sha256",
+    "source_commit",
+    "readiness_sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "confirmation-readiness-v3.0" },
+    "status": { "const": "PASS_METHOD_FROZEN_TARGET_BLIND_READY_FUTURE_GATES_CLOSED" },
+    "scope": { "const": "offline_source_bound_target_blind_readiness_only" },
+    "method_freeze_status": { "const": "FROZEN_TARGET_BLIND_ONLY" },
+    "target_blind_ready": { "const": "YES" },
+    "no_target_or_metric_payload_read": { "const": true },
+    "model_fit_performed": { "const": false },
+    "no_provider_network_calls_performed": { "const": true },
+    "claim_boundary": { "const": "NO_PREDICTIVE_OR_COMPARATIVE_CLAIM" },
+    "safe_to_reconcile_existing_results": { "const": "NO" },
+    "safe_to_open_or_evaluate_oos": { "const": "NO" },
+    "safe_to_acquire_new_historical_sample": { "const": "NO" },
+    "safe_to_start_prospective_capture": { "const": "NO" },
+    "gate_statuses": { "$ref": "#/$defs/gateStatuses" },
+    "bound_artifact_integrity": { "$ref": "#/$defs/boundIntegrity" },
+    "preflight_workflow": { "$ref": "#/$defs/preflightWorkflow" },
+    "required_before_any_oos_access": {
+      "type": "array",
+      "const": [
+        "FROZEN_V4_METHOD_REVIEW",
+        "SEPARATE_EXPLICIT_HUMAN_AUTHORIZATION",
+        "DATE_LEVEL_PIT_PREFLIGHT_IF_NEW_HISTORICAL_ACQUISITION",
+        "VALIDATED_RECEIPT_LOGGER_IF_PROSPECTIVE_CAPTURE"
+      ]
+    },
+    "forbidden_runtime_actions": {
+      "type": "array",
+      "const": [
+        "OOS_ACCESS",
+        "SEALED_RESULT_RECONCILIATION",
+        "NEW_HISTORICAL_ACQUISITION",
+        "PROSPECTIVE_CAPTURE_START",
+        "MODEL_FIT",
+        "METRIC_EVALUATION",
+        "PROVIDER_NETWORK_CALL"
+      ]
+    },
+    "artifact_schema": { "$ref": "#/$defs/artifactSchema" },
+    "builder_script_sha256": { "$ref": "#/$defs/sha256" },
+    "source_commit": { "$ref": "#/$defs/commit" },
+    "readiness_sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "gateStatuses": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "existing_sealed_result_reconciliation",
+        "oos_access",
+        "new_historical_acquisition",
+        "prospective_capture"
+      ],
+      "properties": {
+        "existing_sealed_result_reconciliation": { "const": "BLOCKED_LITERAL_NO_REMAINS_CURRENT" },
+        "oos_access": { "const": "BLOCKED_NO" },
+        "new_historical_acquisition": { "const": "NO_UNTIL_DATE_LEVEL_PIT_PREFLIGHT" },
+        "prospective_capture": { "const": "NO_UNTIL_RECEIPT_LOGGER_VALIDATED" }
+      }
+    },
+    "boundIntegrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "v24_predictor_only_manifest",
+        "provider_timing_evidence_policy_gate_v1",
+        "preregistration_v4"
+      ],
+      "properties": {
+        "status": { "const": "PASS" },
+        "v24_predictor_only_manifest": { "$ref": "#/$defs/v24Binding" },
+        "provider_timing_evidence_policy_gate_v1": { "$ref": "#/$defs/policyBinding" },
+        "preregistration_v4": { "$ref": "#/$defs/preregistrationV4Binding" }
+      }
+    },
+    "v24Binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file_sha256", "manifest_sha256"],
+      "properties": {
+        "file_sha256": { "$ref": "#/$defs/sha256" },
+        "manifest_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "policyBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file_sha256", "policy_sha256"],
+      "properties": {
+        "file_sha256": { "$ref": "#/$defs/sha256" },
+        "policy_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "preregistrationV4Binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file_sha256", "preregistration_sha256"],
+      "properties": {
+        "file_sha256": { "$ref": "#/$defs/sha256" },
+        "preregistration_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "preflightWorkflow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "execution_status",
+        "historical_acquisition_gate",
+        "prospective_capture_gate",
+        "exact_recheck_command",
+        "required_human_inputs",
+        "workflow",
+        "not_authorization"
+      ],
+      "properties": {
+        "execution_status": { "const": "NOT_EXECUTED" },
+        "historical_acquisition_gate": { "const": "GO_AFTER_DATE_LEVEL_PIT_PREFLIGHT" },
+        "prospective_capture_gate": { "const": "GO_AFTER_RECEIPT_LOGGER_VALIDATED" },
+        "exact_recheck_command": {
+          "const": "uv run python scripts/aggregate_pit_reconciliation_gate_v21.py"
+        },
+        "required_human_inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "workflow": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "not_authorization": {
+          "type": "array",
+          "const": ["OOS_ACCESS", "SEALED_RESULT_RECONCILIATION", "MODEL_FIT", "METRIC_EVALUATION"]
+        }
+      }
+    },
+    "artifactSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["logical_path", "file_sha256"],
+      "properties": {
+        "logical_path": {
+          "const": "specs/001-pit-options-rv30/contracts/confirmation-readiness-v3.schema.json"
+        },
+        "file_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  }
+}
