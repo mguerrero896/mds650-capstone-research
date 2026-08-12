@@ -40,16 +40,22 @@ def build_request_budget(
     fmp_request_count = asset_day_count
     unusual_whales_request_count = session_count
     massive_initial_contract_search_count = asset_day_count
+    massive_initial_contract_reference_conditional_max = asset_day_count
     massive_initial_quote_conditional_max = asset_day_count
     initial_request_count = (
         fmp_request_count + unusual_whales_request_count + massive_initial_contract_search_count
     )
-    initial_request_upper_bound = initial_request_count + massive_initial_quote_conditional_max
+    initial_request_upper_bound = (
+        initial_request_count
+        + massive_initial_contract_reference_conditional_max
+        + massive_initial_quote_conditional_max
+    )
     massive_contract_search_cap = MAX_CONTRACT_SEARCH_PAGES_PER_ASSET_DAY * asset_day_count
     cap_request_count = (
         fmp_request_count
         + unusual_whales_request_count
         + massive_contract_search_cap
+        + massive_initial_contract_reference_conditional_max
         + massive_initial_quote_conditional_max
     )
 
@@ -75,14 +81,25 @@ def build_request_budget(
         "massive_contract_pagination": {
             "max_contract_pages_per_asset_day": MAX_CONTRACT_SEARCH_PAGES_PER_ASSET_DAY,
             "contract_search_request_cap": massive_contract_search_cap,
+            "contract_stage_order": [
+                "contract_search",
+                "contract_reference",
+                "quote_as_of",
+            ],
+            "contract_reference_max_per_asset_day": 1,
+            "contract_reference_only_after_contract_resolution": True,
             "quote_as_of_max_per_asset_day": 1,
             "quote_as_of_only_after_contract_resolution": True,
+            "quote_as_of_only_after_contract_reference": True,
             "pagination_exceed_status": PAGINATION_CAP_EXCEEDED_STATUS,
         },
         "request_budget": {
             "fmp_one_minute_requests": fmp_request_count,
             "unusual_whales_range_metadata_probe_requests": unusual_whales_request_count,
             "massive_initial_contract_search_requests": massive_initial_contract_search_count,
+            "massive_initial_contract_reference_conditional_max": (
+                massive_initial_contract_reference_conditional_max
+            ),
             "massive_initial_quote_as_of_conditional_max": massive_initial_quote_conditional_max,
             "initial_request_count": initial_request_count,
             "initial_request_upper_bound_if_all_contracts_resolve": initial_request_upper_bound,
@@ -118,6 +135,7 @@ def plan_massive_asset_day_requests(
         return {
             "status": PAGINATION_CAP_EXCEEDED_STATUS,
             "contract_search_request_count": MAX_CONTRACT_SEARCH_PAGES_PER_ASSET_DAY,
+            "contract_reference_request_count": 0,
             "quote_as_of_request_count": 0,
         }
     return {
@@ -127,6 +145,7 @@ def plan_massive_asset_day_requests(
             else "CONTRACT_UNRESOLVED_WITHIN_PAGE_CAP"
         ),
         "contract_search_request_count": required_contract_pages,
+        "contract_reference_request_count": 1 if contract_resolution_succeeds else 0,
         "quote_as_of_request_count": 1 if contract_resolution_succeeds else 0,
     }
 

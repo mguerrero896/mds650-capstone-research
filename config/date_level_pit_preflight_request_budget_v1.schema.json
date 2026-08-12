@@ -71,15 +71,33 @@
       "required": [
         "max_contract_pages_per_asset_day",
         "contract_search_request_cap",
+        "contract_stage_order",
+        "contract_reference_max_per_asset_day",
+        "contract_reference_only_after_contract_resolution",
         "quote_as_of_max_per_asset_day",
         "quote_as_of_only_after_contract_resolution",
+        "quote_as_of_only_after_contract_reference",
         "pagination_exceed_status"
       ],
       "properties": {
         "max_contract_pages_per_asset_day": {"type": "integer", "minimum": 1},
         "contract_search_request_cap": {"type": "integer", "minimum": 1},
+        "contract_stage_order": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "prefixItems": [
+            {"const": "contract_search"},
+            {"const": "contract_reference"},
+            {"const": "quote_as_of"}
+          ],
+          "items": false
+        },
+        "contract_reference_max_per_asset_day": {"const": 1},
+        "contract_reference_only_after_contract_resolution": {"const": true},
         "quote_as_of_max_per_asset_day": {"const": 1},
         "quote_as_of_only_after_contract_resolution": {"const": true},
+        "quote_as_of_only_after_contract_reference": {"const": true},
         "pagination_exceed_status": {
           "const": "FAILED_CLOSED_CONTRACT_PAGINATION_CAP_EXCEEDED"
         }
@@ -92,6 +110,7 @@
         "fmp_one_minute_requests",
         "unusual_whales_range_metadata_probe_requests",
         "massive_initial_contract_search_requests",
+        "massive_initial_contract_reference_conditional_max",
         "massive_initial_quote_as_of_conditional_max",
         "initial_request_count",
         "initial_request_upper_bound_if_all_contracts_resolve",
@@ -101,6 +120,10 @@
         "fmp_one_minute_requests": {"type": "integer", "minimum": 1},
         "unusual_whales_range_metadata_probe_requests": {"type": "integer", "minimum": 1},
         "massive_initial_contract_search_requests": {"type": "integer", "minimum": 1},
+        "massive_initial_contract_reference_conditional_max": {
+          "type": "integer",
+          "minimum": 0
+        },
         "massive_initial_quote_as_of_conditional_max": {"type": "integer", "minimum": 0},
         "initial_request_count": {"type": "integer", "minimum": 1},
         "initial_request_upper_bound_if_all_contracts_resolve": {

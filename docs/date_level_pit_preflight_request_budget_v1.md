@@ -15,18 +15,20 @@ Hay `7 × 8 = 56` asset-days.
 
 - FMP: una comprobación de un minuto por asset-day: `56` solicitudes.
 - Unusual Whales: un probe Range de metadatos por sesión, cacheado entre assets: `7` solicitudes.
-- Massive: una búsqueda inicial de contrato por asset-day: `56` solicitudes. La cotización as-of
-  puede añadirse exactamente una vez por asset-day, solo después de resolver el contrato:
-  máximo condicional `56` solicitudes.
+- Massive: una búsqueda inicial de contrato por asset-day: `56` solicitudes. Después de una
+  búsqueda que resuelve el contrato se añade una referencia individual de contrato, exactamente
+  una vez por asset-day: máximo condicional `56` solicitudes. La cotización as-of se añade como
+  tercera etapa, después de esa referencia individual, también con máximo condicional `56`.
 
 Por tanto, el conteo inicial no condicional es `56 + 7 + 56 = 119`. Si cada búsqueda inicial
-resuelve el contrato, su cota superior es `119 + 56 = 175`.
+resuelve el contrato, su cota superior es `119 + 56 + 56 = 231`.
 
 El límite explícito para búsqueda de contrato Massive es tres páginas por asset-day. Bajo ese
-límite, la cota total es `56 + 7 + (3 × 56) + 56 = 287` solicitudes. Si una continuación exigiera
-una cuarta página, el futuro ejecutor debe detenerse con
-`FAILED_CLOSED_CONTRACT_PAGINATION_CAP_EXCEEDED`, sin solicitar cotización as-of para ese
-asset-day.
+límite, la secuencia es búsqueda de contrato, referencia individual y cotización as-of; la cota
+total es `56 + 7 + (3 × 56) + 56 + 56 = 343` solicitudes. Si una continuación exigiera una cuarta
+página, el futuro ejecutor debe detenerse con
+`FAILED_CLOSED_CONTRACT_PAGINATION_CAP_EXCEEDED`, sin solicitar referencia individual ni
+cotización as-of para ese asset-day.
 
 ## Autorización y costes
 

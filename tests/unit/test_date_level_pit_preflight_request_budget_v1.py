@@ -70,10 +70,11 @@ def test_build_request_budget_derives_session_asset_counts_and_uw_cache() -> Non
         "fmp_one_minute_requests": 56,
         "unusual_whales_range_metadata_probe_requests": 7,
         "massive_initial_contract_search_requests": 56,
+        "massive_initial_contract_reference_conditional_max": 56,
         "massive_initial_quote_as_of_conditional_max": 56,
         "initial_request_count": 119,
-        "initial_request_upper_bound_if_all_contracts_resolve": 175,
-        "cap_request_count": 287,
+        "initial_request_upper_bound_if_all_contracts_resolve": 231,
+        "cap_request_count": 343,
     }
     assert budget["unusual_whales_cache_policy"] == {
         "scope": "PER_SESSION_ACROSS_ASSETS",
@@ -81,7 +82,43 @@ def test_build_request_budget_derives_session_asset_counts_and_uw_cache() -> Non
     }
 
 
-def test_massive_pagination_gates_quote_and_fails_closed_beyond_cap() -> None:
+def test_build_request_budget_counts_contract_reference_before_quote_as_of() -> None:
+    catalog = _json_mapping(CATALOG_PATH)
+    endpoints = catalog["endpoints"]
+    assert isinstance(endpoints, list)
+    massive = endpoints[2]
+    assert isinstance(massive, dict)
+    routes = massive["routes"]
+    assert isinstance(routes, list)
+    assert [route["operation"] for route in routes] == [
+        "contract_reference",
+        "quote_as_of",
+    ]
+
+    budget = _build_request_budget()
+    request_budget = budget["request_budget"]
+    assert isinstance(request_budget, dict)
+    massive_contract_pagination = budget["massive_contract_pagination"]
+    assert isinstance(massive_contract_pagination, dict)
+
+    assert request_budget.get("massive_initial_contract_reference_conditional_max") == 56
+    assert request_budget["initial_request_count"] == 119
+    assert request_budget["initial_request_upper_bound_if_all_contracts_resolve"] == 231
+    assert request_budget["cap_request_count"] == 343
+    assert massive_contract_pagination.get("contract_stage_order") == [
+        "contract_search",
+        "contract_reference",
+        "quote_as_of",
+    ]
+    assert massive_contract_pagination.get("contract_reference_max_per_asset_day") == 1
+    assert massive_contract_pagination.get(
+        "contract_reference_only_after_contract_resolution"
+    ) is True
+    assert massive_contract_pagination.get("quote_as_of_only_after_contract_reference") is True
+
+
+def test_massive_pagination_gates_contract_reference_and_quote_and_fails_closed_beyond_cap(
+) -> None:
     candidate = getattr(_module(), "plan_massive_asset_day_requests", None)
     assert callable(candidate), "plan_massive_asset_day_requests contract is required"
     plan_massive = cast(Callable[..., dict[str, object]], candidate)
@@ -93,16 +130,19 @@ def test_massive_pagination_gates_quote_and_fails_closed_beyond_cap() -> None:
     assert resolved == {
         "status": "CONTRACT_RESOLVED_WITHIN_PAGE_CAP",
         "contract_search_request_count": 1,
+        "contract_reference_request_count": 1,
         "quote_as_of_request_count": 1,
     }
     assert unresolved == {
         "status": "CONTRACT_UNRESOLVED_WITHIN_PAGE_CAP",
         "contract_search_request_count": 3,
+        "contract_reference_request_count": 0,
         "quote_as_of_request_count": 0,
     }
     assert cap_exceeded == {
         "status": "FAILED_CLOSED_CONTRACT_PAGINATION_CAP_EXCEEDED",
         "contract_search_request_count": 3,
+        "contract_reference_request_count": 0,
         "quote_as_of_request_count": 0,
     }
 
