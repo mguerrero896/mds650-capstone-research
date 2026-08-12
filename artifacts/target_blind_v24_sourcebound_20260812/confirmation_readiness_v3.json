@@ -1,0 +1,81 @@
+{
+  "artifact_schema": {
+    "file_sha256": "1bc6962ddb11acc8a71baf3c725da59a4a5b6ee2850b23f7c91cbe3f4b384745",
+    "logical_path": "specs/001-pit-options-rv30/contracts/confirmation-readiness-v3.schema.json"
+  },
+  "bound_artifact_integrity": {
+    "preregistration_v4": {
+      "file_sha256": "7c8f7f646973a18d0758c0197978ff53963b97ce35debbb49f144656725210a5",
+      "preregistration_sha256": "fe03d9ae5578ef0faf3ee89b11d8043a13c25757b9ff9e68b0f2b2af1b512bc1"
+    },
+    "provider_timing_evidence_policy_gate_v1": {
+      "file_sha256": "a37560470159cee24a80bc2d0f93883eab02264aa6fd880d88f69a8df2744f79",
+      "policy_sha256": "05da11e4f24c73d1cb8f01fee6daf6da75040a6ae0399f8bcc9cbb03647933a7"
+    },
+    "status": "PASS",
+    "v24_predictor_only_manifest": {
+      "file_sha256": "35d19dd7b93619464d721532c6ac9b1d31fce2d90937912b401cf666f1ff0219",
+      "manifest_sha256": "e6f454799ad66bd9dcb00c0fcafaa8278ec24ffd302aeb09ca315f548858a83b"
+    }
+  },
+  "builder_script_sha256": "b577144c63ad80ea4c9cfa23a29af3ef3682c6c7ba7af9d1b0064cc0fbb27842",
+  "claim_boundary": "NO_PREDICTIVE_OR_COMPARATIVE_CLAIM",
+  "forbidden_runtime_actions": [
+    "OOS_ACCESS",
+    "SEALED_RESULT_RECONCILIATION",
+    "NEW_HISTORICAL_ACQUISITION",
+    "PROSPECTIVE_CAPTURE_START",
+    "MODEL_FIT",
+    "METRIC_EVALUATION",
+    "PROVIDER_NETWORK_CALL"
+  ],
+  "gate_statuses": {
+    "existing_sealed_result_reconciliation": "BLOCKED_LITERAL_NO_REMAINS_CURRENT",
+    "new_historical_acquisition": "NO_UNTIL_DATE_LEVEL_PIT_PREFLIGHT",
+    "oos_access": "BLOCKED_NO",
+    "prospective_capture": "NO_UNTIL_RECEIPT_LOGGER_VALIDATED"
+  },
+  "method_freeze_status": "FROZEN_TARGET_BLIND_ONLY",
+  "model_fit_performed": false,
+  "no_provider_network_calls_performed": true,
+  "no_target_or_metric_payload_read": true,
+  "preflight_workflow": {
+    "exact_recheck_command": "uv run python scripts/aggregate_pit_reconciliation_gate_v21.py",
+    "execution_status": "NOT_EXECUTED",
+    "historical_acquisition_gate": "GO_AFTER_DATE_LEVEL_PIT_PREFLIGHT",
+    "not_authorization": [
+      "OOS_ACCESS",
+      "SEALED_RESULT_RECONCILIATION",
+      "MODEL_FIT",
+      "METRIC_EVALUATION"
+    ],
+    "prospective_capture_gate": "GO_AFTER_RECEIPT_LOGGER_VALIDATED",
+    "required_human_inputs": [
+      "APPROVED_DATE_LEVEL_SESSION_PLAN_WITH_SHA256",
+      "APPROVED_STORAGE_AND_COST_BOUNDARY",
+      "SEPARATE_EXPLICIT_HUMAN_AUTHORIZATION"
+    ],
+    "workflow": [
+      "Record an approved exact session plan and its SHA256 before any acquisition request.",
+      "Run the exact recheck command only in the isolated PIT preflight stage.",
+      "Record date-level timing evidence under the registered contract without OOS or metric payloads.",
+      "Obtain separate authorization before acquisition; no preflight outcome authorizes OOS, reconciliation, fitting, or metric evaluation."
+    ]
+  },
+  "readiness_sha256": "5a2cd9996ec2ff0017bf5f84de9871cffce2b19780b7592d9efa4e8a08719cf3",
+  "required_before_any_oos_access": [
+    "FROZEN_V4_METHOD_REVIEW",
+    "SEPARATE_EXPLICIT_HUMAN_AUTHORIZATION",
+    "DATE_LEVEL_PIT_PREFLIGHT_IF_NEW_HISTORICAL_ACQUISITION",
+    "VALIDATED_RECEIPT_LOGGER_IF_PROSPECTIVE_CAPTURE"
+  ],
+  "safe_to_acquire_new_historical_sample": "NO",
+  "safe_to_open_or_evaluate_oos": "NO",
+  "safe_to_reconcile_existing_results": "NO",
+  "safe_to_start_prospective_capture": "NO",
+  "schema_version": "confirmation-readiness-v3.0",
+  "scope": "offline_source_bound_target_blind_readiness_only",
+  "source_commit": "743c6e2ea564d7e4422204d98318612690e49d5b",
+  "status": "PASS_METHOD_FROZEN_TARGET_BLIND_READY_FUTURE_GATES_CLOSED",
+  "target_blind_ready": "YES"
+}
