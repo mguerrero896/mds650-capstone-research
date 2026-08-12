@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Date-level PIT preflight plan v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "artifact_type",
+    "schema_version",
+    "status",
+    "flags",
+    "calendar",
+    "assets",
+    "sentinel_sessions",
+    "semantic_hash_scope",
+    "semantic_self_hash"
+  ],
+  "properties": {
+    "artifact_type": {
+      "const": "date_level_pit_preflight_plan_v1"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "status": {
+      "const": "CANDIDATE_APPROVAL_REQUIRED"
+    },
+    "flags": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "NO_PROVIDER_CALLS_EXECUTED",
+        "NOT_AUTHORIZATION_FOR_ACQUISITION"
+      ],
+      "properties": {
+        "NO_PROVIDER_CALLS_EXECUTED": {
+          "const": true
+        },
+        "NOT_AUTHORIZATION_FOR_ACQUISITION": {
+          "const": true
+        }
+      }
+    },
+    "calendar": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exchange",
+        "timezone",
+        "source"
+      ],
+      "properties": {
+        "exchange": {
+          "const": "XNYS"
+        },
+        "timezone": {
+          "const": "America/New_York"
+        },
+        "source": {
+          "const": "exchange_calendars"
+        }
+      }
+    },
+    "assets": {
+      "const": [
+        "SPY",
+        "QQQ",
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "TSLA",
+        "AMZN",
+        "META"
+      ]
+    },
+    "sentinel_sessions": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "date",
+          "scenario",
+          "calendar_metadata"
+        ],
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "scenario": {
+            "enum": [
+              "ANOMALY_UW",
+              "EARLY_CLOSE",
+              "WINTER_REGULAR",
+              "PRE_DST",
+              "POST_DST",
+              "SUMMER_REGULAR"
+            ]
+          },
+          "calendar_metadata": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "calendar",
+              "timezone",
+              "is_xnys_session",
+              "session_type",
+              "open_utc",
+              "close_utc",
+              "session_length_minutes"
+            ],
+            "properties": {
+              "calendar": {
+                "const": "XNYS"
+              },
+              "timezone": {
+                "const": "America/New_York"
+              },
+              "is_xnys_session": {
+                "const": true
+              },
+              "session_type": {
+                "enum": [
+                  "REGULAR",
+                  "EARLY_CLOSE"
+                ]
+              },
+              "open_utc": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "\\+00:00$"
+              },
+              "close_utc": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "\\+00:00$"
+              },
+              "session_length_minutes": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "semantic_hash_scope": {
+      "const": "canonical-json-excluding-semantic_self_hash"
+    },
+    "semantic_self_hash": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    }
+  }
+}
