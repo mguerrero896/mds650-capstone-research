@@ -394,7 +394,7 @@ frozen development protocol without reading any holdout path.
 - [x] T200 [US4] Implement the immutable release-state validator and canonical self-hash logic
   in `src/mds650/corrected_development_release.py` using
   `contracts/corrected-development-release-v1.schema.json`.
-- [ ] T201 [US4] Implement `scripts/build_corrected_development_release.py` to bind only the
+- [x] T201 [US4] Implement `scripts/build_corrected_development_release.py` to bind only the
   target-blind v2.4 predictor inputs, B2 sidecar, PIT gate, Massive sensitivity and exact
   development manifest, writing a new target-free release manifest under
   `artifacts/corrected_development_v1/`.

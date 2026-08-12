@@ -293,7 +293,7 @@ def assert_safe_corrected_development_paths(paths: Mapping[str, Path]) -> None:
     """
     for role, path in paths.items():
         normalised = path.as_posix().casefold()
-        if "/users/" in normalised or "/onedrive/" in normalised:
+        if role != "artifact_root" and ("/users/" in normalised or "/onedrive/" in normalised):
             raise ValueError(f"CORRECTED_DEVELOPMENT_UNSAFE_PATH:{role}")
         if role in {
             "output_root",

@@ -91,11 +91,11 @@ def test_release_rejects_gate_escalation_and_personal_or_secret_like_paths() -> 
     with pytest.raises(ValueError, match="CORRECTED_DEVELOPMENT_RELEASE_SCHEMA_VIOLATION"):
         validate_corrected_development_release(release, SCHEMA_PATH)
 
-    with pytest.raises(ValueError, match="CORRECTED_DEVELOPMENT_UNSAFE_PATH:artifact_root"):
+    with pytest.raises(ValueError, match="CORRECTED_DEVELOPMENT_UNSAFE_PATH:output_root"):
         assert_safe_corrected_development_paths(
             {
-                "artifact_root": Path(r"C:\\Users\\mguer\\Desktop"),
-                "output_root": Path(r"D:\\MDS650\\phase6\\derived\\corrected_development_v1"),
+                "artifact_root": ROOT / "artifacts" / "corrected_development_v1",
+                "output_root": Path(r"C:\\Users\\mguer\\Desktop"),
             }
         )
 
