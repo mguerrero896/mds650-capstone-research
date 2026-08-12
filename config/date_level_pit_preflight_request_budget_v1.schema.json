@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Date-level PIT preflight request budget v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "artifact_type",
+    "schema_version",
+    "status",
+    "flags",
+    "dimensions",
+    "catalog_descriptor_status",
+    "unusual_whales_cache_policy",
+    "massive_contract_pagination",
+    "request_budget",
+    "cost_authorization",
+    "security",
+    "semantic_hash_scope",
+    "semantic_self_hash"
+  ],
+  "properties": {
+    "artifact_type": {"const": "date_level_pit_preflight_request_budget_v1"},
+    "schema_version": {"const": "1.0.0"},
+    "status": {"const": "CANDIDATE_AUTHORIZATION_REQUIRED"},
+    "flags": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "NO_PROVIDER_CALLS_EXECUTED",
+        "NOT_AUTHORIZATION_FOR_ACQUISITION",
+        "NOT_A_BILLING_CLAIM"
+      ],
+      "properties": {
+        "NO_PROVIDER_CALLS_EXECUTED": {"const": true},
+        "NOT_AUTHORIZATION_FOR_ACQUISITION": {"const": true},
+        "NOT_A_BILLING_CLAIM": {"const": true}
+      }
+    },
+    "dimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asset_count", "session_count", "asset_day_count"],
+      "properties": {
+        "asset_count": {"type": "integer", "minimum": 1},
+        "session_count": {"type": "integer", "minimum": 1},
+        "asset_day_count": {"type": "integer", "minimum": 1}
+      }
+    },
+    "catalog_descriptor_status": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fmp", "unusual_whales", "massive"],
+      "properties": {
+        "fmp": {"const": "CONFIGURED"},
+        "unusual_whales": {"const": "CONFIGURED"},
+        "massive": {"const": "CONFIGURED"}
+      }
+    },
+    "unusual_whales_cache_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scope", "request_count"],
+      "properties": {
+        "scope": {"const": "PER_SESSION_ACROSS_ASSETS"},
+        "request_count": {"type": "integer", "minimum": 1}
+      }
+    },
+    "massive_contract_pagination": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_contract_pages_per_asset_day",
+        "contract_search_request_cap",
+        "quote_as_of_max_per_asset_day",
+        "quote_as_of_only_after_contract_resolution",
+        "pagination_exceed_status"
+      ],
+      "properties": {
+        "max_contract_pages_per_asset_day": {"type": "integer", "minimum": 1},
+        "contract_search_request_cap": {"type": "integer", "minimum": 1},
+        "quote_as_of_max_per_asset_day": {"const": 1},
+        "quote_as_of_only_after_contract_resolution": {"const": true},
+        "pagination_exceed_status": {
+          "const": "FAILED_CLOSED_CONTRACT_PAGINATION_CAP_EXCEEDED"
+        }
+      }
+    },
+    "request_budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fmp_one_minute_requests",
+        "unusual_whales_range_metadata_probe_requests",
+        "massive_initial_contract_search_requests",
+        "massive_initial_quote_as_of_conditional_max",
+        "initial_request_count",
+        "initial_request_upper_bound_if_all_contracts_resolve",
+        "cap_request_count"
+      ],
+      "properties": {
+        "fmp_one_minute_requests": {"type": "integer", "minimum": 1},
+        "unusual_whales_range_metadata_probe_requests": {"type": "integer", "minimum": 1},
+        "massive_initial_contract_search_requests": {"type": "integer", "minimum": 1},
+        "massive_initial_quote_as_of_conditional_max": {"type": "integer", "minimum": 0},
+        "initial_request_count": {"type": "integer", "minimum": 1},
+        "initial_request_upper_bound_if_all_contracts_resolve": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "cap_request_count": {"type": "integer", "minimum": 1}
+      }
+    },
+    "cost_authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "cost_amount_claimed"],
+      "properties": {
+        "status": {"const": "EXTERNAL_AUTHORIZATION_REQUIRED_NOT_A_BILLING_CLAIM"},
+        "cost_amount_claimed": {"const": false}
+      }
+    },
+    "security": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "secret_values_emitted",
+        "personal_paths_emitted",
+        "raw_endpoint_details_emitted"
+      ],
+      "properties": {
+        "secret_values_emitted": {"const": false},
+        "personal_paths_emitted": {"const": false},
+        "raw_endpoint_details_emitted": {"const": false}
+      }
+    },
+    "semantic_hash_scope": {"const": "canonical-json-excluding-semantic_self_hash"},
+    "semantic_self_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  }
+}
