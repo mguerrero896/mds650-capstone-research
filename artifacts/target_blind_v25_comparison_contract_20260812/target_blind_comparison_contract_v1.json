@@ -1,0 +1,127 @@
+{
+  "artifact_schema": {
+    "file_sha256": "2f9d2e5cd7f21f96419a66f1024d3ded304b4029151868d8500fed34d3ea6c83",
+    "logical_path": "specs/001-pit-options-rv30/contracts/target-blind-comparison-contract-v1.schema.json"
+  },
+  "b1b_b1c_role": "PRE_SPECIFIED_ROBUSTNESS_ONLY",
+  "builder_source_sha256": "a84abc5c53c3176af664b09423f00e0122995e1444abbb4efb5c95ab542d0bdc",
+  "comparison_contract_sha256": "ed936c545292a3954405cf2c0d6545377320e930edd548b235a4c66d0f9dc050",
+  "forbidden_runtime_actions": [
+    "RV30_ACCESS",
+    "QLIKE_EVALUATION",
+    "MODEL_FIT",
+    "OOS_ACCESS",
+    "SEALED_RESULT_RECONCILIATION",
+    "NEW_HISTORICAL_ACQUISITION",
+    "PROSPECTIVE_CAPTURE_START"
+  ],
+  "inference": {
+    "cluster_unit": "TRADING_DAY",
+    "multiplicity": "HOLM",
+    "resampling": "PAIRED_DAY_CLUSTER_BOOTSTRAP",
+    "selection_by_sign": "PROHIBITED"
+  },
+  "metric_evaluation_performed": false,
+  "model_fit_performed": false,
+  "model_information_sets": {
+    "B0": [
+      "b0v2_log_spot",
+      "b0v2_underlying_return_5m",
+      "b0v2_underlying_rv_5m",
+      "b0v2_underlying_rv_30m",
+      "b0v2_log_dollar_volume_5m",
+      "b0v2_spy_return_5m",
+      "b0v2_spy_rv_30m",
+      "b0v2_qqq_return_5m",
+      "b0v2_qqq_rv_30m",
+      "b0v2_session_sine",
+      "b0v2_session_cosine",
+      "b0v2_asset_identity"
+    ],
+    "B1a": [
+      "b0v2_log_spot",
+      "b0v2_underlying_return_5m",
+      "b0v2_underlying_rv_5m",
+      "b0v2_underlying_rv_30m",
+      "b0v2_log_dollar_volume_5m",
+      "b0v2_spy_return_5m",
+      "b0v2_spy_rv_30m",
+      "b0v2_qqq_return_5m",
+      "b0v2_qqq_rv_30m",
+      "b0v2_session_sine",
+      "b0v2_session_cosine",
+      "b0v2_asset_identity",
+      "b1v2_atm_iv_30_60_dte",
+      "b1v2_atm_iv_change_5m",
+      "b1v2_atm_iv_change_30m"
+    ],
+    "B2": [
+      "b0v2_log_spot",
+      "b0v2_underlying_return_5m",
+      "b0v2_underlying_rv_5m",
+      "b0v2_underlying_rv_30m",
+      "b0v2_log_dollar_volume_5m",
+      "b0v2_spy_return_5m",
+      "b0v2_spy_rv_30m",
+      "b0v2_qqq_return_5m",
+      "b0v2_qqq_rv_30m",
+      "b0v2_session_sine",
+      "b0v2_session_cosine",
+      "b0v2_asset_identity",
+      "b1v2_atm_iv_30_60_dte",
+      "b1v2_atm_iv_change_5m",
+      "b1v2_atm_iv_change_30m",
+      "b2v2_z_log_trade_count",
+      "b2v2_z_unique_contract_share",
+      "b2v2_z_log_mean_trade_premium",
+      "b2v2_z_log_max_trade_premium",
+      "b2v2_deviation_call_put_premium_imbalance",
+      "b2v2_deviation_execution_side_premium_imbalance",
+      "b2v2_z_repeated_contract_premium_share",
+      "b2v2_z_strike_concentration",
+      "b2v2_z_expiry_concentration"
+    ]
+  },
+  "no_target_or_metric_payload_read": true,
+  "parent_preregistration": {
+    "file_sha256": "7c8f7f646973a18d0758c0197978ff53963b97ce35debbb49f144656725210a5",
+    "logical_path": "artifacts/target_blind_v24_sourcebound_20260812/next_confirmation_preregistration_v4.json",
+    "preregistration_sha256": "fe03d9ae5578ef0faf3ee89b11d8043a13c25757b9ff9e68b0f2b2af1b512bc1",
+    "schema_version": "target-blind-confirmation-preregistration-v4.0",
+    "source_commit": "743c6e2ea564d7e4422204d98318612690e49d5b"
+  },
+  "primary_b1_level": "B1a",
+  "primary_benchmark_substitution": "PROHIBITED",
+  "primary_comparisons": [
+    {
+      "benchmark": "B0",
+      "challenger": "B1a",
+      "comparison_id": "B1A_VS_B0",
+      "estimand": "MEAN_DAILY_QLIKE_B0_MINUS_B1A",
+      "positive_direction": "FAVORS_B1A"
+    },
+    {
+      "benchmark": "B1a",
+      "challenger": "B2",
+      "comparison_id": "B2_VS_B1A",
+      "estimand": "MEAN_DAILY_QLIKE_B1A_MINUS_B2",
+      "positive_direction": "FAVORS_B2"
+    }
+  ],
+  "purpose": "freeze_nested_b0_b1a_b2_comparisons_before_rv30_or_qlike_access",
+  "safe_to_acquire_new_historical_sample": "NO",
+  "safe_to_open_or_evaluate_oos": "NO",
+  "safe_to_reconcile_existing_results": "NO",
+  "safe_to_start_prospective_capture": "NO",
+  "schema_version": "target-blind-comparison-contract-v1.0",
+  "scope": "offline_metadata_only_primary_comparison_freeze",
+  "selection_controls": {
+    "asset_selection_by_predictive_result": "PROHIBITED",
+    "feature_selection_by_rv30_or_qlike": "PROHIBITED",
+    "model_selection_by_sign": "PROHIBITED",
+    "primary_comparison_switching": "PROHIBITED"
+  },
+  "source_commit": "bd8002a90adab01622dfb18f8fb3132ae28ee411",
+  "status": "SEALED_PRIMARY_COMPARISONS_TARGET_BLIND_NO_EVALUATION",
+  "target_definition": "RV30"
+}
