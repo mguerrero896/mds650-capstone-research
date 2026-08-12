@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/date-level-pit-preflight-status-v2.1.schema.json",
+  "title": "MDS650 Date-Level PIT Preflight Current Status v2.1",
+  "description": "A target-blind, zero-network status record. It preserves verified historical availability separately from unresolved PIT semantics, binds the registered Massive selector, and cannot authorize acquisition, reconciliation, evaluation or OOS access.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "scope",
+    "network_permitted",
+    "network_attempts_sent",
+    "safe_to_reconcile_existing_results",
+    "safe_to_open_or_evaluate_oos",
+    "historical_source_availability",
+    "contract_evidence_statuses",
+    "massive_contract_selection_rule_id",
+    "source_fingerprint",
+    "operation_counts",
+    "attempt_budget",
+    "operational_preconditions_not_evaluated",
+    "required_before_network",
+    "exact_recheck_commands",
+    "artifact_schema",
+    "builder_source_sha256",
+    "source_commit",
+    "semantic_self_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "date-level-pit-preflight-status-v2.1" },
+    "status": { "const": "FAILED_CLOSED" },
+    "scope": { "const": "target_blind_date_level_pit_compatibility_only" },
+    "network_permitted": { "const": false },
+    "network_attempts_sent": { "const": 0 },
+    "safe_to_reconcile_existing_results": { "const": "NO" },
+    "safe_to_open_or_evaluate_oos": { "const": "NO" },
+    "historical_source_availability": { "$ref": "#/$defs/historicalAvailability" },
+    "contract_evidence_statuses": {
+      "type": "array",
+      "const": [
+        "FMP_DATE_BOUNDED_ONLY_NO_PIT_CLAIM",
+        "UW_FULL_TAPE_ZIP_ROUTE_DOCUMENTED_EXECUTION_GATED",
+        "MASSIVE_QUOTE_AS_OF_PARAMETERS_DOCUMENTED_LOCAL_SIP_CHECK_REQUIRED"
+      ]
+    },
+    "massive_contract_selection_rule_id": {
+      "const": "massive-contract-grid-v1-asof-dte-moneyness-tiebreak"
+    },
+    "source_fingerprint": { "$ref": "#/$defs/sourceFingerprint" },
+    "operation_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fmp_minute_bars",
+        "unusual_whales_full_tape",
+        "massive_contract_search",
+        "total_initial_operations"
+      ],
+      "properties": {
+        "fmp_minute_bars": { "const": 56 },
+        "unusual_whales_full_tape": { "const": 7 },
+        "massive_contract_search": { "const": 56 },
+        "total_initial_operations": { "const": 119 }
+      }
+    },
+    "attempt_budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "logical_request_cap",
+        "global_http_attempt_cap",
+        "max_attempts_per_logical_request",
+        "attempts_reserved",
+        "attempts_sent"
+      ],
+      "properties": {
+        "logical_request_cap": { "const": 343 },
+        "global_http_attempt_cap": { "const": 343 },
+        "max_attempts_per_logical_request": { "const": 3 },
+        "attempts_reserved": { "const": 0 },
+        "attempts_sent": { "const": 0 }
+      }
+    },
+    "operational_preconditions_not_evaluated": {
+      "type": "array",
+      "const": ["SECRET_PRESENCE", "D_DRIVE_FREE_SPACE", "COST_AUTHORIZATION"]
+    },
+    "required_before_network": {
+      "type": "array",
+      "const": [
+        "FMP_DATE_BOUNDED_ONLY_NO_PIT_CLAIM",
+        "UW_FULL_TAPE_ZIP_ROUTE_DOCUMENTED_EXECUTION_GATED",
+        "MASSIVE_QUOTE_AS_OF_PARAMETERS_DOCUMENTED_LOCAL_SIP_CHECK_REQUIRED"
+      ]
+    },
+    "exact_recheck_commands": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "artifact_schema": { "$ref": "#/$defs/artifactSchema" },
+    "builder_source_sha256": { "$ref": "#/$defs/sha256" },
+    "source_commit": { "$ref": "#/$defs/commit" },
+    "semantic_self_hash": { "$ref": "#/$defs/prefixedSha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "prefixedSha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "historicalAvailability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "fmp",
+        "unusual_whales",
+        "fmp_evidence_sha256",
+        "unusual_whales_evidence_sha256"
+      ],
+      "properties": {
+        "status": { "const": "PASS_SEPARATE_FROM_PIT_TIMESTAMP_SEMANTICS" },
+        "fmp": { "const": "PASS_90_OF_90_SESSIONS" },
+        "unusual_whales": { "const": "PASS_90_OF_90_FILE_METADATA" },
+        "fmp_evidence_sha256": {
+          "const": "97c3b57707a953629ff57e485cde918e52ecdd1777a246e84072b5c4150771dc"
+        },
+        "unusual_whales_evidence_sha256": {
+          "const": "244690e15054f518e5d12083e6b81d2bcbfcd8f5f009304f4127cbb5c1c4a3f3"
+        }
+      }
+    },
+    "sourceFingerprint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["plan_sha256", "endpoint_catalog_sha256", "request_budget_sha256", "composite_sha256"],
+      "properties": {
+        "plan_sha256": { "$ref": "#/$defs/prefixedSha256" },
+        "endpoint_catalog_sha256": { "$ref": "#/$defs/prefixedSha256" },
+        "request_budget_sha256": { "$ref": "#/$defs/prefixedSha256" },
+        "composite_sha256": { "$ref": "#/$defs/prefixedSha256" }
+      }
+    },
+    "artifactSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["logical_path", "file_sha256"],
+      "properties": {
+        "logical_path": {
+          "const": "specs/001-pit-options-rv30/contracts/date-level-pit-preflight-status-v2.1.schema.json"
+        },
+        "file_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  }
+}

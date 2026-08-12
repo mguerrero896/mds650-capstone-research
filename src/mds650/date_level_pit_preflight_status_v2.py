@@ -24,6 +24,7 @@ from mds650.date_level_pit_preflight_v2 import (
     OperationPlan,
     build_operation_plan,
 )
+from mds650.massive_contract_selection_v1 import RULE_ID as MASSIVE_CONTRACT_SELECTION_RULE_ID
 
 
 class _JsonSchemaValidator(Protocol):
@@ -54,17 +55,35 @@ def _load_draft202012_validator() -> _Draft202012ValidatorFactory:
 
 _DRAFT202012_VALIDATOR = _load_draft202012_validator()
 _ROOT = Path(__file__).resolve().parents[2]
-_SCHEMA_PATH = (
+_LEGACY_SCHEMA_PATH = (
     _ROOT
     / "specs"
     / "001-pit-options-rv30"
     / "contracts"
     / "date-level-pit-preflight-status-v2.schema.json"
 )
-_OUTPUT_FILENAME = "date_level_pit_preflight_status_v2_current.json"
+_CURRENT_SCHEMA_PATH = (
+    _ROOT
+    / "specs"
+    / "001-pit-options-rv30"
+    / "contracts"
+    / "date-level-pit-preflight-status-v2.1.schema.json"
+)
+_LEGACY_SCHEMA_VERSION = "date-level-pit-preflight-status-v2.0"
+_CURRENT_SCHEMA_VERSION = "date-level-pit-preflight-status-v2.1"
+_SCHEMA_PATH_BY_VERSION = {
+    _LEGACY_SCHEMA_VERSION: _LEGACY_SCHEMA_PATH,
+    _CURRENT_SCHEMA_VERSION: _CURRENT_SCHEMA_PATH,
+}
+_OUTPUT_FILENAME = "date_level_pit_preflight_status_v2_1_current.json"
 _SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 _COMMIT_PATTERN = re.compile(r"^[0-9a-f]{40}$")
 _EXPECTED_EVIDENCE_STATUSES = (
+    ContractEvidenceStatus.FMP_DATE_BOUNDED_ONLY_NO_PIT_CLAIM,
+    ContractEvidenceStatus.UW_FULL_TAPE_ZIP_ROUTE_DOCUMENTED_EXECUTION_GATED,
+    ContractEvidenceStatus.MASSIVE_QUOTE_AS_OF_PARAMETERS_DOCUMENTED_LOCAL_SIP_CHECK_REQUIRED,
+)
+_LEGACY_EVIDENCE_STATUSES = (
     ContractEvidenceStatus.FMP_DATE_BOUNDED_ONLY_NO_PIT_CLAIM,
     ContractEvidenceStatus.UW_FULL_TAPE_ZIP_ROUTE_DOCUMENTED_EXECUTION_GATED,
     ContractEvidenceStatus.MASSIVE_CONTRACT_SELECTION_RULE_UNRESOLVED_NO_EXECUTION,
@@ -154,7 +173,13 @@ def validate_current_date_level_pit_status_v2(document: Mapping[str, object]) ->
         "semantic_self_hash",
         "PREFLIGHT_V2_STATUS_SELF_HASH_INVALID",
     )
-    schema = _read_json_object(_SCHEMA_PATH, "PREFLIGHT_V2_STATUS_SCHEMA_UNREADABLE")
+    schema_version = document.get("schema_version")
+    if not isinstance(schema_version, str):
+        raise ValueError("PREFLIGHT_V2_STATUS_SCHEMA_INVALID")
+    schema_path = _SCHEMA_PATH_BY_VERSION.get(schema_version)
+    if schema_path is None:
+        raise ValueError("PREFLIGHT_V2_STATUS_SCHEMA_INVALID")
+    schema = _read_json_object(schema_path, "PREFLIGHT_V2_STATUS_SCHEMA_UNREADABLE")
     try:
         _DRAFT202012_VALIDATOR.check_schema(schema)
         errors = list(_DRAFT202012_VALIDATOR(schema).iter_errors(document))
@@ -162,14 +187,14 @@ def validate_current_date_level_pit_status_v2(document: Mapping[str, object]) ->
         raise ValueError("PREFLIGHT_V2_STATUS_SCHEMA_INVALID") from exc
     if errors:
         raise ValueError("PREFLIGHT_V2_STATUS_SCHEMA_INVALID")
-    _validate_policy_literals(document)
+    _validate_policy_literals(document, schema_version)
 
 
 def _build_status_document(operation_plan: OperationPlan, source_commit: str) -> dict[str, object]:
     """Render one deterministic status mapping from a validated no-network plan."""
     availability = _historical_availability_document(operation_plan.historical_availability)
     document: dict[str, object] = {
-        "schema_version": "date-level-pit-preflight-status-v2.0",
+        "schema_version": _CURRENT_SCHEMA_VERSION,
         "status": "FAILED_CLOSED",
         "scope": "target_blind_date_level_pit_compatibility_only",
         "network_permitted": False,
@@ -178,6 +203,7 @@ def _build_status_document(operation_plan: OperationPlan, source_commit: str) ->
         "safe_to_open_or_evaluate_oos": "NO",
         "historical_source_availability": availability,
         "contract_evidence_statuses": [status.value for status in _EXPECTED_EVIDENCE_STATUSES],
+        "massive_contract_selection_rule_id": MASSIVE_CONTRACT_SELECTION_RULE_ID,
         "source_fingerprint": {
             "plan_sha256": operation_plan.source_fingerprint.plan_sha256,
             "endpoint_catalog_sha256": operation_plan.source_fingerprint.catalog_sha256,
@@ -208,9 +234,12 @@ def _build_status_document(operation_plan: OperationPlan, source_commit: str) ->
         "artifact_schema": {
             "logical_path": (
                 "specs/001-pit-options-rv30/contracts/"
-                "date-level-pit-preflight-status-v2.schema.json"
+                "date-level-pit-preflight-status-v2.1.schema.json"
             ),
-            "file_sha256": _file_sha256(_SCHEMA_PATH, "PREFLIGHT_V2_STATUS_SCHEMA_UNREADABLE"),
+            "file_sha256": _file_sha256(
+                _CURRENT_SCHEMA_PATH,
+                "PREFLIGHT_V2_STATUS_SCHEMA_UNREADABLE",
+            ),
         },
         "builder_source_sha256": _file_sha256(
             Path(__file__), "PREFLIGHT_V2_STATUS_BUILDER_UNREADABLE"
@@ -229,7 +258,7 @@ def _validate_hard_no_network_gate(operation_plan: OperationPlan) -> None:
         or gate.execution_permitted
         or gate.attempts_sent != 0
         or gate.evidence_statuses != _EXPECTED_EVIDENCE_STATUSES
-        or operation_plan.contract_selection_rule_id is not None
+        or operation_plan.contract_selection_rule_id != MASSIVE_CONTRACT_SELECTION_RULE_ID
     ):
         raise ValueError("PREFLIGHT_V2_STATUS_NETWORK_GATE_INVALID")
 
@@ -274,7 +303,7 @@ def _operation_counts(operation_plan: OperationPlan) -> dict[str, int]:
     return counts
 
 
-def _validate_policy_literals(document: Mapping[str, object]) -> None:
+def _validate_policy_literals(document: Mapping[str, object], schema_version: object) -> None:
     """Require the emitted schema-valid document to retain all current hard blocks."""
     expected = {
         "status": "FAILED_CLOSED",
@@ -286,9 +315,17 @@ def _validate_policy_literals(document: Mapping[str, object]) -> None:
     }
     if any(document.get(key) != value for key, value in expected.items()):
         raise ValueError("PREFLIGHT_V2_STATUS_POLICY_INVALID")
-    if document.get("contract_evidence_statuses") != [
-        status.value for status in _EXPECTED_EVIDENCE_STATUSES
-    ]:
+    expected_statuses = (
+        _EXPECTED_EVIDENCE_STATUSES
+        if schema_version == _CURRENT_SCHEMA_VERSION
+        else _LEGACY_EVIDENCE_STATUSES
+    )
+    if document.get("contract_evidence_statuses") != [status.value for status in expected_statuses]:
+        raise ValueError("PREFLIGHT_V2_STATUS_POLICY_INVALID")
+    if (
+        schema_version == _CURRENT_SCHEMA_VERSION
+        and document.get("massive_contract_selection_rule_id") != MASSIVE_CONTRACT_SELECTION_RULE_ID
+    ):
         raise ValueError("PREFLIGHT_V2_STATUS_POLICY_INVALID")
 
 

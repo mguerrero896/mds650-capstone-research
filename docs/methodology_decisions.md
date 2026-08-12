@@ -235,3 +235,13 @@ Spec Kit consistency and preregistration gates pass.
    This only removes a local reproducibility ambiguity; it does not call Massive, alter
    any legacy B1Q cache, establish provider PIT semantics, resolve B1Q exogenous-input
    provenance or upgrade SAFE_TO_RECONCILE_EXISTING_RESULTS=NO.
+41. **PIT preflight status v2.1 supersedes only its current planning state
+   (2026-08-12)** — The v2.1 preflight status binds the registered Massive selection-rule ID
+   and removes the stale current-state code
+   `MASSIVE_CONTRACT_SELECTION_RULE_UNRESOLVED_NO_EXECUTION`. The sealed v2.0 status and its
+   historical evidence code remain immutable and schema-valid. FMP historical availability
+   remains `PASS_90_OF_90_SESSIONS`, and Unusual Whales Full Tape file metadata remains
+   `PASS_90_OF_90_FILE_METADATA`; these positive availability facts remain distinct from
+   timestamp, publication, receipt and exogenous-input provenance. The v2.1 status therefore
+   remains `FAILED_CLOSED`, with zero transport attempts and no authorization to reconcile
+   legacy results, acquire new data or open OOS.

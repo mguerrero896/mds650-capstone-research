@@ -58,7 +58,9 @@ def test_build_operation_plan_derives_bounded_initial_operations_and_attempt_cap
         == _json_mapping(BUDGET_PATH)["semantic_self_hash"]
     )
     assert operation_plan.source_fingerprint.composite_sha256.startswith("sha256:")
-    assert operation_plan.contract_selection_rule_id is None
+    assert operation_plan.contract_selection_rule_id == (
+        "massive-contract-grid-v1-asof-dte-moneyness-tiebreak"
+    )
 
     operations = operation_plan.initial_operations
     assert len(operations) == 119
@@ -95,7 +97,7 @@ def test_build_operation_plan_derives_bounded_initial_operations_and_attempt_cap
         for operation in contract_searches
     )
     assert {operation.disposition.value for operation in contract_searches} == {
-        "CONTRACT_UNRESOLVED_NO_EXECUTION"
+        "LOCAL_CONTRACT_PENDING_OFFICIAL_MACHINE_READABLE_CONFIRMATION"
     }
     assert not [
         operation for operation in operations if operation.kind.value == "contract_reference"
@@ -174,7 +176,7 @@ def test_approval_matching_revalidates_schema_before_comparing_composite_identit
         )
 
 
-def test_massive_search_stays_unresolved_without_a_catalog_selection_rule() -> None:
+def test_massive_search_transitions_only_with_the_registered_selection_rule() -> None:
     module = _module()
     operation_plan = _operation_plan()
     search = next(
@@ -184,8 +186,8 @@ def test_massive_search_stays_unresolved_without_a_catalog_selection_rule() -> N
     )
     state = module.initial_massive_asset_session_state(search)
     resolution = module.ContractResolution(
-        rule_id="typed-contract-selection",
-        contract_candidate="contract-candidate",
+        rule_id="massive-contract-grid-v1-asof-dte-moneyness-tiebreak",
+        contract_candidate="O:AAPL250328C00245000",
     )
 
     transition = module.resolve_massive_contract_candidate(
@@ -194,13 +196,34 @@ def test_massive_search_stays_unresolved_without_a_catalog_selection_rule() -> N
         resolution,
     )
 
-    assert transition.next_operation is None
+    assert transition.next_operation is not None
+    assert transition.next_operation.kind is module.OperationKind.CONTRACT_REFERENCE
+    assert transition.next_operation.contract_candidate == "O:AAPL250328C00245000"
     assert transition.state.disposition is (
-        module.OperationDisposition.CONTRACT_UNRESOLVED_NO_EXECUTION
+        module.OperationDisposition.LOCAL_CONTRACT_PENDING_OFFICIAL_MACHINE_READABLE_CONFIRMATION
     )
-    assert transition.state.contract_candidate_count == 0
+    assert transition.state.contract_candidate_count == 1
     assert transition.state.contract_reference_count == 0
     assert transition.state.quote_count == 0
+
+    unresolved = module.resolve_massive_contract_candidate(
+        operation_plan,
+        state,
+        module.ContractResolution(
+            rule_id="different-registered-rule",
+            contract_candidate="O:AAPL250328C00245000",
+        ),
+    )
+    assert unresolved.next_operation is None
+    assert unresolved.failure is module.FailureClassification.CONTRACT_SELECTION_UNRESOLVED
+
+    with pytest.raises(
+        module.PitPreflightV2Error, match="PREFLIGHT_V2_CONTRACT_RESOLUTION_INVALID"
+    ):
+        module.ContractResolution(
+            rule_id="massive-contract-grid-v1-asof-dte-moneyness-tiebreak",
+            contract_candidate="AAPL250328C00245000",
+        )
 
 
 def test_massive_state_machine_bounds_search_pages_and_fails_closed_before_page_four() -> None:
@@ -485,7 +508,6 @@ def test_current_inputs_hard_block_network_without_recording_an_attempt() -> Non
     assert gate.evidence_statuses == (
         module.ContractEvidenceStatus.FMP_DATE_BOUNDED_ONLY_NO_PIT_CLAIM,
         module.ContractEvidenceStatus.UW_FULL_TAPE_ZIP_ROUTE_DOCUMENTED_EXECUTION_GATED,
-        module.ContractEvidenceStatus.MASSIVE_CONTRACT_SELECTION_RULE_UNRESOLVED_NO_EXECUTION,
         module.ContractEvidenceStatus.MASSIVE_QUOTE_AS_OF_PARAMETERS_DOCUMENTED_LOCAL_SIP_CHECK_REQUIRED,
     )
 

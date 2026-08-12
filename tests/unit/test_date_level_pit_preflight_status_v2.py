@@ -84,7 +84,7 @@ def test_status_record_preserves_history_but_hard_blocks_network(
     output_path = _emit(emitter, tmp_path / "output")
     document = _read_json(output_path)
 
-    assert document["schema_version"] == "date-level-pit-preflight-status-v2.0"
+    assert document["schema_version"] == "date-level-pit-preflight-status-v2.1"
     assert document["status"] == "FAILED_CLOSED"
     assert document["network_permitted"] is False
     assert document["network_attempts_sent"] == 0
@@ -115,9 +115,14 @@ def test_status_record_preserves_history_but_hard_blocks_network(
     assert document["contract_evidence_statuses"] == [
         "FMP_DATE_BOUNDED_ONLY_NO_PIT_CLAIM",
         "UW_FULL_TAPE_ZIP_ROUTE_DOCUMENTED_EXECUTION_GATED",
-        "MASSIVE_CONTRACT_SELECTION_RULE_UNRESOLVED_NO_EXECUTION",
         "MASSIVE_QUOTE_AS_OF_PARAMETERS_DOCUMENTED_LOCAL_SIP_CHECK_REQUIRED",
     ]
+    assert document["massive_contract_selection_rule_id"] == (
+        "massive-contract-grid-v1-asof-dte-moneyness-tiebreak"
+    )
+    assert document["artifact_schema"]["logical_path"] == (
+        "specs/001-pit-options-rv30/contracts/date-level-pit-preflight-status-v2.1.schema.json"
+    )
     assert document["semantic_self_hash"] == _canonical_sha256(
         {key: value for key, value in document.items() if key != "semantic_self_hash"}
     )
@@ -144,3 +149,20 @@ def test_status_validator_rejects_a_self_hash_invalid_record(tmp_path: Path) -> 
 
     with pytest.raises(ValueError, match="PREFLIGHT_V2_STATUS_SELF_HASH_INVALID"):
         emitter.validate_current_date_level_pit_status_v2(document)
+
+
+def test_status_validator_retains_the_sealed_v20_record_as_historical_evidence() -> None:
+    """A v2.1 upgrade must not invalidate the immutable v2.0 status record."""
+    emitter = _module()
+    legacy_path = (
+        ROOT
+        / "artifacts"
+        / "preflight"
+        / "revalidated_20260812"
+        / "date_level_pit_preflight_status_v2_current.json"
+    )
+
+    legacy = _read_json(legacy_path)
+
+    assert legacy["schema_version"] == "date-level-pit-preflight-status-v2.0"
+    emitter.validate_current_date_level_pit_status_v2(legacy)

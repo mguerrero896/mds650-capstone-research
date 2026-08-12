@@ -13,6 +13,7 @@ from threading import Lock
 from typing import Final, Protocol, cast
 
 from mds650.date_level_pit_preflight_v1 import PreflightError, derive_forecast_origin
+from mds650.massive_contract_selection_v1 import RULE_ID as MASSIVE_CONTRACT_SELECTION_RULE_ID
 
 EXPECTED_PROVIDERS: Final[frozenset[str]] = frozenset({"fmp", "unusual_whales", "massive"})
 EXPECTED_ASSET_COUNT: Final[int] = 8
@@ -146,6 +147,8 @@ class ContractEvidenceStatus(StrEnum):
     UW_FULL_TAPE_ZIP_ROUTE_DOCUMENTED_EXECUTION_GATED = (
         "UW_FULL_TAPE_ZIP_ROUTE_DOCUMENTED_EXECUTION_GATED"
     )
+    # Preserved solely to parse historical v2 status evidence; the registered
+    # selector now removes it from the current network gate.
     MASSIVE_CONTRACT_SELECTION_RULE_UNRESOLVED_NO_EXECUTION = (
         "MASSIVE_CONTRACT_SELECTION_RULE_UNRESOLVED_NO_EXECUTION"
     )
@@ -360,7 +363,11 @@ class ContractResolution:
     contract_candidate: str
 
     def __post_init__(self) -> None:
-        if not self.rule_id or not self.contract_candidate:
+        if (
+            not self.rule_id
+            or not self.contract_candidate
+            or not self.contract_candidate.startswith("O:")
+        ):
             raise PitPreflightV2Error("PREFLIGHT_V2_CONTRACT_RESOLUTION_INVALID")
 
 
@@ -641,7 +648,9 @@ def build_operation_plan(
                     origin_ns=origin_ns,
                     page=1,
                     shared_across_assets=False,
-                    disposition=OperationDisposition.CONTRACT_UNRESOLVED_NO_EXECUTION,
+                    disposition=(
+                        OperationDisposition.LOCAL_CONTRACT_PENDING_OFFICIAL_MACHINE_READABLE_CONFIRMATION
+                    ),
                 )
             )
     if len(operations) != 119:
@@ -652,7 +661,7 @@ def build_operation_plan(
         logical_request_cap=LOGICAL_REQUEST_CAP,
         max_attempts_per_logical_request=MAX_ATTEMPTS_PER_LOGICAL_REQUEST,
         http_attempt_cap=GLOBAL_HTTP_ATTEMPT_CAP,
-        contract_selection_rule_id=None,
+        contract_selection_rule_id=MASSIVE_CONTRACT_SELECTION_RULE_ID,
         historical_availability=current_historical_source_availability(),
         network_gate=current_network_gate(),
     )
@@ -745,7 +754,6 @@ def current_network_gate() -> NetworkGate:
         evidence_statuses=(
             ContractEvidenceStatus.FMP_DATE_BOUNDED_ONLY_NO_PIT_CLAIM,
             ContractEvidenceStatus.UW_FULL_TAPE_ZIP_ROUTE_DOCUMENTED_EXECUTION_GATED,
-            ContractEvidenceStatus.MASSIVE_CONTRACT_SELECTION_RULE_UNRESOLVED_NO_EXECUTION,
             ContractEvidenceStatus.MASSIVE_QUOTE_AS_OF_PARAMETERS_DOCUMENTED_LOCAL_SIP_CHECK_REQUIRED,
         ),
     )
@@ -774,7 +782,9 @@ def initial_massive_asset_session_state(
         contract_reference_count=0,
         quote_count=0,
         reference_validated=False,
-        disposition=OperationDisposition.CONTRACT_UNRESOLVED_NO_EXECUTION,
+        disposition=(
+            OperationDisposition.LOCAL_CONTRACT_PENDING_OFFICIAL_MACHINE_READABLE_CONFIRMATION
+        ),
         failure=None,
     )
 
@@ -811,7 +821,9 @@ def advance_massive_contract_search_page(
         origin_ns=state.origin_ns,
         page=next_page,
         shared_across_assets=False,
-        disposition=OperationDisposition.CONTRACT_UNRESOLVED_NO_EXECUTION,
+        disposition=(
+            OperationDisposition.LOCAL_CONTRACT_PENDING_OFFICIAL_MACHINE_READABLE_CONFIRMATION
+        ),
     )
     return MassiveTransition(state=advanced, next_operation=operation, failure=None)
 
@@ -821,7 +833,7 @@ def resolve_massive_contract_candidate(
     state: MassiveAssetSessionState,
     resolution: ContractResolution,
 ) -> MassiveTransition:
-    """Fail closed because current immutable inputs register no selection rule."""
+    """Advance only when the candidate carries the registered selection-rule ID."""
     if state.stage is not MassiveStage.CONTRACT_SEARCH:
         raise PitPreflightV2Error("PREFLIGHT_V2_MASSIVE_RESOLUTION_TRANSITION_INVALID")
     if operation_plan.contract_selection_rule_id != resolution.rule_id:
