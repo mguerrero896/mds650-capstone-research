@@ -1,0 +1,62 @@
+{
+  "b1q_exogenous_input_provenance": "UNRESOLVED",
+  "bound_sources": {
+    "confirmation_readiness": {
+      "artifact_identity": "5a2cd9996ec2ff0017bf5f84de9871cffce2b19780b7592d9efa4e8a08719cf3",
+      "file_sha256": "fc04acc0d466b25a176f3f2e599fad516a69c3a74251469178a7406d00826095",
+      "role": "CONFIRMATION_READINESS_V3",
+      "status": "PASS_METHOD_FROZEN_TARGET_BLIND_READY_FUTURE_GATES_CLOSED"
+    },
+    "fmp_docs_review": {
+      "artifact_identity": "e460e2e22c2c5105b86fc97909da64d98184f3060bb52767c8ffeb53211f89ad",
+      "file_sha256": "debf59a05d062c1b2f3b16b98e40f8df61ec363f7a79ce23a6659680e3aa225a",
+      "role": "FMP_B1Q_EXOGENOUS_DOCS_REVIEW_V1",
+      "status": "DOCUMENTED_ENDPOINTS_INSUFFICIENT_FOR_B1Q_PIT"
+    },
+    "policy_gate": {
+      "artifact_identity": "05da11e4f24c73d1cb8f01fee6daf6da75040a6ae0399f8bcc9cbb03647933a7",
+      "file_sha256": "a37560470159cee24a80bc2d0f93883eab02264aa6fd880d88f69a8df2744f79",
+      "role": "PROVIDER_TIMING_POLICY_GATE_V1",
+      "status": "PASS_EVIDENCE_SCOPED_POLICY_FAIL_CLOSED"
+    },
+    "preflight": {
+      "artifact_identity": "a866b52ab7e6b8bbee38c6041c3935eb7fb329a7e1006674816d4008a71f6112",
+      "file_sha256": "9e246c6a167fc0a5ed5cb61cf83e6a747e6dee74901a4aa52f2ad76ab579e6db",
+      "role": "DATE_LEVEL_PIT_PREFLIGHT_STATUS_V2_1",
+      "status": "FAILED_CLOSED"
+    },
+    "source_coverage": {
+      "artifact_identity": "088cf2259a2d6acdb58c9651d0a43f39938e5e639069bb92960baa3e869c4d1d",
+      "file_sha256": "c9719cab83000e52d6dae2778fd1e65395ede0270fce1f8e7ef75140cdbfdc2b",
+      "role": "CORRECTED_DEVELOPMENT_SOURCE_COVERAGE_V1",
+      "status": "BLOCKED_SOURCE_COVERAGE"
+    }
+  },
+  "current_blockers": [
+    "B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED",
+    "DATE_LEVEL_PIT_PREFLIGHT_FAILED_CLOSED",
+    "SAFE_TO_RECONCILE_EXISTING_RESULTS_NO",
+    "SAFE_TO_OPEN_OR_EVALUATE_OOS_NO"
+  ],
+  "date_level_pit_preflight": "FAILED_CLOSED",
+  "historical_source_availability": {
+    "fmp": "PASS_90_OF_90_SESSIONS",
+    "interpretation": "AVAILABLE_HISTORY_NOT_PIT_TIMESTAMP_PROOF",
+    "unusual_whales": "PASS_90_OF_90_FILE_METADATA"
+  },
+  "method_freeze_status": "FROZEN_TARGET_BLIND_ONLY",
+  "model_fit_performed": false,
+  "observed_on_utc": "2026-08-12",
+  "personal_paths_emitted": false,
+  "provider_market_data_requests_performed": false,
+  "safe_to_acquire_new_historical_sample": "NO",
+  "safe_to_build_b0_b1_b2_evaluation": false,
+  "safe_to_open_or_evaluate_oos": "NO",
+  "safe_to_reconcile_existing_results": "NO",
+  "schema_version": "current-research-readiness-v1.0",
+  "scope": "offline_target_blind_current_readiness_only",
+  "secret_values_emitted": false,
+  "semantic_self_hash": "sha256:ddc493270632506e0d7e1bcfb9eb46d263a63ff19455fd9d5ea88708f5ccd572",
+  "status": "READY_FOR_CONFIRMATION_WITH_BLOCKERS",
+  "target_or_metric_payload_read": false
+}

@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/current-research-readiness-v1.schema.json",
+  "title": "MDS650 Current Research Readiness v1",
+  "description": "Target-blind snapshot that binds historical availability separately from PIT and evaluation gates.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "scope",
+    "observed_on_utc",
+    "method_freeze_status",
+    "historical_source_availability",
+    "b1q_exogenous_input_provenance",
+    "date_level_pit_preflight",
+    "safe_to_build_b0_b1_b2_evaluation",
+    "safe_to_reconcile_existing_results",
+    "safe_to_open_or_evaluate_oos",
+    "safe_to_acquire_new_historical_sample",
+    "current_blockers",
+    "bound_sources",
+    "provider_market_data_requests_performed",
+    "target_or_metric_payload_read",
+    "model_fit_performed",
+    "secret_values_emitted",
+    "personal_paths_emitted",
+    "semantic_self_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "current-research-readiness-v1.0" },
+    "status": { "const": "READY_FOR_CONFIRMATION_WITH_BLOCKERS" },
+    "scope": { "const": "offline_target_blind_current_readiness_only" },
+    "observed_on_utc": { "const": "2026-08-12" },
+    "method_freeze_status": { "const": "FROZEN_TARGET_BLIND_ONLY" },
+    "historical_source_availability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fmp", "unusual_whales", "interpretation"],
+      "properties": {
+        "fmp": { "const": "PASS_90_OF_90_SESSIONS" },
+        "unusual_whales": { "const": "PASS_90_OF_90_FILE_METADATA" },
+        "interpretation": { "const": "AVAILABLE_HISTORY_NOT_PIT_TIMESTAMP_PROOF" }
+      }
+    },
+    "b1q_exogenous_input_provenance": { "const": "UNRESOLVED" },
+    "date_level_pit_preflight": { "const": "FAILED_CLOSED" },
+    "safe_to_build_b0_b1_b2_evaluation": { "const": false },
+    "safe_to_reconcile_existing_results": { "const": "NO" },
+    "safe_to_open_or_evaluate_oos": { "const": "NO" },
+    "safe_to_acquire_new_historical_sample": { "const": "NO" },
+    "current_blockers": {
+      "type": "array",
+      "const": [
+        "B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED",
+        "DATE_LEVEL_PIT_PREFLIGHT_FAILED_CLOSED",
+        "SAFE_TO_RECONCILE_EXISTING_RESULTS_NO",
+        "SAFE_TO_OPEN_OR_EVALUATE_OOS_NO"
+      ]
+    },
+    "bound_sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_gate",
+        "preflight",
+        "source_coverage",
+        "fmp_docs_review",
+        "confirmation_readiness"
+      ],
+      "properties": {
+        "policy_gate": { "$ref": "#/$defs/policyGateSource" },
+        "preflight": { "$ref": "#/$defs/preflightSource" },
+        "source_coverage": { "$ref": "#/$defs/sourceCoverageSource" },
+        "fmp_docs_review": { "$ref": "#/$defs/fmpDocsReviewSource" },
+        "confirmation_readiness": { "$ref": "#/$defs/confirmationReadinessSource" }
+      }
+    },
+    "provider_market_data_requests_performed": { "const": false },
+    "target_or_metric_payload_read": { "const": false },
+    "model_fit_performed": { "const": false },
+    "secret_values_emitted": { "const": false },
+    "personal_paths_emitted": { "const": false },
+    "semantic_self_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "file_sha256", "status", "artifact_identity"],
+      "properties": {
+        "role": { "type": "string" },
+        "file_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "status": { "type": "string" },
+        "artifact_identity": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "policyGateSource": {
+      "allOf": [
+        { "$ref": "#/$defs/source" },
+        {
+          "properties": {
+            "role": { "const": "PROVIDER_TIMING_POLICY_GATE_V1" },
+            "file_sha256": { "const": "a37560470159cee24a80bc2d0f93883eab02264aa6fd880d88f69a8df2744f79" },
+            "status": { "const": "PASS_EVIDENCE_SCOPED_POLICY_FAIL_CLOSED" },
+            "artifact_identity": { "const": "05da11e4f24c73d1cb8f01fee6daf6da75040a6ae0399f8bcc9cbb03647933a7" }
+          }
+        }
+      ]
+    },
+    "preflightSource": {
+      "allOf": [
+        { "$ref": "#/$defs/source" },
+        {
+          "properties": {
+            "role": { "const": "DATE_LEVEL_PIT_PREFLIGHT_STATUS_V2_1" },
+            "file_sha256": { "const": "9e246c6a167fc0a5ed5cb61cf83e6a747e6dee74901a4aa52f2ad76ab579e6db" },
+            "status": { "const": "FAILED_CLOSED" },
+            "artifact_identity": { "const": "a866b52ab7e6b8bbee38c6041c3935eb7fb329a7e1006674816d4008a71f6112" }
+          }
+        }
+      ]
+    },
+    "sourceCoverageSource": {
+      "allOf": [
+        { "$ref": "#/$defs/source" },
+        {
+          "properties": {
+            "role": { "const": "CORRECTED_DEVELOPMENT_SOURCE_COVERAGE_V1" },
+            "file_sha256": { "const": "c9719cab83000e52d6dae2778fd1e65395ede0270fce1f8e7ef75140cdbfdc2b" },
+            "status": { "const": "BLOCKED_SOURCE_COVERAGE" },
+            "artifact_identity": { "const": "088cf2259a2d6acdb58c9651d0a43f39938e5e639069bb92960baa3e869c4d1d" }
+          }
+        }
+      ]
+    },
+    "fmpDocsReviewSource": {
+      "allOf": [
+        { "$ref": "#/$defs/source" },
+        {
+          "properties": {
+            "role": { "const": "FMP_B1Q_EXOGENOUS_DOCS_REVIEW_V1" },
+            "file_sha256": { "const": "debf59a05d062c1b2f3b16b98e40f8df61ec363f7a79ce23a6659680e3aa225a" },
+            "status": { "const": "DOCUMENTED_ENDPOINTS_INSUFFICIENT_FOR_B1Q_PIT" },
+            "artifact_identity": { "const": "e460e2e22c2c5105b86fc97909da64d98184f3060bb52767c8ffeb53211f89ad" }
+          }
+        }
+      ]
+    },
+    "confirmationReadinessSource": {
+      "allOf": [
+        { "$ref": "#/$defs/source" },
+        {
+          "properties": {
+            "role": { "const": "CONFIRMATION_READINESS_V3" },
+            "file_sha256": { "const": "fc04acc0d466b25a176f3f2e599fad516a69c3a74251469178a7406d00826095" },
+            "status": { "const": "PASS_METHOD_FROZEN_TARGET_BLIND_READY_FUTURE_GATES_CLOSED" },
+            "artifact_identity": { "const": "5a2cd9996ec2ff0017bf5f84de9871cffce2b19780b7592d9efa4e8a08719cf3" }
+          }
+        }
+      ]
+    }
+  }
+}
