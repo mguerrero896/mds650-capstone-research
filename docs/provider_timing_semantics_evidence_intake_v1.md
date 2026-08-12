@@ -36,6 +36,10 @@ Only either of these source types can be submitted:
 An HTTP status, endpoint existence, plan description, marketing statement or
 oral assertion is not sufficient.
 
+Copy-ready, non-sensitive provider questions are in
+[`provider_timing_clarification_request_v1.md`](provider_timing_clarification_request_v1.md).
+They request the required facts but do not send a support message automatically.
+
 For the B1Q block, a review-ready semantics submission is still not a usable
 numeric input. A later source build must separately retain each raw payload's
 sanitized SHA-256 and an evidence-availability timestamp no later than the
