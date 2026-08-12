@@ -49,15 +49,20 @@ class UnusualWhalesProvider:
     def flow_alerts(
         self,
         *,
-        ticker: str,
-        start_date: str,
-        end_date: str,
-        cursor: str | None = None,
+        ticker_symbol: str,
+        newer_than: str,
+        older_than: str,
+        limit: int = 100,
     ) -> ProviderResponse:
-        """Request a bounded historical flow-alert page for one ticker."""
-        params: dict[str, str] = {"ticker": ticker, "start_date": start_date, "end_date": end_date}
-        if cursor is not None:
-            params["cursor"] = cursor
+        """Request one documented time-window flow-alert page for a ticker."""
+        if not isinstance(limit, int) or isinstance(limit, bool) or not 1 <= limit <= 200:
+            raise ValueError("UW_FLOW_LIMIT_INVALID")
+        params: dict[str, str | int] = {
+            "ticker_symbol": ticker_symbol,
+            "newer_than": newer_than,
+            "older_than": older_than,
+            "limit": limit,
+        }
         return self._client.get_json("/option-trades/flow-alerts", params=params)
 
     def close(self) -> None:
