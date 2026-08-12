@@ -371,12 +371,52 @@ def test_b1_attempt_ledger_is_hashed_and_pit_validated(tmp_path: Path) -> None:
         {"iv_attempt_rows": 1},
     ) == {
         "rows": 1,
-        "future_rate_rows": 0,
+        "non_prior_rate_rows": 0,
         "future_quote_rows": 0,
         "missing_request_hash_rows": 0,
     }
 
     frame.with_columns(pl.lit(1_001).alias("sip_timestamp")).write_parquet(ledger)
+    with pytest.raises(ValueError, match="PHASE5_B1_ATTEMPT_LEDGER_INVALID"):
+        panel_builder._validate_b1_attempt_ledger(
+            ledger,
+            {"iv_attempt_rows": 1},
+        )
+
+
+def test_b1_attempt_ledger_rejects_same_session_rate_source(tmp_path: Path) -> None:
+    """A date-only same-session Treasury record is not proven pre-origin input."""
+    ledger = tmp_path / "same_session_rate.parquet"
+    pl.DataFrame(
+        {
+            "session_date": ["2026-03-24"],
+            "forecast_origin_ns": [1_000],
+            "rate_source_date": ["2026-03-24"],
+            "sip_timestamp": [999],
+            "source_request_hash": ["abc"],
+        }
+    ).write_parquet(ledger)
+
+    with pytest.raises(ValueError, match="PHASE5_B1_ATTEMPT_LEDGER_INVALID"):
+        panel_builder._validate_b1_attempt_ledger(
+            ledger,
+            {"iv_attempt_rows": 1},
+        )
+
+
+def test_b1_attempt_ledger_rejects_missing_rate_source_date(tmp_path: Path) -> None:
+    """An absent rate source date cannot prove pre-origin availability."""
+    ledger = tmp_path / "missing_rate_source.parquet"
+    pl.DataFrame(
+        {
+            "session_date": ["2026-03-24"],
+            "forecast_origin_ns": [1_000],
+            "rate_source_date": [None],
+            "sip_timestamp": [999],
+            "source_request_hash": ["abc"],
+        }
+    ).write_parquet(ledger)
+
     with pytest.raises(ValueError, match="PHASE5_B1_ATTEMPT_LEDGER_INVALID"):
         panel_builder._validate_b1_attempt_ledger(
             ledger,

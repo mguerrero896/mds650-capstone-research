@@ -91,9 +91,12 @@ def _validate_b1_attempt_ledger(
         raise ValueError(f"PHASE5_B1_ATTEMPT_COLUMNS_MISSING:{','.join(missing)}")
     stats = scan.select(
         pl.len().alias("rows"),
-        (pl.col("rate_source_date") > pl.col("session_date"))
+        (
+            pl.col("rate_source_date").is_null()
+            | (pl.col("rate_source_date") >= pl.col("session_date"))
+        )
         .sum()
-        .alias("future_rate_rows"),
+        .alias("non_prior_rate_rows"),
         (
             pl.col("sip_timestamp").is_not_null()
             & (pl.col("sip_timestamp") > pl.col("forecast_origin_ns"))
@@ -111,7 +114,7 @@ def _validate_b1_attempt_ledger(
     if (
         not isinstance(expected_rows, int)
         or stats["rows"] != expected_rows
-        or stats["future_rate_rows"]
+        or stats["non_prior_rate_rows"]
         or stats["future_quote_rows"]
         or stats["missing_request_hash_rows"]
     ):
