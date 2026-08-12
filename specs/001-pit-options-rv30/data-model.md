@@ -267,7 +267,7 @@ Any early, mismatched or second analytical read fails closed.
 | `release_id` | string | Deterministic identifier from source hashes and frozen method identity |
 | `status` | enum | `TARGET_BLIND_READY`, `TARGET_BOUND_READY`, `EVALUATED_DEVELOPMENT_ONLY`, `BLOCKED` |
 | `development_sessions` | list[date] | Exactly the 80 dates in `StudySessionManifest`; no holdout date permitted |
-| `predictor_manifest_sha256` | string | Must bind the immutable target-blind v2.4 predictor manifest |
+| `predictor_manifest_sha256` | string | Must bind the new exact-80-session target-free predictor manifest; v2.4 is control/provenance only |
 | `availability_sidecar_sha256` | string | Must bind the v2.2 B2 availability sidecar |
 | `pit_gate_sha256` | string | Must bind the PIT v2.1 reconciliation gate without changing its legacy status |
 | `massive_reselection_sha256` | string | Must bind the v2.1 as-of reselection evidence |
@@ -276,6 +276,22 @@ Any early, mismatched or second analytical read fails closed.
 | `corrected_common_origin_count` | integer | Count of passing common rows after B2 exclusions |
 | `b2_excluded_origin_count` | integer | Exclusions with all nine B2 fields null and an explicit reason |
 | `safe_to_evaluate_corrected_development` | enum | `YES` only for the fixed development sample after all source and leakage gates pass |
+
+### CorrectedDevelopmentSourceCoverage
+
+| Field | Type | Rule |
+|---|---|---|
+| `development_sessions` | list[date] | Exactly the ordered 80 dates from `StudySessionManifest` |
+| `component` | enum | `B0`, `B1Q`, or `B2` |
+| `asset` | string | One selected outcome asset or `MARKET_CONTROL` for B0 controls |
+| `session_date` | date | Must belong to `development_sessions` |
+| `coverage_status` | enum | `AVAILABLE_EXACT_WINDOW`, `MISSING`, or `B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED` |
+| `reason_code` | string/null | Required whenever status is not `AVAILABLE_EXACT_WINDOW` |
+| `source_sha256` | string | SHA-256 of the source file or cache manifest, never a target artifact |
+
+The coverage ledger is target-free. Any unresolved B1Q exogenous-input provenance makes the
+release `BLOCKED_SOURCE_COVERAGE`; it cannot be replaced by a later, stale, or carried-forward
+rate/dividend value.
 | `safe_to_reconcile_existing_results` | enum | Always `NO` for legacy sealed results |
 | `safe_to_open_or_evaluate_oos` | enum | Always `NO` in this release |
 | `release_sha256` | string | Canonical content hash excluding this field |

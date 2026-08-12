@@ -14,10 +14,12 @@ The target MUST use the fully observed close at forecast origin t and the next t
 The PIT v2.1 B2 availability correction does not reopen, amend or reconcile a sealed legacy
 result. `SAFE_TO_RECONCILE_EXISTING_RESULTS=NO` remains literal for those artifacts. A new
 release may evaluate only the predeclared eighty development sessions after it cryptographically
-binds the target-blind v2.4 predictor manifest, B2 availability sidecar, PIT v2.1 gate, Massive
-reselection evidence and the development source manifest. It MUST reject a holdout session,
-legacy result path, source-hash mismatch, target-like input during predictor construction, a
-future predictor timestamp, or an ambiguous B2 zero.
+binds an exact-80-session target-free predictor manifest, source-coverage ledger, B2 availability
+sidecar, PIT v2.1 gate, Massive reselection evidence and the development source manifest. The
+180-session v2.4 panel is control/provenance only, not an interchangeable data source. It MUST
+reject a holdout session, legacy result path, source-hash mismatch, source-window mismatch,
+target-like input during predictor construction, a future predictor timestamp, an ambiguous B2
+zero, or a B1Q rate/dividend value without exact pre-origin provenance.
 
 `SAFE_TO_EVALUATE_CORRECTED_DEVELOPMENT=YES` is a narrow development-only state. It never
 implies legacy reconciliation, provider-timing confirmation, new acquisition, a prospective

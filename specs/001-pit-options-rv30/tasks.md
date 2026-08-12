@@ -394,13 +394,23 @@ frozen development protocol without reading any holdout path.
 - [x] T200 [US4] Implement the immutable release-state validator and canonical self-hash logic
   in `src/mds650/corrected_development_release.py` using
   `contracts/corrected-development-release-v1.schema.json`.
-- [x] T201 [US4] Implement `scripts/build_corrected_development_release.py` to bind only the
-  target-blind v2.4 predictor inputs, B2 sidecar, PIT gate, Massive sensitivity and exact
-  development manifest, writing a new target-free release manifest under
-  `artifacts/corrected_development_v1/`.
-- [ ] T202 [US4] Run the target-free release build idempotently, validate JSON Schema and emit
-  `artifacts/corrected_development_v1/target_blind_release_manifest.json` without opening RV30,
-  metrics, legacy results or holdout paths.
+- [x] T201 [US4] Implement `scripts/build_corrected_development_release.py` to reject a
+  target-blind predictor source whose date coverage differs from the exact development manifest;
+  v2.4 remains an approved control/provenance input, never a relabelled 80-session source.
+- [ ] T201A [P] [US4] Add failing source-coverage and exact-origin-grid tests in
+  `tests/unit/test_corrected_development_sources.py`, including no stale B1Q rate/dividend
+  substitution and all-null B1Q missing rows for unresolved retained-session provenance.
+- [ ] T201B [US4] Implement `src/mds650/corrected_development_sources.py` and
+  `contracts/corrected-development-source-coverage-v1.schema.json` to build a target-free
+  exact-80 source coverage ledger from FMP, Full Tape and B1Q sources; emit
+  `BLOCKED_SOURCE_COVERAGE` before target binding on an unresolved input.
+- [ ] T201C [US4] Implement `scripts/build_corrected_development_predictors.py` to create the
+  exact 80-session B0/B1Q/B2 target-free panel only from source-bound local inputs, preserving
+  B2 exclusions and B1Q missingness; write all bulk outputs under `D:\MDS650`.
+- [ ] T202 [US4] Run the exact-window source build idempotently, validate the coverage schema
+  and emit either `artifacts/corrected_development_v1/target_blind_release_manifest.json` when
+  all B1Q source coverage passes or a self-hashed `BLOCKED_SOURCE_COVERAGE` artifact without
+  opening RV30, metrics, legacy results or holdout paths.
 - [ ] T203 [P] [US4] Add failing development target-binding tests for exact origin/target hashes,
   holdout-path rejection, target-before-predictor ordering and deterministic release identity in
   `tests/contract/test_corrected_development_target_binding.py`.
@@ -464,7 +474,7 @@ frozen development protocol without reading any holdout path.
   T192 requires T188, T189–T191 and permits exactly one analytical holdout read.
 - No Phase 5 task selects assets, features, models or thresholds using RV30 association, QLIKE,
   preliminary prediction quality or holdout outcomes.
-- Phase 12 follows T197 → T198/T199 → T200/T201 → T202 → T203 → T204 → T205 → T206 →
+- Phase 12 follows T197 → T198/T199 → T200/T201 → T201A → T201B → T201C → T202 → T203 → T204 → T205 → T206 →
   T207/T208 → T209. It is the only correction path for the B2 v2.2 availability sidecar;
   it never changes sealed legacy results, performs acquisition, opens the OOS holdout or
   selects any method by a favorable development sign.

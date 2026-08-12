@@ -119,9 +119,12 @@ uv run pytest -q tests\contract\test_corrected_development_release.py `
 uv run python scripts\build_corrected_development_release.py --check-only
 ```
 
-The gate must prove: the exact eighty development dates; zero holdout overlap; source-hash
-bindings for the v2.4 predictor panel, B2 sidecar, PIT v2.1 gate and Massive reselection; no
-target payload during predictor construction; and explicit B2 exclusions rather than zeroes.
+The gate must prove: an exact-window target-free source for the eighty development dates (the
+180-session v2.4 panel is control/provenance only); zero holdout overlap; source-hash bindings
+for the source-coverage ledger, B2 sidecar, PIT v2.1 gate and Massive reselection; no target
+payload during predictor construction; explicit B2 exclusions rather than zeroes; and no stale
+or carried-forward B1Q rate/dividend substitute. If coverage is incomplete, it writes a
+`BLOCKED_SOURCE_COVERAGE` artifact and must not bind targets.
 Only then may the separate development target-binding command run. It must retain
 `SAFE_TO_RECONCILE_EXISTING_RESULTS=NO` and `SAFE_TO_OPEN_OR_EVALUATE_OOS=NO`.
 

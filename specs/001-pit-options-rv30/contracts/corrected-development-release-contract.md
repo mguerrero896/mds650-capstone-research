@@ -11,11 +11,18 @@ change model, asset or inference settings to seek a preferred result.
 
 The release must hash-bind all of the following before any target is read:
 
-1. target-blind v2.4 predictor manifest and predictor/common Parquet files;
+1. an exact-80-session target-free predictor manifest and predictor/common Parquet files;
 2. B2 v2.2 availability manifest and sidecar;
 3. PIT v2.1 reconciliation gate and UW anomaly evidence;
 4. Massive v2.1 as-of reselection sensitivity evidence;
-5. exact 80-session development source manifest and frozen comparison contract.
+5. exact 80-session development source manifest, source-coverage ledger and frozen comparison
+   contract.
+
+The 180-session target-blind v2.4 artifact is a control/provenance template only. It must not be
+filtered, renamed or bound as the exact 80-session predictor source. A B1Q retained-session quote
+cache without an exact pre-origin rate/dividend source is recorded as
+`B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED`; the B1Q fields remain null and no target binding may
+start. A later, stale or carried-forward rate/dividend is prohibited.
 
 The release rejects a changed hash, missing schema, untracked source builder, personal path,
 secret-like field, target/loss/forecast input during predictor construction, duplicate origin,
@@ -35,7 +42,8 @@ window is eligible, has no qualifying trade and has no observed delay incident.
 | `TARGET_BLIND_READY` | Source hashes, date isolation and B2 exclusion policy passed. | Target reads, modeling, metrics, OOS. |
 | `TARGET_BOUND_READY` | Exact development-only RV30 targets bind to predictor origin IDs. | OOS, legacy reconciliation, method change. |
 | `EVALUATED_DEVELOPMENT_ONLY` | Frozen development protocol completed and all variants were retained. | OOS, acquisition, legacy reconciliation, rerun for sign. |
-| `BLOCKED` | Any contract or leakage condition failed. | All downstream steps. |
+| `BLOCKED_SOURCE_COVERAGE` | An exact fixed-session input or B1Q exogenous-input provenance is absent. | Target binding, modeling, metrics and OOS. |
+| `BLOCKED` | Any other contract or leakage condition failed. | All downstream steps. |
 
 `SAFE_TO_RECONCILE_EXISTING_RESULTS` is always `NO` and
 `SAFE_TO_OPEN_OR_EVALUATE_OOS` is always `NO` in every state. Only the final state may record

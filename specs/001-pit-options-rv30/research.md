@@ -205,9 +205,11 @@ evidence and creates a durable handoff for the supervisor.
 **Decision**: Treat the FMP 90/90 exact-session and Unusual Whales 90/90 Full Tape metadata
 findings as historical availability evidence, distinct from provider timing semantics. Keep FMP
 `+1` minute primary / `+2` minute sensitivity as conservative study assumptions and retain UW
-`created_at` as an operational-availability proxy. Rebuild a new development-only release from
-the source-bound v2.4 predictor panel and B2 availability sidecar, then bind it only to the
-predeclared eighty development sessions. Preserve the literal
+`created_at` as an operational-availability proxy. Build a new target-free predictor source
+specifically for the eighty development sessions; v2.4 supplies control/provenance rules but is
+not an interchangeable data window. Record an unresolved retained-session B1Q rate/dividend
+input as a missing source, never as a stale substitute. Only then may a passing exact-window
+release bind the predeclared eighty development sessions. Preserve the literal
 `SAFE_TO_RECONCILE_EXISTING_RESULTS=NO` for sealed legacy outputs and
 `SAFE_TO_OPEN_OR_EVALUATE_OOS=NO` until a separate holdout authorization.
 

@@ -190,10 +190,13 @@ Spec Kit consistency and preregistration gates pass.
    availability only: they do not confirm the FMP bar timestamp label or REST availability, and
    they do not turn Unusual Whales `created_at` into publication or client-receipt time. The
    approved correction is therefore a new, source-bound, development-only B0/B1a/B2 release
-   from the target-blind v2.4 panel, B2 availability sidecar, PIT v2.1 evidence, Massive
-   reselection evidence and the exact fixed 80-session development manifest. Delayed B2 rows
-   are explicit all-nine-feature-null exclusions, never no-activity zeroes. This release may
-   support a fresh frozen development evaluation only after target binding and leakage gates;
-   it never rewrites sealed legacy results, acquires data, reads the ten-session holdout or
-   upgrades `SAFE_TO_RECONCILE_EXISTING_RESULTS=NO` or
-   `SAFE_TO_OPEN_OR_EVALUATE_OOS=NO`.
+   built specifically for the exact fixed 80-session development manifest. The target-blind
+   v2.4 panel is retained as a control/provenance artifact but cannot be relabelled as the
+   source window because its 180 dates do not equal the frozen 80 dates. A coverage ledger must
+   record B0/B2 and B1Q source identity by asset-date. A retained B1Q quote cache without exact
+   pre-origin rate/dividend provenance is `B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED`, not a
+   license to use a later, stale, or carried-forward value. Delayed B2 rows are explicit
+   all-nine-feature-null exclusions, never no-activity zeroes. A source-coverage gap yields
+   `BLOCKED_SOURCE_COVERAGE` before target binding or evaluation. This release never rewrites
+   sealed legacy results, acquires data, reads the ten-session holdout or upgrades
+   `SAFE_TO_RECONCILE_EXISTING_RESULTS=NO` or `SAFE_TO_OPEN_OR_EVALUATE_OOS=NO`.
