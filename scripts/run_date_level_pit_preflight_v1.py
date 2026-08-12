@@ -17,6 +17,7 @@ from mds650.date_level_pit_preflight_v1 import (
 
 DEFAULT_PLAN = Path("artifacts/preflight/date_level_pit_preflight_plan_v1.json")
 DEFAULT_OUTPUT = Path("artifacts/preflight/date_level_pit_preflight_report_v1.json")
+DEFAULT_ENDPOINT_CATALOG = Path("config/date_level_pit_preflight_endpoint_catalog_v1.json")
 
 
 def main() -> int:
@@ -26,15 +27,17 @@ def main() -> int:
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--approved-plan-semantic-hash")
     parser.add_argument("--assert-zero-incremental-spend", action="store_true")
-    parser.add_argument("--endpoint-descriptors", type=Path)
+    parser.add_argument(
+        "--endpoint-catalog",
+        "--endpoint-descriptors",
+        dest="endpoint_catalog",
+        type=Path,
+        default=DEFAULT_ENDPOINT_CATALOG,
+    )
     args = parser.parse_args()
     try:
         plan = load_plan(args.plan)
-        descriptors = (
-            load_endpoint_descriptors(args.endpoint_descriptors)
-            if args.endpoint_descriptors is not None
-            else {}
-        )
+        descriptors = load_endpoint_descriptors(args.endpoint_catalog)
         report = run_date_level_pit_preflight(
             plan,
             execute=args.execute,

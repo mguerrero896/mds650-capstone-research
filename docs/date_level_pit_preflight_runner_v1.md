@@ -2,8 +2,8 @@
 
 El runner prepara un reporte fail-closed sobre el plan calendar-derived v1. Por defecto es
 dry-run: bloquea toda request y produce `DRY_RUN_NETWORK_BLOCKED`. El CLI no instala ningún
-transporte de red; aun con `--execute`, un descriptor válido sin transporte termina en
-`NETWORK_TRANSPORT_UNCONFIGURED`.
+transporte de red; aun con `--execute`, el catálogo configurado sin transporte explícito termina
+en `NETWORK_TRANSPORT_UNCONFIGURED`.
 
 La única ruta ejecutable por código es una función inyectable para tests o futura integración.
 Una respuesta de esa ruta queda etiquetada
@@ -14,9 +14,18 @@ gasto incremental cero, al menos 80 GiB libres en `D:`, y presencia booleana de 
 (`FMP_API_KEY`, `UNUSUALWHALES_API_KEY`, `MASSIVE_API_KEY`). Nunca extrae ni imprime sus valores.
 La aserción de gasto es una declaración de gate, no una afirmación independiente sobre costes.
 
-Los descriptores son una lista JSON declarativa con `provider`, `endpoint_id`, `method` y
-`request_target`. No se entrega ninguno: FMP, Unusual Whales y Massive quedan
-`UNCONFIGURED_ENDPOINT` hasta que exista un contrato configurado y revisado. El reporte nunca
+El catálogo versionado por defecto es
+`config/date_level_pit_preflight_endpoint_catalog_v1.json`, validado contra
+`specs/001-pit-options-rv30/contracts/date-level-pit-preflight-endpoint-catalog-v1.schema.json`.
+Registra la ruta FMP de 1 minuto, un probe de rango histórico Full Tape de Unusual Whales sólo de
+metadatos y los contratos/cotizaciones as-of de Massive. El probe UW usa un target lógico, no
+declara una URL de proveedor ni semántica de timestamps no documentada. Massive fija
+`timestamp.lte` en nanosegundos, `sort=timestamp`, `order=desc` y `limit=1`.
+
+El catálogo configura FMP, Unusual Whales y Massive para diagnóstico, pero no autoriza
+adquisición ni crea clientes o transporte. Una ejecución futura sigue exigiendo autorización
+explícita, hash semántico aprobado, aserción de gasto incremental cero, al menos 80 GiB libres en
+`D:`, presencia booleana de las tres claves y un transporte inyectado/revisado. El reporte nunca
 emite request targets, URLs, bodies ni payloads; sólo un hash de la forma de respuesta.
 
 ```powershell

@@ -6,10 +6,11 @@ import hashlib
 import json
 import os
 import shutil
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass
+from importlib import import_module
 from pathlib import Path
-from typing import Final, cast
+from typing import Final, Protocol, cast
 
 PROVIDERS: Final[tuple[str, ...]] = ("fmp", "unusual_whales", "massive")
 REQUIRED_KEY_NAMES: Final[dict[str, str]] = {
@@ -18,10 +19,25 @@ REQUIRED_KEY_NAMES: Final[dict[str, str]] = {
     "massive": "MASSIVE_API_KEY",
 }
 MIN_D_DRIVE_FREE_BYTES: Final[int] = 80 * 1024**3
+ENDPOINT_CATALOG_SCHEMA_PATH: Final[Path] = (
+    Path(__file__).resolve().parents[2]
+    / "specs/001-pit-options-rv30/contracts/"
+    "date-level-pit-preflight-endpoint-catalog-v1.schema.json"
+)
 
 
 class PreflightError(RuntimeError):
     """Static-code failure for a preflight gate or output operation."""
+
+
+class _CatalogValidator(Protocol):
+    def iter_errors(self, instance: object) -> Iterable[object]: ...
+
+
+class _CatalogValidatorFactory(Protocol):
+    def __call__(self, schema: Mapping[str, object]) -> _CatalogValidator: ...
+
+    def check_schema(self, schema: Mapping[str, object]) -> None: ...
 
 
 @dataclass(frozen=True, slots=True)
@@ -66,31 +82,60 @@ def load_plan(path: Path) -> dict[str, object]:
 
 
 def load_endpoint_descriptors(path: Path) -> dict[str, EndpointDescriptor]:
-    """Load only explicit, declarative endpoint descriptors from local JSON."""
+    """Load descriptors only from a schema-validated, declarative catalog."""
     try:
         decoded: object = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        raise PreflightError("ENDPOINT_DESCRIPTOR_READ_FAILED") from exc
-    if not isinstance(decoded, list):
-        raise PreflightError("ENDPOINT_DESCRIPTOR_FORMAT_INVALID")
+        raise PreflightError("ENDPOINT_CATALOG_READ_FAILED") from exc
+    schema = _load_endpoint_catalog_schema()
+    validator = _endpoint_catalog_validator(schema)
+    if any(validator.iter_errors(decoded)):
+        raise PreflightError("ENDPOINT_CATALOG_SCHEMA_INVALID")
+    if not isinstance(decoded, Mapping):
+        raise PreflightError("ENDPOINT_CATALOG_SCHEMA_INVALID")
+    endpoints = decoded.get("endpoints")
+    if not isinstance(endpoints, list):
+        raise PreflightError("ENDPOINT_CATALOG_SCHEMA_INVALID")
     descriptors: dict[str, EndpointDescriptor] = {}
-    for item in decoded:
+    for item in endpoints:
         if not isinstance(item, Mapping):
-            raise PreflightError("ENDPOINT_DESCRIPTOR_FORMAT_INVALID")
+            raise PreflightError("ENDPOINT_CATALOG_SCHEMA_INVALID")
         descriptor_keys = ("provider", "endpoint_id", "method", "request_target")
         values = {key: item.get(key) for key in descriptor_keys}
         if not all(isinstance(value, str) and value for value in values.values()):
-            raise PreflightError("ENDPOINT_DESCRIPTOR_FORMAT_INVALID")
+            raise PreflightError("ENDPOINT_CATALOG_SCHEMA_INVALID")
         provider = cast(str, values["provider"])
         if provider not in PROVIDERS or provider in descriptors:
-            raise PreflightError("ENDPOINT_DESCRIPTOR_FORMAT_INVALID")
+            raise PreflightError("ENDPOINT_CATALOG_SCHEMA_INVALID")
         descriptors[provider] = EndpointDescriptor(
             provider=provider,
             endpoint_id=cast(str, values["endpoint_id"]),
             method=cast(str, values["method"]),
             request_target=cast(str, values["request_target"]),
         )
+    if tuple(descriptors) != PROVIDERS:
+        raise PreflightError("ENDPOINT_CATALOG_SCHEMA_INVALID")
     return descriptors
+
+
+def _load_endpoint_catalog_schema() -> dict[str, object]:
+    try:
+        decoded: object = json.loads(ENDPOINT_CATALOG_SCHEMA_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise PreflightError("ENDPOINT_CATALOG_SCHEMA_UNAVAILABLE") from exc
+    if not isinstance(decoded, dict) or not all(isinstance(key, str) for key in decoded):
+        raise PreflightError("ENDPOINT_CATALOG_SCHEMA_UNAVAILABLE")
+    return cast(dict[str, object], decoded)
+
+
+def _endpoint_catalog_validator(schema: Mapping[str, object]) -> _CatalogValidator:
+    try:
+        module = import_module("jsonschema")
+        factory = cast(_CatalogValidatorFactory, module.Draft202012Validator)
+        factory.check_schema(schema)
+        return factory(schema)
+    except Exception as exc:
+        raise PreflightError("ENDPOINT_CATALOG_SCHEMA_UNAVAILABLE") from exc
 
 
 def environment_key_presence(environ: Mapping[str, str] | None = None) -> dict[str, bool]:

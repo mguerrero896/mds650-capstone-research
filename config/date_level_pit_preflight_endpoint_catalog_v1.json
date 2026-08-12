@@ -1,0 +1,60 @@
+{
+  "artifact_type": "date_level_pit_preflight_endpoint_catalog_v1",
+  "schema_version": "1.0.0",
+  "status": "CONFIGURED_REQUIRES_EXECUTION_GATES",
+  "execution_requirements": {
+    "authorization_required": true,
+    "zero_incremental_spend_assertion_required": true,
+    "minimum_d_drive_free_bytes": 85899345920,
+    "network_transport_required": true
+  },
+  "endpoints": [
+    {
+      "provider": "fmp",
+      "endpoint_id": "fmp-underlying-1min",
+      "method": "GET",
+      "request_target": "/stable/historical-chart/1min",
+      "metadata_only": false,
+      "request_parameters": {
+        "symbol": "{asset}"
+      }
+    },
+    {
+      "provider": "unusual_whales",
+      "endpoint_id": "uw-full-tape-historical-range-probe",
+      "method": "METADATA_ONLY",
+      "request_target": "unusual_whales_full_tape_historical_range_probe",
+      "metadata_only": true,
+      "range_probe": {
+        "dataset": "full_tape_historical",
+        "mode": "metadata_only"
+      }
+    },
+    {
+      "provider": "massive",
+      "endpoint_id": "massive-contract-reference-and-quote-asof",
+      "method": "GET",
+      "request_target": "massive_contract_reference_and_quote_asof",
+      "metadata_only": false,
+      "routes": [
+        {
+          "operation": "contract_reference",
+          "path": "/v3/reference/options/contracts/{contract_id}",
+          "method": "GET"
+        },
+        {
+          "operation": "quote_as_of",
+          "path": "/v3/quotes/{contract_id}",
+          "method": "GET",
+          "timestamp_unit": "nanoseconds",
+          "parameters": {
+            "timestamp.lte": "{as_of_timestamp_ns}",
+            "sort": "timestamp",
+            "order": "desc",
+            "limit": 1
+          }
+        }
+      ]
+    }
+  ]
+}

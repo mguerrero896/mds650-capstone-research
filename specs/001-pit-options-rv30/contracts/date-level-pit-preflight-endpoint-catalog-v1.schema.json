@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Date-level PIT preflight endpoint catalog v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "artifact_type",
+    "schema_version",
+    "status",
+    "execution_requirements",
+    "endpoints"
+  ],
+  "properties": {
+    "artifact_type": { "const": "date_level_pit_preflight_endpoint_catalog_v1" },
+    "schema_version": { "const": "1.0.0" },
+    "status": { "const": "CONFIGURED_REQUIRES_EXECUTION_GATES" },
+    "execution_requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authorization_required",
+        "zero_incremental_spend_assertion_required",
+        "minimum_d_drive_free_bytes",
+        "network_transport_required"
+      ],
+      "properties": {
+        "authorization_required": { "const": true },
+        "zero_incremental_spend_assertion_required": { "const": true },
+        "minimum_d_drive_free_bytes": { "const": 85899345920 },
+        "network_transport_required": { "const": true }
+      }
+    },
+    "endpoints": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "provider",
+              "endpoint_id",
+              "method",
+              "request_target",
+              "metadata_only",
+              "request_parameters"
+            ],
+            "properties": {
+              "provider": { "const": "fmp" },
+              "endpoint_id": { "const": "fmp-underlying-1min" },
+              "method": { "const": "GET" },
+              "request_target": { "const": "/stable/historical-chart/1min" },
+              "metadata_only": { "const": false },
+              "request_parameters": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["symbol"],
+                "properties": { "symbol": { "const": "{asset}" } }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "provider",
+              "endpoint_id",
+              "method",
+              "request_target",
+              "metadata_only",
+              "range_probe"
+            ],
+            "properties": {
+              "provider": { "const": "unusual_whales" },
+              "endpoint_id": { "const": "uw-full-tape-historical-range-probe" },
+              "method": { "const": "METADATA_ONLY" },
+              "request_target": {
+                "const": "unusual_whales_full_tape_historical_range_probe"
+              },
+              "metadata_only": { "const": true },
+              "range_probe": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["dataset", "mode"],
+                "properties": {
+                  "dataset": { "const": "full_tape_historical" },
+                  "mode": { "const": "metadata_only" }
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "provider",
+              "endpoint_id",
+              "method",
+              "request_target",
+              "metadata_only",
+              "routes"
+            ],
+            "properties": {
+              "provider": { "const": "massive" },
+              "endpoint_id": { "const": "massive-contract-reference-and-quote-asof" },
+              "method": { "const": "GET" },
+              "request_target": { "const": "massive_contract_reference_and_quote_asof" },
+              "metadata_only": { "const": false },
+              "routes": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "prefixItems": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["operation", "path", "method"],
+                    "properties": {
+                      "operation": { "const": "contract_reference" },
+                      "path": { "const": "/v3/reference/options/contracts/{contract_id}" },
+                      "method": { "const": "GET" }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["operation", "path", "method", "timestamp_unit", "parameters"],
+                    "properties": {
+                      "operation": { "const": "quote_as_of" },
+                      "path": { "const": "/v3/quotes/{contract_id}" },
+                      "method": { "const": "GET" },
+                      "timestamp_unit": { "const": "nanoseconds" },
+                      "parameters": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": ["timestamp.lte", "sort", "order", "limit"],
+                        "properties": {
+                          "timestamp.lte": { "const": "{as_of_timestamp_ns}" },
+                          "sort": { "const": "timestamp" },
+                          "order": { "const": "desc" },
+                          "limit": { "const": 1 }
+                        }
+                      }
+                    }
+                  }
+                ],
+                "items": false
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "allOf": [
+    { "properties": { "endpoints": { "contains": { "properties": { "provider": { "const": "fmp" } } } } } },
+    {
+      "properties": {
+        "endpoints": {
+          "contains": { "properties": { "provider": { "const": "unusual_whales" } } }
+        }
+      }
+    },
+    {
+      "properties": {
+        "endpoints": { "contains": { "properties": { "provider": { "const": "massive" } } } }
+      }
+    }
+  ]
+}
