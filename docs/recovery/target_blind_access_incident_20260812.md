@@ -33,6 +33,16 @@ was visible. No model was run, no metric was recomputed and no conclusion was
 drawn from those snippets. This is a third OOS-access event for the same
 operator context.
 
+A subsequently fresh executor, while preparing a calendar-only PIT-preflight
+plan, ran a filename-only repository listing over `docs` and `specs`. That
+listing rendered the name `docs/independent_replication_30_session_results.md`.
+The file was not opened; no content, values, signs, metrics, models or other
+result material was rendered or read. The executor stopped immediately and
+made no files, provider calls, tests, builds, synchronizations or preflight
+requests for that subtask. This is a metadata-only OOS-boundary exposure, but
+the executor is conservatively no longer eligible to perform target-blind work
+in this research cycle.
+
 ## Containment
 
 - No model, QLIKE calculation, forecast evaluation, tuning, result
@@ -48,6 +58,10 @@ operator context.
 - Any remaining target-blind B1Q implementation must be performed by a fresh,
   unexposed executor that is explicitly prohibited from opening OOS-sealed
   paths. Its work must be independently reviewed before integration.
+- The executor associated with the filename-only metadata exposure is also
+  excluded from further target-blind implementation for this cycle. A future
+  executor must start with an explicit filesystem allowlist instead of a
+  repository-wide filename search.
 - The existing `mds650-research` GBrain source is not an eligible target-blind
   retrieval source after the synchronization event. It must be replaced by an
   allowlisted source before any semantic query is used in a target-blind task.
@@ -70,4 +84,5 @@ material to "complete" the picture.
 Future repository searches in target-blind tasks must exclude result-bearing
 paths before execution, including `docs/independent_replication_*`,
 `artifacts/canonical_validation_v1`, evaluation scripts and any sealed OOS
-directory. Use explicit allowed-path lists rather than a broad `docs` search.
+directory. This includes filename discovery, not only content search. Use
+explicit allowed-path lists rather than a broad `docs` search.
