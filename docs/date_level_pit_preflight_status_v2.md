@@ -44,8 +44,11 @@ protocol; authorization, credentials or storage capacity do not override them:
 - `UW_FULL_TAPE_ZIP_ROUTE_DOCUMENTED_EXECUTION_GATED`
 - `MASSIVE_QUOTE_AS_OF_PARAMETERS_DOCUMENTED_LOCAL_SIP_CHECK_REQUIRED`
 
-The v2.1 output is
-`artifacts/preflight/date_level_pit_preflight_status_v2_1_current.json`.
+The current v2.1 immutable output is
+`artifacts/preflight/date_level_pit_preflight_status_v2_1_current.json` (file
+SHA-256 `9e246c6a167fc0a5ed5cb61cf83e6a747e6dee74901a4aa52f2ad76ab579e6db`,
+semantic SHA-256
+`sha256:a866b52ab7e6b8bbee38c6041c3935eb7fb329a7e1006674816d4008a71f6112`).
 The sealed v2.0 record remains historical evidence at
 `artifacts/preflight/revalidated_20260812/date_level_pit_preflight_status_v2_current.json`;
 it is neither overwritten nor retroactively reclassified.
