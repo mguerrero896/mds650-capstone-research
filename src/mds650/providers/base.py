@@ -8,6 +8,7 @@ import time
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 import httpx
 
@@ -49,18 +50,19 @@ class ProviderHTTPClient:
         max_retries: int = 3,
         backoff_seconds: float = 0.5,
         timeout_seconds: float = 20.0,
-        api_key_header: str = "Authorization",
+        api_key_header: str | None = "Authorization",
         api_key_prefix: str = "Bearer ",
+        api_key_query_param: str | None = None,
         transport: httpx.BaseTransport | None = None,
     ) -> None:
-        """Create a bounded client using an Authorization header.
+        """Create a bounded client using exactly one supported auth carrier.
 
         Parameters
         ----------
         base_url:
             Provider origin without credential query parameters.
         api_key:
-            Secret retained only in the in-memory request header.
+            Secret retained only in the in-memory request header or query parameter.
         max_retries:
             Maximum total attempts for one request, including the first.
         backoff_seconds:
@@ -69,6 +71,9 @@ class ProviderHTTPClient:
             Per-request timeout.
         api_key_header, api_key_prefix:
             Header name and prefix used for provider authentication.
+        api_key_query_param:
+            Query parameter used for provider authentication. Exactly one of this
+            and ``api_key_header`` must be configured.
         transport:
             Optional test transport; production defaults to httpx networking.
 
@@ -78,7 +83,14 @@ class ProviderHTTPClient:
             If configuration is invalid or the base URL contains credentials.
         """
         parsed = httpx.URL(base_url)
-        if parsed.params or not api_key or max_retries <= 0 or backoff_seconds < 0:
+        if (
+            parsed.params
+            or parsed.query
+            or not api_key
+            or max_retries <= 0
+            or backoff_seconds < 0
+            or (api_key_header is None) == (api_key_query_param is None)
+        ):
             raise ValueError("PROVIDER_CLIENT_CONFIGURATION_INVALID")
         self._client = httpx.Client(
             base_url=base_url,
@@ -90,6 +102,10 @@ class ProviderHTTPClient:
         self._backoff_seconds = backoff_seconds
         self._api_key_header = api_key_header
         self._api_key_prefix = api_key_prefix
+        self._api_key_query_param = api_key_query_param
+        self._secret_query_params = (
+            frozenset((api_key_query_param,)) if api_key_query_param is not None else frozenset()
+        )
 
     def close(self) -> None:
         """Close the underlying HTTP connection pool."""
@@ -124,10 +140,17 @@ class ProviderHTTPClient:
         SchemaDriftError
             If a successful response is not valid JSON.
         """
-        headers = {self._api_key_header: f"{self._api_key_prefix}{self._api_key}"}
+        headers = (
+            {self._api_key_header: f"{self._api_key_prefix}{self._api_key}"}
+            if self._api_key_header is not None
+            else {}
+        )
+        request_params = {} if params is None else dict(params)
+        if self._api_key_query_param is not None:
+            request_params[self._api_key_query_param] = self._api_key
         for attempt in range(1, self._max_retries + 1):
             try:
-                response = self._client.get(path, params=params, headers=headers)
+                response = self._client.get(path, params=request_params, headers=headers)
             except httpx.HTTPError as exc:
                 raise ProviderBlockedError("PROVIDER_NETWORK_FAILURE") from exc
             if 200 <= response.status_code < 300:
@@ -138,7 +161,10 @@ class ProviderHTTPClient:
                 return ProviderResponse(
                     status_code=response.status_code,
                     payload=payload,
-                    request_url=str(response.request.url),
+                    request_url=_sanitize_request_url(
+                        response.request.url,
+                        secret_query_params=self._secret_query_params,
+                    ),
                     attempts=attempt,
                     rate_limit_observations=_rate_headers(response.headers),
                 )
@@ -176,6 +202,20 @@ def _rate_headers(headers: httpx.Headers) -> dict[str, str]:
         for key, value in headers.items()
         if key.lower() == "retry-after" or key.lower().startswith("x-ratelimit")
     }
+
+
+def _sanitize_request_url(url: httpx.URL, *, secret_query_params: frozenset[str]) -> str:
+    """Remove credential query values before exposing a request URL."""
+    parsed = urlsplit(str(url))
+    sanitized_query = urlencode(
+        [
+            (name, value)
+            for name, value in parse_qsl(parsed.query, keep_blank_values=True)
+            if name not in secret_query_params
+        ],
+        doseq=True,
+    )
+    return urlunsplit((parsed.scheme, parsed.netloc, parsed.path, sanitized_query, ""))
 
 
 def schema_fingerprint(records: Sequence[Mapping[str, Any]]) -> str:

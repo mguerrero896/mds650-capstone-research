@@ -87,10 +87,12 @@ class MassiveProvider:
     """Directed Massive Options Advanced client; never a full OPRA downloader."""
 
     def __init__(self, api_key: str, *, transport: Any = None, max_retries: int = 3) -> None:
-        """Create a bearer-authenticated Massive/Polygon REST client."""
+        """Create a query-authenticated Massive REST client."""
         self._client = ProviderHTTPClient(
-            base_url="https://api.polygon.io",
+            base_url="https://api.massive.com",
             api_key=api_key,
+            api_key_header=None,
+            api_key_query_param="apiKey",
             transport=transport,
             max_retries=max_retries,
         )
@@ -117,12 +119,18 @@ class MassiveProvider:
         contract_id: str,
         *,
         timestamp: str,
-        cursor: str | None = None,
     ) -> ProviderResponse:
-        """Request a bounded historical quote window for one contract."""
-        params: dict[str, str] = {"timestamp": timestamp}
-        if cursor is not None:
-            params["cursor"] = cursor
+        """Request one directed quote at or before the supplied as-of timestamp."""
+        if not isinstance(contract_id, str) or not contract_id:
+            raise ValueError("MASSIVE_CONTRACT_ID_REQUIRED")
+        if not isinstance(timestamp, str) or not timestamp:
+            raise ValueError("MASSIVE_AS_OF_TIMESTAMP_REQUIRED")
+        params: dict[str, str | int] = {
+            "timestamp.lte": timestamp,
+            "sort": "timestamp",
+            "order": "desc",
+            "limit": 1,
+        }
         return self._client.get_json(f"/v3/quotes/{contract_id}", params=params)
 
     def close(self) -> None:
