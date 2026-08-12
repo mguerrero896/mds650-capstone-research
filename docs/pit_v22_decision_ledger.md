@@ -378,3 +378,49 @@ SAFE_TO_RECONCILE_EXISTING_RESULTS=NO
 SAFE_TO_OPEN_OR_EVALUATE_OOS=NO
 READY_FOR_CONFIRMATION=YES_WITH_HARD_PIT_BLOCKS
 ```
+
+## Decision 46 — provider timing evidence intake is review-only
+
+**Status:** accepted as a local, target-blind evidence-admission control. It
+does not amend a provider-timing conclusion or turn any current hard block
+into an execution authorization.
+
+**Evidence:**
+`docs/provider_timing_semantics_evidence_intake_v1.md`,
+`specs/001-pit-options-rv30/contracts/provider-timing-semantics-evidence-submission-v1.schema.json`,
+`specs/001-pit-options-rv30/contracts/provider-timing-semantics-evidence-assessment-v1.schema.json`,
+and `src/mds650/provider_timing_semantics_evidence_intake_v1.py`.
+
+**Decision:** admit only a sanitized, hash-bound, versioned official provider
+source or identified provider support case for one explicit unresolved timing
+block. An assessment can say only that its required claim identifiers, source
+identity and hygiene requirements are complete for **independent technical
+review**. It never adjudicates the source statement, provider history,
+publication/receipt semantics or PIT validity.
+
+**Reason:** an informal email, a generic documentation page, an HTTP success or
+a user-supplied JSON flag must not bypass the separate technical review and
+bounded authenticated probe that a timing-gate amendment requires.
+
+**Permitted claims:**
+
+- A future provider response can be retained in a reproducible, sanitized and
+  immutable review envelope.
+- A complete envelope has no missing required claim identifier for its one
+  named hard block.
+
+**Forbidden claims:**
+
+- That a complete intake closes FMP, UW or Massive semantics.
+- That it permits provider transport, acquisition, backfill, B2 construction,
+  reconciliation, OOS access, QLIKE, model fitting or a positive-edge claim.
+
+**Consequences:**
+
+```text
+PROVIDER_TIMING_EVIDENCE_INTAKE=REVIEW_ONLY
+HARD_GATE_ACTION=NONE
+NETWORK_PERMITTED=false
+SAFE_TO_RECONCILE_EXISTING_RESULTS=NO
+SAFE_TO_OPEN_OR_EVALUATE_OOS=NO
+```

@@ -16,6 +16,9 @@ import pytest
 
 MODULE_NAME = "mds650.provider_timing_semantics_evidence_intake_v1"
 ROOT = Path(__file__).resolve().parents[2]
+PLAN_PATH = ROOT / "artifacts/preflight/date_level_pit_preflight_plan_v1.json"
+CATALOG_PATH = ROOT / "config/date_level_pit_preflight_endpoint_catalog_v2.json"
+BUDGET_PATH = ROOT / "artifacts/preflight/date_level_pit_preflight_request_budget_v2.json"
 
 
 class _EvidenceIntake(Protocol):
@@ -200,6 +203,28 @@ def test_complete_support_case_stays_review_only_for_unusual_whales() -> None:
     assert assessment["status"] == "EVIDENCE_COMPLETE_REQUIRES_INDEPENDENT_TECHNICAL_REVIEW"
     assert assessment["hard_gate_action"] == "NONE"
     assert assessment["network_permitted"] is False
+
+
+def test_review_ready_evidence_cannot_mutate_the_current_preflight_gate() -> None:
+    """A hidden intake-to-transport path would make this target-blind regression fail."""
+    from mds650.date_level_pit_preflight_v2 import (
+        NetworkGateStatus,
+        build_operation_plan,
+    )
+
+    intake = _module()
+    assessment = intake.assess_provider_timing_semantics_evidence_submission_v1(_fmp_submission())
+    operation_plan = build_operation_plan(
+        cast(dict[str, object], json.loads(PLAN_PATH.read_text(encoding="utf-8"))),
+        cast(dict[str, object], json.loads(CATALOG_PATH.read_text(encoding="utf-8"))),
+        cast(dict[str, object], json.loads(BUDGET_PATH.read_text(encoding="utf-8"))),
+    )
+
+    assert assessment["status"] == "EVIDENCE_COMPLETE_REQUIRES_INDEPENDENT_TECHNICAL_REVIEW"
+    assert assessment["hard_gate_action"] == "NONE"
+    assert operation_plan.network_gate.status is NetworkGateStatus.NETWORK_BLOCKED
+    assert operation_plan.network_gate.execution_permitted is False
+    assert operation_plan.network_gate.attempts_sent == 0
 
 
 def test_provider_block_mismatch_and_query_reference_are_rejected() -> None:

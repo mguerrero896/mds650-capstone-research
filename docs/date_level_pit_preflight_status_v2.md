@@ -42,3 +42,13 @@ The current immutable output is
 SHA-256 `945908ba718bea18fe85f3cb4297495d08e7e2b3158619c1bc4ae5b543642683`,
 semantic SHA-256
 `sha256:f7089333dba0dd65d5a901f8fdfb64983fc5d976afd856594426b6918de5943d`).
+
+## Provider response intake
+
+When a provider supplies a written clarification, first process a sanitized
+record through
+[`provider-timing-semantics-evidence-intake-v1`](provider_timing_semantics_evidence_intake_v1.md).
+Its best possible outcome is review-ready evidence; it does not alter this
+`FAILED_CLOSED` status. A separate technical review, an explicit gate
+amendment and the bounded provider protocol remain required before any network
+transport can be reconsidered.
