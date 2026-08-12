@@ -225,3 +225,13 @@ Spec Kit consistency and preregistration gates pass.
    alter B1Q, reconcile legacy outputs or open OOS. Any future parity route would require a
    separately authorized methodological amendment, an expanded source contract and fresh PIT
    review before it can be considered.
+40. **Deterministic Massive contract-selection rule (2026-08-12)** — The local,
+   target-blind rule massive-contract-grid-v1-asof-dte-moneyness-tiebreak fixes
+   contract-grid selection from already schema-validated historical reference candidates.
+   It uses the registered 7–21, 30–60 and 90–180 DTE buckets, the
+   0.95/0.975/1.00/1.025/1.05 moneyness grid and call/put slots. Ties are resolved in
+   this exact order: absolute moneyness distance, distance from the DTE-bucket midpoint,
+   expiration, strike and contract identifier. A missing slot remains missing, not zero.
+   This only removes a local reproducibility ambiguity; it does not call Massive, alter
+   any legacy B1Q cache, establish provider PIT semantics, resolve B1Q exogenous-input
+   provenance or upgrade SAFE_TO_RECONCILE_EXISTING_RESULTS=NO.
