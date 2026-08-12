@@ -1,0 +1,85 @@
+{
+  "artifact_type": "date_level_pit_preflight_endpoint_catalog_v2",
+  "schema_version": "2.0.0",
+  "status": "DOCUMENTED_ROUTES_EXECUTION_GATED",
+  "execution_requirements": {
+    "authorization_required": true,
+    "zero_incremental_spend_assertion_required": true,
+    "minimum_d_drive_free_bytes": 85899345920,
+    "network_permitted_by_this_artifact": false
+  },
+  "provider_documentation": {
+    "fmp": "https://site.financialmodelingprep.com/developer/docs/stable/intraday-1-min",
+    "unusual_whales": "https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.full_tape",
+    "massive_contracts": "https://massive.com/docs/rest/options/contracts/all-contracts",
+    "massive_quotes": "https://massive.com/docs/rest/options/trades-quotes/quotes"
+  },
+  "endpoints": [
+    {
+      "provider": "fmp",
+      "endpoint_id": "fmp-underlying-1min-date-bounded",
+      "method": "GET",
+      "request_target": "/stable/historical-chart/1min",
+      "metadata_only": false,
+      "request_parameters": {
+        "symbol": "{asset}",
+        "from": "{session_date}",
+        "to": "{session_date}",
+        "extended": false,
+        "nonadjusted": false
+      },
+      "pit_semantics_status": "DATE_BOUNDED_ONLY_NO_PIT_CLAIM"
+    },
+    {
+      "provider": "unusual_whales",
+      "endpoint_id": "uw-full-tape-zip-download",
+      "method": "GET",
+      "request_target": "/api/option-trades/full-tape/{session_date}",
+      "metadata_only": false,
+      "expected_content_type": "application/zip",
+      "range_transport_status": "NOT_DOCUMENTED_NOT_USED",
+      "pit_semantics_status": "CREATED_AT_PROXY_ONLY"
+    },
+    {
+      "provider": "massive",
+      "endpoint_id": "massive-contract-search-reference-and-quote-asof",
+      "method": "GET",
+      "metadata_only": false,
+      "contract_selection_status": "UNRESOLVED_NO_EXECUTION",
+      "pit_semantics_status": "EVENT_TIME_ASOF_LOCAL_SIP_CHECK_REQUIRED",
+      "routes": [
+        {
+          "operation": "contract_search",
+          "path": "/v3/reference/options/contracts",
+          "method": "GET",
+          "parameters": {
+            "underlying_ticker": "{asset}",
+            "as_of": "{session_date}",
+            "limit": 1000
+          },
+          "pagination": {
+            "next_url": "FOLLOW_ONLY_WITHIN_THREE_PAGE_CAP"
+          }
+        },
+        {
+          "operation": "contract_reference",
+          "path": "/v3/reference/options/contracts/{contract_id}",
+          "method": "GET"
+        },
+        {
+          "operation": "quote_as_of",
+          "path": "/v3/quotes/{contract_id}",
+          "method": "GET",
+          "timestamp_unit": "nanoseconds",
+          "parameters": {
+            "timestamp.lte": "{as_of_timestamp_ns}",
+            "sort": "timestamp",
+            "order": "desc",
+            "limit": 1
+          },
+          "local_postcondition": "sip_timestamp_lte_forecast_origin"
+        }
+      ]
+    }
+  ]
+}

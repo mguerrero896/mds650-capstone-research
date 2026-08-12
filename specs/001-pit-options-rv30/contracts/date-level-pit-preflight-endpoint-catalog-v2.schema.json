@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Date-level PIT preflight endpoint catalog v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "artifact_type",
+    "schema_version",
+    "status",
+    "execution_requirements",
+    "provider_documentation",
+    "endpoints"
+  ],
+  "properties": {
+    "artifact_type": {"const": "date_level_pit_preflight_endpoint_catalog_v2"},
+    "schema_version": {"const": "2.0.0"},
+    "status": {"const": "DOCUMENTED_ROUTES_EXECUTION_GATED"},
+    "execution_requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authorization_required",
+        "zero_incremental_spend_assertion_required",
+        "minimum_d_drive_free_bytes",
+        "network_permitted_by_this_artifact"
+      ],
+      "properties": {
+        "authorization_required": {"const": true},
+        "zero_incremental_spend_assertion_required": {"const": true},
+        "minimum_d_drive_free_bytes": {"const": 85899345920},
+        "network_permitted_by_this_artifact": {"const": false}
+      }
+    },
+    "provider_documentation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fmp", "unusual_whales", "massive_contracts", "massive_quotes"],
+      "properties": {
+        "fmp": {"type": "string", "format": "uri"},
+        "unusual_whales": {"type": "string", "format": "uri"},
+        "massive_contracts": {"type": "string", "format": "uri"},
+        "massive_quotes": {"type": "string", "format": "uri"}
+      }
+    },
+    "endpoints": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "provider", "endpoint_id", "method", "request_target", "metadata_only",
+              "request_parameters", "pit_semantics_status"
+            ],
+            "properties": {
+              "provider": {"const": "fmp"},
+              "endpoint_id": {"const": "fmp-underlying-1min-date-bounded"},
+              "method": {"const": "GET"},
+              "request_target": {"const": "/stable/historical-chart/1min"},
+              "metadata_only": {"const": false},
+              "request_parameters": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["symbol", "from", "to", "extended", "nonadjusted"],
+                "properties": {
+                  "symbol": {"const": "{asset}"},
+                  "from": {"const": "{session_date}"},
+                  "to": {"const": "{session_date}"},
+                  "extended": {"const": false},
+                  "nonadjusted": {"const": false}
+                }
+              },
+              "pit_semantics_status": {"const": "DATE_BOUNDED_ONLY_NO_PIT_CLAIM"}
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "provider", "endpoint_id", "method", "request_target", "metadata_only",
+              "expected_content_type", "range_transport_status", "pit_semantics_status"
+            ],
+            "properties": {
+              "provider": {"const": "unusual_whales"},
+              "endpoint_id": {"const": "uw-full-tape-zip-download"},
+              "method": {"const": "GET"},
+              "request_target": {"const": "/api/option-trades/full-tape/{session_date}"},
+              "metadata_only": {"const": false},
+              "expected_content_type": {"const": "application/zip"},
+              "range_transport_status": {"const": "NOT_DOCUMENTED_NOT_USED"},
+              "pit_semantics_status": {"const": "CREATED_AT_PROXY_ONLY"}
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "provider", "endpoint_id", "method", "metadata_only", "routes",
+              "contract_selection_status", "pit_semantics_status"
+            ],
+            "properties": {
+              "provider": {"const": "massive"},
+              "endpoint_id": {"const": "massive-contract-search-reference-and-quote-asof"},
+              "method": {"const": "GET"},
+              "metadata_only": {"const": false},
+              "contract_selection_status": {"const": "UNRESOLVED_NO_EXECUTION"},
+              "pit_semantics_status": {
+                "const": "EVENT_TIME_ASOF_LOCAL_SIP_CHECK_REQUIRED"
+              },
+              "routes": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {"type": "object"}
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

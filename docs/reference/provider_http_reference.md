@@ -23,6 +23,12 @@ are validated.
   `GET https://financialmodelingprep.com/stable/historical-chart/1min?symbol=AAPL&apikey=YOUR_KEY`.
   Newer "stable" paths live under
   `/stable/...` (e.g. `/stable/earnings-calendar`).
+- The official 1-minute viewer also documents date-bounded `from`/`to` inputs
+  and `extended` / `nonadjusted` flags. It does **not** document timezone,
+  whether `date` labels a bar open or close, range-bound inclusivity, regular
+  session defaults, or REST publication latency. Therefore an exact date request
+  is not a PIT semantics confirmation; retain the registered +1 minute rule
+  and +2 minute sensitivity.
 - Error semantics: 401 = bad/missing key; 403 = endpoint not in plan
   (earnings calendar and long history are premium-tier datasets).
 - MEASURED DEPTH (2026-07-21, `scripts/window_probe_v1.py`): 1-min AAPL bars
@@ -40,6 +46,12 @@ are validated.
   - `GET /api/option-trades/flow-alerts` — params include `ticker_symbol`,
     `min_premium`, `newer_than` / `older_than` (unix ms/sec or ISO date),
     `limit` (default 100, max 200), plus many filter flags.
+  - `GET /api/option-trades/full-tape/{date}` — a documented market-date
+    (`YYYY-MM-DD`) download returning `application/zip`; the public OpenAPI
+    describes data since 2022-01-01 subject to plan lookback. The documentation
+    does **not** establish `Range`, `HEAD`, `206`, `Content-Range`, resumable
+    transfer, or streaming semantics. A future preflight must therefore use
+    only the documented ZIP download route, never an undocumented range probe.
   - `GET /api/stock/{ticker}/volatility/term-structure`
 - Pagination: time-window pagination via `newer_than` / `older_than`; the
   corrected auditor advances the lower time boundary and checks page IDs.
@@ -71,6 +83,10 @@ are validated.
   before transport, then sends
   `timestamp.lte=<forecast_origin_ns>&sort=timestamp&order=desc&limit=1`.
   Sanitized request records exclude `apiKey`.
+- The official quote reference lists `timestamp.lte` / `.gte` range filters and
+  accepts a nanosecond timestamp. The client must still validate locally that
+  every retained `sip_timestamp <= forecast_origin`; provider event time does
+  not prove customer receipt latency or historical PIT availability.
 - Pagination: responses include `next_url`; follow it with the same query
   authentication (the audit script already does this via `next_path`).
 - Docs: https://massive.com/docs/rest/quickstart — every docs page has a

@@ -1,0 +1,58 @@
+{
+  "artifact_type": "date_level_pit_preflight_request_budget_v2",
+  "catalog_descriptor_status": {
+    "fmp": "DATE_BOUNDED_ONLY_NO_PIT_CLAIM",
+    "massive": "DOCUMENTED_ROUTES_CONTRACT_SELECTION_UNRESOLVED",
+    "unusual_whales": "DOCUMENTED_ZIP_ROUTE_EXECUTION_GATED"
+  },
+  "cost_authorization": {
+    "cost_amount_claimed": false,
+    "status": "EXTERNAL_AUTHORIZATION_REQUIRED_NOT_A_BILLING_CLAIM"
+  },
+  "dimensions": {
+    "asset_count": 8,
+    "asset_day_count": 56,
+    "session_count": 7
+  },
+  "flags": {
+    "NOT_AUTHORIZATION_FOR_ACQUISITION": true,
+    "NOT_A_BILLING_CLAIM": true,
+    "NO_PROVIDER_CALLS_EXECUTED": true
+  },
+  "massive_contract_pagination": {
+    "contract_reference_max_per_asset_day": 1,
+    "contract_reference_only_after_contract_resolution": true,
+    "contract_search_request_cap": 168,
+    "contract_stage_order": ["contract_search", "contract_reference", "quote_as_of"],
+    "max_contract_pages_per_asset_day": 3,
+    "pagination_exceed_status": "FAILED_CLOSED_CONTRACT_PAGINATION_CAP_EXCEEDED",
+    "quote_as_of_max_per_asset_day": 1,
+    "quote_as_of_only_after_contract_reference": true,
+    "quote_as_of_only_after_contract_resolution": true
+  },
+  "request_budget": {
+    "cap_request_count": 343,
+    "fmp_one_minute_requests": 56,
+    "initial_request_count": 119,
+    "initial_request_upper_bound_if_all_contracts_resolve": 231,
+    "massive_initial_contract_reference_conditional_max": 56,
+    "massive_initial_contract_search_requests": 56,
+    "massive_initial_quote_as_of_conditional_max": 56,
+    "unusual_whales_full_tape_zip_requests": 7
+  },
+  "schema_version": "2.0.0",
+  "security": {
+    "personal_paths_emitted": false,
+    "raw_endpoint_details_emitted": false,
+    "secret_values_emitted": false
+  },
+  "semantic_hash_scope": "canonical-json-excluding-semantic_self_hash",
+  "semantic_self_hash": "sha256:5035157f6112136e6000f8af368753c8b6457449f8034b14f8f102c4de45478d",
+  "status": "CANDIDATE_AUTHORIZATION_REQUIRED",
+  "unusual_whales_cache_policy": {
+    "range_transport_status": "NOT_DOCUMENTED_NOT_USED",
+    "request_count": 7,
+    "scope": "PER_SESSION_ACROSS_ASSETS",
+    "transport": "FULL_TAPE_ZIP_DOWNLOAD"
+  }
+}
