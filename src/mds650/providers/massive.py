@@ -118,15 +118,19 @@ class MassiveProvider:
         self,
         contract_id: str,
         *,
-        timestamp: str,
+        forecast_origin_ns: object,
     ) -> ProviderResponse:
-        """Request one directed quote at or before the supplied as-of timestamp."""
+        """Request one directed quote at or before a forecast-origin nanosecond."""
         if not isinstance(contract_id, str) or not contract_id:
             raise ValueError("MASSIVE_CONTRACT_ID_REQUIRED")
-        if not isinstance(timestamp, str) or not timestamp:
-            raise ValueError("MASSIVE_AS_OF_TIMESTAMP_REQUIRED")
+        if (
+            isinstance(forecast_origin_ns, bool)
+            or not isinstance(forecast_origin_ns, int)
+            or not 1_000_000_000_000_000_000 <= forecast_origin_ns <= 9_999_999_999_999_999_999
+        ):
+            raise ValueError("MASSIVE_FORECAST_ORIGIN_NS_REQUIRED")
         params: dict[str, str | int] = {
-            "timestamp.lte": timestamp,
+            "timestamp.lte": forecast_origin_ns,
             "sort": "timestamp",
             "order": "desc",
             "limit": 1,

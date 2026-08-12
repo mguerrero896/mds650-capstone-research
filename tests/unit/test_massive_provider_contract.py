@@ -22,7 +22,7 @@ def test_directed_quotes_uses_massive_query_auth_and_as_of_selection_params() ->
     try:
         response = provider.directed_quotes(
             "O:AAPL260821C00200000",
-            timestamp="2026-03-09T13:30:00Z",
+            forecast_origin_ns=1_773_000_000_000_000_000,
         )
     finally:
         provider.close()
@@ -32,7 +32,7 @@ def test_directed_quotes_uses_massive_query_auth_and_as_of_selection_params() ->
     request = observed[0]
     assert str(request.url.copy_with(query=None)) == "https://api.massive.com/v3/quotes/O:AAPL260821C00200000"
     assert dict(request.url.params) == {
-        "timestamp.lte": "2026-03-09T13:30:00Z",
+        "timestamp.lte": "1773000000000000000",
         "sort": "timestamp",
         "order": "desc",
         "limit": "1",
@@ -41,12 +41,25 @@ def test_directed_quotes_uses_massive_query_auth_and_as_of_selection_params() ->
     assert request.headers.get("authorization") is None
     assert response.request_url == (
         "https://api.massive.com/v3/quotes/O:AAPL260821C00200000?"
-        "timestamp.lte=2026-03-09T13%3A30%3A00Z&sort=timestamp&order=desc&limit=1"
+        "timestamp.lte=1773000000000000000&sort=timestamp&order=desc&limit=1"
     )
     assert "synthetic-query-key" not in response.request_url
 
 
-def test_directed_quotes_rejects_invalid_as_of_inputs_without_transport() -> None:
+@pytest.mark.parametrize(
+    "forecast_origin_ns",
+    [
+        True,
+        "2026-03-09T13:30:00Z",
+        0,
+        -1,
+        999_999_999_999_999_999,
+        10_000_000_000_000_000_000,
+    ],
+)
+def test_directed_quotes_rejects_invalid_forecast_origin_ns_without_transport(
+    forecast_origin_ns: object,
+) -> None:
     def unexpected_handler(_: httpx.Request) -> httpx.Response:
         raise AssertionError("transport called")
 
@@ -56,13 +69,16 @@ def test_directed_quotes_rejects_invalid_as_of_inputs_without_transport() -> Non
     )
     try:
         with pytest.raises(ValueError, match="MASSIVE_CONTRACT_ID_REQUIRED"):
-            provider.directed_quotes("", timestamp="2026-03-09T13:30:00Z")
-        with pytest.raises(ValueError, match="MASSIVE_AS_OF_TIMESTAMP_REQUIRED"):
-            provider.directed_quotes("O:AAPL260821C00200000", timestamp="")
+            provider.directed_quotes("", forecast_origin_ns=1_773_000_000_000_000_000)
+        with pytest.raises(ValueError, match="MASSIVE_FORECAST_ORIGIN_NS_REQUIRED"):
+            provider.directed_quotes(
+                "O:AAPL260821C00200000",
+                forecast_origin_ns=forecast_origin_ns,
+            )
         with pytest.raises(TypeError, match="cursor"):
             provider.directed_quotes(
                 "O:AAPL260821C00200000",
-                timestamp="2026-03-09T13:30:00Z",
+                forecast_origin_ns=1_773_000_000_000_000_000,
                 cursor="legacy-cursor",
             )
     finally:
@@ -80,7 +96,10 @@ def test_massive_authentication_error_does_not_emit_query_key() -> None:
     )
     try:
         with pytest.raises(AuthenticationError) as error:
-            provider.directed_quotes("O:AAPL260821C00200000", timestamp="2026-03-09T13:30:00Z")
+            provider.directed_quotes(
+                "O:AAPL260821C00200000",
+                forecast_origin_ns=1_773_000_000_000_000_000,
+            )
     finally:
         provider.close()
 
