@@ -271,6 +271,19 @@ def test_assessment_validator_rejects_post_assessment_gate_mutation() -> None:
         intake.validate_provider_timing_semantics_evidence_assessment_v1(assessment)
 
 
+def test_validator_rejects_claim_status_contradiction_with_recomputed_hash() -> None:
+    """A forged complete status with missing claims must fail beyond self-hash validation."""
+    intake = _module()
+    assessment = intake.assess_provider_timing_semantics_evidence_submission_v1(_fmp_submission())
+    assessment["missing_claim_ids"] = ["FMP_HISTORICAL_CORRECTION_BEHAVIOR"]
+    assessment["semantic_self_hash"] = _canonical_sha256(
+        {key: value for key, value in assessment.items() if key != "semantic_self_hash"}
+    )
+
+    with pytest.raises(ValueError, match="PIT_EVIDENCE_ASSESSMENT_CLAIM_STATE_INVALID"):
+        intake.validate_provider_timing_semantics_evidence_assessment_v1(assessment)
+
+
 def test_writer_is_idempotent_and_rejects_divergent_evidence(tmp_path: Path) -> None:
     """Replacing an approved evidence intake with different bytes must fail closed."""
     intake = _module()

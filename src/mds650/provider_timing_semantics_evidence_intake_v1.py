@@ -203,6 +203,7 @@ def validate_provider_timing_semantics_evidence_assessment_v1(
     _validate_self_hash(assessment)
     _validate_assessment_schema(assessment)
     _assert_sanitized(assessment)
+    _validate_claim_state(assessment)
     expected = {
         "hard_gate_action": "NONE",
         "network_permitted": False,
@@ -286,6 +287,30 @@ def _validate_assessment_schema(assessment: Mapping[str, object]) -> None:
         _ASSESSMENT_SCHEMA_PATH,
         "PIT_EVIDENCE_ASSESSMENT_SCHEMA_INVALID",
     )
+
+
+def _validate_claim_state(assessment: Mapping[str, object]) -> None:
+    """Require claim lists and review status to describe one coherent state."""
+    required = _claim_id_list(
+        assessment, "required_claim_ids", "PIT_EVIDENCE_ASSESSMENT_CLAIM_STATE_INVALID"
+    )
+    submitted = _claim_id_list(
+        assessment, "submitted_claim_ids", "PIT_EVIDENCE_ASSESSMENT_CLAIM_STATE_INVALID"
+    )
+    missing = _claim_id_list(
+        assessment, "missing_claim_ids", "PIT_EVIDENCE_ASSESSMENT_CLAIM_STATE_INVALID"
+    )
+    if len(set(required)) != len(required) or len(set(submitted)) != len(submitted):
+        raise ValueError("PIT_EVIDENCE_ASSESSMENT_CLAIM_STATE_INVALID")
+    expected_submitted = [claim_id for claim_id in required if claim_id in submitted]
+    expected_missing = [claim_id for claim_id in required if claim_id not in submitted]
+    if submitted != expected_submitted or missing != expected_missing:
+        raise ValueError("PIT_EVIDENCE_ASSESSMENT_CLAIM_STATE_INVALID")
+    status = _required_string(assessment, "status", "PIT_EVIDENCE_ASSESSMENT_CLAIM_STATE_INVALID")
+    if (status == "EVIDENCE_COMPLETE_REQUIRES_INDEPENDENT_TECHNICAL_REVIEW" and missing) or (
+        status == "EVIDENCE_INSUFFICIENT" and not missing
+    ):
+        raise ValueError("PIT_EVIDENCE_ASSESSMENT_CLAIM_STATE_INVALID")
 
 
 def _validate_against_schema(
@@ -383,6 +408,14 @@ def _normalized_source(source: Mapping[str, object]) -> dict[str, str]:
             source, "source_content_sha256", "PIT_EVIDENCE_INTAKE_SOURCE_INVALID"
         ),
     }
+
+
+def _claim_id_list(assessment: Mapping[str, object], key: str, error_code: str) -> list[str]:
+    """Return one schema-validated claim-ID list with a stable failure code."""
+    value = assessment.get(key)
+    if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
+        raise ValueError(error_code)
+    return cast(list[str], value)
 
 
 def _validate_self_hash(assessment: Mapping[str, object]) -> None:
