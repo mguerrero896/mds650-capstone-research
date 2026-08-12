@@ -14,6 +14,7 @@ from mds650.b1q_put_call_parity_feasibility import (
     ALLOWED_ATTEMPT_COLUMNS,
     B1Q_PARITY_OUTPUT_CONFLICT,
     assess_put_call_parity_feasibility,
+    validate_put_call_parity_feasibility_report,
     write_json_if_new_or_identical,
 )
 from mds650.study_design import canonical_sha256
@@ -89,6 +90,12 @@ def _frame(*, two_strikes: bool, include_forbidden_columns: bool = False) -> pl.
             pl.lit("prediction").alias("model_prediction"),
         )
     return frame
+
+
+def _rehash(report: dict[str, object]) -> None:
+    """Refresh a report hash after a deliberate valid-field mutation."""
+    unsigned = {key: value for key, value in report.items() if key != "semantic_self_hash"}
+    report["semantic_self_hash"] = f"sha256:{canonical_sha256(unsigned)}"
 
 
 def test_one_strike_pair_is_not_silently_used_as_a_rate_or_dividend_proxy() -> None:
@@ -179,10 +186,36 @@ def test_schema_self_hash_and_immutable_writer_are_deterministic(tmp_path: Path)
     assert output.read_bytes() == expected_bytes
 
     drift = dict(result)
-    drift["scope"] = "MUTATED_SCOPE"
+    drift["interpretation"] = "A different but still sanitized interpretation."
+    _rehash(drift)
     with pytest.raises(ValueError, match=B1Q_PARITY_OUTPUT_CONFLICT):
         write_json_if_new_or_identical(output, drift)
 
     assert hashlib.sha256(output.read_bytes()).hexdigest() == hashlib.sha256(
         expected_bytes
     ).hexdigest()
+
+
+def test_runtime_validator_rejects_hash_schema_and_sensitive_content_before_a_write() -> None:
+    """A report must fail closed even if a caller bypasses the construction helper."""
+    report = assess_put_call_parity_feasibility(
+        _frame(two_strikes=False),
+        source_file_sha256="e" * 64,
+    )
+
+    invalid_hash = dict(report)
+    invalid_hash["semantic_self_hash"] = "sha256:" + ("0" * 64)
+    with pytest.raises(ValueError, match="B1Q_PARITY_REPORT_SELF_HASH_INVALID"):
+        validate_put_call_parity_feasibility_report(invalid_hash)
+
+    schema_invalid = dict(report)
+    schema_invalid["safe_to_open_or_evaluate_oos"] = "YES"
+    _rehash(schema_invalid)
+    with pytest.raises(ValueError, match="B1Q_PARITY_REPORT_SCHEMA_INVALID"):
+        validate_put_call_parity_feasibility_report(schema_invalid)
+
+    sensitive = dict(report)
+    sensitive["interpretation"] = "Authorization: Bearer secret"
+    _rehash(sensitive)
+    with pytest.raises(ValueError, match="B1Q_PARITY_REPORT_HYGIENE_INVALID"):
+        validate_put_call_parity_feasibility_report(sensitive)

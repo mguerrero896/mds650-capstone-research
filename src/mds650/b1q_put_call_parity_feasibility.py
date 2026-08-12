@@ -12,9 +12,10 @@ import json
 import math
 import os
 import re
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
+from importlib import import_module
 from pathlib import Path
-from typing import Any
+from typing import Any, Protocol, cast
 
 import polars as pl
 
@@ -58,6 +59,44 @@ _CONTRACT_QUOTE_IDENTITY_COLUMNS = (
     "ask",
 )
 _EXPIRY_COLUMNS = (*_ORIGIN_COLUMNS, "expiry")
+_ROOT = Path(__file__).resolve().parents[2]
+_REPORT_SCHEMA_PATH = (
+    _ROOT
+    / "specs"
+    / "001-pit-options-rv30"
+    / "contracts"
+    / "b1q-put-call-parity-feasibility-v1.schema.json"
+)
+_SENSITIVE_TEXT_MARKERS = ("api_key", "authorization:", "bearer ", "c:\\users\\", "/users/")
+
+
+class _JsonSchemaValidator(Protocol):
+    """Minimal typed surface used from the installed JSON Schema validator."""
+
+    def iter_errors(self, instance: object) -> Iterable[object]:
+        """Yield validation errors for one JSON-compatible instance."""
+
+
+class _Draft202012ValidatorFactory(Protocol):
+    """Typed construction boundary for the installed Draft 2020-12 validator."""
+
+    def __call__(self, schema: Mapping[str, object]) -> _JsonSchemaValidator:
+        """Create a validator for one schema mapping."""
+
+    def check_schema(self, schema: Mapping[str, object]) -> None:
+        """Raise if the supplied schema itself is invalid."""
+
+
+def _load_draft202012_validator() -> _Draft202012ValidatorFactory:
+    """Load the installed JSON Schema validator without depending on untyped stubs."""
+    module = import_module("jsonschema")
+    candidate = cast(object, getattr(module, "Draft202012Validator", None))
+    if not callable(candidate) or not callable(getattr(candidate, "check_schema", None)):
+        raise RuntimeError("B1Q_PARITY_JSONSCHEMA_VALIDATOR_UNAVAILABLE")
+    return cast(_Draft202012ValidatorFactory, candidate)
+
+
+_DRAFT202012_VALIDATOR = _load_draft202012_validator()
 
 
 def assess_put_call_parity_feasibility(
@@ -208,7 +247,48 @@ def assess_put_call_parity_feasibility(
         ),
     }
     payload["semantic_self_hash"] = f"sha256:{canonical_sha256(payload)}"
+    validate_put_call_parity_feasibility_report(payload)
     return payload
+
+
+def validate_put_call_parity_feasibility_report(report: Mapping[str, object]) -> None:
+    """Validate a parity report's hash, schema, and sensitive-content boundary.
+
+    Parameters
+    ----------
+    report:
+        Candidate JSON-compatible feasibility report.
+
+    Returns
+    -------
+    None
+        The function returns only after the deterministic self-hash, Draft
+        2020-12 schema, and sanitization policy all pass.
+
+    Raises
+    ------
+    ValueError
+        If the report is malformed, has an invalid semantic hash, fails its
+        JSON Schema, or contains a token-like string or personal path.
+
+    Examples
+    --------
+    >>> # validate_put_call_parity_feasibility_report(report)
+    """
+    unsigned = dict(report)
+    recorded_hash = unsigned.pop("semantic_self_hash", None)
+    expected_hash = f"sha256:{canonical_sha256(unsigned)}"
+    if recorded_hash != expected_hash:
+        raise ValueError("B1Q_PARITY_REPORT_SELF_HASH_INVALID")
+    schema = _load_report_schema()
+    try:
+        _DRAFT202012_VALIDATOR.check_schema(schema)
+        errors = list(_DRAFT202012_VALIDATOR(schema).iter_errors(report))
+    except (TypeError, ValueError) as error:
+        raise ValueError("B1Q_PARITY_REPORT_SCHEMA_INVALID") from error
+    if errors:
+        raise ValueError("B1Q_PARITY_REPORT_SCHEMA_INVALID")
+    _validate_report_hygiene(report)
 
 
 def write_json_if_new_or_identical(path: Path, payload: Mapping[str, Any]) -> str:
@@ -237,6 +317,7 @@ def write_json_if_new_or_identical(path: Path, payload: Mapping[str, Any]) -> st
     >>> from pathlib import Path
     >>> # write_json_if_new_or_identical(Path("report.json"), {"status": "PASS"})
     """
+    validate_put_call_parity_feasibility_report(payload)
     rendered = (json.dumps(payload, indent=2, sort_keys=True) + "\n").encode("utf-8")
     path.parent.mkdir(parents=True, exist_ok=True)
     try:
@@ -270,6 +351,37 @@ def _validate_inputs(
     missing = sorted(set(ALLOWED_ATTEMPT_COLUMNS).difference(attempts.columns))
     if missing:
         raise ValueError("B1Q_PARITY_REQUIRED_COLUMN_MISSING")
+
+
+def _load_report_schema() -> dict[str, object]:
+    """Load the versioned report schema or fail before any report is accepted."""
+    try:
+        decoded = json.loads(_REPORT_SCHEMA_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise ValueError("B1Q_PARITY_REPORT_SCHEMA_UNREADABLE") from error
+    if not isinstance(decoded, dict):
+        raise ValueError("B1Q_PARITY_REPORT_SCHEMA_UNREADABLE")
+    return cast(dict[str, object], decoded)
+
+
+def _validate_report_hygiene(value: object) -> None:
+    """Reject token-like strings and personal paths from a distributable report."""
+    for text in _iter_strings(value):
+        if any(marker in text.lower() for marker in _SENSITIVE_TEXT_MARKERS):
+            raise ValueError("B1Q_PARITY_REPORT_HYGIENE_INVALID")
+
+
+def _iter_strings(value: object) -> Iterable[str]:
+    """Yield every string stored in a JSON-compatible nested value."""
+    if isinstance(value, str):
+        yield value
+    elif isinstance(value, Mapping):
+        for key, nested_value in value.items():
+            yield from _iter_strings(key)
+            yield from _iter_strings(nested_value)
+    elif isinstance(value, (list, tuple)):
+        for nested_value in value:
+            yield from _iter_strings(nested_value)
 
 
 def _valid_quote_rows(

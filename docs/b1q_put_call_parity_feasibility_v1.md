@@ -48,6 +48,9 @@ Its semantic hash is
 `sha256:a801672670218ae54fe805cdaed977820d4230bc5896f5fd2764ec0174215661`
 and its byte hash is
 `d31e5a74df9d9176dbd786b6cb3380f8df79bf03440ffd1e2cfe96b969fc07a2`.
+The writer validates its Draft 2020-12 schema, semantic self-hash and
+secret/personal-path hygiene before both the initial write and an identical
+replay; a different valid report at the same path fails closed.
 
 It reports 249,920 source rows and 31,240 origins. Of 207,064 valid quote
 rows before deterministic deduplication, 104 duplicated contract/quote records
