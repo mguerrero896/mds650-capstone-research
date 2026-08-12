@@ -32,16 +32,13 @@ PREREGISTRATION = (
 )
 DEFAULT_OUTPUT = ROOT / "artifacts" / "target_blind_v22" / "confirmation_readiness_v1.json"
 DEFAULT_PANEL = (
-    Path("D:/MDS650/phase6/derived/target_blind_v22")
-    / "target_blind_common_predictors_v22.parquet"
+    Path("D:/MDS650/phase6/derived/target_blind_v22") / "target_blind_common_predictors_v22.parquet"
 )
 DEFAULT_COMMON = (
-    Path("D:/MDS650/phase6/derived/target_blind_v22")
-    / "target_blind_common_complete_v22.parquet"
+    Path("D:/MDS650/phase6/derived/target_blind_v22") / "target_blind_common_complete_v22.parquet"
 )
 DEFAULT_SIDECAR = (
-    Path("D:/MDS650/phase6/derived/provider_timing_v22")
-    / "b2_row_availability_v22.parquet"
+    Path("D:/MDS650/phase6/derived/provider_timing_v22") / "b2_row_availability_v22.parquet"
 )
 DEFAULT_DATA_ROOT = Path("D:/MDS650")
 

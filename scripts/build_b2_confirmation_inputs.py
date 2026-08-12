@@ -428,12 +428,8 @@ def _prepare_b1_origins() -> tuple[pl.DataFrame, pl.DataFrame, dict[str, int]]:
     # input, preserving the complete origin table and a machine-readable
     # missingness ledger so the resulting coverage is never overstated.
     origins = pl.read_parquet(B0_PREDICTORS)
-    eligible = origins.filter(
-        pl.col("spot").is_not_null() & pl.col("drop_reason").is_null()
-    )
-    excluded = origins.join(
-        eligible.select("origin_id"), on="origin_id", how="anti"
-    )
+    eligible = origins.filter(pl.col("spot").is_not_null() & pl.col("drop_reason").is_null())
+    excluded = origins.join(eligible.select("origin_id"), on="origin_id", how="anti")
     if eligible.height == 0 or eligible["origin_id"].n_unique() != eligible.height:
         raise RuntimeError("B2_CONFIRMATION_B1_ELIGIBLE_ORIGINS_INVALID")
     B1_ORIGINS.parent.mkdir(parents=True, exist_ok=True)

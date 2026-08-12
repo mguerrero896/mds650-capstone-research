@@ -171,9 +171,8 @@ class ProviderHTTPClient:
             if response.status_code in {401, 403}:
                 raise AuthenticationError("PROVIDER_AUTHENTICATION_FAILED")
             if (
-                (response.status_code == 429 or response.status_code >= 500)
-                and attempt < self._max_retries
-            ):
+                response.status_code == 429 or response.status_code >= 500
+            ) and attempt < self._max_retries:
                 retry_after = _retry_after(response.headers)
                 delay = (
                     retry_after
@@ -235,10 +234,7 @@ def schema_fingerprint(records: Sequence[Mapping[str, Any]]) -> str:
     for record in records:
         for name, value in record.items():
             fields.setdefault(name, set()).add(type(value).__name__)
-    canonical = {
-        name: sorted(types)
-        for name, types in sorted(fields.items())
-    }
+    canonical = {name: sorted(types) for name, types in sorted(fields.items())}
     return hashlib.sha256(
         json.dumps(canonical, separators=(",", ":"), sort_keys=True).encode("utf-8")
     ).hexdigest()

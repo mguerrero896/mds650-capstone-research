@@ -31,9 +31,7 @@ def _frame(start: datetime, rows: int) -> pl.DataFrame:
             record[feature] = (
                 "AAPL"
                 if feature == "b0v2_asset_identity"
-                else 0.01
-                + ((index * (position + 3)) % 19) / 1_000
-                + position / 10_000
+                else 0.01 + ((index * (position + 3)) % 19) / 1_000 + position / 10_000
             )
         data.append(record)
     return pl.DataFrame(data)
@@ -78,17 +76,16 @@ def test_fixed_extensions_cannot_select_from_testing_rows() -> None:
     assert canonical_model_parameters("ridge_fixed_extension", phase6_frozen=frozen) == {
         "alpha": 1.0
     }
-    assert canonical_model_parameters(
-        "elastic_net_fixed_extension", phase6_frozen=frozen
-    ) == {"alpha": 0.01, "l1_ratio": 0.5}
+    assert canonical_model_parameters("elastic_net_fixed_extension", phase6_frozen=frozen) == {
+        "alpha": 0.01,
+        "l1_ratio": 0.5,
+    }
 
 
 def test_training_does_not_require_evaluation_only_volatility_regime() -> None:
     """Training remains valid before a fold-specific evaluation stratum exists."""
 
-    training = _frame(datetime(2025, 1, 2, 14, 30, tzinfo=UTC), 120).drop(
-        "volatility_regime"
-    )
+    training = _frame(datetime(2025, 1, 2, 14, 30, tzinfo=UTC), 120).drop("volatility_regime")
     testing = _frame(datetime(2025, 1, 3, 14, 30, tzinfo=UTC), 10)
 
     result = forecast_canonical_fold(

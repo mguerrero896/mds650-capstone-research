@@ -149,9 +149,9 @@ def _file_sha256(path: Path, error_prefix: str) -> str:
 
 def _render_json(document: Mapping[str, object]) -> bytes:
     """Render canonical, human-auditable artifact bytes deterministically."""
-    return (
-        json.dumps(dict(document), allow_nan=False, indent=2, sort_keys=True) + "\n"
-    ).encode("utf-8")
+    return (json.dumps(dict(document), allow_nan=False, indent=2, sort_keys=True) + "\n").encode(
+        "utf-8"
+    )
 
 
 def _require_sha256(value: object, error_code: str) -> str:
@@ -183,9 +183,7 @@ def _require_string_list(value: object, error_code: str) -> list[str]:
     return [item for item in value if isinstance(item, str)]
 
 
-def _validate_schema(
-    document: Mapping[str, object], schema_path: Path, error_prefix: str
-) -> None:
+def _validate_schema(document: Mapping[str, object], schema_path: Path, error_prefix: str) -> None:
     """Validate one document against one local Draft 2020-12 schema."""
     schema = _read_json_mapping(schema_path, f"{error_prefix}_SCHEMA")
     try:
@@ -338,9 +336,10 @@ def _validate_v3_preregistration(document: Mapping[str, object]) -> Mapping[str,
         _require_string_list(
             information_sets.get(key), "CONFIRMATION_V4_V3_INFORMATION_SET_INVALID"
         )
-    if _require_string_list(
-        information_sets.get("B2_addition"), "CONFIRMATION_V4_V3_B2_INVALID"
-    ) != _FROZEN_B2_FEATURES:
+    if (
+        _require_string_list(information_sets.get("B2_addition"), "CONFIRMATION_V4_V3_B2_INVALID")
+        != _FROZEN_B2_FEATURES
+    ):
         raise ValueError("CONFIRMATION_V4_V3_B2_FROZEN_CONTRACT_INVALID")
     return information_sets
 
@@ -526,9 +525,7 @@ def _build_preregistration(
             ),
             "file_sha256": _file_sha256(_V4_OUTPUT_SCHEMA, "CONFIRMATION_V4_OUTPUT_SCHEMA"),
         },
-        "builder_script_sha256": _file_sha256(
-            Path(__file__), "CONFIRMATION_V4_BUILDER_SCRIPT"
-        ),
+        "builder_script_sha256": _file_sha256(Path(__file__), "CONFIRMATION_V4_BUILDER_SCRIPT"),
         "source_commit": source_commit,
     }
     document["preregistration_sha256"] = _canonical_sha256(document)
@@ -601,9 +598,7 @@ def _build_readiness(
                 _READINESS_OUTPUT_SCHEMA, "CONFIRMATION_V4_READINESS_SCHEMA"
             ),
         },
-        "builder_script_sha256": _file_sha256(
-            Path(__file__), "CONFIRMATION_V4_BUILDER_SCRIPT"
-        ),
+        "builder_script_sha256": _file_sha256(Path(__file__), "CONFIRMATION_V4_BUILDER_SCRIPT"),
         "source_commit": source_commit,
     }
     document["readiness_sha256"] = _canonical_sha256(document)

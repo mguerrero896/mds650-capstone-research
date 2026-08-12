@@ -76,18 +76,18 @@ def test_b2v2_never_uses_current_or_future_session_history() -> None:
 
     changed = build_b2v2_from_activity(shocked, origins)
 
-    assert baseline.filter(pl.col("origin_id") != future_origin).select(
-        B2V2_FEATURES
-    ).equals(changed.filter(pl.col("origin_id") != future_origin).select(B2V2_FEATURES))
+    assert (
+        baseline.filter(pl.col("origin_id") != future_origin)
+        .select(B2V2_FEATURES)
+        .equals(changed.filter(pl.col("origin_id") != future_origin).select(B2V2_FEATURES))
+    )
 
 
 def test_b2v2_builder_rejects_target_columns() -> None:
     activity, origins = _frames()
 
     with pytest.raises(ValueError, match="B2V2_TARGET_COLUMN_FORBIDDEN"):
-        build_b2v2_from_activity(
-            activity.with_columns(pl.lit(1.0).alias("rv30")), origins
-        )
+        build_b2v2_from_activity(activity.with_columns(pl.lit(1.0).alias("rv30")), origins)
 
 
 def test_b2v2_requires_twenty_prior_sessions() -> None:
@@ -210,24 +210,16 @@ def test_b2_checkpoint_requires_cutoff_evidence(tmp_path) -> None:
 
     valid = tmp_path / "valid.parquet"
     activity.with_columns(
-        pl.lit(datetime(2025, 7, 7, 13, 59, tzinfo=UTC)).alias(
-            "b2v2_cutoff_utc"
-        ),
-        pl.lit(datetime(2025, 7, 7, 13, 58, 30, tzinfo=UTC)).alias(
-            "b2v2_max_created_at_utc"
-        ),
+        pl.lit(datetime(2025, 7, 7, 13, 59, tzinfo=UTC)).alias("b2v2_cutoff_utc"),
+        pl.lit(datetime(2025, 7, 7, 13, 58, 30, tzinfo=UTC)).alias("b2v2_max_created_at_utc"),
     ).write_parquet(valid)
 
     assert b2_activity_checkpoint_valid(valid, expected_rows=1)
 
     future = tmp_path / "future.parquet"
     activity.with_columns(
-        pl.lit(datetime(2025, 7, 7, 13, 59, tzinfo=UTC)).alias(
-            "b2v2_cutoff_utc"
-        ),
-        pl.lit(datetime(2025, 7, 7, 13, 59, 1, tzinfo=UTC)).alias(
-            "b2v2_max_created_at_utc"
-        ),
+        pl.lit(datetime(2025, 7, 7, 13, 59, tzinfo=UTC)).alias("b2v2_cutoff_utc"),
+        pl.lit(datetime(2025, 7, 7, 13, 59, 1, tzinfo=UTC)).alias("b2v2_max_created_at_utc"),
     ).write_parquet(future)
 
     assert not b2_activity_checkpoint_valid(future, expected_rows=1)

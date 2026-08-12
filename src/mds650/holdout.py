@@ -61,12 +61,8 @@ FROZEN_PHASE5_SOURCE_PATHS = (
 
 def _valid_self_hash(payload: Mapping[str, Any]) -> bool:
     manifest_hash = payload.get("manifest_sha256")
-    unsigned = {
-        key: value for key, value in payload.items() if key != "manifest_sha256"
-    }
-    return isinstance(manifest_hash, str) and manifest_hash == canonical_sha256(
-        unsigned
-    )
+    unsigned = {key: value for key, value in payload.items() if key != "manifest_sha256"}
+    return isinstance(manifest_hash, str) and manifest_hash == canonical_sha256(unsigned)
 
 
 def authorize_holdout_read(
@@ -108,20 +104,16 @@ def authorize_holdout_read(
     if not _valid_self_hash(method_freeze):
         raise PermissionError("METHOD_FREEZE_SELF_HASH_INVALID")
     if (
-        method_freeze.get("status")
-        != "FROZEN_AFTER_DEVELOPMENT_BEFORE_HOLDOUT"
+        method_freeze.get("status") != "FROZEN_AFTER_DEVELOPMENT_BEFORE_HOLDOUT"
         or method_freeze.get("holdout_reads") != 0
         or not method_freeze.get("holdout_hyperparameters")
     ):
         raise PermissionError("METHOD_FREEZE_INVALID")
-    if (
-        holdout.get("method_freeze_sha256")
-        != method_freeze.get("manifest_sha256")
-    ):
+    if holdout.get("method_freeze_sha256") != method_freeze.get("manifest_sha256"):
         raise PermissionError("METHOD_FREEZE_HASH_MISMATCH")
-    if holdout.get("preregistration_sha256") != method_freeze.get(
-        "input_hashes", {}
-    ).get("preregistration.json"):
+    if holdout.get("preregistration_sha256") != method_freeze.get("input_hashes", {}).get(
+        "preregistration.json"
+    ):
         raise PermissionError("PREREGISTRATION_HASH_MISMATCH")
     if holdout.get("status") != "ACQUIRED_NOT_READ":
         raise PermissionError("HOLDOUT_NOT_ACQUIRED")
@@ -130,19 +122,15 @@ def authorize_holdout_read(
     if holdout.get("holdout_sessions") != list(EXPECTED_HOLDOUT_SESSIONS):
         raise PermissionError("HOLDOUT_SESSION_SET_MISMATCH")
     session_statuses = holdout.get("session_statuses")
-    if not isinstance(session_statuses, list) or [
-        row.get("session_date") for row in session_statuses if isinstance(row, dict)
-    ] != list(EXPECTED_HOLDOUT_SESSIONS) or any(
-        not isinstance(row, dict) or row.get("status") != "PASS"
-        for row in session_statuses
+    if (
+        not isinstance(session_statuses, list)
+        or [row.get("session_date") for row in session_statuses if isinstance(row, dict)]
+        != list(EXPECTED_HOLDOUT_SESSIONS)
+        or any(not isinstance(row, dict) or row.get("status") != "PASS" for row in session_statuses)
     ):
         raise PermissionError("HOLDOUT_SESSION_EVIDENCE_INCOMPLETE")
     gates = holdout.get("release_gates")
-    if (
-        not isinstance(gates, dict)
-        or set(gates) != _RELEASE_GATES
-        or not all(gates.values())
-    ):
+    if not isinstance(gates, dict) or set(gates) != _RELEASE_GATES or not all(gates.values()):
         raise PermissionError("HOLDOUT_RELEASE_GATES_FAILED")
     panel_hash = holdout.get("panel_sha256")
     if not isinstance(panel_hash, str) or not _SHA256.fullmatch(panel_hash):
@@ -154,9 +142,7 @@ def authorize_holdout_read(
         {
             "status": "READ_ONCE",
             "holdout_reads": 1,
-            "authorized_at_utc": now_utc.astimezone(UTC)
-            .isoformat()
-            .replace("+00:00", "Z"),
+            "authorized_at_utc": now_utc.astimezone(UTC).isoformat().replace("+00:00", "Z"),
             "previous_manifest_sha256": previous_hash,
         }
     )

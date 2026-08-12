@@ -10,11 +10,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 
 ROOT = Path(__file__).parents[2]
 SCHEMA = (
-    ROOT
-    / "specs"
-    / "001-pit-options-rv30"
-    / "contracts"
-    / "provider-audit-manifest.schema.json"
+    ROOT / "specs" / "001-pit-options-rv30" / "contracts" / "provider-audit-manifest.schema.json"
 )
 MANIFESTS = [
     ROOT / "artifacts" / "api_audit" / "authenticated_v1j" / "provider_audit_manifest.json",

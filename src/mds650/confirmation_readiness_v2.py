@@ -18,9 +18,7 @@ import polars as pl
 
 from mds650.study_design import canonical_sha256
 
-_FORBIDDEN_EXACT = frozenset(
-    {"rv30", "qlike", "target", "prediction", "outcome", "loss", "metric"}
-)
+_FORBIDDEN_EXACT = frozenset({"rv30", "qlike", "target", "prediction", "outcome", "loss", "metric"})
 _FORBIDDEN_PREFIXES = (
     "rv30_",
     "target_",
@@ -289,8 +287,7 @@ def _validate_provider_timing_boundary(
         failures.append("HISTORICAL_SOURCE_AVAILABILITY_SEPARATION_INVALID")
     fmp_history = _mapping(historical_availability.get("fmp"))
     if (
-        fmp_history.get("historical_availability_status")
-        != "PASS_90_OF_90_SESSIONS"
+        fmp_history.get("historical_availability_status") != "PASS_90_OF_90_SESSIONS"
         or fmp_history.get("session_count") != 90
         or fmp_history.get("evidence_sha256")
         != "97c3b57707a953629ff57e485cde918e52ecdd1777a246e84072b5c4150771dc"
@@ -298,8 +295,7 @@ def _validate_provider_timing_boundary(
         failures.append("FMP_HISTORICAL_SOURCE_AVAILABILITY_BOUNDARY_INVALID")
     uw_history = _mapping(historical_availability.get("unusual_whales"))
     if (
-        uw_history.get("historical_availability_status")
-        != "PASS_90_OF_90_FILE_METADATA"
+        uw_history.get("historical_availability_status") != "PASS_90_OF_90_FILE_METADATA"
         or uw_history.get("session_count") != 90
         or uw_history.get("row_level_pit_claim") is not False
         or uw_history.get("evidence_sha256")
@@ -356,7 +352,6 @@ def _nested_string(payload: Mapping[str, Any], key: str, nested_key: str) -> str
 def _contains_outcome_like_columns(columns: list[str]) -> bool:
     """Return whether a target-like field escaped into a target-blind table."""
     return any(
-        column.casefold() in _FORBIDDEN_EXACT
-        or column.casefold().startswith(_FORBIDDEN_PREFIXES)
+        column.casefold() in _FORBIDDEN_EXACT or column.casefold().startswith(_FORBIDDEN_PREFIXES)
         for column in columns
     )

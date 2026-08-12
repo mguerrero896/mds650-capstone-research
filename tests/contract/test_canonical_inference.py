@@ -63,8 +63,6 @@ def test_contrasts_pair_only_shared_origin_and_day() -> None:
 def test_model_disagreement_cannot_become_global_edge() -> None:
     """Opposite registered model signs prevent a universal positive claim."""
 
-    result = validate_claim_eligibility(
-        {"gamma_b2": 0.01, "lightgbm_b2": -0.01, "mde_pass": True}
-    )
+    result = validate_claim_eligibility({"gamma_b2": 0.01, "lightgbm_b2": -0.01, "mde_pass": True})
 
     assert result == "MODEL_FAMILY_DEPENDENT"

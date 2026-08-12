@@ -31,9 +31,7 @@ from mds650.phase6 import (  # noqa: E402
 PANEL_MANIFEST = (
     ROOT / "artifacts" / "target_blind_v22" / "target_blind_common_predictor_manifest_v22.json"
 )
-OUTPUT = (
-    ROOT / "artifacts" / "target_blind_v22" / "next_confirmation_preregistration_v2.json"
-)
+OUTPUT = ROOT / "artifacts" / "target_blind_v22" / "next_confirmation_preregistration_v2.json"
 
 
 def canonical_sha256(value: Mapping[str, Any]) -> str:
@@ -87,9 +85,7 @@ def build_preregistration(panel_manifest: Mapping[str, Any]) -> dict[str, Any]:
         "bound_panel": {
             "panel_sha256": panel_manifest["output"]["panel_sha256"],
             "row_count": panel_manifest["output"]["row_count"],
-            "common_complete_row_count": panel_manifest["output"][
-                "common_complete_row_count"
-            ],
+            "common_complete_row_count": panel_manifest["output"]["common_complete_row_count"],
             "source_hashes": panel_manifest["source_hashes"],
             "builder_hashes": panel_manifest["builder_hashes"],
             "timing_rules": panel_manifest["timing_rules"],
@@ -172,9 +168,7 @@ def _write_json_atomic(path: Path, payload: Mapping[str, Any]) -> None:
     """Write deterministic JSON atomically to a local repository artefact."""
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(
-        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-    )
+    temporary.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     os.replace(temporary, path)
 
 

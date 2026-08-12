@@ -55,10 +55,7 @@ B2_AVAILABILITY_SIDECAR = Path(
     r"D:\MDS650\phase6\derived\provider_timing_v22\b2_row_availability_v22.parquet"
 )
 PIT_RECONCILIATION_GATE = (
-    ROOT
-    / "artifacts"
-    / "provider_timing_v21"
-    / "pit_reconciliation_gate_v21_20260812.json"
+    ROOT / "artifacts" / "provider_timing_v21" / "pit_reconciliation_gate_v21_20260812.json"
 )
 MASSIVE_RESELECTION = (
     ROOT

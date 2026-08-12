@@ -55,8 +55,7 @@ def test_continuity_rejects_duplicate_asset_date() -> None:
     rows = _passing_rows("2025-07-07")
 
     assert (
-        continuity_verdict([*rows, rows[0]], {"2025-07-07"})
-        == "REPLICATION_CONTINUITY_DUPLICATE"
+        continuity_verdict([*rows, rows[0]], {"2025-07-07"}) == "REPLICATION_CONTINUITY_DUPLICATE"
     )
 
 

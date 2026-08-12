@@ -54,18 +54,12 @@ def test_build_holdout_config_selects_exact_ten_sessions() -> None:
         projected_peak_additional_bytes=20 * GIB,
     )
 
-    assert tuple(day.isoformat() for day in config.sessions) == tuple(
-        manifest["holdout"]
-    )
+    assert tuple(day.isoformat() for day in config.sessions) == tuple(manifest["holdout"])
     assert config.excluded_dates == frozenset(
         date.fromisoformat(value) for value in manifest["development"]
     )
-    assert config.raw_root == Path(
-        "D:/MDS650/data/phase5_holdout/raw/full_tape"
-    )
-    assert config.event_root == Path(
-        "D:/MDS650/data/phase5_holdout/data/option_events"
-    )
+    assert config.raw_root == Path("D:/MDS650/data/phase5_holdout/raw/full_tape")
+    assert config.event_root == Path("D:/MDS650/data/phase5_holdout/data/option_events")
 
 
 def test_build_holdout_config_rejects_manifest_hash_mismatch() -> None:

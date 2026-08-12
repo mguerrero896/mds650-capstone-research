@@ -155,7 +155,10 @@ def _build_evidence_rows() -> list[dict[str, Any]]:
             "acquisition_incident",
             ARTIFACT / "acquisition_incidents" / "2025-04-04_crc_failure.json",
         ),
-        ("development_model_comparison", ROOT / "artifacts/methodology/development_model_comparison.json"),
+        (
+            "development_model_comparison",
+            ROOT / "artifacts/methodology/development_model_comparison.json",
+        ),
         ("development_contrasts", ROOT / "artifacts/methodology/development_contrasts_v2.json"),
         ("development_report", ROOT / "docs/model_and_mde_comparison_v2.md"),
         ("development_stability_report", ROOT / "docs/development_stability_audit_v2.md"),
@@ -223,14 +226,18 @@ def _development_table(results: dict[str, Any]) -> str:
         rows.append(
             [
                 model,
-                _format_number(b1["estimate"]) + f" [{_format_number(b1['ci_low'])}, {_format_number(b1['ci_high'])}]",
+                _format_number(b1["estimate"])
+                + f" [{_format_number(b1['ci_low'])}, {_format_number(b1['ci_high'])}]",
                 _format_p(b1.get("p_value_holm_within_model_family")),
-                _format_number(b2["estimate"]) + f" [{_format_number(b2['ci_low'])}, {_format_number(b2['ci_high'])}]",
+                _format_number(b2["estimate"])
+                + f" [{_format_number(b2['ci_low'])}, {_format_number(b2['ci_high'])}]",
                 _format_p(b2.get("p_value_holm_within_model_family")),
                 str(b2["result_sign"]),
             ]
         )
-    return _table(["Modelo", "Δ B1 (IC 95%)", "Holm p", "Δ B2 (IC 95%)", "Holm p", "Signo B2"], rows)
+    return _table(
+        ["Modelo", "Δ B1 (IC 95%)", "Holm p", "Δ B2 (IC 95%)", "Holm p", "Signo B2"], rows
+    )
 
 
 def _global_table(results: dict[str, Any]) -> str:
@@ -262,7 +269,11 @@ def _stability_table(results: dict[str, Any], dimension: str, role: str) -> str:
     """Render one stability dimension for the B2 contrast."""
     rows: list[list[str]] = []
     for row in results["evaluation"]["stability"]:
-        if row["dimension"] == dimension and row["model_role"] == role and row["contrast"] == "delta_b2v2":
+        if (
+            row["dimension"] == dimension
+            and row["model_role"] == role
+            and row["contrast"] == "delta_b2v2"
+        ):
             rows.append(
                 [
                     str(row["value"]),
@@ -330,10 +341,22 @@ def _calibration_table(results: dict[str, Any]) -> str:
                 _format_number(row["median_actual_to_forecast"]),
             ]
         )
-    return _table(["Rol", "Información", "RV30 media", "Pronóstico medio", "Sesgo medio", "Mediana real/pronóstico"], rows)
+    return _table(
+        [
+            "Rol",
+            "Información",
+            "RV30 media",
+            "Pronóstico medio",
+            "Sesgo medio",
+            "Mediana real/pronóstico",
+        ],
+        rows,
+    )
 
 
-def _render_report(results: dict[str, Any], acquisition: dict[str, Any], summary: dict[str, Any]) -> str:
+def _render_report(
+    results: dict[str, Any], acquisition: dict[str, Any], summary: dict[str, Any]
+) -> str:
     """Render the evidence-first human report from frozen JSON inputs."""
     target = summary["target_body_acquisition"]
     incident = acquisition.get("excluded_provider_sessions", [])

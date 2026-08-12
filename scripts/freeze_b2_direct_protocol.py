@@ -127,9 +127,7 @@ def main() -> None:
         encoding="utf-8",
     )
     print(
-        json.dumps(
-            {"status": manifest["status"], "manifest_sha256": manifest["manifest_sha256"]}
-        )
+        json.dumps({"status": manifest["status"], "manifest_sha256": manifest["manifest_sha256"]})
     )
 
 

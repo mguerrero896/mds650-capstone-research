@@ -112,9 +112,7 @@ def build_phase5_storage_config(
         If the manifest hash/counts are invalid or the reusable set is not the
         exact 25-session subset of development.
     """
-    unsigned = {
-        key: value for key, value in session_manifest.items() if key != "manifest_sha256"
-    }
+    unsigned = {key: value for key, value in session_manifest.items() if key != "manifest_sha256"}
     if session_manifest.get("manifest_sha256") != canonical_sha256(unsigned):
         raise ValueError("SESSION_MANIFEST_HASH_MISMATCH")
     development = tuple(date.fromisoformat(value) for value in session_manifest["development"])
@@ -163,9 +161,7 @@ def build_phase5_holdout_storage_config(
         If the manifest hash, partition sizes, order, uniqueness, or
         disjointness is invalid.
     """
-    unsigned = {
-        key: value for key, value in session_manifest.items() if key != "manifest_sha256"
-    }
+    unsigned = {key: value for key, value in session_manifest.items() if key != "manifest_sha256"}
     if session_manifest.get("manifest_sha256") != canonical_sha256(unsigned):
         raise ValueError("SESSION_MANIFEST_HASH_MISMATCH")
     development = tuple(date.fromisoformat(value) for value in session_manifest["development"])

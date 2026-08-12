@@ -58,14 +58,7 @@ def _raw_sources() -> list[dict[str, Any]]:
         records.append(
             {
                 "session_date": day,
-                "source": (
-                    ROOT
-                    / "artifacts"
-                    / "raw"
-                    / "full_tape"
-                    / day
-                    / f"full_tape_{day}.zip"
-                ),
+                "source": (ROOT / "artifacts" / "raw" / "full_tape" / day / f"full_tape_{day}.zip"),
                 "sha256": str(row["raw_sha256"]),
                 "bytes": int(row["raw_bytes"]),
                 "source_manifest": pilot_path,

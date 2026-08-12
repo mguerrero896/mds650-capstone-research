@@ -126,8 +126,7 @@ def test_pilot_builds_all_assets_origins_targets_and_trace() -> None:
     assert len(result.frozen_assets.assets) == 6
     assert set(result.covered_assets) == set(ASSETS)
     assert all(
-        result.event_no_event_counts[asset][0] >= 1
-        and result.event_no_event_counts[asset][1] >= 1
+        result.event_no_event_counts[asset][0] >= 1 and result.event_no_event_counts[asset][1] >= 1
         for asset in ASSETS
     )
     assert len(result.targets) > 0

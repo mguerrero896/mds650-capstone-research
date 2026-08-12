@@ -17,8 +17,7 @@ from scripts.generate_date_level_pit_preflight_plan_v1 import (
 ROOT = Path(__file__).resolve().parents[2]
 ARTIFACT_PATH = ROOT / "artifacts/preflight/date_level_pit_preflight_plan_v1.json"
 SCHEMA_PATH = (
-    ROOT
-    / "specs/001-pit-options-rv30/contracts/date-level-pit-preflight-plan-v1.schema.json"
+    ROOT / "specs/001-pit-options-rv30/contracts/date-level-pit-preflight-plan-v1.schema.json"
 )
 MATERIAL_PATHS = (
     ROOT / "scripts/generate_date_level_pit_preflight_plan_v1.py",

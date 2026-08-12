@@ -132,9 +132,7 @@ def test_phase6_evaluation_guard_rejects_noncommon_or_duplicate_rows() -> None:
     with pytest.raises(ValueError, match="PHASE6_EVALUATION_PANEL_INVALID"):
         validate_phase6_evaluation_panel(frame, preregistration)
 
-    duplicate = pl.concat(
-        [frame.with_columns(pl.lit(True).alias("common_complete"))] * 2
-    )
+    duplicate = pl.concat([frame.with_columns(pl.lit(True).alias("common_complete"))] * 2)
     with pytest.raises(ValueError, match="PHASE6_EVALUATION_PANEL_INVALID"):
         validate_phase6_evaluation_panel(duplicate, preregistration)
 
@@ -168,9 +166,7 @@ def test_phase6_gamma_selection_and_forecast_are_positive() -> None:
                 "volatility_regime": "normal",
                 "rv30": 0.001 + index / 1_000_000,
                 **{
-                    name: "AAPL"
-                    if name == "b0v2_asset_identity"
-                    else 0.1 + index / 100.0
+                    name: "AAPL" if name == "b0v2_asset_identity" else 0.1 + index / 100.0
                     for name in features
                 },
             }
@@ -256,9 +252,7 @@ def test_phase6_contrast_is_paired_by_origin_and_day() -> None:
 
 
 def test_volatility_regime_cutpoints_use_training_only() -> None:
-    training = pl.DataFrame(
-        {"b0v2_underlying_rv_30m": [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]}
-    )
+    training = pl.DataFrame({"b0v2_underlying_rv_30m": [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]})
     testing = pl.DataFrame(
         {
             "origin_id": ["low", "mid", "high"],
@@ -334,9 +328,7 @@ def test_phase6_sensitivity_replaces_only_registered_columns() -> None:
         }
     )
 
-    replaced = replace_phase6_features(
-        primary, sensitivity, columns=("b0v2_log_spot",)
-    )
+    replaced = replace_phase6_features(primary, sensitivity, columns=("b0v2_log_spot",))
 
     assert replaced["b0v2_log_spot"].to_list() == [4.4]
     assert replaced["rv30"].to_list() == [0.001]

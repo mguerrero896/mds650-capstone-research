@@ -15,8 +15,7 @@ def main() -> None:
     """Validate the frozen date partition and build restartable B1Q evidence."""
     storage = acquisition.load_phase5_development_config(
         session_manifest_path=ROOT / "artifacts/phase5/study_sessions_90.json",
-        reused_manifest_path=ROOT
-        / "artifacts/phase5/reused_25_session_manifest.json",
+        reused_manifest_path=ROOT / "artifacts/phase5/reused_25_session_manifest.json",
         output_root=DATA_ROOT,
         projected_peak_additional_bytes=150 * 1024**3,
     )
@@ -26,8 +25,7 @@ def main() -> None:
             output_root=DATA_ROOT / "data/b1q/phase5_missing_55",
             cache_root=DATA_ROOT / "cache/massive",
             sessions=tuple(day.isoformat() for day in storage.sessions),
-            origins_path=DATA_ROOT
-            / "data/fmp/phase5_missing_55/b2_calibration_origins.parquet",
+            origins_path=DATA_ROOT / "data/fmp/phase5_missing_55/b2_calibration_origins.parquet",
         )
     )
 

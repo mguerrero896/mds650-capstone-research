@@ -36,6 +36,5 @@ def test_freeze_assets_fails_when_fewer_than_four_pass_quality_gate() -> None:
 def test_freeze_assets_rejects_duplicate_or_incomplete_candidates() -> None:
     with pytest.raises(QualityGateError, match="ASSET_QUALITY_GATE_FAILED"):
         freeze_assets(
-            [_quality("SPY"), _quality("SPY")]
-            + [_quality(a) for a in ("QQQ", "AAPL", "MSFT")]
+            [_quality("SPY"), _quality("SPY")] + [_quality(a) for a in ("QQQ", "AAPL", "MSFT")]
         )

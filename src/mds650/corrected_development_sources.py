@@ -20,9 +20,7 @@ import polars as pl
 from mds650.study_design import canonical_sha256
 from mds650.target_blind_panel_v22 import KEY_COLUMNS
 
-B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED = (
-    "B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED"
-)
+B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED = "B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED"
 B1Q_SOURCE_ROW_MISSING = "B1Q_SOURCE_ROW_MISSING"
 _ALLOWED_DIVIDEND_ASSUMPTIONS = frozenset(
     {"NO_PRE_ORIGIN_DIVIDEND_Q_ZERO", "PRE_ORIGIN_TRAILING_DECLARATIONS"}
@@ -171,11 +169,7 @@ def build_exact_development_origins(
         while origin <= last_origin:
             session_minute = int((origin - session_open).total_seconds() // 60)
             segment = (
-                "first"
-                if session_minute < 130
-                else "middle"
-                if session_minute < 260
-                else "last"
+                "first" if session_minute < 130 else "middle" if session_minute < 260 else "last"
             )
             for asset in normalized_assets:
                 rows.append(
@@ -255,21 +249,17 @@ def prepare_b1q_source(
             "_retained_cache_date": pl.Boolean,
         },
     )
-    joined = (
-        origins.join(retained, on=["asset", "session_date"], how="left", validate="m:1")
-        .join(
-            source_rows.with_columns(pl.lit(True).alias("_source_row_present")),
-            on=list(KEY_COLUMNS),
-            how="left",
-            validate="1:1",
-        )
+    joined = origins.join(retained, on=["asset", "session_date"], how="left", validate="m:1").join(
+        source_rows.with_columns(pl.lit(True).alias("_source_row_present")),
+        on=list(KEY_COLUMNS),
+        how="left",
+        validate="1:1",
     )
     provenance_verified = (
         pl.col("_source_row_present").fill_null(False)
         & pl.col("rate_source_date").is_not_null()
         & (
-            pl.col("rate_source_date").cast(pl.String)
-            < pl.col("session_date").cast(pl.String)
+            pl.col("rate_source_date").cast(pl.String) < pl.col("session_date").cast(pl.String)
         ).fill_null(False)
         & pl.col("dividend_assumption").is_in(_ALLOWED_DIVIDEND_ASSUMPTIONS).fill_null(False)
         & _evidence_available_by_origin("rate_source_available_at_utc")
@@ -338,9 +328,7 @@ def _with_exogenous_evidence_columns(source: pl.DataFrame) -> pl.DataFrame:
     additions: list[pl.Expr] = []
     if "rate_source_available_at_utc" not in source.columns:
         additions.append(
-            pl.lit(None, dtype=pl.Datetime(time_zone="UTC")).alias(
-                "rate_source_available_at_utc"
-            )
+            pl.lit(None, dtype=pl.Datetime(time_zone="UTC")).alias("rate_source_available_at_utc")
         )
     if "rate_source_payload_sha256" not in source.columns:
         additions.append(pl.lit(None, dtype=pl.String).alias("rate_source_payload_sha256"))
@@ -351,9 +339,7 @@ def _with_exogenous_evidence_columns(source: pl.DataFrame) -> pl.DataFrame:
             )
         )
     if "dividend_source_payload_sha256" not in source.columns:
-        additions.append(
-            pl.lit(None, dtype=pl.String).alias("dividend_source_payload_sha256")
-        )
+        additions.append(pl.lit(None, dtype=pl.String).alias("dividend_source_payload_sha256"))
     return source.with_columns(*additions) if additions else source
 
 
@@ -367,10 +353,7 @@ def _evidence_available_by_origin(column: str) -> pl.Expr:
 def _payload_hash_is_valid(column: str) -> pl.Expr:
     """Return whether one local raw-payload identity is a SHA-256 digest."""
     return (
-        pl.col(column)
-        .cast(pl.String, strict=False)
-        .str.contains(_SHA256_PATTERN)
-        .fill_null(False)
+        pl.col(column).cast(pl.String, strict=False).str.contains(_SHA256_PATTERN).fill_null(False)
     )
 
 
@@ -429,8 +412,8 @@ def build_source_coverage_ledger(
     _assert_unique_keys("b1q_source", b1q_source)
     validated_hashes = _validated_source_hashes(source_hashes)
 
-    expected_asset_dates = origins.select("asset", "session_date").unique().sort(
-        ["session_date", "asset"]
+    expected_asset_dates = (
+        origins.select("asset", "session_date").unique().sort(["session_date", "asset"])
     )
     b0 = _asset_date_coverage(expected_asset_dates, b0_asset_dates, "B0")
     b2 = _asset_date_coverage(expected_asset_dates, b2_asset_dates, "B2")
@@ -581,12 +564,7 @@ def _draft202012_validator() -> _Draft202012ValidatorFactory:
 
 def _assert_unique_keys(name: str, frame: pl.DataFrame) -> None:
     """Reject duplicate B1Q identity keys before any left join can hide them."""
-    duplicates = (
-        frame.group_by(list(KEY_COLUMNS))
-        .len()
-        .filter(pl.col("len") > 1)
-        .height
-    )
+    duplicates = frame.group_by(list(KEY_COLUMNS)).len().filter(pl.col("len") > 1).height
     if duplicates:
         raise ValueError(f"CORRECTED_DEVELOPMENT_{name.upper()}_KEY_DUPLICATE")
 

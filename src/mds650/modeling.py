@@ -17,9 +17,7 @@ from sklearn.preprocessing import (  # type: ignore[import-untyped]
     StandardScaler,
 )
 
-MODEL_ROLES = frozenset(
-    {"gamma_glm_confirmatory", "lightgbm_robustness"}
-)
+MODEL_ROLES = frozenset({"gamma_glm_confirmatory", "lightgbm_robustness"})
 
 
 @dataclass(frozen=True)
@@ -51,17 +49,13 @@ class FittedPositiveModel:
         """
         missing = set(self.feature_columns) - set(frame.columns)
         if missing:
-            raise ValueError(
-                f"MODEL_FEATURES_MISSING:{','.join(sorted(missing))}"
-            )
+            raise ValueError(f"MODEL_FEATURES_MISSING:{','.join(sorted(missing))}")
         predictors = frame.select(self.feature_columns).to_pandas()
         predictions = np.asarray(
             self.estimator.predict(predictors),
             dtype=np.float64,
         )
-        if predictions.shape != (frame.height,) or not np.isfinite(
-            predictions
-        ).all():
+        if predictions.shape != (frame.height,) or not np.isfinite(predictions).all():
             raise ValueError("NONFINITE_MODEL_PREDICTION")
         return np.maximum(predictions, self.forecast_floor)
 
@@ -74,9 +68,7 @@ def _model_for_role(
     if role == "gamma_glm_confirmatory":
         allowed = {"alpha", "max_iter", "tol"}
         if unexpected := set(parameters) - allowed:
-            raise ValueError(
-                f"UNKNOWN_GAMMA_PARAMETERS:{','.join(sorted(unexpected))}"
-            )
+            raise ValueError(f"UNKNOWN_GAMMA_PARAMETERS:{','.join(sorted(unexpected))}")
         return GammaRegressor(**dict(parameters))
     if role == "lightgbm_robustness":
         allowed = {
@@ -88,9 +80,7 @@ def _model_for_role(
             "reg_lambda",
         }
         if unexpected := set(parameters) - allowed:
-            raise ValueError(
-                f"UNKNOWN_LIGHTGBM_PARAMETERS:{','.join(sorted(unexpected))}"
-            )
+            raise ValueError(f"UNKNOWN_LIGHTGBM_PARAMETERS:{','.join(sorted(unexpected))}")
         model_parameters: dict[str, Any] = dict(parameters)
         return LGBMRegressor(
             objective="gamma",

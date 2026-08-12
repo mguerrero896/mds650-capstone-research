@@ -161,9 +161,7 @@ def build_target_blind_b0_v22(
         .select(
             *KEY_COLUMNS,
             *B0V2_FEATURES,
-            pl.col("max_predictor_available_at_utc").alias(
-                "b0v2_max_predictor_available_at_utc"
-            ),
+            pl.col("max_predictor_available_at_utc").alias("b0v2_max_predictor_available_at_utc"),
             "b0v2_predictor_missing_reason",
         )
         .sort("origin_id")
@@ -243,9 +241,11 @@ def adapt_b1q_source_to_v22(
         max_sip = _optional_int(row["b1q_max_sip_timestamp_ns"])
         if max_sip is not None and max_sip > origin_ns:
             raise ValueError("TARGET_BLIND_V22_B1_FUTURE_QUOTE")
-        source_pit_valid = bool(row["b1q_pit_evidence_valid"]) and bool(
-            row["b1q_quote_not_after_origin"]
-        ) and max_sip is not None
+        source_pit_valid = (
+            bool(row["b1q_pit_evidence_valid"])
+            and bool(row["b1q_quote_not_after_origin"])
+            and max_sip is not None
+        )
         atm = _positive_float_or_none(row["b1q_atm_iv"])
         skew = _finite_float_or_none(row["b1q_skew"])
         term = _term_values(row["b1q_term_structure"])
@@ -258,23 +258,17 @@ def adapt_b1q_source_to_v22(
             "atm": atm if bool(row["b1a_complete"]) and source_pit_valid else None,
             "skew": (
                 skew
-                if bool(row["b1b_complete"])
-                and bool(row["b1a_complete"])
-                and source_pit_valid
+                if bool(row["b1b_complete"]) and bool(row["b1a_complete"]) and source_pit_valid
                 else None
             ),
             "term_short_to_medium": (
                 term["short_to_medium"]
-                if bool(row["b1c_complete"])
-                and bool(row["b1b_complete"])
-                and source_pit_valid
+                if bool(row["b1c_complete"]) and bool(row["b1b_complete"]) and source_pit_valid
                 else None
             ),
             "term_medium_to_long": (
                 term["medium_to_long"]
-                if bool(row["b1c_complete"])
-                and bool(row["b1b_complete"])
-                and source_pit_valid
+                if bool(row["b1c_complete"]) and bool(row["b1b_complete"]) and source_pit_valid
                 else None
             ),
         }
@@ -408,10 +402,9 @@ def apply_b2_availability_mask_v22(
         pl.col("eligible_for_corrected_pit_panel").alias("b2v2_availability_eligible"),
     )
     joined = b2.join(selected, on="origin_id", how="left", validate="1:1")
-    valid_source = (
-        pl.col("b2v2_complete").fill_null(False)
-        & pl.col("b2v2_availability_eligible").fill_null(False)
-    )
+    valid_source = pl.col("b2v2_complete").fill_null(False) & pl.col(
+        "b2v2_availability_eligible"
+    ).fill_null(False)
     mask_expressions = [
         pl.when(valid_source)
         .then(pl.col(feature).cast(pl.Float64))
@@ -466,9 +459,7 @@ def build_target_blind_common_predictor_panel_v22(
         If source keys differ, a PIT timestamp is after its origin, a nested B1
         invariant fails, or an outcome-like column is observed.
     """
-    _assert_target_blind_columns(
-        {"origins": origins, "b0": b0, "b1": b1, "b2": b2}
-    )
+    _assert_target_blind_columns({"origins": origins, "b0": b0, "b1": b1, "b2": b2})
     _require_columns("origins", origins, KEY_COLUMNS)
     _require_columns(
         "b0",
@@ -593,31 +584,34 @@ def build_target_blind_common_predictor_panel_v22(
             | (pl.col("b2v2_max_created_at_utc") <= pl.col("b2v2_cutoff_utc")),
         ]
     ).fill_null(False)
-    panel = panel.with_columns(
-        b0_complete.alias("b0v2_predictor_complete"),
-        b1a_complete.alias("b1v2a_predictor_complete"),
-        b1b_complete.alias("b1v2b_predictor_complete"),
-        b1c_complete.alias("b1v2c_predictor_complete"),
-        b2_complete.alias("b2v2_predictor_complete"),
-    ).with_columns(
-        pl.col("b2v2_predictor_complete").alias("common_predictor_complete")
-    ).with_columns(
-        pl.when(~pl.col("b0v2_predictor_complete"))
-        .then(pl.lit("B0V2_PREDICTOR_MISSING_OR_PIT_FAILURE"))
-        .when(~pl.col("b1v2a_predictor_complete"))
-        .then(pl.lit("B1V2A_PREDICTOR_MISSING_OR_PIT_FAILURE"))
-        .when(~pl.col("b2v2_predictor_complete"))
-        .then(
-            pl.coalesce(
-                [
-                    pl.col("b2v2_predictor_missing_reason"),
-                    pl.lit("B2V2_PREDICTOR_MISSING_OR_PIT_FAILURE"),
-                ]
-            )
+    panel = (
+        panel.with_columns(
+            b0_complete.alias("b0v2_predictor_complete"),
+            b1a_complete.alias("b1v2a_predictor_complete"),
+            b1b_complete.alias("b1v2b_predictor_complete"),
+            b1c_complete.alias("b1v2c_predictor_complete"),
+            b2_complete.alias("b2v2_predictor_complete"),
         )
-        .otherwise(pl.lit("NONE"))
-        .alias("predictor_exclusion_reason")
-    ).sort("origin_id")
+        .with_columns(pl.col("b2v2_predictor_complete").alias("common_predictor_complete"))
+        .with_columns(
+            pl.when(~pl.col("b0v2_predictor_complete"))
+            .then(pl.lit("B0V2_PREDICTOR_MISSING_OR_PIT_FAILURE"))
+            .when(~pl.col("b1v2a_predictor_complete"))
+            .then(pl.lit("B1V2A_PREDICTOR_MISSING_OR_PIT_FAILURE"))
+            .when(~pl.col("b2v2_predictor_complete"))
+            .then(
+                pl.coalesce(
+                    [
+                        pl.col("b2v2_predictor_missing_reason"),
+                        pl.lit("B2V2_PREDICTOR_MISSING_OR_PIT_FAILURE"),
+                    ]
+                )
+            )
+            .otherwise(pl.lit("NONE"))
+            .alias("predictor_exclusion_reason")
+        )
+        .sort("origin_id")
+    )
     _assert_target_blind_columns({"common_panel": panel})
     return panel, panel.filter(pl.col("common_predictor_complete"))
 
@@ -668,9 +662,7 @@ def summarize_target_blind_common_predictor_panel_v22(panel: pl.DataFrame) -> di
         "b2v2_predictor_complete",
         "common_predictor_complete",
     )
-    counts = {
-        column: int(panel.filter(pl.col(column)).height) for column in complete_columns
-    }
+    counts = {column: int(panel.filter(pl.col(column)).height) for column in complete_columns}
     return {
         "schema_version": "target-blind-common-predictor-panel-v2.2",
         "status": "PASS_TARGET_BLIND_INPUTS_RECONCILIATION_REMAINS_BLOCKED",
@@ -681,9 +673,7 @@ def summarize_target_blind_common_predictor_panel_v22(panel: pl.DataFrame) -> di
         "asset_count": int(panel["asset"].n_unique()),
         "session_count": int(panel["session_date"].n_unique()),
         "completion_counts": counts,
-        "completion_rates": {
-            column: counts[column] / count for column in complete_columns
-        },
+        "completion_rates": {column: counts[column] / count for column in complete_columns},
         "exclusion_reason_counts": {
             str(row["predictor_exclusion_reason"]): int(row["len"])
             for row in panel.group_by("predictor_exclusion_reason")
@@ -719,8 +709,7 @@ def _assert_target_blind_columns(frames: Mapping[str, pl.DataFrame]) -> None:
         for column in frame.columns:
             normalised = column.lower()
             forbidden_forecast = (
-                normalised.startswith("forecast_")
-                and normalised not in _SAFE_FORECAST_COLUMNS
+                normalised.startswith("forecast_") and normalised not in _SAFE_FORECAST_COLUMNS
             )
             if (
                 normalised in _FORBIDDEN_EXACT

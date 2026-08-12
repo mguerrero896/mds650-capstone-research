@@ -24,8 +24,7 @@ def require_evidence_root(*required_relative_paths: str) -> Path:
         pytest.skip("MDS650_EVIDENCE_ROOT_REQUIRED_FOR_EVIDENCE_TEST")
     root = Path(configured).expanduser().resolve()
     if not root.is_dir() or any(
-        not (root / relative_path).is_file()
-        for relative_path in required_relative_paths
+        not (root / relative_path).is_file() for relative_path in required_relative_paths
     ):
         pytest.fail("MDS650_EVIDENCE_ROOT_INCOMPLETE")
     return root

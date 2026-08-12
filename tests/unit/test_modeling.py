@@ -75,9 +75,7 @@ def test_preprocessor_is_fit_on_training_rows_only() -> None:
         parameters={"alpha": 0.01, "max_iter": 2_000, "tol": 1e-8},
         seed=650,
     )
-    scaler = fitted.estimator.named_steps["preprocess"].named_transformers_[
-        "numeric"
-    ]
+    scaler = fitted.estimator.named_steps["preprocess"].named_transformers_["numeric"]
 
     assert scaler.mean_[0] == pytest.approx(training["x1"].mean())
     assert scaler.mean_[0] != pytest.approx(10_000.0)

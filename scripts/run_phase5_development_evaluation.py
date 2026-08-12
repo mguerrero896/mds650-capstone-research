@@ -520,9 +520,7 @@ def _validate_stability_inputs(
         or validation.get("manifest_sha256") != canonical_sha256(validation_unsigned)
         or validation.get("holdout_reads") != 0
         or validation.get("provider_requests") != 0
-        or validation.get("hashes", {}).get(
-            "development_stability_inputs_80d.parquet"
-        )
+        or validation.get("hashes", {}).get("development_stability_inputs_80d.parquet")
         != _sha256_file(STABILITY_INPUT_PATH)
         or any(
             row.get("maximum_absolute_feature_difference") != 0.0
@@ -746,9 +744,7 @@ def main() -> None:
             "development_stability_input_manifest.json": _sha256_file(
                 STABILITY_INPUT_MANIFEST_PATH
             ),
-            "development_stability_validation.json": _sha256_file(
-                STABILITY_VALIDATION_PATH
-            ),
+            "development_stability_validation.json": _sha256_file(STABILITY_VALIDATION_PATH),
             "development_panel_quality.json": _sha256_file(QUALITY_PATH),
             "development_source_manifest_80d.json": _sha256_file(SOURCE_MANIFEST_PATH),
             "preregistration.json": _sha256_file(PREREGISTRATION_PATH),

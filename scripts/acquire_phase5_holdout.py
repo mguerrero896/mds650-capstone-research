@@ -106,9 +106,7 @@ def _sha256_file(path: Path) -> str:
 
 def _self_hash_valid(payload: Mapping[str, Any]) -> bool:
     expected = payload.get("manifest_sha256")
-    unsigned = {
-        key: value for key, value in payload.items() if key != "manifest_sha256"
-    }
+    unsigned = {key: value for key, value in payload.items() if key != "manifest_sha256"}
     return isinstance(expected, str) and expected == canonical_sha256(unsigned)
 
 
@@ -132,22 +130,18 @@ def validate_acquisition_authority(
         raise PermissionError("HOLDOUT_PERIOD_INCOMPLETE")
     if not _self_hash_valid(session_manifest):
         raise PermissionError("SESSION_MANIFEST_SELF_HASH_INVALID")
-    if list(session_manifest.get("holdout", ())) != list(
-        EXPECTED_HOLDOUT_SESSIONS
-    ):
+    if list(session_manifest.get("holdout", ())) != list(EXPECTED_HOLDOUT_SESSIONS):
         raise PermissionError("HOLDOUT_SESSION_SET_MISMATCH")
     if (
         session_manifest.get("development_count") != 80
         or session_manifest.get("holdout_count") != 10
-        or set(session_manifest.get("development", ()))
-        & set(session_manifest.get("holdout", ()))
+        or set(session_manifest.get("development", ())) & set(session_manifest.get("holdout", ()))
     ):
         raise PermissionError("STUDY_SESSION_PARTITION_INVALID")
     if not _self_hash_valid(method_freeze):
         raise PermissionError("METHOD_FREEZE_SELF_HASH_INVALID")
     if (
-        method_freeze.get("status")
-        != "FROZEN_AFTER_DEVELOPMENT_BEFORE_HOLDOUT"
+        method_freeze.get("status") != "FROZEN_AFTER_DEVELOPMENT_BEFORE_HOLDOUT"
         or method_freeze.get("holdout_reads") != 0
         or not method_freeze.get("holdout_hyperparameters")
     ):
@@ -172,10 +166,8 @@ def build_holdout_access_ledger(
         acquired_at_utc,
     )
     statuses = [dict(row) for row in session_statuses]
-    if (
-        [row.get("session_date") for row in statuses]
-        != list(EXPECTED_HOLDOUT_SESSIONS)
-        or any(row.get("status") != "PASS" for row in statuses)
+    if [row.get("session_date") for row in statuses] != list(EXPECTED_HOLDOUT_SESSIONS) or any(
+        row.get("status") != "PASS" for row in statuses
     ):
         raise ValueError("HOLDOUT_SESSION_EVIDENCE_INCOMPLETE")
     expected_gates = {
@@ -195,9 +187,7 @@ def build_holdout_access_ledger(
         )
     ):
         raise ValueError("HOLDOUT_EVIDENCE_HASH_INVALID")
-    preregistration_sha256 = method_freeze.get("input_hashes", {}).get(
-        "preregistration.json"
-    )
+    preregistration_sha256 = method_freeze.get("input_hashes", {}).get("preregistration.json")
     if not _valid_sha256(preregistration_sha256):
         raise ValueError("PREREGISTRATION_HASH_INVALID")
     ledger: dict[str, Any] = {
@@ -214,9 +204,7 @@ def build_holdout_access_ledger(
         "release_gates": dict(release_gates),
         "holdout_reads": 0,
         "authorized_at_utc": None,
-        "acquired_at_utc": acquired_at_utc.astimezone(UTC)
-        .isoformat()
-        .replace("+00:00", "Z"),
+        "acquired_at_utc": acquired_at_utc.astimezone(UTC).isoformat().replace("+00:00", "Z"),
     }
     ledger["manifest_sha256"] = canonical_sha256(ledger)
     return ledger
@@ -296,9 +284,7 @@ def _build_panel(
     b1_builder.main(b1_config)
     b1_source = pl.read_parquet(config.b1_root / "b1_origin_matrix_20d.parquet")
     batch = _read_json(storage.manifest_root / "batch_manifest.json")
-    source_hashes = {
-        str(row["session_date"]): str(row["sha256"]) for row in batch["sessions"]
-    }
+    source_hashes = {str(row["session_date"]): str(row["sha256"]) for row in batch["sessions"]}
     all_rows, common = panel_builder._new_components(
         origins_source,
         bars,
@@ -312,16 +298,13 @@ def _build_panel(
     if (
         all_rows.height != 5_680
         or all_rows["origin_id"].n_unique() != all_rows.height
-        or sorted(all_rows["session_date"].unique().to_list())
-        != list(EXPECTED_HOLDOUT_SESSIONS)
+        or sorted(all_rows["session_date"].unique().to_list()) != list(EXPECTED_HOLDOUT_SESSIONS)
     ):
         raise ValueError("HOLDOUT_NOMINAL_PANEL_SHAPE_INVALID")
     selected = holdout_runner._validate_panel(
         common,
         selected_assets=method_freeze["selected_assets"],
-        b2_delay_seconds=int(
-            method_freeze["timing"]["b2_primary_delay_seconds"]
-        ),
+        b2_delay_seconds=int(method_freeze["timing"]["b2_primary_delay_seconds"]),
     )
     config.panel_path.parent.mkdir(parents=True, exist_ok=True)
     common.write_parquet(config.panel_path, compression="zstd")
@@ -347,9 +330,7 @@ def _run_full_test_suite(report_path: Path) -> bool:
         capture_output=True,
         text=True,
     )
-    sanitized = (completed.stdout + completed.stderr).replace(
-        str(ROOT), "MDS650_REPOSITORY"
-    )
+    sanitized = (completed.stdout + completed.stderr).replace(str(ROOT), "MDS650_REPOSITORY")
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(sanitized, encoding="utf-8")
     return completed.returncode == 0
@@ -397,22 +378,14 @@ def acquire(
         fmp_manifest,
         b1_summary,
     )
-    selected = common.filter(
-        pl.col("asset").is_in(method_freeze["selected_assets"])
-    )
+    selected = common.filter(pl.col("asset").is_in(method_freeze["selected_assets"]))
     leakage_pass = not (
         selected.filter(
             (pl.col("b0_available_at_utc") > pl.col("forecast_origin_utc"))
-            | (
-                pl.col("b1q_max_sip_timestamp_ns")
-                > pl.col("forecast_origin_utc").dt.epoch("ns")
-            )
+            | (pl.col("b1q_max_sip_timestamp_ns") > pl.col("forecast_origin_utc").dt.epoch("ns"))
             | (
                 pl.col("b2_max_operational_time").is_not_null()
-                & (
-                    pl.col("b2_max_operational_time")
-                    > pl.col("b2_window_end")
-                )
+                & (pl.col("b2_max_operational_time") > pl.col("b2_window_end"))
             )
         ).height
     )
@@ -438,12 +411,8 @@ def acquire(
         "panel_sha256": _sha256_file(config.panel_path),
         "stability_panel_sha256": _sha256_file(config.stability_path),
         "event_source_file_count": len(event_sources),
-        "fmp_manifest_sha256": _sha256_file(
-            config.fmp_root / "fmp_20d_manifest.json"
-        ),
-        "b1_summary_sha256": _sha256_file(
-            config.b1_root / "b1_coverage_20d.json"
-        ),
+        "fmp_manifest_sha256": _sha256_file(config.fmp_root / "fmp_20d_manifest.json"),
+        "b1_summary_sha256": _sha256_file(config.b1_root / "b1_coverage_20d.json"),
         "test_report_sha256": _sha256_file(config.test_report),
         "method_freeze_sha256": method_freeze["manifest_sha256"],
         "release_gates": gates,
@@ -452,18 +421,14 @@ def acquire(
         "secret_values_emitted": False,
         "personal_paths_emitted": False,
     }
-    acquisition_manifest["manifest_sha256"] = canonical_sha256(
-        acquisition_manifest
-    )
+    acquisition_manifest["manifest_sha256"] = canonical_sha256(acquisition_manifest)
     _write_json(config.acquisition_manifest, acquisition_manifest)
     ledger = build_holdout_access_ledger(
         session_manifest=sessions,
         method_freeze=method_freeze,
         session_statuses=session_statuses,
         panel_sha256=acquisition_manifest["panel_sha256"],
-        stability_panel_sha256=acquisition_manifest[
-            "stability_panel_sha256"
-        ],
+        stability_panel_sha256=acquisition_manifest["stability_panel_sha256"],
         acquisition_manifest_sha256=acquisition_manifest["manifest_sha256"],
         release_gates=gates,
         acquired_at_utc=execution_time,
@@ -491,9 +456,7 @@ def main() -> None:
     result = acquire(
         HoldoutAcquisitionConfig(
             data_root=arguments.data_root,
-            projected_peak_additional_bytes=(
-                arguments.projected_peak_additional_gib * 1024**3
-            ),
+            projected_peak_additional_bytes=(arguments.projected_peak_additional_gib * 1024**3),
         )
     )
     print(

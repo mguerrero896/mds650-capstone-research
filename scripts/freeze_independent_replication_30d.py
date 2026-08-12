@@ -73,9 +73,9 @@ def main() -> None:
         "personal_paths_emitted": False,
     }
     payload["manifest_sha256"] = hashlib.sha256(
-        json.dumps(
-            payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")
-        ).encode("utf-8")
+        json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode(
+            "utf-8"
+        )
     ).hexdigest()
     OUT.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n",

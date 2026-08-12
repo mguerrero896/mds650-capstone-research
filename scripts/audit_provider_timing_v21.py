@@ -37,9 +37,7 @@ def _session_dates(event_root: Path) -> tuple[str, ...]:
         ISO-like date directory identifiers.
     """
     values = [
-        path.name.removeprefix("date=")
-        for path in event_root.glob("date=*")
-        if path.is_dir()
+        path.name.removeprefix("date=") for path in event_root.glob("date=*") if path.is_dir()
     ]
     return tuple(sorted(value for value in values if len(value) == 10))
 

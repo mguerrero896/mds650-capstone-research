@@ -79,8 +79,7 @@ def test_training_mde_from_frozen_forecasts_is_bitwise_deterministic() -> None:
     forecasts = _training_forecast_fixture()
 
     estimates = {
-        repr(training_mde_from_forecasts(forecasts, draws=10_000, seed=650))
-        for _ in range(20)
+        repr(training_mde_from_forecasts(forecasts, draws=10_000, seed=650)) for _ in range(20)
     }
 
     assert len(estimates) == 1
@@ -98,9 +97,7 @@ def test_training_oof_forecasts_never_read_registered_oos_dates() -> None:
     rows = []
     features = phase6_information_sets()["B2v2"]
     for index, day in enumerate(training_dates):
-        origin = datetime.fromisoformat(day).replace(tzinfo=UTC) + timedelta(
-            hours=14, minutes=35
-        )
+        origin = datetime.fromisoformat(day).replace(tzinfo=UTC) + timedelta(hours=14, minutes=35)
         rows.append(
             {
                 "origin_id": f"AAPL:{origin.isoformat()}",
@@ -110,28 +107,20 @@ def test_training_oof_forecasts_never_read_registered_oos_dates() -> None:
                 "session_tercile": "first",
                 "rv30": 0.001 + index / 1_000_000,
                 **{
-                    name: "AAPL"
-                    if name == "b0v2_asset_identity"
-                    else 0.1 + index / 100.0
+                    name: "AAPL" if name == "b0v2_asset_identity" else 0.1 + index / 100.0
                     for name in features
                 },
             }
         )
 
-    forecasts, ledger = training_only_oof_forecasts(
-        pl.DataFrame(rows), preregistration
-    )
+    forecasts, ledger = training_only_oof_forecasts(pl.DataFrame(rows), preregistration)
 
     assert forecasts["origin_id"].n_unique() == 30
     assert forecasts.height == 90
     assert set(forecasts["information_set"]) == {"B0v2", "B1v2a", "B2v2"}
-    assert set(forecasts["session_date"]).isdisjoint(
-        preregistration["folds"][0]["test_dates"]
-    )
+    assert set(forecasts["session_date"]).isdisjoint(preregistration["folds"][0]["test_dates"])
     assert len(ledger) == 36
-    mde = training_mde_from_forecasts(
-        forecasts, draws=1_000, seed=650
-    )
+    mde = training_mde_from_forecasts(forecasts, draws=1_000, seed=650)
     assert set(mde) == {"delta_b1v2", "delta_b2v2"}
     assert all(value > 0 for value in mde.values())
 

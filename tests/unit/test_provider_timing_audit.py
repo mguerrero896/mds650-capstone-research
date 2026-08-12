@@ -87,20 +87,23 @@ def test_offline_audit_cli_writes_all_required_sanitized_artifacts(tmp_path: Pat
     )
     output = tmp_path / "output"
 
-    assert audit_script.main(
-        [
-            "--phase6-event-root",
-            str(phase6),
-            "--independent-event-root",
-            str(independent),
-            "--output-dir",
-            str(output),
-            "--sample-size",
-            "20",
-            "--batch-size",
-            "2",
-        ]
-    ) == 0
+    assert (
+        audit_script.main(
+            [
+                "--phase6-event-root",
+                str(phase6),
+                "--independent-event-root",
+                str(independent),
+                "--output-dir",
+                str(output),
+                "--sample-size",
+                "20",
+                "--batch-size",
+                "2",
+            ]
+        )
+        == 0
+    )
 
     manifest = json.loads(
         (output / "provider_timing_semantics_audit_v1.json").read_text(encoding="utf-8")

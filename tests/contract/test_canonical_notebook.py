@@ -19,9 +19,7 @@ def test_notebook_is_small_offline_and_references_canonical_evidence() -> None:
     assert isinstance(cells, list)
     assert 7 <= len(cells) <= 12
     code = "\n".join(
-        "".join(cell.get("source", []))
-        for cell in cells
-        if cell.get("cell_type") == "code"
+        "".join(cell.get("source", [])) for cell in cells if cell.get("cell_type") == "code"
     )
     assert "artifacts/canonical_validation_v1" in code
     assert "load_validated_contrasts" in code

@@ -206,9 +206,7 @@ def test_source_bound_readiness_v2_binds_v23_inputs_without_authorising_oos(
     tmp_path: Path,
 ) -> None:
     """Source-bound valid inputs support method-freeze preparation, never OOS access."""
-    result = build_source_bound_confirmation_readiness_v2(
-        _write_source_bound_fixture(tmp_path)
-    )
+    result = build_source_bound_confirmation_readiness_v2(_write_source_bound_fixture(tmp_path))
 
     assert result["status"] == "PASS_SOURCE_BOUND_METHOD_FREEZE_PREPARATION"
     assert result["bound_artifact_integrity"]["status"] == "PASS"
@@ -237,9 +235,7 @@ def test_source_bound_readiness_v2_rejects_historical_source_claim_that_override
     audit["manifest_sha256"] = canonical_sha256(
         {key: value for key, value in audit.items() if key != "manifest_sha256"}
     )
-    config.provider_docs_audit_path.write_text(
-        json.dumps(audit, sort_keys=True), encoding="utf-8"
-    )
+    config.provider_docs_audit_path.write_text(json.dumps(audit, sort_keys=True), encoding="utf-8")
 
     result = build_source_bound_confirmation_readiness_v2(
         replace(config, provider_docs_audit=audit)
@@ -247,9 +243,10 @@ def test_source_bound_readiness_v2_rejects_historical_source_claim_that_override
 
     assert result["status"] == "FAIL_SOURCE_BOUND_READINESS"
     assert result["provider_timing_boundary"]["status"] == "FAIL"
-    assert "FMP_HISTORICAL_SOURCE_AVAILABILITY_BOUNDARY_INVALID" in result[
-        "provider_timing_boundary"
-    ]["failure_codes"]
+    assert (
+        "FMP_HISTORICAL_SOURCE_AVAILABILITY_BOUNDARY_INVALID"
+        in result["provider_timing_boundary"]["failure_codes"]
+    )
 
 
 def test_source_bound_readiness_v2_rejects_tampered_manifest_and_preregistration(
@@ -262,9 +259,7 @@ def test_source_bound_readiness_v2_rejects_tampered_manifest_and_preregistration
     manifest["schema_version"] = "target-blind-common-predictor-manifest-v0"
     manifest["SAFE_TO_OPEN_OR_EVALUATE_OOS"] = "YES"
     manifest["model_fit_performed"] = True
-    config.panel_manifest_path.write_text(
-        json.dumps(manifest, sort_keys=True), encoding="utf-8"
-    )
+    config.panel_manifest_path.write_text(json.dumps(manifest, sort_keys=True), encoding="utf-8")
     bound_panel = preregistration["bound_panel"]
     assert isinstance(bound_panel, dict)
     bound_panel["panel_manifest_sha256"] = "0" * 64
@@ -298,9 +293,10 @@ def test_source_bound_readiness_v2_rejects_target_column_in_predictor_panel(
 
     assert result["status"] == "FAIL_SOURCE_BOUND_READINESS"
     assert result["common_subset_validation"]["status"] == "FAIL"
-    assert "TARGET_BLIND_OUTCOME_LIKE_COLUMN_PRESENT" in result["common_subset_validation"][
-        "failure_codes"
-    ]
+    assert (
+        "TARGET_BLIND_OUTCOME_LIKE_COLUMN_PRESENT"
+        in result["common_subset_validation"]["failure_codes"]
+    )
 
 
 def test_source_bound_readiness_v2_fails_closed_for_unreadable_predictor_panel(
@@ -331,6 +327,7 @@ def test_source_bound_readiness_v2_rejects_missing_b2_availability_sidecar(
     result = build_source_bound_confirmation_readiness_v2(config)
 
     assert result["status"] == "FAIL_SOURCE_BOUND_READINESS"
-    assert "B2_AVAILABILITY_SIDECAR_HASH_MISMATCH" in result["bound_artifact_integrity"][
-        "failure_codes"
-    ]
+    assert (
+        "B2_AVAILABILITY_SIDECAR_HASH_MISMATCH"
+        in result["bound_artifact_integrity"]["failure_codes"]
+    )

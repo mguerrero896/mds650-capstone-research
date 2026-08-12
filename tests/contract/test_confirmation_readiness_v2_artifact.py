@@ -11,17 +11,10 @@ from mds650.study_design import canonical_sha256
 
 ROOT = Path(__file__).resolve().parents[2]
 SCHEMA_PATH = (
-    ROOT
-    / "specs"
-    / "001-pit-options-rv30"
-    / "contracts"
-    / "confirmation-readiness-v2.schema.json"
+    ROOT / "specs" / "001-pit-options-rv30" / "contracts" / "confirmation-readiness-v2.schema.json"
 )
 ARTIFACT_PATH = (
-    ROOT
-    / "artifacts"
-    / "target_blind_v23_sourcebound_20260812"
-    / "confirmation_readiness_v2.json"
+    ROOT / "artifacts" / "target_blind_v23_sourcebound_20260812" / "confirmation_readiness_v2.json"
 )
 
 

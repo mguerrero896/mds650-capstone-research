@@ -51,21 +51,18 @@ def test_authenticated_manifest_covers_eight_assets_and_separates_pit_state() ->
     uw_assets = {
         record["asset"]
         for record in records
-        if record["provider"] == "unusual_whales"
-        and record["component"] == "unusual_option_events"
+        if record["provider"] == "unusual_whales" and record["component"] == "unusual_option_events"
     }
     assert fmp_assets == ASSETS
     assert uw_assets == ASSETS
     event_records = [
         record
         for record in records
-        if record["provider"] == "unusual_whales"
-        and record["component"] == "unusual_option_events"
+        if record["provider"] == "unusual_whales" and record["component"] == "unusual_option_events"
     ]
     assert any(record["event_iv_fields_present"] for record in event_records)
     assert all(
-        record["ordinary_option_state_pit_verified"] != "verified"
-        for record in event_records
+        record["ordinary_option_state_pit_verified"] != "verified" for record in event_records
     )
 
 
@@ -111,8 +108,7 @@ def test_v1j_records_ordinary_state_coverage_without_upgrading_pit() -> None:
     ordinary = [
         record
         for record in records
-        if record["provider"] == "unusual_whales"
-        and record["component"] == "ordinary_option_state"
+        if record["provider"] == "unusual_whales" and record["component"] == "ordinary_option_state"
     ]
     term_structure = [
         record
@@ -164,9 +160,7 @@ def test_v1r_massive_probe_records_pagination_schema_and_empty_window() -> None:
     quotes = [record for record in massive if record["component"] == "contract_quotes"]
     assert len(quotes) == 3
     assert quotes[0]["pagination"]["status"] == "pass"
-    assert {"bid_price", "ask_price", "bid_size", "ask_size"}.issubset(
-        quotes[0]["schema_fields"]
-    )
+    assert {"bid_price", "ask_price", "bid_size", "ask_size"}.issubset(quotes[0]["schema_fields"])
     assert any(record["rows"] == 0 for record in quotes)
     validation = load_and_validate_audit_manifest(LATEST_MANIFEST)
     assert validation.authorized_for_backfill is False

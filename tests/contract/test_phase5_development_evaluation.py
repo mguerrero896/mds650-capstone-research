@@ -201,9 +201,7 @@ def test_method_freeze_hashes_exact_development_evidence() -> None:
     assert freeze["output_hashes"]["development_results.json"] == _sha256(
         phase5 / "development_results.json"
     )
-    assert freeze["output_hashes"]["variant_ledger.json"] == _sha256(
-        phase5 / "variant_ledger.json"
-    )
+    assert freeze["output_hashes"]["variant_ledger.json"] == _sha256(phase5 / "variant_ledger.json")
     assert freeze["manifest_sha256"] == canonical_sha256(
         {key: value for key, value in freeze.items() if key != "manifest_sha256"}
     )

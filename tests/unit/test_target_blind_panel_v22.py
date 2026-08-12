@@ -26,9 +26,7 @@ def _origin_rows() -> pl.DataFrame:
             "origin_id": [f"AAPL-{index}" for index in range(1, 6)],
             "asset": ["AAPL"] * 5,
             "session_date": ["2026-01-05"] * 5,
-            "forecast_origin_utc": [
-                start + timedelta(minutes=minute) for minute in minutes
-            ],
+            "forecast_origin_utc": [start + timedelta(minutes=minute) for minute in minutes],
         }
     )
 
@@ -49,9 +47,7 @@ def _b0_rows(origins: pl.DataFrame) -> pl.DataFrame:
             pl.lit(0.5).alias("b0v2_session_sine"),
             pl.lit(0.5).alias("b0v2_session_cosine"),
             pl.lit("AAPL").alias("b0v2_asset_identity"),
-            pl.col("forecast_origin_utc").alias(
-                "b0v2_max_predictor_available_at_utc"
-            ),
+            pl.col("forecast_origin_utc").alias("b0v2_max_predictor_available_at_utc"),
             pl.lit(None, dtype=pl.String).alias("b0v2_predictor_missing_reason"),
         ]
     )
@@ -66,9 +62,7 @@ def _b1_source(origins: pl.DataFrame) -> pl.DataFrame:
             pl.lit(True).alias("b1c_complete"),
             pl.lit(True).alias("b1q_pit_evidence_valid"),
             pl.lit(True).alias("b1q_quote_not_after_origin"),
-            pl.col("forecast_origin_utc").dt.epoch("ns").alias(
-                "b1q_max_sip_timestamp_ns"
-            ),
+            pl.col("forecast_origin_utc").dt.epoch("ns").alias("b1q_max_sip_timestamp_ns"),
             pl.Series(
                 "b1q_atm_iv",
                 [0.20 + (index * 0.01) for index in range(origins.height)],
@@ -101,16 +95,12 @@ def _b2_rows(origins: pl.DataFrame) -> pl.DataFrame:
             pl.lit(0.1).alias("b2v2_z_log_mean_trade_premium"),
             pl.lit(0.1).alias("b2v2_z_log_max_trade_premium"),
             pl.lit(0.1).alias("b2v2_deviation_call_put_premium_imbalance"),
-            pl.lit(0.1).alias(
-                "b2v2_deviation_execution_side_premium_imbalance"
-            ),
+            pl.lit(0.1).alias("b2v2_deviation_execution_side_premium_imbalance"),
             pl.lit(0.1).alias("b2v2_z_repeated_contract_premium_share"),
             pl.lit(0.1).alias("b2v2_z_strike_concentration"),
             pl.lit(0.1).alias("b2v2_z_expiry_concentration"),
             pl.lit(True).alias("b2v2_complete"),
-            (pl.col("forecast_origin_utc") - pl.duration(seconds=60)).alias(
-                "b2v2_cutoff_utc"
-            ),
+            (pl.col("forecast_origin_utc") - pl.duration(seconds=60)).alias("b2v2_cutoff_utc"),
             (pl.col("forecast_origin_utc") - pl.duration(seconds=90)).alias(
                 "b2v2_max_created_at_utc"
             ),
@@ -166,8 +156,7 @@ def test_target_blind_b0_strips_internal_target_placeholder() -> None:
     assert "rv30" not in result.columns
     assert not any(column.startswith("target_") for column in result.columns)
     assert (
-        result["b0v2_max_predictor_available_at_utc"].item()
-        <= result["forecast_origin_utc"].item()
+        result["b0v2_max_predictor_available_at_utc"].item() <= result["forecast_origin_utc"].item()
     )
 
 
@@ -175,9 +164,7 @@ def test_target_blind_panel_is_complete_without_target_or_metric_columns() -> No
     """A fully valid target-free fixture yields complete nested predictor sets."""
     origins = _origin_rows()
     b1 = adapt_b1q_source_to_v22(origins, _b1_source(origins))
-    b2 = apply_b2_availability_mask_v22(
-        _b2_rows(origins), _availability_rows(origins)
-    )
+    b2 = apply_b2_availability_mask_v22(_b2_rows(origins), _availability_rows(origins))
 
     panel, eligible = build_target_blind_common_predictor_panel_v22(
         origins, _b0_rows(origins), b1, b2
@@ -219,10 +206,7 @@ def test_b2_delay_exclusion_clears_features_and_blocks_common_completion() -> No
     excluded = panel.filter(pl.col("origin_id") == "AAPL-5")
     assert excluded["b2v2_predictor_complete"].item() is False
     assert excluded["b2v2_z_log_trade_count"].item() is None
-    assert (
-        excluded["predictor_exclusion_reason"].item()
-        == "B2V2_DELAYED_OR_UNAVAILABLE_ACTIVITY"
-    )
+    assert excluded["predictor_exclusion_reason"].item() == "B2V2_DELAYED_OR_UNAVAILABLE_ACTIVITY"
     assert eligible["origin_id"].to_list() == ["AAPL-4"]
 
 
@@ -235,9 +219,7 @@ def test_target_blind_panel_rejects_outcome_column() -> None:
     )
 
     with pytest.raises(ValueError, match="TARGET_BLIND_V22_FORBIDDEN_COLUMN"):
-        build_target_blind_common_predictor_panel_v22(
-            origins, _b0_rows(_origin_rows()), b1, b2
-        )
+        build_target_blind_common_predictor_panel_v22(origins, _b0_rows(_origin_rows()), b1, b2)
 
 
 def test_b1_adapter_preserves_nested_completion_invariant() -> None:
@@ -252,27 +234,17 @@ def test_b1_adapter_preserves_nested_completion_invariant() -> None:
 
     adapted = adapt_b1q_source_to_v22(origins, source)
 
-    assert adapted.filter(
-        pl.col("b1v2b_complete") & ~pl.col("b1v2a_complete")
-    ).height == 0
-    assert adapted.filter(
-        pl.col("b1v2c_complete") & ~pl.col("b1v2b_complete")
-    ).height == 0
+    assert adapted.filter(pl.col("b1v2b_complete") & ~pl.col("b1v2a_complete")).height == 0
+    assert adapted.filter(pl.col("b1v2c_complete") & ~pl.col("b1v2b_complete")).height == 0
 
 
 def test_target_blind_panel_is_deterministic() -> None:
     """Identical target-free inputs yield byte-stable logical rows."""
     origins = _origin_rows()
     b1 = adapt_b1q_source_to_v22(origins, _b1_source(origins))
-    b2 = apply_b2_availability_mask_v22(
-        _b2_rows(origins), _availability_rows(origins)
-    )
-    first, _ = build_target_blind_common_predictor_panel_v22(
-        origins, _b0_rows(origins), b1, b2
-    )
-    second, _ = build_target_blind_common_predictor_panel_v22(
-        origins, _b0_rows(origins), b1, b2
-    )
+    b2 = apply_b2_availability_mask_v22(_b2_rows(origins), _availability_rows(origins))
+    first, _ = build_target_blind_common_predictor_panel_v22(origins, _b0_rows(origins), b1, b2)
+    second, _ = build_target_blind_common_predictor_panel_v22(origins, _b0_rows(origins), b1, b2)
 
     assert first.equals(second)
 
@@ -281,12 +253,8 @@ def test_summary_is_non_evaluative_and_reports_availability_state() -> None:
     """The summary reports predictor availability rather than a market result."""
     origins = _origin_rows()
     b1 = adapt_b1q_source_to_v22(origins, _b1_source(origins))
-    b2 = apply_b2_availability_mask_v22(
-        _b2_rows(origins), _availability_rows(origins)
-    )
-    panel, _ = build_target_blind_common_predictor_panel_v22(
-        origins, _b0_rows(origins), b1, b2
-    )
+    b2 = apply_b2_availability_mask_v22(_b2_rows(origins), _availability_rows(origins))
+    panel, _ = build_target_blind_common_predictor_panel_v22(origins, _b0_rows(origins), b1, b2)
 
     summary = summarize_target_blind_common_predictor_panel_v22(panel)
 
@@ -300,9 +268,7 @@ def test_adapter_rejects_future_massive_quote() -> None:
     """A Massive SIP timestamp after its origin cannot enter B1."""
     origins = _origin_rows()
     source = _b1_source(origins).with_columns(
-        (pl.col("forecast_origin_utc").dt.epoch("ns") + 1).alias(
-            "b1q_max_sip_timestamp_ns"
-        )
+        (pl.col("forecast_origin_utc").dt.epoch("ns") + 1).alias("b1q_max_sip_timestamp_ns")
     )
 
     with pytest.raises(ValueError, match="TARGET_BLIND_V22_B1_FUTURE_QUOTE"):
@@ -351,9 +317,7 @@ def test_b2_mask_rejects_absent_primary_variant() -> None:
             lambda b0, b1, b2: (
                 b0,
                 b1,
-                b2.with_columns(
-                    pl.col("forecast_origin_utc").alias("b2v2_max_created_at_utc")
-                ),
+                b2.with_columns(pl.col("forecast_origin_utc").alias("b2v2_max_created_at_utc")),
             ),
             "TARGET_BLIND_V22_B2_AFTER_CUTOFF",
         ),
@@ -367,16 +331,12 @@ def test_common_panel_fails_closed_on_pit_timestamp_violations(
     origins = _origin_rows()
     b0 = _b0_rows(origins)
     b1 = adapt_b1q_source_to_v22(origins, _b1_source(origins))
-    b2 = apply_b2_availability_mask_v22(
-        _b2_rows(origins), _availability_rows(origins)
-    )
+    b2 = apply_b2_availability_mask_v22(_b2_rows(origins), _availability_rows(origins))
     assert callable(mutation)
     mutated_b0, mutated_b1, mutated_b2 = mutation(b0, b1, b2)
 
     with pytest.raises(ValueError, match=message):
-        build_target_blind_common_predictor_panel_v22(
-            origins, mutated_b0, mutated_b1, mutated_b2
-        )
+        build_target_blind_common_predictor_panel_v22(origins, mutated_b0, mutated_b1, mutated_b2)
 
 
 @pytest.mark.parametrize(
@@ -403,14 +363,10 @@ def test_common_panel_rejects_non_nested_b1_flags(
             pl.lit(False).alias("b1v2b_complete"),
             pl.lit(True).alias("b1v2c_complete"),
         )
-    b2 = apply_b2_availability_mask_v22(
-        _b2_rows(origins), _availability_rows(origins)
-    )
+    b2 = apply_b2_availability_mask_v22(_b2_rows(origins), _availability_rows(origins))
 
     with pytest.raises(ValueError, match=message):
-        build_target_blind_common_predictor_panel_v22(
-            origins, _b0_rows(origins), b1, b2
-        )
+        build_target_blind_common_predictor_panel_v22(origins, _b0_rows(origins), b1, b2)
 
 
 def test_common_panel_drops_unallowlisted_b2_metadata() -> None:
@@ -421,9 +377,7 @@ def test_common_panel_drops_unallowlisted_b2_metadata() -> None:
         _b2_rows(origins), _availability_rows(origins)
     ).with_columns(pl.lit("legacy-sidecar-field").alias("legacy_b2_metadata"))
 
-    panel, _ = build_target_blind_common_predictor_panel_v22(
-        origins, _b0_rows(origins), b1, b2
-    )
+    panel, _ = build_target_blind_common_predictor_panel_v22(origins, _b0_rows(origins), b1, b2)
 
     assert "legacy_b2_metadata" not in panel.columns
 
@@ -437,9 +391,7 @@ def test_target_blind_panel_rejects_loss_like_column() -> None:
     )
 
     with pytest.raises(ValueError, match="TARGET_BLIND_V22_FORBIDDEN_COLUMN"):
-        build_target_blind_common_predictor_panel_v22(
-            origins, _b0_rows(_origin_rows()), b1, b2
-        )
+        build_target_blind_common_predictor_panel_v22(origins, _b0_rows(_origin_rows()), b1, b2)
 
 
 def test_common_panel_rejects_excluded_b2_row_with_feature_value() -> None:
@@ -464,6 +416,4 @@ def test_common_panel_rejects_excluded_b2_row_with_feature_value() -> None:
     )
 
     with pytest.raises(ValueError, match="TARGET_BLIND_V22_B2_EXCLUDED_FEATURE_VALUE"):
-        build_target_blind_common_predictor_panel_v22(
-            origins, _b0_rows(origins), b1, b2
-        )
+        build_target_blind_common_predictor_panel_v22(origins, _b0_rows(origins), b1, b2)

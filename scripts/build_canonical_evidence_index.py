@@ -144,9 +144,7 @@ def build_evidence_records(
     return records
 
 
-def _write_csv_if_equal(
-    path: Path, records: Sequence[dict[str, str | int | bool]]
-) -> str:
+def _write_csv_if_equal(path: Path, records: Sequence[dict[str, str | int | bool]]) -> str:
     """Persist a deterministic CSV index without overwriting different evidence."""
 
     import io
@@ -189,9 +187,7 @@ def main() -> None:
     """Create the portable evidence index and print its sanitized status."""
 
     args = _parse_args()
-    records = build_evidence_records(
-        repository_root=args.repository_root, data_root=args.data_root
-    )
+    records = build_evidence_records(repository_root=args.repository_root, data_root=args.data_root)
     digest = _write_csv_if_equal(args.output, records)
     print(
         json.dumps(

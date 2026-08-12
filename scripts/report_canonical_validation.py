@@ -113,8 +113,10 @@ def _positive_float_mapping(payload: object, error_code: str) -> dict[str, float
         raise RuntimeError(error_code)
     output: dict[str, float] = {}
     for key, value in payload.items():
-        if isinstance(value, bool) or not isinstance(key, str) or not isinstance(
-            value, (int, float)
+        if (
+            isinstance(value, bool)
+            or not isinstance(key, str)
+            or not isinstance(value, (int, float))
         ):
             raise RuntimeError(error_code)
         parsed = float(value)
@@ -154,12 +156,7 @@ def load_frozen_mde(evidence_root: Path) -> tuple[dict[str, float], str]:
 def _verify_independent_mde(evidence_root: Path, mde: Mapping[str, float]) -> str:
     """Require the independent result ledger to retain the same frozen thresholds."""
 
-    path = (
-        evidence_root
-        / "artifacts"
-        / "independent_replication"
-        / "independent_results.json"
-    )
+    path = evidence_root / "artifacts" / "independent_replication" / "independent_results.json"
     payload = _read_json(path)
     comparison = payload.get("mde_comparison")
     if not isinstance(comparison, Mapping):
@@ -296,9 +293,7 @@ def report_canonical_validation(
     if not evidence_root.is_dir() or not data_root.is_dir():
         raise RuntimeError("CANONICAL_REPORT_INPUT_UNAVAILABLE")
     prediction_frames = [
-        load_hash_verified_predictions(
-            data_root=data_root, output_root=output_root, block=block
-        )
+        load_hash_verified_predictions(data_root=data_root, output_root=output_root, block=block)
         for block in _BLOCKS
     ]
     predictions = pl.concat(prediction_frames).sort(
@@ -314,9 +309,11 @@ def report_canonical_validation(
     )
     contrast_integrity = results.get("contrast_integrity")
     stability_rows = results.get("stability")
-    if not isinstance(contrast_integrity, Mapping) or not isinstance(
-        stability_rows, list
-    ) or not all(isinstance(row, Mapping) for row in stability_rows):
+    if (
+        not isinstance(contrast_integrity, Mapping)
+        or not isinstance(stability_rows, list)
+        or not all(isinstance(row, Mapping) for row in stability_rows)
+    ):
         raise RuntimeError("CANONICAL_REPORT_RESULT_INVALID")
     redundancy: list[dict[str, object]] = []
     panel_hashes: dict[str, str] = {}

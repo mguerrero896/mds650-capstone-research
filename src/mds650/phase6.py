@@ -123,10 +123,7 @@ def build_phase6_common_panel(
     for name, frame in frames.items():
         missing = set(required[name]) - set(frame.columns)
         if missing:
-            raise ValueError(
-                f"PHASE6_REQUIRED_COLUMNS_MISSING:{name}:"
-                f"{','.join(sorted(missing))}"
-            )
+            raise ValueError(f"PHASE6_REQUIRED_COLUMNS_MISSING:{name}:{','.join(sorted(missing))}")
         if frame["origin_id"].null_count() or frame["origin_id"].n_unique() != frame.height:
             raise ValueError(f"PHASE6_DUPLICATE_ORIGIN:{name}")
         keys = frame.select(key_columns).sort("origin_id")
@@ -135,30 +132,24 @@ def build_phase6_common_panel(
         elif not keys.equals(canonical_keys):
             raise ValueError(f"PHASE6_ORIGIN_KEY_MISMATCH:{name}")
 
-    if b0.filter(
-        pl.col("max_predictor_available_at_utc")
-        > pl.col("forecast_origin_utc")
-    ).height:
+    if b0.filter(pl.col("max_predictor_available_at_utc") > pl.col("forecast_origin_utc")).height:
         raise ValueError("PHASE6_B0_AFTER_ORIGIN")
     if b1.filter(
         pl.col("max_sip_timestamp_ns").is_not_null()
         & (pl.col("max_sip_timestamp_ns") > pl.col("forecast_origin_ns"))
     ).height:
         raise ValueError("PHASE6_B1_AFTER_ORIGIN")
-    if b2.filter(
-        pl.col("b2v2_cutoff_utc") > pl.col("forecast_origin_utc")
-    ).height:
+    if b2.filter(pl.col("b2v2_cutoff_utc") > pl.col("forecast_origin_utc")).height:
         raise ValueError("PHASE6_B2_CUTOFF_AFTER_ORIGIN")
     if b2.filter(
         pl.col("b2v2_max_created_at_utc").is_not_null()
         & (pl.col("b2v2_max_created_at_utc") > pl.col("b2v2_cutoff_utc"))
     ).height:
         raise ValueError("PHASE6_B2_AFTER_CUTOFF")
-    if b1.filter(
-        pl.col("b1v2c_complete") & ~pl.col("b1v2b_complete")
-    ).height or b1.filter(
-        pl.col("b1v2b_complete") & ~pl.col("b1v2a_complete")
-    ).height:
+    if (
+        b1.filter(pl.col("b1v2c_complete") & ~pl.col("b1v2b_complete")).height
+        or b1.filter(pl.col("b1v2b_complete") & ~pl.col("b1v2a_complete")).height
+    ):
         raise ValueError("PHASE6_B1_NESTED_INVARIANT_FAILURE")
 
     panel = origins
@@ -168,9 +159,7 @@ def build_phase6_common_panel(
             for column in frame.columns
             if column == "origin_id" or column not in panel.columns
         ]
-        panel = panel.join(
-            frame.select(additions), on="origin_id", how="left", validate="1:1"
-        )
+        panel = panel.join(frame.select(additions), on="origin_id", how="left", validate="1:1")
     numeric_b0 = [name for name in B0V2_FEATURES if name != "b0v2_asset_identity"]
     target_complete = (
         (pl.col("target_price_count") == 31)
@@ -202,10 +191,7 @@ def build_phase6_common_panel(
             pl.col("b2v2_cutoff_utc").is_not_null(),
             pl.col("b2v2_cutoff_utc") <= pl.col("forecast_origin_utc"),
             pl.col("b2v2_max_created_at_utc").is_null()
-            | (
-                pl.col("b2v2_max_created_at_utc")
-                <= pl.col("b2v2_cutoff_utc")
-            ),
+            | (pl.col("b2v2_max_created_at_utc") <= pl.col("b2v2_cutoff_utc")),
         ]
     )
     panel = panel.with_columns(
@@ -238,9 +224,7 @@ def b2_activity_checkpoint_valid(path: Path, *, expected_rows: int) -> bool:
             "b2v2_max_created_at_utc",
         } <= set(scan.collect_schema().names()):
             return False
-        frame = scan.select(
-            "origin_id", "b2v2_cutoff_utc", "b2v2_max_created_at_utc"
-        ).collect()
+        frame = scan.select("origin_id", "b2v2_cutoff_utc", "b2v2_max_created_at_utc").collect()
     except (OSError, pl.exceptions.PolarsError):
         return False
     return bool(
@@ -249,12 +233,10 @@ def b2_activity_checkpoint_valid(path: Path, *, expected_rows: int) -> bool:
         and frame["b2v2_cutoff_utc"].null_count() == 0
         and frame.filter(
             pl.col("b2v2_max_created_at_utc").is_not_null()
-            & (
-                pl.col("b2v2_max_created_at_utc")
-                > pl.col("b2v2_cutoff_utc")
-            )
+            & (pl.col("b2v2_max_created_at_utc") > pl.col("b2v2_cutoff_utc"))
         ).is_empty()
     )
+
 
 _PROVENANCE_KEYS = {
     "branch",
@@ -357,8 +339,7 @@ def aggregate_b2_activity(
     if delay_seconds not in {60, 120, 300}:
         raise ValueError("B2V2_DELAY_NOT_REGISTERED")
     if any(
-        column.lower() in {"rv30", "qlike", "target"}
-        or column.lower().startswith("rv30_")
+        column.lower() in {"rv30", "qlike", "target"} or column.lower().startswith("rv30_")
         for column in trades.columns
     ):
         raise ValueError("B2V2_TARGET_COLUMN_FORBIDDEN")
@@ -383,17 +364,14 @@ def aggregate_b2_activity(
         "session_date",
         "forecast_origin_utc",
     ).with_columns(
-        (
-            pl.col("forecast_origin_utc")
-            - pl.duration(seconds=delay_seconds)
-        ).alias("b2v2_cutoff_utc")
+        (pl.col("forecast_origin_utc") - pl.duration(seconds=delay_seconds)).alias(
+            "b2v2_cutoff_utc"
+        )
     )
     eligible = (
         trades.with_columns(
             (
-                (pl.col("executed_at") + pl.duration(seconds=delay_seconds)).dt.truncate(
-                    "5m"
-                )
+                (pl.col("executed_at") + pl.duration(seconds=delay_seconds)).dt.truncate("5m")
                 + pl.duration(minutes=5)
             ).alias("_first_candidate_origin")
         )
@@ -423,13 +401,11 @@ def aggregate_b2_activity(
             )
             & (
                 pl.col("executed_at")
-                < pl.col("forecast_origin_utc")
-                - pl.duration(seconds=delay_seconds)
+                < pl.col("forecast_origin_utc") - pl.duration(seconds=delay_seconds)
             )
             & (
                 pl.col("created_at")
-                <= pl.col("forecast_origin_utc")
-                - pl.duration(seconds=delay_seconds)
+                <= pl.col("forecast_origin_utc") - pl.duration(seconds=delay_seconds)
             )
         )
         .with_columns(pl.col("premium").fill_null(0.0).clip(0.0).alias("_premium"))
@@ -437,10 +413,7 @@ def aggregate_b2_activity(
     counts = eligible.group_by("origin_id").agg(
         pl.col("created_at").max().alias("b2v2_max_created_at_utc"),
         pl.len().cast(pl.Float64).alias("option_trade_count_5m"),
-        pl.col("option_chain_id")
-        .n_unique()
-        .cast(pl.Float64)
-        .alias("unique_contract_count_5m"),
+        pl.col("option_chain_id").n_unique().cast(pl.Float64).alias("unique_contract_count_5m"),
         pl.col("_premium").sum().alias("total_premium_5m"),
         pl.col("_premium").max().alias("max_trade_premium_5m"),
         pl.when(pl.col("option_type").str.to_lowercase() == "call")
@@ -476,22 +449,14 @@ def aggregate_b2_activity(
         .group_by("origin_id", "strike")
         .len()
         .group_by("origin_id")
-        .agg(
-            (pl.col("len").max() / pl.col("len").sum()).alias(
-                "strike_concentration"
-            )
-        )
+        .agg((pl.col("len").max() / pl.col("len").sum()).alias("strike_concentration"))
     )
     expiries = (
         eligible.filter(pl.col("expiry").is_not_null())
         .group_by("origin_id", "expiry")
         .len()
         .group_by("origin_id")
-        .agg(
-            (pl.col("len").max() / pl.col("len").sum()).alias(
-                "expiry_concentration"
-            )
-        )
+        .agg((pl.col("len").max() / pl.col("len").sum()).alias("expiry_concentration"))
     )
     activity = (
         origin_key.join(counts, on="origin_id", how="left", validate="1:1")
@@ -535,9 +500,7 @@ def build_b2v2_features(
     window_minutes: int = 5,
 ) -> pl.DataFrame:
     """Construct normalized B2v2 features from individual Full Tape rows."""
-    return build_b2v2_from_activity(
-        aggregate_b2_activity(trades, origins, window_minutes), origins
-    )
+    return build_b2v2_from_activity(aggregate_b2_activity(trades, origins, window_minutes), origins)
 
 
 def build_b2v2_from_activity(
@@ -553,8 +516,7 @@ def build_b2v2_from_activity(
     forbidden = {
         column
         for column in (*activity.columns, *origins.columns)
-        if column.lower() in {"rv30", "qlike", "target"}
-        or column.lower().startswith("rv30_")
+        if column.lower() in {"rv30", "qlike", "target"} or column.lower().startswith("rv30_")
     }
     if forbidden:
         raise ValueError("B2V2_TARGET_COLUMN_FORBIDDEN")
@@ -580,34 +542,32 @@ def build_b2v2_from_activity(
         if column in activity.columns
     ]
     raw = origins.select(sorted(required_origins)).join(
-        activity.select(
-            "origin_id", *sorted(RAW_B2_COLUMNS), *evidence_columns
-        ),
+        activity.select("origin_id", *sorted(RAW_B2_COLUMNS), *evidence_columns),
         on="origin_id",
         how="left",
         validate="1:1",
     )
-    raw = raw.with_columns(
-        pl.col(column).fill_null(0.0) for column in sorted(RAW_B2_COLUMNS)
-    )
+    raw = raw.with_columns(pl.col(column).fill_null(0.0) for column in sorted(RAW_B2_COLUMNS))
     compact = add_compact_b2_features(raw)
     source_to_output = dict(zip(B2_FEATURE_NAMES, B2V2_FEATURES, strict=True))
-    records = compact.select(
-        "origin_id",
-        "asset",
-        "session_date",
-        "forecast_origin_utc",
-        *B2_FEATURE_NAMES,
-        *evidence_columns,
-    ).sort(["asset", "session_date", "forecast_origin_utc"]).to_dicts()
+    records = (
+        compact.select(
+            "origin_id",
+            "asset",
+            "session_date",
+            "forecast_origin_utc",
+            *B2_FEATURE_NAMES,
+            *evidence_columns,
+        )
+        .sort(["asset", "session_date", "forecast_origin_utc"])
+        .to_dicts()
+    )
     for row in records:
         row["_band"] = _phase6_band(row["forecast_origin_utc"])
 
     dates_by_asset: dict[str, list[str]] = {}
     rows_by_asset_date: dict[tuple[str, str], list[dict[str, Any]]] = {}
-    rows_by_asset_band_date: dict[
-        tuple[str, str, str], list[dict[str, Any]]
-    ] = {}
+    rows_by_asset_band_date: dict[tuple[str, str, str], list[dict[str, Any]]] = {}
     current_groups: dict[tuple[str, str, str], list[dict[str, Any]]] = {}
     for row in records:
         asset, day, band = row["asset"], row["session_date"], row["_band"]
@@ -631,18 +591,14 @@ def build_b2v2_from_activity(
             band_values = [
                 float(row[source])
                 for prior_day in prior_dates
-                for row in rows_by_asset_band_date.get(
-                    (asset, band, prior_day), []
-                )
+                for row in rows_by_asset_band_date.get((asset, band, prior_day), [])
             ]
             asset_values = [
                 float(row[source])
                 for prior_day in prior_dates
                 for row in rows_by_asset_date.get((asset, prior_day), [])
             ]
-            parameters[destination] = _robust_parameters(
-                band_values, asset_values
-            )
+            parameters[destination] = _robust_parameters(band_values, asset_values)
         for current in current_rows:
             result = {
                 key: current[key]
@@ -661,15 +617,11 @@ def build_b2v2_from_activity(
                     labels.append("INSUFFICIENT_PRIOR_SESSIONS")
                     continue
                 center, scale, label = parameters[destination]
-                result[destination] = (
-                    (float(current[source]) - center) / scale if scale else 0.0
-                )
+                result[destination] = (float(current[source]) - center) / scale if scale else 0.0
                 labels.append(label)
             result["b2v2_complete"] = complete
             result["b2v2_history_sessions"] = len(prior_dates)
-            result["b2v2_normalization_labels"] = ";".join(
-                sorted(set(labels))
-            )
+            result["b2v2_normalization_labels"] = ";".join(sorted(set(labels)))
             output.append(result)
     return pl.DataFrame(output, infer_schema_length=None).sort(
         ["asset", "session_date", "forecast_origin_utc"]
@@ -747,10 +699,7 @@ def _exact_bar_window(
     return_count: int,
 ) -> list[Mapping[str, Any]] | None:
     """Return consecutive one-minute bars ending at ``end``."""
-    timestamps = [
-        end - timedelta(minutes=offset)
-        for offset in range(return_count, -1, -1)
-    ]
+    timestamps = [end - timedelta(minutes=offset) for offset in range(return_count, -1, -1)]
     rows = [index.get(timestamp) for timestamp in timestamps]
     return None if any(row is None for row in rows) else [row for row in rows if row]
 
@@ -761,8 +710,7 @@ def _log_returns(rows: Sequence[Mapping[str, Any]]) -> list[float]:
     if any(not math.isfinite(value) or value <= 0 for value in closes):
         raise ValueError("B0V2_CLOSE_NOT_POSITIVE")
     return [
-        math.log(current / previous)
-        for previous, current in zip(closes, closes[1:], strict=False)
+        math.log(current / previous) for previous, current in zip(closes, closes[1:], strict=False)
     ]
 
 
@@ -896,9 +844,7 @@ def build_b0v2_features(
             }
         )
         if predictor_anchor is None:
-            output.append(
-                {**base, "drop_reason": "B0V2_PREDICTOR_ANCHOR_MISSING"}
-            )
+            output.append({**base, "drop_reason": "B0V2_PREDICTOR_ANCHOR_MISSING"})
             continue
         if predictor_anchor["available_at_utc"] > origin:
             raise ValueError("B0V2_ORIGIN_CLOSE_NOT_AVAILABLE")
@@ -933,23 +879,16 @@ def build_b0v2_features(
             returns = _log_returns(control_30)
             prefix = control.lower()
             control_values[f"b0v2_{prefix}_return_5m"] = sum(returns[-5:])
-            control_values[f"b0v2_{prefix}_rv_30m"] = sum(
-                value * value for value in returns
-            )
+            control_values[f"b0v2_{prefix}_rv_30m"] = sum(value * value for value in returns)
             predictor_rows.extend(control_30)
         if not controls_valid:
             output.append({**base, "drop_reason": "B0V2_MARKET_CONTROL_MISSING"})
             continue
 
         recent_underlying = underlying_30[-5:]
-        dollar_volume = sum(
-            float(row["close"]) * float(row["volume"])
-            for row in recent_underlying
-        )
+        dollar_volume = sum(float(row["close"]) * float(row["volume"]) for row in recent_underlying)
         if not math.isfinite(dollar_volume) or dollar_volume <= 0:
-            output.append(
-                {**base, "drop_reason": "B0V2_DOLLAR_VOLUME_NOT_POSITIVE"}
-            )
+            output.append({**base, "drop_reason": "B0V2_DOLLAR_VOLUME_NOT_POSITIVE"})
             continue
         minute = (
             origin.astimezone(_NEW_YORK).hour * 60
@@ -969,12 +908,8 @@ def build_b0v2_features(
                 "drop_reason": target_drop_reason,
                 "b0v2_log_spot": math.log(float(predictor_anchor["close"])),
                 "b0v2_underlying_return_5m": sum(underlying_returns_5),
-                "b0v2_underlying_rv_5m": sum(
-                    value * value for value in underlying_returns_5
-                ),
-                "b0v2_underlying_rv_30m": sum(
-                    value * value for value in underlying_returns_30
-                ),
+                "b0v2_underlying_rv_5m": sum(value * value for value in underlying_returns_5),
+                "b0v2_underlying_rv_30m": sum(value * value for value in underlying_returns_30),
                 "b0v2_log_dollar_volume_5m": math.log(dollar_volume),
                 **control_values,
                 "b0v2_session_sine": math.sin(angle),
@@ -1004,8 +939,7 @@ def _b1_atm_iv(rows: Sequence[Mapping[str, Any]]) -> float | None:
             return float(low["implied_volatility"])
         weight = (1.0 - low_m) / (high_m - low_m)
         return float(low["implied_volatility"]) + weight * (
-            float(high["implied_volatility"])
-            - float(low["implied_volatility"])
+            float(high["implied_volatility"]) - float(low["implied_volatility"])
         )
     closest = min(rows, key=lambda row: abs(float(row["moneyness"]) - 1.0))
     return float(closest["implied_volatility"])
@@ -1021,27 +955,22 @@ def _b1_skew(rows: Sequence[Mapping[str, Any]]) -> float | None:
         puts = [
             row
             for row in expiry_rows
-            if str(row["option_type"]).lower() == "put"
-            and float(row["moneyness"]) <= 0.99
+            if str(row["option_type"]).lower() == "put" and float(row["moneyness"]) <= 0.99
         ]
         calls = [
             row
             for row in expiry_rows
-            if str(row["option_type"]).lower() == "call"
-            and float(row["moneyness"]) >= 1.01
+            if str(row["option_type"]).lower() == "call" and float(row["moneyness"]) >= 1.01
         ]
         if not puts or not calls:
             continue
         put = min(puts, key=lambda row: abs(float(row["moneyness"]) - 0.975))
         call = min(calls, key=lambda row: abs(float(row["moneyness"]) - 1.025))
-        distance = abs(float(put["moneyness"]) - 0.975) + abs(
-            float(call["moneyness"]) - 1.025
-        )
+        distance = abs(float(put["moneyness"]) - 0.975) + abs(float(call["moneyness"]) - 1.025)
         candidates.append(
             (
                 distance,
-                float(put["implied_volatility"])
-                - float(call["implied_volatility"]),
+                float(put["implied_volatility"]) - float(call["implied_volatility"]),
             )
         )
     return min(candidates)[1] if candidates else None
@@ -1147,14 +1076,12 @@ def build_b1v2_features(
         origin_id = str(row["origin_id"])
         if origin_id not in origin_ids:
             raise ValueError("B1V2_UNKNOWN_ORIGIN")
-        candidates.setdefault(origin_id, {}).setdefault(
-            str(row["contract"]), []
-        ).append(row)
+        candidates.setdefault(origin_id, {}).setdefault(str(row["contract"]), []).append(row)
 
     levels: list[dict[str, Any]] = []
-    for origin_row in origins.sort(
-        ["asset", "session_date", "forecast_origin_utc"]
-    ).iter_rows(named=True):
+    for origin_row in origins.sort(["asset", "session_date", "forecast_origin_utc"]).iter_rows(
+        named=True
+    ):
         origin = origin_row["forecast_origin_utc"]
         if not isinstance(origin, datetime) or origin.tzinfo is None:
             raise ValueError("B1V2_ORIGIN_TIMESTAMP_INVALID")
@@ -1197,9 +1124,7 @@ def build_b1v2_features(
                 **origin_row,
                 "forecast_origin_ns": origin_ns,
                 "max_sip_timestamp_ns": max(timestamps) if timestamps else None,
-                "selected_midpoint": (
-                    midpoints[len(midpoints) // 2] if midpoints else None
-                ),
+                "selected_midpoint": (midpoints[len(midpoints) // 2] if midpoints else None),
                 "valid_contract_count": len(valid),
                 **summary,
             }
@@ -1218,15 +1143,9 @@ def build_b1v2_features(
 
         enriched = {
             **row,
-            "b1v2_atm_iv_change_5m": _b1_change(
-                row, previous_5, "b1v2_atm_iv_30_60_dte"
-            ),
-            "b1v2_atm_iv_change_30m": _b1_change(
-                row, previous_30, "b1v2_atm_iv_30_60_dte"
-            ),
-            "b1v2_skew_change_30m": _b1_change(
-                row, previous_30, "b1v2_skew_symmetric_moneyness"
-            ),
+            "b1v2_atm_iv_change_5m": _b1_change(row, previous_5, "b1v2_atm_iv_30_60_dte"),
+            "b1v2_atm_iv_change_30m": _b1_change(row, previous_30, "b1v2_atm_iv_30_60_dte"),
+            "b1v2_skew_change_30m": _b1_change(row, previous_30, "b1v2_skew_symmetric_moneyness"),
             "b1v2_term_short_to_medium_change_30m": _b1_change(
                 row, previous_30, "b1v2_term_short_to_medium"
             ),
@@ -1244,9 +1163,7 @@ def build_b1v2_features(
             enriched.get(feature) is not None for feature in B1V2C_FEATURES
         )
         enriched["b1v2_missing_reason"] = (
-            None
-            if enriched["b1v2a_complete"]
-            else "B1V2A_HISTORY_OR_STATE_MISSING"
+            None if enriched["b1v2a_complete"] else "B1V2A_HISTORY_OR_STATE_MISSING"
         )
         output.append(enriched)
 
@@ -1295,9 +1212,7 @@ def b1v2_coverage_status(frame: pl.DataFrame) -> str:
     )
 
 
-def continuity_verdict(
-    rows: Sequence[Mapping[str, object]], expected_dates: set[str]
-) -> str:
+def continuity_verdict(rows: Sequence[Mapping[str, object]], expected_dates: set[str]) -> str:
     """Return the fail-closed provider-continuity decision.
 
     Parameters
@@ -1313,13 +1228,9 @@ def continuity_verdict(
         Stable PASS or blocker code.
     """
     expected_keys = {
-        (day, asset)
-        for day in expected_dates
-        for asset in (*OUTCOME_ASSETS, *MARKET_CONTROLS)
+        (day, asset) for day in expected_dates for asset in (*OUTCOME_ASSETS, *MARKET_CONTROLS)
     }
-    observed_keys = [
-        (str(row.get("date", "")), str(row.get("asset", ""))) for row in rows
-    ]
+    observed_keys = [(str(row.get("date", "")), str(row.get("asset", ""))) for row in rows]
     if len(observed_keys) != len(set(observed_keys)):
         return "REPLICATION_CONTINUITY_DUPLICATE"
     if set(observed_keys) != expected_keys:
@@ -1420,9 +1331,7 @@ def phase6_folds() -> list[dict[str, object]]:
     folds: list[dict[str, object]] = []
     for fold_number in range(1, 6):
         test_dates = [
-            row["session_date"]
-            for row in rows
-            if row["role"] == f"oos_fold_{fold_number}"
+            row["session_date"] for row in rows if row["role"] == f"oos_fold_{fold_number}"
         ]
         train_dates = [*initial_train, *previous_tests]
         if (
@@ -1462,9 +1371,7 @@ def _validate_provenance(provenance: Mapping[str, Any]) -> None:
         raise ValueError("PHASE6_PROVENANCE_INVALID")
     for key in _HASH_KEYS:
         value = provenance[key]
-        if not isinstance(value, str) or len(value) != 64 or set(value) - set(
-            "0123456789abcdef"
-        ):
+        if not isinstance(value, str) or len(value) != 64 or set(value) - set("0123456789abcdef"):
             raise ValueError("PHASE6_PROVENANCE_INVALID")
 
 

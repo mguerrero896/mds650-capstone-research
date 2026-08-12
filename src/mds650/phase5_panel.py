@@ -132,9 +132,10 @@ def build_common_panel(
         _require_columns(frame, name, required[name])
         _reject_duplicate_origins(frame)
 
-    if excluded_dates and origins.filter(
-        pl.col("session_date").cast(pl.String).is_in(excluded_dates)
-    ).height:
+    if (
+        excluded_dates
+        and origins.filter(pl.col("session_date").cast(pl.String).is_in(excluded_dates)).height
+    ):
         raise ValueError("HOLDOUT_DATE_IN_DEVELOPMENT_PANEL")
 
     panel = origins
@@ -167,10 +168,7 @@ def build_common_panel(
         & (pl.col("rv30") > 0)
     )
     b0_complete = target_complete & pl.all_horizontal(
-        [
-            pl.col(column).cast(pl.Float64).is_finite().fill_null(False)
-            for column in _B0_PREDICTORS
-        ]
+        [pl.col(column).cast(pl.Float64).is_finite().fill_null(False) for column in _B0_PREDICTORS]
         + [
             pl.col("b0_available_at_utc").is_not_null(),
             pl.col("b0_available_at_utc") <= pl.col("forecast_origin_utc"),
@@ -180,26 +178,19 @@ def build_common_panel(
         [
             pl.col("b1a_complete").fill_null(False),
             (
-                pl.col("b1q_atm_iv").cast(pl.Float64).is_finite()
-                & (pl.col("b1q_atm_iv") > 0)
+                pl.col("b1q_atm_iv").cast(pl.Float64).is_finite() & (pl.col("b1q_atm_iv") > 0)
             ).fill_null(False),
             pl.col("b1q_pit_evidence_valid").fill_null(False),
             pl.col("b1q_quote_not_after_origin").fill_null(False),
         ]
     )
     b2_complete = b1a_common_complete & pl.all_horizontal(
-        [
-            pl.col(name).cast(pl.Float64).is_finite().fill_null(False)
-            for name in B2_FEATURE_NAMES
-        ]
+        [pl.col(name).cast(pl.Float64).is_finite().fill_null(False) for name in B2_FEATURE_NAMES]
         + [
             pl.col("b2_window_end").is_not_null(),
             (
                 pl.col("b2_max_operational_time").is_null()
-                | (
-                    pl.col("b2_max_operational_time")
-                    <= pl.col("b2_window_end")
-                )
+                | (pl.col("b2_max_operational_time") <= pl.col("b2_window_end"))
             ),
         ]
     )

@@ -19,9 +19,7 @@ def _predictions(*, negative_b2: bool = True) -> pl.DataFrame:
     }
     for day in range(10):
         for index, asset in enumerate(assets):
-            origin = datetime(2026, 1, 5, tzinfo=UTC) + timedelta(
-                days=day, minutes=5 * index
-            )
+            origin = datetime(2026, 1, 5, tzinfo=UTC) + timedelta(days=day, minutes=5 * index)
             for role in ("gamma_glm_confirmatory", "lightgbm_robustness"):
                 for information_set, forecast in forecasts.items():
                     rows.append(
@@ -45,11 +43,7 @@ def _predictions(*, negative_b2: bool = True) -> pl.DataFrame:
 
 def _timing_predictions() -> pl.DataFrame:
     primary = _predictions(negative_b2=False)
-    parts = [
-        primary.with_columns(
-            pl.lit("FMP_DELAY_2_MINUTES").alias("timing_variant")
-        )
-    ]
+    parts = [primary.with_columns(pl.lit("FMP_DELAY_2_MINUTES").alias("timing_variant"))]
     for variant in (
         "window_15m_60s",
         "window_30m_60s",
@@ -80,10 +74,7 @@ def test_global_family_contains_exactly_two_hypotheses() -> None:
 def test_negative_result_is_preserved_without_claiming_an_edge() -> None:
     result = evaluate_phase6(_predictions(), _method())
 
-    assert (
-        result["global"]["gamma_glm_confirmatory"]["delta_b2v2"]["estimate"]
-        < 0
-    )
+    assert result["global"]["gamma_glm_confirmatory"]["delta_b2v2"]["estimate"] < 0
     assert result["decision"] == "GLOBAL_EDGE_NOT_CONFIRMED"
     assert result["all_signs_retained"] is True
 
@@ -105,9 +96,7 @@ def test_positive_edge_requires_and_passes_every_frozen_gate() -> None:
 
 
 def test_missing_timing_variant_fails_closed() -> None:
-    incomplete = _timing_predictions().filter(
-        pl.col("timing_variant") != "latency_5m_300s"
-    )
+    incomplete = _timing_predictions().filter(pl.col("timing_variant") != "latency_5m_300s")
 
     with pytest.raises(ValueError, match="PHASE6_TIMING_VARIANTS_INCOMPLETE"):
         evaluate_phase6(
@@ -120,8 +109,7 @@ def test_missing_timing_variant_fails_closed() -> None:
 def test_timing_reversal_prevents_b2_global_confirmation() -> None:
     timing = _timing_predictions().with_columns(
         pl.when(
-            (pl.col("timing_variant") == "latency_5m_300s")
-            & (pl.col("information_set") == "B2v2")
+            (pl.col("timing_variant") == "latency_5m_300s") & (pl.col("information_set") == "B2v2")
         )
         .then(2.5)
         .otherwise(pl.col("forecast"))

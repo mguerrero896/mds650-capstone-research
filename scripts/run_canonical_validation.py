@@ -123,15 +123,11 @@ def _atomic_json(path: Path, payload: Mapping[str, object]) -> None:
         raise RuntimeError("CANONICAL_OUTPUT_ALREADY_EXISTS")
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_name(path.name + f".tmp-{uuid.uuid4().hex}")
-    temporary.write_text(
-        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-    )
+    temporary.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     temporary.rename(path)
 
 
-def validate_roots(
-    *, evidence_root: Path, data_root: Path, output_root: Path
-) -> None:
+def validate_roots(*, evidence_root: Path, data_root: Path, output_root: Path) -> None:
     """Validate explicit, non-overlapping external input and output roots.
 
     Parameters
@@ -194,9 +190,7 @@ def reuse_hash_verified_block(block_output: Path) -> dict[str, str] | None:
         return None
     manifest = _read_json(manifest_path)
     hashes = manifest.get("output_hashes")
-    if manifest.get("status") != "PASS_CANONICAL_VALIDATION" or not isinstance(
-        hashes, dict
-    ):
+    if manifest.get("status") != "PASS_CANONICAL_VALIDATION" or not isinstance(hashes, dict):
         raise RuntimeError("CANONICAL_OUTPUT_MANIFEST_INVALID")
     for name, expected in hashes.items():
         if not isinstance(name, str) or not isinstance(expected, str):
@@ -235,13 +229,9 @@ def _phase6_inputs(evidence_root: Path) -> BlockInputs:
     predictions = pl.read_parquet(prediction_path).filter(
         pl.col("timing_variant") == _PRIMARY_TIMING
     )
-    if set(predictions.get_column("model_role").unique().to_list()) != set(
-        _HISTORICAL_ROLES
-    ):
+    if set(predictions.get_column("model_role").unique().to_list()) != set(_HISTORICAL_ROLES):
         raise RuntimeError("CANONICAL_HISTORICAL_ROLE_CONTRACT_INVALID")
-    if set(predictions.get_column("information_set").unique().to_list()) != set(
-        _INFORMATION_SETS
-    ):
+    if set(predictions.get_column("information_set").unique().to_list()) != set(_INFORMATION_SETS):
         raise RuntimeError("CANONICAL_HISTORICAL_INFORMATION_SET_INVALID")
     guard = preregistration.get("models", {}).get("purge_embargo_minutes")
     if not isinstance(guard, int) or guard < 0:
@@ -326,8 +316,7 @@ def _historical_fold_predictions(
     for role in _HISTORICAL_ROLES:
         information_frames = {
             information_set: rows.filter(
-                (pl.col("model_role") == role)
-                & (pl.col("information_set") == information_set)
+                (pl.col("model_role") == role) & (pl.col("information_set") == information_set)
             )
             for information_set in _INFORMATION_SETS
         }
@@ -336,9 +325,7 @@ def _historical_fold_predictions(
             raise RuntimeError("CANONICAL_EVALUATION_ORIGIN_MISMATCH")
     return rows.select(
         *(column for column in _OUTPUT_PREDICTION_COLUMNS if column in rows.columns)
-    ).with_columns(
-        pl.lit("HISTORICAL_REGISTERED_REFERENCE").alias("analysis_status")
-    )
+    ).with_columns(pl.lit("HISTORICAL_REGISTERED_REFERENCE").alias("analysis_status"))
 
 
 def _extension_fold_predictions(
@@ -420,10 +407,16 @@ def _build_predictions(
         variant_ledger.extend(extension_ledger)
         for role in _HISTORICAL_ROLES:
             for information_set in _INFORMATION_SETS:
-                parameters = historical.filter(
-                    (pl.col("model_role") == role)
-                    & (pl.col("information_set") == information_set)
-                ).get_column("selected_parameters").unique().sort().to_list()
+                parameters = (
+                    historical.filter(
+                        (pl.col("model_role") == role)
+                        & (pl.col("information_set") == information_set)
+                    )
+                    .get_column("selected_parameters")
+                    .unique()
+                    .sort()
+                    .to_list()
+                )
                 variant_ledger.append(
                     {
                         "fold": fold.fold,
@@ -457,8 +450,10 @@ def _build_predictions(
                     "volatility_regime_cutpoints": regime_cutpoints,
                 }
             )
-    predictions = pl.concat(parts).select(*_OUTPUT_PREDICTION_COLUMNS).sort(
-        ["fold", "model_role", "information_set", "origin_id"]
+    predictions = (
+        pl.concat(parts)
+        .select(*_OUTPUT_PREDICTION_COLUMNS)
+        .sort(["fold", "model_role", "information_set", "origin_id"])
     )
     key_count = predictions.select(
         pl.struct("fold", "model_role", "information_set", "origin_id").n_unique()
@@ -604,9 +599,7 @@ def _parse_args() -> argparse.Namespace:
     """Parse offline canonical-validation runner arguments."""
 
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--block", choices=("phase6", "independent_replication"), required=True
-    )
+    parser.add_argument("--block", choices=("phase6", "independent_replication"), required=True)
     parser.add_argument(
         "--evidence-root",
         type=Path,

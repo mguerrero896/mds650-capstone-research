@@ -81,14 +81,17 @@ def test_optional_iv_does_not_define_b2_core_and_aliases_are_absent() -> None:
 def test_common_row_sets_and_targets_are_nested_and_identical() -> None:
     row_sets = _json("matrix_row_sets_v1.json")
     assert row_sets["row_set_nesting"] == {"B1Q_subset_B0": True, "B2_subset_B1Q": True}
-    assert len(
-        {
-            row_sets["target_hash_common"],
-            row_sets["target_hash_common_in_b0"],
-            row_sets["target_hash_common_in_b1q"],
-            row_sets["target_hash_common_in_b2"],
-        }
-    ) == 1
+    assert (
+        len(
+            {
+                row_sets["target_hash_common"],
+                row_sets["target_hash_common_in_b0"],
+                row_sets["target_hash_common_in_b1q"],
+                row_sets["target_hash_common_in_b2"],
+            }
+        )
+        == 1
+    )
 
 
 def test_checkpoint_and_holdout_gates_are_fail_closed() -> None:

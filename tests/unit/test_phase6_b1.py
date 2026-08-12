@@ -98,12 +98,8 @@ def test_b1v2_selects_last_quote_not_after_origin() -> None:
 def test_b1v2_benchmarks_are_nested() -> None:
     result = build_b1v2_features(_origins(), _states(_origins()))
 
-    assert result.filter(
-        pl.col("b1v2c_complete") & ~pl.col("b1v2b_complete")
-    ).is_empty()
-    assert result.filter(
-        pl.col("b1v2b_complete") & ~pl.col("b1v2a_complete")
-    ).is_empty()
+    assert result.filter(pl.col("b1v2c_complete") & ~pl.col("b1v2b_complete")).is_empty()
+    assert result.filter(pl.col("b1v2b_complete") & ~pl.col("b1v2a_complete")).is_empty()
     assert result.filter(pl.col("b1v2c_complete")).height == 1
 
 
@@ -165,9 +161,7 @@ def test_contract_resolution_cache_is_reused_without_network(
         ),
         encoding="utf-8",
     )
-    origins = pl.DataFrame(
-        {"asset": ["AAPL"], "session_date": ["2025-08-04"], "spot": [195.0]}
-    )
+    origins = pl.DataFrame({"asset": ["AAPL"], "session_date": ["2025-08-04"], "spot": [195.0]})
     monkeypatch.setattr(
         b1_builder.closure,
         "resolve_contracts",

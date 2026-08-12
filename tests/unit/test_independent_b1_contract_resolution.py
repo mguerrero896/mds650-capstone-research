@@ -63,9 +63,7 @@ def test_contract_day_cache_loader_reads_each_contract_once(
         for index, row in enumerate(contracts)
     }
 
-    loaded = b1_script._load_contract_day_caches(
-        "AAPL", "2025-03-03", contracts, cache_paths
-    )
+    loaded = b1_script._load_contract_day_caches("AAPL", "2025-03-03", contracts, cache_paths)
 
     assert calls == [str(Path("D:/cache/0.json")), str(Path("D:/cache/1.json"))]
     assert sorted(loaded) == sorted(row["contract"] for row in contracts)

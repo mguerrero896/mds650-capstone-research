@@ -448,9 +448,7 @@ def main() -> None:
             )
             if len(effects) >= 2 and np.std(effects, ddof=1) > 0:
                 daily_mde[f"{model_name}:{label}"] = round(
-                    estimate_training_mde(
-                        effects, draws=BOOTSTRAP_REPETITIONS, seed=SEED
-                    ),
+                    estimate_training_mde(effects, draws=BOOTSTRAP_REPETITIONS, seed=SEED),
                     12,
                 )
     holm: dict[str, float] = {}

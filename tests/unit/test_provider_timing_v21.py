@@ -466,9 +466,7 @@ def test_massive_reselection_excludes_post_close_early_close_quotes_before_selec
 
     assert audit["status"] == "PASS"
     assert audit["cache_identity_failures"] == {}
-    assert audit["cache_scope_warnings"] == {
-        "OK_EARLY_CLOSE_POST_CLOSE_QUOTES_EXCLUDED": 1
-    }
+    assert audit["cache_scope_warnings"] == {"OK_EARLY_CLOSE_POST_CLOSE_QUOTES_EXCLUDED": 1}
     assert audit["summary_by_cutoff"][0]["selected_quote_count"] == 1
 
 
@@ -692,9 +690,7 @@ def test_massive_reselection_reports_invalid_option_type_explicitly(tmp_path: Pa
     )
 
     assert audit["status"] == "PASS"
-    assert audit["summary_by_cutoff"][0]["iv_failure_reason_counts"] == {
-        "INVALID_OPTION_TYPE": 1
-    }
+    assert audit["summary_by_cutoff"][0]["iv_failure_reason_counts"] == {"INVALID_OPTION_TYPE": 1}
 
 
 def test_massive_reselection_rejects_ambiguous_attempt_source_hash(tmp_path: Path) -> None:

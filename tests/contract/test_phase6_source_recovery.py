@@ -66,10 +66,7 @@ def test_phase6_source_recovery_records_exact_frozen_blobs(tmp_path: Path) -> No
 
     assert payload["status"] == "PASS"
     assert payload["audited_source_count"] == 2
-    assert all(
-        item["expected_sha256"] == item["recovered_sha256"]
-        for item in payload["artifacts"]
-    )
+    assert all(item["expected_sha256"] == item["recovered_sha256"] for item in payload["artifacts"])
     for item in payload["artifacts"]:
         assert (
             subprocess.run(

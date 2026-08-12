@@ -26,9 +26,7 @@ AFTER_HOLDOUT = datetime(2026, 7, 31, 20, 1, tzinfo=UTC)
 
 
 def _self_hash(payload: dict[str, Any]) -> dict[str, Any]:
-    result = {
-        key: value for key, value in payload.items() if key != "manifest_sha256"
-    }
+    result = {key: value for key, value in payload.items() if key != "manifest_sha256"}
     result["manifest_sha256"] = canonical_sha256(result)
     return result
 
@@ -67,11 +65,7 @@ def test_acquisition_authority_requires_exact_frozen_ten_sessions() -> None:
     sessions["holdout"] = sessions["holdout"][:-1]
     sessions["holdout_count"] = 9
     sessions["manifest_sha256"] = canonical_sha256(
-        {
-            key: value
-            for key, value in sessions.items()
-            if key != "manifest_sha256"
-        }
+        {key: value for key, value in sessions.items() if key != "manifest_sha256"}
     )
 
     with pytest.raises(PermissionError, match="HOLDOUT_SESSION_SET_MISMATCH"):
@@ -112,11 +106,7 @@ def test_sealed_ledger_is_accepted_without_reading_holdout() -> None:
     assert ledger["holdout_reads"] == 0
     assert ledger["authorized_at_utc"] is None
     assert ledger["manifest_sha256"] == canonical_sha256(
-        {
-            key: value
-            for key, value in ledger.items()
-            if key != "manifest_sha256"
-        }
+        {key: value for key, value in ledger.items() if key != "manifest_sha256"}
     )
     authorized = authorize_holdout_read(
         ledger,
@@ -140,8 +130,7 @@ def test_sealed_ledger_rejects_failed_quality_gate() -> None:
             session_manifest=sessions,
             method_freeze=_method_freeze(),
             session_statuses=[
-                {"session_date": day, "status": "PASS"}
-                for day in EXPECTED_HOLDOUT_SESSIONS
+                {"session_date": day, "status": "PASS"} for day in EXPECTED_HOLDOUT_SESSIONS
             ],
             panel_sha256="2" * 64,
             stability_panel_sha256="3" * 64,

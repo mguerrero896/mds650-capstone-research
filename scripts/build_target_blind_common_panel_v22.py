@@ -185,9 +185,7 @@ def build_panel(
         "b1q_source_sha256": sha256_file(b1_source_path),
         "b2_primary_inputs_sha256": combined_input_digest(b2_paths),
         "b2_availability_sidecar_sha256": sha256_file(availability_path),
-        "massive_reselection_sensitivity_v21_sha256": sha256_file(
-            massive_sensitivity_path
-        ),
+        "massive_reselection_sensitivity_v21_sha256": sha256_file(massive_sensitivity_path),
     }
     return panel, common, summary, hashes
 
@@ -235,9 +233,7 @@ def _write_json(path: Path, payload: Mapping[str, Any]) -> None:
     """Write stable formatted JSON to a local artefact path."""
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(
-        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-    )
+    temporary.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     os.replace(temporary, path)
 
 
@@ -292,9 +288,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "b1q_primary_state": "SIP_ASOF_ORIGIN_MAX_AGE_60S",
             "massive_reselection_sensitivity_cutoff_seconds": [60, 300],
             "b2_primary_variant": B2_PRIMARY_VARIANT,
-            "b2_created_at_rule": (
-                "OPERATIONAL_AVAILABILITY_PROXY_ORIGIN_MINUS_60_SECONDS"
-            ),
+            "b2_created_at_rule": ("OPERATIONAL_AVAILABILITY_PROXY_ORIGIN_MINUS_60_SECONDS"),
         },
         "source_hashes": source_hashes,
         "builder_hashes": {
@@ -316,22 +310,25 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "target_blind_common_predictors_v22.parquet"
             ),
             "common_complete": (
-                "D:/MDS650/phase6/derived/target_blind_v22/"
-                "target_blind_common_complete_v22.parquet"
+                "D:/MDS650/phase6/derived/target_blind_v22/target_blind_common_complete_v22.parquet"
             ),
         },
     }
     _write_json(args.artifact_root / "target_blind_common_predictor_manifest_v22.json", manifest)
     _write_json(args.artifact_root / "target_blind_common_predictor_summary_v22.json", summary)
-    coverage = panel.group_by("asset").agg(
-        pl.len().alias("origin_count"),
-        pl.col("b0v2_predictor_complete").mean().alias("b0_completion_rate"),
-        pl.col("b1v2a_predictor_complete").mean().alias("b1a_completion_rate"),
-        pl.col("b1v2b_predictor_complete").mean().alias("b1b_completion_rate"),
-        pl.col("b1v2c_predictor_complete").mean().alias("b1c_completion_rate"),
-        pl.col("b2v2_predictor_complete").mean().alias("b2_completion_rate"),
-        pl.col("common_predictor_complete").mean().alias("common_completion_rate"),
-    ).sort("asset")
+    coverage = (
+        panel.group_by("asset")
+        .agg(
+            pl.len().alias("origin_count"),
+            pl.col("b0v2_predictor_complete").mean().alias("b0_completion_rate"),
+            pl.col("b1v2a_predictor_complete").mean().alias("b1a_completion_rate"),
+            pl.col("b1v2b_predictor_complete").mean().alias("b1b_completion_rate"),
+            pl.col("b1v2c_predictor_complete").mean().alias("b1c_completion_rate"),
+            pl.col("b2v2_predictor_complete").mean().alias("b2_completion_rate"),
+            pl.col("common_predictor_complete").mean().alias("common_completion_rate"),
+        )
+        .sort("asset")
+    )
     coverage.write_csv(
         args.artifact_root / "target_blind_common_predictor_coverage_by_asset_v22.csv"
     )

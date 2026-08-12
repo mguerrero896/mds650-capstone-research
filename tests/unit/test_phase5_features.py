@@ -44,9 +44,7 @@ def test_compact_b2_formulas_match_hand_calculation() -> None:
 def test_compact_b2_zero_denominators_are_documented_zero() -> None:
     row = {key: 0.0 for key in _raw_row()}
 
-    result = add_compact_b2_features(pl.DataFrame([row])).select(
-        B2_FEATURE_NAMES
-    )
+    result = add_compact_b2_features(pl.DataFrame([row])).select(B2_FEATURE_NAMES)
 
     assert result.row(0) == (0.0,) * 9
 

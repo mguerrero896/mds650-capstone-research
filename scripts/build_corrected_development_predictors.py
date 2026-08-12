@@ -252,9 +252,7 @@ def build_target_free_source_coverage(
         [
             pl.scan_parquet(path)
             .select("asset", "session_date")
-            .filter(
-                pl.col("asset").is_in(assets) & pl.col("session_date").is_in(session_dates)
-            )
+            .filter(pl.col("asset").is_in(assets) & pl.col("session_date").is_in(session_dates))
             .unique()
             .collect()
             for path in fmp_paths

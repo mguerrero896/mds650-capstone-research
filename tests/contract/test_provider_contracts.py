@@ -58,9 +58,7 @@ def test_unusual_whales_time_and_iv_alias_fixture_is_explicit() -> None:
     raw = _load("uw_flow.json")["data"][0]
     assert {"iv_start", "iv_end", "created_at", "start_time", "end_time"}.issubset(raw)
     assert "executed_at" not in raw
-    event = parse_flow_alert_payload(
-        {"data": [raw]}, run_id="run-1", source_response_id="uw-1"
-    )[0]
+    event = parse_flow_alert_payload({"data": [raw]}, run_id="run-1", source_response_id="uw-1")[0]
     assert event.available_at_utc is None
 
 

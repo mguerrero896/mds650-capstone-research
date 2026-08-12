@@ -48,7 +48,5 @@ def test_preregistration_rejects_non_target_blind_source() -> None:
     manifest = _panel_manifest()
     manifest["safe_to_reconcile_existing_results"] = "YES"
 
-    with pytest.raises(
-        ValueError, match="TARGET_BLIND_V22_PREREGISTRATION_PANEL_MANIFEST_INVALID"
-    ):
+    with pytest.raises(ValueError, match="TARGET_BLIND_V22_PREREGISTRATION_PANEL_MANIFEST_INVALID"):
         prereg_script.build_preregistration(manifest)

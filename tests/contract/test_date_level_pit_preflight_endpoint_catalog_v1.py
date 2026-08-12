@@ -16,8 +16,7 @@ from mds650.date_level_pit_preflight_v1 import (
 ROOT = Path(__file__).resolve().parents[2]
 CATALOG_PATH = ROOT / "config/date_level_pit_preflight_endpoint_catalog_v1.json"
 SCHEMA_PATH = (
-    ROOT
-    / "specs/001-pit-options-rv30/contracts/"
+    ROOT / "specs/001-pit-options-rv30/contracts/"
     "date-level-pit-preflight-endpoint-catalog-v1.schema.json"
 )
 PLAN_PATH = ROOT / "artifacts/preflight/date_level_pit_preflight_plan_v1.json"

@@ -148,9 +148,7 @@ def _validate_independent_panel(frame: pl.DataFrame) -> None:
     missing = required - set(frame.columns)
     if missing:
         missing_text = ",".join(sorted(missing))
-        raise RuntimeError(
-            f"B2_CONFIRMATION_INDEPENDENT_CONTRACT_COLUMNS_MISSING:{missing_text}"
-        )
+        raise RuntimeError(f"B2_CONFIRMATION_INDEPENDENT_CONTRACT_COLUMNS_MISSING:{missing_text}")
     block_counts = {
         str(block): int(frame.filter(pl.col("block_id") == block)["session_date"].n_unique())
         for block in frame["block_id"].unique().to_list()
@@ -172,11 +170,7 @@ def _validate_independent_panel(frame: pl.DataFrame) -> None:
 
 def _write_effect_figure(contrasts: list[dict[str, Any]], path: Path) -> None:
     """Write a dependency-free SVG of the registered B1 and B2 contrasts."""
-    rows = [
-        row
-        for row in contrasts
-        if row.get("contrast") in {"delta_b1", "delta_b2"}
-    ]
+    rows = [row for row in contrasts if row.get("contrast") in {"delta_b1", "delta_b2"}]
     rows = sorted(
         rows,
         key=lambda row: (
@@ -208,8 +202,7 @@ def _write_effect_figure(contrasts: list[dict[str, Any]], path: Path) -> None:
         label = f"{row['block_id']} / {row['model_name']} / {row['contrast']}"
         lines.append(f"<text x='20' y='{y + 4}' font-size='11'>{label}</text>")
         lines.append(
-            f"<rect x='{x:.2f}' y='{y - 9}' width='{abs(length):.2f}' "
-            f"height='16' fill='{colour}'/>"
+            f"<rect x='{x:.2f}' y='{y - 9}' width='{abs(length):.2f}' height='16' fill='{colour}'/>"
         )
         lines.append(f"<text x='940' y='{y + 4}' font-size='11'>{estimate:.6f}</text>")
     lines.append(
@@ -348,8 +341,10 @@ def main() -> None:
     )
     frozen_mde = float(protocol.get("inference", {}).get("mde", 0.0))
     mechanism_mde = float(mechanism_prereg.get("inference", {}).get("mde", 0.0))
-    if frozen_mde <= 0 or mechanism_mde <= 0 or not np.isclose(
-        frozen_mde, mechanism_mde, rtol=0.0, atol=1e-15
+    if (
+        frozen_mde <= 0
+        or mechanism_mde <= 0
+        or not np.isclose(frozen_mde, mechanism_mde, rtol=0.0, atol=1e-15)
     ):
         raise RuntimeError("B2_CONFIRMATION_MDE_SOURCE_MISMATCH")
     development_panel = _valid_panel(pl.read_parquet(DEV_PANEL))

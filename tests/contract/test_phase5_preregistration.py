@@ -12,11 +12,7 @@ from jsonschema import Draft202012Validator
 
 ROOT = Path(__file__).resolve().parents[2]
 SCHEMA = (
-    ROOT
-    / "specs"
-    / "001-pit-options-rv30"
-    / "contracts"
-    / "phase5-preregistration.schema.json"
+    ROOT / "specs" / "001-pit-options-rv30" / "contracts" / "phase5-preregistration.schema.json"
 )
 EXPECTED_FEATURES = [
     "b2_log_trade_count",

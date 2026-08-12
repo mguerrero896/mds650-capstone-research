@@ -243,9 +243,7 @@ def test_sealer_rejects_altered_sidecar_or_policy_binding(
         )
 
 
-def test_sealer_refuses_output_conflict(
-    sealer: _ConfirmationPackageSealer, tmp_path: Path
-) -> None:
+def test_sealer_refuses_output_conflict(sealer: _ConfirmationPackageSealer, tmp_path: Path) -> None:
     """Write-if-identical prevents a later invocation from replacing a sealed record."""
     source_directory = tmp_path / "sources"
     output_directory = tmp_path / "output"

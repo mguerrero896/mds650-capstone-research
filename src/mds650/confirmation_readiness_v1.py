@@ -209,9 +209,8 @@ def _validate_bound_artifacts(config: ConfirmationReadinessConfig) -> dict[str, 
     unsigned = {
         key: value for key, value in preregistration.items() if key != "preregistration_sha256"
     }
-    if (
-        not isinstance(preregistration_hash, str)
-        or preregistration_hash != canonical_sha256(unsigned)
+    if not isinstance(preregistration_hash, str) or preregistration_hash != canonical_sha256(
+        unsigned
     ):
         failures.append("PREREGISTRATION_SELF_HASH_INVALID")
     return {
@@ -241,9 +240,8 @@ def _validate_common_subset(config: ConfirmationReadinessConfig) -> dict[str, An
     required = {"origin_id", "common_predictor_complete"}
     if not required <= set(panel.columns) or not required <= set(common.columns):
         failures.append("TARGET_BLIND_COMMON_REQUIRED_COLUMNS_MISSING")
-    if (
-        _contains_outcome_like_columns(panel.columns)
-        or _contains_outcome_like_columns(common.columns)
+    if _contains_outcome_like_columns(panel.columns) or _contains_outcome_like_columns(
+        common.columns
     ):
         failures.append("TARGET_BLIND_OUTCOME_LIKE_COLUMN_PRESENT")
     expected_rows = _nested_int(config.panel_manifest, "output", "row_count")
@@ -260,9 +258,9 @@ def _validate_common_subset(config: ConfirmationReadinessConfig) -> dict[str, An
         if not common.get_column("common_predictor_complete").all():
             failures.append("TARGET_BLIND_COMMON_COMPLETENESS_FLAG_FALSE")
         common_ids = common.get_column("origin_id").to_list()
-        expected_common_frame = panel.filter(
-            pl.col("origin_id").is_in(common_ids)
-        ).sort("origin_id")
+        expected_common_frame = panel.filter(pl.col("origin_id").is_in(common_ids)).sort(
+            "origin_id"
+        )
         observed_common_frame = common.sort("origin_id")
         if not expected_common_frame.equals(observed_common_frame):
             failures.append("TARGET_BLIND_COMMON_NOT_EXACT_SUBSET")
@@ -351,9 +349,7 @@ def _acquisition_preflight(config: ConfirmationReadinessConfig) -> dict[str, Any
             "observed_free_bytes": _observed_free_bytes(config),
             "write_probe_pass": None,
         }
-    missing = [
-        name for name in REQUIRED_PROVIDER_SECRET_NAMES if not config.environment.get(name)
-    ]
+    missing = [name for name in REQUIRED_PROVIDER_SECRET_NAMES if not config.environment.get(name)]
     credentials_status = "PASS_PRESENT_BY_NAME" if not missing else "FAIL_MISSING_REQUIRED_NAMES"
     cost_status = (
         "PASS_EXPLICIT_REFERENCE_PRESENT"
@@ -477,7 +473,6 @@ def _nested_int(payload: Mapping[str, Any], key: str, nested_key: str) -> int | 
 def _contains_outcome_like_columns(columns: list[str]) -> bool:
     """Return whether a target-like field escaped into a target-blind table."""
     return any(
-        column.casefold() in _FORBIDDEN_EXACT
-        or column.casefold().startswith(_FORBIDDEN_PREFIXES)
+        column.casefold() in _FORBIDDEN_EXACT or column.casefold().startswith(_FORBIDDEN_PREFIXES)
         for column in columns
     )

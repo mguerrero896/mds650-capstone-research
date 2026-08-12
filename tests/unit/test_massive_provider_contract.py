@@ -30,7 +30,10 @@ def test_directed_quotes_uses_massive_query_auth_and_as_of_selection_params() ->
     assert response.status_code == 200
     assert len(observed) == 1
     request = observed[0]
-    assert str(request.url.copy_with(query=None)) == "https://api.massive.com/v3/quotes/O:AAPL260821C00200000"
+    assert (
+        str(request.url.copy_with(query=None))
+        == "https://api.massive.com/v3/quotes/O:AAPL260821C00200000"
+    )
     assert dict(request.url.params) == {
         "timestamp.lte": "1773000000000000000",
         "sort": "timestamp",

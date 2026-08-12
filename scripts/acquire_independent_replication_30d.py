@@ -86,9 +86,7 @@ def _raise_if_provider_archive_blocked(
         raise RuntimeError(f"REPLICATION_PROVIDER_ARCHIVE_BLOCKED:{session_date}")
 
 
-def _validate_acquisition_manifest(
-    manifest: Mapping[str, Any], expected_dates: list[str]
-) -> None:
+def _validate_acquisition_manifest(manifest: Mapping[str, Any], expected_dates: list[str]) -> None:
     """Validate an in-progress manifest before resuming acquisition.
 
     Parameters
@@ -378,9 +376,7 @@ def main() -> None:
             if _checkpoint_valid(candidate, config):
                 existing[day_text] = candidate
                 ordered = [
-                    existing[item.isoformat()]
-                    for item in dates
-                    if item.isoformat() in existing
+                    existing[item.isoformat()] for item in dates if item.isoformat() in existing
                 ]
                 _write_manifest(ordered, window, method_freeze, exclusions)
                 continue

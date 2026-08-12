@@ -110,14 +110,19 @@ def _resolve_medium(
             candidates.extend(page_rows)
             next_url = page.get("next_url")
             pages += 1
-        return candidates, request_id, pages, {
-            "expired": expired,
-            "http_status": status,
-            "request_id": request_id,
-            "pages": pages,
-            "candidate_rows": len(candidates),
-            "params_sanitized": params,
-        }
+        return (
+            candidates,
+            request_id,
+            pages,
+            {
+                "expired": expired,
+                "http_status": status,
+                "request_id": request_id,
+                "pages": pages,
+                "candidate_rows": len(candidates),
+                "params_sanitized": params,
+            },
+        )
 
     candidates, request_id, pages, first_attempt = fetch("true")
     attempts = [first_attempt]
@@ -230,9 +235,7 @@ def _load_contract_day_caches(
 ) -> dict[str, dict[str, Any]]:
     """Load each contract-day quote cache once for all origins in that day."""
     return {
-        str(contract["contract"]): _json(
-            Path(cache_paths[(asset, day, str(contract["contract"]))])
-        )
+        str(contract["contract"]): _json(Path(cache_paths[(asset, day, str(contract["contract"]))]))
         for contract in day_contracts
     }
 

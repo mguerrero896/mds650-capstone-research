@@ -50,35 +50,86 @@ MANIFEST_ROOT = OUT / "manifests"
 MIN_FREE_BYTES = 90 * 1024**3
 PILOT_DATES = frozenset(date(2026, 7, day) for day in range(13, 18))
 SESSIONS: tuple[date, ...] = (
-    date(2026, 6, 11), date(2026, 6, 12), date(2026, 6, 15), date(2026, 6, 16),
-    date(2026, 6, 17), date(2026, 6, 18), date(2026, 6, 22), date(2026, 6, 23),
-    date(2026, 6, 24), date(2026, 6, 25), date(2026, 6, 26), date(2026, 6, 29),
-    date(2026, 6, 30), date(2026, 7, 1), date(2026, 7, 2), date(2026, 7, 6),
-    date(2026, 7, 7), date(2026, 7, 8), date(2026, 7, 9), date(2026, 7, 10),
+    date(2026, 6, 11),
+    date(2026, 6, 12),
+    date(2026, 6, 15),
+    date(2026, 6, 16),
+    date(2026, 6, 17),
+    date(2026, 6, 18),
+    date(2026, 6, 22),
+    date(2026, 6, 23),
+    date(2026, 6, 24),
+    date(2026, 6, 25),
+    date(2026, 6, 26),
+    date(2026, 6, 29),
+    date(2026, 6, 30),
+    date(2026, 7, 1),
+    date(2026, 7, 2),
+    date(2026, 7, 6),
+    date(2026, 7, 7),
+    date(2026, 7, 8),
+    date(2026, 7, 9),
+    date(2026, 7, 10),
 )
 ASSETS = tuple(sorted(CANDIDATE_ASSETS))
 NY = ZoneInfo("America/New_York")
 ENDPOINT = "https://api.unusualwhales.com/api/option-trades/full-tape/{day}"
 EVENT_FIELDS = (
-    "id", "underlying_symbol", "executed_at", "nbbo_bid", "nbbo_ask", "size", "price",
-    "option_chain_id", "created_at", "report_flags", "tags", "expiry", "option_type",
-    "open_interest", "strike", "premium", "volume", "implied_volatility", "exchange",
-    "ask_vol", "bid_vol", "no_side_vol", "mid_vol", "multi_vol",
+    "id",
+    "underlying_symbol",
+    "executed_at",
+    "nbbo_bid",
+    "nbbo_ask",
+    "size",
+    "price",
+    "option_chain_id",
+    "created_at",
+    "report_flags",
+    "tags",
+    "expiry",
+    "option_type",
+    "open_interest",
+    "strike",
+    "premium",
+    "volume",
+    "implied_volatility",
+    "exchange",
+    "ask_vol",
+    "bid_vol",
+    "no_side_vol",
+    "mid_vol",
+    "multi_vol",
     "upstream_condition_detail",
 )
-EVENT_SCHEMA = pa.schema([
-    pa.field("id", pa.string()), pa.field("underlying_symbol", pa.string()),
-    pa.field("option_chain_id", pa.string()), pa.field("executed_at", pa.timestamp("us", tz="UTC")),
-    pa.field("created_at", pa.timestamp("us", tz="UTC")), pa.field("nbbo_bid", pa.float64()),
-    pa.field("nbbo_ask", pa.float64()), pa.field("price", pa.float64()), pa.field("size", pa.float64()),
-    pa.field("premium", pa.float64()), pa.field("volume", pa.int64()), pa.field("open_interest", pa.int64()),
-    pa.field("implied_volatility", pa.float64()), pa.field("expiry", pa.date32()),
-    pa.field("strike", pa.float64()), pa.field("option_type", pa.string()),
-    pa.field("report_flags", pa.string()), pa.field("tags", pa.string()), pa.field("ask_vol", pa.int64()),
-    pa.field("bid_vol", pa.int64()), pa.field("no_side_vol", pa.int64()), pa.field("mid_vol", pa.int64()),
-    pa.field("multi_vol", pa.int64()), pa.field("exchange", pa.string()),
-    pa.field("upstream_condition_detail", pa.string()),
-])
+EVENT_SCHEMA = pa.schema(
+    [
+        pa.field("id", pa.string()),
+        pa.field("underlying_symbol", pa.string()),
+        pa.field("option_chain_id", pa.string()),
+        pa.field("executed_at", pa.timestamp("us", tz="UTC")),
+        pa.field("created_at", pa.timestamp("us", tz="UTC")),
+        pa.field("nbbo_bid", pa.float64()),
+        pa.field("nbbo_ask", pa.float64()),
+        pa.field("price", pa.float64()),
+        pa.field("size", pa.float64()),
+        pa.field("premium", pa.float64()),
+        pa.field("volume", pa.int64()),
+        pa.field("open_interest", pa.int64()),
+        pa.field("implied_volatility", pa.float64()),
+        pa.field("expiry", pa.date32()),
+        pa.field("strike", pa.float64()),
+        pa.field("option_type", pa.string()),
+        pa.field("report_flags", pa.string()),
+        pa.field("tags", pa.string()),
+        pa.field("ask_vol", pa.int64()),
+        pa.field("bid_vol", pa.int64()),
+        pa.field("no_side_vol", pa.int64()),
+        pa.field("mid_vol", pa.int64()),
+        pa.field("multi_vol", pa.int64()),
+        pa.field("exchange", pa.string()),
+        pa.field("upstream_condition_detail", pa.string()),
+    ]
+)
 
 
 class _ProcessMemoryCounters(ctypes.Structure):
@@ -143,7 +194,9 @@ def _relative(path: Path, base: Path = ROOT) -> str:
 def _atomic_json(path: Path, payload: dict[str, Any]) -> None:
     """Write a JSON checkpoint atomically beside its final path."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as handle:
+    with tempfile.NamedTemporaryFile(
+        "w", encoding="utf-8", dir=path.parent, delete=False
+    ) as handle:
         json.dump(payload, handle, indent=2, sort_keys=True, default=str)
         temporary = Path(handle.name)
     temporary.replace(path)
@@ -178,22 +231,31 @@ def _event_row(row: dict[str, str]) -> dict[str, Any]:
     """Normalize one retained Full Tape row to the stable Parquet schema."""
     expiry = date.fromisoformat(row["expiry"]) if row.get("expiry") else None
     return {
-        "id": row.get("id"), "underlying_symbol": row.get("underlying_symbol"),
-        "option_chain_id": row.get("option_chain_id"), "executed_at": _dt(row["executed_at"]),
-        "created_at": _dt(row["created_at"]), "nbbo_bid": _number(row.get("nbbo_bid")),
-        "nbbo_ask": _number(row.get("nbbo_ask")), "price": _number(row.get("price")),
-        "size": _number(row.get("size")), "premium": _number(row.get("premium")),
+        "id": row.get("id"),
+        "underlying_symbol": row.get("underlying_symbol"),
+        "option_chain_id": row.get("option_chain_id"),
+        "executed_at": _dt(row["executed_at"]),
+        "created_at": _dt(row["created_at"]),
+        "nbbo_bid": _number(row.get("nbbo_bid")),
+        "nbbo_ask": _number(row.get("nbbo_ask")),
+        "price": _number(row.get("price")),
+        "size": _number(row.get("size")),
+        "premium": _number(row.get("premium")),
         "volume": _number(row.get("volume"), integer=True),
         "open_interest": _number(row.get("open_interest"), integer=True),
-        "implied_volatility": _number(row.get("implied_volatility")), "expiry": expiry,
-        "strike": _number(row.get("strike")), "option_type": row.get("option_type"),
-        "report_flags": row.get("report_flags"), "tags": row.get("tags"),
+        "implied_volatility": _number(row.get("implied_volatility")),
+        "expiry": expiry,
+        "strike": _number(row.get("strike")),
+        "option_type": row.get("option_type"),
+        "report_flags": row.get("report_flags"),
+        "tags": row.get("tags"),
         "ask_vol": _number(row.get("ask_vol"), integer=True),
         "bid_vol": _number(row.get("bid_vol"), integer=True),
         "no_side_vol": _number(row.get("no_side_vol"), integer=True),
         "mid_vol": _number(row.get("mid_vol"), integer=True),
         "multi_vol": _number(row.get("multi_vol"), integer=True),
-        "exchange": row.get("exchange"), "upstream_condition_detail": row.get("upstream_condition_detail"),
+        "exchange": row.get("exchange"),
+        "upstream_condition_detail": row.get("upstream_condition_detail"),
     }
 
 
@@ -232,9 +294,12 @@ def storage_preflight(config: Phase5StorageConfig | None = None) -> dict[str, An
     legacy = list(legacy_root.glob("*.json")) if legacy_root.exists() else []
     evidence: dict[str, Any] = {
         **capacity,
-        "secret_presence": {name: bool(os.environ.get(name)) for name in (
-            "UNUSUALWHALES_API_KEY", "MASSIVE_API_KEY", "FMP_API_KEY")},
-        "legacy_cache_status": "LEGACY_CACHE_READ_ONLY", "legacy_cache_files": len(legacy),
+        "secret_presence": {
+            name: bool(os.environ.get(name))
+            for name in ("UNUSUALWHALES_API_KEY", "MASSIVE_API_KEY", "FMP_API_KEY")
+        },
+        "legacy_cache_status": "LEGACY_CACHE_READ_ONLY",
+        "legacy_cache_files": len(legacy),
         "active_cache_status": (
             "ACTIVE_PHASE5_SSD_CACHE_ONLY"
             if config is not None
@@ -243,7 +308,8 @@ def storage_preflight(config: Phase5StorageConfig | None = None) -> dict[str, An
         "authorized_sessions": [day.isoformat() for day in sessions],
         "excluded_dates": sorted(day.isoformat() for day in excluded_dates),
         "network_calls_started": False,
-        "secret_values_emitted": False, "personal_paths_emitted": False,
+        "secret_values_emitted": False,
+        "personal_paths_emitted": False,
     }
     if not evidence["free_space_pass"]:
         raise RuntimeError("INSUFFICIENT_STORAGE_FOR_PHASE_3F")
@@ -265,30 +331,46 @@ def _stream_download(day: date, key: str, destination: Path) -> dict[str, Any]:
             partial.unlink()
         digest = hashlib.sha256()
         try:
-            with httpx.Client(timeout=httpx.Timeout(180.0, connect=30.0), follow_redirects=True) as client, client.stream("GET", ENDPOINT.format(day=day.isoformat()), headers={
-                "Authorization": f"Bearer {key}", "Accept": "application/json",
-            }) as response:
-                    status = response.status_code
-                    if status == 429 or status >= 500:
-                        raise httpx.HTTPStatusError("RETRYABLE_PROVIDER_STATUS", request=response.request, response=response)
-                    response.raise_for_status()
-                    with partial.open("wb") as handle:
-                        for chunk in response.iter_bytes(8 * 1024 * 1024):
-                            if chunk:
-                                digest.update(chunk)
-                                handle.write(chunk)
+            with (
+                httpx.Client(
+                    timeout=httpx.Timeout(180.0, connect=30.0), follow_redirects=True
+                ) as client,
+                client.stream(
+                    "GET",
+                    ENDPOINT.format(day=day.isoformat()),
+                    headers={
+                        "Authorization": f"Bearer {key}",
+                        "Accept": "application/json",
+                    },
+                ) as response,
+            ):
+                status = response.status_code
+                if status == 429 or status >= 500:
+                    raise httpx.HTTPStatusError(
+                        "RETRYABLE_PROVIDER_STATUS", request=response.request, response=response
+                    )
+                response.raise_for_status()
+                with partial.open("wb") as handle:
+                    for chunk in response.iter_bytes(8 * 1024 * 1024):
+                        if chunk:
+                            digest.update(chunk)
+                            handle.write(chunk)
             partial.replace(destination)
             return {
-                "http_status": status, "attempts": attempts, "download_seconds": time_module.perf_counter() - started,
-                "bytes": destination.stat().st_size, "sha256": digest.hexdigest(),
-                "endpoint": ENDPOINT.format(day=day.isoformat()), "request_id": None,
+                "http_status": status,
+                "attempts": attempts,
+                "download_seconds": time_module.perf_counter() - started,
+                "bytes": destination.stat().st_size,
+                "sha256": digest.hexdigest(),
+                "endpoint": ENDPOINT.format(day=day.isoformat()),
+                "request_id": None,
             }
         except (httpx.HTTPError, OSError) as exc:
             if partial.exists():
                 partial.unlink()
             if attempt == 4:
                 raise RuntimeError(f"FULL_TAPE_DOWNLOAD_FAILED:{day}:{type(exc).__name__}") from exc
-            time_module.sleep(2**(attempt - 1))
+            time_module.sleep(2 ** (attempt - 1))
     raise AssertionError("UNREACHABLE_DOWNLOAD_LOOP")
 
 
@@ -322,13 +404,18 @@ def _flush(
     if not batches[asset]:
         return
     root = EVENT_ROOT if event_root is None else event_root
-    target = root / f"date={batches[asset][0]['_session_date']}" / f"asset={asset}" / "events.parquet"
+    target = (
+        root / f"date={batches[asset][0]['_session_date']}" / f"asset={asset}" / "events.parquet"
+    )
     target.parent.mkdir(parents=True, exist_ok=True)
     writer = writers.get(asset)
     if writer is None:
         writer = pq.ParquetWriter(target, EVENT_SCHEMA, compression="zstd")
         writers[asset] = writer
-    rows = [{key: value for key, value in row.items() if key != "_session_date"} for row in batches[asset]]
+    rows = [
+        {key: value for key, value in row.items() if key != "_session_date"}
+        for row in batches[asset]
+    ]
     writer.write_table(pa.Table.from_pylist(rows, schema=EVENT_SCHEMA))
     batches[asset].clear()
 
@@ -432,9 +519,13 @@ def filter_session(
         for asset in ASSETS:
             _flush(writers, batches, asset, event_root)
             if asset not in writers:
-                target = event_root / f"date={day.isoformat()}" / f"asset={asset}" / "events.parquet"
+                target = (
+                    event_root / f"date={day.isoformat()}" / f"asset={asset}" / "events.parquet"
+                )
                 target.parent.mkdir(parents=True, exist_ok=True)
-                pq.write_table(pa.Table.from_pylist([], schema=EVENT_SCHEMA), target, compression="zstd")
+                pq.write_table(
+                    pa.Table.from_pylist([], schema=EVENT_SCHEMA), target, compression="zstd"
+                )
     finally:
         dedup.commit()
         dedup.close()
@@ -448,15 +539,22 @@ def filter_session(
         for path in event_root.glob(f"date={day.isoformat()}/asset=*/events.parquet")
     )
     return {
-        "session_date": day.isoformat(), "csv_member": member, "csv_uncompressed_bytes": csv_bytes,
+        "session_date": day.isoformat(),
+        "csv_member": member,
+        "csv_uncompressed_bytes": csv_bytes,
         "schema_fingerprint": hashlib.sha256("\n".join(sorted(fields)).encode()).hexdigest(),
         "schema_fields": sorted(fields),
-        "rows_seen": rows_seen, "rows_retained": sum(counts.values()),
-        "retained_by_asset": dict(sorted(counts.items())), "duplicate_event_ids": duplicates,
-        "parquet_bytes": parquet_bytes, "filter_seconds": time_module.perf_counter() - started,
-        "python_peak_traced_bytes": None, "python_peak_working_set_bytes": peak_working_set,
+        "rows_seen": rows_seen,
+        "rows_retained": sum(counts.values()),
+        "retained_by_asset": dict(sorted(counts.items())),
+        "duplicate_event_ids": duplicates,
+        "parquet_bytes": parquet_bytes,
+        "filter_seconds": time_module.perf_counter() - started,
+        "python_peak_traced_bytes": None,
+        "python_peak_working_set_bytes": peak_working_set,
         "dedup_key": "id",
-        "dedup_storage": "disk_backed_sqlite_primary_key", "dedup_memory_bound": True,
+        "dedup_storage": "disk_backed_sqlite_primary_key",
+        "dedup_memory_bound": True,
         "timestamp_fields_validated": ["executed_at", "created_at"],
     }
 
@@ -521,9 +619,7 @@ def load_phase5_holdout_config(
     projected_peak_additional_bytes: int,
 ) -> Phase5StorageConfig:
     """Load the frozen manifest and derive the isolated holdout allow-list."""
-    session_manifest = json.loads(
-        session_manifest_path.read_text(encoding="utf-8")
-    )
+    session_manifest = json.loads(session_manifest_path.read_text(encoding="utf-8"))
     return build_phase5_holdout_storage_config(
         session_manifest,
         data_root=output_root,
@@ -585,9 +681,13 @@ def main(
         if zip_path.exists():
             existing_hash = _sha256_file(zip_path)
             download = {
-                "http_status": None, "attempts": 0, "download_seconds": 0.0,
-                "bytes": zip_path.stat().st_size, "sha256": existing_hash,
-                "endpoint": ENDPOINT.format(day=day.isoformat()), "request_id": None,
+                "http_status": None,
+                "attempts": 0,
+                "download_seconds": 0.0,
+                "bytes": zip_path.stat().st_size,
+                "sha256": existing_hash,
+                "endpoint": ENDPOINT.format(day=day.isoformat()),
+                "request_id": None,
                 "reused_raw_archive": True,
             }
         else:
@@ -599,32 +699,62 @@ def main(
             **download,
             **filtered,
             "raw_path": _relative(zip_path, ROOT if config is None else config.data_root),
-            "schema_fields": sorted(expected_fields), "legacy_cache_status": "LEGACY_CACHE_READ_ONLY",
-            "active_cache_status": "ACTIVE_CALIBRATION_CACHE_V2_ONLY", "reused_existing": False,
-            "secret_values_emitted": False, "personal_paths_emitted": False,
+            "schema_fields": sorted(expected_fields),
+            "legacy_cache_status": "LEGACY_CACHE_READ_ONLY",
+            "active_cache_status": "ACTIVE_CALIBRATION_CACHE_V2_ONLY",
+            "reused_existing": False,
+            "secret_values_emitted": False,
+            "personal_paths_emitted": False,
         }
         _atomic_json(day_manifest_path, record)
         day_records.append(record)
-        _atomic_json(batch_manifest_path, {
-            "status": "IN_PROGRESS",
+        _atomic_json(
+            batch_manifest_path,
+            {
+                "status": "IN_PROGRESS",
+                "phase": phase,
+                "session_count": len(day_records),
+                "authorized_session_count": len(sessions),
+                "sessions": day_records,
+                "preflight": preflight,
+                "full_backfill": "BLOCKED",
+                "modeling": "BLOCKED",
+                "qlike": "BLOCKED",
+                "final_test": "BLOCKED",
+                "asset_freeze": "BLOCKED",
+                "secret_values_emitted": False,
+                "personal_paths_emitted": False,
+            },
+        )
+    _atomic_json(
+        batch_manifest_path,
+        {
+            "status": "PASS",
             "phase": phase,
             "session_count": len(day_records),
-            "authorized_session_count": len(sessions), "sessions": day_records,
-            "preflight": preflight, "full_backfill": "BLOCKED", "modeling": "BLOCKED",
-            "qlike": "BLOCKED", "final_test": "BLOCKED", "asset_freeze": "BLOCKED",
-            "secret_values_emitted": False, "personal_paths_emitted": False,
-        })
-    _atomic_json(batch_manifest_path, {
-        "status": "PASS",
-        "phase": phase,
-        "session_count": len(day_records),
-        "authorized_session_count": len(sessions),
-        "sessions": day_records, "preflight": preflight,
-        "full_backfill": "BLOCKED", "modeling": "BLOCKED", "qlike": "BLOCKED",
-        "final_test": "BLOCKED", "asset_freeze": "BLOCKED", "pit_claim": False,
-        "secret_values_emitted": False, "personal_paths_emitted": False,
-    })
-    print(json.dumps({"status": "PASS", "sessions": len(day_records), "reused": sum(bool(x.get("reused_existing")) for x in day_records), "secret_values_emitted": False}))
+            "authorized_session_count": len(sessions),
+            "sessions": day_records,
+            "preflight": preflight,
+            "full_backfill": "BLOCKED",
+            "modeling": "BLOCKED",
+            "qlike": "BLOCKED",
+            "final_test": "BLOCKED",
+            "asset_freeze": "BLOCKED",
+            "pit_claim": False,
+            "secret_values_emitted": False,
+            "personal_paths_emitted": False,
+        },
+    )
+    print(
+        json.dumps(
+            {
+                "status": "PASS",
+                "sessions": len(day_records),
+                "reused": sum(bool(x.get("reused_existing")) for x in day_records),
+                "secret_values_emitted": False,
+            }
+        )
+    )
 
 
 def cli(argv: list[str] | None = None) -> None:

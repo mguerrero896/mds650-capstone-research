@@ -180,8 +180,7 @@ def test_operational_inputs_do_not_authorise_acquisition_without_exact_plan(tmp_
     result = build_confirmation_readiness(_config(tmp_path, acquisition_requested=True))
 
     assert (
-        result["acquisition_preflight"]["status"]
-        == "BLOCKED_EXACT_PLAN_AND_PROVIDER_PIT_REQUIRED"
+        result["acquisition_preflight"]["status"] == "BLOCKED_EXACT_PLAN_AND_PROVIDER_PIT_REQUIRED"
     )
     assert result["safe_to_acquire_new_sample"] == "NO"
     assert result["safe_to_open_or_evaluate_oos"] == "NO"
@@ -207,9 +206,10 @@ def test_readiness_rejects_changed_pit_boundary_and_invalid_coverage(tmp_path: P
     result = build_confirmation_readiness(replace(config, panel_manifest=manifest))
 
     assert result["pit_claim_boundary"]["status"] == "FAIL"
-    assert "PIT_TIMING_RULE_INVALID_FMP_PRIMARY_DELAY_MINUTES" in result["pit_claim_boundary"][
-        "failure_codes"
-    ]
+    assert (
+        "PIT_TIMING_RULE_INVALID_FMP_PRIMARY_DELAY_MINUTES"
+        in result["pit_claim_boundary"]["failure_codes"]
+    )
     assert result["coverage_observation"]["status"] == "FAIL"
     assert result["ready_for_confirmation"] == "NO"
 
@@ -225,9 +225,10 @@ def test_readiness_rejects_target_like_column_in_bound_panel(tmp_path: Path) -> 
     result = build_confirmation_readiness(config)
 
     assert result["common_subset_validation"]["status"] == "FAIL"
-    assert "TARGET_BLIND_OUTCOME_LIKE_COLUMN_PRESENT" in result["common_subset_validation"][
-        "failure_codes"
-    ]
+    assert (
+        "TARGET_BLIND_OUTCOME_LIKE_COLUMN_PRESENT"
+        in result["common_subset_validation"]["failure_codes"]
+    )
     assert result["safe_to_open_or_evaluate_oos"] == "NO"
 
 

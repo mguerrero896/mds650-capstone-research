@@ -42,11 +42,7 @@ def replace_phase6_features(
 ) -> pl.DataFrame:
     """Replace registered sensitivity columns without changing keys or RV30."""
     keys = ("origin_id", "asset", "session_date", "forecast_origin_utc")
-    if any(
-        name not in frame.columns
-        for frame in (primary, sensitivity)
-        for name in keys
-    ):
+    if any(name not in frame.columns for frame in (primary, sensitivity) for name in keys):
         raise ValueError("PHASE6_SENSITIVITY_KEY_MISMATCH")
     if any(name not in primary.columns or name not in sensitivity.columns for name in columns):
         raise ValueError("PHASE6_SENSITIVITY_COLUMNS_MISSING")
@@ -58,20 +54,18 @@ def replace_phase6_features(
         raise ValueError("PHASE6_SENSITIVITY_KEY_MISMATCH")
     if "rv30" in sensitivity.columns and (
         "rv30" not in primary.columns
-        or not primary.select("origin_id", "rv30").sort(
-            "origin_id"
-        ).equals(sensitivity.select("origin_id", "rv30").sort("origin_id"))
+        or not primary.select("origin_id", "rv30")
+        .sort("origin_id")
+        .equals(sensitivity.select("origin_id", "rv30").sort("origin_id"))
     ):
         raise ValueError("PHASE6_SENSITIVITY_TARGET_DRIFT")
     replacements = sensitivity.select("origin_id", *columns).rename(
         {name: f"{name}__sensitivity" for name in columns}
     )
-    joined = primary.join(
-        replacements, on="origin_id", how="left", maintain_order="left"
+    joined = primary.join(replacements, on="origin_id", how="left", maintain_order="left")
+    return joined.with_columns(pl.col(f"{name}__sensitivity").alias(name) for name in columns).drop(
+        *(f"{name}__sensitivity" for name in columns)
     )
-    return joined.with_columns(
-        pl.col(f"{name}__sensitivity").alias(name) for name in columns
-    ).drop(*(f"{name}__sensitivity" for name in columns))
 
 
 def estimate_training_mde(
@@ -97,9 +91,7 @@ def estimate_training_mde(
         raise ValueError("PHASE6_TRAINING_MDE_INPUT_INVALID")
     centered = values - values.mean()
     generator = np.random.default_rng(seed)
-    samples = centered[
-        generator.integers(0, values.size, size=(draws, values.size))
-    ].mean(axis=1)
+    samples = centered[generator.integers(0, values.size, size=(draws, values.size))].mean(axis=1)
     null_critical = float(np.quantile(samples, 0.9875))
     power_tail = float(np.quantile(samples, 0.20))
     mde = null_critical - power_tail
@@ -123,8 +115,7 @@ def authorize_phase6_oos(
         or ledger.get("oos_read_count") != 0
         or ledger.get("evaluation_attempt_count") != 0
         or ledger.get("common_panel_sha256") != common_panel_sha256
-        or ledger.get("preregistration_manifest_sha256")
-        != preregistration_manifest_sha256
+        or ledger.get("preregistration_manifest_sha256") != preregistration_manifest_sha256
         or ledger.get("results_inspected") is not False
         or results_exist
     ):
@@ -139,9 +130,7 @@ def authorize_phase6_oos(
     return authorized
 
 
-def _parameter_grid(
-    preregistration: Mapping[str, Any], role: str
-) -> list[dict[str, float | int]]:
+def _parameter_grid(preregistration: Mapping[str, Any], role: str) -> list[dict[str, float | int]]:
     models = preregistration["models"]
     if role == "gamma_glm_confirmatory":
         model = models["confirmatory"]
@@ -214,9 +203,7 @@ def select_phase6_parameters(
                 fitted.predict(validation),
                 floor=FORECAST_FLOOR,
             )["qlike"]
-            record.update(
-                {"status": "RUN", "validation_qlike": score, "failure_reason": None}
-            )
+            record.update({"status": "RUN", "validation_qlike": score, "failure_reason": None})
             successful.append((score, json.dumps(parameters, sort_keys=True), parameters))
         except Exception as error:
             record.update(
@@ -229,8 +216,7 @@ def select_phase6_parameters(
         records.append(record)
     if not successful:
         raise ValueError(
-            f"PHASE6_NO_SUCCESSFUL_TUNING_VARIANT:{fold.fold}:"
-            f"{information_set}:{role}"
+            f"PHASE6_NO_SUCCESSFUL_TUNING_VARIANT:{fold.fold}:{information_set}:{role}"
         )
     selected = min(successful, key=lambda row: (row[0], row[1]))[2]
     selected_id = canonical_sha256(
@@ -288,12 +274,8 @@ def forecast_phase6_fold(
         pl.Series("qlike_loss", qlike_losses(target, predictions)),
         pl.Series("absolute_error", np.abs(errors)),
         pl.Series("squared_error", np.square(errors)),
-        pl.lit(json.dumps(dict(parameters), sort_keys=True)).alias(
-            "selected_parameters"
-        ),
-        pl.lit(canonical_sha256({"features": list(features)})).alias(
-            "feature_schema_sha256"
-        ),
+        pl.lit(json.dumps(dict(parameters), sort_keys=True)).alias("selected_parameters"),
+        pl.lit(canonical_sha256({"features": list(features)})).alias("feature_schema_sha256"),
     )
 
 
@@ -309,17 +291,13 @@ def phase6_contrast(
     """Estimate one paired QLIKE improvement with whole-day uncertainty."""
     keys = ["origin_id", "asset", "session_date", "fold"]
     left = forecasts.filter(
-        (pl.col("model_role") == role)
-        & (pl.col("information_set") == baseline)
+        (pl.col("model_role") == role) & (pl.col("information_set") == baseline)
     ).select(*keys, pl.col("qlike_loss").alias("baseline_loss"))
     right = forecasts.filter(
-        (pl.col("model_role") == role)
-        & (pl.col("information_set") == expanded)
+        (pl.col("model_role") == role) & (pl.col("information_set") == expanded)
     ).select(*keys, pl.col("qlike_loss").alias("expanded_loss"))
     paired = left.join(right, on=keys, how="inner", validate="1:1").with_columns(
-        (pl.col("baseline_loss") - pl.col("expanded_loss")).alias(
-            "loss_difference"
-        )
+        (pl.col("baseline_loss") - pl.col("expanded_loss")).alias("loss_difference")
     )
     if paired.height != left.height or paired.height != right.height:
         raise ValueError(f"PHASE6_UNPAIRED_CONTRAST:{role}:{name}")
@@ -334,15 +312,9 @@ def phase6_contrast(
         "contrast": name,
         "definition": f"QLIKE({baseline})-QLIKE({expanded})",
         "positive_direction": "EXPANDED_INFORMATION_SET_BETTER",
-        "result_sign": (
-            "POSITIVE" if estimate > 0 else "NEGATIVE" if estimate < 0 else "ZERO"
-        ),
-        "baseline_mean_qlike": float(
-            np.asarray(left["baseline_loss"].to_numpy()).mean()
-        ),
-        "expanded_mean_qlike": float(
-            np.asarray(right["expanded_loss"].to_numpy()).mean()
-        ),
+        "result_sign": ("POSITIVE" if estimate > 0 else "NEGATIVE" if estimate < 0 else "ZERO"),
+        "baseline_mean_qlike": float(np.asarray(left["baseline_loss"].to_numpy()).mean()),
+        "expanded_mean_qlike": float(np.asarray(right["expanded_loss"].to_numpy()).mean()),
         "p_value_raw": float(inference["p_value_two_sided"]),
         **inference,
     }
@@ -424,9 +396,7 @@ def evaluate_phase6(
             expanded="B2v2",
             preregistration=preregistration,
         )
-    targeted_holm = holm_adjust(
-        {name: float(row["p_value_raw"]) for name, row in targeted.items()}
-    )
+    targeted_holm = holm_adjust({name: float(row["p_value_raw"]) for name, row in targeted.items()})
     for name, adjusted in targeted_holm.items():
         targeted[name]["p_value_holm"] = adjusted
 
@@ -475,10 +445,7 @@ def evaluate_phase6(
     return {
         "metrics": sorted(metrics, key=lambda row: (row["model_role"], row["information_set"])),
         "global": {
-            role: {
-                name: global_rows[(role, name)] for name, _, _ in contrasts
-            }
-            for role in roles
+            role: {name: global_rows[(role, name)] for name, _, _ in contrasts} for role in roles
         },
         "global_holm": gamma_holm,
         "targeted_b2v2": targeted,
@@ -512,11 +479,7 @@ def _phase6_timing_contrasts(
     output = []
     for variant in sorted(sensitivity["timing_variant"].unique().to_list()):
         variant_rows = sensitivity.filter(pl.col("timing_variant") == variant)
-        expected_sets = (
-            {"B0v2", "B1v2a", "B2v2"}
-            if variant == "FMP_DELAY_2_MINUTES"
-            else {"B2v2"}
-        )
+        expected_sets = {"B0v2", "B1v2a", "B2v2"} if variant == "FMP_DELAY_2_MINUTES" else {"B2v2"}
         if set(variant_rows["information_set"].unique()) != expected_sets:
             raise ValueError(f"PHASE6_TIMING_INFORMATION_SETS_INVALID:{variant}")
         for role in roles:
@@ -527,8 +490,7 @@ def _phase6_timing_contrasts(
                 combined = variant_rows
                 if baseline not in available:
                     baseline_rows = primary.filter(
-                        (pl.col("model_role") == role)
-                        & (pl.col("information_set") == baseline)
+                        (pl.col("model_role") == role) & (pl.col("information_set") == baseline)
                     )
                     combined = pl.concat([combined, baseline_rows], how="diagonal_relaxed")
                 row = phase6_contrast(
@@ -592,9 +554,7 @@ def training_only_oof_forecasts(
                     preregistration=preregistration,
                 )
             )
-    forecasts = pl.concat(forecast_parts).sort(
-        ["fold", "information_set", "origin_id"]
-    )
+    forecasts = pl.concat(forecast_parts).sort(["fold", "information_set", "origin_id"])
     expected_origins = forecasts["origin_id"].n_unique()
     if expected_origins == 0 or forecasts.height != expected_origins * 3:
         raise ValueError("PHASE6_MDE_FORECAST_PAIRING_FAILURE")
@@ -614,20 +574,18 @@ def training_mde_from_forecasts(
         ("delta_b2v2", "B1v2a", "B2v2"),
     ):
         keys = ["origin_id", "session_date", "fold"]
-        left = forecasts.filter(
-            pl.col("information_set") == baseline
-        ).select(*keys, pl.col("qlike_loss").alias("baseline_loss"))
-        right = forecasts.filter(
-            pl.col("information_set") == expanded
-        ).select(*keys, pl.col("qlike_loss").alias("expanded_loss"))
+        left = forecasts.filter(pl.col("information_set") == baseline).select(
+            *keys, pl.col("qlike_loss").alias("baseline_loss")
+        )
+        right = forecasts.filter(pl.col("information_set") == expanded).select(
+            *keys, pl.col("qlike_loss").alias("expanded_loss")
+        )
         paired = left.join(right, on=keys, how="inner", validate="1:1")
         if paired.height != left.height or paired.height != right.height:
             raise ValueError(f"PHASE6_MDE_UNPAIRED:{name}")
         daily_groups = (
             paired.with_columns(
-                (pl.col("baseline_loss") - pl.col("expanded_loss")).alias(
-                    "loss_difference"
-                )
+                (pl.col("baseline_loss") - pl.col("expanded_loss")).alias("loss_difference")
             )
             .select("session_date", "fold", "origin_id", "loss_difference")
             .sort("session_date", "fold", "origin_id")
@@ -758,11 +716,7 @@ def validate_phase6_evaluation_panel(
     ValueError
         If the preregistration, row keys, sessions, assets or predictors drift.
     """
-    unsigned = {
-        key: value
-        for key, value in preregistration.items()
-        if key != "manifest_sha256"
-    }
+    unsigned = {key: value for key, value in preregistration.items() if key != "manifest_sha256"}
     information_sets = phase6_information_sets()
     required = {
         "origin_id",
@@ -782,11 +736,7 @@ def validate_phase6_evaluation_panel(
         for day in row[key]
     }
     expected_assets = set(preregistration.get("outcome_assets", ()))
-    numeric = [
-        name
-        for name in information_sets["B2v2"]
-        if name != "b0v2_asset_identity"
-    ]
+    numeric = [name for name in information_sets["B2v2"] if name != "b0v2_asset_identity"]
     invalid = (
         preregistration.get("status") != "FROZEN_BEFORE_OOS"
         or preregistration.get("oos_read_count") != 0
@@ -798,8 +748,7 @@ def validate_phase6_evaluation_panel(
         or set(panel["session_date"].cast(pl.String).unique()) != expected_dates
         or set(panel["asset"].cast(pl.String).unique()) != expected_assets
         or panel.filter(~pl.col("common_complete")).height > 0
-        or panel.filter(~pl.col("rv30").is_finite() | (pl.col("rv30") <= 0)).height
-        > 0
+        or panel.filter(~pl.col("rv30").is_finite() | (pl.col("rv30") <= 0)).height > 0
         or panel.select(
             pl.any_horizontal(
                 [~pl.col(name).cast(pl.Float64).is_finite() for name in numeric]

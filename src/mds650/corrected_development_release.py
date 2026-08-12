@@ -242,9 +242,7 @@ def build_corrected_development_release(
     return manifest
 
 
-def validate_corrected_development_release(
-    release: Mapping[str, Any], schema_path: Path
-) -> None:
+def validate_corrected_development_release(release: Mapping[str, Any], schema_path: Path) -> None:
     """Validate one release manifest against its schema and canonical self-hash.
 
     Parameters
@@ -385,8 +383,7 @@ def _assert_source_hashes(source_hashes: Mapping[str, str]) -> None:
     if set(source_hashes) != set(REQUIRED_SOURCE_HASH_KEYS):
         raise ValueError("CORRECTED_DEVELOPMENT_SOURCE_HASH_KEYS_INVALID")
     if any(
-        _SHA256_PATTERN.fullmatch(source_hashes[key]) is None
-        for key in REQUIRED_SOURCE_HASH_KEYS
+        _SHA256_PATTERN.fullmatch(source_hashes[key]) is None for key in REQUIRED_SOURCE_HASH_KEYS
     ):
         raise ValueError("CORRECTED_DEVELOPMENT_SOURCE_HASH_INVALID")
 

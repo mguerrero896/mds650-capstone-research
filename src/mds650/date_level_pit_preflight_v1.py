@@ -21,8 +21,7 @@ REQUIRED_KEY_NAMES: Final[dict[str, str]] = {
 }
 MIN_D_DRIVE_FREE_BYTES: Final[int] = 80 * 1024**3
 ENDPOINT_CATALOG_SCHEMA_PATH: Final[Path] = (
-    Path(__file__).resolve().parents[2]
-    / "specs/001-pit-options-rv30/contracts/"
+    Path(__file__).resolve().parents[2] / "specs/001-pit-options-rv30/contracts/"
     "date-level-pit-preflight-endpoint-catalog-v1.schema.json"
 )
 UTC: Final[timezone] = timezone.utc  # noqa: UP017

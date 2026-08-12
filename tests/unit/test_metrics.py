@@ -28,17 +28,13 @@ def test_regression_metrics_match_direct_definitions() -> None:
 
     assert metrics["mae"] == pytest.approx(0.5)
     assert metrics["rmse"] == pytest.approx(0.5)
-    assert metrics["qlike"] == pytest.approx(
-        float(qlike_losses(actual, forecast).mean())
-    )
+    assert metrics["qlike"] == pytest.approx(float(qlike_losses(actual, forecast).mean()))
 
 
 def test_paired_day_bootstrap_is_clustered_and_deterministic() -> None:
     differences = pl.DataFrame(
         {
-            "session_date": ["2026-06-01"] * 2
-            + ["2026-06-02"] * 2
-            + ["2026-06-03"] * 2,
+            "session_date": ["2026-06-01"] * 2 + ["2026-06-02"] * 2 + ["2026-06-03"] * 2,
             "loss_difference": [1.0, 1.0, 2.0, 2.0, 3.0, 3.0],
         }
     )
@@ -70,6 +66,4 @@ def test_paired_day_bootstrap_is_clustered_and_deterministic() -> None:
 def test_holm_adjustment_is_monotone_in_sorted_order() -> None:
     adjusted = holm_adjust({"delta_b1": 0.01, "delta_b2": 0.04, "robust": 0.03})
 
-    assert adjusted == pytest.approx(
-        {"delta_b1": 0.03, "delta_b2": 0.06, "robust": 0.06}
-    )
+    assert adjusted == pytest.approx({"delta_b1": 0.03, "delta_b2": 0.06, "robust": 0.06})

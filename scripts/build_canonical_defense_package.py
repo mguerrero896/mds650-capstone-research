@@ -452,9 +452,9 @@ def _report_html(markdown: str, records: Sequence[Mapping[str, str]]) -> str:
         f"<td>{html.escape(record['block_label'])}</td>"
         f"<td>{html.escape(record['model'])}</td>"
         f"<td>{html.escape(record['comparison'])}</td>"
-        f"<td class=\"numeric\">{html.escape(record['qlike_delta'])}</td>"
-        f"<td class=\"numeric\">{html.escape(record['ci_95'])}</td>"
-        f"<td class=\"numeric\">{html.escape(record['holm_p'])}</td>"
+        f'<td class="numeric">{html.escape(record["qlike_delta"])}</td>'
+        f'<td class="numeric">{html.escape(record["ci_95"])}</td>'
+        f'<td class="numeric">{html.escape(record["holm_p"])}</td>'
         f"<td>{html.escape(record['mde_met'])}</td>"
         "</tr>"
         for record in records
@@ -544,8 +544,8 @@ underlying/market controls, and can trade-derived activity add further value?
 
 ## Slide 6 — Registered results
 
-- Independent Gamma B2: {independent_gamma_b2['qlike_delta']} with 95% interval {independent_gamma_b2['ci_95']}; MDE met: {independent_gamma_b2['mde_met']}.
-- Independent LightGBM B2: {independent_lgbm_b2['qlike_delta']} with 95% interval {independent_lgbm_b2['ci_95']}; MDE met: {independent_lgbm_b2['mde_met']}.
+- Independent Gamma B2: {independent_gamma_b2["qlike_delta"]} with 95% interval {independent_gamma_b2["ci_95"]}; MDE met: {independent_gamma_b2["mde_met"]}.
+- Independent LightGBM B2: {independent_lgbm_b2["qlike_delta"]} with 95% interval {independent_lgbm_b2["ci_95"]}; MDE met: {independent_lgbm_b2["mde_met"]}.
 - Full signed table: `tables/canonical_registered_contrasts.csv`.
 
 ## Slide 7 — Correct conclusion
@@ -574,7 +574,7 @@ def _qlike_svg(records: Sequence[Mapping[str, str]]) -> str:
     height = 90 + line_height * len(records)
     elements = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="{height}" viewBox="0 0 1200 {height}">',
-        '<style>text{font-family:Arial,sans-serif;fill:#172033}.title{font-size:20px;font-weight:bold}.label{font-size:12px}.value{font-size:12px;font-weight:bold}</style>',
+        "<style>text{font-family:Arial,sans-serif;fill:#172033}.title{font-size:20px;font-weight:bold}.label{font-size:12px}.value{font-size:12px;font-weight:bold}</style>",
         '<rect width="100%" height="100%" fill="white"/>',
         '<text x="24" y="32" class="title">Registered QLIKE contrasts: all signs retained</text>',
         '<text x="24" y="54" class="label">Positive bars favour the expanded information set; zero is the vertical reference.</text>',
@@ -586,9 +586,7 @@ def _qlike_svg(records: Sequence[Mapping[str, str]]) -> str:
         width = abs(value) * scale
         x = axis_x if value >= 0 else axis_x - width
         color = "#167a49" if value >= 0 else "#b34036"
-        label = (
-            f"{record['block']} | {record['model_role']} | {record['contrast']}"
-        )
+        label = f"{record['block']} | {record['model_role']} | {record['contrast']}"
         elements.extend(
             [
                 f'<text x="20" y="{y + 15}" class="label">{html.escape(label)}</text>',
@@ -612,7 +610,7 @@ def _design_flow_svg() -> str:
     )
     elements = [
         '<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="220" viewBox="0 0 1120 220">',
-        '<style>text{font-family:Arial,sans-serif;fill:#172033}.title{font-size:19px;font-weight:bold}.head{font-size:14px;font-weight:bold}.body{font-size:11px}</style>',
+        "<style>text{font-family:Arial,sans-serif;fill:#172033}.title{font-size:19px;font-weight:bold}.head{font-size:14px;font-weight:bold}.body{font-size:11px}</style>",
         '<rect width="100%" height="100%" fill="white"/>',
         '<text x="20" y="28" class="title">Canonical RV30 design: evidence before conclusion</text>',
         '<defs><marker id="arrow" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0, 9 3.5, 0 7" fill="#123c69"/></marker></defs>',
@@ -639,12 +637,10 @@ def _build_outputs(records: Sequence[Mapping[str, str]]) -> dict[Path, bytes]:
     markdown = _report_markdown(records)
     return {
         Path("MDS650_Canonical_RV30_Defense_Report.md"): markdown.encode("utf-8"),
-        Path("MDS650_Canonical_RV30_Defense_Report.html"): _report_html(
-            markdown, records
-        ).encode("utf-8"),
-        Path("MDS650_Canonical_RV30_Defense_Slides.md"): _slides_markdown(records).encode(
+        Path("MDS650_Canonical_RV30_Defense_Report.html"): _report_html(markdown, records).encode(
             "utf-8"
         ),
+        Path("MDS650_Canonical_RV30_Defense_Slides.md"): _slides_markdown(records).encode("utf-8"),
         Path("tables/canonical_registered_contrasts.csv"): _csv_bytes(records),
         Path("figures/canonical_qlike_contrasts.svg"): _qlike_svg(records).encode("utf-8"),
         Path("figures/canonical_design_flow.svg"): _design_flow_svg().encode("utf-8"),
@@ -726,8 +722,7 @@ def build_defense_package(source: Path, output: Path) -> dict[str, object]:
         raise RuntimeError("CANONICAL_DEFENSE_OUTPUT_INVALID")
 
     existing = [
-        _write_equal(output / relative, payload)
-        for relative, payload in output_payloads.items()
+        _write_equal(output / relative, payload) for relative, payload in output_payloads.items()
     ]
     input_paths = [f"{_ARTIFACT_ROOT}/{name}" for name in _INPUT_FILES]
     output_paths = [relative.as_posix() for relative in _OUTPUT_FILES] + [

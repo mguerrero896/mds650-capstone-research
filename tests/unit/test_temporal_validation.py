@@ -19,8 +19,7 @@ def _session_frame(days: list[date]) -> pl.DataFrame:
         {
             "session_date": [day.isoformat() for day in days],
             "forecast_origin_utc": [
-                datetime.combine(day, datetime.min.time(), UTC)
-                + timedelta(hours=15)
+                datetime.combine(day, datetime.min.time(), UTC) + timedelta(hours=15)
                 for day in days
             ],
             "value": list(range(len(days))),
@@ -71,9 +70,7 @@ def test_expanding_fold_uses_only_declared_train_and_test_dates() -> None:
 
     assert training["session_date"].to_list() == ["2026-05-18", "2026-05-19"]
     assert testing["session_date"].to_list() == ["2026-05-20", "2026-05-21"]
-    assert set(training["session_date"].to_list()).isdisjoint(
-        testing["session_date"].to_list()
-    )
+    assert set(training["session_date"].to_list()).isdisjoint(testing["session_date"].to_list())
 
 
 def test_inner_validation_is_last_training_history_only() -> None:
@@ -90,6 +87,4 @@ def test_inner_validation_is_last_training_history_only() -> None:
     assert validation["session_date"].unique().sort().to_list() == [
         day.isoformat() for day in days[-2:]
     ]
-    assert fitting["forecast_origin_utc"].max() < validation[
-        "forecast_origin_utc"
-    ].min()
+    assert fitting["forecast_origin_utc"].max() < validation["forecast_origin_utc"].min()

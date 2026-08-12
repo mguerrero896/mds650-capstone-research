@@ -8,9 +8,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def test_method_freeze_precedes_target_outcome_read() -> None:
     freeze = json.loads(
-        (ROOT / "artifacts/independent_replication/method_freeze.json").read_text(
-            encoding="utf-8"
-        )
+        (ROOT / "artifacts/independent_replication/method_freeze.json").read_text(encoding="utf-8")
     )
     assert freeze["status"] == "FROZEN_BEFORE_TARGET_OUTCOME_READ"
     assert freeze["target_outcome_read"] is False

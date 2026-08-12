@@ -112,9 +112,12 @@ def test_claim_ledger_preserves_proxy_and_not_evaluated_boundaries() -> None:
     assert ledger["safe_to_open_or_evaluate_oos"] == "NO"
     assert ledger["model_fit_performed"] is False
     assert all(claim["evidence"] for claim in ledger["claims"])
-    assert canonical_sha256(
-        {key: value for key, value in ledger.items() if key != "claim_ledger_sha256"}
-    ) == ledger["claim_ledger_sha256"]
+    assert (
+        canonical_sha256(
+            {key: value for key, value in ledger.items() if key != "claim_ledger_sha256"}
+        )
+        == ledger["claim_ledger_sha256"]
+    )
 
 
 def test_claim_ledger_rejects_any_input_that_opens_reconciliation_or_oos() -> None:
@@ -194,9 +197,7 @@ def test_claim_ledger_schema_rejects_extra_or_duplicate_claims() -> None:
     assert list(Draft202012Validator(schema).iter_errors(mutated))
 
     duplicate_identifier = json.loads(json.dumps(ledger))
-    duplicate_identifier["claims"][1]["claim_id"] = duplicate_identifier["claims"][0][
-        "claim_id"
-    ]
+    duplicate_identifier["claims"][1]["claim_id"] = duplicate_identifier["claims"][0]["claim_id"]
 
     assert list(Draft202012Validator(schema).iter_errors(duplicate_identifier))
 

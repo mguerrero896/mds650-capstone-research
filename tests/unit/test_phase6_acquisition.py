@@ -109,12 +109,7 @@ def test_acquire_session_is_idempotent_after_verified_checkpoint(
         _fields: set[str] | None,
         config: Phase5StorageConfig,
     ) -> dict[str, object]:
-        target = (
-            config.event_root
-            / f"date={day.isoformat()}"
-            / "asset=AAPL"
-            / "events.parquet"
-        )
+        target = config.event_root / f"date={day.isoformat()}" / "asset=AAPL" / "events.parquet"
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(b"parquet-fixture")
         return {
@@ -129,9 +124,7 @@ def test_acquire_session_is_idempotent_after_verified_checkpoint(
     monkeypatch.setattr(acquisition, "CHECKPOINT_ROOT", checkpoints)
     monkeypatch.setattr(acquisition.downloader, "_stream_download", fake_download)
     monkeypatch.setattr(acquisition.downloader, "filter_session", fake_filter)
-    monkeypatch.setattr(
-        acquisition.downloader, "_secret", lambda _name: "fixture-secret"
-    )
+    monkeypatch.setattr(acquisition.downloader, "_secret", lambda _name: "fixture-secret")
     monkeypatch.setattr(acquisition, "storage_preflight", lambda _config: {})
     config = Phase5StorageConfig(
         sessions=(date(2025, 7, 7),),

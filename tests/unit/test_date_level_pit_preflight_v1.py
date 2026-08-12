@@ -165,9 +165,7 @@ def test_forecast_origin_uses_declared_utc_session_midpoint(
 
 def test_forecast_origin_reads_only_declared_open_and_close_utc() -> None:
     origin = _derive_origin(
-        _DeclaredOpenCloseMetadata(
-            "2026-01-20T14:30:00+00:00", "2026-01-20T21:00:00+00:00"
-        )
+        _DeclaredOpenCloseMetadata("2026-01-20T14:30:00+00:00", "2026-01-20T21:00:00+00:00")
     )
 
     assert origin.forecast_origin_utc == "2026-01-20T17:45:00+00:00"
@@ -341,9 +339,7 @@ def test_run_preflight_execute_does_not_wire_a_real_network_transport() -> None:
 
     assert report["status"] == "FAILED_CLOSED"
     assert report["blocking_reasons"] == ["NETWORK_TRANSPORT_UNCONFIGURED"]
-    assert {check["request_status"] for check in _checks(report)} == {
-        "NOT_ATTEMPTED_GATE_BLOCKED"
-    }
+    assert {check["request_status"] for check in _checks(report)} == {"NOT_ATTEMPTED_GATE_BLOCKED"}
 
 
 def test_run_preflight_report_is_deterministic() -> None:

@@ -105,9 +105,11 @@ def build_pilot(
         if not bars:
             raise QualityGateError("PILOT_EMPTY_UNDERLYING_DATA")
         normalized_by_asset[asset] = bars
-        ratio = min(
-            len(bars) / expected_rows_per_asset, 1.0
-        ) if expected_rows_per_asset is not None else 1.0
+        ratio = (
+            min(len(bars) / expected_rows_per_asset, 1.0)
+            if expected_rows_per_asset is not None
+            else 1.0
+        )
         quality.append(
             AssetQuality(
                 asset=asset,
@@ -146,8 +148,7 @@ def build_pilot(
             if anchor is None:
                 continue
             future_times = [
-                origin.origin_start_utc + timedelta(minutes=offset)
-                for offset in range(1, 31)
+                origin.origin_start_utc + timedelta(minutes=offset) for offset in range(1, 31)
             ]
             future_bars = [by_timestamp.get(timestamp) for timestamp in future_times]
             if any(bar is None for bar in future_bars):
@@ -221,14 +222,12 @@ def _trace_row(
     eligible_trades = [
         trade
         for trade in trades
-        if trade.contract_id in event_contract_ids
-        and trade.observed_at_utc <= cutoff
+        if trade.contract_id in event_contract_ids and trade.observed_at_utc <= cutoff
     ]
     eligible_quotes = [
         quote
         for quote in quotes
-        if quote.contract_id in event_contract_ids
-        and quote.observed_at_utc <= cutoff
+        if quote.contract_id in event_contract_ids and quote.observed_at_utc <= cutoff
     ]
     return {
         "origin_id": origin.origin_id,

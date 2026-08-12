@@ -179,12 +179,7 @@ class _SensitivityAccumulator:
         age_cutoff = (cutoff_ns - sip_timestamp) / NANOSECONDS_PER_SECOND
         self.age_from_origin.append(age_origin)
         self.age_from_cutoff.append(age_cutoff)
-        if (
-            not math.isfinite(bid)
-            or not math.isfinite(ask)
-            or bid <= 0.0
-            or ask <= bid
-        ):
+        if not math.isfinite(bid) or not math.isfinite(ask) or bid <= 0.0 or ask <= bid:
             self.invalid_selected_nbbo_count += 1
             self.invalid_selected_spread_count += 1
             return
@@ -801,9 +796,10 @@ def audit_forecast_origin_session_bounds(
         if origin_timestamp_column == "forecast_origin_ns":
             origin_values = batch.column(2).to_pylist()
             origin_valid = [isinstance(value, int) for value in origin_values]
-            origin_ns_values = [int(value) if valid else 0 for value, valid in zip(
-                origin_values, origin_valid, strict=True
-            )]
+            origin_ns_values = [
+                int(value) if valid else 0
+                for value, valid in zip(origin_values, origin_valid, strict=True)
+            ]
         else:
             origin_ns_values_array, origin_valid_array = _timestamp_array_numpy(batch.column(2))
             origin_ns_values = origin_ns_values_array.tolist()
@@ -968,6 +964,7 @@ def audit_massive_reselection(
     reader = pq.ParquetFile(attempts_path)
     if not set(required_columns).issubset(reader.schema_arrow.names):
         raise ValueError("TIMING_V21_B1_ATTEMPT_COLUMNS_MISSING")
+
     def _asset_accumulator(delay: int, asset: str) -> _SensitivityAccumulator:
         return asset_accumulators.setdefault((delay, asset), _SensitivityAccumulator())
 
@@ -976,9 +973,7 @@ def audit_massive_reselection(
             global_accumulators[delay].attempt_count += 1
             _asset_accumulator(delay, asset).attempt_count += 1
 
-    def _process_asset_day(
-        *, asset: str, session_date: str, rows: list[dict[str, Any]]
-    ) -> None:
+    def _process_asset_day(*, asset: str, session_date: str, rows: list[dict[str, Any]]) -> None:
         """Process one contiguous asset-day, decoding each cache once."""
         processing_counts["asset_day_group_count"] += 1
         processing_counts["max_pending_attempt_rows"] = max(
@@ -993,9 +988,7 @@ def audit_massive_reselection(
             by_source_hash = by_contract[contract]
             processing_counts["contract_day_group_count"] += 1
             contract_rows = [
-                row
-                for source_hash in sorted(by_source_hash)
-                for row in by_source_hash[source_hash]
+                row for source_hash in sorted(by_source_hash) for row in by_source_hash[source_hash]
             ]
             for _row in contract_rows:
                 _record_attempt_count(asset=asset)
@@ -1493,8 +1486,10 @@ def _expected_massive_cache_key(
     expiry = contract_metadata.get("expiry")
     strike = contract_metadata.get("strike")
     option_type = contract_metadata.get("option_type")
-    if not isinstance(expiry, str) or not isinstance(strike, int | float) or not isinstance(
-        option_type, str
+    if (
+        not isinstance(expiry, str)
+        or not isinstance(strike, int | float)
+        or not isinstance(option_type, str)
     ):
         raise ValueError("TIMING_V21_CACHE_CONTRACT_METADATA_INVALID")
     return (
@@ -1601,12 +1596,7 @@ def _iv_from_reselected_quote(
     *, row: Mapping[str, Any], quote: tuple[int, int, float, float]
 ) -> dict[str, Any] | None:
     _, _, bid, ask = quote
-    if (
-        not math.isfinite(bid)
-        or not math.isfinite(ask)
-        or bid <= 0.0
-        or ask <= bid
-    ):
+    if not math.isfinite(bid) or not math.isfinite(ask) or bid <= 0.0 or ask <= bid:
         return {"success": False, "failure_reason": "INVALID_SELECTED_NBBO"}
     midpoint = (bid + ask) / 2.0
     relative_spread = (ask - bid) / midpoint
@@ -1639,8 +1629,7 @@ def _invert_iv(
         return {"success": False, "failure_reason": "INVALID_OPTION_TYPE"}
     if (
         not all(
-            math.isfinite(value)
-            for value in (spot, strike, time_years, rate, dividend, midpoint)
+            math.isfinite(value) for value in (spot, strike, time_years, rate, dividend, midpoint)
         )
         or spot <= 0.0
         or strike <= 0.0

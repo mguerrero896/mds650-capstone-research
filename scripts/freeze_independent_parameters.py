@@ -52,9 +52,7 @@ def main() -> None:
         for information_set in ("B0v2", "B1v2a", "B2v2")
         for role in ("gamma_glm_confirmatory", "lightgbm_robustness")
     }
-    observed = {
-        (str(row.get("information_set")), str(row.get("model_role"))) for row in selected
-    }
+    observed = {(str(row.get("information_set")), str(row.get("model_role"))) for row in selected}
     if observed != required:
         raise RuntimeError("PHASE6_FOLD1_PARAMETER_SET_INCOMPLETE")
     parameters = {

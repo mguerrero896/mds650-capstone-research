@@ -47,8 +47,7 @@ def add_compact_b2_features(frame: pl.DataFrame) -> pl.DataFrame:
     invalid = frame.select(
         pl.any_horizontal(
             [
-                ~pl.col(column).cast(pl.Float64).is_finite()
-                | (pl.col(column).cast(pl.Float64) < 0)
+                ~pl.col(column).cast(pl.Float64).is_finite() | (pl.col(column).cast(pl.Float64) < 0)
                 for column in sorted(RAW_B2_COLUMNS)
             ]
         ).any()
@@ -58,9 +57,8 @@ def add_compact_b2_features(frame: pl.DataFrame) -> pl.DataFrame:
 
     count = pl.col("option_trade_count_5m").cast(pl.Float64)
     premium = pl.col("total_premium_5m").cast(pl.Float64)
-    call_put_premium = (
-        pl.col("call_premium_5m").cast(pl.Float64)
-        + pl.col("put_premium_5m").cast(pl.Float64)
+    call_put_premium = pl.col("call_premium_5m").cast(pl.Float64) + pl.col("put_premium_5m").cast(
+        pl.Float64
     )
 
     result = frame.with_columns(
@@ -74,10 +72,7 @@ def add_compact_b2_features(frame: pl.DataFrame) -> pl.DataFrame:
             .then((premium / count).log1p())
             .otherwise(0.0)
             .alias(B2_FEATURE_NAMES[2]),
-            pl.col("max_trade_premium_5m")
-            .cast(pl.Float64)
-            .log1p()
-            .alias(B2_FEATURE_NAMES[3]),
+            pl.col("max_trade_premium_5m").cast(pl.Float64).log1p().alias(B2_FEATURE_NAMES[3]),
             pl.when(call_put_premium > 0)
             .then(
                 (
@@ -96,12 +91,8 @@ def add_compact_b2_features(frame: pl.DataFrame) -> pl.DataFrame:
             .then(pl.col("repeated_contract_premium") / premium)
             .otherwise(0.0)
             .alias(B2_FEATURE_NAMES[6]),
-            pl.col("strike_concentration")
-            .cast(pl.Float64)
-            .alias(B2_FEATURE_NAMES[7]),
-            pl.col("expiry_concentration")
-            .cast(pl.Float64)
-            .alias(B2_FEATURE_NAMES[8]),
+            pl.col("strike_concentration").cast(pl.Float64).alias(B2_FEATURE_NAMES[7]),
+            pl.col("expiry_concentration").cast(pl.Float64).alias(B2_FEATURE_NAMES[8]),
         ]
     )
     return result

@@ -67,9 +67,9 @@ def test_exclusion_requires_stable_provider_incident(tmp_path: Path) -> None:
         encoding="utf-8",
     )
 
-    assert acquisition._validated_exclusions(
-        ["2025-04-04"], [date(2025, 4, 4)], tmp_path
-    ) == {date(2025, 4, 4)}
+    assert acquisition._validated_exclusions(["2025-04-04"], [date(2025, 4, 4)], tmp_path) == {
+        date(2025, 4, 4)
+    }
     with pytest.raises(RuntimeError, match="REPLICATION_EXCLUSION_NOT_PROVIDER_BLOCKED"):
         acquisition._validated_exclusions(["2025-04-03"], [date(2025, 4, 3)], tmp_path)
 
@@ -114,6 +114,4 @@ def test_incident_adjusted_manifest_allows_only_declared_missing_date() -> None:
     payload["manifest_sha256"] = acquisition.canonical_sha256(
         {key: value for key, value in payload.items() if key != "manifest_sha256"}
     )
-    acquisition._validate_acquisition_manifest(
-        payload, ["2025-04-03", "2025-04-04"]
-    )
+    acquisition._validate_acquisition_manifest(payload, ["2025-04-03", "2025-04-04"])

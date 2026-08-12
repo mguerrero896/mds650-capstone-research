@@ -46,9 +46,7 @@ def _write_block(tmp_path: Path, *, expected_hash: str | None = None) -> tuple[P
         encoding="utf-8",
     )
     (summary_block / "summary.json").write_text(
-        json.dumps(
-            {"status": "PASS_CANONICAL_VALIDATION", "prediction_sha256": digest}
-        ),
+        json.dumps({"status": "PASS_CANONICAL_VALIDATION", "prediction_sha256": digest}),
         encoding="utf-8",
     )
     return data_root, output_root

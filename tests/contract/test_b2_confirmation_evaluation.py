@@ -15,9 +15,7 @@ SCRIPT = ROOT / "scripts" / "evaluate_b2_confirmation_blocks.py"
 def test_independent_panel_is_opened_after_development_fit() -> None:
     source = SCRIPT.read_text(encoding="utf-8")
     fit_position = source.index("fit_development_candidate(")
-    independent_read_position = source.index(
-        'new_raw = pl.read_parquet(NEW_PANEL)'
-    )
+    independent_read_position = source.index("new_raw = pl.read_parquet(NEW_PANEL)")
     assert fit_position < independent_read_position
     assert "frozen above" in source
 

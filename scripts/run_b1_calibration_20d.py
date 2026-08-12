@@ -63,10 +63,7 @@ def _authorized_sessions(config: B1BuildConfig) -> tuple[str, ...]:
     sessions = tuple(
         sorted(
             str(value)
-            for value in pl.read_parquet(source)
-            .get_column("session_date")
-            .unique()
-            .to_list()
+            for value in pl.read_parquet(source).get_column("session_date").unique().to_list()
         )
     )
     if not sessions:
@@ -118,9 +115,7 @@ def _fmp_list_request(
             payload = response.json()
         except ValueError:
             raise RuntimeError("FMP_RESPONSE_NOT_JSON") from None
-        if not isinstance(payload, list) or not all(
-            isinstance(row, dict) for row in payload
-        ):
+        if not isinstance(payload, list) or not all(isinstance(row, dict) for row in payload):
             raise RuntimeError("FMP_RESPONSE_NOT_LIST")
         return payload
     raise RuntimeError("FMP_REQUEST_RETRY_EXHAUSTED")
@@ -183,7 +178,11 @@ def _rates_and_dividends(
                 fmp_key,
             )
     result: dict[tuple[str, str], float] = {}
-    for row in origins.group_by(["asset", "session_date"]).agg(pl.col("spot").first()).iter_rows(named=True):
+    for row in (
+        origins.group_by(["asset", "session_date"])
+        .agg(pl.col("spot").first())
+        .iter_rows(named=True)
+    ):
         asset, day, spot = str(row["asset"]), str(row["session_date"]), float(row["spot"])
         cutoff = date.fromisoformat(day)
         total = 0.0
@@ -239,7 +238,11 @@ def _resolve_contracts(
     config: B1BuildConfig = DEFAULT_CONFIG,
 ) -> dict[tuple[str, str], list[dict[str, Any]]]:
     """Resolve and checkpoint historical contracts once per asset/session."""
-    spots = origins.group_by(["asset", "session_date"]).agg(pl.col("spot").first()).sort(["asset", "session_date"])
+    spots = (
+        origins.group_by(["asset", "session_date"])
+        .agg(pl.col("spot").first())
+        .sort(["asset", "session_date"])
+    )
     cache_path = config.cache_root / "resolved_contracts_phase6_strict_v3.json"
     if cache_path.exists():
         payload = json.loads(cache_path.read_text(encoding="utf-8"))
@@ -334,12 +337,15 @@ def _fetch_quotes(
                     message = str(error)
                     attempts = transient_retries.get(job_key, 0)
                     if (
-                        ("MASSIVE_QUOTE_HTTP_502" in message or "MASSIVE_QUOTE_HTTP_503" in message)
-                        and attempts < 4
-                    ):
+                        "MASSIVE_QUOTE_HTTP_502" in message or "MASSIVE_QUOTE_HTTP_503" in message
+                    ) and attempts < 4:
                         transient_retries[job_key] = attempts + 1
                         time_module.sleep(min(30, 5 * 2**attempts))
-                        pending[executor.submit(closure.fetch_contract_day, (asset, day, contract), massive_key)] = (
+                        pending[
+                            executor.submit(
+                                closure.fetch_contract_day, (asset, day, contract), massive_key
+                            )
+                        ] = (
                             asset,
                             day,
                             contract,
@@ -347,18 +353,14 @@ def _fetch_quotes(
                         continue
                     raise
                 if cache.get("http_status") != 200:
-                    raise RuntimeError(
-                        f"B1Q_QUOTE_CACHE_HTTP_FAILURE:{asset}:{day}"
-                    )
+                    raise RuntimeError(f"B1Q_QUOTE_CACHE_HTTP_FAILURE:{asset}:{day}")
                 pagination = cache.get("pagination_complete")
                 if pagination is True:
                     audit["pagination_explicit"] += 1
                 elif pagination == "INFERRED_TERMINAL_PARTIAL_PAGE":
                     audit["pagination_inferred_terminal_partial"] += 1
                 else:
-                    raise RuntimeError(
-                        f"B1Q_QUOTE_PAGINATION_UNVERIFIED:{asset}:{day}"
-                    )
+                    raise RuntimeError(f"B1Q_QUOTE_PAGINATION_UNVERIFIED:{asset}:{day}")
                 audit["cache_hits" if cache.get("cache_hit") else "network_fetches"] += 1
                 audit["pages"] += int(cache.get("pages", 0))
                 audit["provider_duplicate_rows_removed"] += int(
@@ -367,9 +369,7 @@ def _fetch_quotes(
                 cache_path = Path(str(cache.get("cache_path", "")))
                 source_hash = cache.get("source_request_hash")
                 if not cache_path.is_file() or not isinstance(source_hash, str):
-                    raise RuntimeError(
-                        f"B1Q_QUOTE_CACHE_EVIDENCE_MISSING:{asset}:{day}"
-                    )
+                    raise RuntimeError(f"B1Q_QUOTE_CACHE_EVIDENCE_MISSING:{asset}:{day}")
                 output[(asset, day, contract["contract"])] = (
                     cache_path,
                     source_hash,
@@ -385,12 +385,9 @@ def _fetch_quotes(
                         massive_key,
                     )
                 ] = job
-    if (
-        len(output) != len(jobs)
-        or audit["pagination_explicit"]
-        + audit["pagination_inferred_terminal_partial"]
-        != len(jobs)
-    ):
+    if len(output) != len(jobs) or audit["pagination_explicit"] + audit[
+        "pagination_inferred_terminal_partial"
+    ] != len(jobs):
         raise RuntimeError("B1Q_QUOTE_CACHE_AUDIT_INCOMPLETE")
     return output, audit
 
@@ -411,7 +408,10 @@ def _first_failure(iv_rows: list[dict[str, Any]], summary: dict[str, Any]) -> st
         return "NO_HISTORICAL_CONTRACT"
     if not any(row.get("midpoint") is not None for row in iv_rows):
         return "NO_QUOTE_BEFORE_ORIGIN"
-    if not any(row.get("quote_age_seconds") is not None and row.get("quote_age_seconds", 9999) <= 60 for row in iv_rows):
+    if not any(
+        row.get("quote_age_seconds") is not None and row.get("quote_age_seconds", 9999) <= 60
+        for row in iv_rows
+    ):
         return "STALE_QUOTE"
     if not any(row.get("iv_success") for row in iv_rows):
         return "IV_NO_CONVERGENCE"
@@ -420,7 +420,11 @@ def _first_failure(iv_rows: list[dict[str, Any]], summary: dict[str, Any]) -> st
     if summary.get("b1q_skew") is None:
         return "SKEW_PAIR_MISSING"
     term = summary.get("b1q_term_structure") or {}
-    if term.get("short_to_medium") is None and term.get("medium_to_long") is None and term.get("short_to_long") is None:
+    if (
+        term.get("short_to_medium") is None
+        and term.get("medium_to_long") is None
+        and term.get("short_to_long") is None
+    ):
         return "TERM_BUCKET_MISSING"
     return "NO_FAILURE"
 
@@ -431,9 +435,7 @@ def _quote_pit_evidence(
 ) -> dict[str, int | bool | None]:
     """Summarize observed SIP timestamps for one forecast origin."""
     timestamps = [
-        int(row["sip_timestamp"])
-        for row in iv_rows
-        if isinstance(row.get("sip_timestamp"), int)
+        int(row["sip_timestamp"]) for row in iv_rows if isinstance(row.get("sip_timestamp"), int)
     ]
     latest = max(timestamps) if timestamps else None
     not_after_origin = latest is not None and latest <= origin_ns
@@ -447,21 +449,29 @@ def _quote_pit_evidence(
 def _coverage(frame: pl.DataFrame) -> dict[str, Any]:
     """Compute component and nested coverage for one frame."""
     n = frame.height or 1
-    return {"atm_iv_component": frame["atm_iv_available"].mean(), "skew_component": frame["skew_available"].mean(), "term_structure_component": frame["term_structure_available"].mean(), "b1a": frame["b1a_complete"].mean(), "b1b": frame["b1b_complete"].mean(), "b1c": frame["b1c_complete"].mean(), "iv_success_rate": frame["iv_inversion_success_rate"].mean() if n else 0.0}
+    return {
+        "atm_iv_component": frame["atm_iv_available"].mean(),
+        "skew_component": frame["skew_available"].mean(),
+        "term_structure_component": frame["term_structure_available"].mean(),
+        "b1a": frame["b1a_complete"].mean(),
+        "b1b": frame["b1b_complete"].mean(),
+        "b1c": frame["b1c_complete"].mean(),
+        "iv_success_rate": frame["iv_inversion_success_rate"].mean() if n else 0.0,
+    }
 
 
 def _load_origins(config: B1BuildConfig) -> pl.DataFrame:
     """Load the explicit origin source and enforce its session allow-list."""
     source = config.origins_path or config.output_root / "b2_calibration_origins.parquet"
-    origins = pl.read_parquet(source).select(["origin_id", "asset", "session_date", "forecast_origin_utc", "spot", "session_segment"])
+    origins = pl.read_parquet(source).select(
+        ["origin_id", "asset", "session_date", "forecast_origin_utc", "spot", "session_segment"]
+    )
     observed_sessions = tuple(
         sorted(str(value) for value in origins.get_column("session_date").unique().to_list())
     )
     if observed_sessions != _authorized_sessions(config):
         raise RuntimeError("B1_ORIGIN_SESSION_ALLOWLIST_MISMATCH")
-    return origins.with_columns(
-        pl.col("forecast_origin_utc").dt.timestamp("ns").alias("origin_ns")
-    )
+    return origins.with_columns(pl.col("forecast_origin_utc").dt.timestamp("ns").alias("origin_ns"))
 
 
 def main(config: B1BuildConfig = DEFAULT_CONFIG) -> None:
@@ -472,9 +482,7 @@ def main(config: B1BuildConfig = DEFAULT_CONFIG) -> None:
     fmp_key, massive_key = _secret("FMP_API_KEY"), _secret("MASSIVE_API_KEY")
     rates, dividend_yields = _rates_and_dividends(fmp_key, origins, config)
     contracts = _resolve_contracts(origins, massive_key, config)
-    quote_cache_refs, quote_cache_audit = _fetch_quotes(
-        contracts, massive_key, config
-    )
+    quote_cache_refs, quote_cache_audit = _fetch_quotes(contracts, massive_key, config)
     _load_quote_cache.cache_clear()
     origins = origins.sort(["asset", "session_date", "forecast_origin_utc"])
     rows: list[dict[str, Any]] = []
@@ -486,12 +494,29 @@ def main(config: B1BuildConfig = DEFAULT_CONFIG) -> None:
         dividend_yield = dividend_yields.get((asset, day), 0.0)
         iv_rows: list[dict[str, Any]] = []
         for contract in contracts.get((asset, day), []):
-            cache_path, source_hash = quote_cache_refs[
-                (asset, day, contract["contract"])
-            ]
+            cache_path, source_hash = quote_cache_refs[(asset, day, contract["contract"])]
             cache = _load_quote_cache(cache_path)
             quote = closure.latest_quote(cache, int(origin["origin_ns"]))
-            attempt: dict[str, Any] = {**contract, "asset": asset, "session_date": day, "origin_id": origin["origin_id"], "forecast_origin_utc": origin["forecast_origin_utc"].isoformat(), "forecast_origin_ns": int(origin["origin_ns"]), "spot": float(origin["spot"]), "moneyness": float(contract["strike"]) / float(origin["spot"]), "rate": rate, "rate_source_date": rate_source_date, "dividend_yield": dividend_yield, "dividend_assumption": "PRE_ORIGIN_TRAILING_DECLARATIONS" if dividend_yield > 0 else "NO_PRE_ORIGIN_DIVIDEND_Q_ZERO", "source_request_hash": source_hash, "iv_success": False, "iv": None, "failure_reason": "NO_QUOTE_BEFORE_ORIGIN"}
+            attempt: dict[str, Any] = {
+                **contract,
+                "asset": asset,
+                "session_date": day,
+                "origin_id": origin["origin_id"],
+                "forecast_origin_utc": origin["forecast_origin_utc"].isoformat(),
+                "forecast_origin_ns": int(origin["origin_ns"]),
+                "spot": float(origin["spot"]),
+                "moneyness": float(contract["strike"]) / float(origin["spot"]),
+                "rate": rate,
+                "rate_source_date": rate_source_date,
+                "dividend_yield": dividend_yield,
+                "dividend_assumption": "PRE_ORIGIN_TRAILING_DECLARATIONS"
+                if dividend_yield > 0
+                else "NO_PRE_ORIGIN_DIVIDEND_Q_ZERO",
+                "source_request_hash": source_hash,
+                "iv_success": False,
+                "iv": None,
+                "failure_reason": "NO_QUOTE_BEFORE_ORIGIN",
+            }
             if quote:
                 attempt["sip_timestamp"] = quote.get("sip_timestamp")
                 attempt["failure_reason"] = quote.get(
@@ -499,22 +524,120 @@ def main(config: B1BuildConfig = DEFAULT_CONFIG) -> None:
                     "NO_QUOTE_BEFORE_ORIGIN",
                 )
             if quote and quote.get("midpoint") is not None:
-                attempt.update({"bid": quote.get("bid"), "ask": quote.get("ask"), "quote_age_seconds": quote.get("quote_age_seconds"), "relative_spread": quote.get("relative_spread"), "midpoint": quote.get("midpoint")})
+                attempt.update(
+                    {
+                        "bid": quote.get("bid"),
+                        "ask": quote.get("ask"),
+                        "quote_age_seconds": quote.get("quote_age_seconds"),
+                        "relative_spread": quote.get("relative_spread"),
+                        "midpoint": quote.get("midpoint"),
+                    }
+                )
                 if quote["quote_age_seconds"] > 60:
                     attempt["failure_reason"] = "STALE_QUOTE"
                 elif quote["relative_spread"] > 0.25:
                     attempt["failure_reason"] = "INVALID_SPREAD"
                 else:
-                    result = closure.invert_iv(float(origin["spot"]), float(contract["strike"]), float(contract["dte"]) / 365.0, attempt["rate"], attempt["dividend_yield"], float(quote["midpoint"]), str(contract["option_type"]))
-                    attempt.update({"iv_success": bool(result["success"]), "iv": result.get("iv"), "failure_reason": result.get("failure_reason"), "iterations": result.get("iterations"), "lower_bound": result.get("lower_bound"), "upper_bound": result.get("upper_bound")})
+                    result = closure.invert_iv(
+                        float(origin["spot"]),
+                        float(contract["strike"]),
+                        float(contract["dte"]) / 365.0,
+                        attempt["rate"],
+                        attempt["dividend_yield"],
+                        float(quote["midpoint"]),
+                        str(contract["option_type"]),
+                    )
+                    attempt.update(
+                        {
+                            "iv_success": bool(result["success"]),
+                            "iv": result.get("iv"),
+                            "failure_reason": result.get("failure_reason"),
+                            "iterations": result.get("iterations"),
+                            "lower_bound": result.get("lower_bound"),
+                            "upper_bound": result.get("upper_bound"),
+                        }
+                    )
             iv_rows.append(attempt)
         attempt_rows.extend(iv_rows)
         summary = closure.route_summary(iv_rows, route="B1Q")
-        atm, skew, term = summary.get("b1q_atm_iv"), summary.get("b1q_skew"), summary.get("b1q_term_structure") or {}
+        atm, skew, term = (
+            summary.get("b1q_atm_iv"),
+            summary.get("b1q_skew"),
+            summary.get("b1q_term_structure") or {},
+        )
         pit_evidence = _quote_pit_evidence(iv_rows, int(origin["origin_ns"]))
-        row = {"origin_id": origin["origin_id"], "asset": asset, "session_date": day, "forecast_origin_utc": origin["forecast_origin_utc"], "session_segment": origin["session_segment"], "instrument_type": "ETF" if asset in {"SPY", "QQQ"} else "equity", "rate": rate, "rate_source_date": rate_source_date, "dividend_yield": dividend_yield, "dividend_assumption": "PRE_ORIGIN_TRAILING_DECLARATIONS" if dividend_yield > 0 else "NO_PRE_ORIGIN_DIVIDEND_Q_ZERO", "atm_iv_available": atm is not None, "skew_available": skew is not None, "term_structure_available": any(value is not None for value in term.values()), "b1a_complete": atm is not None, "b1b_complete": atm is not None and skew is not None, "b1c_complete": atm is not None and skew is not None and all(value is not None for value in (term.get("short_to_medium"), term.get("medium_to_long"), term.get("short_to_long"))), "b1q_atm_iv": atm, "b1q_skew": skew, "b1q_term_structure": term, "valid_contract_count": summary.get("valid_contract_count", 0), "valid_quote_count": summary.get("valid_quote_count", 0), "valid_expiry_bucket_count": summary.get("valid_expiry_bucket_count", 0), "median_quote_age": summary.get("median_quote_age"), "median_relative_spread": summary.get("median_relative_spread"), "iv_attempts": len(iv_rows), "iv_successes": sum(bool(item.get("iv_success")) for item in iv_rows), "iv_inversion_success_rate": sum(bool(item.get("iv_success")) for item in iv_rows) / len(iv_rows) if iv_rows else 0.0, "first_failure_code": _first_failure(iv_rows, summary), **pit_evidence, "route": "B1Q_MASSIVE_PRIMARY", "b1t_status": "DIAGNOSTIC_ONLY"}
+        row = {
+            "origin_id": origin["origin_id"],
+            "asset": asset,
+            "session_date": day,
+            "forecast_origin_utc": origin["forecast_origin_utc"],
+            "session_segment": origin["session_segment"],
+            "instrument_type": "ETF" if asset in {"SPY", "QQQ"} else "equity",
+            "rate": rate,
+            "rate_source_date": rate_source_date,
+            "dividend_yield": dividend_yield,
+            "dividend_assumption": "PRE_ORIGIN_TRAILING_DECLARATIONS"
+            if dividend_yield > 0
+            else "NO_PRE_ORIGIN_DIVIDEND_Q_ZERO",
+            "atm_iv_available": atm is not None,
+            "skew_available": skew is not None,
+            "term_structure_available": any(value is not None for value in term.values()),
+            "b1a_complete": atm is not None,
+            "b1b_complete": atm is not None and skew is not None,
+            "b1c_complete": atm is not None
+            and skew is not None
+            and all(
+                value is not None
+                for value in (
+                    term.get("short_to_medium"),
+                    term.get("medium_to_long"),
+                    term.get("short_to_long"),
+                )
+            ),
+            "b1q_atm_iv": atm,
+            "b1q_skew": skew,
+            "b1q_term_structure": term,
+            "valid_contract_count": summary.get("valid_contract_count", 0),
+            "valid_quote_count": summary.get("valid_quote_count", 0),
+            "valid_expiry_bucket_count": summary.get("valid_expiry_bucket_count", 0),
+            "median_quote_age": summary.get("median_quote_age"),
+            "median_relative_spread": summary.get("median_relative_spread"),
+            "iv_attempts": len(iv_rows),
+            "iv_successes": sum(bool(item.get("iv_success")) for item in iv_rows),
+            "iv_inversion_success_rate": sum(bool(item.get("iv_success")) for item in iv_rows)
+            / len(iv_rows)
+            if iv_rows
+            else 0.0,
+            "first_failure_code": _first_failure(iv_rows, summary),
+            **pit_evidence,
+            "route": "B1Q_MASSIVE_PRIMARY",
+            "b1t_status": "DIAGNOSTIC_ONLY",
+        }
         rows.append(row)
-        failures.extend({key: item.get(key) for key in ("asset", "origin_id", "contract", "option_type", "dte", "moneyness", "rate", "dividend_yield", "sip_timestamp", "midpoint", "quote_age_seconds", "relative_spread", "iv_success", "failure_reason", "iv")} for item in iv_rows if not item.get("iv_success"))
+        failures.extend(
+            {
+                key: item.get(key)
+                for key in (
+                    "asset",
+                    "origin_id",
+                    "contract",
+                    "option_type",
+                    "dte",
+                    "moneyness",
+                    "rate",
+                    "dividend_yield",
+                    "sip_timestamp",
+                    "midpoint",
+                    "quote_age_seconds",
+                    "relative_spread",
+                    "iv_success",
+                    "failure_reason",
+                    "iv",
+                )
+            }
+            for item in iv_rows
+            if not item.get("iv_success")
+        )
     frame = pl.DataFrame(rows, infer_schema_length=None, strict=False)
     frame.write_parquet(config.output_root / "b1_origin_matrix_20d.parquet", compression="zstd")
     pl.DataFrame(
@@ -525,16 +648,96 @@ def main(config: B1BuildConfig = DEFAULT_CONFIG) -> None:
         config.output_root / "b1_iv_attempts_20d.parquet",
         compression="zstd",
     )
-    frame.group_by("asset").agg([pl.len().alias("origins"), pl.col("atm_iv_available").mean().alias("atm_iv_component"), pl.col("skew_available").mean().alias("skew_component"), pl.col("term_structure_available").mean().alias("term_structure_component"), pl.col("b1a_complete").mean().alias("b1a"), pl.col("b1b_complete").mean().alias("b1b"), pl.col("b1c_complete").mean().alias("b1c"), pl.col("iv_inversion_success_rate").mean().alias("iv_success_rate")]).sort("asset").write_csv(config.output_root / "b1_coverage_by_asset.csv")
-    frame.group_by("session_segment").agg([pl.len().alias("origins"), pl.col("atm_iv_available").mean().alias("atm_iv_component"), pl.col("skew_available").mean().alias("skew_component"), pl.col("term_structure_available").mean().alias("term_structure_component"), pl.col("b1a_complete").mean().alias("b1a"), pl.col("b1b_complete").mean().alias("b1b"), pl.col("b1c_complete").mean().alias("b1c"), pl.col("iv_inversion_success_rate").mean().alias("iv_success_rate")]).sort("session_segment").write_csv(config.output_root / "b1_coverage_by_session_segment.csv")
+    frame.group_by("asset").agg(
+        [
+            pl.len().alias("origins"),
+            pl.col("atm_iv_available").mean().alias("atm_iv_component"),
+            pl.col("skew_available").mean().alias("skew_component"),
+            pl.col("term_structure_available").mean().alias("term_structure_component"),
+            pl.col("b1a_complete").mean().alias("b1a"),
+            pl.col("b1b_complete").mean().alias("b1b"),
+            pl.col("b1c_complete").mean().alias("b1c"),
+            pl.col("iv_inversion_success_rate").mean().alias("iv_success_rate"),
+        ]
+    ).sort("asset").write_csv(config.output_root / "b1_coverage_by_asset.csv")
+    frame.group_by("session_segment").agg(
+        [
+            pl.len().alias("origins"),
+            pl.col("atm_iv_available").mean().alias("atm_iv_component"),
+            pl.col("skew_available").mean().alias("skew_component"),
+            pl.col("term_structure_available").mean().alias("term_structure_component"),
+            pl.col("b1a_complete").mean().alias("b1a"),
+            pl.col("b1b_complete").mean().alias("b1b"),
+            pl.col("b1c_complete").mean().alias("b1c"),
+            pl.col("iv_inversion_success_rate").mean().alias("iv_success_rate"),
+        ]
+    ).sort("session_segment").write_csv(config.output_root / "b1_coverage_by_session_segment.csv")
     global_cov = _coverage(frame)
-    by_date = {str(row["session_date"]): _coverage(frame.filter(pl.col("session_date") == row["session_date"])) for row in frame.select("session_date").unique().iter_rows(named=True)}
+    by_date = {
+        str(row["session_date"]): _coverage(
+            frame.filter(pl.col("session_date") == row["session_date"])
+        )
+        for row in frame.select("session_date").unique().iter_rows(named=True)
+    }
     by_route = {"B1Q": global_cov, "B1T": {"status": "DIAGNOSTIC_ONLY", "coverage": None}}
-    summary = {"status": "PASS_B1Q_20_SESSION_RECOMPUTATION", "scope": "B2_CONFIRMATION_60_SESSIONS", "session_count": frame["session_date"].n_unique(), "origins": frame.height, "iv_attempt_rows": len(attempt_rows), "global": global_cov, "by_date": by_date, "by_route": by_route, "nested_invariants": {"b1c_implies_b1b": bool(frame.filter(pl.col("b1c_complete") & ~pl.col("b1b_complete")).height == 0), "b1b_implies_b1a": bool(frame.filter(pl.col("b1b_complete") & ~pl.col("b1a_complete")).height == 0), "coverage_b1c_le_b1b": global_cov["b1c"] <= global_cov["b1b"], "coverage_b1b_le_b1a": global_cov["b1b"] <= global_cov["b1a"]}, "pit_invariants": {"future_quote_rows": frame.filter(~pl.col("b1q_quote_not_after_origin") & pl.col("b1q_max_sip_timestamp_ns").is_not_null()).height, "b1a_without_pit_evidence": frame.filter(pl.col("b1a_complete") & ~pl.col("b1q_pit_evidence_valid")).height, "future_rate_source_rows": frame.filter(pl.col("rate_source_date") >= pl.col("session_date")).height}, "quote_cache_audit": quote_cache_audit, "contract_resolution_schema": "b1q-contract-grid-3.0", "primary_quote_age_seconds": 60, "primary_relative_spread": 0.25, "b1t_independent": False, "modeling": "BLOCKED", "qlike": "BLOCKED", "secret_values_emitted": False}
+    summary = {
+        "status": "PASS_B1Q_20_SESSION_RECOMPUTATION",
+        "scope": "B2_CONFIRMATION_60_SESSIONS",
+        "session_count": frame["session_date"].n_unique(),
+        "origins": frame.height,
+        "iv_attempt_rows": len(attempt_rows),
+        "global": global_cov,
+        "by_date": by_date,
+        "by_route": by_route,
+        "nested_invariants": {
+            "b1c_implies_b1b": bool(
+                frame.filter(pl.col("b1c_complete") & ~pl.col("b1b_complete")).height == 0
+            ),
+            "b1b_implies_b1a": bool(
+                frame.filter(pl.col("b1b_complete") & ~pl.col("b1a_complete")).height == 0
+            ),
+            "coverage_b1c_le_b1b": global_cov["b1c"] <= global_cov["b1b"],
+            "coverage_b1b_le_b1a": global_cov["b1b"] <= global_cov["b1a"],
+        },
+        "pit_invariants": {
+            "future_quote_rows": frame.filter(
+                ~pl.col("b1q_quote_not_after_origin")
+                & pl.col("b1q_max_sip_timestamp_ns").is_not_null()
+            ).height,
+            "b1a_without_pit_evidence": frame.filter(
+                pl.col("b1a_complete") & ~pl.col("b1q_pit_evidence_valid")
+            ).height,
+            "future_rate_source_rows": frame.filter(
+                pl.col("rate_source_date") >= pl.col("session_date")
+            ).height,
+        },
+        "quote_cache_audit": quote_cache_audit,
+        "contract_resolution_schema": "b1q-contract-grid-3.0",
+        "primary_quote_age_seconds": 60,
+        "primary_relative_spread": 0.25,
+        "b1t_independent": False,
+        "modeling": "BLOCKED",
+        "qlike": "BLOCKED",
+        "secret_values_emitted": False,
+    }
     _assert_invariants(frame, summary)
-    (config.output_root / "b1_coverage_20d.json").write_text(json.dumps(summary, indent=2, default=str), encoding="utf-8")
-    pl.DataFrame(failures, infer_schema_length=None, strict=False).write_csv(config.output_root / "b1_iv_failures_20d.csv")
-    print(json.dumps({"status": summary["status"], "origins": frame.height, "global": global_cov, "cache_files": len(list(config.cache_root.glob("*.json"))), "secret_values_emitted": False}))
+    (config.output_root / "b1_coverage_20d.json").write_text(
+        json.dumps(summary, indent=2, default=str), encoding="utf-8"
+    )
+    pl.DataFrame(failures, infer_schema_length=None, strict=False).write_csv(
+        config.output_root / "b1_iv_failures_20d.csv"
+    )
+    print(
+        json.dumps(
+            {
+                "status": summary["status"],
+                "origins": frame.height,
+                "global": global_cov,
+                "cache_files": len(list(config.cache_root.glob("*.json"))),
+                "secret_values_emitted": False,
+            }
+        )
+    )
 
 
 def _assert_invariants(frame: pl.DataFrame, summary: dict[str, Any]) -> None:

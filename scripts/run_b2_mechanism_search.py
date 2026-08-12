@@ -571,10 +571,7 @@ def main() -> None:
                 purge_minutes=int(phase5_prereg["purge_embargo_minutes"]),
             )
             parameter_ledger.extend(
-                [
-                    {**record, "fold": fold.fold, "information_set": "B1"}
-                    for record in b1_records
-                ]
+                [{**record, "fold": fold.fold, "information_set": "B1"} for record in b1_records]
             )
             for information_set in ("B0", "B2"):
                 parameters, records = _select_parameters(
@@ -650,14 +647,10 @@ def main() -> None:
                 )
                 if mechanism_id == MECHANISM_VARIANTS[0]:
                     all_parts.append(
-                        lag_baseline_frame.with_columns(
-                            pl.lit("lag_1_session").alias("b2_variant")
-                        )
+                        lag_baseline_frame.with_columns(pl.lit("lag_1_session").alias("b2_variant"))
                     )
                 all_parts.append(
-                    lag_expanded_frame.with_columns(
-                        pl.lit("lag_1_session").alias("b2_variant")
-                    )
+                    lag_expanded_frame.with_columns(pl.lit("lag_1_session").alias("b2_variant"))
                 )
                 ledger.append(
                     {

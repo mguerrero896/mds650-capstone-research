@@ -206,9 +206,7 @@ def _write_json(path: Path, payload: Mapping[str, Any]) -> None:
 def _write_csv(path: Path, rows: Sequence[Mapping[str, Any]]) -> None:
     """Write a deterministic CSV with a stable scope-first column order."""
     preferred = ["granularity", "cohort", "session_date", "asset"]
-    fieldnames = preferred + sorted(
-        {key for row in rows for key in row if key not in preferred}
-    )
+    fieldnames = preferred + sorted({key for row in rows for key in row if key not in preferred})
     temporary = path.with_suffix(path.suffix + ".part")
     with temporary.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator="\n")

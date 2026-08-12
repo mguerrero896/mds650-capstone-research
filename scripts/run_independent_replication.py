@@ -266,9 +266,7 @@ def _add_provider_gap_rows(
             expressions.append(pl.col(column))
         elif column == "b2v2_cutoff_utc":
             expressions.append(
-                (
-                    pl.col("forecast_origin_utc") - pl.duration(seconds=60)
-                ).alias(column)
+                (pl.col("forecast_origin_utc") - pl.duration(seconds=60)).alias(column)
             )
         elif column == "b2v2_complete":
             expressions.append(pl.lit(False).alias(column))
@@ -289,12 +287,8 @@ def _build_panel() -> pl.DataFrame:
     b0 = b0.sort("origin_id")
     b1 = pl.read_parquet(B1).sort("origin_id")
     acquisition = _json(ACQUISITION)
-    excluded_dates = sorted(
-        str(item) for item in acquisition.get("excluded_provider_sessions", [])
-    )
-    b2 = _add_provider_gap_rows(
-        pl.read_parquet(B2).sort("origin_id"), origins, excluded_dates
-    )
+    excluded_dates = sorted(str(item) for item in acquisition.get("excluded_provider_sessions", []))
+    b2 = _add_provider_gap_rows(pl.read_parquet(B2).sort("origin_id"), origins, excluded_dates)
     panel, complete = build_phase6_common_panel(origins, b0, b1, b2)
     panel = panel.sort(["session_date", "forecast_origin_utc", "asset"])
     complete = complete.sort(["session_date", "forecast_origin_utc", "asset"])
@@ -474,17 +468,11 @@ def _calibration(predictions: pl.DataFrame) -> list[dict[str, Any]]:
 def _b0_delay_panel(panel: pl.DataFrame, origins: pl.DataFrame, bars: pl.DataFrame) -> pl.DataFrame:
     """Replace only B0 predictors with a target-free +2-minute variant."""
     delay2 = build_b0v2_features(bars, origins, delay_minutes=2, include_target=False)
-    replacements = delay2.select(
-        *KEYS, "max_predictor_available_at_utc", *B0V2_FEATURES
-    )
+    replacements = delay2.select(*KEYS, "max_predictor_available_at_utc", *B0V2_FEATURES)
     drop_columns = [
-        name
-        for name in (*B0V2_FEATURES, "max_predictor_available_at_utc")
-        if name in panel.columns
+        name for name in (*B0V2_FEATURES, "max_predictor_available_at_utc") if name in panel.columns
     ]
-    joined = panel.drop(*drop_columns).join(
-        replacements, on=list(KEYS), how="left", validate="1:1"
-    )
+    joined = panel.drop(*drop_columns).join(replacements, on=list(KEYS), how="left", validate="1:1")
     if joined.height != panel.height:
         raise RuntimeError("INDEPENDENT_FMP_SENSITIVITY_ALIGNMENT_FAILURE")
     return joined
@@ -497,9 +485,7 @@ def _b2_sensitivity_panels(
     output: dict[str, pl.DataFrame] = {}
     activity_root = DERIVED / "b2_activity"
     acquisition = _json(ACQUISITION)
-    excluded_dates = sorted(
-        str(item) for item in acquisition.get("excluded_provider_sessions", [])
-    )
+    excluded_dates = sorted(str(item) for item in acquisition.get("excluded_provider_sessions", []))
     expected_partition_count = len(_json(WINDOW)["all_dates"]) - len(excluded_dates)
     b2_origins = origins.filter(~pl.col("session_date").is_in(excluded_dates))
     for spec in spec_names:
@@ -526,9 +512,7 @@ def _b2_sensitivity_panels(
             )
             if name in panel.columns
         ]
-        dropped = panel.drop(
-            *b2_drop_columns
-        )
+        dropped = panel.drop(*b2_drop_columns)
         variant = dropped.join(replacements, on=list(KEYS), how="left", validate="1:1")
         if variant.height != panel.height:
             raise RuntimeError(f"INDEPENDENT_B2_SENSITIVITY_ALIGNMENT:{spec}")

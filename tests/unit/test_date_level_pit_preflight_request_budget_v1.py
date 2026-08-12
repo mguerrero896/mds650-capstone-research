@@ -111,14 +111,15 @@ def test_build_request_budget_counts_contract_reference_before_quote_as_of() -> 
         "quote_as_of",
     ]
     assert massive_contract_pagination.get("contract_reference_max_per_asset_day") == 1
-    assert massive_contract_pagination.get(
-        "contract_reference_only_after_contract_resolution"
-    ) is True
+    assert (
+        massive_contract_pagination.get("contract_reference_only_after_contract_resolution") is True
+    )
     assert massive_contract_pagination.get("quote_as_of_only_after_contract_reference") is True
 
 
-def test_massive_pagination_gates_contract_reference_and_quote_and_fails_closed_beyond_cap(
-) -> None:
+def test_massive_pagination_gates_contract_reference_and_quote_and_fails_closed_beyond_cap() -> (
+    None
+):
     candidate = getattr(_module(), "plan_massive_asset_day_requests", None)
     assert callable(candidate), "plan_massive_asset_day_requests contract is required"
     plan_massive = cast(Callable[..., dict[str, object]], candidate)

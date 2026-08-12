@@ -19,15 +19,9 @@ def _arrays(
 ) -> tuple[FloatArray, FloatArray]:
     observed = np.asarray(actual, dtype=np.float64)
     predicted = np.asarray(forecast, dtype=np.float64)
-    if (
-        observed.ndim != 1
-        or predicted.shape != observed.shape
-        or observed.size == 0
-    ):
+    if observed.ndim != 1 or predicted.shape != observed.shape or observed.size == 0:
         raise ValueError("METRIC_ARRAY_SHAPE_INVALID")
-    if floor <= 0 or not np.isfinite(observed).all() or not np.isfinite(
-        predicted
-    ).all():
+    if floor <= 0 or not np.isfinite(observed).all() or not np.isfinite(predicted).all():
         raise ValueError("METRIC_INPUT_INVALID")
     if (observed <= 0).any():
         raise ValueError("QLIKE_REQUIRES_POSITIVE_TARGET")
@@ -156,12 +150,8 @@ def paired_day_bootstrap(
     )
     estimates = day_sums[samples].sum(axis=1) / day_counts[samples].sum(axis=1)
     lower, upper = np.quantile(estimates, [0.025, 0.975])
-    probability_nonpositive = (
-        float(np.count_nonzero(estimates <= 0)) + 1.0
-    ) / (repetitions + 1.0)
-    probability_nonnegative = (
-        float(np.count_nonzero(estimates >= 0)) + 1.0
-    ) / (repetitions + 1.0)
+    probability_nonpositive = (float(np.count_nonzero(estimates <= 0)) + 1.0) / (repetitions + 1.0)
+    probability_nonnegative = (float(np.count_nonzero(estimates >= 0)) + 1.0) / (repetitions + 1.0)
     return {
         "estimate": math.fsum(day_sums) / math.fsum(day_counts),
         "ci_low": float(lower),
@@ -196,8 +186,7 @@ def holm_adjust(p_values: Mapping[str, float]) -> dict[str, float]:
         If the mapping is empty or any p-value lies outside ``[0, 1]``.
     """
     if not p_values or any(
-        not np.isfinite(value) or not 0 <= value <= 1
-        for value in p_values.values()
+        not np.isfinite(value) or not 0 <= value <= 1 for value in p_values.values()
     ):
         raise ValueError("HOLM_P_VALUES_INVALID")
     ordered = sorted(p_values.items(), key=lambda item: (item[1], item[0]))

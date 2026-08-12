@@ -71,34 +71,24 @@ def test_b0v2_uses_only_available_bars_and_exact_rv30_prices() -> None:
 def test_b0v2_two_minute_delay_changes_predictors_not_rv30() -> None:
     primary = build_b0v2_features(_bars(), _origins()).row(0, named=True)
     delayed_bars = _bars().with_columns(
-        (
-            pl.col("bar_timestamp_raw_utc") + pl.duration(minutes=2)
-        ).alias("available_at_utc")
+        (pl.col("bar_timestamp_raw_utc") + pl.duration(minutes=2)).alias("available_at_utc")
     )
 
-    delayed = build_b0v2_features(
-        delayed_bars, _origins(), delay_minutes=2
-    ).row(0, named=True)
+    delayed = build_b0v2_features(delayed_bars, _origins(), delay_minutes=2).row(0, named=True)
 
     assert delayed["drop_reason"] is None
     assert delayed["rv30"] == primary["rv30"]
     assert delayed["anchor_timestamp_raw_utc"] == ORIGIN - timedelta(minutes=1)
-    assert delayed["predictor_anchor_timestamp_raw_utc"] == ORIGIN - timedelta(
-        minutes=2
-    )
+    assert delayed["predictor_anchor_timestamp_raw_utc"] == ORIGIN - timedelta(minutes=2)
     assert delayed["max_predictor_available_at_utc"] <= ORIGIN
 
 
 def test_b0v2_delay_never_changes_target_when_predictor_history_is_short() -> None:
     early_origin = datetime(2026, 1, 5, 15, 1, tzinfo=UTC)
-    primary = build_b0v2_features(_bars(), _origin_at(early_origin)).row(
-        0, named=True
-    )
+    primary = build_b0v2_features(_bars(), _origin_at(early_origin)).row(0, named=True)
     delayed = build_b0v2_features(
         _bars().with_columns(
-            (
-                pl.col("bar_timestamp_raw_utc") + pl.duration(minutes=2)
-            ).alias("available_at_utc")
+            (pl.col("bar_timestamp_raw_utc") + pl.duration(minutes=2)).alias("available_at_utc")
         ),
         _origin_at(early_origin),
         delay_minutes=2,

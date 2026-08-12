@@ -33,8 +33,7 @@ def redact_mapping(values: Mapping[str, object]) -> dict[str, object]:
     ``redact_mapping({"api_key": "x"}) == {"api_key": "[REDACTED]"}``.
     """
     return {
-        key: "[REDACTED]" if _SECRET_KEY.search(key) else value
-        for key, value in values.items()
+        key: "[REDACTED]" if _SECRET_KEY.search(key) else value for key, value in values.items()
     }
 
 

@@ -200,8 +200,8 @@ B2 row cannot be called genuine zero activity. The B2 activity-availability
 contract is **not closed** until a future consumer applies the sidecar state.
 
 **Existing-results reconciliation:**
-`SAFE_TO_RECONCILE_EXISTING_RESULTS={'YES' if safe_to_reconcile else 'NO'}`.
-Reasons: `{', '.join(reconciliation_reasons) if reconciliation_reasons else 'none'}`.
+`SAFE_TO_RECONCILE_EXISTING_RESULTS={"YES" if safe_to_reconcile else "NO"}`.
+Reasons: `{", ".join(reconciliation_reasons) if reconciliation_reasons else "none"}`.
 This rendering does not read, alter, or reinterpret any sealed predictive result.
 
 ## Massive shifted as-of sensitivity
@@ -211,10 +211,10 @@ At every delay, the audit reselects the last cached quote satisfying
 at the original origin. IV is recalculated from the new midpoint and existing
 target-free PIT inputs. This does not prove customer-side REST receipt latency.
 
-**Forecast-origin session gate:** `{origin_bounds.get('status', 'UNVERIFIED')}`.
-The audit reports `{origin_bounds.get('origin_before_open_count', 'UNVERIFIED')}`
+**Forecast-origin session gate:** `{origin_bounds.get("status", "UNVERIFIED")}`.
+The audit reports `{origin_bounds.get("origin_before_open_count", "UNVERIFIED")}`
 origins before the official open and
-`{origin_bounds.get('origin_after_close_count', 'UNVERIFIED')}` after the
+`{origin_bounds.get("origin_after_close_count", "UNVERIFIED")}` after the
 official close, including early-close sessions.
 
 **Massive cache-identity gate:** `{massive_status}`. A failed identity or
@@ -267,8 +267,8 @@ economic inference.
 the B2 activity-availability interpretation remains fail-closed:
 `{b2_gate}`. Massive cache-identity status: `{massive_status}`.
 
-`SAFE_TO_RECONCILE_EXISTING_RESULTS={'YES' if safe_to_reconcile else 'NO'}`.
-Reasons: `{', '.join(reconciliation_reasons) if reconciliation_reasons else 'none'}`.
+`SAFE_TO_RECONCILE_EXISTING_RESULTS={"YES" if safe_to_reconcile else "NO"}`.
+Reasons: `{", ".join(reconciliation_reasons) if reconciliation_reasons else "none"}`.
 
 ## Evidence
 

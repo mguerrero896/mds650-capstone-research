@@ -40,9 +40,7 @@ def test_massive_sensitivity_guard_rejects_non_pass_status(tmp_path: Path) -> No
     path = tmp_path / "massive.json"
     path.write_text(json.dumps(_sensitivity_record(status="FAIL")), encoding="utf-8")
 
-    with pytest.raises(
-        ValueError, match="TARGET_BLIND_V22_MASSIVE_SENSITIVITY_NOT_ACCEPTED"
-    ):
+    with pytest.raises(ValueError, match="TARGET_BLIND_V22_MASSIVE_SENSITIVITY_NOT_ACCEPTED"):
         builder._validate_massive_sensitivity(path)
 
 

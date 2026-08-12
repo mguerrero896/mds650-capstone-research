@@ -27,11 +27,7 @@ DESIGN = (
     / "2026-07-29-rv30-90-session-champion-challenger-design.md"
 )
 SCHEMA = (
-    ROOT
-    / "specs"
-    / "001-pit-options-rv30"
-    / "contracts"
-    / "phase5-preregistration.schema.json"
+    ROOT / "specs" / "001-pit-options-rv30" / "contracts" / "phase5-preregistration.schema.json"
 )
 OUTPUT = ROOT / "artifacts" / "phase5"
 SESSION_OUTPUT = OUTPUT / "study_sessions_90.json"

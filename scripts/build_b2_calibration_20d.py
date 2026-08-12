@@ -297,9 +297,7 @@ def _build_origins(
 def _event_paths(config: B2BuildConfig = DEFAULT_CONFIG) -> list[tuple[Path, str, str]]:
     """Return downloaded event partitions and their source hashes."""
     manifest = json.loads(config.download_manifest.read_text(encoding="utf-8"))
-    if manifest.get("status") != "PASS" or manifest.get("session_count") != len(
-        config.sessions
-    ):
+    if manifest.get("status") != "PASS" or manifest.get("session_count") != len(config.sessions):
         raise RuntimeError("CALIBRATION_DOWNLOAD_NOT_COMPLETE")
     hashes = {row["session_date"]: row["sha256"] for row in manifest["sessions"]}
     paths: list[tuple[Path, str, str]] = []
@@ -365,9 +363,17 @@ def _build_feature_frame(
             )
             .with_columns(pl.col("_candidate_origin").alias("forecast_origin_utc"))
             .filter(
-                (pl.col("executed_at") >= pl.col("forecast_origin_utc") - pl.duration(seconds=lag) - pl.duration(minutes=5))
+                (
+                    pl.col("executed_at")
+                    >= pl.col("forecast_origin_utc")
+                    - pl.duration(seconds=lag)
+                    - pl.duration(minutes=5)
+                )
                 & (pl.col("executed_at") < pl.col("forecast_origin_utc") - pl.duration(seconds=lag))
-                & (pl.max_horizontal("executed_at", "created_at") <= pl.col("forecast_origin_utc") - pl.duration(seconds=lag))
+                & (
+                    pl.max_horizontal("executed_at", "created_at")
+                    <= pl.col("forecast_origin_utc") - pl.duration(seconds=lag)
+                )
             )
         )
         counts = (
@@ -420,7 +426,10 @@ def _build_feature_frame(
                     .mean()
                     .alias("sweep_or_equivalent_share"),
                     pl.col("implied_volatility").median().alias("implied_volatility_median"),
-                    pl.col("implied_volatility").is_not_null().sum().alias("valid_iv_observation_count"),
+                    pl.col("implied_volatility")
+                    .is_not_null()
+                    .sum()
+                    .alias("valid_iv_observation_count"),
                     (pl.col("implied_volatility").max() - pl.col("implied_volatility").min()).alias(
                         "within_bin_iv_change"
                     ),
@@ -686,9 +695,7 @@ def _fit_parameters(
 def _calibration_source_hash(config: B2BuildConfig = DEFAULT_CONFIG) -> str:
     """Return a deterministic bundle hash for the authorized calibration ZIPs."""
     payload = json.loads(config.download_manifest.read_text(encoding="utf-8"))
-    hashes = sorted(
-        str(row.get("sha256", "")) for row in payload.get("sessions", [])
-    )
+    hashes = sorted(str(row.get("sha256", "")) for row in payload.get("sessions", []))
     if len(hashes) != len(config.sessions) or any(len(value) != 64 for value in hashes):
         raise RuntimeError("CALIBRATION_SOURCE_HASHES_INVALID")
     return hashlib.sha256("|".join(hashes).encode("ascii")).hexdigest()
@@ -737,9 +744,7 @@ def _apply_and_emit(
     calibration_source_hash = _calibration_source_hash(config)
     pl.DataFrame(pilot_scores).with_columns(
         [
-            pl.lit("CALIBRATED_SECONDARY_EXPLORATORY").alias(
-                "unusual_event_status"
-            ),
+            pl.lit("CALIBRATED_SECONDARY_EXPLORATORY").alias("unusual_event_status"),
             pl.lit(calibration_source_hash).alias("calibration_source_hash"),
             pl.lit("artifacts/calibration_20d/download_manifest.json").alias(
                 "calibration_source_manifest"
@@ -780,9 +785,7 @@ def _apply_and_emit(
                 "unusual_event_prevalence": statistics.mean(values) if values else None,
             }
         )
-    pl.DataFrame(sensitivity_rows).write_csv(
-        config.output_root / "b2_sensitivity_comparison.csv"
-    )
+    pl.DataFrame(sensitivity_rows).write_csv(config.output_root / "b2_sensitivity_comparison.csv")
 
 
 def main(config: B2BuildConfig = DEFAULT_CONFIG) -> None:

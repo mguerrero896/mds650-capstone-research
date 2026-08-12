@@ -12,6 +12,8 @@ import polars as pl
 
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "scripts" / "build_b2_confirmation_inputs.py"
+
+
 def _target_blind_probe(tmp_path: Path) -> Path:
     """Create 60 normal XNYS sessions without historical provider evidence."""
     calendar = xcals.get_calendar("XNYS")
@@ -66,7 +68,7 @@ def test_probe_and_script_are_explicitly_target_blind_before_target_stage(
     assert payload["full_tape_downloaded"] is False
     source = SCRIPT.read_text(encoding="utf-8")
     assert "target-free" in source
-    assert "target_outcome_read\": False" in source
+    assert 'target_outcome_read": False' in source
 
 
 def test_b1_input_preserves_early_origin_missingness(tmp_path: Path) -> None:
@@ -78,9 +80,7 @@ def test_b1_input_preserves_early_origin_missingness(tmp_path: Path) -> None:
     assert excluded.height == 2_160
     assert reasons == {"B0V2_UNDERLYING_HISTORY_MISSING": 2_160}
     manifest = json.loads(
-        (module.ARTIFACT_ROOT / "b1_input_manifest.json").read_text(
-            encoding="utf-8"
-        )
+        (module.ARTIFACT_ROOT / "b1_input_manifest.json").read_text(encoding="utf-8")
     )
     assert manifest["total_origin_count"] == 25_920
     assert manifest["eligible_origin_count"] == 23_760

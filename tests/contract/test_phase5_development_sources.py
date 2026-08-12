@@ -128,13 +128,14 @@ def test_b1q_origin_records_observed_quote_pit_evidence() -> None:
         "b1q_pit_evidence_valid": True,
     }
 
-    assert b1_builder._quote_pit_evidence([], origin_ns)[
-        "b1q_pit_evidence_valid"
-    ] is False
-    assert b1_builder._quote_pit_evidence(
-        [{"sip_timestamp": origin_ns + 1}],
-        origin_ns,
-    )["b1q_quote_not_after_origin"] is False
+    assert b1_builder._quote_pit_evidence([], origin_ns)["b1q_pit_evidence_valid"] is False
+    assert (
+        b1_builder._quote_pit_evidence(
+            [{"sip_timestamp": origin_ns + 1}],
+            origin_ns,
+        )["b1q_quote_not_after_origin"]
+        is False
+    )
 
 
 def test_massive_request_retries_transient_transport_failure() -> None:
@@ -211,9 +212,7 @@ def test_b1q_fetch_retains_paths_instead_of_quote_payloads(
         config,
     )
 
-    assert paths[
-        ("AAPL", "2026-03-24", "O:AAPL260417C00100000")
-    ] == (cache_path, "abc")
+    assert paths[("AAPL", "2026-03-24", "O:AAPL260417C00100000")] == (cache_path, "abc")
     assert audit["pagination_inferred_terminal_partial"] == 1
 
 
@@ -310,11 +309,14 @@ def test_fmp_list_request_retries_and_rejects_non_list_payload() -> None:
     assert calls == 2
     assert payload == [{"date": "2026-03-24", "month3": 4.1}]
 
-    with httpx.Client(
-        transport=httpx.MockTransport(
-            lambda request: httpx.Response(200, json={"unexpected": True})
-        )
-    ) as client, pytest.raises(RuntimeError, match="FMP_RESPONSE_NOT_LIST"):
+    with (
+        httpx.Client(
+            transport=httpx.MockTransport(
+                lambda request: httpx.Response(200, json={"unexpected": True})
+            )
+        ) as client,
+        pytest.raises(RuntimeError, match="FMP_RESPONSE_NOT_LIST"),
+    ):
         b1_builder._fmp_list_request(
             client,
             "https://financialmodelingprep.com/stable/dividends",
@@ -323,11 +325,12 @@ def test_fmp_list_request_retries_and_rejects_non_list_payload() -> None:
             backoff_seconds=0,
         )
 
-    with httpx.Client(
-        transport=httpx.MockTransport(
-            lambda request: httpx.Response(200, content=b"not-json")
-        )
-    ) as client, pytest.raises(RuntimeError, match="FMP_RESPONSE_NOT_JSON"):
+    with (
+        httpx.Client(
+            transport=httpx.MockTransport(lambda request: httpx.Response(200, content=b"not-json"))
+        ) as client,
+        pytest.raises(RuntimeError, match="FMP_RESPONSE_NOT_JSON"),
+    ):
         b1_builder._fmp_list_request(
             client,
             "https://financialmodelingprep.com/stable/dividends",

@@ -21,9 +21,7 @@ def _inputs() -> tuple[pl.DataFrame, pl.DataFrame, pl.DataFrame, pl.DataFrame]:
     b1_rows = []
     b2_rows = []
     for index in range(2):
-        origin = datetime(2025, 10, 28, 14, 35, tzinfo=UTC) + timedelta(
-            minutes=5 * index
-        )
+        origin = datetime(2025, 10, 28, 14, 35, tzinfo=UTC) + timedelta(minutes=5 * index)
         origin_id = f"AAPL:{origin.isoformat()}"
         key = {
             "origin_id": origin_id,
@@ -42,8 +40,7 @@ def _inputs() -> tuple[pl.DataFrame, pl.DataFrame, pl.DataFrame, pl.DataFrame]:
                 "max_predictor_available_at_utc": origin,
                 "drop_reason": None,
                 **{
-                    name: "AAPL" if name == "b0v2_asset_identity" else 1.0
-                    for name in B0V2_FEATURES
+                    name: "AAPL" if name == "b0v2_asset_identity" else 1.0 for name in B0V2_FEATURES
                 },
             }
         )
@@ -104,15 +101,11 @@ def test_phase6_common_panel_rejects_future_predictor(source: str) -> None:
         )
         error = "PHASE6_B0_AFTER_ORIGIN"
     elif source == "b1":
-        b1 = b1.with_columns(
-            (pl.col("forecast_origin_ns") + 1).alias("max_sip_timestamp_ns")
-        )
+        b1 = b1.with_columns((pl.col("forecast_origin_ns") + 1).alias("max_sip_timestamp_ns"))
         error = "PHASE6_B1_AFTER_ORIGIN"
     else:
         b2 = b2.with_columns(
-            (pl.col("b2v2_cutoff_utc") + pl.duration(seconds=1)).alias(
-                "b2v2_max_created_at_utc"
-            )
+            (pl.col("b2v2_cutoff_utc") + pl.duration(seconds=1)).alias("b2v2_max_created_at_utc")
         )
         error = "PHASE6_B2_AFTER_CUTOFF"
 

@@ -40,9 +40,7 @@ def test_replication_origin_dates_match_frozen_allow_list() -> None:
     )
     frame = panel._origins(window)
     assert set(frame["session_date"].unique().to_list()) == set(window["all_dates"])
-    assert min(date.fromisoformat(value) for value in window["all_dates"]) == date(
-        2025, 2, 25
-    )
+    assert min(date.fromisoformat(value) for value in window["all_dates"]) == date(2025, 2, 25)
 
 
 def test_persisted_origins_match_builder() -> None:
@@ -64,9 +62,7 @@ def test_persisted_origins_match_builder() -> None:
 
 def test_fmp_manifest_filters_provider_over_return_and_keeps_b0_warmup_only() -> None:
     fmp = json.loads(
-        (ROOT / "artifacts/independent_replication/fmp_manifest.json").read_text(
-            encoding="utf-8"
-        )
+        (ROOT / "artifacts/independent_replication/fmp_manifest.json").read_text(encoding="utf-8")
     )
     b0 = json.loads(
         (ROOT / "artifacts/independent_replication/b0_training_manifest.json").read_text(

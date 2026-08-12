@@ -91,8 +91,7 @@ def _semantics_markdown(payload: Mapping[str, Any]) -> str:
         ),
     ]
     fmp_table_rows = [
-        f"| {name} | `{status}` | {consequence} |"
-        for name, status, consequence in fmp_rows
+        f"| {name} | `{status}` | {consequence} |" for name, status, consequence in fmp_rows
     ]
     metric_rows = [
         ("Rows in scope", _number(global_summary.get("row_count"), 0)),
@@ -267,7 +266,7 @@ def _future_execution_markdown(payload: Mapping[str, Any]) -> str:
 
 ## Current status
 
-`{_as_text(fmp.get('live_probe_status'))}`
+`{_as_text(fmp.get("live_probe_status"))}`
 
 This status is pending and non-blocking. No market-open wait, provider HTTP
 request, WebSocket connection or real-time capture was performed by this audit.

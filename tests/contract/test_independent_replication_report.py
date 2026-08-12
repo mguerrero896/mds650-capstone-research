@@ -13,16 +13,12 @@ ARTIFACT = ROOT / "artifacts" / "independent_replication"
 
 
 def test_independent_results_keep_single_target_read_and_frozen_mde() -> None:
-    results = json.loads(
-        (ARTIFACT / "independent_results.json").read_text(encoding="utf-8")
-    )
+    results = json.loads((ARTIFACT / "independent_results.json").read_text(encoding="utf-8"))
     assert results["status"] == "INDEPENDENT_REPLICATION_COMPLETE"
     assert results["target"] == "RV30"
     assert results["target_read_count"] == 1
     assert results["evaluation"]["all_signs_retained"] is True
-    assert results["mde_comparison"]["gamma_glm_confirmatory"]["delta_b2v2"][
-        "exceeds_mde"
-    ] is True
+    assert results["mde_comparison"]["gamma_glm_confirmatory"]["delta_b2v2"]["exceeds_mde"] is True
 
 
 def test_stability_artifact_contains_strata_and_hours() -> None:
@@ -51,9 +47,7 @@ def test_evidence_index_is_sanitized_and_hashed() -> None:
 
 
 def test_human_report_distinguishes_targeted_from_universal_edge() -> None:
-    text = (ROOT / "docs/independent_replication_30_session_results.md").read_text(
-        encoding="utf-8"
-    )
+    text = (ROOT / "docs/independent_replication_30_session_results.md").read_text(encoding="utf-8")
     assert "model-dependent B2 signal" in text
     assert "model-independent global edge" in text
     assert "All positive, negative and null variants remain registered" in text

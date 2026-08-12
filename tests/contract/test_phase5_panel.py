@@ -114,14 +114,10 @@ def test_target_hash_changes_when_rv30_changes() -> None:
 
 def test_source_reconciliation_is_exactly_25_plus_55_without_holdout() -> None:
     sessions = json.loads(
-        (ROOT / "artifacts/phase5/study_sessions_90.json").read_text(
-            encoding="utf-8"
-        )
+        (ROOT / "artifacts/phase5/study_sessions_90.json").read_text(encoding="utf-8")
     )
     reused = json.loads(
-        (ROOT / "artifacts/phase5/reused_25_session_manifest.json").read_text(
-            encoding="utf-8"
-        )
+        (ROOT / "artifacts/phase5/reused_25_session_manifest.json").read_text(encoding="utf-8")
     )
     missing = sorted(set(sessions["development"]) - set(reused["sessions"]))
 
@@ -210,9 +206,7 @@ def test_quality_asset_selection_is_target_blind() -> None:
 def test_common_panel_rejects_future_b2_state() -> None:
     origins, b0, b1, b2 = _inputs()
     b2 = b2.with_columns(
-        (pl.col("b2_window_end") + pl.duration(minutes=1)).alias(
-            "b2_max_operational_time"
-        )
+        (pl.col("b2_window_end") + pl.duration(minutes=1)).alias("b2_max_operational_time")
     )
 
     with pytest.raises(ValueError, match="B2_PREDICTOR_AFTER_WINDOW_END"):
@@ -228,9 +222,7 @@ def test_common_panel_rejects_future_b2_state() -> None:
 def test_common_panel_rejects_future_b0_or_b2_window() -> None:
     origins, b0, b1, b2 = _inputs()
     b0 = b0.with_columns(
-        (pl.col("b0_available_at_utc") + pl.duration(seconds=1)).alias(
-            "b0_available_at_utc"
-        )
+        (pl.col("b0_available_at_utc") + pl.duration(seconds=1)).alias("b0_available_at_utc")
     )
     with pytest.raises(ValueError, match="B0_PREDICTOR_AFTER_FORECAST_ORIGIN"):
         build_common_panel(
@@ -243,16 +235,11 @@ def test_common_panel_rejects_future_b0_or_b2_window() -> None:
 
     origins, b0, b1, b2 = _inputs()
     b2 = b2.with_columns(
-        (pl.col("forecast_origin_utc") + pl.duration(seconds=1)).alias(
-            "b2_window_end"
-        )
+        (pl.col("forecast_origin_utc") + pl.duration(seconds=1)).alias("b2_window_end")
         if "forecast_origin_utc" in b2.columns
         else pl.Series(
             "b2_window_end",
-            [
-                value + timedelta(seconds=1)
-                for value in origins["forecast_origin_utc"].to_list()
-            ],
+            [value + timedelta(seconds=1) for value in origins["forecast_origin_utc"].to_list()],
         )
     )
     with pytest.raises(ValueError, match="B2_WINDOW_END_AFTER_FORECAST_ORIGIN"):

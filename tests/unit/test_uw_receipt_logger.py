@@ -37,13 +37,16 @@ def test_receipt_logger_keeps_required_timing_fields_and_hashes_raw_message() ->
     assert record["event_id"] == "event-1"
     assert record["trade_id"] == "trade-1"
     assert record["aggregated_trade_id"] == "aggregate-1"
-    assert record["raw_message_hash"] == build_uw_receipt_record(
-        message,
-        received_at_utc="2026-08-11T14:30:01Z",
-        source="other",
-        connection_type="replay",
-        local_clock_offset="+00:00",
-    )["raw_message_hash"]
+    assert (
+        record["raw_message_hash"]
+        == build_uw_receipt_record(
+            message,
+            received_at_utc="2026-08-11T14:30:01Z",
+            source="other",
+            connection_type="replay",
+            local_clock_offset="+00:00",
+        )["raw_message_hash"]
+    )
     assert len(str(record["raw_message_hash"])) == 64
     assert "must-not-appear" not in json.dumps(record, sort_keys=True)
 
@@ -92,21 +95,24 @@ def test_receipt_and_reconciliation_clis_use_only_local_replay(tmp_path: Path) -
         encoding="utf-8",
     )
     receipt_output = tmp_path / "receipts.jsonl"
-    assert receipt_script.main(
-        ["--replay", str(source_replay), "--output", str(receipt_output)]
-    ) == 0
+    assert (
+        receipt_script.main(["--replay", str(source_replay), "--output", str(receipt_output)]) == 0
+    )
 
     reconciliation_output = tmp_path / "reconciliation.json"
-    assert reconcile_script.main(
-        [
-            "--receipt-replay",
-            str(receipt_output),
-            "--full-tape-replay",
-            str(source_replay),
-            "--output",
-            str(reconciliation_output),
-        ]
-    ) == 0
+    assert (
+        reconcile_script.main(
+            [
+                "--receipt-replay",
+                str(receipt_output),
+                "--full-tape-replay",
+                str(source_replay),
+                "--output",
+                str(reconciliation_output),
+            ]
+        )
+        == 0
+    )
     result = json.loads(reconciliation_output.read_text(encoding="utf-8"))
     assert result["status"] == "REPLAY_ONLY_NOT_LIVE"
     assert result["matched_count"] == 1

@@ -191,9 +191,10 @@ def test_schema_self_hash_and_immutable_writer_are_deterministic(tmp_path: Path)
     with pytest.raises(ValueError, match=B1Q_PARITY_OUTPUT_CONFLICT):
         write_json_if_new_or_identical(output, drift)
 
-    assert hashlib.sha256(output.read_bytes()).hexdigest() == hashlib.sha256(
-        expected_bytes
-    ).hexdigest()
+    assert (
+        hashlib.sha256(output.read_bytes()).hexdigest()
+        == hashlib.sha256(expected_bytes).hexdigest()
+    )
 
 
 def test_runtime_validator_rejects_hash_schema_and_sensitive_content_before_a_write() -> None:

@@ -50,9 +50,7 @@ def test_b2_aliases_are_canonicalized_and_duplicate_aliases_fail() -> None:
     result = canonicalize_b2_frame(frame)
     assert set(result.columns) == {"implied_volatility_median", "within_bin_iv_change"}
     with pytest.raises(ValueError, match="B2_ALIAS_CONFLICT"):
-        canonicalize_b2_frame(
-            frame.with_columns(pl.lit(0.3).alias("median_implied_volatility"))
-        )
+        canonicalize_b2_frame(frame.with_columns(pl.lit(0.3).alias("median_implied_volatility")))
 
 
 def test_checkpoint_hashes_and_corruption_fail_closed() -> None:

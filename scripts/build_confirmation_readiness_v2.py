@@ -35,11 +35,7 @@ AVAILABILITY_SIDECAR = Path(
     r"D:\MDS650\phase6\derived\provider_timing_v22\b2_row_availability_v22.parquet"
 )
 SCHEMA = (
-    ROOT
-    / "specs"
-    / "001-pit-options-rv30"
-    / "contracts"
-    / "confirmation-readiness-v2.schema.json"
+    ROOT / "specs" / "001-pit-options-rv30" / "contracts" / "confirmation-readiness-v2.schema.json"
 )
 
 

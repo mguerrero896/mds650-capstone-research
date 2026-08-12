@@ -70,19 +70,12 @@ def build_method_freeze(
     preregistration = json.loads(preregistration_path.read_text(encoding="utf-8"))
     if preregistration.get("oos_read_count") != 0:
         raise RuntimeError("OOS_ACCESSED_BEFORE_METHOD_FREEZE")
-    unsigned = {
-        key: value
-        for key, value in preregistration.items()
-        if key != "manifest_sha256"
-    }
-    if (
-        preregistration.get("status") != "FROZEN_BEFORE_OOS"
-        or preregistration.get("manifest_sha256") != canonical_sha256(unsigned)
-    ):
+    unsigned = {key: value for key, value in preregistration.items() if key != "manifest_sha256"}
+    if preregistration.get("status") != "FROZEN_BEFORE_OOS" or preregistration.get(
+        "manifest_sha256"
+    ) != canonical_sha256(unsigned):
         raise RuntimeError("PHASE6_PREREGISTRATION_INVALID")
-    panel = validate_phase6_evaluation_panel(
-        pl.read_parquet(panel_path), preregistration
-    )
+    panel = validate_phase6_evaluation_panel(pl.read_parquet(panel_path), preregistration)
     training_dates = set(preregistration["folds"][0]["train_dates"])
     training = panel.filter(pl.col("session_date").is_in(training_dates))
     forecasts, variants = training_only_oof_forecasts(training, preregistration)
@@ -122,8 +115,7 @@ def build_method_freeze(
         "status": "FROZEN_AFTER_TRAINING_BEFORE_OOS",
         "oos_read_count": 0,
         "information_sets": {
-            name: list(features)
-            for name, features in phase6_information_sets().items()
+            name: list(features) for name, features in phase6_information_sets().items()
         },
         "models": preregistration["models"],
         "folds": preregistration["folds"],
@@ -146,23 +138,19 @@ def build_method_freeze(
         "stability": preregistration["stability"],
         "timing": preregistration["timing"],
         "package_versions": {
-            package: version(package)
-            for package in ("lightgbm", "numpy", "polars", "scikit-learn")
+            package: version(package) for package in ("lightgbm", "numpy", "polars", "scikit-learn")
         },
         "input_hashes": {
             "common_panel.parquet": _sha256(panel_path),
             "preregistration.json": _sha256(preregistration_path),
-            "training_mde_oof_forecasts.parquet": _sha256(
-                TRAINING_FORECASTS_PATH
-            ),
+            "training_mde_oof_forecasts.parquet": _sha256(TRAINING_FORECASTS_PATH),
             "training_mde_variant_ledger.json": _sha256(TRAINING_LEDGER_PATH),
             "b0v2_sensitivities.parquet": _sha256(B0_SENSITIVITY_PATH),
             "b2v2_sensitivities.parquet": _sha256(B2_SENSITIVITY_PATH),
             "uv.lock": _sha256(ROOT / "uv.lock"),
         },
         "source_code_hashes": {
-            path.relative_to(ROOT).as_posix(): _sha256(path)
-            for path in source_paths
+            path.relative_to(ROOT).as_posix(): _sha256(path) for path in source_paths
         },
         "preregistration_manifest_sha256": preregistration["manifest_sha256"],
         "secret_values_emitted": False,

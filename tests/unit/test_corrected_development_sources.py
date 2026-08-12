@@ -89,9 +89,7 @@ def test_exact_origin_grid_matches_phase5_rv30_spacing() -> None:
 def test_same_day_rate_provenance_nulls_the_b1q_state() -> None:
     """A rate dated on the origin session cannot enter a B1Q predictor row."""
     origins = build_exact_development_origins(("2026-03-24",), assets=("AAPL",)).head(1)
-    source_row = _b1_source_row(
-        origins.row(0, named=True), rate_source_date="2026-03-24"
-    )
+    source_row = _b1_source_row(origins.row(0, named=True), rate_source_date="2026-03-24")
     source = pl.DataFrame([source_row])
 
     prepared = prepare_b1q_source(origins, source)
@@ -129,14 +127,10 @@ def test_prior_rate_without_timestamped_payload_evidence_nulls_the_b1q_state() -
 
 def test_missing_retained_b1q_source_is_not_carried_forward() -> None:
     """An unresolved retained cache date stays null rather than using an earlier B1Q row."""
-    all_origins = build_exact_development_origins(
-        ("2026-03-24", "2026-03-25"), assets=("AAPL",)
-    )
+    all_origins = build_exact_development_origins(("2026-03-24", "2026-03-25"), assets=("AAPL",))
     retained_origin = all_origins.filter(pl.col("session_date") == "2026-03-25").head(1)
     origins = pl.concat([all_origins.head(1), retained_origin])
-    source_row = _b1_source_row(
-        origins.row(0, named=True), rate_source_date="2026-03-23"
-    )
+    source_row = _b1_source_row(origins.row(0, named=True), rate_source_date="2026-03-23")
     source = pl.DataFrame([source_row])
 
     prepared = prepare_b1q_source(

@@ -198,9 +198,7 @@ def build_causal_audit(
             if isinstance(retained_last_train, datetime)
             else None
         )
-        causal_pass = (
-            retained_gap is not None and retained_gap >= float(protected_minutes)
-        )
+        causal_pass = retained_gap is not None and retained_gap >= float(protected_minutes)
         for role in sorted(model_roles):
             rows.append(
                 {
@@ -429,9 +427,11 @@ def forecast_canonical_fold(
     )
     forecasts = fitted.predict(testing)
     target = np.asarray(testing.get_column("rv30").to_numpy(), dtype=np.float64)
-    if forecasts.shape != target.shape or not np.isfinite(forecasts).all() or (
-        forecasts <= 0
-    ).any():
+    if (
+        forecasts.shape != target.shape
+        or not np.isfinite(forecasts).all()
+        or (forecasts <= 0).any()
+    ):
         raise ValueError("CANONICAL_MODEL_FORECAST_INVALID")
     errors = target - forecasts
     return testing.select(
@@ -451,9 +451,7 @@ def forecast_canonical_fold(
         pl.Series("absolute_error", np.abs(errors)),
         pl.Series("squared_error", np.square(errors)),
         pl.lit(json.dumps(parameters, sort_keys=True)).alias("selected_parameters"),
-        pl.lit(canonical_sha256({"features": list(features)})).alias(
-            "feature_schema_sha256"
-        ),
+        pl.lit(canonical_sha256({"features": list(features)})).alias("feature_schema_sha256"),
     )
 
 
@@ -488,14 +486,11 @@ def _canonical_prediction_frame(predictions: pl.DataFrame) -> pl.DataFrame:
     key_columns = ("block", "fold", "model_role", "information_set", "origin_id")
     if (
         any(predictions.get_column(column).null_count() for column in key_columns)
-        or predictions.select(pl.struct(*key_columns).n_unique()).item()
-        != predictions.height
+        or predictions.select(pl.struct(*key_columns).n_unique()).item() != predictions.height
     ):
         raise ValueError("CANONICAL_PREDICTION_DUPLICATE_KEY")
     observed = np.asarray(predictions.get_column("rv30").to_numpy(), dtype=np.float64)
-    forecasts = np.asarray(
-        predictions.get_column("forecast").to_numpy(), dtype=np.float64
-    )
+    forecasts = np.asarray(predictions.get_column("forecast").to_numpy(), dtype=np.float64)
     if (
         not np.isfinite(observed).all()
         or not np.isfinite(forecasts).all()
@@ -507,15 +502,11 @@ def _canonical_prediction_frame(predictions: pl.DataFrame) -> pl.DataFrame:
         "block", "fold", "model_role", maintain_order=True
     ):
         information_frames = {
-            information_set: frame.filter(
-                pl.col("information_set") == information_set
-            )
+            information_set: frame.filter(pl.col("information_set") == information_set)
             for information_set in _INFORMATION_SET_ORDER
         }
         if any(item.is_empty() for item in information_frames.values()):
-            raise ValueError(
-                f"CANONICAL_INFORMATION_SET_MISSING:{block}:{fold}:{role}"
-            )
+            raise ValueError(f"CANONICAL_INFORMATION_SET_MISSING:{block}:{fold}:{role}")
         assert_identical_origin_sets(information_frames)
     return predictions.with_columns(
         pl.Series("canonical_qlike_loss", qlike_losses(observed, forecasts))
@@ -525,11 +516,7 @@ def _canonical_prediction_frame(predictions: pl.DataFrame) -> pl.DataFrame:
 def _analysis_status_for_role(role: str) -> str:
     """Return the evidence status allowed for a model role."""
 
-    return (
-        "REGISTERED_OOS"
-        if role in _REGISTERED_ROLES
-        else "POST_READ_FIXED_EXTENSION"
-    )
+    return "REGISTERED_OOS" if role in _REGISTERED_ROLES else "POST_READ_FIXED_EXTENSION"
 
 
 def _finite_float(value: object, error_code: str) -> float:
@@ -607,9 +594,7 @@ def _paired_loss_frame(
     if target_difference is None or float(target_difference) != 0.0:
         raise ValueError("CANONICAL_CONTRAST_TARGET_DRIFT")
     return paired.with_columns(
-        (pl.col("baseline_loss") - pl.col("expanded_loss")).alias(
-            "loss_difference"
-        )
+        (pl.col("baseline_loss") - pl.col("expanded_loss")).alias("loss_difference")
     ), unpaired
 
 
@@ -674,9 +659,7 @@ def _contrast_summary(
         "mde_pass": mde_pass,
         "bootstrap_repetitions": int(inference["repetitions"]),
         "bootstrap_seed": int(inference["seed"]),
-        "result_sign": (
-            "POSITIVE" if estimate > 0 else "NEGATIVE" if estimate < 0 else "ZERO"
-        ),
+        "result_sign": ("POSITIVE" if estimate > 0 else "NEGATIVE" if estimate < 0 else "ZERO"),
     }
 
 
@@ -690,10 +673,7 @@ def _add_holm_adjustment(rows: list[dict[str, object]]) -> list[dict[str, object
                 row.get("p_value_raw"), "CANONICAL_P_VALUE_INVALID"
             )
     adjusted = holm_adjust(p_values) if p_values else {}
-    return [
-        {**row, "p_value_holm": adjusted.get(str(row["contrast"]))}
-        for row in rows
-    ]
+    return [{**row, "p_value_holm": adjusted.get(str(row["contrast"]))} for row in rows]
 
 
 def _metrics_and_calibration(
@@ -829,14 +809,10 @@ def evaluate_canonical_predictions(
     contrasts: list[dict[str, object]] = []
     stability: list[dict[str, object]] = []
     unpaired_rows = 0
-    for (block, role), model_frame in frame.group_by(
-        "block", "model_role", maintain_order=True
-    ):
+    for (block, role), model_frame in frame.group_by("block", "model_role", maintain_order=True):
         role_rows: list[dict[str, object]] = []
         for name, baseline, expanded in _CANONICAL_CONTRASTS:
-            paired, unpaired = _paired_loss_frame(
-                model_frame, baseline=baseline, expanded=expanded
-            )
+            paired, unpaired = _paired_loss_frame(model_frame, baseline=baseline, expanded=expanded)
             unpaired_rows += unpaired
             role_rows.append(
                 _contrast_summary(
@@ -855,9 +831,7 @@ def evaluate_canonical_predictions(
                 for value in sorted(
                     model_frame.get_column(dimension).cast(pl.String).unique().to_list()
                 ):
-                    subset = model_frame.filter(
-                        pl.col(dimension).cast(pl.String) == value
-                    )
+                    subset = model_frame.filter(pl.col(dimension).cast(pl.String) == value)
                     subset_paired, subset_unpaired = _paired_loss_frame(
                         subset, baseline=baseline, expanded=expanded
                     )
@@ -958,9 +932,7 @@ def validate_claim_eligibility(results: Mapping[str, object]) -> str:
     if {"gamma_b2", "lightgbm_b2", "mde_pass"} <= set(results):
         gamma = results["gamma_b2"]
         challenger = results["lightgbm_b2"]
-        if not isinstance(gamma, (int, float)) or not isinstance(
-            challenger, (int, float)
-        ):
+        if not isinstance(gamma, (int, float)) or not isinstance(challenger, (int, float)):
             raise ValueError("CANONICAL_CLAIM_INPUT_INVALID")
         if float(gamma) * float(challenger) < 0:
             return "MODEL_FAMILY_DEPENDENT"
@@ -1004,17 +976,14 @@ def validate_claim_eligibility(results: Mapping[str, object]) -> str:
     all_strong = all(
         row.get("status") == "RUN"
         and _finite_float(row.get("ci_low"), "CANONICAL_CLAIM_INPUT_INVALID") > 0
-        and _finite_float(row.get("p_value_holm"), "CANONICAL_CLAIM_INPUT_INVALID")
-        < 0.05
+        and _finite_float(row.get("p_value_holm"), "CANONICAL_CLAIM_INPUT_INVALID") < 0.05
         and row.get("mde_pass") is True
         for row in registered
     )
     return "GLOBAL_EDGE" if all_strong else "CONDITIONAL"
 
 
-def summarize_b2_redundancy(
-    panel: pl.DataFrame, *, block: str
-) -> list[dict[str, object]]:
+def summarize_b2_redundancy(panel: pl.DataFrame, *, block: str) -> list[dict[str, object]]:
     """Describe target-blind redundancy among the nine fixed B2 features.
 
     Parameters

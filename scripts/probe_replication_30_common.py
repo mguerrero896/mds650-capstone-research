@@ -56,9 +56,7 @@ def _fmp_day(client: httpx.Client, key: str, asset: str, day: date) -> dict[str,
     payload = _json(response)
     rows = payload if isinstance(payload, list) else []
     exact = [
-        row
-        for row in rows
-        if isinstance(row, dict) and str(row.get("date", ""))[:10] == day_text
+        row for row in rows if isinstance(row, dict) and str(row.get("date", ""))[:10] == day_text
     ]
     returned_dates = sorted(
         {str(row.get("date", ""))[:10] for row in rows if isinstance(row, dict)}
@@ -71,9 +69,7 @@ def _fmp_day(client: httpx.Client, key: str, asset: str, day: date) -> dict[str,
         "returned_dates": returned_dates,
         "spot_proxy": spot,
         "exact_session_pass": (
-            response.status_code == 200
-            and returned_dates == [day_text]
-            and bool(exact)
+            response.status_code == 200 and returned_dates == [day_text] and bool(exact)
         ),
     }
 
@@ -213,10 +209,7 @@ def main() -> None:
         "schema_version": "b2-replication-30-common-probe-1.0",
         "status": (
             "PASS_METADATA_ONLY"
-            if all(
-                row["fmp_all_assets_pass"] and row["massive_all_assets_pass"]
-                for row in records
-            )
+            if all(row["fmp_all_assets_pass"] and row["massive_all_assets_pass"] for row in records)
             else "FAIL_METADATA_ONLY"
         ),
         "window_start": dates[0].isoformat(),
@@ -230,9 +223,7 @@ def main() -> None:
         "secret_values_emitted": False,
     }
     output = OUTPUT.with_name(
-        f"b2_replication_{len(dates)}_common_probe.json"
-        if arguments.warmup_count
-        else OUTPUT.name
+        f"b2_replication_{len(dates)}_common_probe.json" if arguments.warmup_count else OUTPUT.name
     )
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")

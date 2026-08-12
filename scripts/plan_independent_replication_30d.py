@@ -121,12 +121,10 @@ def main() -> None:
         "disjoint_from_phase5_phase6": True,
         "overlap_dates": overlap,
         "purpose": (
-            "Use warm-up only for causal trailing B2 state; score only the 30 "
-            "target sessions."
+            "Use warm-up only for causal trailing B2 state; score only the 30 target sessions."
         ),
         "download_scope": (
-            "Full Tape for all_dates; target sessions are the independent "
-            "evaluation block."
+            "Full Tape for all_dates; target sessions are the independent evaluation block."
         ),
         "storage_preflight_sha256": _sha256(STORAGE_OUTPUT),
         "secret_values_emitted": False,

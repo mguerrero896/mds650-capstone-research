@@ -90,9 +90,7 @@ def pending_sessions(
     ]
     by_date: dict[str, Mapping[str, object]] = {}
     for record in records:
-        if not isinstance(record, dict) or not isinstance(
-            record.get("session_date"), str
-        ):
+        if not isinstance(record, dict) or not isinstance(record.get("session_date"), str):
             continue
         session_date = str(record["session_date"])
         if session_date in by_date:
@@ -102,9 +100,7 @@ def pending_sessions(
     return [
         session_date
         for session_date in expected
-        if not _record_valid(
-            by_date.get(session_date, {}), preregistration_sha256
-        )
+        if not _record_valid(by_date.get(session_date, {}), preregistration_sha256)
     ]
 
 
@@ -113,16 +109,10 @@ def _checkpoint_path(session_date: str) -> Path:
     return CHECKPOINT_ROOT / f"{session_date}.json"
 
 
-def _verify_checkpoint_files(
-    record: Mapping[str, object], config: Phase5StorageConfig
-) -> None:
+def _verify_checkpoint_files(record: Mapping[str, object], config: Phase5StorageConfig) -> None:
     """Fail if any retained raw or Parquet hash differs."""
     session_date = str(record["session_date"])
-    raw_path = (
-        config.raw_root
-        / session_date
-        / f"full_tape_{session_date}.zip"
-    )
+    raw_path = config.raw_root / session_date / f"full_tape_{session_date}.zip"
     if not raw_path.is_file() or sha256_file(raw_path) != record.get("raw_sha256"):
         raise RuntimeError(f"PHASE6_RAW_HASH_MISMATCH:{session_date}")
     parquet_files = record.get("parquet_files")
@@ -157,9 +147,7 @@ def _expected_schema_fields() -> set[str] | None:
 def _parquet_manifest(day: date, config: Phase5StorageConfig) -> list[dict[str, object]]:
     """Hash the derived per-asset partitions for one session."""
     rows: list[dict[str, object]] = []
-    for path in sorted(
-        config.event_root.glob(f"date={day.isoformat()}/asset=*/events.parquet")
-    ):
+    for path in sorted(config.event_root.glob(f"date={day.isoformat()}/asset=*/events.parquet")):
         rows.append(
             {
                 "relative_path": path.relative_to(config.data_root).as_posix(),
@@ -172,9 +160,7 @@ def _parquet_manifest(day: date, config: Phase5StorageConfig) -> list[dict[str, 
     return rows
 
 
-def acquire_session(
-    session_date: str, config: Phase5StorageConfig
-) -> dict[str, object]:
+def acquire_session(session_date: str, config: Phase5StorageConfig) -> dict[str, object]:
     """Acquire or hash-verify one authorized Full Tape session."""
     day = date.fromisoformat(session_date)
     if day not in config.sessions:
@@ -212,17 +198,13 @@ def acquire_session(
         download["endpoint"] = "/api/option-trades/full-tape/{date}"
         download["reused_raw_archive"] = False
 
-    filtered = downloader.filter_session(
-        day, raw_path, _expected_schema_fields(), config
-    )
+    filtered = downloader.filter_session(day, raw_path, _expected_schema_fields(), config)
     record: dict[str, object] = {
         "status": "PASS",
         "session_date": session_date,
         "completed_at_utc": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
         "preregistration_sha256": preregistration_sha256,
-        "session_contract_sha256": _session_contract(
-            session_date, preregistration_sha256
-        ),
+        "session_contract_sha256": _session_contract(session_date, preregistration_sha256),
         "raw_sha256": raw_sha256,
         "raw_bytes": int(str(download["bytes"])),
         "http_status": download.get("http_status"),
@@ -304,9 +286,7 @@ def run() -> dict[str, object]:
     """Resume the exact 180-session acquisition until PASS or a named blocker."""
     preregistration = _assert_prerequisites()
     DATA_ROOT.mkdir(parents=True, exist_ok=True)
-    dates = tuple(
-        date.fromisoformat(row["session_date"]) for row in phase6_sessions()
-    )
+    dates = tuple(date.fromisoformat(row["session_date"]) for row in phase6_sessions())
     config = Phase5StorageConfig(
         sessions=dates,
         excluded_dates=frozenset(),

@@ -238,8 +238,6 @@ def fit_development_candidate(
     numeric = frame.select([name for name in features if name not in categorical]).to_numpy()
     if not np.isfinite(numeric).all():
         raise ValueError("DEVELOPMENT_FEATURE_INVALID")
-    estimator = _log_linear_pipeline(
-        features, model_name, parameters, seed, categorical
-    )
+    estimator = _log_linear_pipeline(features, model_name, parameters, seed, categorical)
     estimator.fit(frame.select(features).to_pandas(), np.log(np.maximum(target, forecast_floor)))
     return FittedDevelopmentCandidate(model_name, features, estimator, True, forecast_floor)

@@ -40,9 +40,7 @@ def test_defense_package_preserves_registered_signs_and_forbids_overclaim(
     """A presentation artifact cannot erase the adverse registered robustness result."""
 
     defense.build_defense_package(SOURCE, tmp_path)
-    report = (tmp_path / "MDS650_Canonical_RV30_Defense_Report.md").read_text(
-        encoding="utf-8"
-    )
+    report = (tmp_path / "MDS650_Canonical_RV30_Defense_Report.md").read_text(encoding="utf-8")
     table_rows = list(
         __import__("csv").DictReader(
             (tmp_path / "tables" / "canonical_registered_contrasts.csv").open(

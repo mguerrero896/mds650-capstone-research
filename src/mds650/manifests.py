@@ -110,6 +110,7 @@ def load_and_validate_audit_manifest(path: Path) -> AuditValidation:
 def _massive_directed_probe_passed(summary: Mapping[str, Any]) -> bool:
     trades = summary.get("massive_directed_trade_statuses")
     quotes = summary.get("massive_directed_quote_statuses")
+
     def successful_directed_probe(statuses: Any) -> bool:
         if not isinstance(statuses, list) or not statuses:
             return False

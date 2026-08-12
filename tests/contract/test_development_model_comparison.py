@@ -27,7 +27,6 @@ def test_development_comparison_artifacts_have_required_contract() -> None:
     assert ledger["all_variants_retained"] is True
     assert ledger["oos_reads"] == 0
     assert any(
-        row["model_name"] == "elastic_net"
-        and row["status"] == "REGISTERED_NOT_RUN_RUNTIME_BUDGET"
+        row["model_name"] == "elastic_net" and row["status"] == "REGISTERED_NOT_RUN_RUNTIME_BUDGET"
         for row in variants["variants"]
     )

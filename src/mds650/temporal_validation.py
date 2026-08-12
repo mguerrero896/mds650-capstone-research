@@ -201,18 +201,12 @@ def split_inner_validation(
     missing = {session_column, origin_column} - set(frame.columns)
     if missing:
         raise ValueError(f"TEMPORAL_COLUMNS_MISSING:{','.join(sorted(missing))}")
-    sessions = sorted(
-        frame[session_column].cast(pl.String).unique().to_list()
-    )
+    sessions = sorted(frame[session_column].cast(pl.String).unique().to_list())
     if validation_sessions < 1 or len(sessions) <= validation_sessions:
         raise ValueError("INSUFFICIENT_INNER_VALIDATION_HISTORY")
     validation_days = sessions[-validation_sessions:]
-    validation = frame.filter(
-        pl.col(session_column).cast(pl.String).is_in(validation_days)
-    )
-    fitting = frame.filter(
-        ~pl.col(session_column).cast(pl.String).is_in(validation_days)
-    )
+    validation = frame.filter(pl.col(session_column).cast(pl.String).is_in(validation_days))
+    fitting = frame.filter(~pl.col(session_column).cast(pl.String).is_in(validation_days))
     first_validation_origin = validation[origin_column].min()
     if not isinstance(first_validation_origin, datetime):
         raise ValueError("INVALID_INNER_VALIDATION_ORIGIN")

@@ -116,14 +116,10 @@ class _LatencyAccumulator:
         minimum = float(np.min(latency_seconds))
         maximum = float(np.max(latency_seconds))
         self.latency_min_seconds = (
-            minimum
-            if self.latency_min_seconds is None
-            else min(self.latency_min_seconds, minimum)
+            minimum if self.latency_min_seconds is None else min(self.latency_min_seconds, minimum)
         )
         self.latency_max_seconds = (
-            maximum
-            if self.latency_max_seconds is None
-            else max(self.latency_max_seconds, maximum)
+            maximum if self.latency_max_seconds is None else max(self.latency_max_seconds, maximum)
         )
         for cutoff in UW_LATENCY_CUTOFF_SECONDS:
             self.within_cutoff_counts[cutoff] += int(

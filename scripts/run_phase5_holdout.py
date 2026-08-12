@@ -197,10 +197,7 @@ def _validate_stability_sidecar(
                 f"b2_window_end__{delay}s",
                 f"b2_max_operational_time__{delay}s",
                 f"b2_option_activity_present__{delay}s",
-                *(
-                    b2_sensitivity_column(feature, delay)
-                    for feature in B2_FEATURE_NAMES
-                ),
+                *(b2_sensitivity_column(feature, delay) for feature in B2_FEATURE_NAMES),
             }
         )
     missing = sorted(required - set(sidecar.columns))

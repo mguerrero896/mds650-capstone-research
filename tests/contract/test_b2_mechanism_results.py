@@ -23,4 +23,3 @@ def test_residual_search_records_all_variants_without_retaining_any() -> None:
     assert len(payload["lag_sensitivity_results"]) == 25
     assert payload["independent_samples_read"] is False
     assert payload["oos_read_count"] == 0
-

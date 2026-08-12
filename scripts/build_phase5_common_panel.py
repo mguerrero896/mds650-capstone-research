@@ -89,27 +89,28 @@ def _validate_b1_attempt_ledger(
     missing = sorted(required - set(scan.collect_schema().names()))
     if missing:
         raise ValueError(f"PHASE5_B1_ATTEMPT_COLUMNS_MISSING:{','.join(missing)}")
-    stats = scan.select(
-        pl.len().alias("rows"),
-        (
-            pl.col("rate_source_date").is_null()
-            | (pl.col("rate_source_date") >= pl.col("session_date"))
+    stats = (
+        scan.select(
+            pl.len().alias("rows"),
+            (
+                pl.col("rate_source_date").is_null()
+                | (pl.col("rate_source_date") >= pl.col("session_date"))
+            )
+            .sum()
+            .alias("non_prior_rate_rows"),
+            (
+                pl.col("sip_timestamp").is_not_null()
+                & (pl.col("sip_timestamp") > pl.col("forecast_origin_ns"))
+            )
+            .sum()
+            .alias("future_quote_rows"),
+            (pl.col("source_request_hash").is_null() | (pl.col("source_request_hash") == ""))
+            .sum()
+            .alias("missing_request_hash_rows"),
         )
-        .sum()
-        .alias("non_prior_rate_rows"),
-        (
-            pl.col("sip_timestamp").is_not_null()
-            & (pl.col("sip_timestamp") > pl.col("forecast_origin_ns"))
-        )
-        .sum()
-        .alias("future_quote_rows"),
-        (
-            pl.col("source_request_hash").is_null()
-            | (pl.col("source_request_hash") == "")
-        )
-        .sum()
-        .alias("missing_request_hash_rows"),
-    ).collect().row(0, named=True)
+        .collect()
+        .row(0, named=True)
+    )
     expected_rows = summary.get("iv_attempt_rows")
     if (
         not isinstance(expected_rows, int)
@@ -366,26 +367,24 @@ def _new_b2(
     if aggregate_frame["origin_id"].n_unique() != aggregate_frame.height:
         raise ValueError("PHASE5_B2_AGGREGATE_DUPLICATE_ORIGIN")
 
-    grid = origins.select(
-        ["origin_id", "session_date", "forecast_origin_utc"]
-    ).join(
-        pl.DataFrame(
-            {
-                "session_date": list(session_hashes),
-                "_session_source_hash": list(session_hashes.values()),
-            }
-        ),
-        on="session_date",
-        how="left",
-    ).with_columns(
-        (pl.col("forecast_origin_utc") - pl.duration(seconds=60)).alias(
-            "b2_window_end"
-        ),
-        (
-            pl.col("forecast_origin_utc")
-            - pl.duration(seconds=60)
-            - pl.duration(minutes=5)
-        ).alias("b2_window_start"),
+    grid = (
+        origins.select(["origin_id", "session_date", "forecast_origin_utc"])
+        .join(
+            pl.DataFrame(
+                {
+                    "session_date": list(session_hashes),
+                    "_session_source_hash": list(session_hashes.values()),
+                }
+            ),
+            on="session_date",
+            how="left",
+        )
+        .with_columns(
+            (pl.col("forecast_origin_utc") - pl.duration(seconds=60)).alias("b2_window_end"),
+            (
+                pl.col("forecast_origin_utc") - pl.duration(seconds=60) - pl.duration(minutes=5)
+            ).alias("b2_window_start"),
+        )
     )
     result = grid.join(aggregate_frame, on="origin_id", how="left")
     zero_fields = (
@@ -401,28 +400,22 @@ def _new_b2(
         "b2_strike_concentration",
         "b2_expiry_concentration",
     )
-    result = result.with_columns(
-        [pl.col(column).fill_null(0) for column in zero_fields]
-    ).with_columns(
-        pl.when(pl.col("b2_total_premium_5m") > 0)
-        .then(pl.col("_ask_premium") / pl.col("b2_total_premium_5m"))
-        .otherwise(0.0)
-        .alias("b2_ask_side_premium_share"),
-        pl.when(pl.col("b2_total_premium_5m") > 0)
-        .then(pl.col("_bid_premium") / pl.col("b2_total_premium_5m"))
-        .otherwise(0.0)
-        .alias("b2_bid_side_premium_share"),
-        (pl.col("b2_option_trade_count_5m") > 0).alias(
-            "b2_option_activity_present"
-        ),
-        pl.lit("operational_availability_proxy").alias(
-            "b2_availability_semantics"
-        ),
-        pl.coalesce("b2_source_hash", "_session_source_hash").alias(
-            "b2_source_hash"
-        ),
-    ).drop(
-        "_session_source_hash"
+    result = (
+        result.with_columns([pl.col(column).fill_null(0) for column in zero_fields])
+        .with_columns(
+            pl.when(pl.col("b2_total_premium_5m") > 0)
+            .then(pl.col("_ask_premium") / pl.col("b2_total_premium_5m"))
+            .otherwise(0.0)
+            .alias("b2_ask_side_premium_share"),
+            pl.when(pl.col("b2_total_premium_5m") > 0)
+            .then(pl.col("_bid_premium") / pl.col("b2_total_premium_5m"))
+            .otherwise(0.0)
+            .alias("b2_bid_side_premium_share"),
+            (pl.col("b2_option_trade_count_5m") > 0).alias("b2_option_activity_present"),
+            pl.lit("operational_availability_proxy").alias("b2_availability_semantics"),
+            pl.coalesce("b2_source_hash", "_session_source_hash").alias("b2_source_hash"),
+        )
+        .drop("_session_source_hash")
     )
     return _compact_prefixed_b2(result)
 
@@ -646,14 +639,11 @@ def main(config: PanelBuildConfig = DEFAULT_CONFIG) -> None:
         raise ValueError("PHASE5_FULL_TAPE_ACQUISITION_INCOMPLETE")
     full_tape_rows = full_tape.get("sessions")
     if not isinstance(full_tape_rows, list) or not all(
-        isinstance(row, dict) and row.get("status") == "PASS"
-        for row in full_tape_rows
+        isinstance(row, dict) and row.get("status") == "PASS" for row in full_tape_rows
     ):
         raise ValueError("PHASE5_FULL_TAPE_SESSION_FAILURE")
     acquired = sorted(str(row["session_date"]) for row in full_tape_rows)
-    source_hashes = {
-        str(row["session_date"]): str(row["sha256"]) for row in full_tape_rows
-    }
+    source_hashes = {str(row["session_date"]): str(row["sha256"]) for row in full_tape_rows}
     reconciliation = reconcile_development_sources(sessions, reused, acquired)
     holdout = frozenset(str(day) for day in sessions["holdout"])
 
@@ -718,10 +708,7 @@ def main(config: PanelBuildConfig = DEFAULT_CONFIG) -> None:
         or all_rows["origin_id"].n_unique() != all_rows.height
         or all_rows["session_date"].n_unique() != 80
         or set(all_rows["session_date"].to_list()) & holdout
-        or any(
-            row["len"] != 5_680
-            for row in all_rows.group_by("asset").len().to_dicts()
-        )
+        or any(row["len"] != 5_680 for row in all_rows.group_by("asset").len().to_dicts())
     ):
         raise ValueError("PHASE5_DEVELOPMENT_PANEL_SHAPE_INVALID")
 
@@ -737,16 +724,10 @@ def main(config: PanelBuildConfig = DEFAULT_CONFIG) -> None:
             ).height,
             "future_b2_rows": all_rows.filter(
                 pl.col("b2_max_operational_time").is_not_null()
-                & (
-                    pl.col("b2_max_operational_time")
-                    > pl.col("b2_window_end")
-                )
+                & (pl.col("b2_max_operational_time") > pl.col("b2_window_end"))
             ).height,
-            "duplicate_origins": all_rows.height
-            - all_rows["origin_id"].n_unique(),
-            "holdout_overlap": sorted(
-                set(all_rows["session_date"].to_list()) & holdout
-            ),
+            "duplicate_origins": all_rows.height - all_rows["origin_id"].n_unique(),
+            "holdout_overlap": sorted(set(all_rows["session_date"].to_list()) & holdout),
         }
     )
     if quality["future_b0_rows"] or quality["future_b2_rows"]:
@@ -767,13 +748,9 @@ def main(config: PanelBuildConfig = DEFAULT_CONFIG) -> None:
         "schema_version": "phase5-development-sources-1.0",
         "input_hashes": {
             "study_sessions_90.json": _sha256_file(config.session_manifest),
-            "reused_25_session_manifest.json": _sha256_file(
-                config.reused_manifest
-            ),
+            "reused_25_session_manifest.json": _sha256_file(config.reused_manifest),
             "origin_matrix_25d.parquet": _sha256_file(config.retained_matrix),
-            "full_tape_batch_manifest.json": _sha256_file(
-                config.full_tape_manifest
-            ),
+            "full_tape_batch_manifest.json": _sha256_file(config.full_tape_manifest),
             "fmp_origins_55d.parquet": _sha256_file(origins_path),
             "fmp_bars_55d.parquet": _sha256_file(bars_path),
             "b1q_origins_55d.parquet": _sha256_file(b1_path),

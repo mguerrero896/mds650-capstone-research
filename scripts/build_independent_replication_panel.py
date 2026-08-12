@@ -432,9 +432,7 @@ def build_b2() -> None:
             "complete_origin_count": primary.filter(pl.col("b2v2_complete")).height,
             "session_count": primary["session_date"].n_unique(),
             "excluded_provider_sessions": sorted(excluded_dates),
-            "availability_status": (
-                "PASS_WITH_PROVIDER_INCIDENT" if excluded_dates else "PASS"
-            ),
+            "availability_status": ("PASS_WITH_PROVIDER_INCIDENT" if excluded_dates else "PASS"),
             "primary_cutoff": "created_at <= forecast_origin - 60 seconds",
             "sensitivity_specs": list(B2_SPECS),
             "b2_sha256": sha256_file(B2_PRIMARY_PATH),
