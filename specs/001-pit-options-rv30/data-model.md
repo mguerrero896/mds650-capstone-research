@@ -288,10 +288,14 @@ Any early, mismatched or second analytical read fails closed.
 | `coverage_status` | enum | `AVAILABLE_EXACT_WINDOW`, `MISSING`, or `B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED` |
 | `reason_code` | string/null | Required whenever status is not `AVAILABLE_EXACT_WINDOW` |
 | `source_sha256` | string | SHA-256 of the source file or cache manifest, never a target artifact |
+| `rate_source_payload_sha256` | string/null | Sanitized immutable raw-rate payload identity; required before a B1Q rate can be usable |
+| `rate_source_available_at_utc` | UTC timestamp/null | Must be no later than the forecast origin; a prior calendar date alone is insufficient |
+| `dividend_source_payload_sha256` | string/null | Sanitized immutable raw-dividend or no-known-prior-dividend evidence identity |
+| `dividend_source_available_at_utc` | UTC timestamp/null | Must be no later than the forecast origin for either registered dividend assumption |
 
 The coverage ledger is target-free. Any unresolved B1Q exogenous-input provenance makes the
-release `BLOCKED_SOURCE_COVERAGE`; it cannot be replaced by a later, stale, or carried-forward
-rate/dividend value.
+release `BLOCKED_SOURCE_COVERAGE`; it cannot be replaced by a later, stale, carried-forward, or
+unhashed rate/dividend value.
 | `safe_to_reconcile_existing_results` | enum | Always `NO` for legacy sealed results |
 | `safe_to_open_or_evaluate_oos` | enum | Always `NO` in this release |
 | `release_sha256` | string | Canonical content hash excluding this field |

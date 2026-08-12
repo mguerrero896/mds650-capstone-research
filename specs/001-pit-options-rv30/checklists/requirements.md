@@ -189,8 +189,9 @@
   [Clarity, Spec §FR-083]
 - [ ] CHK018 Does the corrected release bind an exact-80-session source (not a filtered
   180-session panel) by SHA-256, reject the ten holdout dates and result-like inputs, prohibit
-  target or metric payload reads during predictor construction, and reject same-session, stale
-  or carried-forward B1Q exogenous inputs? [Security and Reproducibility, Spec §FR-084 and §SC-037]
+  target or metric payload reads during predictor construction, and reject same-session, stale,
+  carried-forward, unhashed or post-origin B1Q exogenous inputs? [Security and Reproducibility,
+  Spec §FR-084 and §SC-037]
 - [x] CHK019 Does the B2 policy encode delayed or unavailable windows as all-nine-feature null
   exclusions with eligibility and reason, rather than zero activity? [Data Integrity, Spec
   §FR-085 and §SC-038]
@@ -203,7 +204,7 @@
 - [x] CHK022 Do the corrected release states retain literal `NO` values for legacy
   reconciliation and OOS access even after a successful development-only evaluation?
   [Safety, Spec §FR-088 and §SC-040]
-- [ ] CHK023 Does the source-coverage ledger fail closed with `BLOCKED_SOURCE_COVERAGE` when
-  any fixed asset-date lacks an exact B1Q state or has same-session or missing pre-origin
-  rate/dividend provenance?
+- [x] CHK023 Does the source-coverage ledger fail closed with `BLOCKED_SOURCE_COVERAGE` when
+  any fixed asset-date lacks an exact B1Q state or has same-session, missing, unhashed or
+  post-origin rate/dividend provenance?
   [Data Integrity, Spec §SC-041]

@@ -808,8 +808,10 @@ only; no final scientific claim is permitted until the separately controlled hol
   reject every holdout session, target-like input during predictor construction, legacy result
    path, source-hash mismatch and source-window mismatch. A B1Q row with same-session or
    missing exact pre-origin rate/dividend provenance MUST be explicitly missing with
-  `B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED`; stale or carried-forward exogenous inputs are
-  forbidden.
+   `B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED`; stale or carried-forward exogenous inputs are
+   forbidden. A calendar date strictly before the session is insufficient by itself: each rate
+   and dividend input MUST retain a sanitized raw-payload SHA-256 and an availability timestamp
+   no later than the forecast origin. Missing, malformed or later evidence is unresolved.
 - **FR-085**: The corrected B2 policy MUST encode a delayed or unavailable activity window as
   all nine B2 fields missing with an eligibility flag and explicit reason. It MUST NOT encode it
   as no activity or as a numerical zero. A genuine zero is permitted only for an eligible window
@@ -887,6 +889,7 @@ missing provider data remains missing with an explicit reason.
   legacy result or of the prospective holdout. Final edge support remains conditional on the
   one-time holdout read under the already frozen protocol.
 - **SC-041**: If any fixed development asset-date lacks an exact B1Q source state or has a
-  same-session or missing exact pre-origin rate/dividend provenance, the source-coverage artifact MUST be
-  `BLOCKED_SOURCE_COVERAGE`, all affected B1Q fields MUST remain null with a machine-readable
-  reason, and target binding or development evaluation MUST NOT start.
+  same-session, missing, unhashed, or not-yet-available exact pre-origin rate/dividend input,
+  the source-coverage artifact MUST be `BLOCKED_SOURCE_COVERAGE`, all affected B1Q fields MUST
+  remain null with a machine-readable reason, and target binding or development evaluation MUST
+  NOT start.

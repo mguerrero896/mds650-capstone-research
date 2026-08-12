@@ -388,7 +388,9 @@ or filtered into the frozen window. Its preflight is ordered:
 3. Build and hash a source-coverage ledger before materializing a release. It must prove exact
    date equality for B0, B1Q and B2. Any B1Q row with a same-session or missing exact pre-origin
    rate/dividend input is `B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED`, not permission to carry
-   forward any later value. The executed ledger records B0/FMP and B2/UW raw-source coverage for
+   forward any later value. A valid B1Q exogenous row additionally binds each rate and dividend
+   input to a sanitized raw-payload SHA-256 and an evidence-availability timestamp no later than
+   its forecast origin. The executed ledger records B0/FMP and B2/UW raw-source coverage for
    all 480 selected asset-date pairs, while B1Q remains blocked for all 34,080 origins until its
    exogenous inputs are rebuilt with separate pre-origin evidence. If any such gap remains, emit only a
    `BLOCKED_SOURCE_COVERAGE` artifact and stop before target binding.

@@ -27,12 +27,19 @@ B1Q_SOURCE_ROW_MISSING = "B1Q_SOURCE_ROW_MISSING"
 _ALLOWED_DIVIDEND_ASSUMPTIONS = frozenset(
     {"NO_PRE_ORIGIN_DIVIDEND_Q_ZERO", "PRE_ORIGIN_TRAILING_DECLARATIONS"}
 )
+_EXOGENOUS_EVIDENCE_COLUMNS = (
+    "rate_source_available_at_utc",
+    "rate_source_payload_sha256",
+    "dividend_source_available_at_utc",
+    "dividend_source_payload_sha256",
+)
 _B1Q_SOURCE_COLUMNS = (
     *KEY_COLUMNS,
     "rate",
     "rate_source_date",
     "dividend_yield",
     "dividend_assumption",
+    *_EXOGENOUS_EVIDENCE_COLUMNS,
     "b1a_complete",
     "b1b_complete",
     "b1c_complete",
@@ -43,6 +50,7 @@ _B1Q_SOURCE_COLUMNS = (
     "b1q_quote_not_after_origin",
     "b1q_pit_evidence_valid",
 )
+_SHA256_PATTERN = r"^[0-9a-f]{64}$"
 _B1Q_NULLABLE_ON_UNRESOLVED = (
     "rate",
     "rate_source_date",
@@ -226,6 +234,7 @@ def prepare_b1q_source(
     ``B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED``.
     """
     _require_columns("origins", origins, KEY_COLUMNS)
+    source = _with_exogenous_evidence_columns(source)
     _require_columns("b1q_source", source, _B1Q_SOURCE_COLUMNS)
     _assert_unique_keys("origins", origins)
     _assert_unique_keys("b1q_source", source)
@@ -263,6 +272,10 @@ def prepare_b1q_source(
             < pl.col("session_date").cast(pl.String)
         ).fill_null(False)
         & pl.col("dividend_assumption").is_in(_ALLOWED_DIVIDEND_ASSUMPTIONS).fill_null(False)
+        & _evidence_available_by_origin("rate_source_available_at_utc")
+        & _evidence_available_by_origin("dividend_source_available_at_utc")
+        & _payload_hash_is_valid("rate_source_payload_sha256")
+        & _payload_hash_is_valid("dividend_source_payload_sha256")
     )
     reason = (
         pl.when(provenance_verified)
@@ -303,6 +316,7 @@ def prepare_b1q_source(
             "rate_source_date",
             "dividend_yield",
             "dividend_assumption",
+            *_EXOGENOUS_EVIDENCE_COLUMNS,
             "b1a_complete",
             "b1b_complete",
             "b1c_complete",
@@ -316,6 +330,47 @@ def prepare_b1q_source(
             "b1q_source_missing_reason",
         )
         .sort(["session_date", "forecast_origin_utc", "asset"])
+    )
+
+
+def _with_exogenous_evidence_columns(source: pl.DataFrame) -> pl.DataFrame:
+    """Add null audit columns when a legacy B1Q source lacks payload evidence."""
+    additions: list[pl.Expr] = []
+    if "rate_source_available_at_utc" not in source.columns:
+        additions.append(
+            pl.lit(None, dtype=pl.Datetime(time_zone="UTC")).alias(
+                "rate_source_available_at_utc"
+            )
+        )
+    if "rate_source_payload_sha256" not in source.columns:
+        additions.append(pl.lit(None, dtype=pl.String).alias("rate_source_payload_sha256"))
+    if "dividend_source_available_at_utc" not in source.columns:
+        additions.append(
+            pl.lit(None, dtype=pl.Datetime(time_zone="UTC")).alias(
+                "dividend_source_available_at_utc"
+            )
+        )
+    if "dividend_source_payload_sha256" not in source.columns:
+        additions.append(
+            pl.lit(None, dtype=pl.String).alias("dividend_source_payload_sha256")
+        )
+    return source.with_columns(*additions) if additions else source
+
+
+def _evidence_available_by_origin(column: str) -> pl.Expr:
+    """Return whether one timestamped evidence record was available by origin."""
+    available_at = pl.col(column).cast(pl.Datetime(time_zone="UTC"), strict=False)
+    origin = pl.col("forecast_origin_utc").cast(pl.Datetime(time_zone="UTC"), strict=False)
+    return available_at.is_not_null() & origin.is_not_null() & (available_at <= origin)
+
+
+def _payload_hash_is_valid(column: str) -> pl.Expr:
+    """Return whether one local raw-payload identity is a SHA-256 digest."""
+    return (
+        pl.col(column)
+        .cast(pl.String, strict=False)
+        .str.contains(_SHA256_PATTERN)
+        .fill_null(False)
     )
 
 

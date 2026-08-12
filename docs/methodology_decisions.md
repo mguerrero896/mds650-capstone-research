@@ -204,3 +204,10 @@ Spec Kit consistency and preregistration gates pass.
    `BLOCKED_SOURCE_COVERAGE` before target binding or evaluation. This release never rewrites
    sealed legacy results, acquires data, reads the ten-session holdout or upgrades
    `SAFE_TO_RECONCILE_EXISTING_RESULTS=NO` or `SAFE_TO_OPEN_OR_EVALUATE_OOS=NO`.
+38. **B1Q exogenous-evidence hardening (2026-08-12)** — A strictly prior
+   `rate_source_date` is necessary but not sufficient to establish B1Q provenance. Every usable
+   rate and dividend input must additionally carry a sanitized raw-payload SHA-256 and an
+   evidence-availability timestamp at or before its forecast origin. Missing, malformed or
+   later evidence produces `B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED`; it never licenses a
+   backfilled, carried-forward or undocumented proxy. Legacy B1Q source files lacking these
+   audit fields remain explicitly blocked until separately evidenced inputs are available.

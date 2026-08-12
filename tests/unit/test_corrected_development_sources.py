@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import polars as pl
@@ -32,11 +32,16 @@ def _source_hashes() -> dict[str, str]:
     }
 
 
-def _b1_source_row(origin: dict[str, object], *, rate_source_date: str) -> dict[str, object]:
+def _b1_source_row(
+    origin: dict[str, object],
+    *,
+    rate_source_date: str,
+    include_exogenous_evidence: bool = True,
+) -> dict[str, object]:
     """Return one minimal, target-free B1Q source state for a synthetic origin."""
     origin_timestamp = origin["forecast_origin_utc"]
     assert isinstance(origin_timestamp, datetime)
-    return {
+    row: dict[str, object] = {
         "origin_id": origin["origin_id"],
         "asset": origin["asset"],
         "session_date": origin["session_date"],
@@ -55,6 +60,17 @@ def _b1_source_row(origin: dict[str, object], *, rate_source_date: str) -> dict[
         "b1q_quote_not_after_origin": True,
         "b1q_pit_evidence_valid": True,
     }
+    if include_exogenous_evidence:
+        available_at = origin_timestamp - timedelta(days=1)
+        row.update(
+            {
+                "rate_source_available_at_utc": available_at,
+                "rate_source_payload_sha256": "e" * 64,
+                "dividend_source_available_at_utc": available_at,
+                "dividend_source_payload_sha256": "f" * 64,
+            }
+        )
+    return row
 
 
 def test_exact_origin_grid_matches_phase5_rv30_spacing() -> None:
@@ -88,6 +104,27 @@ def test_same_day_rate_provenance_nulls_the_b1q_state() -> None:
     assert row["b1q_max_sip_timestamp_ns"] is None
     assert row["b1a_complete"] is False
     assert row["b1q_pit_evidence_valid"] is False
+
+
+def test_prior_rate_without_timestamped_payload_evidence_nulls_the_b1q_state() -> None:
+    """A prior calendar date alone cannot establish B1Q exogenous provenance."""
+    origins = build_exact_development_origins(("2026-03-24",), assets=("AAPL",)).head(1)
+    source = pl.DataFrame(
+        [
+            _b1_source_row(
+                origins.row(0, named=True),
+                rate_source_date="2026-03-23",
+                include_exogenous_evidence=False,
+            )
+        ]
+    )
+
+    prepared = prepare_b1q_source(origins, source)
+    row = prepared.row(0, named=True)
+
+    assert row["b1q_source_missing_reason"] == B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED
+    assert row["b1q_exogenous_provenance_verified"] is False
+    assert row["b1q_atm_iv"] is None
 
 
 def test_missing_retained_b1q_source_is_not_carried_forward() -> None:

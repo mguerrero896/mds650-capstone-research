@@ -399,8 +399,8 @@ frozen development protocol without reading any holdout path.
   v2.4 remains an approved control/provenance input, never a relabelled 80-session source.
 - [x] T201A [P] [US4] Add failing source-coverage and exact-origin-grid tests in
   `tests/unit/test_corrected_development_sources.py`, including no stale B1Q rate/dividend
-  substitution and all-null B1Q missing rows for unresolved same-session or retained-session
-  provenance.
+  substitution, mandatory sanitized payload hashes and availability timestamps, and all-null B1Q
+  missing rows for unresolved same-session or retained-session provenance.
 - [x] T201B [US4] Implement `src/mds650/corrected_development_sources.py` and
   `contracts/corrected-development-source-coverage-v1.schema.json` to build a target-free
   exact-80 source coverage ledger from FMP, Full Tape and B1Q sources; emit
