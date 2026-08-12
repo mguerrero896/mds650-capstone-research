@@ -411,10 +411,12 @@ frozen development protocol without reading any holdout path.
   coverage-first implementation intentionally stops after the self-hashed
   `BLOCKED_SOURCE_COVERAGE` ledger because all B1Q origins lack admissible exogenous-input
   provenance; it does not materialize a predictor panel or bind targets.
-- [ ] T202 [US4] Run the exact-window source build idempotently, validate the coverage schema
+- [x] T202 [US4] Run the exact-window source build idempotently, validate the coverage schema
   and emit either `artifacts/corrected_development_v1/target_blind_release_manifest.json` when
   all B1Q source coverage passes or a self-hashed `BLOCKED_SOURCE_COVERAGE` artifact without
-  opening RV30, metrics, legacy results or holdout paths.
+  opening RV30, metrics, legacy results or holdout paths. The recorded 80-session run emitted
+  `artifacts/corrected_development_v1/source_coverage_ledger.json` with B0/B2 source coverage
+  passing and B1Q blocked by `B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED`.
 - [ ] T203 [P] [US4] Add failing development target-binding tests for exact origin/target hashes,
   holdout-path rejection, target-before-predictor ordering and deterministic release identity in
   `tests/contract/test_corrected_development_target_binding.py`.
