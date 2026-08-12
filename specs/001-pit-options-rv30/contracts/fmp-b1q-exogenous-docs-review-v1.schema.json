@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/fmp-b1q-exogenous-docs-review-v1.schema.json",
+  "title": "FMP B1Q Exogenous Documentation Review v1",
+  "description": "Target-blind record of documented FMP rate/dividend endpoint facts and unresolved point-in-time provenance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "scope",
+    "observed_on_utc",
+    "treasury_endpoint_status",
+    "treasury_cycle_time_status",
+    "dividend_endpoint_status",
+    "dividend_cycle_time_status",
+    "sources",
+    "b1q_exogenous_input_provenance_status",
+    "unresolved_reason_codes",
+    "required_support_claim_ids",
+    "permitted_conclusion",
+    "safe_to_build_b1q",
+    "safe_to_reconcile_existing_results",
+    "safe_to_open_or_evaluate_oos",
+    "provider_market_data_requests_performed",
+    "target_or_metric_payload_read",
+    "model_fit_performed",
+    "secret_values_emitted",
+    "personal_paths_emitted",
+    "semantic_self_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "fmp-b1q-exogenous-docs-review-v1.0" },
+    "status": { "const": "DOCUMENTED_ENDPOINTS_INSUFFICIENT_FOR_B1Q_PIT" },
+    "scope": { "const": "official_documentation_review_only_target_blind" },
+    "observed_on_utc": { "const": "2026-08-12" },
+    "treasury_endpoint_status": { "const": "DOCUMENTED_HISTORICAL_ENDPOINT" },
+    "treasury_cycle_time_status": { "const": "DOCUMENTED_TWO_HOURS" },
+    "dividend_endpoint_status": { "const": "DOCUMENTED_DECLARATION_DATE_FIELD" },
+    "dividend_cycle_time_status": { "const": "DOCUMENTED_ONE_TO_TWO_HOURS" },
+    "sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["treasury_rates", "dividends"],
+      "properties": {
+        "treasury_rates": { "$ref": "#/$defs/treasurySource" },
+        "dividends": { "$ref": "#/$defs/dividendSource" }
+      }
+    },
+    "b1q_exogenous_input_provenance_status": { "const": "UNRESOLVED" },
+    "unresolved_reason_codes": {
+      "type": "array",
+      "const": [
+        "FMP_TREASURY_OBSERVATION_DATE_SEMANTICS_UNDOCUMENTED",
+        "FMP_TREASURY_HISTORICAL_AVAILABILITY_OR_REVISION_UNDOCUMENTED",
+        "FMP_DIVIDEND_CUSTOMER_AVAILABILITY_OR_REVISION_UNDOCUMENTED"
+      ]
+    },
+    "required_support_claim_ids": {
+      "type": "array",
+      "const": [
+        "FMP_TREASURY_OBSERVATION_DATE_SEMANTICS",
+        "FMP_TREASURY_HISTORICAL_AVAILABILITY_OR_REVISION_SEMANTICS",
+        "FMP_DIVIDEND_DECLARATION_DATE_SEMANTICS",
+        "FMP_DIVIDEND_HISTORICAL_AVAILABILITY_OR_REVISION_SEMANTICS"
+      ]
+    },
+    "permitted_conclusion": { "type": "string", "minLength": 20 },
+    "safe_to_build_b1q": { "const": false },
+    "safe_to_reconcile_existing_results": { "const": "NO" },
+    "safe_to_open_or_evaluate_oos": { "const": "NO" },
+    "provider_market_data_requests_performed": { "const": false },
+    "target_or_metric_payload_read": { "const": false },
+    "model_fit_performed": { "const": false },
+    "secret_values_emitted": { "const": false },
+    "personal_paths_emitted": { "const": false },
+    "semantic_self_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+  },
+  "$defs": {
+    "treasurySource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "endpoint_url",
+        "documentation_url",
+        "cycle_times_url",
+        "endpoint_scope",
+        "cycle_time",
+        "observation_date_semantics_documented",
+        "customer_available_at_documented",
+        "historical_revision_or_backfill_behavior_documented"
+      ],
+      "properties": {
+        "endpoint_url": { "const": "https://financialmodelingprep.com/stable/treasury-rates" },
+        "documentation_url": { "const": "https://site.financialmodelingprep.com/developer/docs/stable/treasury-rates" },
+        "cycle_times_url": { "const": "https://site.financialmodelingprep.com/developer/docs/cycle-times-stable" },
+        "endpoint_scope": { "const": "LATEST_AND_HISTORICAL_TREASURY_RATES" },
+        "cycle_time": { "const": "TWO_HOURS" },
+        "observation_date_semantics_documented": { "const": false },
+        "customer_available_at_documented": { "const": false },
+        "historical_revision_or_backfill_behavior_documented": { "const": false }
+      }
+    },
+    "dividendSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "endpoint_url",
+        "documentation_url",
+        "cycle_times_url",
+        "endpoint_scope",
+        "declaration_date_field_documented",
+        "cycle_time",
+        "customer_available_at_documented",
+        "historical_revision_or_backfill_behavior_documented"
+      ],
+      "properties": {
+        "endpoint_url": { "const": "https://financialmodelingprep.com/stable/dividends" },
+        "documentation_url": { "const": "https://site.financialmodelingprep.com/developer/docs/historical-stock-dividends-api/" },
+        "cycle_times_url": { "const": "https://site.financialmodelingprep.com/developer/docs/cycle-times-stable" },
+        "endpoint_scope": { "const": "SYMBOL_DIVIDEND_HISTORY_AND_SCHEDULE" },
+        "declaration_date_field_documented": { "const": true },
+        "cycle_time": { "const": "ONE_TO_TWO_HOURS" },
+        "customer_available_at_documented": { "const": false },
+        "historical_revision_or_backfill_behavior_documented": { "const": false }
+      }
+    }
+  }
+}

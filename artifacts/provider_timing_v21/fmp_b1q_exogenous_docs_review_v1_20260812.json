@@ -1,0 +1,54 @@
+{
+  "b1q_exogenous_input_provenance_status": "UNRESOLVED",
+  "dividend_cycle_time_status": "DOCUMENTED_ONE_TO_TWO_HOURS",
+  "dividend_endpoint_status": "DOCUMENTED_DECLARATION_DATE_FIELD",
+  "model_fit_performed": false,
+  "observed_on_utc": "2026-08-12",
+  "permitted_conclusion": "Endpoint and refresh documentation supports neither pre-origin rate/dividend provenance nor a B1Q rebuild.",
+  "personal_paths_emitted": false,
+  "provider_market_data_requests_performed": false,
+  "required_support_claim_ids": [
+    "FMP_TREASURY_OBSERVATION_DATE_SEMANTICS",
+    "FMP_TREASURY_HISTORICAL_AVAILABILITY_OR_REVISION_SEMANTICS",
+    "FMP_DIVIDEND_DECLARATION_DATE_SEMANTICS",
+    "FMP_DIVIDEND_HISTORICAL_AVAILABILITY_OR_REVISION_SEMANTICS"
+  ],
+  "safe_to_build_b1q": false,
+  "safe_to_open_or_evaluate_oos": "NO",
+  "safe_to_reconcile_existing_results": "NO",
+  "schema_version": "fmp-b1q-exogenous-docs-review-v1.0",
+  "scope": "official_documentation_review_only_target_blind",
+  "secret_values_emitted": false,
+  "semantic_self_hash": "sha256:e460e2e22c2c5105b86fc97909da64d98184f3060bb52767c8ffeb53211f89ad",
+  "sources": {
+    "dividends": {
+      "customer_available_at_documented": false,
+      "cycle_time": "ONE_TO_TWO_HOURS",
+      "cycle_times_url": "https://site.financialmodelingprep.com/developer/docs/cycle-times-stable",
+      "declaration_date_field_documented": true,
+      "documentation_url": "https://site.financialmodelingprep.com/developer/docs/historical-stock-dividends-api/",
+      "endpoint_scope": "SYMBOL_DIVIDEND_HISTORY_AND_SCHEDULE",
+      "endpoint_url": "https://financialmodelingprep.com/stable/dividends",
+      "historical_revision_or_backfill_behavior_documented": false
+    },
+    "treasury_rates": {
+      "customer_available_at_documented": false,
+      "cycle_time": "TWO_HOURS",
+      "cycle_times_url": "https://site.financialmodelingprep.com/developer/docs/cycle-times-stable",
+      "documentation_url": "https://site.financialmodelingprep.com/developer/docs/stable/treasury-rates",
+      "endpoint_scope": "LATEST_AND_HISTORICAL_TREASURY_RATES",
+      "endpoint_url": "https://financialmodelingprep.com/stable/treasury-rates",
+      "historical_revision_or_backfill_behavior_documented": false,
+      "observation_date_semantics_documented": false
+    }
+  },
+  "status": "DOCUMENTED_ENDPOINTS_INSUFFICIENT_FOR_B1Q_PIT",
+  "target_or_metric_payload_read": false,
+  "treasury_cycle_time_status": "DOCUMENTED_TWO_HOURS",
+  "treasury_endpoint_status": "DOCUMENTED_HISTORICAL_ENDPOINT",
+  "unresolved_reason_codes": [
+    "FMP_TREASURY_OBSERVATION_DATE_SEMANTICS_UNDOCUMENTED",
+    "FMP_TREASURY_HISTORICAL_AVAILABILITY_OR_REVISION_UNDOCUMENTED",
+    "FMP_DIVIDEND_CUSTOMER_AVAILABILITY_OR_REVISION_UNDOCUMENTED"
+  ]
+}
