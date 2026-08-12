@@ -22,6 +22,20 @@ metadatos y los contratos/cotizaciones as-of de Massive. El probe UW usa un targ
 declara una URL de proveedor ni semántica de timestamps no documentada. Massive fija
 `timestamp.lte` en nanosegundos, `sort=timestamp`, `order=desc` y `limit=1`.
 
+Antes de entregar un `PreflightRequest` al transporte inyectado, el runner deriva en memoria un
+único origen por sesión a partir exclusivamente de los límites declarados
+`calendar_metadata.open_utc` y `calendar_metadata.close_utc`. Ambos deben ser timestamps UTC con
+zona explícita. El origen es el punto medio de la sesión, truncado hacia abajo al límite UTC de
+cinco minutos; el resultado debe permanecer estrictamente entre apertura y cierre y ser un Unix
+nanoseconds positivo de 19 dígitos. Se expone como `forecast_origin_utc` (ISO-8601 UTC) y
+`forecast_origin_ns`. Un futuro adaptador Massive debe enlazar su `timestamp.lte` as-of con
+`request.forecast_origin_ns`; el campo UTC permite auditar esa elección sin convertir zonas.
+
+La derivación es preflight-only: no modifica el plan versionado ni su `semantic_self_hash`, no
+lee resultados ni datos externos y no ejecuta llamadas de proveedor. Metadatos de sesión ausentes,
+naïve, no UTC, no positivos o cuyo truncamiento deje el origen en un borde fallan cerrados con
+`SENTINEL_SESSION_METADATA_INVALID`.
+
 El catálogo configura FMP, Unusual Whales y Massive para diagnóstico, pero no autoriza
 adquisición ni crea clientes o transporte. Una ejecución futura sigue exigiendo autorización
 explícita, hash semántico aprobado, aserción de gasto incremental cero, al menos 80 GiB libres en

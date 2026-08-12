@@ -8,6 +8,7 @@ import os
 import shutil
 from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass
+from datetime import datetime, timedelta, timezone
 from importlib import import_module
 from pathlib import Path
 from typing import Final, Protocol, cast
@@ -24,6 +25,13 @@ ENDPOINT_CATALOG_SCHEMA_PATH: Final[Path] = (
     / "specs/001-pit-options-rv30/contracts/"
     "date-level-pit-preflight-endpoint-catalog-v1.schema.json"
 )
+UTC: Final[timezone] = timezone.utc  # noqa: UP017
+UNIX_EPOCH: Final[datetime] = datetime(1970, 1, 1, tzinfo=UTC)
+NANOSECONDS_PER_SECOND: Final[int] = 1_000_000_000
+NANOSECONDS_PER_MICROSECOND: Final[int] = 1_000
+FIVE_MINUTES_NS: Final[int] = 5 * 60 * NANOSECONDS_PER_SECOND
+MIN_NINETEEN_DIGIT_NS: Final[int] = 1_000_000_000_000_000_000
+MAX_NINETEEN_DIGIT_NS: Final[int] = 9_999_999_999_999_999_999
 
 
 class PreflightError(RuntimeError):
@@ -51,15 +59,71 @@ class EndpointDescriptor:
 
 
 @dataclass(frozen=True, slots=True)
+class ForecastOrigin:
+    """A target-free UTC origin derived only from declared session bounds."""
+
+    forecast_origin_utc: str
+    forecast_origin_ns: int
+
+
+@dataclass(frozen=True, slots=True)
 class PreflightRequest:
-    """A date-level check passed to an injected transport without credentials or bodies."""
+    """A target-free date-level check passed to an injected transport."""
 
     provider: str
     session_date: str
     asset: str
+    forecast_origin_utc: str
+    forecast_origin_ns: int
 
 
 RequestFn = Callable[[EndpointDescriptor, PreflightRequest], object]
+
+
+def derive_forecast_origin(session_metadata: Mapping[str, object]) -> ForecastOrigin:
+    """Derive one strict, five-minute-aligned UTC origin from declared bounds only."""
+    if not isinstance(session_metadata, Mapping):
+        raise PreflightError("SENTINEL_SESSION_METADATA_INVALID")
+    open_utc = _parse_declared_utc(session_metadata.get("open_utc"))
+    close_utc = _parse_declared_utc(session_metadata.get("close_utc"))
+    open_ns = _unix_ns(open_utc)
+    close_ns = _unix_ns(close_utc)
+    if close_ns <= open_ns:
+        raise PreflightError("SENTINEL_SESSION_METADATA_INVALID")
+    midpoint_ns = open_ns + (close_ns - open_ns) // 2
+    forecast_origin_ns = midpoint_ns - midpoint_ns % FIVE_MINUTES_NS
+    if not open_ns < forecast_origin_ns < close_ns:
+        raise PreflightError("SENTINEL_SESSION_METADATA_INVALID")
+    if not MIN_NINETEEN_DIGIT_NS <= forecast_origin_ns <= MAX_NINETEEN_DIGIT_NS:
+        raise PreflightError("SENTINEL_SESSION_METADATA_INVALID")
+    forecast_origin_utc = UNIX_EPOCH + timedelta(
+        microseconds=forecast_origin_ns // NANOSECONDS_PER_MICROSECOND
+    )
+    return ForecastOrigin(
+        forecast_origin_utc=forecast_origin_utc.isoformat(timespec="seconds"),
+        forecast_origin_ns=forecast_origin_ns,
+    )
+
+
+def _parse_declared_utc(value: object) -> datetime:
+    if not isinstance(value, str):
+        raise PreflightError("SENTINEL_SESSION_METADATA_INVALID")
+    try:
+        parsed = datetime.fromisoformat(value)
+    except ValueError as exc:
+        raise PreflightError("SENTINEL_SESSION_METADATA_INVALID") from exc
+    if parsed.tzinfo is None or parsed.utcoffset() != timedelta(0):
+        raise PreflightError("SENTINEL_SESSION_METADATA_INVALID")
+    return parsed.astimezone(UTC)
+
+
+def _unix_ns(moment: datetime) -> int:
+    delta = moment - UNIX_EPOCH
+    return (
+        delta.days * 86_400 * NANOSECONDS_PER_SECOND
+        + delta.seconds * NANOSECONDS_PER_SECOND
+        + delta.microseconds * NANOSECONDS_PER_MICROSECOND
+    )
 
 
 def canonical_json(value: Mapping[str, object]) -> bytes:
@@ -338,11 +402,11 @@ def _build_checks(
     request_fn: RequestFn | None,
     descriptors: Mapping[str, EndpointDescriptor],
 ) -> list[dict[str, object]]:
-    assets, session_dates = _plan_dimensions(plan)
+    assets, session_origins = _plan_dimensions(plan)
     checks: list[dict[str, object]] = []
     for provider in PROVIDERS:
         descriptor = descriptors.get(provider)
-        for session_date in session_dates:
+        for session_date, forecast_origin in session_origins:
             for asset in assets:
                 check: dict[str, object] = {
                     "provider": provider,
@@ -356,7 +420,13 @@ def _build_checks(
                 }
                 if execute and not blockers and descriptor is not None and request_fn is not None:
                     try:
-                        request = PreflightRequest(provider, session_date, asset)
+                        request = PreflightRequest(
+                            provider=provider,
+                            session_date=session_date,
+                            asset=asset,
+                            forecast_origin_utc=forecast_origin.forecast_origin_utc,
+                            forecast_origin_ns=forecast_origin.forecast_origin_ns,
+                        )
                         response = request_fn(descriptor, request)
                     except Exception:
                         check["request_status"] = "INJECTED_TRANSPORT_FAILURE"
@@ -367,7 +437,9 @@ def _build_checks(
     return checks
 
 
-def _plan_dimensions(plan: Mapping[str, object]) -> tuple[list[str], list[str]]:
+def _plan_dimensions(
+    plan: Mapping[str, object],
+) -> tuple[list[str], list[tuple[str, ForecastOrigin]]]:
     raw_assets = plan.get("assets")
     raw_sessions = plan.get("sentinel_sessions")
     assets = (
@@ -375,12 +447,25 @@ def _plan_dimensions(plan: Mapping[str, object]) -> tuple[list[str], list[str]]:
         if isinstance(raw_assets, list) and all(isinstance(asset, str) for asset in raw_assets)
         else []
     )
-    session_dates: list[str] = []
-    if isinstance(raw_sessions, list):
-        for session in raw_sessions:
-            if isinstance(session, Mapping) and isinstance(session.get("date"), str):
-                session_dates.append(cast(str, session["date"]))
-    return assets, session_dates
+    if not isinstance(raw_sessions, list):
+        raise PreflightError("SENTINEL_SESSION_METADATA_INVALID")
+    session_origins: list[tuple[str, ForecastOrigin]] = []
+    session_dates: set[str] = set()
+    for session in raw_sessions:
+        if not isinstance(session, Mapping):
+            raise PreflightError("SENTINEL_SESSION_METADATA_INVALID")
+        session_date = session.get("date")
+        session_metadata = session.get("calendar_metadata")
+        if (
+            not isinstance(session_date, str)
+            or not session_date
+            or not isinstance(session_metadata, Mapping)
+            or session_date in session_dates
+        ):
+            raise PreflightError("SENTINEL_SESSION_METADATA_INVALID")
+        session_dates.add(session_date)
+        session_origins.append((session_date, derive_forecast_origin(session_metadata)))
+    return assets, session_origins
 
 
 def _request_status(execute: bool, blockers: list[str], endpoint_status: str) -> str:
