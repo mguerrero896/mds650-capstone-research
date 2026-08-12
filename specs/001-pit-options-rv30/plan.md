@@ -386,9 +386,11 @@ or filtered into the frozen window. Its preflight is ordered:
    PIT v2.1 anomaly gate, Massive v2.1 reselection evidence, the 80-session source manifest and
    frozen comparison contract. Reject a missing, altered, untracked or forbidden input path.
 3. Build and hash a source-coverage ledger before materializing a release. It must prove exact
-   date equality for B0, B1Q and B2. For a retained-session B1Q quote cache, a missing exact
-   pre-origin rate/dividend input is `B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED`, not permission
-   to carry forward any later value. If any such gap remains, emit only a
+   date equality for B0, B1Q and B2. Any B1Q row with a same-session or missing exact pre-origin
+   rate/dividend input is `B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED`, not permission to carry
+   forward any later value. The executed ledger records B0/FMP and B2/UW raw-source coverage for
+   all 480 selected asset-date pairs, while B1Q remains blocked for all 34,080 origins until its
+   exogenous inputs are rebuilt with separate pre-origin evidence. If any such gap remains, emit only a
    `BLOCKED_SOURCE_COVERAGE` artifact and stop before target binding.
 4. Construct predictor rows only from the exact development source list before any target file is
    read. Reject all ten holdout dates, result-like inputs, duplicate origin IDs, a B2

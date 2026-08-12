@@ -62,9 +62,10 @@ results and the prospective holdout remain closed.
   acquire, or evaluate the ten-session prospective holdout.
 - Q: Can the existing 180-session v2.4 predictor panel be relabelled as the frozen
   80-session source? → A: No. It is a target-blind control/provenance artifact only. A new
-  exact-window source build must prove date equality and source coverage. Any retained-session
-  B1Q row without exact pre-origin rate and dividend provenance remains missing with a recorded
-  blocker; it is never filled from a later, stale, or carried-forward input.
+  exact-window source build must prove date equality and source coverage. Any B1Q row with a
+  same-session or missing exact pre-origin rate and dividend provenance remains missing with a
+  recorded blocker; it is never filled from a later, stale, same-session, or carried-forward
+  input.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -805,8 +806,8 @@ only; no final scientific claim is permitted until the separately controlled hol
   relabelled or filtered as the 80-session source. The source coverage ledger, B2 availability
   sidecar, PIT v2.1 gate and Massive reselection evidence MUST be bound by SHA-256. It MUST
   reject every holdout session, target-like input during predictor construction, legacy result
-  path, source-hash mismatch and source-window mismatch. A B1Q row lacking exact pre-origin
-  rate/dividend provenance MUST be explicitly missing with
+   path, source-hash mismatch and source-window mismatch. A B1Q row with same-session or
+   missing exact pre-origin rate/dividend provenance MUST be explicitly missing with
   `B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED`; stale or carried-forward exogenous inputs are
   forbidden.
 - **FR-085**: The corrected B2 policy MUST encode a delayed or unavailable activity window as
@@ -885,7 +886,7 @@ missing provider data remains missing with an explicit reason.
 - **SC-040**: A successful corrected-development evaluation does not change the status of any
   legacy result or of the prospective holdout. Final edge support remains conditional on the
   one-time holdout read under the already frozen protocol.
-- **SC-041**: If any fixed development asset-date lacks an exact B1Q source state or exact
-  pre-origin rate/dividend provenance, the source-coverage artifact MUST be
+- **SC-041**: If any fixed development asset-date lacks an exact B1Q source state or has a
+  same-session or missing exact pre-origin rate/dividend provenance, the source-coverage artifact MUST be
   `BLOCKED_SOURCE_COVERAGE`, all affected B1Q fields MUST remain null with a machine-readable
   reason, and target binding or development evaluation MUST NOT start.

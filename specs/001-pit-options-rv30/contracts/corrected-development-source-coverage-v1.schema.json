@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/corrected-development-source-coverage-v1.schema.json",
+  "title": "Corrected Development Source Coverage v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "expected_origin_count",
+    "expected_asset_date_count",
+    "components",
+    "source_hashes",
+    "target_binding_permitted",
+    "no_target_or_metric_payload_read",
+    "safe_to_open_or_evaluate_oos",
+    "ledger_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "corrected-development-source-coverage-v1"},
+    "status": {"enum": ["PASS_SOURCE_COVERAGE", "BLOCKED_SOURCE_COVERAGE"]},
+    "expected_origin_count": {"type": "integer", "minimum": 1},
+    "expected_asset_date_count": {"type": "integer", "minimum": 1},
+    "components": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["B0", "B1Q", "B2"],
+      "properties": {
+        "B0": {"$ref": "#/$defs/assetDateComponent"},
+        "B1Q": {"$ref": "#/$defs/b1qComponent"},
+        "B2": {"$ref": "#/$defs/assetDateComponent"}
+      }
+    },
+    "source_hashes": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+    },
+    "target_binding_permitted": {"type": "boolean"},
+    "no_target_or_metric_payload_read": {"const": true},
+    "safe_to_open_or_evaluate_oos": {"const": "NO"},
+    "ledger_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "$defs": {
+    "assetDate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asset", "session_date"],
+      "properties": {
+        "asset": {"type": "string", "minLength": 1},
+        "session_date": {"type": "string", "format": "date"}
+      }
+    },
+    "assetDateComponent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "expected_asset_date_count",
+        "available_asset_date_count",
+        "missing_asset_dates",
+        "unexpected_asset_dates",
+        "component"
+      ],
+      "properties": {
+        "status": {"enum": ["PASS", "BLOCKED"]},
+        "expected_asset_date_count": {"type": "integer", "minimum": 1},
+        "available_asset_date_count": {"type": "integer", "minimum": 0},
+        "missing_asset_dates": {"type": "array", "items": {"$ref": "#/$defs/assetDate"}},
+        "unexpected_asset_dates": {"type": "array", "items": {"$ref": "#/$defs/assetDate"}},
+        "component": {"enum": ["B0", "B2"]}
+      }
+    },
+    "b1qComponent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "expected_origin_count",
+        "available_origin_count",
+        "missing_origin_count",
+        "unexpected_origin_count",
+        "unresolved_origin_count",
+        "unresolved_reason_counts"
+      ],
+      "properties": {
+        "status": {"enum": ["PASS", "BLOCKED"]},
+        "expected_origin_count": {"type": "integer", "minimum": 1},
+        "available_origin_count": {"type": "integer", "minimum": 0},
+        "missing_origin_count": {"type": "integer", "minimum": 0},
+        "unexpected_origin_count": {"type": "integer", "minimum": 0},
+        "unresolved_origin_count": {"type": "integer", "minimum": 0},
+        "unresolved_reason_counts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["b1q_source_missing_reason", "len"],
+            "properties": {
+              "b1q_source_missing_reason": {"type": "string", "minLength": 1},
+              "len": {"type": "integer", "minimum": 1}
+            }
+          }
+        }
+      }
+    }
+  }
+}

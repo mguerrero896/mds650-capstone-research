@@ -193,9 +193,13 @@ Spec Kit consistency and preregistration gates pass.
    built specifically for the exact fixed 80-session development manifest. The target-blind
    v2.4 panel is retained as a control/provenance artifact but cannot be relabelled as the
    source window because its 180 dates do not equal the frozen 80 dates. A coverage ledger must
-   record B0/B2 and B1Q source identity by asset-date. A retained B1Q quote cache without exact
-   pre-origin rate/dividend provenance is `B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED`, not a
-   license to use a later, stale, or carried-forward value. Delayed B2 rows are explicit
+   record B0/B2 and B1Q source identity by asset-date. The executed 80-session target-free
+   ledger records B0/FMP and B2/UW raw Full Tape source coverage for all 480 selected
+   asset-date pairs. It also records that the 55 existing B1Q source dates have
+   `rate_source_date == session_date`, while the retained 25 dates lack separately stored
+   pre-origin rate/dividend provenance; all 34,080 B1Q origins are therefore
+   `B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED`. Neither condition licenses a later, stale,
+   same-session, or carried-forward value. Delayed B2 rows are explicit
    all-nine-feature-null exclusions, never no-activity zeroes. A source-coverage gap yields
    `BLOCKED_SOURCE_COVERAGE` before target binding or evaluation. This release never rewrites
    sealed legacy results, acquires data, reads the ten-session holdout or upgrades

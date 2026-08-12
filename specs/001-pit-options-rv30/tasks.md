@@ -397,16 +397,20 @@ frozen development protocol without reading any holdout path.
 - [x] T201 [US4] Implement `scripts/build_corrected_development_release.py` to reject a
   target-blind predictor source whose date coverage differs from the exact development manifest;
   v2.4 remains an approved control/provenance input, never a relabelled 80-session source.
-- [ ] T201A [P] [US4] Add failing source-coverage and exact-origin-grid tests in
+- [x] T201A [P] [US4] Add failing source-coverage and exact-origin-grid tests in
   `tests/unit/test_corrected_development_sources.py`, including no stale B1Q rate/dividend
-  substitution and all-null B1Q missing rows for unresolved retained-session provenance.
-- [ ] T201B [US4] Implement `src/mds650/corrected_development_sources.py` and
+  substitution and all-null B1Q missing rows for unresolved same-session or retained-session
+  provenance.
+- [x] T201B [US4] Implement `src/mds650/corrected_development_sources.py` and
   `contracts/corrected-development-source-coverage-v1.schema.json` to build a target-free
   exact-80 source coverage ledger from FMP, Full Tape and B1Q sources; emit
   `BLOCKED_SOURCE_COVERAGE` before target binding on an unresolved input.
 - [ ] T201C [US4] Implement `scripts/build_corrected_development_predictors.py` to create the
   exact 80-session B0/B1Q/B2 target-free panel only from source-bound local inputs, preserving
-  B2 exclusions and B1Q missingness; write all bulk outputs under `D:\MDS650`.
+  B2 exclusions and B1Q missingness; write all bulk outputs under `D:\MDS650`. The current
+  coverage-first implementation intentionally stops after the self-hashed
+  `BLOCKED_SOURCE_COVERAGE` ledger because all B1Q origins lack admissible exogenous-input
+  provenance; it does not materialize a predictor panel or bind targets.
 - [ ] T202 [US4] Run the exact-window source build idempotently, validate the coverage schema
   and emit either `artifacts/corrected_development_v1/target_blind_release_manifest.json` when
   all B1Q source coverage passes or a self-hashed `BLOCKED_SOURCE_COVERAGE` artifact without

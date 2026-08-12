@@ -1,0 +1,51 @@
+{
+  "components": {
+    "B0": {
+      "available_asset_date_count": 480,
+      "component": "B0",
+      "expected_asset_date_count": 480,
+      "missing_asset_dates": [],
+      "status": "PASS",
+      "unexpected_asset_dates": []
+    },
+    "B1Q": {
+      "available_origin_count": 34080,
+      "expected_origin_count": 34080,
+      "missing_origin_count": 0,
+      "status": "BLOCKED",
+      "unexpected_origin_count": 0,
+      "unresolved_origin_count": 34080,
+      "unresolved_reason_counts": [
+        {
+          "b1q_source_missing_reason": "B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED",
+          "len": 34080
+        }
+      ]
+    },
+    "B2": {
+      "available_asset_date_count": 480,
+      "component": "B2",
+      "expected_asset_date_count": 480,
+      "missing_asset_dates": [],
+      "status": "PASS",
+      "unexpected_asset_dates": []
+    }
+  },
+  "expected_asset_date_count": 480,
+  "expected_origin_count": 34080,
+  "ledger_sha256": "088cf2259a2d6acdb58c9651d0a43f39938e5e639069bb92960baa3e869c4d1d",
+  "no_target_or_metric_payload_read": true,
+  "safe_to_open_or_evaluate_oos": "NO",
+  "schema_version": "corrected-development-source-coverage-v1",
+  "source_hashes": {
+    "b1q_source": "f357304acd48884eda6d817b9ceceb0df39ea961dabe90e43302ca65f4a3279a",
+    "b2_full_tape_batch_manifest": "521e90c4ddf32fc035ed7c353c8b1370d75ef93ba0d79b5703bbb21c203423e8",
+    "b2_full_tape_reused_manifest": "b23df63d70e2e1a476ad009eb3e47c2a273a297800ced3530f14f40c90f18386",
+    "development_source_manifest": "ad2c80fbb6f42f360bdd7a10a01b3c4fb771ef46b1ef80ab1e6e35320f04a126",
+    "fmp_source_1": "b9145becb154cc9ccb9c77866ed4a5753dcfde3061266537940993c3a7437c1e",
+    "fmp_source_2": "c5b2394d034e598ff22647c9ee1149cebd1a5ab5a622060996f21cf55457ba33",
+    "fmp_source_3": "c122e3387369b47c89c6e6afda9811025188aa37707fce88b785d03c188b8743"
+  },
+  "status": "BLOCKED_SOURCE_COVERAGE",
+  "target_binding_permitted": false
+}
