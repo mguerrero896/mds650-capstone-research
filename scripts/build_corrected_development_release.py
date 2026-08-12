@@ -150,6 +150,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         print("SAFE_TO_OPEN_OR_EVALUATE_OOS=NO")
         return 0
 
+    _validated_predictor_session_coverage(
+        args.predictor_panel,
+        development_sessions=preflight.development_sessions,
+        holdout_sessions=preflight.holdout_sessions,
+    )
     source_panel = (
         pl.scan_parquet(args.predictor_panel)
         .filter(pl.col("session_date").is_in(preflight.development_sessions))
@@ -345,6 +350,35 @@ def _assert_predictor_source_bindings(
         raise ValueError("CORRECTED_DEVELOPMENT_SOURCE_HASH_MISMATCH")
     if output.get("panel_sha256") != _sha256_file(predictor_panel_path):
         raise ValueError("CORRECTED_DEVELOPMENT_PREDICTOR_PANEL_HASH_MISMATCH")
+
+
+def _validated_predictor_session_coverage(
+    predictor_panel_path: Path,
+    *,
+    development_sessions: Sequence[str],
+    holdout_sessions: Sequence[str],
+) -> None:
+    """Require an exact source-window match before materializing any output.
+
+    Only the target-free ``session_date`` column is read.  A source panel with
+    an adjacent or historical window cannot be relabelled as the frozen
+    Phase-12 development panel.
+    """
+    scan = pl.scan_parquet(predictor_panel_path)
+    if "session_date" not in scan.collect_schema().names():
+        raise ValueError("CORRECTED_DEVELOPMENT_PREDICTOR_SESSION_DATE_MISSING")
+    observed_values = (
+        scan.select(pl.col("session_date").cast(pl.String).unique().sort())
+        .collect()
+        .to_series()
+        .to_list()
+    )
+    if (
+        any(not isinstance(value, str) for value in observed_values)
+        or observed_values != list(development_sessions)
+        or set(observed_values) & set(holdout_sessions)
+    ):
+        raise ValueError("CORRECTED_DEVELOPMENT_PREDICTOR_SESSION_COVERAGE_MISMATCH")
 
 
 def _write_parquet_if_new_or_identical(frame: pl.DataFrame, path: Path) -> None:
