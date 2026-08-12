@@ -208,3 +208,7 @@
   any fixed asset-date lacks an exact B1Q state or has same-session, missing, unhashed or
   post-origin rate/dividend provenance?
   [Data Integrity, Spec §SC-041]
+- [x] CHK024 Is any put-call-parity feasibility diagnostic target-free, limited to the minimum
+  two-strike same-expiry condition, hash-bound, and expressly prohibited from substituting
+  exogenous rate/dividend provenance or relaxing legacy/OOS gates?
+  [Scientific Integrity, Spec §FR-084]

@@ -812,6 +812,10 @@ only; no final scientific claim is permitted until the separately controlled hol
    forbidden. A calendar date strictly before the session is insufficient by itself: each rate
    and dividend input MUST retain a sanitized raw-payload SHA-256 and an availability timestamp
    no later than the forecast origin. Missing, malformed or later evidence is unresolved.
+   A target-free put-call-parity diagnostic MAY establish only whether the cached contract grid
+   has at least two valid paired strikes at a common expiry; it MUST NOT substitute a rate or
+   dividend input, alter B1Q, or release the coverage gate unless a separately approved method
+   amendment and PIT-reviewed source contract exist.
    The provider semantics supporting those fields MUST be submitted through the review-only
    timing-evidence intake before a raw-payload bundle is considered admissible; that intake alone
    never authorizes a source rebuild or evaluation.

@@ -407,6 +407,10 @@ frozen development protocol without reading any holdout path.
   `contracts/corrected-development-source-coverage-v1.schema.json` to build a target-free
   exact-80 source coverage ledger from FMP, Full Tape and B1Q sources; emit
   `BLOCKED_SOURCE_COVERAGE` before target binding on an unresolved input.
+- [x] T201B1 [P] [US4] Add the target-free, source-hashed B1Q put-call-parity grid diagnostic
+  in `src/mds650/b1q_put_call_parity_feasibility.py` with a JSON Schema, immutable report and
+  tests. It may diagnose insufficient paired strikes but must not substitute rate/dividend
+  evidence, change B1Q, bind a target or alter legacy/OOS gates.
 - [ ] T201C [US4] Implement `scripts/build_corrected_development_predictors.py` to create the
   exact 80-session B0/B1Q/B2 target-free panel only from source-bound local inputs, preserving
   B2 exclusions and B1Q missingness; write all bulk outputs under `D:\MDS650`. The current

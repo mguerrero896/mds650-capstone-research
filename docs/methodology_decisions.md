@@ -213,3 +213,15 @@ Spec Kit consistency and preregistration gates pass.
    revision claims must first pass the review-only timing-evidence intake; that assessment is
    not a network or rebuild authorization. Legacy B1Q source files lacking these audit fields
    remain explicitly blocked until separately evidenced inputs are available.
+39. **B1Q put-call-parity grid diagnostic (2026-08-12)** — The target-free, source-hashed
+   `artifacts/corrected_development_v1/b1q_put_call_parity_feasibility_v1.json` tests only
+   whether the already cached B1Q contract grid has the minimum same-expiry geometry required to
+   derive a discount factor from put-call parity. It reads an explicit quote-only allowlist and
+   no target, metric, IV outcome, rate, dividend, model or holdout field. On the current 55-day
+   cache it found 27,199 of 31,240 origins with at least one same-strike call/put pair, but zero
+   origins with two paired strikes at one expiry; the result is therefore
+   `INFEASIBLE_WITH_CURRENT_CONTRACT_GRID`. This is neither evidence that FMP or Massive lack
+   history nor permission to synthesize a rate/dividend input, carry a value forward, use zero,
+   alter B1Q, reconcile legacy outputs or open OOS. Any future parity route would require a
+   separately authorized methodological amendment, an expanded source contract and fresh PIT
+   review before it can be considered.

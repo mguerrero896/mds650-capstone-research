@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1q-put-call-parity-feasibility-v1.schema.json",
+  "title": "B1Q Put-Call-Parity Feasibility Diagnostic v1",
+  "description": "A target-free diagnostic of whether the existing B1Q quote grid contains sufficient same-expiry paired strikes to estimate a put-call-parity discount factor. It is not an approved substitute for ex-ante rate/dividend provenance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "scope",
+    "source_file_sha256",
+    "source_row_count",
+    "origin_count",
+    "input_columns_read",
+    "forbidden_target_or_outcome_columns_read",
+    "quote_filters",
+    "valid_quote_rows_before_contract_quote_deduplication",
+    "duplicate_contract_quote_records_dropped",
+    "valid_quote_rows",
+    "same_strike_call_put_pairs",
+    "expiry_groups_with_two_paired_strikes",
+    "origins_with_any_pair",
+    "origins_with_two_strike_expiry",
+    "origins_with_valid_discount_estimate",
+    "origin_coverage_any_pair",
+    "origin_coverage_two_strike_expiry",
+    "origin_coverage_valid_discount_estimate",
+    "valid_discount_estimate_median",
+    "valid_discount_estimate_p05",
+    "valid_discount_estimate_p95",
+    "by_asset",
+    "method_change_authorized",
+    "b1q_exogenous_input_provenance_resolved",
+    "safe_to_reconcile_existing_results",
+    "safe_to_open_or_evaluate_oos",
+    "target_or_metric_data_read",
+    "interpretation",
+    "semantic_self_hash"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "status": {
+      "enum": [
+        "INFEASIBLE_WITH_CURRENT_CONTRACT_GRID",
+        "FEASIBLE_CANDIDATE_REQUIRES_METHOD_AMENDMENT"
+      ]
+    },
+    "scope": {
+      "const": "TARGET_FREE_B1Q_PUT_CALL_PARITY_FEASIBILITY_ONLY"
+    },
+    "source_file_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source_row_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "origin_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "input_columns_read": {
+      "type": "array",
+      "minItems": 14,
+      "maxItems": 14,
+      "items": {
+        "type": "string"
+      },
+      "prefixItems": [
+        { "const": "asset" },
+        { "const": "session_date" },
+        { "const": "origin_id" },
+        { "const": "forecast_origin_utc" },
+        { "const": "forecast_origin_ns" },
+        { "const": "expiry" },
+        { "const": "strike" },
+        { "const": "option_type" },
+        { "const": "contract" },
+        { "const": "sip_timestamp" },
+        { "const": "bid" },
+        { "const": "ask" },
+        { "const": "quote_age_seconds" },
+        { "const": "relative_spread" }
+      ]
+    },
+    "forbidden_target_or_outcome_columns_read": {
+      "type": "array",
+      "maxItems": 0
+    },
+    "quote_filters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sip_timestamp_at_or_before_origin",
+        "bid_positive",
+        "ask_strictly_above_bid",
+        "quote_age_seconds_min",
+        "quote_age_seconds_max",
+        "relative_spread_min",
+        "relative_spread_max",
+        "expiry_strictly_after_session_date"
+      ],
+      "properties": {
+        "sip_timestamp_at_or_before_origin": { "const": true },
+        "bid_positive": { "const": true },
+        "ask_strictly_above_bid": { "const": true },
+        "quote_age_seconds_min": { "const": 0.0 },
+        "quote_age_seconds_max": { "type": "number", "minimum": 0.0 },
+        "relative_spread_min": { "const": 0.0 },
+        "relative_spread_max": { "type": "number", "minimum": 0.0 },
+        "expiry_strictly_after_session_date": { "const": true }
+      }
+    },
+    "valid_quote_rows_before_contract_quote_deduplication": { "type": "integer", "minimum": 0 },
+    "duplicate_contract_quote_records_dropped": { "type": "integer", "minimum": 0 },
+    "valid_quote_rows": { "type": "integer", "minimum": 0 },
+    "same_strike_call_put_pairs": { "type": "integer", "minimum": 0 },
+    "expiry_groups_with_two_paired_strikes": { "type": "integer", "minimum": 0 },
+    "origins_with_any_pair": { "type": "integer", "minimum": 0 },
+    "origins_with_two_strike_expiry": { "type": "integer", "minimum": 0 },
+    "origins_with_valid_discount_estimate": { "type": "integer", "minimum": 0 },
+    "origin_coverage_any_pair": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+    "origin_coverage_two_strike_expiry": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+    "origin_coverage_valid_discount_estimate": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+    "valid_discount_estimate_median": { "type": ["number", "null"] },
+    "valid_discount_estimate_p05": { "type": ["number", "null"] },
+    "valid_discount_estimate_p95": { "type": ["number", "null"] },
+    "by_asset": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "asset",
+          "origin_count",
+          "origins_with_any_pair",
+          "origins_with_two_strike_expiry",
+          "origins_with_valid_discount_estimate",
+          "origin_coverage_any_pair",
+          "origin_coverage_two_strike_expiry",
+          "origin_coverage_valid_discount_estimate"
+        ],
+        "properties": {
+          "asset": { "type": "string", "minLength": 1 },
+          "origin_count": { "type": "integer", "minimum": 0 },
+          "origins_with_any_pair": { "type": "integer", "minimum": 0 },
+          "origins_with_two_strike_expiry": { "type": "integer", "minimum": 0 },
+          "origins_with_valid_discount_estimate": { "type": "integer", "minimum": 0 },
+          "origin_coverage_any_pair": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+          "origin_coverage_two_strike_expiry": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+          "origin_coverage_valid_discount_estimate": { "type": "number", "minimum": 0.0, "maximum": 1.0 }
+        }
+      }
+    },
+    "method_change_authorized": { "const": false },
+    "b1q_exogenous_input_provenance_resolved": { "const": false },
+    "safe_to_reconcile_existing_results": { "const": "NO" },
+    "safe_to_open_or_evaluate_oos": { "const": "NO" },
+    "target_or_metric_data_read": { "const": false },
+    "interpretation": { "type": "string", "minLength": 1 },
+    "semantic_self_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+  }
+}

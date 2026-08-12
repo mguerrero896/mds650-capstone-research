@@ -394,6 +394,10 @@ or filtered into the frozen window. Its preflight is ordered:
    all 480 selected asset-date pairs, while B1Q remains blocked for all 34,080 origins until its
    exogenous inputs are rebuilt with separate pre-origin evidence. If any such gap remains, emit only a
    `BLOCKED_SOURCE_COVERAGE` artifact and stop before target binding.
+   A quote-only put-call-parity diagnostic may test whether the existing contract grid contains
+   two valid paired strikes at a common expiry, but it is a fail-closed feasibility check only:
+   it cannot synthesize exogenous inputs or alter B1Q without a separately approved method
+   amendment and a new PIT-reviewed source contract.
 4. Construct predictor rows only from the exact development source list before any target file is
    read. Reject all ten holdout dates, result-like inputs, duplicate origin IDs, a B2
    delayed-source zero encoding, source-hash drift, source-window mismatch and a predictor
