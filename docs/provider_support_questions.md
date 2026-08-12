@@ -67,3 +67,14 @@ backfill, OOS evaluation, model training or a claim of a positive edge.
 Until written provider confirmation exists, these questions preserve the
 distinction between an operational availability proxy and a verified provider
 publication or client-receipt timestamp.
+
+## Sanitized intake after a response
+
+Do not commit the raw support email, authorization headers, customer identity,
+local path, or provider payload. Retain the original in restricted storage,
+then create a sanitized, hash-bound submission using
+[`provider-timing-semantics-evidence-submission-v1.schema.json`](../specs/001-pit-options-rv30/contracts/provider-timing-semantics-evidence-submission-v1.schema.json).
+Assess it locally with
+`scripts/assess_provider_timing_semantics_evidence_v1.py`. A complete intake
+remains review-only and cannot itself enable provider network access, backfill,
+sealed-result reconciliation, OOS evaluation, or model fitting.

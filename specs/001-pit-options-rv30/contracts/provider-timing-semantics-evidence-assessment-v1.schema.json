@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/provider-timing-semantics-evidence-assessment-v1.schema.json",
+  "title": "MDS650 Provider Timing Semantics Evidence Assessment v1",
+  "description": "Fail-closed, target-blind intake assessment. Neither status permits provider network access, sealed-result reconciliation, or OOS access.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "status", "scope", "provider", "blocking_status", "source", "required_claim_ids", "submitted_claim_ids", "missing_claim_ids", "acceptance_boundary", "hard_gate_action", "network_permitted", "safe_to_reconcile_existing_results", "safe_to_open_or_evaluate_oos", "no_provider_http_requests_performed", "no_target_or_metric_payload_read", "no_oos_or_predictive_artifacts_read", "model_fit_performed", "secret_values_emitted", "personal_paths_emitted", "semantic_self_hash"
+  ],
+  "properties": {
+    "schema_version": {"const": "provider-timing-semantics-evidence-assessment-v1.0"},
+    "status": {"enum": ["EVIDENCE_INSUFFICIENT", "EVIDENCE_COMPLETE_REQUIRES_INDEPENDENT_TECHNICAL_REVIEW"]},
+    "scope": {"const": "target_blind_provider_timing_evidence_intake_only"},
+    "provider": {"enum": ["FMP", "UNUSUAL_WHALES", "MASSIVE"]},
+    "blocking_status": {
+      "enum": [
+        "FMP_DATE_BOUNDED_ONLY_NO_PIT_CLAIM",
+        "UW_FULL_TAPE_ZIP_ROUTE_DOCUMENTED_EXECUTION_GATED",
+        "MASSIVE_CONTRACT_SELECTION_RULE_UNRESOLVED_NO_EXECUTION",
+        "MASSIVE_QUOTE_AS_OF_PARAMETERS_DOCUMENTED_LOCAL_SIP_CHECK_REQUIRED"
+      ]
+    },
+    "source": {"$ref": "#/$defs/source"},
+    "required_claim_ids": {"$ref": "#/$defs/claimIds"},
+    "submitted_claim_ids": {"$ref": "#/$defs/claimIds"},
+    "missing_claim_ids": {"$ref": "#/$defs/claimIds"},
+    "acceptance_boundary": {"const": "COMPLETENESS_AND_HYGIENE_ONLY_PROVIDER_CLAIM_TRUTH_REQUIRES_INDEPENDENT_REVIEW"},
+    "hard_gate_action": {"const": "NONE"},
+    "network_permitted": {"const": false},
+    "safe_to_reconcile_existing_results": {"const": "NO"},
+    "safe_to_open_or_evaluate_oos": {"const": "NO"},
+    "no_provider_http_requests_performed": {"const": true},
+    "no_target_or_metric_payload_read": {"const": true},
+    "no_oos_or_predictive_artifacts_read": {"const": true},
+    "model_fit_performed": {"const": false},
+    "secret_values_emitted": {"const": false},
+    "personal_paths_emitted": {"const": false},
+    "semantic_self_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_type", "reference", "source_version", "captured_at_utc", "source_content_sha256"],
+      "properties": {
+        "source_type": {"enum": ["OFFICIAL_VERSIONED_SPECIFICATION", "PROVIDER_SUPPORT_CASE_RESPONSE"]},
+        "reference": {"type": "string", "minLength": 4, "maxLength": 512},
+        "source_version": {"type": "string", "minLength": 1, "maxLength": 128},
+        "captured_at_utc": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"},
+        "source_content_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "claimIds": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+      "uniqueItems": true
+    }
+  }
+}
