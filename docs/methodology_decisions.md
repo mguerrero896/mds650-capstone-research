@@ -209,5 +209,7 @@ Spec Kit consistency and preregistration gates pass.
    rate and dividend input must additionally carry a sanitized raw-payload SHA-256 and an
    evidence-availability timestamp at or before its forecast origin. Missing, malformed or
    later evidence produces `B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED`; it never licenses a
-   backfilled, carried-forward or undocumented proxy. Legacy B1Q source files lacking these
-   audit fields remain explicitly blocked until separately evidenced inputs are available.
+   backfilled, carried-forward or undocumented proxy. The FMP Treasury/dividend semantics and
+   revision claims must first pass the review-only timing-evidence intake; that assessment is
+   not a network or rebuild authorization. Legacy B1Q source files lacking these audit fields
+   remain explicitly blocked until separately evidenced inputs are available.

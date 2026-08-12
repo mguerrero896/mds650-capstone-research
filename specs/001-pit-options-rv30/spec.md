@@ -812,6 +812,9 @@ only; no final scientific claim is permitted until the separately controlled hol
    forbidden. A calendar date strictly before the session is insufficient by itself: each rate
    and dividend input MUST retain a sanitized raw-payload SHA-256 and an availability timestamp
    no later than the forecast origin. Missing, malformed or later evidence is unresolved.
+   The provider semantics supporting those fields MUST be submitted through the review-only
+   timing-evidence intake before a raw-payload bundle is considered admissible; that intake alone
+   never authorizes a source rebuild or evaluation.
 - **FR-085**: The corrected B2 policy MUST encode a delayed or unavailable activity window as
   all nine B2 fields missing with an eligibility flag and explicit reason. It MUST NOT encode it
   as no activity or as a numerical zero. A genuine zero is permitted only for an eligible window

@@ -147,6 +147,39 @@ def _uw_support_submission() -> dict[str, object]:
     }
 
 
+def _fmp_b1q_exogenous_submission() -> dict[str, object]:
+    """Return a complete FMP evidence submission for B1Q rates and dividends."""
+    claim_ids = [
+        "FMP_TREASURY_OBSERVATION_DATE_SEMANTICS",
+        "FMP_TREASURY_HISTORICAL_AVAILABILITY_OR_REVISION_SEMANTICS",
+        "FMP_DIVIDEND_DECLARATION_DATE_SEMANTICS",
+        "FMP_DIVIDEND_HISTORICAL_AVAILABILITY_OR_REVISION_SEMANTICS",
+    ]
+    return {
+        "schema_version": "provider-timing-semantics-evidence-submission-v1.0",
+        "provider": "FMP",
+        "blocking_status": "FMP_B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED",
+        "source": {
+            "source_type": "PROVIDER_SUPPORT_CASE_RESPONSE",
+            "reference": "FMP-67890",
+            "source_version": "2026-08-12",
+            "captured_at_utc": "2026-08-12T00:00:00Z",
+            "source_content_sha256": _sha256("synthetic-fmp-b1q-exogenous-evidence"),
+        },
+        "claims": [
+            {
+                "claim_id": claim_id,
+                "locator": "case-response/answer",
+                "statement": (
+                    "The sanitized provider response explicitly addresses this B1Q "
+                    "exogenous-input timing and revision claim for independent review."
+                ),
+            }
+            for claim_id in claim_ids
+        ],
+    }
+
+
 def test_complete_submission_is_reviewable_but_cannot_open_network() -> None:
     """A gate-opening branch would make a complete evidence intake unsafe."""
     intake = _module()
@@ -203,6 +236,22 @@ def test_complete_support_case_stays_review_only_for_unusual_whales() -> None:
     assert assessment["status"] == "EVIDENCE_COMPLETE_REQUIRES_INDEPENDENT_TECHNICAL_REVIEW"
     assert assessment["hard_gate_action"] == "NONE"
     assert assessment["network_permitted"] is False
+
+
+def test_complete_fmp_b1q_exogenous_evidence_stays_review_only() -> None:
+    """A rate/dividend source explanation must not itself authorize a B1Q rebuild."""
+    intake = _module()
+
+    assessment = intake.assess_provider_timing_semantics_evidence_submission_v1(
+        _fmp_b1q_exogenous_submission()
+    )
+
+    assert assessment["status"] == "EVIDENCE_COMPLETE_REQUIRES_INDEPENDENT_TECHNICAL_REVIEW"
+    assert assessment["provider"] == "FMP"
+    assert assessment["blocking_status"] == "FMP_B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED"
+    assert assessment["missing_claim_ids"] == []
+    assert assessment["network_permitted"] is False
+    assert assessment["safe_to_reconcile_existing_results"] == "NO"
 
 
 def test_review_ready_evidence_cannot_mutate_the_current_preflight_gate() -> None:

@@ -20,6 +20,7 @@ customer receipt time, or complete point-in-time semantics.
 | Provider | Block | Evidence required for review |
 | --- | --- | --- |
 | FMP | `FMP_DATE_BOUNDED_ONLY_NO_PIT_CLAIM` | timezone, bar-label convention, REST availability latency, historical correction behavior |
+| FMP | `FMP_B1Q_EXOGENOUS_INPUT_PROVENANCE_UNRESOLVED` | Treasury observation-date semantics, historical availability/revisions, dividend declaration-date semantics, historical availability/revisions |
 | Unusual Whales | `UW_FULL_TAPE_ZIP_ROUTE_DOCUMENTED_EXECUTION_GATED` | `executed_at`, `created_at`, customer-visible availability, archive corrections, stable event identifier |
 | Massive | `MASSIVE_CONTRACT_SELECTION_RULE_UNRESOLVED_NO_EXECUTION` | `as_of`, pagination, corrections, deterministic historical contract-selection rule |
 | Massive | `MASSIVE_QUOTE_AS_OF_PARAMETERS_DOCUMENTED_LOCAL_SIP_CHECK_REQUIRED` | `.lte` wire format, inclusivity, ordering/tie-break, `sip_timestamp` semantics |
@@ -34,6 +35,12 @@ Only either of these source types can be submitted:
 
 An HTTP status, endpoint existence, plan description, marketing statement or
 oral assertion is not sufficient.
+
+For the B1Q block, a review-ready semantics submission is still not a usable
+numeric input. A later source build must separately retain each raw payload's
+sanitized SHA-256 and an evidence-availability timestamp no later than the
+forecast origin. The intake never authorizes a replacement rate, dividend
+yield, `q = 0` assumption, provider request, model run, or gate transition.
 
 ## Safe submission procedure
 
