@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Date-level PIT preflight report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "artifact_type",
+    "schema_version",
+    "status",
+    "execution_mode",
+    "plan_semantic_hash",
+    "approved_plan_semantic_hash",
+    "blocking_reasons",
+    "security",
+    "gates",
+    "checks",
+    "semantic_hash_scope",
+    "semantic_self_hash"
+  ],
+  "properties": {
+    "artifact_type": { "const": "date_level_pit_preflight_report_v1" },
+    "schema_version": { "const": "1.0.0" },
+    "status": {
+      "enum": [
+        "DRY_RUN_NETWORK_BLOCKED",
+        "FAILED_CLOSED",
+        "INJECTED_TRANSPORT_COMPLETED_NOT_PROVIDER_VALIDATED"
+      ]
+    },
+    "execution_mode": { "enum": ["DRY_RUN", "EXECUTE_WITH_INJECTED_TRANSPORT"] },
+    "plan_semantic_hash": { "type": ["string", "null"], "pattern": "^sha256:[a-f0-9]{64}$" },
+    "approved_plan_semantic_hash": {
+      "type": ["string", "null"],
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "blocking_reasons": { "type": "array", "items": { "pattern": "^[A-Z0-9_]+$" } },
+    "security": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "secret_values_emitted",
+        "personal_paths_emitted",
+        "request_urls_emitted",
+        "request_bodies_emitted"
+      ],
+      "properties": {
+        "secret_values_emitted": { "const": false },
+        "personal_paths_emitted": { "const": false },
+        "request_urls_emitted": { "const": false },
+        "request_bodies_emitted": { "const": false }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "plan_integrity",
+        "approval_hash",
+        "zero_incremental_spend_assertion",
+        "d_drive_free_space",
+        "key_presence",
+        "key_presence_status",
+        "endpoint_configuration",
+        "transport"
+      ],
+      "properties": {
+        "plan_integrity": { "enum": ["PASS", "FAIL"] },
+        "approval_hash": { "enum": ["NOT_REQUIRED_DRY_RUN", "MISSING", "MATCH", "MISMATCH"] },
+        "zero_incremental_spend_assertion": {
+          "enum": ["NOT_REQUIRED_DRY_RUN", "ASSERTED", "MISSING"]
+        },
+        "d_drive_free_space": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["threshold_bytes", "observed_free_bytes", "status"],
+          "properties": {
+            "threshold_bytes": { "const": 85899345920 },
+            "observed_free_bytes": { "type": ["integer", "null"], "minimum": 0 },
+            "status": { "enum": ["NOT_REQUIRED_DRY_RUN", "PASS", "FAIL", "UNAVAILABLE"] }
+          }
+        },
+        "key_presence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["FMP_API_KEY", "UNUSUALWHALES_API_KEY", "MASSIVE_API_KEY"],
+          "properties": {
+            "FMP_API_KEY": { "type": "boolean" },
+            "UNUSUALWHALES_API_KEY": { "type": "boolean" },
+            "MASSIVE_API_KEY": { "type": "boolean" }
+          }
+        },
+        "key_presence_status": { "enum": ["PASS", "FAIL"] },
+        "endpoint_configuration": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["fmp", "unusual_whales", "massive"],
+          "properties": {
+            "fmp": { "enum": ["CONFIGURED", "UNCONFIGURED_ENDPOINT"] },
+            "unusual_whales": { "enum": ["CONFIGURED", "UNCONFIGURED_ENDPOINT"] },
+            "massive": { "enum": ["CONFIGURED", "UNCONFIGURED_ENDPOINT"] }
+          }
+        },
+        "transport": {
+          "enum": [
+            "NETWORK_BLOCKED_DRY_RUN",
+            "NOT_EVALUATED",
+            "INJECTED_TRANSPORT_ENABLED",
+            "INJECTED_TRANSPORT_FAILURE"
+          ]
+        }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "provider",
+          "session_date",
+          "asset",
+          "endpoint_status",
+          "request_status",
+          "response"
+        ],
+        "properties": {
+          "provider": { "enum": ["fmp", "unusual_whales", "massive"] },
+          "session_date": { "type": "string", "format": "date" },
+          "asset": { "enum": ["SPY", "QQQ", "AAPL", "MSFT", "NVDA", "TSLA", "AMZN", "META"] },
+          "endpoint_status": { "enum": ["CONFIGURED", "UNCONFIGURED_ENDPOINT"] },
+          "request_status": {
+            "enum": [
+              "NETWORK_BLOCKED_DRY_RUN",
+              "NOT_ATTEMPTED_GATE_BLOCKED",
+              "NOT_ATTEMPTED_UNCONFIGURED_ENDPOINT",
+              "INJECTED_TRANSPORT_RESPONSE",
+              "INJECTED_TRANSPORT_FAILURE"
+            ]
+          },
+          "response": {
+            "type": ["object", "null"],
+            "additionalProperties": false,
+            "required": ["http_status", "response_shape_sha256"],
+            "properties": {
+              "http_status": { "type": ["integer", "null"], "minimum": 100, "maximum": 599 },
+              "response_shape_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+            }
+          }
+        }
+      }
+    },
+    "semantic_hash_scope": { "const": "canonical-json-excluding-semantic_self_hash" },
+    "semantic_self_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+  }
+}
