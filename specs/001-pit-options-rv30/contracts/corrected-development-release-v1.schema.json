@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/corrected-development-release-v1.schema.json",
+  "title": "Corrected Development Release v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "artifact_type",
+    "schema_version",
+    "release_id",
+    "status",
+    "scope",
+    "development_sessions",
+    "source_hashes",
+    "b2_exclusions",
+    "gates",
+    "no_target_or_metric_payload_read_during_predictor_build",
+    "model_fit_performed",
+    "release_sha256"
+  ],
+  "properties": {
+    "artifact_type": {
+      "const": "corrected-development-release-v1"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "release_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{7,127}$"
+    },
+    "status": {
+      "enum": [
+        "TARGET_BLIND_READY",
+        "TARGET_BOUND_READY",
+        "EVALUATED_DEVELOPMENT_ONLY",
+        "BLOCKED"
+      ]
+    },
+    "scope": {
+      "const": "corrected_development_only_no_oos_no_legacy_reconciliation"
+    },
+    "development_sessions": {
+      "type": "array",
+      "minItems": 80,
+      "maxItems": 80,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "format": "date"
+      }
+    },
+    "source_hashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_blind_predictor_manifest_sha256",
+        "b2_availability_sidecar_sha256",
+        "pit_reconciliation_gate_sha256",
+        "massive_reselection_sha256",
+        "development_source_manifest_sha256"
+      ],
+      "properties": {
+        "target_blind_predictor_manifest_sha256": { "$ref": "#/$defs/sha256" },
+        "b2_availability_sidecar_sha256": { "$ref": "#/$defs/sha256" },
+        "pit_reconciliation_gate_sha256": { "$ref": "#/$defs/sha256" },
+        "massive_reselection_sha256": { "$ref": "#/$defs/sha256" },
+        "development_source_manifest_sha256": { "$ref": "#/$defs/sha256" },
+        "target_binding_sha256": { "$ref": "#/$defs/sha256" },
+        "method_freeze_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "b2_exclusions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "excluded_origin_count",
+        "encoding",
+        "zero_activity_rule"
+      ],
+      "properties": {
+        "excluded_origin_count": { "type": "integer", "minimum": 0 },
+        "encoding": {
+          "const": "ALL_NINE_B2_FEATURES_NULL_WITH_ELIGIBILITY_FLAG_AND_REASON"
+        },
+        "zero_activity_rule": {
+          "const": "ELIGIBLE_WINDOW_NO_ACTIVITY_AND_NO_DELAY_INCIDENT_ONLY"
+        }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "safe_to_evaluate_corrected_development",
+        "safe_to_reconcile_existing_results",
+        "safe_to_open_or_evaluate_oos",
+        "holdout_overlap_count",
+        "future_predictor_count",
+        "duplicate_origin_count"
+      ],
+      "properties": {
+        "safe_to_evaluate_corrected_development": { "enum": ["YES", "NO"] },
+        "safe_to_reconcile_existing_results": { "const": "NO" },
+        "safe_to_open_or_evaluate_oos": { "const": "NO" },
+        "holdout_overlap_count": { "type": "integer", "minimum": 0 },
+        "future_predictor_count": { "type": "integer", "minimum": 0 },
+        "duplicate_origin_count": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "no_target_or_metric_payload_read_during_predictor_build": { "const": true },
+    "model_fit_performed": { "type": "boolean" },
+    "release_sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "status": { "const": "TARGET_BLIND_READY" } },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "model_fit_performed": { "const": false },
+          "gates": {
+            "properties": {
+              "safe_to_evaluate_corrected_development": { "const": "NO" }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "status": { "const": "EVALUATED_DEVELOPMENT_ONLY" } },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "model_fit_performed": { "const": true },
+          "gates": {
+            "properties": {
+              "safe_to_evaluate_corrected_development": { "const": "YES" },
+              "holdout_overlap_count": { "const": 0 },
+              "future_predictor_count": { "const": 0 },
+              "duplicate_origin_count": { "const": 0 }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

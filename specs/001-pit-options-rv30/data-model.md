@@ -259,3 +259,27 @@ never masks missing provider data. RV30, loss and forecast fields are prohibited
 | `authorized_at_utc` | timestamp/null | Recorded on the sole read |
 
 Any early, mismatched or second analytical read fails closed.
+
+## CorrectedDevelopmentRelease
+
+| Field | Type | Rule |
+|---|---|---|
+| `release_id` | string | Deterministic identifier from source hashes and frozen method identity |
+| `status` | enum | `TARGET_BLIND_READY`, `TARGET_BOUND_READY`, `EVALUATED_DEVELOPMENT_ONLY`, `BLOCKED` |
+| `development_sessions` | list[date] | Exactly the 80 dates in `StudySessionManifest`; no holdout date permitted |
+| `predictor_manifest_sha256` | string | Must bind the immutable target-blind v2.4 predictor manifest |
+| `availability_sidecar_sha256` | string | Must bind the v2.2 B2 availability sidecar |
+| `pit_gate_sha256` | string | Must bind the PIT v2.1 reconciliation gate without changing its legacy status |
+| `massive_reselection_sha256` | string | Must bind the v2.1 as-of reselection evidence |
+| `development_source_manifest_sha256` | string | Must bind the exact 80-session source manifest |
+| `target_binding_sha256` | string/null | Populated only after the predictor-only release passes |
+| `corrected_common_origin_count` | integer | Count of passing common rows after B2 exclusions |
+| `b2_excluded_origin_count` | integer | Exclusions with all nine B2 fields null and an explicit reason |
+| `safe_to_evaluate_corrected_development` | enum | `YES` only for the fixed development sample after all source and leakage gates pass |
+| `safe_to_reconcile_existing_results` | enum | Always `NO` for legacy sealed results |
+| `safe_to_open_or_evaluate_oos` | enum | Always `NO` in this release |
+| `release_sha256` | string | Canonical content hash excluding this field |
+
+`CorrectedDevelopmentRelease` is a new evidence object, not an update of a legacy result.
+It rejects target-like input during predictor construction. Target binding and development
+evaluation are successive, separately manifested states; neither can include a holdout date.

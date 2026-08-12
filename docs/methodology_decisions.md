@@ -184,3 +184,16 @@ Spec Kit consistency and preregistration gates pass.
    observed. Therefore `SAFE_TO_RECONCILE_EXISTING_RESULTS=NO`. The audit establishes neither
    Unusual Whales publication/client-receipt time nor an economic or predictive claim; no
    sealed result, model or QLIKE output was read or changed.
+37. **Corrected development evidence release (2026-08-12)** — Authenticated historical-source
+   evidence establishes FMP `PASS_90_OF_90_SESSIONS` and Unusual Whales
+   `PASS_90_OF_90_FILE_METADATA` for the registered sample. These findings establish historical
+   availability only: they do not confirm the FMP bar timestamp label or REST availability, and
+   they do not turn Unusual Whales `created_at` into publication or client-receipt time. The
+   approved correction is therefore a new, source-bound, development-only B0/B1a/B2 release
+   from the target-blind v2.4 panel, B2 availability sidecar, PIT v2.1 evidence, Massive
+   reselection evidence and the exact fixed 80-session development manifest. Delayed B2 rows
+   are explicit all-nine-feature-null exclusions, never no-activity zeroes. This release may
+   support a fresh frozen development evaluation only after target binding and leakage gates;
+   it never rewrites sealed legacy results, acquires data, reads the ten-session holdout or
+   upgrades `SAFE_TO_RECONCILE_EXISTING_RESULTS=NO` or
+   `SAFE_TO_OPEN_OR_EVALUATE_OOS=NO`.

@@ -108,6 +108,32 @@ The Colab notebook will install a tagged repository revision and call the same
 `src/mds650` functions. It is an orchestration and presentation layer, not a
 second implementation.
 
+## Corrected development release gate
+
+This gate is local and development-only. It does not acquire data, change sealed legacy results
+or open the prospective holdout.
+
+```powershell
+uv run pytest -q tests\contract\test_corrected_development_release.py `
+  tests\unit\test_corrected_development_gate.py
+uv run python scripts\build_corrected_development_release.py --check-only
+```
+
+The gate must prove: the exact eighty development dates; zero holdout overlap; source-hash
+bindings for the v2.4 predictor panel, B2 sidecar, PIT v2.1 gate and Massive reselection; no
+target payload during predictor construction; and explicit B2 exclusions rather than zeroes.
+Only then may the separate development target-binding command run. It must retain
+`SAFE_TO_RECONCILE_EXISTING_RESULTS=NO` and `SAFE_TO_OPEN_OR_EVALUATE_OOS=NO`.
+
+After a development-only method freeze, use:
+
+```powershell
+uv run python scripts\run_corrected_development_evaluation.py --development-only
+```
+
+The command must use the frozen B0/B1a/B2 information sets and method settings, write a new
+result ledger, retain all signs and registered variants, and fail before reading any holdout path.
+
 ## Target contract checkpoint
 
 For an origin `t`, the target requires the fully observed close `C(i,t)` plus exactly the

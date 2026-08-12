@@ -372,6 +372,58 @@ explicitly attributed to non-IV B0/B1Q coverage rather than optional IV missingn
 - [ ] T195 [P] [US4] Reproduce the locked install and compact validation path in Colab and record sanitized parity hashes in `artifacts/phase5/colab_compatibility.json`.
 - [ ] T196 [US4] Write `reports/CODEX_PHASE5_FINAL_HANDOFF.md` with both deltas, uncertainty, Holm, all registered variants and every positive, negative or null result.
 
+## Phase 12: Corrected Development Evidence Release after PIT v2.1 (controlled)
+
+**Goal**: Produce one new source-bound development-only B0/B1a/B2 evidence release using the
+immutable B2 availability correction, while preserving the sealed legacy-result and prospective
+holdout gates.
+
+**Independent test**: The release binds exactly 80 development sessions and all approved source
+hashes, rejects every holdout/result-like input and delayed-source zero encoding, and can run the
+frozen development protocol without reading any holdout path.
+
+- [x] T197 [US4] Update the corrected-development specification, plan, data model, contracts,
+  quickstart and decision record under `specs/001-pit-options-rv30/` and write
+  `docs/recovery/corrected_development_spec_analysis.md`.
+- [ ] T198 [P] [US4] Add failing contract tests for the corrected-development release schema,
+  immutable source bindings, literal legacy/OOS gates and no secret/personal-path output in
+  `tests/contract/test_corrected_development_release.py`.
+- [ ] T199 [P] [US4] Add failing unit tests for exact 80-session isolation, zero holdout overlap,
+  duplicate/future predictor rejection, B2 all-null exclusion encoding and no target during
+  predictor construction in `tests/unit/test_corrected_development_gate.py`.
+- [ ] T200 [US4] Implement the immutable release-state validator and canonical self-hash logic
+  in `src/mds650/corrected_development_release.py` using
+  `contracts/corrected-development-release-v1.schema.json`.
+- [ ] T201 [US4] Implement `scripts/build_corrected_development_release.py` to bind only the
+  target-blind v2.4 predictor inputs, B2 sidecar, PIT gate, Massive sensitivity and exact
+  development manifest, writing a new target-free release manifest under
+  `artifacts/corrected_development_v1/`.
+- [ ] T202 [US4] Run the target-free release build idempotently, validate JSON Schema and emit
+  `artifacts/corrected_development_v1/target_blind_release_manifest.json` without opening RV30,
+  metrics, legacy results or holdout paths.
+- [ ] T203 [P] [US4] Add failing development target-binding tests for exact origin/target hashes,
+  holdout-path rejection, target-before-predictor ordering and deterministic release identity in
+  `tests/contract/test_corrected_development_target_binding.py`.
+- [ ] T204 [US4] Implement `src/mds650/corrected_development_target_binding.py` and
+  `scripts/bind_corrected_development_targets.py` to bind RV30 only after T202 passes and only
+  for the fixed 80 sessions; emit a separate bound manifest and fail closed on any mismatch.
+- [ ] T205 [P] [US4] Add failing tests that the corrected evaluator uses frozen B0/B1a/B2,
+  folds, methods and registered timing variants; preserves all signs; and cannot resolve an OOS
+  path in `tests/contract/test_corrected_development_evaluation.py`.
+- [ ] T206 [US4] Implement and execute `scripts/run_corrected_development_evaluation.py` on the
+  newly bound development release only, producing immutable forecasts, all registered
+  B0/B1a/B2 metrics, bootstrap/Holm output and a variant ledger under
+  `artifacts/corrected_development_v1/` without retuning.
+- [ ] T207 [US4] Seal data, code, method, prediction and result hashes; run deterministic replay
+  and write `artifacts/corrected_development_v1/method_freeze.json` with
+  `SAFE_TO_RECONCILE_EXISTING_RESULTS=NO` and `SAFE_TO_OPEN_OR_EVALUATE_OOS=NO`.
+- [ ] T208 [US4] Run scoped pytest, Ruff, Mypy, coverage, JSON Schema, secret/path scans and
+  Ponytail review; write `artifacts/corrected_development_v1/test_report.txt` and
+  `docs/recovery/corrected_development_validation.md`.
+- [ ] T209 [US4] Amend the prospective-holdout decision artifact only to bind the corrected
+  development method freeze; retain its single-read guard and do not acquire or evaluate a
+  holdout session in `artifacts/phase5/holdout_access_ledger.json`.
+
 ## Dependencies and parallel execution
 
 - Setup T001–T006 precedes foundational work.
@@ -412,6 +464,10 @@ explicitly attributed to non-IV B0/B1Q coverage rather than optional IV missingn
   T192 requires T188, T189–T191 and permits exactly one analytical holdout read.
 - No Phase 5 task selects assets, features, models or thresholds using RV30 association, QLIKE,
   preliminary prediction quality or holdout outcomes.
+- Phase 12 follows T197 → T198/T199 → T200/T201 → T202 → T203 → T204 → T205 → T206 →
+  T207/T208 → T209. It is the only correction path for the B2 v2.2 availability sidecar;
+  it never changes sealed legacy results, performs acquisition, opens the OOS holdout or
+  selects any method by a favorable development sign.
 
 ## Requirement traceability
 
@@ -437,6 +493,7 @@ explicitly attributed to non-IV B0/B1Q coverage rather than optional IV missingn
 | FR-071–FR-074, FR-080, SC-032–SC-033 | T169–T178 |
 | FR-075–FR-078, FR-081, SC-034, SC-036 | T179–T188, T193–T196 |
 | FR-082 | T166–T173, T191 |
+| FR-083–FR-088, SC-037–SC-040 | T197–T209 |
 | SC-001–SC-003 | T018A–T018D, T024, T031A–T031E, T033 |
 | SC-004–SC-006 | T034–T048, T070–T076 |
 | SC-007 | T049–T054 |

@@ -9,6 +9,21 @@ single-read ledger transition.
 
 The target MUST use the fully observed close at forecast origin t and the next thirty consecutive one-minute closes, producing exactly thirty one-minute log returns.
 
+## Corrected development-release boundary
+
+The PIT v2.1 B2 availability correction does not reopen, amend or reconcile a sealed legacy
+result. `SAFE_TO_RECONCILE_EXISTING_RESULTS=NO` remains literal for those artifacts. A new
+release may evaluate only the predeclared eighty development sessions after it cryptographically
+binds the target-blind v2.4 predictor manifest, B2 availability sidecar, PIT v2.1 gate, Massive
+reselection evidence and the development source manifest. It MUST reject a holdout session,
+legacy result path, source-hash mismatch, target-like input during predictor construction, a
+future predictor timestamp, or an ambiguous B2 zero.
+
+`SAFE_TO_EVALUATE_CORRECTED_DEVELOPMENT=YES` is a narrow development-only state. It never
+implies legacy reconciliation, provider-timing confirmation, new acquisition, a prospective
+holdout read or final edge support. The new release must preserve excluded B2 rows as nine null
+feature values plus an eligibility flag and explicit reason.
+
 ## Benchmark nesting
 
 Each run must evaluate identical origin IDs, target hashes and eligible assets under:

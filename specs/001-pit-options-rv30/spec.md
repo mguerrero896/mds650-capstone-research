@@ -4,8 +4,9 @@
 
 **Created**: 2026-07-20
 
-**Status**: Phase 5 design approved; Spec Kit consistency and preregistration gates remain
-required before acquisition, modeling or QLIKE
+**Status**: Phase 5 design approved; PIT v2.1 remediation and the source-bound corrected
+development-release gate remain required before any new development evaluation. Existing sealed
+results and the prospective holdout remain closed.
 
 **Input**: User description: "Evaluate whether unusual options activity provides incremental out-of-sample information for forecasting the next 30 minutes of realized variance, using authenticated provider audits, a point-in-time pilot, and a Spec-Driven Development workflow."
 
@@ -44,6 +45,21 @@ required before acquisition, modeling or QLIKE
   assumption; `+2 minutes` is a prespecified sensitivity, not provider-confirmed semantics.
 - Q: Has the written design been approved? → A: Yes; negative, null and positive registered
   results must all be retained and reported without optimizing for a favorable sign.
+
+### Session 2026-08-12
+
+- Q: Does confirmed historical availability of FMP and Unusual Whales establish point-in-time
+  semantics? → A: No. FMP passed 90/90 exact-session historical probes and Unusual Whales
+  passed metadata probes for 90/90 historical Full Tape files; these are availability findings.
+  FMP `+1`/`+2` minutes and Unusual Whales `created_at` with the 60-second cutoff remain the
+  registered conservative study rule and operational-availability proxy, respectively.
+- Q: May a corrected B2 availability mask reopen sealed legacy results? → A: No.
+  `SAFE_TO_RECONCILE_EXISTING_RESULTS=NO` remains literal for those results. A new,
+  source-bound development-only release is the only permitted correction path.
+- Q: What is the scope of a corrected development release? → A: It joins the immutable
+  target-blind v2.4 predictor panel to the predeclared 80 development sessions only, retains all
+  B2 exclusions as missing with a reason, and does not read, acquire, or evaluate the ten-session
+  prospective holdout.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -662,10 +678,13 @@ plus one minute is no later than the forecast origin; plus two minutes is a pres
 sensitivity. Both conventions MUST preserve the existing origin IDs, 31 target prices and
 30 RV30 returns. The source timestamp, availability timestamp and feature age MUST be retained.
 
-Unusual Whales features MUST use separate five-minute half-open windows
-`[origin - delay - 5m, origin - delay)` for delays 60, 120 and 300 seconds, and MUST require
-`max(executed_at, created_at) <= origin - delay` before aggregation. `created_at` MUST remain
-labelled an operational availability proxy and MUST NOT be called publication time.
+Unusual Whales features MUST use separate five-minute half-open event-time windows
+`[origin - delay - 5m, origin - delay)` for delays 60, 120 and 300 seconds. `executed_at` may
+define that event-time window only when it is an observed raw Full Tape field in the accepted
+source schema; a source/session without that field fails B2 acceptance rather than inventing it.
+For an accepted source, `created_at <= origin - delay` is the separate operational-availability
+cutoff before aggregation. `created_at` MUST remain labelled an operational availability proxy
+and MUST NOT be called publication time.
 
 The canonical B2 field is `b2_within_bin_iv_change`. Its missingness and observation count MUST
 be preserved; it is optional and MUST NOT remove a primary B2 row. Known aliases, exact duplicate
@@ -703,8 +722,11 @@ externally, sending email, trading, or changing the frozen methods after holdout
   `b2_strike_concentration` and `b2_expiry_concentration`. Their definitions MUST be frozen
   without consulting RV30, QLIKE or predictive results; provider cumulative fields remain
   excluded.
-- **FR-073**: Primary B2 eligibility MUST use the half-open window ending sixty seconds before
-  the forecast origin and require both `executed_at` and `created_at` no later than that end.
+- **FR-073**: Primary B2 eligibility MUST use a half-open five-minute event-time window ending
+  sixty seconds before the forecast origin. `executed_at` may define that window only where it
+  is an observed raw Full Tape field in the accepted source schema; if absent, the source/session
+  MUST fail B2 acceptance rather than substituting another timestamp. Independently,
+  `created_at` MUST be no later than the window end as the operational-availability cutoff.
   Cutoffs of 120 and 300 seconds are prespecified sensitivities. `created_at` remains an
   operational availability proxy, never publication time or evidence of trader intention.
 - **FR-074**: One canonical row MUST represent one asset at one valid five-minute forecast
@@ -761,6 +783,40 @@ externally, sending email, trading, or changing the frozen methods after holdout
   minimum free space during the peak is below 80 GB. No raw evidence may be deleted before
   hashes, manifests and reproducibility are independently verified.
 
+## Phase 5A — Corrected Development Evidence Release
+
+This phase corrects the interpretation of B2 availability without rewriting any sealed legacy
+output. It uses only already-acquired development evidence and the frozen method. It is neither
+a new historical acquisition nor a prospective holdout read. Its results are development evidence
+only; no final scientific claim is permitted until the separately controlled holdout phase passes.
+
+- **FR-083**: Historical source availability MUST be reported independently of point-in-time
+  semantics. The registered FMP `PASS_90_OF_90_SESSIONS` and Unusual Whales
+  `PASS_90_OF_90_FILE_METADATA` findings MUST NOT upgrade FMP bar-label/latency semantics,
+  Unusual Whales publication timing, or the prospective-holdout gate.
+- **FR-084**: A corrected development release MUST bind the immutable target-blind v2.4
+  predictor manifest, B2 availability sidecar, PIT v2.1 gate, Massive reselection evidence and
+  the exact 80-session development manifest by SHA-256. It MUST reject every holdout session,
+  target-like input during predictor construction, legacy result path and source-hash mismatch.
+- **FR-085**: The corrected B2 policy MUST encode a delayed or unavailable activity window as
+  all nine B2 fields missing with an eligibility flag and explicit reason. It MUST NOT encode it
+  as no activity or as a numerical zero. A genuine zero is permitted only for an eligible window
+  with no qualifying activity and no delay incident.
+- **FR-086**: Target binding MAY occur only after the predictor-only release passes FR-084 and
+  MUST use the predeclared development session list, deterministic origin IDs and matching RV30
+  target hashes. It MUST reject duplicate origins, a target not exactly matched to its origin, a
+  predictor timestamp later than its forecast origin, and any holdout date.
+- **FR-087**: Development evaluation MUST use the frozen B0, B1a and B2 information sets,
+  Gamma GLM confirmatory role, LightGBM fixed robustness role, expanding folds, purge/embargo,
+  QLIKE, MAE, RMSE, paired-day bootstrap, Holm family and registered timing sensitivities. It
+  MUST preserve every sign and variant and MUST NOT tune features, assets, thresholds or models
+  to obtain a favorable result.
+- **FR-088**: The release MUST emit a new, self-hashed corrected-development manifest and
+  result ledger under a new artifact root. It MAY set
+  `SAFE_TO_EVALUATE_CORRECTED_DEVELOPMENT=YES` only for the fixed 80-session development run.
+  It MUST retain `SAFE_TO_RECONCILE_EXISTING_RESULTS=NO` and
+  `SAFE_TO_OPEN_OR_EVALUATE_OOS=NO`; neither may be inferred from a successful development run.
+
 ### Frozen compact B2 formulas
 
 For each eligible five-minute window:
@@ -804,3 +860,16 @@ missing provider data remains missing with an explicit reason.
 - **SC-036**: Final evidence reports both information-set deltas, uncertainty, multiplicity,
   all prespecified stability strata, all registered variants and all positive, negative and
   null results without post-holdout method changes.
+- **SC-037**: The corrected-development input manifest proves exactly 80 ordered, unique
+  development sessions, zero holdout overlap, source-hash equality for every bound input, and
+  zero target or metric payload reads during predictor construction.
+- **SC-038**: The corrected-development panel proves that every B2 exclusion has nine null
+  B2 features, `b2v2_availability_eligible=false`, and a non-empty reason; it proves that no
+  delayed-source incident is represented as a confirmed zero-activity window.
+- **SC-039**: A development evaluation may start only after the corrected-development gate,
+  target-origin binding, no-leakage checks, frozen-method hash and deterministic replay checks
+  pass. Its output records all B0/B1a/B2 deltas, intervals, adjusted p-values and variants
+  without accessing any holdout input.
+- **SC-040**: A successful corrected-development evaluation does not change the status of any
+  legacy result or of the prospective holdout. Final edge support remains conditional on the
+  one-time holdout read under the already frozen protocol.

@@ -151,8 +151,9 @@
   B1b/B1c explicitly limited to robustness roles? [Consistency, Spec §FR-071]
 - [x] CHK003 Are all nine compact B2 names, formulas and zero-denominator rules frozen and
   traceable without consulting RV30 or QLIKE? [Clarity, Spec §FR-072 and Frozen formulas]
-- [x] CHK004 Are primary and sensitivity event windows, half-open boundaries and both timestamp
-  cutoffs specified without calling `created_at` publication time? [Clarity, Spec §FR-073]
+- [x] CHK004 Are primary and sensitivity event windows, half-open boundaries, the conditional
+  observed-raw `executed_at` requirement and the separate `created_at` availability cutoff
+  specified without calling `created_at` publication time? [Clarity, Spec §FR-073]
 - [x] CHK005 Does the specification define the canonical row, common-origin rule, target-hash
   equality and every prohibited missing-data shortcut? [Completeness, Spec §FR-074]
 - [x] CHK006 Are confirmatory and challenger model roles unambiguous, including the prohibition
@@ -180,3 +181,24 @@
 - [x] CHK016 Does holdout acquisition have an exact UTC release instant, isolated storage,
   resumable provider checkpoints, zero model/QLIKE execution, source hashes and a tested
   pre-network fail-closed path? [Security and Reproducibility, Spec §FR-079 and §SC-035]
+
+## Corrected Development Evidence Release Requirements
+
+- [x] CHK017 Are FMP 90/90 exact-session availability and Unusual Whales 90/90 Full Tape
+  metadata availability explicitly separated from unresolved provider timestamp semantics?
+  [Clarity, Spec §FR-083]
+- [x] CHK018 Does the corrected release bind every approved source by SHA-256, reject the ten
+  holdout dates and result-like inputs, and prohibit target or metric payload reads during
+  predictor construction? [Security and Reproducibility, Spec §FR-084 and §SC-037]
+- [x] CHK019 Does the B2 policy encode delayed or unavailable windows as all-nine-feature null
+  exclusions with eligibility and reason, rather than zero activity? [Data Integrity, Spec
+  §FR-085 and §SC-038]
+- [x] CHK020 Is target binding explicitly sequenced after the target-free release and required
+  to prove exact origin matching, deterministic identity and no future predictor timestamp?
+  [Leakage Prevention, Spec §FR-086]
+- [x] CHK021 Does the development evaluator preserve the frozen methods, information sets,
+  variants, signs and inference protocol without retuning for an outcome? [Scientific
+  Integrity, Spec §FR-087 and §SC-039]
+- [x] CHK022 Do the corrected release states retain literal `NO` values for legacy
+  reconciliation and OOS access even after a successful development-only evaluation?
+  [Safety, Spec §FR-088 and §SC-040]

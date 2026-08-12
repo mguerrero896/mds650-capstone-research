@@ -199,3 +199,30 @@ backfill if B1 or the minimum asset gate fails.
 
 **Rationale**: This preserves the distinction between regenerated artifacts and fresh provider
 evidence and creates a durable handoff for the supervisor.
+
+## Decision 14: Rebuild corrected development evidence without reconciling legacy results
+
+**Decision**: Treat the FMP 90/90 exact-session and Unusual Whales 90/90 Full Tape metadata
+findings as historical availability evidence, distinct from provider timing semantics. Keep FMP
+`+1` minute primary / `+2` minute sensitivity as conservative study assumptions and retain UW
+`created_at` as an operational-availability proxy. Rebuild a new development-only release from
+the source-bound v2.4 predictor panel and B2 availability sidecar, then bind it only to the
+predeclared eighty development sessions. Preserve the literal
+`SAFE_TO_RECONCILE_EXISTING_RESULTS=NO` for sealed legacy outputs and
+`SAFE_TO_OPEN_OR_EVALUATE_OOS=NO` until a separate holdout authorization.
+
+**Rationale**: On 2025-10-20, observed record-creation delays can make a B2 zero ambiguous.
+The v2.2 sidecar marks such rows excluded rather than inactive. Reusing the prior outcome
+artifacts would hide this correction, whereas a separately hashed development release makes the
+data lineage and exclusion policy auditable without reading the prospective holdout.
+
+**Alternatives considered**:
+
+- Flip the legacy reconciliation flag after the sidecar exists: rejected because sealed legacy
+  outputs did not consume the mask.
+- Treat all source-file availability as proof of publication timing: rejected because historical
+  availability does not establish bar label, provider latency or customer receipt timing.
+- Omit B2 delayed-source rows silently: rejected because the missingness mechanism is material
+  and must remain visible in the release manifest.
+- Retune the model or B2 registry after correction: rejected because it would introduce
+  outcome-dependent model selection.

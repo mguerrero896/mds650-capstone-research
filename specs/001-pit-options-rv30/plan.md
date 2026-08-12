@@ -288,10 +288,11 @@ rules from contaminating the common analytical contract.
 
 Phase 4B is a local-only correction over the retained 20 calibration sessions and five Pilot V2
 sessions. It supersedes the legacy 15/0-second B2 sensitivities with fixed five-minute windows
-ending 60, 120 and 300 seconds before each origin. The event predicate is
-`executed_at ∈ [origin-delay-5m, origin-delay)` together with
-`max(executed_at, created_at) <= origin-delay`; `created_at` remains an operational availability
-proxy and is never called publication time.
+ending 60, 120 and 300 seconds before each origin. For an accepted Full Tape schema containing
+raw `executed_at`, the event predicate is `executed_at ∈ [origin-delay-5m, origin-delay)` and
+the independent availability predicate is `created_at <= origin-delay`. A source/session without
+observed raw `executed_at` fails B2 acceptance rather than receiving an invented event time;
+`created_at` remains an operational availability proxy and is never called publication time.
 
 FMP +1 is the primary conservative research assumption. FMP +2 is a separate sensitivity
 snapshot: the latest raw bar satisfying
@@ -369,6 +370,34 @@ sessions each and at least 50% of that dimension's origins. Any non-primary timi
 `ci_high < 0` is a material timing reversal. All stability calculations occur within the sole
 authorized holdout read.
 
+### 5.7 Corrected development evidence release after PIT v2.1
+
+The previously sealed development and holdout result artifacts are never rewritten. The
+availability correction creates a separate, source-bound release from the immutable v2.4
+predictor-only panel and the fixed 80-session development manifest. Its preflight is ordered:
+
+1. Verify the FMP 90/90 session evidence and UW 90/90 Full Tape metadata evidence as
+   historical availability only; retain FMP `+1` primary / `+2` sensitivity and UW
+   `created_at` minus 60 seconds as registered study conventions rather than provider latency
+   claims.
+2. Verify semantic hashes of the target-blind v2.4 manifest, B2 availability sidecar, PIT v2.1
+   anomaly gate, Massive v2.1 reselection evidence, the 80-session source manifest and frozen
+   comparison contract. Reject a missing, altered, untracked or forbidden input path.
+3. Restrict predictor rows to the fixed development session list before any target file is read.
+   Reject all ten holdout dates, result-like inputs, duplicate origin IDs, a B2 delayed-source
+   zero encoding, source-hash drift and a predictor timestamp after its origin.
+4. Bind RV30 only to the passing predictor release on matching deterministic origin IDs. The
+   binding process is separately manifested, validates the target hash, and has no route to
+   read a holdout file.
+5. Run only the frozen Gamma GLM and fixed LightGBM development protocol on the corrected
+   common rows. Reproduce all frozen B0/B1a/B2 comparisons and timing variants without a
+   sign-based retry, feature change, asset re-selection or hyperparameter change.
+
+The new release may state `SAFE_TO_EVALUATE_CORRECTED_DEVELOPMENT=YES` only when these five
+steps pass. It deliberately preserves `SAFE_TO_RECONCILE_EXISTING_RESULTS=NO` for legacy
+outputs and `SAFE_TO_OPEN_OR_EVALUATE_OOS=NO` for the prospective holdout. Its development
+results are evidence for method freeze and interpretation, not final confirmation.
+
 ### Phase 5 post-design constitution check
 
 - Evidence/PIT truth: PASS — all joins have explicit availability cutoffs and fail closed.
@@ -379,3 +408,5 @@ authorized holdout read.
   manifests are hashed and holdout reads are ledgered.
 - Statistical validity: PASS — expanding folds, purge/embargo, QLIKE, day-cluster bootstrap,
   Holm and honest sign reporting are predeclared.
+- Corrected-release isolation: PASS by design — legacy reconciliation and OOS access cannot be
+  upgraded by a development-only rebuild; B2 delayed-source rows remain explicit exclusions.
