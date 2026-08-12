@@ -400,6 +400,40 @@ def test_historical_availability_pass_does_not_override_the_pit_network_gate() -
     assert operation_plan.network_gate.status is module.NetworkGateStatus.NETWORK_BLOCKED
 
 
+def test_historical_availability_revalidates_the_two_registered_probe_files(
+    tmp_path: Path,
+) -> None:
+    """A changed historical-metadata probe must fail before a PIT plan is built."""
+    module = _module()
+    candidate = getattr(module, "validate_historical_source_availability_evidence", None)
+    assert callable(candidate), "the historical-availability evidence validator is required"
+
+    fmp_copy = tmp_path / "fmp_probe.json"
+    uw_copy = tmp_path / "uw_probe.json"
+    fmp_copy.write_bytes(
+        (ROOT / "artifacts" / "api_audit" / "b2_replication_90_common_probe.json").read_bytes()
+    )
+    uw_copy.write_bytes(
+        (ROOT / "artifacts" / "api_audit" / "b2_replication_90_uw_metadata_probe.json").read_bytes()
+    )
+
+    availability = candidate(fmp_copy, uw_copy)
+    assert (
+        availability.fmp_status is module.ProviderHistoricalAvailability.FMP_PASS_90_OF_90_SESSIONS
+    )
+    assert (
+        availability.unusual_whales_status
+        is module.ProviderHistoricalAvailability.UW_PASS_90_OF_90_FILE_METADATA
+    )
+
+    fmp_copy.write_text('{"tampered":true}\n', encoding="utf-8")
+    with pytest.raises(
+        module.PitPreflightV2Error,
+        match="PREFLIGHT_V2_HISTORICAL_AVAILABILITY_INVALID",
+    ):
+        candidate(fmp_copy, uw_copy)
+
+
 def test_atomic_attempt_ledger_counts_each_retry_inside_the_inclusive_global_cap() -> None:
     module = _module()
     ledger = module.AttemptLedger()

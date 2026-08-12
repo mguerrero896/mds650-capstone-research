@@ -24,6 +24,18 @@ GLOBAL_HTTP_ATTEMPT_CAP: Final[int] = LOGICAL_REQUEST_CAP
 MIN_NINETEEN_DIGIT_NS: Final[int] = 1_000_000_000_000_000_000
 MAX_NINETEEN_DIGIT_NS: Final[int] = 9_999_999_999_999_999_999
 ROOT: Final[Path] = Path(__file__).resolve().parents[2]
+FMP_HISTORICAL_PROBE_PATH: Final[Path] = (
+    ROOT / "artifacts/api_audit/b2_replication_90_common_probe.json"
+)
+UW_HISTORICAL_PROBE_PATH: Final[Path] = (
+    ROOT / "artifacts/api_audit/b2_replication_90_uw_metadata_probe.json"
+)
+FMP_HISTORICAL_PROBE_SHA256: Final[str] = (
+    "97c3b57707a953629ff57e485cde918e52ecdd1777a246e84072b5c4150771dc"
+)
+UW_HISTORICAL_PROBE_SHA256: Final[str] = (
+    "244690e15054f518e5d12083e6b81d2bcbfcd8f5f009304f4127cbb5c1c4a3f3"
+)
 PLAN_SCHEMA_PATH: Final[Path] = (
     ROOT / "specs/001-pit-options-rv30/contracts/date-level-pit-preflight-plan-v1.schema.json"
 )
@@ -661,14 +673,66 @@ def current_historical_source_availability() -> HistoricalSourceAvailability:
     cannot authorize network transport, reconcile existing results, or assert
     timestamp, publication, or receipt semantics.
     """
+    return validate_historical_source_availability_evidence(
+        FMP_HISTORICAL_PROBE_PATH,
+        UW_HISTORICAL_PROBE_PATH,
+    )
+
+
+def validate_historical_source_availability_evidence(
+    fmp_probe_path: Path,
+    unusual_whales_probe_path: Path,
+) -> HistoricalSourceAvailability:
+    """Validate the two immutable historical-availability probe artifacts.
+
+    Parameters
+    ----------
+    fmp_probe_path
+        Path to the target-free FMP 90-session metadata probe.
+    unusual_whales_probe_path
+        Path to the target-free Unusual Whales 90-session Full Tape metadata probe.
+
+    Returns
+    -------
+    HistoricalSourceAvailability
+        The registered availability statuses, explicitly separate from PIT timing.
+
+    Raises
+    ------
+    PitPreflightV2Error
+        If either file is absent, malformed, has an unexpected hash, or no longer
+        reports its registered 90-session metadata finding.
+
+    Notes
+    -----
+    This reads only two sanitized metadata probes. It cannot establish FMP bar
+    timestamp semantics, Unusual Whales row-level availability, publication time,
+    or customer receipt time.
+    """
+    fmp_probe = _load_evidence_mapping(fmp_probe_path)
+    unusual_whales_probe = _load_evidence_mapping(unusual_whales_probe_path)
+    if (
+        _file_sha256(fmp_probe_path) != FMP_HISTORICAL_PROBE_SHA256
+        or _file_sha256(unusual_whales_probe_path) != UW_HISTORICAL_PROBE_SHA256
+        or fmp_probe.get("status") != "PASS_METADATA_ONLY"
+        or fmp_probe.get("fmp_pass_sessions") != 90
+        or fmp_probe.get("session_count") != 90
+        or fmp_probe.get("pit_claim") is not False
+        or fmp_probe.get("secret_values_emitted") is not False
+        or unusual_whales_probe.get("status") != "PASS_METADATA_ONLY"
+        or unusual_whales_probe.get("metadata_pass_count") != 90
+        or unusual_whales_probe.get("session_count") != 90
+        or unusual_whales_probe.get("full_tape_downloaded") is not False
+        or unusual_whales_probe.get("pit_claim") is not False
+        or unusual_whales_probe.get("secret_values_emitted") is not False
+    ):
+        raise PitPreflightV2Error("PREFLIGHT_V2_HISTORICAL_AVAILABILITY_INVALID")
     return HistoricalSourceAvailability(
         status=HistoricalAvailabilityStatus.PASS_SEPARATE_FROM_PIT,
         fmp_status=ProviderHistoricalAvailability.FMP_PASS_90_OF_90_SESSIONS,
         unusual_whales_status=(ProviderHistoricalAvailability.UW_PASS_90_OF_90_FILE_METADATA),
-        fmp_evidence_sha256=("97c3b57707a953629ff57e485cde918e52ecdd1777a246e84072b5c4150771dc"),
-        unusual_whales_evidence_sha256=(
-            "244690e15054f518e5d12083e6b81d2bcbfcd8f5f009304f4127cbb5c1c4a3f3"
-        ),
+        fmp_evidence_sha256=FMP_HISTORICAL_PROBE_SHA256,
+        unusual_whales_evidence_sha256=UW_HISTORICAL_PROBE_SHA256,
     )
 
 
@@ -1092,6 +1156,23 @@ def _load_schema(path: Path) -> dict[str, object]:
     if not isinstance(decoded, dict) or not all(isinstance(key, str) for key in decoded):
         raise PitPreflightV2Error("PREFLIGHT_V2_SOURCE_SCHEMA_UNAVAILABLE")
     return cast(dict[str, object], decoded)
+
+
+def _load_evidence_mapping(path: Path) -> Mapping[str, object]:
+    try:
+        decoded: object = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise PitPreflightV2Error("PREFLIGHT_V2_HISTORICAL_AVAILABILITY_INVALID") from exc
+    if not isinstance(decoded, dict) or not all(isinstance(key, str) for key in decoded):
+        raise PitPreflightV2Error("PREFLIGHT_V2_HISTORICAL_AVAILABILITY_INVALID")
+    return cast(Mapping[str, object], decoded)
+
+
+def _file_sha256(path: Path) -> str:
+    try:
+        return hashlib.sha256(path.read_bytes()).hexdigest()
+    except OSError as exc:
+        raise PitPreflightV2Error("PREFLIGHT_V2_HISTORICAL_AVAILABILITY_INVALID") from exc
 
 
 def _validate_source_schema(
