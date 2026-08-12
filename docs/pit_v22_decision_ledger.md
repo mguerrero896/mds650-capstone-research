@@ -263,3 +263,61 @@ SAFE_TO_OPEN_OR_EVALUATE_OOS=NO
 SAFE_TO_ACQUIRE_NEW_SAMPLE=NO
 MODEL_FIT_PERFORMED=NO
 ```
+
+## Decision 44 — primary B0/B1a/B2 comparison contract
+
+**Status:** accepted as an additive, target-blind method-freeze clarification;
+it does not modify the immutable v4 preregistration or authorize evaluation.
+
+**Evidence:**
+`artifacts/target_blind_v25_comparison_contract_20260812/target_blind_comparison_contract_v1.json`
+(file SHA-256 `82f455c3c5c7d72701d2525c1965aaa434d59bb24ded52002e0590d1cd5a91da`,
+semantic SHA-256 `ed936c545292a3954405cf2c0d6545377320e930edd548b235a4c66d0f9dc050`),
+`specs/001-pit-options-rv30/contracts/target-blind-comparison-contract-v1.schema.json`,
+and `docs/target_blind_comparison_contract_v1.md`.
+
+**Decision:** preserve the parent v4 feature contracts and make the nested
+primary ladder explicit:
+
+| Information set | Fixed composition | Role |
+| --- | --- | --- |
+| B0 | Parent v4 `B0` controls | Underlying/market benchmark |
+| B1a | B0 plus parent v4 `B1a_addition` | Primary ordinary-options-state challenger |
+| B2 | B1a plus the exact nine parent v4 `B2_addition` fields | Primary trade-activity challenger |
+
+The two and only two primary estimands are the daily means of
+`QLIKE(B0) - QLIKE(B1a)` and `QLIKE(B1a) - QLIKE(B2)`. Positive direction is
+defined prospectively as favoring the challenger; no positive, negative or
+null value has been inspected or asserted. B1b and B1c remain pre-specified
+robustness analyses and cannot replace B1a after observing coverage, RV30,
+QLIKE, a sign or a predictive outcome.
+
+**Reason:** a list of additive feature families alone does not prevent a later
+comparison switch. The separate self-hashing contract binds the exact ladder,
+directional estimands, Gamma/LightGBM method context, daily-cluster bootstrap,
+Holm adjustment and anti-selection controls before any target or metric access.
+
+**Permitted claims:**
+
+- The primary scientific questions have an exact, nested and source-bound
+  future comparison definition.
+- The declared comparison direction is a convention for interpreting a future
+  lower QLIKE, not evidence of an edge.
+
+**Forbidden claims:**
+
+- That B1a improves B0, B2 improves B1a, or either effect is statistically
+  significant or stable.
+- That B1b or B1c may be promoted to primary after an observed result.
+- That the comparison contract opens OOS, reconciliation, model fitting,
+  metric evaluation, new acquisition or prospective capture.
+
+**Consequences:**
+
+```text
+PRIMARY_COMPARISON_CONTRACT=SEALED_TARGET_BLIND
+PRIMARY_B1_LEVEL=B1a
+SAFE_TO_RECONCILE_EXISTING_RESULTS=NO
+SAFE_TO_OPEN_OR_EVALUATE_OOS=NO
+MODEL_FIT_PERFORMED=NO
+```

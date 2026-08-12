@@ -17,6 +17,37 @@ evaluation.
 - Inference: paired trading-day cluster bootstrap with Holm adjustment. Selection
   by sign is prohibited.
 
+## Additive primary-comparison freeze
+
+The immutable v4 record retains the component feature lists. The additive,
+self-hashing v1 comparison contract fixes their scientific ladder without
+rewriting that sealed record:
+
+| Primary comparison | Fixed estimand | Interpretation convention |
+| --- | --- | --- |
+| B1a versus B0 | daily mean `QLIKE(B0) - QLIKE(B1a)` | Positive favors B1a |
+| B2 versus B1a | daily mean `QLIKE(B1a) - QLIKE(B2)` | Positive favors B2 |
+
+`B1a` is the only primary ordinary-options benchmark. B1b and B1c are
+pre-specified robustness analyses only; they cannot be substituted after
+coverage, RV30, QLIKE, a sign or any predictive outcome is observed. The
+contract also prohibits feature, asset, model and primary-comparison selection
+using RV30 or QLIKE.
+
+The immutable artifact is
+`artifacts/target_blind_v25_comparison_contract_20260812/target_blind_comparison_contract_v1.json`
+(file SHA-256 `82f455c3c5c7d72701d2525c1965aaa434d59bb24ded52002e0590d1cd5a91da`).
+It still authorizes no model fit, metric evaluation, OOS access, reconciliation
+or acquisition.
+
+Its idempotent verification command uses the sealed source commit, rather than
+the moving branch head:
+
+```powershell
+$commit = 'bd8002a90adab01622dfb18f8fb3132ae28ee411'
+uv run --offline python scripts/seal_target_blind_comparison_contract_v1.py --source-commit $commit
+```
+
 ## Evidence binding and status
 
 `scripts/seal_target_blind_confirmation_package_v4.py` validates the local
