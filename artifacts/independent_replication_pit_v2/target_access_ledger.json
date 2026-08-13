@@ -1,0 +1,14 @@
+{
+  "complete_panel_sha256": "e0686f0ee3f4cd119d7d6399182498fa405873325f8007d59ed3ac72ddda1fda",
+  "corrected_target_reuse_count": 1,
+  "cumulative_target_payload_reads": 2,
+  "manifest_sha256": "b55d844a3321d9ba8908ee65dbaa8b5fed76516a71cafa25a2c97dce83759ab3",
+  "personal_paths_emitted": false,
+  "preregistration_sha256": "ca126726f61eb6e6000d23672e85de9a841e4d28d488683f3be1300a5b65c765",
+  "prior_target_read_count": 1,
+  "pristine_first_read": false,
+  "schema_version": "independent-corrected-target-access-v1.0",
+  "secret_values_emitted": false,
+  "status": "CORRECTED_TARGET_REUSE_COMPLETE",
+  "target_b0_sha256": "76a76dfb5387afdcb5a20c09f5e265528522395ae4c1c1df651696d7ef3aa363"
+}

@@ -1,0 +1,10 @@
+{
+  "evaluation_count": 1,
+  "manifest_sha256": "8515801dab16c94df8848a7b5721858b8c8370aec62618787f87ddaf4fb929ce",
+  "personal_paths_emitted": false,
+  "preregistration_sha256": "ca126726f61eb6e6000d23672e85de9a841e4d28d488683f3be1300a5b65c765",
+  "results_sha256": "9b0ba53ce5b55cf54ad22a316f0323fef77d9996faf20e12c1e0d5462a7ebc22",
+  "schema_version": "independent-corrected-evaluation-access-v1.0",
+  "secret_values_emitted": false,
+  "status": "CORRECTED_EVALUATION_COMPLETE"
+}

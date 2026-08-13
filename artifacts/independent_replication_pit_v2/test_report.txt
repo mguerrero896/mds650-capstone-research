@@ -1,0 +1,38 @@
+MDS650 corrected independent reevaluation verification
+Run date: 2026-08-13 Australia/Sydney
+
+Evaluation integrity
+- Preregistration JSON Schema: PASS
+- Preregistration semantic self-hash: PASS
+- Preregistration idempotent replay: PASS
+- Corrected B1 target-blind audit: PASS
+- Panel, complete-panel, prediction, timing-prediction hashes: PASS
+- Results, panel, target-access and evaluation-access self-hashes: PASS
+- Exclusive evaluation lock bound to preregistration: PASS
+- One corrected evaluation recorded: PASS
+- Identical origin count per model/information set: PASS (11,664)
+- Non-null finite RV30 targets and forecasts: PASS
+- All result signs retained: PASS
+- Secret values detected: 0
+- Personal paths detected: 0
+- Evaluation stderr bytes: 0
+
+Commands and results
+
+uv run pytest -q tests/unit/test_b1q_exogenous_provenance_v1.py tests/unit/test_independent_b1_contract_resolution.py tests/unit/test_independent_corrected_reevaluation.py tests/unit/test_independent_replication_panel.py tests/contract/test_independent_replication.py
+RESULT: 24 passed
+
+uv run pytest -q tests/contract/test_canonical_documentation.py
+RESULT: 3 passed
+
+uv run ruff check .
+RESULT: All checks passed
+
+uv run mypy
+RESULT: Success: no issues found in 146 source files
+
+uv run pytest -m "not live" --cov=mds650 --cov-report=term
+RESULT: 671 passed, 12 skipped; total coverage 82.35%; fail-under 80% passed
+
+git diff --check
+RESULT: PASS (line-ending conversion warnings only)

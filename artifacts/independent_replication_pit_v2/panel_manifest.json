@@ -1,0 +1,17 @@
+{
+  "asset_count": 6,
+  "complete_origin_count": 27065,
+  "complete_panel_sha256": "e0686f0ee3f4cd119d7d6399182498fa405873325f8007d59ed3ac72ddda1fda",
+  "corrected_b1_sha256": "7caa766bf386a899835ddbeeb040a89e0f5572100107cf21e84931127c784dd1",
+  "manifest_sha256": "fcaddbe0a9ddce26ad23e1e50bc916c632c5783c4791f89cdf647207abb0cf65",
+  "origin_count": 38664,
+  "panel_sha256": "210e76d87c1bfdf481d4d32222b821526ddb058b37f6b8ddbc4cfde55a157aab",
+  "personal_paths_emitted": false,
+  "preregistration_sha256": "ca126726f61eb6e6000d23672e85de9a841e4d28d488683f3be1300a5b65c765",
+  "pristine_first_read": false,
+  "schema_version": "independent-corrected-panel-v1.0",
+  "secret_values_emitted": false,
+  "session_count": 90,
+  "status": "PASS_CORRECTED_COMMON_PANEL",
+  "target_complete_origin_count": 11664
+}

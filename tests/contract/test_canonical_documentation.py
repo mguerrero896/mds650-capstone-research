@@ -55,9 +55,15 @@ def test_every_claim_has_machine_evidence_and_declared_status() -> None:
     for row in rows:
         assert row["claim_id"]
         assert row["claim_text"]
-        assert row["status"] in {"SUPPORTED", "CONDITIONAL", "NOT_SUPPORTED"}
+        assert row["status"] in {
+            "SUPPORTED",
+            "CONDITIONAL",
+            "NOT_SUPPORTED",
+            "INVALIDATED_INPUT",
+        }
         assert row["evidence_path"]
-        assert (ROOT / row["evidence_path"]).is_file()
+        for evidence_path in row["evidence_path"].split(";"):
+            assert (ROOT / evidence_path.strip()).is_file()
         assert row["metric"]
         assert row["model_role"]
         assert row["block"]

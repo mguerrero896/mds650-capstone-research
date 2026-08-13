@@ -13,8 +13,8 @@ direction of the independent evidence changes with the model family.
 | Question | Defensible answer | Evidence |
 | --- | --- | --- |
 | Does B1v2a improve B0v2 globally? | Not established. Gamma is positive in Phase 6 but negative in the independent block; LightGBM is positive in both blocks but the independent interval includes zero and its effect is below the frozen MDE. | `artifacts/canonical_validation_v1/contrasts.json` |
-| Does B2v2 add value beyond B1v2a globally? | Not established. Gamma is positive in both blocks, but LightGBM turns negative in the independent block. | `artifacts/canonical_validation_v1/contrasts.json` |
-| Is there a targeted result worth reporting? | Yes, conditionally: independent Gamma B2v2 has a QLIKE gain of `0.03291534`, 95% CI `[0.02444358, 0.04162629]`, exceeding its frozen MDE `0.00503510`. It cannot be presented as a model-independent or universal result. | `artifacts/canonical_validation_v1/contrasts.json` |
+| Does B2v2 add value beyond B1v2a globally? | Not established. Corrected Gamma is positive, significant and above MDE, while corrected LightGBM is positive but small, uncertain and below MDE. | `artifacts/independent_replication_pit_v2/results.json` |
+| Is there a targeted result worth reporting? | Yes, conditionally: corrected Gamma B2v2 has a QLIKE gain of `0.03396090`, 95% CI `[0.02542800, 0.04266183]`, exceeding its frozen MDE `0.00503510`. It cannot be presented as a model-independent or universal result. | `artifacts/independent_replication_pit_v2/results.json` |
 
 ## What was compared
 
@@ -36,7 +36,7 @@ direction of the independent evidence changes with the model family.
 | Block | Origins per information set | Registered families | Causal audit | Minimum retained gap |
 | --- | ---: | --- | --- | ---: |
 | Phase 6 | 38,976 | Gamma GLM and LightGBM | 25 role-fold rows pass | 1,115 minutes |
-| Independent replication | 11,664 | Gamma GLM and LightGBM | 5 role-fold rows pass | 1,115 minutes |
+| Corrected independent reevaluation | 11,664 | Gamma GLM and LightGBM | target-blind corrected B1 and paired-origin integrity pass | 1,115 minutes |
 
 Every B0v2, B1v2a and B2v2 comparison uses the same origin identifiers within
 each block, fold and model role. The report recomputes QLIKE from stored RV30
@@ -46,21 +46,22 @@ within each block/model family. The training-only frozen MDEs are `0.02168578`
 for B1v2a versus B0v2 and `0.00503510` for B2v2 versus B1v2a.
 
 Evidence: `artifacts/canonical_validation_v1/phase6/causal_audit.parquet`,
-`artifacts/canonical_validation_v1/independent_replication/causal_audit.parquet`,
-`artifacts/canonical_validation_v1/contrasts.json`, and
-`artifacts/canonical_validation_v1/report_manifest.json`.
+`artifacts/independent_replication_pit_v2/preregistration.json`,
+`artifacts/independent_replication_pit_v2/panel_manifest.json`, and
+`artifacts/independent_replication_pit_v2/results.json`.
 
 ## Why the families disagree
 
-The discrepancy is observable rather than assumed. In the independent block,
-Gamma reports B1v2a `-0.08698073` and B2v2 `+0.03291534`; LightGBM reports
-B1v2a `+0.00553712` and B2v2 `-0.00180221`. Calibration also differs by role
+The discrepancy is observable rather than assumed. In the corrected block,
+Gamma reports B1v2a `-0.09078087` and B2v2 `+0.03396090`; LightGBM reports
+B1v2a `+0.00518679` and B2v2 `+0.00027708`. The LightGBM intervals include zero
+and both estimates remain below their MDEs. Calibration also differs by role
 and information set, while the B2 feature-only diagnostic finds material
 correlation among some frozen predictors. Those diagnostics describe possible
 mechanisms for sensitivity; they do not prove a causal explanation or authorize
 feature reselection.
 
-Evidence: `artifacts/canonical_validation_v1/contrasts.json`,
+Evidence: `artifacts/independent_replication_pit_v2/results.json`,
 `artifacts/canonical_validation_v1/calibration.json`, and
 `artifacts/canonical_validation_v1/redundancy.json`.
 
