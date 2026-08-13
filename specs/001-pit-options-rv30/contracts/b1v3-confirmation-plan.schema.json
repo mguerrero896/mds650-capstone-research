@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1v3-confirmation-plan.schema.json",
+  "title": "MDS650 B1v3 Independent Confirmation Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "target_blind",
+    "safe_to_acquire",
+    "safe_to_read_outcomes",
+    "calendar",
+    "selection_rule",
+    "exposure_ledger_sha256",
+    "candidate_session_count",
+    "candidate_first_session",
+    "candidate_last_session",
+    "provider_preflight",
+    "training_session_count",
+    "confirmation_session_count",
+    "training_sessions",
+    "confirmation_sessions",
+    "exposed_overlap",
+    "outcome_read_count",
+    "plan_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "status": {
+      "enum": [
+        "PENDING_DATE_LEVEL_PROVIDER_PREFLIGHT",
+        "PASS_PRISTINE_60_30_FROZEN",
+        "NO_PRISTINE_30_SESSION_BLOCK"
+      ]
+    },
+    "target_blind": {"const": true},
+    "safe_to_acquire": {"type": "boolean"},
+    "safe_to_read_outcomes": {"const": false},
+    "calendar": {"const": "XNYS"},
+    "selection_rule": {
+      "const": "EARLIEST_CONTIGUOUS_PRISTINE_60_TRAINING_30_CONFIRMATION"
+    },
+    "exposure_ledger_sha256": {"$ref": "#/$defs/sha256"},
+    "candidate_session_count": {"type": "integer", "minimum": 1},
+    "candidate_first_session": {"type": "string", "format": "date"},
+    "candidate_last_session": {"type": "string", "format": "date"},
+    "provider_preflight": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required_providers",
+        "required_session_count",
+        "passed_session_count",
+        "status"
+      ],
+      "properties": {
+        "required_providers": {
+          "type": "array",
+          "prefixItems": [
+            {"const": "fmp"},
+            {"const": "massive"},
+            {"const": "unusual_whales"}
+          ],
+          "items": false
+        },
+        "required_session_count": {"const": 90},
+        "passed_session_count": {"type": "integer", "minimum": 0},
+        "status": {"enum": ["NOT_ESTABLISHED", "PASS_DAILY_CONTINUITY_90_OF_90"]}
+      }
+    },
+    "training_session_count": {"enum": [0, 60]},
+    "confirmation_session_count": {"enum": [0, 30]},
+    "training_sessions": {
+      "type": "array",
+      "maxItems": 60,
+      "uniqueItems": true,
+      "items": {"type": "string", "format": "date"}
+    },
+    "confirmation_sessions": {
+      "type": "array",
+      "maxItems": 30,
+      "uniqueItems": true,
+      "items": {"type": "string", "format": "date"}
+    },
+    "exposed_overlap": {"type": "array", "maxItems": 0},
+    "outcome_read_count": {"const": 0},
+    "plan_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "PASS_PRISTINE_60_30_FROZEN"}}},
+      "then": {
+        "properties": {
+          "safe_to_acquire": {"const": true},
+          "training_session_count": {"const": 60},
+          "confirmation_session_count": {"const": 30},
+          "training_sessions": {"minItems": 60, "maxItems": 60},
+          "confirmation_sessions": {"minItems": 30, "maxItems": 30}
+        }
+      },
+      "else": {"properties": {"safe_to_acquire": {"const": false}}}
+    }
+  ]
+}

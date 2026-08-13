@@ -484,9 +484,9 @@ current evidence and work that still requires explicit approval.
 - [x] T219 [US4] Execute the full target-free build into `artifacts/b1v3_target_blind/` under the
   80-GiB disk gate; emit only new source-bound evidence, rerun byte-identically and record the
   focused test/coverage report.
-- [ ] T220 [P] [US4] Add failing tests in `tests/unit/test_b1v3_confirmation.py` for pristine
+- [x] T220 [P] [US4] Add failing tests in `tests/unit/test_b1v3_confirmation.py` for pristine
   dates, exposure exclusion, exact 60/30 XNYS split and fail-closed behavior.
-- [ ] T221 [US4] Implement the metadata-only selector in `src/mds650/b1v3_confirmation.py`,
+- [x] T221 [US4] Implement the metadata-only selector in `src/mds650/b1v3_confirmation.py`,
   `scripts/plan_b1v3_confirmation.py` and
   `specs/001-pit-options-rv30/contracts/b1v3-confirmation-plan.schema.json`.
 - [ ] T222 [US1] Execute `scripts/run_date_level_pit_preflight_v2.py` for the frozen candidate

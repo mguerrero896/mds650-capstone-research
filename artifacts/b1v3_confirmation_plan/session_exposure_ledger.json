@@ -1,0 +1,2727 @@
+{
+  "exposed_session_count": 360,
+  "exposed_sessions": [
+    "2025-02-25",
+    "2025-02-26",
+    "2025-02-27",
+    "2025-02-28",
+    "2025-03-03",
+    "2025-03-04",
+    "2025-03-05",
+    "2025-03-06",
+    "2025-03-07",
+    "2025-03-10",
+    "2025-03-11",
+    "2025-03-12",
+    "2025-03-13",
+    "2025-03-14",
+    "2025-03-17",
+    "2025-03-18",
+    "2025-03-19",
+    "2025-03-20",
+    "2025-03-21",
+    "2025-03-24",
+    "2025-03-25",
+    "2025-03-26",
+    "2025-03-27",
+    "2025-03-28",
+    "2025-03-31",
+    "2025-04-01",
+    "2025-04-02",
+    "2025-04-03",
+    "2025-04-04",
+    "2025-04-07",
+    "2025-04-08",
+    "2025-04-09",
+    "2025-04-10",
+    "2025-04-11",
+    "2025-04-14",
+    "2025-04-15",
+    "2025-04-16",
+    "2025-04-17",
+    "2025-04-21",
+    "2025-04-22",
+    "2025-04-23",
+    "2025-04-24",
+    "2025-04-25",
+    "2025-04-28",
+    "2025-04-29",
+    "2025-04-30",
+    "2025-05-01",
+    "2025-05-02",
+    "2025-05-05",
+    "2025-05-06",
+    "2025-05-07",
+    "2025-05-08",
+    "2025-05-09",
+    "2025-05-12",
+    "2025-05-13",
+    "2025-05-14",
+    "2025-05-15",
+    "2025-05-16",
+    "2025-05-19",
+    "2025-05-20",
+    "2025-05-21",
+    "2025-05-22",
+    "2025-05-23",
+    "2025-05-27",
+    "2025-05-28",
+    "2025-05-29",
+    "2025-05-30",
+    "2025-06-02",
+    "2025-06-03",
+    "2025-06-04",
+    "2025-06-05",
+    "2025-06-06",
+    "2025-06-09",
+    "2025-06-10",
+    "2025-06-11",
+    "2025-06-12",
+    "2025-06-13",
+    "2025-06-16",
+    "2025-06-17",
+    "2025-06-18",
+    "2025-06-20",
+    "2025-06-23",
+    "2025-06-24",
+    "2025-06-25",
+    "2025-06-26",
+    "2025-06-27",
+    "2025-06-30",
+    "2025-07-01",
+    "2025-07-02",
+    "2025-07-03",
+    "2025-07-07",
+    "2025-07-08",
+    "2025-07-09",
+    "2025-07-10",
+    "2025-07-11",
+    "2025-07-14",
+    "2025-07-15",
+    "2025-07-16",
+    "2025-07-17",
+    "2025-07-18",
+    "2025-07-21",
+    "2025-07-22",
+    "2025-07-23",
+    "2025-07-24",
+    "2025-07-25",
+    "2025-07-28",
+    "2025-07-29",
+    "2025-07-30",
+    "2025-07-31",
+    "2025-08-01",
+    "2025-08-04",
+    "2025-08-05",
+    "2025-08-06",
+    "2025-08-07",
+    "2025-08-08",
+    "2025-08-11",
+    "2025-08-12",
+    "2025-08-13",
+    "2025-08-14",
+    "2025-08-15",
+    "2025-08-18",
+    "2025-08-19",
+    "2025-08-20",
+    "2025-08-21",
+    "2025-08-22",
+    "2025-08-25",
+    "2025-08-26",
+    "2025-08-27",
+    "2025-08-28",
+    "2025-08-29",
+    "2025-09-02",
+    "2025-09-03",
+    "2025-09-04",
+    "2025-09-05",
+    "2025-09-08",
+    "2025-09-09",
+    "2025-09-10",
+    "2025-09-11",
+    "2025-09-12",
+    "2025-09-15",
+    "2025-09-16",
+    "2025-09-17",
+    "2025-09-18",
+    "2025-09-19",
+    "2025-09-22",
+    "2025-09-23",
+    "2025-09-24",
+    "2025-09-25",
+    "2025-09-26",
+    "2025-09-29",
+    "2025-09-30",
+    "2025-10-01",
+    "2025-10-02",
+    "2025-10-03",
+    "2025-10-06",
+    "2025-10-07",
+    "2025-10-08",
+    "2025-10-09",
+    "2025-10-10",
+    "2025-10-13",
+    "2025-10-14",
+    "2025-10-15",
+    "2025-10-16",
+    "2025-10-17",
+    "2025-10-20",
+    "2025-10-21",
+    "2025-10-22",
+    "2025-10-23",
+    "2025-10-24",
+    "2025-10-27",
+    "2025-10-28",
+    "2025-10-29",
+    "2025-10-30",
+    "2025-10-31",
+    "2025-11-03",
+    "2025-11-04",
+    "2025-11-05",
+    "2025-11-06",
+    "2025-11-07",
+    "2025-11-10",
+    "2025-11-11",
+    "2025-11-12",
+    "2025-11-13",
+    "2025-11-14",
+    "2025-11-17",
+    "2025-11-18",
+    "2025-11-19",
+    "2025-11-20",
+    "2025-11-21",
+    "2025-11-24",
+    "2025-11-25",
+    "2025-11-26",
+    "2025-11-28",
+    "2025-12-01",
+    "2025-12-02",
+    "2025-12-03",
+    "2025-12-04",
+    "2025-12-05",
+    "2025-12-08",
+    "2025-12-09",
+    "2025-12-10",
+    "2025-12-11",
+    "2025-12-12",
+    "2025-12-15",
+    "2025-12-16",
+    "2025-12-17",
+    "2025-12-18",
+    "2025-12-19",
+    "2025-12-22",
+    "2025-12-23",
+    "2025-12-24",
+    "2025-12-26",
+    "2025-12-29",
+    "2025-12-30",
+    "2025-12-31",
+    "2026-01-02",
+    "2026-01-05",
+    "2026-01-06",
+    "2026-01-07",
+    "2026-01-08",
+    "2026-01-09",
+    "2026-01-12",
+    "2026-01-13",
+    "2026-01-14",
+    "2026-01-15",
+    "2026-01-16",
+    "2026-01-20",
+    "2026-01-21",
+    "2026-01-22",
+    "2026-01-23",
+    "2026-01-26",
+    "2026-01-27",
+    "2026-01-28",
+    "2026-01-29",
+    "2026-01-30",
+    "2026-02-02",
+    "2026-02-03",
+    "2026-02-04",
+    "2026-02-05",
+    "2026-02-06",
+    "2026-02-09",
+    "2026-02-10",
+    "2026-02-11",
+    "2026-02-12",
+    "2026-02-13",
+    "2026-02-17",
+    "2026-02-18",
+    "2026-02-19",
+    "2026-02-20",
+    "2026-02-23",
+    "2026-02-24",
+    "2026-02-25",
+    "2026-02-26",
+    "2026-02-27",
+    "2026-03-02",
+    "2026-03-03",
+    "2026-03-04",
+    "2026-03-05",
+    "2026-03-06",
+    "2026-03-09",
+    "2026-03-10",
+    "2026-03-11",
+    "2026-03-12",
+    "2026-03-13",
+    "2026-03-16",
+    "2026-03-17",
+    "2026-03-18",
+    "2026-03-19",
+    "2026-03-20",
+    "2026-03-23",
+    "2026-03-24",
+    "2026-03-25",
+    "2026-03-26",
+    "2026-03-27",
+    "2026-03-30",
+    "2026-03-31",
+    "2026-04-01",
+    "2026-04-02",
+    "2026-04-06",
+    "2026-04-07",
+    "2026-04-08",
+    "2026-04-09",
+    "2026-04-10",
+    "2026-04-13",
+    "2026-04-14",
+    "2026-04-15",
+    "2026-04-16",
+    "2026-04-17",
+    "2026-04-20",
+    "2026-04-21",
+    "2026-04-22",
+    "2026-04-23",
+    "2026-04-24",
+    "2026-04-27",
+    "2026-04-28",
+    "2026-04-29",
+    "2026-04-30",
+    "2026-05-01",
+    "2026-05-04",
+    "2026-05-05",
+    "2026-05-06",
+    "2026-05-07",
+    "2026-05-08",
+    "2026-05-11",
+    "2026-05-12",
+    "2026-05-13",
+    "2026-05-14",
+    "2026-05-15",
+    "2026-05-18",
+    "2026-05-19",
+    "2026-05-20",
+    "2026-05-21",
+    "2026-05-22",
+    "2026-05-26",
+    "2026-05-27",
+    "2026-05-28",
+    "2026-05-29",
+    "2026-06-01",
+    "2026-06-02",
+    "2026-06-03",
+    "2026-06-04",
+    "2026-06-05",
+    "2026-06-08",
+    "2026-06-09",
+    "2026-06-10",
+    "2026-06-11",
+    "2026-06-12",
+    "2026-06-15",
+    "2026-06-16",
+    "2026-06-17",
+    "2026-06-18",
+    "2026-06-22",
+    "2026-06-23",
+    "2026-06-24",
+    "2026-06-25",
+    "2026-06-26",
+    "2026-06-29",
+    "2026-06-30",
+    "2026-07-01",
+    "2026-07-02",
+    "2026-07-06",
+    "2026-07-07",
+    "2026-07-08",
+    "2026-07-09",
+    "2026-07-10",
+    "2026-07-13",
+    "2026-07-14",
+    "2026-07-15",
+    "2026-07-16",
+    "2026-07-17",
+    "2026-07-20",
+    "2026-07-21",
+    "2026-07-22",
+    "2026-07-23",
+    "2026-07-24",
+    "2026-07-27",
+    "2026-07-28",
+    "2026-07-29",
+    "2026-07-30",
+    "2026-07-31"
+  ],
+  "first_exposed_session": "2025-02-25",
+  "last_exposed_session": "2026-07-31",
+  "ledger_sha256": "e2f84b5b711606416794c428a4257a4135947e2dc7862972bb2f723b8361a4a7",
+  "schema_version": "1.0",
+  "sessions": [
+    {
+      "date": "2025-02-25",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-02-26",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-02-27",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-02-28",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-03-03",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-03-04",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-03-05",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-03-06",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-03-07",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-03-10",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-03-11",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-03-12",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-03-13",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-03-14",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-03-17",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-03-18",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-03-19",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-03-20",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-03-21",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-03-24",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-03-25",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-03-26",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-03-27",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-03-28",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-03-31",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-04-01",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-04-02",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-04-03",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-04-04",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-04-07",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-04-08",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-04-09",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-04-10",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-04-11",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-04-14",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-04-15",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-04-16",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-04-17",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-04-21",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-04-22",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-04-23",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-04-24",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-04-25",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-04-28",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-04-29",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-04-30",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-05-01",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-05-02",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-05-05",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-05-06",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-05-07",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-05-08",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-05-09",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-05-12",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-05-13",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-05-14",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-05-15",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-05-16",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-05-19",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-05-20",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-05-21",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-05-22",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-05-23",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-05-27",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-05-28",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-05-29",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-05-30",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-06-02",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-06-03",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-06-04",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-06-05",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-06-06",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-06-09",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-06-10",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-06-11",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-06-12",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-06-13",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-06-16",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-06-17",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-06-18",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-06-20",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-06-23",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-06-24",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-06-25",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-06-26",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-06-27",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-06-30",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-07-01",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-07-02",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-07-03",
+      "source_logical_names": [
+        "independent_replication_window"
+      ]
+    },
+    {
+      "date": "2025-07-07",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage"
+      ]
+    },
+    {
+      "date": "2025-07-08",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage"
+      ]
+    },
+    {
+      "date": "2025-07-09",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage"
+      ]
+    },
+    {
+      "date": "2025-07-10",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage"
+      ]
+    },
+    {
+      "date": "2025-07-11",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage"
+      ]
+    },
+    {
+      "date": "2025-07-14",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage"
+      ]
+    },
+    {
+      "date": "2025-07-15",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage"
+      ]
+    },
+    {
+      "date": "2025-07-16",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage"
+      ]
+    },
+    {
+      "date": "2025-07-17",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage"
+      ]
+    },
+    {
+      "date": "2025-07-18",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage"
+      ]
+    },
+    {
+      "date": "2025-07-21",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage"
+      ]
+    },
+    {
+      "date": "2025-07-22",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage"
+      ]
+    },
+    {
+      "date": "2025-07-23",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage"
+      ]
+    },
+    {
+      "date": "2025-07-24",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage"
+      ]
+    },
+    {
+      "date": "2025-07-25",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage"
+      ]
+    },
+    {
+      "date": "2025-07-28",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage"
+      ]
+    },
+    {
+      "date": "2025-07-29",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage"
+      ]
+    },
+    {
+      "date": "2025-07-30",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage"
+      ]
+    },
+    {
+      "date": "2025-07-31",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage"
+      ]
+    },
+    {
+      "date": "2025-08-01",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage"
+      ]
+    },
+    {
+      "date": "2025-08-04",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-08-05",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-08-06",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-08-07",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-08-08",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-08-11",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-08-12",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-08-13",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-08-14",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-08-15",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-08-18",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-08-19",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-08-20",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-08-21",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-08-22",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-08-25",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-08-26",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-08-27",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-08-28",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-08-29",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-09-02",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-09-03",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-09-04",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-09-05",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-09-08",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-09-09",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-09-10",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-09-11",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-09-12",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-09-15",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-09-16",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-09-17",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-09-18",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-09-19",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-09-22",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-09-23",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-09-24",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-09-25",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-09-26",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-09-29",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-09-30",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-10-01",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-10-02",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-10-03",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-10-06",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-10-07",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-10-08",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-10-09",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-10-10",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-10-13",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-10-14",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-10-15",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-10-16",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-10-17",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-10-20",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-10-21",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-10-22",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-10-23",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-10-24",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-10-27",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-10-28",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-10-29",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-10-30",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-10-31",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-11-03",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-11-04",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-11-05",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-11-06",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-11-07",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-11-10",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-11-11",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-11-12",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-11-13",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-11-14",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-11-17",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-11-18",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-11-19",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-11-20",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-11-21",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-11-24",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-11-25",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-11-26",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-11-28",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-12-01",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-12-02",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-12-03",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-12-04",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-12-05",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-12-08",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-12-09",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-12-10",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-12-11",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-12-12",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-12-15",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-12-16",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-12-17",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-12-18",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-12-19",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-12-22",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-12-23",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-12-24",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-12-26",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-12-29",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-12-30",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2025-12-31",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-01-02",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-01-05",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-01-06",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-01-07",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-01-08",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-01-09",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-01-12",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-01-13",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-01-14",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-01-15",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-01-16",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-01-20",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-01-21",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-01-22",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-01-23",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-01-26",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-01-27",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-01-28",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-01-29",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-01-30",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-02-02",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-02-03",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-02-04",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-02-05",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-02-06",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-02-09",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-02-10",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-02-11",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-02-12",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-02-13",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-02-17",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-02-18",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-02-19",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-02-20",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-02-23",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-02-24",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-02-25",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-02-26",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-02-27",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-03-02",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-03-03",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-03-04",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-03-05",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-03-06",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-03-09",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-03-10",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-03-11",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-03-12",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-03-13",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-03-16",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-03-17",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-03-18",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-03-19",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-03-20",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-03-23",
+      "source_logical_names": [
+        "b1v3_target_blind_coverage",
+        "phase6_method_freeze"
+      ]
+    },
+    {
+      "date": "2026-03-24",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-03-25",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-03-26",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-03-27",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-03-30",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-03-31",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-04-01",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-04-02",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-04-06",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-04-07",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-04-08",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-04-09",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-04-10",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-04-13",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-04-14",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-04-15",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-04-16",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-04-17",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-04-20",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-04-21",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-04-22",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-04-23",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-04-24",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-04-27",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-04-28",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-04-29",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-04-30",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-05-01",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-05-04",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-05-05",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-05-06",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-05-07",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-05-08",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-05-11",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-05-12",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-05-13",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-05-14",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-05-15",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-05-18",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-05-19",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-05-20",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-05-21",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-05-22",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-05-26",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-05-27",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-05-28",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-05-29",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-06-01",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-06-02",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-06-03",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-06-04",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-06-05",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-06-08",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-06-09",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-06-10",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-06-11",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-06-12",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-06-15",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-06-16",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-06-17",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-06-18",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-06-22",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-06-23",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-06-24",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-06-25",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-06-26",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-06-29",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-06-30",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-07-01",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-07-02",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-07-06",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-07-07",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-07-08",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-07-09",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-07-10",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-07-13",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-07-14",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-07-15",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-07-16",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-07-17",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-07-20",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-07-21",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-07-22",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-07-23",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-07-24",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-07-27",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-07-28",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-07-29",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-07-30",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    },
+    {
+      "date": "2026-07-31",
+      "source_logical_names": [
+        "phase5_study_sessions"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "date_count": 180,
+      "filename": "b1v3_coverage.json",
+      "first_date": "2025-07-07",
+      "last_date": "2026-03-23",
+      "logical_name": "b1v3_target_blind_coverage",
+      "sha256": "c1ecc8b8458cc818ff48bc8474b3ae10cac48f99e7ee7cd9b2db6effa115dde7"
+    },
+    {
+      "date_count": 90,
+      "filename": "window_manifest.json",
+      "first_date": "2025-02-25",
+      "last_date": "2025-07-03",
+      "logical_name": "independent_replication_window",
+      "sha256": "684dec2d9f821a2d980133ca9e6028332d92f379a436eef466decb410d1fc7fa"
+    },
+    {
+      "date_count": 90,
+      "filename": "study_sessions_90.json",
+      "first_date": "2026-03-24",
+      "last_date": "2026-07-31",
+      "logical_name": "phase5_study_sessions",
+      "sha256": "a7da7d8e8bf5a94365b01215a5c03ff63a7d04c521957c7a3a4835a8e16a04b1"
+    },
+    {
+      "date_count": 160,
+      "filename": "method_freeze.json",
+      "first_date": "2025-08-04",
+      "last_date": "2026-03-23",
+      "logical_name": "phase6_method_freeze",
+      "sha256": "e66a9e5206f29c9a877f31d4650944644eb6328a0d04bc13cf22ab377b2f0c9b"
+    }
+  ],
+  "status": "PASS_DATE_ONLY_EXPOSURE_LEDGER",
+  "target_blind": true
+}
