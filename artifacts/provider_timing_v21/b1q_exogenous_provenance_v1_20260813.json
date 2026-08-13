@@ -1,0 +1,94 @@
+{
+  "asset_count": 6,
+  "asset_day_count": 1080,
+  "augmented_b1q_sha256": "37de37bc837e0ebc47261ca29ee6c217b0a8e22e1dc97402204594edf4104c8b",
+  "availability_rules": {
+    "claim_boundary": "RECONSTRUCTED_PIT_FROM_DOCUMENTED_SOURCE_DATES_NOT_HISTORICAL_CLIENT_RECEIPT",
+    "dividend_positive": "DECLARATION_DATE_END_PLUS_FMP_MAX_CYCLE",
+    "dividend_zero": "NO_PRIOR_DECLARATION_THROUGH_PRIOR_DAY_PLUS_FMP_MAX_CYCLE",
+    "treasury": "US_TREASURY_18_ET_PLUS_FMP_MAX_CYCLE"
+  },
+  "captures": [
+    {
+      "bytes": 345104,
+      "captured_at_utc": "2026-08-12T19:26:35Z",
+      "logical_name": "treasury_2025.xml",
+      "role": "TREASURY_2025",
+      "sha256": "efc2813ebc64e51556a51303ecec3676e3333794da76e5aa7c0e6bb524bdef41"
+    },
+    {
+      "bytes": 237058,
+      "captured_at_utc": "2026-08-12T19:26:45Z",
+      "logical_name": "treasury_2026.xml",
+      "role": "TREASURY_2026",
+      "sha256": "b20d350463163f6373d2c0265c391f11ec583036954ee516b1b854d47553caee"
+    },
+    {
+      "bytes": 24772,
+      "captured_at_utc": "2026-08-12T19:26:46Z",
+      "logical_name": "dividends_AAPL.json",
+      "role": "DIVIDENDS_AAPL",
+      "sha256": "4bd20e6fa533dfc9647a55237aa7af10f1d6bc4eca35d3b89631135b5960b75a"
+    },
+    {
+      "bytes": 2,
+      "captured_at_utc": "2026-08-12T19:26:46Z",
+      "logical_name": "dividends_AMZN.json",
+      "role": "DIVIDENDS_AMZN",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "bytes": 2691,
+      "captured_at_utc": "2026-08-12T19:26:47Z",
+      "logical_name": "dividends_META.json",
+      "role": "DIVIDENDS_META",
+      "sha256": "e5d8287818bb1dd5f50d3788e814e54375d2a8f6cfb3f482412e3a8f7c670010"
+    },
+    {
+      "bytes": 24074,
+      "captured_at_utc": "2026-08-12T19:26:47Z",
+      "logical_name": "dividends_MSFT.json",
+      "role": "DIVIDENDS_MSFT",
+      "sha256": "e384747e06d2cb6f0f44963b16ea09781aa515a6ff37a847f441dd50a253fa99"
+    },
+    {
+      "bytes": 14896,
+      "captured_at_utc": "2026-08-12T19:26:47Z",
+      "logical_name": "dividends_NVDA.json",
+      "role": "DIVIDENDS_NVDA",
+      "sha256": "6fa05a70c18752dd24ea568e7b014ed227b13d2ae42a287743ec9b5801899153"
+    },
+    {
+      "bytes": 2,
+      "captured_at_utc": "2026-08-12T19:26:47Z",
+      "logical_name": "dividends_TSLA.json",
+      "role": "DIVIDENDS_TSLA",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  ],
+  "future_availability_count": 0,
+  "model_fit_performed": false,
+  "official_sources": {
+    "fmp_cycle_times": "https://site.financialmodelingprep.com/developer/docs/cycle-times-stable",
+    "fmp_dividends": "https://site.financialmodelingprep.com/developer/docs/historical-stock-dividends-api/",
+    "treasury_methodology": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics/treasury-yield-curve-methodology",
+    "treasury_xml": "https://home.treasury.gov/treasury-daily-interest-rate-xml-feed"
+  },
+  "personal_paths_emitted": false,
+  "positive_dividend_asset_day_count": 720,
+  "q_zero_asset_day_count": 360,
+  "rate_observation_count": 178,
+  "row_count": 77328,
+  "safe_to_build_corrected_target_blind_panel": true,
+  "safe_to_open_or_evaluate_oos": "NO",
+  "safe_to_reconcile_existing_results": "NO_SEPARATE_GATE_REQUIRED",
+  "schema_version": "b1q-exogenous-provenance-v1.0",
+  "scope": "target_blind_exogenous_input_provenance_only",
+  "secret_values_emitted": false,
+  "semantic_self_hash": "sha256:896284ea57715aeb76f80a599bf01498885c49c00b55556b801936c6300771a4",
+  "session_count": 180,
+  "source_b1q_sha256": "cb23c96203c410193219b73b5ac9985e0d5df18621ac5099551d415eab725856",
+  "status": "PASS_EXACT_VALUE_PARITY_UNDER_REGISTERED_AVAILABILITY_RULES",
+  "target_or_metric_payload_read": false,
+  "value_mismatch_count": 0
+}

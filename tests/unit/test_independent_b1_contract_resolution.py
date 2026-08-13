@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 import httpx
+import polars as pl
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -41,6 +42,70 @@ def test_fmp_historical_ranges_are_chunked_without_truncation() -> None:
 
     assert calls == [("2024-01-01", "2024-03-01"), ("2024-03-02", "2024-03-15")]
     assert len(rows) == 2
+
+
+def test_fmp_historical_ranges_deduplicate_provider_over_return() -> None:
+    """Repeated rows from an endpoint that ignores date bounds are retained once."""
+    repeated = {
+        "symbol": "MSFT",
+        "date": "2025-02-20",
+        "declarationDate": "2024-12-04",
+        "adjDividend": 0.83,
+    }
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, json=[repeated], request=request)
+
+    transport = httpx.MockTransport(handler)
+    with httpx.Client(transport=transport) as client:
+        rows = b1_script._fmp_date_range_rows(
+            client,
+            "https://example.test/dividends",
+            "secret",
+            date(2024, 1, 1),
+            date(2024, 3, 15),
+            {"symbol": "MSFT"},
+            "TEST_FMP_DIVIDENDS",
+        )
+
+    assert rows == [repeated]
+
+
+def test_dividend_yield_uses_only_prior_declaration_dates(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A past ex-date cannot reveal a dividend declared after the session."""
+
+    def fake_rows(
+        _client: httpx.Client,
+        _endpoint: str,
+        _key: str,
+        _start: date,
+        _end: date,
+        _base_params: dict[str, str],
+        label: str,
+    ) -> list[dict[str, Any]]:
+        if label == "FMP_TREASURY":
+            return [{"date": "2025-01-02", "month3": 4.0}]
+        return [
+            {
+                "date": "2025-01-03",
+                "declarationDate": "2025-01-07",
+                "adjDividend": 1.0,
+            }
+        ]
+
+    monkeypatch.setattr(b1_script, "ASSETS", ("AAPL",))
+    monkeypatch.setattr(b1_script, "_fmp_date_range_rows", fake_rows)
+    spots = pl.DataFrame({"asset": ["AAPL"], "session_date": ["2025-01-06"], "spot": [100.0]})
+
+    with httpx.Client() as client:
+        _, yields, labels = b1_script._rates_and_dividends(
+            client, "secret", spots, "2025-01-06", "2025-01-06"
+        )
+
+    assert yields[("AAPL", "2025-01-06")] == 0.0
+    assert labels[("AAPL", "2025-01-06")] == "NO_PRE_ORIGIN_DIVIDEND_Q_ZERO"
 
 
 def test_contract_day_cache_loader_reads_each_contract_once(

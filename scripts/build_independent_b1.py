@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import gc
 import json
+import math
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, timedelta
@@ -20,6 +21,7 @@ import httpx
 import polars as pl
 import run_b1_closure as b1
 
+from mds650.b1q_exogenous_provenance_v1 import parse_treasury_yield_curve_xml
 from mds650.phase5_storage import sha256_file
 from mds650.phase6 import OUTCOME_ASSETS, build_b1v2_features
 from mds650.study_design import canonical_sha256
@@ -35,6 +37,12 @@ ORIGINS_PATH = DATA_ROOT / "derived" / "origins_90d.parquet"
 ATTEMPTS_PATH = DERIVED_ROOT / "iv_attempts_90d.parquet"
 FEATURES_PATH = DERIVED_ROOT / "b1v2a_90d.parquet"
 CONTRACTS_PATH = DERIVED_ROOT / "contracts_90d.json"
+PIT_V2_ROOT = DATA_ROOT / "derived" / "b1_pit_v2"
+PIT_V2_ATTEMPTS_PATH = PIT_V2_ROOT / "iv_attempts_90d_pit_v2.parquet"
+PIT_V2_FEATURES_PATH = PIT_V2_ROOT / "b1v2a_90d_pit_v2.parquet"
+EXOGENOUS_ROOT = (
+    Path(os.environ.get("MDS650_BULK_ROOT", "D:/MDS650")) / "phase6" / "raw" / "fmp_exogenous_v1"
+)
 ASSETS = tuple(OUTCOME_ASSETS)
 MONEY = (0.95, 0.975, 1.0, 1.025, 1.05)
 LOW_DTE, HIGH_DTE = 30, 60
@@ -204,7 +212,7 @@ def _fmp_date_range_rows(
     dividend inputs available strictly before each forecast session instead of
     accepting a truncated response that would masquerade as missing data.
     """
-    rows: list[dict[str, Any]] = []
+    rows_by_value: dict[str, dict[str, Any]] = {}
     cursor = start
     while cursor <= end:
         chunk_end = min(cursor + timedelta(days=60), end)
@@ -222,9 +230,13 @@ def _fmp_date_range_rows(
         payload = response.json()
         if not isinstance(payload, list):
             raise RuntimeError(f"{label}_SCHEMA:{cursor}:{chunk_end}")
-        rows.extend(row for row in payload if isinstance(row, dict))
+        for row in payload:
+            if isinstance(row, dict):
+                rows_by_value.setdefault(
+                    json.dumps(row, sort_keys=True, separators=(",", ":")), row
+                )
         cursor = chunk_end + timedelta(days=1)
-    return rows
+    return list(rows_by_value.values())
 
 
 def _load_contract_day_caches(
@@ -279,23 +291,9 @@ def _rates_and_dividends(
     q_labels: dict[tuple[str, str], str] = {}
     for row in spots.iter_rows(named=True):
         asset, day, spot = str(row["asset"]), str(row["session_date"]), float(row["spot"] or 0.0)
-        cutoff = date.fromisoformat(day)
-        values: list[float] = []
-        for event in dividend_rows[asset]:
-            event_date = event.get("date") or event.get("declarationDate")
-            try:
-                event_day = date.fromisoformat(str(event_date))
-                value = float(event.get("adjDividend") or event.get("dividend") or 0.0)
-            except (TypeError, ValueError):
-                continue
-            if cutoff - timedelta(days=365) <= event_day < cutoff and value > 0:
-                values.append(value)
-        if values and spot > 0:
-            dividend_yields[(asset, day)] = sum(values) / spot
-            q_labels[(asset, day)] = "FMP_DIVIDENDS_EVENT_DATE_LT_SESSION_DATE"
-        else:
-            dividend_yields[(asset, day)] = 0.0
-            q_labels[(asset, day)] = "Q_ZERO_ASSUMPTION_NO_KNOWN_PRIOR_DIVIDEND"
+        dividend_yields[(asset, day)], q_labels[(asset, day)] = _declared_dividend_yield(
+            dividend_rows[asset], day, spot
+        )
     return rates, dividend_yields, q_labels
 
 
@@ -303,6 +301,25 @@ def _prior_rate(rates: dict[str, float], day: str) -> float | None:
     """Return the latest date-level Treasury rate strictly before ``day``."""
     eligible = [key for key in rates if key < day]
     return rates[max(eligible)] if eligible else None
+
+
+def _declared_dividend_yield(
+    events: list[dict[str, Any]], session_day: str, spot: float
+) -> tuple[float, str]:
+    """Return trailing declared dividends divided by the frozen daily spot."""
+    cutoff = date.fromisoformat(session_day)
+    values: list[float] = []
+    for event in events:
+        try:
+            declaration_day = date.fromisoformat(str(event.get("declarationDate")))
+            value = float(event.get("adjDividend") or event.get("dividend") or 0.0)
+        except (TypeError, ValueError):
+            continue
+        if cutoff - timedelta(days=365) <= declaration_day < cutoff and value > 0:
+            values.append(value)
+    if values and spot > 0:
+        return sum(values) / spot, "PRE_ORIGIN_TRAILING_DECLARATIONS"
+    return 0.0, "NO_PRE_ORIGIN_DIVIDEND_Q_ZERO"
 
 
 def build_b1() -> None:
@@ -519,12 +536,250 @@ def build_b1() -> None:
     )
 
 
+def rebuild_b1_pit_v2() -> None:
+    """Recompute cached independent B1 IVs after exogenous-input correction.
+
+    This target-free repair reuses immutable quotes, contracts, origins and
+    bars. It never opens RV30, predictions, QLIKE or model outputs.
+    """
+    required = (
+        ATTEMPTS_PATH,
+        FEATURES_PATH,
+        CONTRACTS_PATH,
+        ORIGINS_PATH,
+        BARS_PATH,
+        EXOGENOUS_ROOT / "treasury_2025.xml",
+        EXOGENOUS_ROOT / "capture_manifest.json",
+    )
+    if any(not path.is_file() for path in required):
+        raise RuntimeError("REPLICATION_B1_PIT_V2_INPUT_MISSING")
+
+    origins = pl.read_parquet(ORIGINS_PATH)
+    bars = pl.read_parquet(BARS_PATH)
+    spots_frame = _spot_by_day(bars, origins)
+    spots = {
+        (str(row["asset"]), str(row["session_date"])): float(row["spot"])
+        for row in spots_frame.iter_rows(named=True)
+    }
+    rates = parse_treasury_yield_curve_xml((EXOGENOUS_ROOT / "treasury_2025.xml").read_bytes())
+    dividends: dict[str, list[dict[str, Any]]] = {}
+    for asset in ASSETS:
+        payload = json.loads(
+            (EXOGENOUS_ROOT / f"dividends_{asset}.json").read_text(encoding="utf-8")
+        )
+        if not isinstance(payload, list) or not all(isinstance(row, dict) for row in payload):
+            raise RuntimeError(f"REPLICATION_B1_PIT_V2_DIVIDEND_SCHEMA:{asset}")
+        dividends[asset] = payload
+
+    contract_manifest = _json(CONTRACTS_PATH)
+    contract_records = contract_manifest.get("records")
+    if not isinstance(contract_records, list):
+        raise RuntimeError("REPLICATION_B1_PIT_V2_CONTRACT_SCHEMA")
+    strikes: dict[tuple[str, str, str], float] = {}
+    for record in contract_records:
+        if not isinstance(record, dict) or not isinstance(record.get("contracts"), list):
+            raise RuntimeError("REPLICATION_B1_PIT_V2_CONTRACT_SCHEMA")
+        asset, day = str(record.get("asset")), str(record.get("session_date"))
+        for contract in record["contracts"]:
+            if isinstance(contract, dict):
+                strikes[(asset, day, str(contract.get("contract")))] = float(contract["strike"])
+
+    daily: dict[tuple[str, str], tuple[float, str, str, float]] = {}
+    for (asset, day), spot in spots.items():
+        rate_source_date = max(source_day for source_day in rates if source_day < day)
+        dividend_yield, assumption = _declared_dividend_yield(dividends[asset], day, spot)
+        daily[(asset, day)] = (
+            dividend_yield,
+            assumption,
+            rate_source_date,
+            rates[rate_source_date],
+        )
+
+    original = pl.read_parquet(ATTEMPTS_PATH)
+    observed_daily = {
+        (str(row["asset"]), str(row["session_date"])): float(row["dividend_yield"])
+        for row in original.group_by("asset", "session_date")
+        .agg(pl.col("dividend_yield").first())
+        .iter_rows(named=True)
+    }
+    duplication_factors: set[float] = set()
+    declaration_window_changed_asset_days = 0
+    for (asset, day), (corrected_yield, _, _, _) in daily.items():
+        cutoff = date.fromisoformat(day)
+        event_values: list[float] = []
+        for event in dividends[asset]:
+            try:
+                event_day = date.fromisoformat(str(event.get("date")))
+                value = float(event.get("adjDividend") or event.get("dividend") or 0.0)
+            except (TypeError, ValueError):
+                continue
+            if cutoff - timedelta(days=365) <= event_day < cutoff and value > 0:
+                event_values.append(value)
+        event_yield = sum(event_values) / spots[(asset, day)] if event_values else 0.0
+        if event_yield > 0:
+            duplication_factors.add(round(observed_daily[(asset, day)] / event_yield, 12))
+        if not math.isclose(event_yield, corrected_yield, rel_tol=0.0, abs_tol=1e-12):
+            declaration_window_changed_asset_days += 1
+    if duplication_factors != {9.0}:
+        raise RuntimeError("REPLICATION_B1_PIT_V2_DUPLICATION_FACTOR_UNEXPECTED")
+
+    corrected_rows: list[dict[str, Any]] = []
+    rate_mismatches = 0
+    dividend_changed_rows = 0
+    iv_changed_rows = 0
+    for row in original.iter_rows(named=True):
+        asset, day = str(row["asset"]), str(row["session_date"])
+        key = (asset, day)
+        dividend_yield, assumption, rate_source_date, rate = daily[key]
+        if not math.isclose(float(row["rate"]), rate, rel_tol=0.0, abs_tol=1e-12):
+            rate_mismatches += 1
+        if not math.isclose(
+            float(row["dividend_yield"]), dividend_yield, rel_tol=0.0, abs_tol=1e-12
+        ):
+            dividend_changed_rows += 1
+
+        bid, ask = row.get("bid"), row.get("ask")
+        age, spread = row.get("quote_age_seconds"), row.get("relative_spread")
+        valid_quote = (
+            bid is not None
+            and ask is not None
+            and age is not None
+            and spread is not None
+            and float(bid) > 0
+            and float(ask) > float(bid)
+            and float(age) <= 60.0
+            and float(spread) <= 0.25
+        )
+        updated = {
+            **row,
+            "spot": spots[key],
+            "strike": strikes[(asset, day, str(row["contract"]))],
+            "rate": rate,
+            "rate_source_date": rate_source_date,
+            "dividend_yield": dividend_yield,
+            "dividend_assumption": assumption,
+            "q_label": assumption,
+            "exogenous_pit_verified": True,
+        }
+        if valid_quote:
+            assert bid is not None and ask is not None
+            iv_result = b1.invert_iv(
+                spots[key],
+                updated["strike"],
+                float(row["dte"]) / 365.0,
+                rate,
+                dividend_yield,
+                (float(bid) + float(ask)) / 2.0,
+                str(row["option_type"]),
+            )
+            new_iv = iv_result.get("iv") if iv_result.get("success") else None
+            old_iv = row.get("implied_volatility")
+            if (old_iv is None) != (new_iv is None) or (
+                old_iv is not None
+                and new_iv is not None
+                and not math.isclose(float(old_iv), float(new_iv), rel_tol=0.0, abs_tol=1e-12)
+            ):
+                iv_changed_rows += 1
+            updated.update(
+                {
+                    "implied_volatility": new_iv,
+                    "success": bool(iv_result.get("success")),
+                    "failure_code": (
+                        None
+                        if iv_result.get("success")
+                        else str(iv_result.get("failure_reason") or "IV_NO_CONVERGENCE")
+                    ),
+                    "iterations": iv_result.get("iterations"),
+                    "lower_bound": iv_result.get("lower_bound"),
+                    "upper_bound": iv_result.get("upper_bound"),
+                }
+            )
+        corrected_rows.append(updated)
+
+    if rate_mismatches:
+        raise RuntimeError("REPLICATION_B1_PIT_V2_RATE_MISMATCH")
+    corrected = pl.DataFrame(corrected_rows, infer_schema_length=None, strict=False)
+    if corrected.height != original.height or not corrected["exogenous_pit_verified"].all():
+        raise RuntimeError("REPLICATION_B1_PIT_V2_ATTEMPT_INVARIANT")
+    if any(name.lower().startswith(("rv30", "qlike", "target")) for name in corrected.columns):
+        raise RuntimeError("REPLICATION_B1_PIT_V2_TARGET_COLUMN")
+
+    features = build_b1v2_features(origins, corrected)
+    if features.height != origins.height:
+        raise RuntimeError("REPLICATION_B1_PIT_V2_ORIGIN_MISMATCH")
+    PIT_V2_ROOT.mkdir(parents=True, exist_ok=True)
+    corrected.write_parquet(PIT_V2_ATTEMPTS_PATH, compression="zstd")
+    features.write_parquet(PIT_V2_FEATURES_PATH, compression="zstd")
+
+    old_features = pl.read_parquet(FEATURES_PATH)
+    feature_comparison = old_features.select(
+        "origin_id", pl.col("b1v2_atm_iv_30_60_dte").alias("old_atm")
+    ).join(
+        features.select("origin_id", pl.col("b1v2_atm_iv_30_60_dte").alias("new_atm")),
+        on="origin_id",
+        how="inner",
+        validate="1:1",
+    )
+    changed_feature_origins = feature_comparison.filter(
+        (pl.col("old_atm").is_null() != pl.col("new_atm").is_null())
+        | (
+            pl.col("old_atm").is_not_null()
+            & pl.col("new_atm").is_not_null()
+            & ((pl.col("old_atm") - pl.col("new_atm")).abs() > 1e-12)
+        )
+    ).height
+    capture_manifest = EXOGENOUS_ROOT / "capture_manifest.json"
+    _write_json(
+        ARTIFACT_ROOT / "b1_pit_v2_manifest.json",
+        {
+            "schema_version": "b2-independent-replication-b1-pit-v2-1.0",
+            "status": "PASS_TARGET_FREE_REPAIR_REQUIRES_NEW_EVALUATION",
+            "route": "B1Q_MASSIVE_CACHED_QUOTES",
+            "origin_count": features.height,
+            "attempt_count": corrected.height,
+            "rate_value_mismatch_count": rate_mismatches,
+            "dividend_rows_corrected": dividend_changed_rows,
+            "provider_over_return_duplication_factor": 9,
+            "declaration_window_changed_asset_days": declaration_window_changed_asset_days,
+            "iv_rows_changed": iv_changed_rows,
+            "atm_feature_origins_changed": changed_feature_origins,
+            "old_b1a_coverage": old_features["b1v2a_complete"].mean(),
+            "corrected_b1a_coverage": features["b1v2a_complete"].mean(),
+            "old_attempts_sha256": sha256_file(ATTEMPTS_PATH),
+            "corrected_attempts_sha256": sha256_file(PIT_V2_ATTEMPTS_PATH),
+            "corrected_features_sha256": sha256_file(PIT_V2_FEATURES_PATH),
+            "exogenous_capture_manifest_sha256": sha256_file(capture_manifest),
+            "rate_availability_rule": "LATEST_TREASURY_DATE_STRICTLY_BEFORE_SESSION",
+            "dividend_availability_rule": "DECLARATION_DATE_STRICTLY_BEFORE_SESSION",
+            "existing_sealed_results_reconciled": False,
+            "new_evaluation_authorized": False,
+            "target_outcome_read": False,
+            "secret_values_emitted": False,
+            "personal_paths_emitted": False,
+        },
+    )
+    print(
+        json.dumps(
+            {
+                "status": "PASS_TARGET_FREE_REPAIR_REQUIRES_NEW_EVALUATION",
+                "origins": features.height,
+                "corrected_b1a_coverage": features["b1v2a_complete"].mean(),
+                "atm_feature_origins_changed": changed_feature_origins,
+            },
+            sort_keys=True,
+        )
+    )
+
+
 def main() -> None:
     """Run the independent B1 stage."""
     parser = argparse.ArgumentParser()
-    parser.add_argument("--stage", choices=("b1",), default="b1")
-    parser.parse_args()
-    build_b1()
+    parser.add_argument("--stage", choices=("b1", "repair-pit-v2"), default="b1")
+    args = parser.parse_args()
+    if args.stage == "repair-pit-v2":
+        rebuild_b1_pit_v2()
+    else:
+        build_b1()
 
 
 if __name__ == "__main__":

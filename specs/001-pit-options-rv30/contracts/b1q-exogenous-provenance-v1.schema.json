@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1q-exogenous-provenance-v1.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "status", "scope", "source_b1q_sha256", "augmented_b1q_sha256",
+    "row_count", "asset_count", "session_count", "rate_observation_count", "asset_day_count",
+    "positive_dividend_asset_day_count", "q_zero_asset_day_count", "value_mismatch_count",
+    "future_availability_count", "availability_rules", "official_sources", "captures",
+    "safe_to_build_corrected_target_blind_panel", "safe_to_reconcile_existing_results",
+    "safe_to_open_or_evaluate_oos", "target_or_metric_payload_read", "model_fit_performed",
+    "secret_values_emitted", "personal_paths_emitted", "semantic_self_hash"
+  ],
+  "properties": {
+    "schema_version": {"const": "b1q-exogenous-provenance-v1.0"},
+    "status": {"const": "PASS_EXACT_VALUE_PARITY_UNDER_REGISTERED_AVAILABILITY_RULES"},
+    "scope": {"const": "target_blind_exogenous_input_provenance_only"},
+    "source_b1q_sha256": {"$ref": "#/$defs/sha256"},
+    "augmented_b1q_sha256": {"$ref": "#/$defs/sha256"},
+    "row_count": {"type": "integer", "minimum": 1},
+    "asset_count": {"const": 6},
+    "session_count": {"const": 180},
+    "rate_observation_count": {"type": "integer", "minimum": 1},
+    "asset_day_count": {"const": 1080},
+    "positive_dividend_asset_day_count": {"type": "integer", "minimum": 0},
+    "q_zero_asset_day_count": {"type": "integer", "minimum": 0},
+    "value_mismatch_count": {"const": 0},
+    "future_availability_count": {"const": 0},
+    "availability_rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["treasury", "dividend_positive", "dividend_zero", "claim_boundary"],
+      "properties": {
+        "treasury": {"const": "US_TREASURY_18_ET_PLUS_FMP_MAX_CYCLE"},
+        "dividend_positive": {"const": "DECLARATION_DATE_END_PLUS_FMP_MAX_CYCLE"},
+        "dividend_zero": {"const": "NO_PRIOR_DECLARATION_THROUGH_PRIOR_DAY_PLUS_FMP_MAX_CYCLE"},
+        "claim_boundary": {"const": "RECONSTRUCTED_PIT_FROM_DOCUMENTED_SOURCE_DATES_NOT_HISTORICAL_CLIENT_RECEIPT"}
+      }
+    },
+    "official_sources": {
+      "type": "object",
+      "additionalProperties": {"type": "string", "format": "uri"}
+    },
+    "captures": {
+      "type": "array", "minItems": 8, "maxItems": 8,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["role", "logical_name", "sha256", "bytes", "captured_at_utc"],
+        "properties": {
+          "role": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+          "logical_name": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+$"},
+          "sha256": {"$ref": "#/$defs/sha256"},
+          "bytes": {"type": "integer", "minimum": 1},
+          "captured_at_utc": {"type": "string", "format": "date-time"}
+        }
+      }
+    },
+    "safe_to_build_corrected_target_blind_panel": {"const": true},
+    "safe_to_reconcile_existing_results": {"const": "NO_SEPARATE_GATE_REQUIRED"},
+    "safe_to_open_or_evaluate_oos": {"const": "NO"},
+    "target_or_metric_payload_read": {"const": false},
+    "model_fit_performed": {"const": false},
+    "secret_values_emitted": {"const": false},
+    "personal_paths_emitted": {"const": false},
+    "semantic_self_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  },
+  "$defs": {"sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}
