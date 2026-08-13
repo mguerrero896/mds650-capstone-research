@@ -245,3 +245,34 @@ Spec Kit consistency and preregistration gates pass.
    timestamp, publication, receipt and exogenous-input provenance. The v2.1 status therefore
    remains `FAILED_CLOSED`, with zero transport attempts and no authorization to reconcile
    legacy results, acquire new data or open OOS.
+42. **Scientific interpretation after the corrected forensic reevaluation
+   (2026-08-14)** — The current accepted interpretation is model-dependent. Gamma reports an
+   adverse `B1a-B0` contrast and a positive, statistically supported `B2-B1a` contrast; the
+   fixed LightGBM challenger does not confirm either contrast at the registered materiality
+   standard. `confirmed_contrasts` therefore remains empty. The directed B2 finding may be
+   described as promising and replicated within Gamma, never as a universal or production
+   edge. No result in this repository is a trading P&L backtest.
+43. **Legacy B1 status and B1v3 proposal boundary (2026-08-14)** — Legacy B1 remains an
+   immutable audit comparator. Target-blind review found that its ATM/skew geometry can mix
+   maturities and that raw-IV term differences do not represent constant-maturity forward
+   variance. A proposed B1v3 would use same-expiry/same-strike call-put consensus, 30-day log
+   implied variance, symmetric same-expiry skew, and forward variance derived from total
+   variance at registered tenors. This is `PENDING_EXPLICIT_APPROVAL`: it is not an implemented
+   benchmark, a frozen method or permission to evaluate outcomes.
+44. **No sign-directed development (2026-08-14)** — B1v3 geometry and feature definitions
+   were derived without reading RV30, QLIKE, predictions or model outcomes for that design
+   step. If approved, the specification, source contract, preprocessing, models, metric,
+   inference and stop rules must be sealed before a new result is opened. Positive, negative
+   and null signs must all remain in the variant ledger; no route may be promoted because it
+   produces a favorable sign.
+45. **Institutional authority and narrative (2026-08-14)** —
+   `reports/MDS650_MASTER_PROJECT_DOSSIER.md` is the human-readable index of code, data,
+   artifacts, joins, models, results and roadmap. It does not supersede immutable manifests,
+   schemas, execution logs, hashes or registered contracts. Any conflict is resolved in favor
+   of the lower-level signed evidence and documented as a supersession, never silently edited.
+46. **Provider availability statement (2026-08-14)** — FMP and Unusual Whales demonstrably
+   provide historical data for the registered sample, and Massive provides directed historical
+   contract/quote data under the observed entitlement. Historical retrieval is not equivalent
+   to proof of first availability at every past origin. New data must pass the date-level
+   contract/preflight and registered timing assumptions; provider facts and research assumptions
+   must remain separately labeled.

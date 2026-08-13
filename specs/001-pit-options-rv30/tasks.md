@@ -446,6 +446,41 @@ frozen development protocol without reading any holdout path.
   development method freeze; retain its single-read guard and do not acquire or evaluate a
   holdout session in `artifacts/phase5/holdout_access_ledger.json`.
 
+## Phase 13: Institutional closure and B1v3 decision (controlled)
+
+**Goal**: Reconcile the repository narrative with the immutable evidence, then decide whether
+to run a new, preregistered B1v3 confirmation without selecting features or variants by sign.
+
+**Independent test**: A reviewer can trace every scientific statement from the master dossier
+to an immutable artifact and can distinguish completed historical work, superseded diagnostics,
+current evidence and work that still requires explicit approval.
+
+- [x] T210 [P] Produce `reports/MDS650_MASTER_PROJECT_DOSSIER.md` with the complete package and
+  script catalogues, data joins, backfill inventory, trained-model history, scientific results,
+  limitations, reproducibility commands and cascaded roadmap.
+- [x] T211 [P] Reconcile `README.md`, `docs/methodology_decisions.md`,
+  `docs/risk_register.md` and this task graph with the corrected forensic interpretation while
+  preserving all prior artifacts and signs.
+- [ ] T212 Obtain explicit owner approval for the target-blind B1v3 contract, then write and
+  review its Spec Kit specification and preregistration. Current status:
+  `PENDING_EXPLICIT_APPROVAL`.
+- [ ] T213 [P] After T212 only, add failing tests and implement B1v3 from coherent same-expiry
+  geometry and corrected point-in-time exogenous evidence without reading RV30, QLIKE,
+  predictions or sealed results.
+- [ ] T214 After T212 only, execute the bounded provider preflight and acquire a genuinely new
+  chronological confirmation sample using directed contract-day extraction, resumable caches,
+  immutable raw evidence and the 80-GiB storage gate.
+- [ ] T215 Build and seal one source-bound B0/B1v3/B2 panel; prove origin preservation,
+  availability at or before origin, missingness semantics, deterministic hashes and absence of
+  outcome access during feature construction.
+- [ ] T216 Execute one frozen confirmation with Gamma as confirmatory model, LightGBM as fixed
+  challenger, QLIKE as primary metric, whole-day paired bootstrap and Holm; preserve every sign
+  and do not retune after opening results.
+- [ ] T217 Produce the final institutional release with code/data/method/result hashes,
+  environment lock, sanitized fixtures, evidence index, limitations, defense-ready tables and
+  an explicit distinction between scientific forecasting evidence and any future economic/P&L
+  validation.
+
 ## Dependencies and parallel execution
 
 - Setup T001–T006 precedes foundational work.
