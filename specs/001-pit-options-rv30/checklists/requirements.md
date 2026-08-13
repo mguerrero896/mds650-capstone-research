@@ -212,3 +212,31 @@
   two-strike same-expiry condition, hash-bound, and expressly prohibited from substituting
   exogenous rate/dividend provenance or relaxing legacy/OOS gates?
   [Scientific Integrity, Spec §FR-084]
+
+## B1v3 Target-Blind Replication Requirements
+
+- [x] CHK025 Are the exact B1v3a, B1v3b and B1v3c feature names and their nested information-set
+  roles specified without leaving feature selection to implementation judgment? [Completeness,
+  Spec §FR-089]
+- [x] CHK026 Are same-expiry/same-strike call-put consensus, ATM interpolation, fallback tolerance
+  and deterministic expiry tie breaks mathematically unambiguous? [Clarity, Spec §FR-090–FR-091]
+- [x] CHK027 Are total-variance and forward-variance requirements explicit about tenor ranges,
+  actual time, ordering, monotonicity, positivity and fail-without-clipping behavior?
+  [Measurability, Spec §FR-092]
+- [x] CHK028 Does the specification distinguish exact within-session lags from forbidden nearest,
+  overnight and carried-forward values, including missing-lag behavior? [Edge Cases, Spec §FR-093]
+- [x] CHK029 Are Massive cutoff reselection, sequence tie breaking, shifted-cutoff age and the
+  prohibition on walking back from an invalid latest quote consistently defined? [Consistency,
+  Spec §FR-094]
+- [x] CHK030 Are target-blind input allowlists, the `target_moneyness` metadata exception, hashes,
+  schemas, idempotence, secret/path hygiene and failure conditions fully specified? [Security and
+  Reproducibility, Spec §FR-095]
+- [x] CHK031 Are nested completeness predicates, monotonicity dimensions and numerical coverage
+  thresholds objectively measurable without predictive-performance selection? [Acceptance
+  Criteria, Spec §FR-096–FR-097]
+- [x] CHK032 Is the independent-sample rule complete about exposure-ledger exclusions, XNYS
+  eligibility, exact 60/30 sizes, earliest contiguous block and the no-pristine-block stop state?
+  [Scientific Integrity, Spec §FR-098]
+- [x] CHK033 Are the model roles, primary/descriptive losses, bootstrap unit/count, Holm family,
+  training-only MDE, one-read control, sign retention and implementation-versus-evidence boundary
+  all frozen before outcome access? [Completeness, Spec §FR-099–FR-100 and §SC-046–SC-047]

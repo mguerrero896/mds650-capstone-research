@@ -461,25 +461,54 @@ current evidence and work that still requires explicit approval.
 - [x] T211 [P] Reconcile `README.md`, `docs/methodology_decisions.md`,
   `docs/risk_register.md` and this task graph with the corrected forensic interpretation while
   preserving all prior artifacts and signs.
-- [ ] T212 Obtain explicit owner approval for the target-blind B1v3 contract, then write and
-  review its Spec Kit specification and preregistration. Current status:
-  `PENDING_EXPLICIT_APPROVAL`.
-- [ ] T213 [P] After T212 only, add failing tests and implement B1v3 from coherent same-expiry
-  geometry and corrected point-in-time exogenous evidence without reading RV30, QLIKE,
-  predictions or sealed results.
-- [ ] T214 After T212 only, execute the bounded provider preflight and acquire a genuinely new
-  chronological confirmation sample using directed contract-day extraction, resumable caches,
-  immutable raw evidence and the 80-GiB storage gate.
-- [ ] T215 Build and seal one source-bound B0/B1v3/B2 panel; prove origin preservation,
-  availability at or before origin, missingness semantics, deterministic hashes and absence of
-  outcome access during feature construction.
-- [ ] T216 Execute one frozen confirmation with Gamma as confirmatory model, LightGBM as fixed
-  challenger, QLIKE as primary metric, whole-day paired bootstrap and Holm; preserve every sign
-  and do not retune after opening results.
-- [ ] T217 Produce the final institutional release with code/data/method/result hashes,
-  environment lock, sanitized fixtures, evidence index, limitations, defense-ready tables and
-  an explicit distinction between scientific forecasting evidence and any future economic/P&L
-  validation.
+- [x] T212 Record explicit owner approval in
+  `docs/superpowers/specs/2026-08-14-b1v3-target-blind-replication-design.md` and freeze the
+  target-blind B1v3 formulas, source contract, sample-selection rule, metrics, inference and stop
+  conditions in
+  `specs/001-pit-options-rv30/spec.md`.
+- [ ] T213 [P] [US4] Add failing tests in `tests/unit/test_b1v3.py` for geometry, interpolation,
+  forward variance and invalid inputs without reading RV30, QLIKE, predictions or sealed results.
+- [ ] T214 [US4] Implement typed primitives in `src/mds650/b1v3.py` for same-expiry/same-strike
+  consensus, ATM, skew and forward variance until the T213 tests pass.
+- [ ] T215 [US4] Extend `tests/unit/test_b1v3.py` with failing tests for one-row-per-origin output,
+  exact within-session lags, nested completeness, target-blind allowlists, session terciles and
+  deterministic ordering.
+- [ ] T216 [US4] Implement the bounded-memory origin builder in `src/mds650/b1v3.py`, including
+  the coverage decision, global/asset/date/tercile/timing invariants and explicit missing
+  reasons.
+- [ ] T217 [P] [US4] Add failing tests in `tests/unit/test_build_b1v3_target_blind.py` for source
+  binding, JSON Schema, self-hash, idempotence, secret/path hygiene and conflicting output.
+- [ ] T218 [US4] Implement `scripts/build_b1v3_target_blind.py` and
+  `specs/001-pit-options-rv30/contracts/b1v3-target-blind-manifest.schema.json` as a thin
+  predictor-only command over the approved target-free IV-attempt corpus.
+- [ ] T219 [US4] Execute the full target-free build into `artifacts/b1v3_target_blind/` under the
+  80-GiB disk gate; emit only new source-bound evidence, rerun byte-identically and record the
+  focused test/coverage report.
+- [ ] T220 [P] [US4] Add failing tests in `tests/unit/test_b1v3_confirmation.py` for pristine
+  dates, exposure exclusion, exact 60/30 XNYS split and fail-closed behavior.
+- [ ] T221 [US4] Implement the metadata-only selector in `src/mds650/b1v3_confirmation.py`,
+  `scripts/plan_b1v3_confirmation.py` and
+  `specs/001-pit-options-rv30/contracts/b1v3-confirmation-plan.schema.json`.
+- [ ] T222 [US1] Execute `scripts/run_date_level_pit_preflight_v2.py` for the frozen candidate
+  dates; permit acquisition only when its contract,
+  attempt-budget and 80-GiB gates pass, otherwise retain the exact blocker without substitution.
+- [ ] T223 [US2] Build and seal `artifacts/b1v3_confirmation_panel/` as one predictor-only,
+  source-bound B0/B1v3a/B2 panel; prove origin preservation, availability at/before origin,
+  explicit missingness,
+  deterministic hashes and zero outcome reads.
+- [ ] T224 [P] [US4] Add failing tests in `tests/unit/test_b1v3_evaluation.py` for information-set
+  nesting, fixed methods, inference and one-read gates.
+- [ ] T225 [US4] Implement the additive Phase 6 adapter in `src/mds650/b1v3_evaluation.py` and
+  seal `docs/b1v3_preregistration.md` against the exact B0/B1v3a/B2 panel and 60/30 session arrays;
+  keep `SAFE_TO_EVALUATE_B1V3=NO` until every prerequisite passes.
+- [ ] T226 [US4] Execute exactly one frozen confirmation into `artifacts/b1v3_confirmation/` only
+  after T219–T225 pass, using Gamma confirmatory, fixed LightGBM challenger, QLIKE, 10,000 paired
+  whole-day bootstrap resamples,
+  Holm and training-only MDE; preserve every registered sign and do not retune.
+- [ ] T227 [US4] Produce `reports/B1V3_IMPLEMENTATION_HANDOFF.md` and the final institutional
+  release with code/data/method/result hashes, environment lock, sanitized fixtures, evidence
+  index, limitations and a strict distinction between technical readiness, scientific evidence
+  and any future economic/P&L validation.
 
 ## Dependencies and parallel execution
 
@@ -525,6 +554,11 @@ current evidence and work that still requires explicit approval.
   T207/T208 → T209. It is the only correction path for the B2 v2.2 availability sidecar;
   it never changes sealed legacy results, performs acquisition, opens the OOS holdout or
   selects any method by a favorable development sign.
+- Phase 13 follows T212 → T213 → T214 → T215 → T216 → T217 → T218 → T219 → T220 → T221 →
+  T222 → T223 → T224 → T225 → T226 → T227. T213/T215/T217/T220/T224 are mandatory RED-before-
+  GREEN gates. T222 performs no network request unless the declarative provider contract and
+  attempt budget pass. T226 is forbidden until a pristine source-bound panel and preregistration
+  are sealed; no task may select a feature, asset, timing variant or model by result sign.
 
 ## Requirement traceability
 
@@ -551,6 +585,9 @@ current evidence and work that still requires explicit approval.
 | FR-075–FR-078, FR-081, SC-034, SC-036 | T179–T188, T193–T196 |
 | FR-082 | T166–T173, T191 |
 | FR-083–FR-088, SC-037–SC-040 | T197–T209 |
+| FR-089–FR-097, SC-042–SC-044 | T212–T219 |
+| FR-098, SC-045 | T220–T223 |
+| FR-099–FR-100, SC-046–SC-047 | T224–T227 |
 | SC-001–SC-003 | T018A–T018D, T024, T031A–T031E, T033 |
 | SC-004–SC-006 | T034–T048, T070–T076 |
 | SC-007 | T049–T054 |

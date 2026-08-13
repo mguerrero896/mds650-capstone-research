@@ -4,9 +4,10 @@
 
 **Created**: 2026-07-20
 
-**Status**: Phase 5 design approved; PIT v2.1 remediation and the source-bound corrected
-development-release gate remain required before any new development evaluation. Existing sealed
-results and the prospective holdout remain closed.
+**Status**: B1v3 written specification owner-approved on 2026-08-14 for target-blind
+implementation. Provider preflight, pristine-sample planning, source-bound panel sealing and
+preregistration remain required before any B1v3 outcome evaluation. Existing sealed results and
+the prospective holdout remain closed.
 
 **Input**: User description: "Evaluate whether unusual options activity provides incremental out-of-sample information for forecasting the next 30 minutes of realized variance, using authenticated provider audits, a point-in-time pilot, and a Spec-Driven Development workflow."
 
@@ -65,7 +66,16 @@ results and the prospective holdout remain closed.
   exact-window source build must prove date equality and source coverage. Any B1Q row with a
   same-session or missing exact pre-origin rate and dividend provenance remains missing with a
   recorded blocker; it is never filled from a later, stale, same-session, or carried-forward
-  input.
+   input.
+
+### Session 2026-08-14
+
+- Q: May the written target-blind B1v3 specification be implemented? → A: Yes. The owner
+  explicitly approved `docs/superpowers/specs/2026-08-14-b1v3-target-blind-replication-design.md`.
+  Implementation MUST preserve its feature geometry, exact-lag rules, coverage gates, pristine
+  60/30-session selection, fixed models/inference and sign-agnostic reporting. This approval does
+  not authorize opening legacy/OOS results during predictor construction or choosing variants by
+  RV30, QLIKE, predictions or result sign.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -900,3 +910,94 @@ missing provider data remains missing with an explicit reason.
   the source-coverage artifact MUST be `BLOCKED_SOURCE_COVERAGE`, all affected B1Q fields MUST
   remain null with a machine-readable reason, and target binding or development evaluation MUST
   NOT start.
+
+## Phase 6 — B1v3 Target-Blind Replication and Independent Confirmation
+
+This phase implements the owner-approved B1v3 contract additively. Legacy B1v2 code and sealed
+results remain immutable audit evidence. Tasks that construct or validate predictors MUST NOT
+read RV30, QLIKE, predictions, losses, model results or any prospective-holdout payload.
+
+- **FR-089**: B1v3a MUST contain exactly `b1v3_log_atm_variance_30d`,
+  `b1v3_log_atm_variance_change_5m` and `b1v3_log_atm_variance_change_30m`.
+  B1v3b MUST add exactly `b1v3_log_symmetric_skew_30d` and
+  `b1v3_log_symmetric_skew_change_30m`. B1v3c MUST add exactly log forward variance for
+  short-to-medium and medium-to-long tenors plus each exact 30-minute change. B2 MUST equal
+  B1v3a plus the nine frozen FR-072 activity features on identical eligible origins. The frozen
+  outcome-asset universe is AAPL, AMZN, META, MSFT, NVDA and TSLA; SPY and QQQ remain B0 market
+  controls rather than outcome rows.
+- **FR-090**: An IV consensus point MUST pair a call and put at the same expiry and strike and
+  use their arithmetic mean IV. ATM IV MUST interpolate in log moneyness between paired strikes
+  immediately below and above spot. Without a bracket, the nearest paired strike MAY be used
+  only when `abs(log(K/S)) <= abs(log(1.025))`, with `atm_interpolated=false`.
+  `b1v3_log_atm_variance_30d` MUST equal `log(IV_ATM^2)`.
+- **FR-091**: The near-30 expiry MUST minimize absolute distance from 30 DTE within 20–40 DTE;
+  ties MUST prefer earlier expiry then lexical contract identity. Symmetric skew MUST compare
+  put IV at 0.975 moneyness with call IV at 1.025 moneyness on that same expiry, using
+  interpolation where bracketed and otherwise a nearest observation only within 0.0125 absolute
+  moneyness. `b1v3_log_symmetric_skew_30d` MUST equal
+  `log(IV_put_0.975 / IV_call_1.025)`. Every fallback MUST be flagged.
+- **FR-092**: Term tenors MUST be selected at short 7±7 DTE with DTE at least 7, medium 30±10
+  DTE and long 90±30 DTE. Total variance MUST be `w = IV^2 * T` with actual `T` in years.
+  Forward variance MUST be `(w2-w1)/(T2-T1)`, require `T_short < T_medium < T_long`, finite
+  positive inputs and nondecreasing total variance, and MUST fail rather than clip an invalid
+  result. Each B1v3c level MUST be the natural logarithm of its strictly positive forward
+  variance.
+- **FR-093**: Five- and thirty-minute B1v3 changes MUST use exact prior forecast origins for the
+  same asset and trading session. Overnight, nearest-neighbor and cross-session lags are
+  forbidden. Every change MUST equal `level(t) - level(t-h)`. Missing exact lags MUST remain null
+  with a machine-readable reason.
+- **FR-094**: Quote selection MUST use the last Massive quote with
+  `sip_timestamp <= forecast_origin - delay`, breaking timestamp ties by highest sequence
+  number. Primary delay is zero seconds; 60 and 300 seconds are registered sensitivities.
+  Quote age MUST be measured against the applicable shifted cutoff. An invalid latest quote
+  MUST fail that contract; the implementation MUST NOT walk backward to an earlier valid quote.
+- **FR-095**: B1v3 source construction MUST select an explicit allowlist from the target-free IV
+  attempt corpus, bind input/design/reselection hashes and fail on forbidden outcome-like fields,
+  future quotes, ambiguous duplicate identities, invalid schemas, hash drift, personal paths,
+  secrets or non-idempotent output. The contractual selector `target_moneyness` is metadata, not
+  a forecasting target, and is the sole permitted `target_*` input name.
+- **FR-096**: Completeness MUST be nested:
+  `b1v3a_complete = atm_component_complete`,
+  `b1v3b_complete = b1v3a_complete AND skew_component_complete`, and
+  `b1v3c_complete = b1v3b_complete AND term_component_complete`. The implementation MUST fail
+  unless `coverage(B1v3c) <= coverage(B1v3b) <= coverage(B1v3a)` globally and by asset, date,
+  session tercile and timing variant.
+- **FR-097**: B1v3a technical acceptance requires global coverage at least 80%, every asset at
+  least 65% and every session tercile at least 60%. B1v3b and B1v3c enriched robustness
+  acceptance each require global coverage at least 70%, every asset at least 50% and every
+  session tercile at least 40%. Coverage governs benchmark feasibility only and MUST NOT be
+  selected using predictive performance.
+- **FR-098**: Independent confirmation MUST first create a date-only exposure ledger of every
+  previously used result date, then select from verified common XNYS history the earliest
+  contiguous pristine 30-session block having at least 60 preceding eligible sessions for
+  training/warmup. The exact 60/30 arrays MUST be frozen before any RV30 or QLIKE access. If no
+  such block exists, the phase MUST stop with `NO_PRISTINE_30_SESSION_BLOCK`.
+- **FR-099**: The confirmation protocol MUST use Gamma GLM as confirmatory model, fixed
+  LightGBM as robustness challenger, QLIKE as primary loss, MAE/RMSE as descriptive losses,
+  10,000 paired whole-day bootstrap resamples, Holm adjustment for the two global information-set
+  contrasts and a training-only MDE. The 30-session confirmation may be read analytically once;
+  all registered positive, null and negative outcomes MUST be retained.
+- **FR-100**: A source-bound preregistration and predictor-only panel MUST pass schema, hash,
+  origin-preservation, no-future-data, missingness, reproducibility and storage gates before
+  `SAFE_TO_EVALUATE_B1V3` may become `YES`. Technical target-blind coverage alone MUST NOT be
+  described as evidence that B1v3 beats B0 or B2 beats B1v3.
+
+- **SC-042**: Focused tests reproduce every B1v3 formula, deterministic tie break, exact-lag
+  rule, invalid-forward-variance rejection, no-future-quote rule and nested-completeness
+  invariant, with at least 85% line coverage for `mds650.b1v3`.
+- **SC-043**: The full target-free build emits one unique row per origin, the exact nine B1v3
+  feature columns, source/design hashes, schema-valid self-hashed manifests, deterministic bytes
+  on replay and no forbidden outcome/result field.
+- **SC-044**: Coverage artifacts report components and nested B1v3a/B1v3b/B1v3c globally and by
+  asset, date, session tercile and 0/60/300-second quote cutoff, and fail on any monotonicity
+  violation.
+- **SC-045**: The confirmation plan proves XNYS membership, no exposed-date overlap, exactly 60
+  preceding training/warmup sessions, exactly 30 contiguous pristine confirmation sessions and
+  deterministic hashes without reading target or result payloads.
+- **SC-046**: The preregistration binds the exact information sets, dates, features, models,
+  grids, metrics, inference, seeds, MDE policy, timing sensitivities and one-read ledger before
+  target access; its default state is `SAFE_TO_EVALUATE_B1V3=NO`.
+- **SC-047**: Final evidence distinguishes implementation readiness, provider/PIT validity,
+  predictor coverage and scientific confirmation. No positive-edge claim is permitted unless the
+  preregistered independent evaluation passes its sign, uncertainty, materiality and stability
+  criteria.

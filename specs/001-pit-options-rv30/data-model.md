@@ -303,3 +303,45 @@ unhashed rate/dividend value.
 `CorrectedDevelopmentRelease` is a new evidence object, not an update of a legacy result.
 It rejects target-like input during predictor construction. Target binding and development
 evaluation are successive, separately manifested states; neither can include a holdout date.
+
+## B1v3TargetBlindOrigin
+
+| Field | Type | Rule |
+|---|---|---|
+| `origin_id` | string | Unique deterministic asset/session/five-minute-origin identity |
+| `asset` | enum | `AAPL`, `AMZN`, `META`, `MSFT`, `NVDA`, or `TSLA` for outcome rows |
+| `session_date` | date | XNYS session; exact-lag joins never cross this value |
+| `forecast_origin_utc` | UTC timestamp | Predictor availability cutoff and ordering key |
+| `quote_cutoff_seconds` | enum | `0`, `60`, or `300`; primary is `0` |
+| `b1v3_log_atm_variance_30d` | float/null | Log of squared same-expiry consensus ATM IV at selected near-30 tenor |
+| `b1v3_log_atm_variance_change_5m` | float/null | Exact same-session 5-minute change |
+| `b1v3_log_atm_variance_change_30m` | float/null | Exact same-session 30-minute change |
+| `b1v3_log_symmetric_skew_30d` | float/null | Log ratio of 0.975 put IV to 1.025 call IV on the selected expiry |
+| `b1v3_log_symmetric_skew_change_30m` | float/null | Exact same-session 30-minute change |
+| `b1v3_log_forward_variance_short_medium` | float/null | Log positive forward variance from short to medium total variance |
+| `b1v3_log_forward_variance_medium_long` | float/null | Log positive forward variance from medium to long total variance |
+| `b1v3_log_forward_variance_short_medium_change_30m` | float/null | Exact same-session 30-minute change |
+| `b1v3_log_forward_variance_medium_long_change_30m` | float/null | Exact same-session 30-minute change |
+| `b1v3a_complete` | boolean | ATM level plus both exact ATM changes are present |
+| `b1v3b_complete` | boolean | `b1v3a_complete` and both skew fields present |
+| `b1v3c_complete` | boolean | `b1v3b_complete` and all four term fields present |
+| `missing_reason` | string/null | Machine-readable first reason for incomplete B1v3a; enriched reasons remain separately traceable |
+| `source_request_hashes` | list[string] | SHA-256 identities of contributing target-free quote requests |
+
+## B1v3ConfirmationPlan
+
+| Field | Type | Rule |
+|---|---|---|
+| `plan_id` | string | Deterministic identity from design, exposure-ledger, calendar and provider hashes |
+| `status` | enum | `TARGET_BLIND_PLANNED`, `NO_PRISTINE_30_SESSION_BLOCK`, `BLOCKED_PROVIDER_PREFLIGHT` |
+| `exposed_sessions` | list[date] | Every date previously used in a result-bearing analysis; no result values included |
+| `training_warmup_sessions` | list[date] | Exactly 60 eligible sessions preceding confirmation |
+| `confirmation_sessions` | list[date] | Earliest contiguous 30 eligible pristine XNYS sessions |
+| `provider_preflight_sha256` | string/null | Required before predictor acquisition/build authorization |
+| `preregistration_sha256` | string/null | Required before any target or QLIKE access |
+| `confirmation_reads` | integer | Starts at zero; may transition to one exactly once after all gates pass |
+| `safe_to_evaluate_b1v3` | enum | Default `NO`; `YES` only after source-bound predictor, preregistration and leakage gates pass |
+
+`B1v3TargetBlindOrigin` contains no RV30, forecast, loss or result value. The sole accepted
+`target_*` source name is `target_moneyness`, a contractual strike selector that is never emitted
+as a predictor or outcome.

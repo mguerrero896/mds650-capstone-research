@@ -252,13 +252,14 @@ Spec Kit consistency and preregistration gates pass.
    standard. `confirmed_contrasts` therefore remains empty. The directed B2 finding may be
    described as promising and replicated within Gamma, never as a universal or production
    edge. No result in this repository is a trading P&L backtest.
-43. **Legacy B1 status and B1v3 proposal boundary (2026-08-14)** — Legacy B1 remains an
+43. **Legacy B1 status and approved B1v3 boundary (2026-08-14)** — Legacy B1 remains an
    immutable audit comparator. Target-blind review found that its ATM/skew geometry can mix
    maturities and that raw-IV term differences do not represent constant-maturity forward
-   variance. A proposed B1v3 would use same-expiry/same-strike call-put consensus, 30-day log
+   variance. The owner-approved B1v3 uses same-expiry/same-strike call-put consensus, 30-day log
    implied variance, symmetric same-expiry skew, and forward variance derived from total
-   variance at registered tenors. This is `PENDING_EXPLICIT_APPROVAL`: it is not an implemented
-   benchmark, a frozen method or permission to evaluate outcomes.
+   variance at registered tenors. Status is `APPROVED_FOR_TARGET_BLIND_IMPLEMENTATION`: it is not
+   yet an accepted benchmark result and does not permit outcome evaluation before source binding,
+   pristine-sample selection, preregistration and one-read gates pass.
 44. **No sign-directed development (2026-08-14)** — B1v3 geometry and feature definitions
    were derived without reading RV30, QLIKE, predictions or model outcomes for that design
    step. If approved, the specification, source contract, preprocessing, models, metric,
@@ -276,3 +277,10 @@ Spec Kit consistency and preregistration gates pass.
    to proof of first availability at every past origin. New data must pass the date-level
    contract/preflight and registered timing assumptions; provider facts and research assumptions
    must remain separately labeled.
+47. **B1v3 independent-confirmation rule (2026-08-14)** — The next scientific test must use a
+   date-only exposure ledger, exclude every previously used result date, require 60 preceding
+   eligible XNYS sessions and freeze the earliest contiguous pristine 30-session block before any
+   RV30 or QLIKE access. Gamma remains confirmatory, LightGBM fixed robustness, QLIKE primary,
+   inference uses 10,000 paired whole-day bootstrap resamples plus Holm, and MDE is training-only.
+   If no eligible block exists, record `NO_PRISTINE_30_SESSION_BLOCK`; never reuse an exposed OOS
+   period or choose a feature/timing/model variant because its result is favorable.

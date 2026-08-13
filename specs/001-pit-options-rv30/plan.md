@@ -426,3 +426,90 @@ results are evidence for method freeze and interpretation, not final confirmatio
   Holm and honest sign reporting are predeclared.
 - Corrected-release isolation: PASS by design — legacy reconciliation and OOS access cannot be
   upgraded by a development-only rebuild; B2 delayed-source rows remain explicit exclusions.
+
+## Phase 6: B1v3 Target-Blind Replication and Independent Confirmation
+
+### 6.1 Governance and isolation
+
+Bind the owner-approved design at
+`docs/superpowers/specs/2026-08-14-b1v3-target-blind-replication-design.md` into FR-089–FR-100,
+SC-042–SC-047 and the Phase 13 task graph. Keep legacy B1v2 modules and sealed result artifacts
+immutable. Target-blind tasks operate only on an explicit column/path allowlist and reject RV30,
+QLIKE, predictions, losses, result artifacts and holdout payloads.
+
+### 6.2 Additive B1v3 feature engine
+
+Create `src/mds650/b1v3.py` rather than altering `src/mds650/phase6.py`. The module uses typed
+immutable observations and bounded-memory origin grouping to construct:
+
+1. same-expiry/same-strike call-put consensus IV;
+2. constant-near-30-day log ATM variance and exact 5/30-minute changes;
+3. same-expiry symmetric 0.975-put/1.025-call log skew and exact 30-minute change;
+4. short/medium and medium/long log forward variance from nondecreasing total variance and each
+   exact 30-minute change;
+5. component and nested completeness flags with explicit reasons.
+
+All interpolation, fallback tolerances, DTE bands and deterministic tie breaks are those in
+FR-090–FR-093. Invalid latest quotes, invalid arbitrage geometry, missing exact lags and duplicate
+identities fail or remain explicitly missing; they are never repaired by silent carry-forward,
+clipping or imputation.
+
+### 6.3 Source-bound target-free build
+
+Create a thin CLI at `scripts/build_b1v3_target_blind.py`. It consumes the existing target-free
+IV-attempt Parquet, validates Massive selection/provenance fields, selects only contractual input
+columns, computes B1v3 features, and emits new Parquet/JSON/CSV evidence under
+`artifacts/b1v3_target_blind/`. The manifest binds input, design, code, schema and output hashes,
+uses write-if-identical semantics and records zero target/metric reads. Run the target-free corpus
+under the 80-GiB disk gate and report coverage for primary and 60/300-second quote-cutoff
+sensitivities without interpreting predictive performance.
+
+### 6.4 Pristine confirmation planning
+
+Create a metadata-only exposure ledger and XNYS calendar selector in
+`src/mds650/b1v3_confirmation.py`. Enumerate all previously used result dates without opening
+result values, exclude them and any provider/PIT-invalid session, require 60 eligible preceding
+training/warmup sessions, and choose the earliest contiguous pristine 30-session block. Seal the
+exact dates and hashes before any target read. Emit `NO_PRISTINE_30_SESSION_BLOCK` and stop when
+the constraint cannot be met; never recycle an exposed OOS interval.
+
+### 6.5 Provider preflight and predictor-only panel
+
+Before acquisition, execute the bounded date-level contract preflight for FMP, UW Full Tape and
+Massive contract/quote evidence. Historical availability and provider timing semantics remain
+separate claims. FMP `+1` minute primary/`+2` sensitivity and UW `created_at` operational cutoff
+remain registered research assumptions; Massive selection uses true reselection at each 0/60/300
+second cutoff. Build a source-bound B0/B1v3a/B2 predictor-only panel only after preflight passes.
+No outcome access is allowed in this subsection.
+
+### 6.6 Additive evaluation adapter and preregistration
+
+Create `src/mds650/b1v3_evaluation.py` as an adapter over the existing Phase 6 modeling and
+inference primitives. It declares nested B0, B1v3a and B2 information sets on identical origins
+without changing legacy B1v2 behavior. Seal exact dates, feature lists, model grids, QLIKE,
+MAE/RMSE, 10,000 paired-day bootstrap repetitions, Holm family, training-only MDE, seeds,
+timing sensitivities and the one-read confirmation ledger. The default and pre-evaluation state
+is `SAFE_TO_EVALUATE_B1V3=NO`.
+
+### 6.7 Verification order
+
+Execute TDD in this strict order: failing geometry tests → minimal primitives → failing
+origin-builder tests → minimal streaming builder → failing CLI/manifest tests → minimal
+source-bound command → full target-free build → failing calendar tests → metadata-only selector →
+failing information-set tests → additive evaluation adapter/preregistration. Each step requires
+focused pytest, Ruff, strict Mypy and `git diff --check`; the final implementation also requires
+the full pytest suite and JSON Schema validation.
+
+### Phase 6 constitution check
+
+- Evidence/PIT truth: PASS by design — target-free construction is separated from provider
+  semantics and scientific outcomes.
+- Frozen objective/scope: PASS — RV30, nine B1v3 features, nine B2 features, 60/30 dates rule,
+  models and inference are explicit.
+- Tests first: PASS — every implementation task has an observed RED state before production code.
+- Reproducibility/security: PASS — allowlists, source hashes, schemas, idempotence, secret/path
+  hygiene and immutable legacy artifacts are mandatory.
+- Statistical validity: PASS by design — one pristine confirmation, fixed estimands, paired-day
+  bootstrap, Holm, training-only MDE and complete sign reporting are preregistered.
+- Implementation/evidence separation: PASS — technical coverage cannot authorize or imply a
+  scientific edge.

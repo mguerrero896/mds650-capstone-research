@@ -228,3 +228,28 @@ data lineage and exclusion policy auditable without reading the prospective hold
   and must remain visible in the release manifest.
 - Retune the model or B2 registry after correction: rejected because it would introduce
   outcome-dependent model selection.
+
+## Decision 15: Implement B1v3 additively and confirm it on a pristine sample
+
+**Decision**: Keep legacy B1v2 immutable and implement B1v3 in a new target-blind module. Use
+same-expiry/same-strike call-put consensus; near-30-day log ATM variance; same-expiry symmetric
+0.975/1.025 log skew; and short/medium/long forward variance derived from total variance.
+Changes use exact same-session 5/30-minute origins. Coverage must be nested and meet the explicit
+FR-097 technical gates. Before outcomes, build a date-only exposure ledger and freeze the
+earliest contiguous pristine 30-session XNYS block with 60 eligible preceding sessions.
+
+**Rationale**: The legacy geometry can mix maturities and raw-IV term differences. The approved
+construction measures coherent option-state quantities while preserving the scientific boundary:
+feature formulas and feasibility are determined without RV30, QLIKE, predictions or result signs.
+A pristine one-read confirmation separates a new test from earlier exploratory and forensic
+exposure.
+
+**Alternatives considered**:
+
+- Rewrite legacy B1v2 in place: rejected because it would destroy auditability of sealed results.
+- Choose the strongest target-free coverage variant after modeling: rejected because coverage
+  may determine feasibility, but predictive sign may not determine the method.
+- Use nearest or overnight values for missing lags: rejected because it changes the registered
+  timing estimand and can introduce stale information.
+- Clip negative forward variance to zero: rejected because it hides invalid quote/geometry states.
+- Reuse a prior OOS interval: rejected because it is not a pristine independent confirmation.

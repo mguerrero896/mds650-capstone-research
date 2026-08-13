@@ -144,3 +144,39 @@ next thirty consecutive one-minute closes. It produces exactly thirty returns:
 `r(i,t+j)=ln[C(i,t+j)/C(i,t+j-1)]`, `j=1..30`, and their squared sum. Missing any of the
 31 prices, unresolved FMP bar start/close semantics, an early close or an unidentified halt
 is a hard invalid status; no silent interpolation is allowed.
+
+## B1v3 target-blind implementation checkpoint
+
+Run the focused tests before materializing the full target-free corpus:
+
+```powershell
+uv run pytest -q tests\unit\test_b1v3.py `
+  tests\unit\test_build_b1v3_target_blind.py
+uv run ruff check src\mds650\b1v3.py scripts\build_b1v3_target_blind.py `
+  tests\unit\test_b1v3.py tests\unit\test_build_b1v3_target_blind.py
+uv run mypy --strict src\mds650\b1v3.py scripts\build_b1v3_target_blind.py
+```
+
+Then verify at least 80 GiB free on `D:` and run exactly one target-free build:
+
+```powershell
+uv run python scripts\build_b1v3_target_blind.py `
+  --input D:\MDS650\phase6\data\b1q\b1_iv_attempts_20d.parquet `
+  --output-root artifacts\b1v3_target_blind
+```
+
+The command must emit schema-valid, self-hashed evidence, one unique row per origin, exact
+0/60/300-second Massive cutoff variants, nested coverage and no RV30/QLIKE/result field. A second
+identical run must preserve every output byte or fail closed.
+
+Plan the independent sample without reading outcomes:
+
+```powershell
+uv run pytest -q tests\unit\test_b1v3_confirmation.py
+uv run python scripts\plan_b1v3_confirmation.py `
+  --output-root artifacts\b1v3_confirmation_plan
+```
+
+Expected pre-evaluation state: exactly 60 training/warmup sessions and 30 contiguous pristine
+confirmation sessions, or literal `NO_PRISTINE_30_SESSION_BLOCK`; `confirmation_reads=0` and
+`SAFE_TO_EVALUATE_B1V3=NO`. QLIKE must not run from this quickstart checkpoint.
