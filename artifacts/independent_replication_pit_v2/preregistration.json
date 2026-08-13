@@ -1,0 +1,189 @@
+{
+  "all_signs_must_be_retained": true,
+  "authorized_evaluation_count": 1,
+  "b1_audit": {
+    "all_exogenous_inputs_verified": true,
+    "attempt_count": 384912,
+    "b1a_coverage": 0.9161235257603972,
+    "b1b_coverage": 0.910097248086075,
+    "b1c_coverage": 0.0,
+    "coverage_by_asset": [
+      {
+        "asset": "AAPL",
+        "b1a_coverage": 0.9162011173184358,
+        "b1b_coverage": 0.914649286157666,
+        "b1c_coverage": 0.0,
+        "origin_count": 6444
+      },
+      {
+        "asset": "AMZN",
+        "b1a_coverage": 0.9162011173184358,
+        "b1b_coverage": 0.9062693978895097,
+        "b1c_coverage": 0.0,
+        "origin_count": 6444
+      },
+      {
+        "asset": "META",
+        "b1a_coverage": 0.9162011173184358,
+        "b1b_coverage": 0.914649286157666,
+        "b1c_coverage": 0.0,
+        "origin_count": 6444
+      },
+      {
+        "asset": "MSFT",
+        "b1a_coverage": 0.9158907510862818,
+        "b1b_coverage": 0.9034761018001242,
+        "b1c_coverage": 0.0,
+        "origin_count": 6444
+      },
+      {
+        "asset": "NVDA",
+        "b1a_coverage": 0.9160459342023588,
+        "b1b_coverage": 0.9053382991930478,
+        "b1c_coverage": 0.0,
+        "origin_count": 6444
+      },
+      {
+        "asset": "TSLA",
+        "b1a_coverage": 0.9162011173184358,
+        "b1b_coverage": 0.9162011173184358,
+        "b1c_coverage": 0.0,
+        "origin_count": 6444
+      }
+    ],
+    "duplicate_attempt_count": 0,
+    "negative_quote_age_count": 0,
+    "nested_coverage_monotonic": true,
+    "nonfinite_iv_count": 0,
+    "origin_count": 38664,
+    "outcome_columns_present": [],
+    "quote_after_origin_count": 0,
+    "rate_not_strictly_prior_count": 0,
+    "status": "PASS_TARGET_BLIND_CORRECTED_B1"
+  },
+  "corrected_evaluation_performed": false,
+  "inference": {
+    "mde_source": "PHASE6_TRAINING_ONLY_FROZEN",
+    "multiplicity": "HOLM",
+    "repetitions": 10000,
+    "resampling": "PAIRED_TRADING_DAY_CLUSTER_BOOTSTRAP"
+  },
+  "information_sets": {
+    "B0": [
+      "b0v2_log_spot",
+      "b0v2_underlying_return_5m",
+      "b0v2_underlying_rv_5m",
+      "b0v2_underlying_rv_30m",
+      "b0v2_log_dollar_volume_5m",
+      "b0v2_spy_return_5m",
+      "b0v2_spy_rv_30m",
+      "b0v2_qqq_return_5m",
+      "b0v2_qqq_rv_30m",
+      "b0v2_session_sine",
+      "b0v2_session_cosine",
+      "b0v2_asset_identity"
+    ],
+    "B1a_addition": [
+      "b1v2_atm_iv_30_60_dte",
+      "b1v2_atm_iv_change_5m",
+      "b1v2_atm_iv_change_30m"
+    ],
+    "B2_addition": [
+      "b2v2_z_log_trade_count",
+      "b2v2_z_unique_contract_share",
+      "b2v2_z_log_mean_trade_premium",
+      "b2v2_z_log_max_trade_premium",
+      "b2v2_deviation_call_put_premium_imbalance",
+      "b2v2_deviation_execution_side_premium_imbalance",
+      "b2v2_z_repeated_contract_premium_share",
+      "b2v2_z_strike_concentration",
+      "b2v2_z_expiry_concentration"
+    ]
+  },
+  "input_hashes": {
+    "acquisition_manifest": "e3bb8ecece694a815f3536527881322cb3e6ce49097d909d46e84697dc4c637a",
+    "b0_warmup": "093891d12f727838d5d1dffda4e58bd92a0d4635ccb931c57c4f3f0ec47af775",
+    "b1_repair_manifest": "4f886ef760423d47630d1a4aa47f9cf50c6c5a2827ae3cad52e6488648c57ab0",
+    "b2_activity_bundle": "0b9bbe48f47598d8e21de3578fe4dd2610fba921199af024647765fec29e9bee",
+    "b2_manifest": "39f9f5a377c4b1b3c0ac81a7612e911179b71ac7c01c316fd05f88383c8a38d7",
+    "b2_primary": "a840fc9a1b307d6aa165a04c78cd28724438bb08ff7a9d5f16428949fc592f3a",
+    "corrected_b1_attempts": "8c2672820cdf5261363b6c4c031ae3f3610160a2b434c7981bbcc9d424b5d5d2",
+    "corrected_b1_features": "7caa766bf386a899835ddbeeb040a89e0f5572100107cf21e84931127c784dd1",
+    "fmp_manifest": "79eb1ffe28a99811b5cb53ec99ffde1032260fe6e6ef6abbebc854cfdb736b7d",
+    "method_freeze": "79682a761751a899df3b3822f10ff33054f86bc3f65d2f29cbe810a4c068528f",
+    "origins": "f28c7f8a28e7fad47c3062259b6f2e146f44ca1831a1a162f64d96eb44c4aecf",
+    "parameter_freeze": "b8f7f98d65e43c041b06f771514c5b59b7826977144b211e7f0af082322c61ec",
+    "phase6_training_mde": "e66a9e5206f29c9a877f31d4650944644eb6328a0d04bc13cf22ab377b2f0c9b",
+    "target_access_ledger": "8983bc9578eb6b13d6b88d556829b3998d9047752534d92825402aaeaf85a11d",
+    "target_b0": "76a76dfb5387afdcb5a20c09f5e265528522395ae4c1c1df651696d7ef3aa363",
+    "underlying_bars": "544f607679746f8264baeea286cc4ef73047106a2c2b19031999275c0f034823",
+    "window_manifest": "684dec2d9f821a2d980133ca9e6028332d92f379a436eef466decb410d1fc7fa"
+  },
+  "metrics": {
+    "primary": "QLIKE",
+    "secondary": [
+      "MAE",
+      "RMSE"
+    ]
+  },
+  "model_fit_during_freeze": false,
+  "models": {
+    "confirmatory": "Gamma_GLM_log_link_fixed_parameters",
+    "robustness": "LightGBM_fixed_parameters_no_tuning"
+  },
+  "output_contract": {
+    "bulk_root": "MDS650_DATA_ROOT/independent_replication_30/derived/pit_v2_evaluation",
+    "overwrite_existing_results": false,
+    "result_root": "artifacts/independent_replication_pit_v2",
+    "result_status": "CORRECTED_FORENSIC_REEVALUATION_COMPLETE"
+  },
+  "personal_paths_emitted": false,
+  "preregistration_sha256": "ca126726f61eb6e6000d23672e85de9a841e4d28d488683f3be1300a5b65c765",
+  "primary_comparisons": [
+    {
+      "estimand": "mean_QLIKE_B0_minus_B1a",
+      "name": "B1a_vs_B0",
+      "positive_favors": "B1a"
+    },
+    {
+      "estimand": "mean_QLIKE_B1a_minus_B2",
+      "name": "B2_vs_B1a",
+      "positive_favors": "B2"
+    }
+  ],
+  "prior_target_read_count": 1,
+  "prior_target_results_exist": true,
+  "pristine_first_read": false,
+  "sample_independent_from_phase6": true,
+  "sample_limitation": "Independent from Phase 6, but the same target block was previously read under a superseded B1 input. This run is a corrected forensic reevaluation, not a new pristine first-read confirmation.",
+  "schema_version": "independent-corrected-reevaluation-v1.0",
+  "scientific_role": "CORRECTED_FORENSIC_REEVALUATION",
+  "secret_values_emitted": false,
+  "selection_by_sign": "PROHIBITED",
+  "source_commit": "0c1024276be847dce8ec4c50152adc8917c5d8bc",
+  "source_hashes": {
+    "b1_repair_builder": "e9eb8ac5510aec449294e826d11a9af1a3e78ad05985d732e7d24f4ee8880f6c",
+    "evaluation_runner": "5d240121883c47b6b61c3219414ab0963b80139cf670f4d19a9c7b70db6c702a",
+    "legacy_evaluation_core": "15ec8db7899c120c25c2db98525a12723740566fee35edf10cc14b85865af6a6",
+    "lockfile": "f9df1a80f37212c81ef4d9ec466b1e94b764aed5daf84435fae75f345623eaac",
+    "modeling": "94dc5f07e8bbcd3e688d007f7487198a99271ff0d560fb635458e53e11bbd4fd",
+    "phase6_evaluation": "f161df14154e18373405cb73459014790040326337ad85725979d2aec83fb278",
+    "phase6_features": "ab518118381b08bb72212011e7204369fd60cb99079122e55cdf7000d55c4413",
+    "preregistration_sealer": "d4c29133d282e1fa02c8216b3a5de6792f17b52b530ea41533d4109bc422d4ec"
+  },
+  "status": "FROZEN_AUTHORIZED_BEFORE_CORRECTED_REEVALUATION",
+  "target": {
+    "horizon_minutes": 30,
+    "name": "RV30",
+    "price_count": 31,
+    "return_count": 30
+  },
+  "target_or_metric_payload_read_during_freeze": false,
+  "timing": {
+    "b1q": "last_SIP_quote_at_or_before_origin_max_age_60s_spread_25pct",
+    "b2": "created_at_operational_proxy_at_or_before_origin_minus_60s",
+    "fmp_primary": "timestamp_raw_plus_1_minute_conservative_assumption",
+    "fmp_sensitivity": "timestamp_raw_plus_2_minutes"
+  },
+  "tuning_after_freeze": "PROHIBITED"
+}
