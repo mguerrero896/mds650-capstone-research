@@ -466,22 +466,22 @@ current evidence and work that still requires explicit approval.
   target-blind B1v3 formulas, source contract, sample-selection rule, metrics, inference and stop
   conditions in
   `specs/001-pit-options-rv30/spec.md`.
-- [ ] T213 [P] [US4] Add failing tests in `tests/unit/test_b1v3.py` for geometry, interpolation,
+- [x] T213 [P] [US4] Add failing tests in `tests/unit/test_b1v3.py` for geometry, interpolation,
   forward variance and invalid inputs without reading RV30, QLIKE, predictions or sealed results.
-- [ ] T214 [US4] Implement typed primitives in `src/mds650/b1v3.py` for same-expiry/same-strike
+- [x] T214 [US4] Implement typed primitives in `src/mds650/b1v3.py` for same-expiry/same-strike
   consensus, ATM, skew and forward variance until the T213 tests pass.
-- [ ] T215 [US4] Extend `tests/unit/test_b1v3.py` with failing tests for one-row-per-origin output,
+- [x] T215 [US4] Extend `tests/unit/test_b1v3.py` with failing tests for one-row-per-origin output,
   exact within-session lags, nested completeness, target-blind allowlists, session terciles and
   deterministic ordering.
-- [ ] T216 [US4] Implement the bounded-memory origin builder in `src/mds650/b1v3.py`, including
+- [x] T216 [US4] Implement the bounded-memory origin builder in `src/mds650/b1v3.py`, including
   the coverage decision, global/asset/date/tercile/timing invariants and explicit missing
   reasons.
-- [ ] T217 [P] [US4] Add failing tests in `tests/unit/test_build_b1v3_target_blind.py` for source
+- [x] T217 [P] [US4] Add failing tests in `tests/unit/test_build_b1v3_target_blind.py` for source
   binding, JSON Schema, self-hash, idempotence, secret/path hygiene and conflicting output.
-- [ ] T218 [US4] Implement `scripts/build_b1v3_target_blind.py` and
+- [x] T218 [US4] Implement `scripts/build_b1v3_target_blind.py` and
   `specs/001-pit-options-rv30/contracts/b1v3-target-blind-manifest.schema.json` as a thin
   predictor-only command over the approved target-free IV-attempt corpus.
-- [ ] T219 [US4] Execute the full target-free build into `artifacts/b1v3_target_blind/` under the
+- [x] T219 [US4] Execute the full target-free build into `artifacts/b1v3_target_blind/` under the
   80-GiB disk gate; emit only new source-bound evidence, rerun byte-identically and record the
   focused test/coverage report.
 - [ ] T220 [P] [US4] Add failing tests in `tests/unit/test_b1v3_confirmation.py` for pristine

@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1v3-target-blind-manifest.schema.json",
+  "title": "MDS650 B1v3 Target-Blind Build Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "status",
+    "target_blind",
+    "safe_to_evaluate_scientifically",
+    "source",
+    "design",
+    "configuration",
+    "feature_contract",
+    "provenance",
+    "coverage",
+    "output",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "run_id": {
+      "type": "string",
+      "pattern": "^b1v3-target-blind-[0-9a-f]{12}-[0-9a-f]{12}-c(0|60|300)$"
+    },
+    "status": {"const": "PASS_TARGET_BLIND_TECHNICAL_BUILD"},
+    "target_blind": {"const": true},
+    "safe_to_evaluate_scientifically": {"const": false},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "logical_name",
+        "filename",
+        "sha256",
+        "bytes",
+        "row_count",
+        "origin_count",
+        "asset_day_count",
+        "assets",
+        "first_session_date",
+        "last_session_date"
+      ],
+      "properties": {
+        "logical_name": {"const": "target_free_iv_attempts"},
+        "filename": {"type": "string", "pattern": "^[^/\\\\]+\\.parquet$"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "row_count": {"type": "integer", "minimum": 1},
+        "origin_count": {"type": "integer", "minimum": 1},
+        "asset_day_count": {"type": "integer", "minimum": 1},
+        "assets": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[A-Z.]{1,10}$"}
+        },
+        "first_session_date": {"type": "string", "format": "date"},
+        "last_session_date": {"type": "string", "format": "date"}
+      }
+    },
+    "design": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["logical_name", "filename", "sha256"],
+      "properties": {
+        "logical_name": {"const": "approved_b1v3_design"},
+        "filename": {"type": "string", "pattern": "^[^/\\\\]+\\.md$"},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "quote_cutoff_seconds",
+        "maximum_quote_age_seconds",
+        "maximum_relative_spread",
+        "lag_minutes",
+        "timezone",
+        "runtime_python"
+      ],
+      "properties": {
+        "quote_cutoff_seconds": {"enum": [0, 60, 300]},
+        "maximum_quote_age_seconds": {"const": 60},
+        "maximum_relative_spread": {"const": 0.25},
+        "lag_minutes": {
+          "type": "array",
+          "prefixItems": [{"const": 5}, {"const": 30}],
+          "items": false
+        },
+        "timezone": {"const": "America/New_York"},
+        "runtime_python": {"type": "string", "pattern": "^3\\.12\\."}
+      }
+    },
+    "feature_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["feature_count", "features", "nested_flags"],
+      "properties": {
+        "feature_count": {"const": 9},
+        "features": {
+          "type": "array",
+          "minItems": 9,
+          "maxItems": 9,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^b1v3_"}
+        },
+        "nested_flags": {
+          "type": "array",
+          "prefixItems": [
+            {"const": "b1v3a_complete"},
+            {"const": "b1v3b_complete"},
+            {"const": "b1v3c_complete"}
+          ],
+          "items": false
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "quote_request_hashes",
+        "rate_source_dates",
+        "dividend_assumptions",
+        "exogenous_raw_payload_binding",
+        "evaluation_blocker"
+      ],
+      "properties": {
+        "quote_request_hashes": {"const": "PRESENT_AND_VALIDATED"},
+        "rate_source_dates": {"const": "PRE_ORIGIN_VALIDATED"},
+        "dividend_assumptions": {"const": "ALLOWLIST_VALIDATED"},
+        "exogenous_raw_payload_binding": {"const": "UNRESOLVED"},
+        "evaluation_blocker": {"const": "EXOGENOUS_RAW_PAYLOAD_BINDING_NOT_PRESENT"}
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["filename", "sha256", "technical_status"],
+      "properties": {
+        "filename": {"const": "b1v3_coverage.json"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "technical_status": {
+          "enum": [
+            "REVISE_B1V3",
+            "PASS_B1V3A_ONLY",
+            "PASS_B1V3A_WITH_ENRICHED_ROBUSTNESS"
+          ]
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "filename",
+        "sha256",
+        "bytes",
+        "row_count",
+        "origin_count",
+        "origin_identity_sha256",
+        "columns"
+      ],
+      "properties": {
+        "filename": {"const": "b1v3_features.parquet"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "row_count": {"type": "integer", "minimum": 1},
+        "origin_count": {"type": "integer", "minimum": 1},
+        "origin_identity_sha256": {"$ref": "#/$defs/sha256"},
+        "columns": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string"}
+        }
+      }
+    },
+    "manifest_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

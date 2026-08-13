@@ -1,0 +1,117 @@
+{
+  "configuration": {
+    "lag_minutes": [
+      5,
+      30
+    ],
+    "maximum_quote_age_seconds": 60,
+    "maximum_relative_spread": 0.25,
+    "quote_cutoff_seconds": 0,
+    "runtime_python": "3.12.12",
+    "timezone": "America/New_York"
+  },
+  "coverage": {
+    "filename": "b1v3_coverage.json",
+    "sha256": "c1ecc8b8458cc818ff48bc8474b3ae10cac48f99e7ee7cd9b2db6effa115dde7",
+    "technical_status": "PASS_B1V3A_WITH_ENRICHED_ROBUSTNESS"
+  },
+  "design": {
+    "filename": "2026-08-14-b1v3-target-blind-replication-design.md",
+    "logical_name": "approved_b1v3_design",
+    "sha256": "03f8c113778bcbf1b41a8f4805b3b84c5e0e5e1725d0b4641d6866acd3a6286a"
+  },
+  "feature_contract": {
+    "feature_count": 9,
+    "features": [
+      "b1v3_log_atm_variance_30d",
+      "b1v3_log_atm_variance_change_5m",
+      "b1v3_log_atm_variance_change_30m",
+      "b1v3_log_symmetric_skew_30d",
+      "b1v3_log_symmetric_skew_change_30m",
+      "b1v3_log_forward_variance_short_medium",
+      "b1v3_log_forward_variance_medium_long",
+      "b1v3_log_forward_variance_short_medium_change_30m",
+      "b1v3_log_forward_variance_medium_long_change_30m"
+    ],
+    "nested_flags": [
+      "b1v3a_complete",
+      "b1v3b_complete",
+      "b1v3c_complete"
+    ]
+  },
+  "manifest_sha256": "89c8cb9f2866fa62d6d52bdd1ac2394567aa1ed678fa24cadd6346df61092470",
+  "output": {
+    "bytes": 6813984,
+    "columns": [
+      "origin_id",
+      "asset",
+      "session_date",
+      "forecast_origin_utc",
+      "forecast_origin_ns",
+      "session_tercile",
+      "quote_cutoff_seconds",
+      "valid_contract_count",
+      "valid_consensus_point_count",
+      "max_sip_timestamp_ns",
+      "source_request_hashes",
+      "atm_expiry",
+      "atm_dte",
+      "atm_interpolated",
+      "skew_put_interpolated",
+      "skew_call_interpolated",
+      "short_dte",
+      "medium_dte",
+      "long_dte",
+      "b1v3_log_atm_variance_30d",
+      "b1v3_log_symmetric_skew_30d",
+      "b1v3_log_forward_variance_short_medium",
+      "b1v3_log_forward_variance_medium_long",
+      "b1v3_level_missing_reason",
+      "b1v3_log_atm_variance_change_5m",
+      "b1v3_log_atm_variance_change_30m",
+      "b1v3_log_symmetric_skew_change_30m",
+      "b1v3_log_forward_variance_short_medium_change_30m",
+      "b1v3_log_forward_variance_medium_long_change_30m",
+      "b1v3a_complete",
+      "b1v3b_complete",
+      "b1v3c_complete",
+      "b1v3_missing_reason"
+    ],
+    "filename": "b1v3_features.parquet",
+    "origin_count": 77328,
+    "origin_identity_sha256": "c950f9c5719f8763a5e244873b3a65b2ab465b3e1a82f88c500c6c2ea0fbcb18",
+    "row_count": 77328,
+    "sha256": "cd93d7164d088c61070ad601379c38be8555643fec5a137e66ee9ff76cbe25a4"
+  },
+  "provenance": {
+    "dividend_assumptions": "ALLOWLIST_VALIDATED",
+    "evaluation_blocker": "EXOGENOUS_RAW_PAYLOAD_BINDING_NOT_PRESENT",
+    "exogenous_raw_payload_binding": "UNRESOLVED",
+    "quote_request_hashes": "PRESENT_AND_VALIDATED",
+    "rate_source_dates": "PRE_ORIGIN_VALIDATED"
+  },
+  "run_id": "b1v3-target-blind-c8e063238295-03f8c113778b-c0",
+  "safe_to_evaluate_scientifically": false,
+  "schema_version": "1.0",
+  "source": {
+    "asset_day_count": 1080,
+    "assets": [
+      "AAPL",
+      "AMZN",
+      "META",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "bytes": 84040666,
+    "filename": "b1_iv_attempts_20d.parquet",
+    "first_session_date": "2025-07-07",
+    "last_session_date": "2026-03-23",
+    "logical_name": "target_free_iv_attempts",
+    "origin_count": 77328,
+    "row_count": 2308176,
+    "sha256": "c8e063238295b080eda620928fa53b517a28867b096dc780d4670b5f858b7967"
+  },
+  "status": "PASS_TARGET_BLIND_TECHNICAL_BUILD",
+  "target_blind": true
+}

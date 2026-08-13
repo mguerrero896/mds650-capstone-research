@@ -1,0 +1,41 @@
+B1v3 target-blind implementation verification
+Run date: 2026-08-14 Australia/Sydney
+Runtime: Python 3.12 via uv
+
+RED evidence
+- uv run pytest -q tests/unit/test_b1v3.py
+  Expected result: collection failed with ModuleNotFoundError for mds650.b1v3.
+- uv run pytest -q tests/unit/test_build_b1v3_target_blind.py
+  Expected result: collection failed with ModuleNotFoundError for scripts.build_b1v3_target_blind.
+
+GREEN evidence
+- uv run pytest -q tests/unit/test_b1v3.py tests/unit/test_build_b1v3_target_blind.py
+  Result: 47 passed.
+- uv run pytest -q --cov=mds650.b1v3 --cov-report=term-missing tests/unit/test_b1v3.py tests/unit/test_build_b1v3_target_blind.py
+  Result: 47 passed; 91.51% focused line/branch coverage report; required 85% B1v3 gate passed.
+- uv run ruff check src/mds650/b1v3.py scripts/build_b1v3_target_blind.py tests/unit/test_b1v3.py tests/unit/test_build_b1v3_target_blind.py
+  Result: all checks passed.
+- uv run mypy --strict src/mds650/b1v3.py scripts/build_b1v3_target_blind.py
+  Result: success; no issues in 2 source files.
+- uv run python scripts/build_b1v3_target_blind.py --input D:/MDS650/phase6/data/b1q/b1_iv_attempts_20d.parquet --output-root artifacts/b1v3_target_blind
+  First result: PASS_TARGET_BLIND_TECHNICAL_BUILD in 68.9 seconds.
+  Replay result: same three output SHA-256 identities in 67.6 seconds.
+
+Full-corpus invariants
+- Source rows: 2,308,176.
+- Unique/output origins: 77,328 / 77,328.
+- Assets: 6.
+- XNYS sessions: 180.
+- Future selected quotes: 0.
+- B1v3c complete without B1v3b complete: 0.
+- B1v3b complete without B1v3a complete: 0.
+- Technical coverage status: PASS_B1V3A_WITH_ENRICHED_ROBUSTNESS.
+- B1v3a global/minimum-asset/minimum-tercile: 0.9052865715 / 0.8673960273 / 0.7527407407.
+- B1v3b global/minimum-asset/minimum-tercile: 0.8762414649 / 0.7683116077 / 0.7344074074.
+- B1v3c global/minimum-asset/minimum-tercile: 0.7744284089 / 0.5387181875 / 0.6485555556.
+
+Scientific boundary
+- No RV30, QLIKE, prediction, model-result or sealed holdout value was read by this build.
+- Technical coverage is not evidence that B1v3 beats B0.
+- SAFE_TO_EVALUATE_SCIENTIFICALLY remains false.
+- Exact blocker: EXOGENOUS_RAW_PAYLOAD_BINDING_NOT_PRESENT.
