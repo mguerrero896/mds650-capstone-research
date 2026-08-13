@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/independent-corrected-reevaluation-v1.schema.json",
+  "title": "Independent corrected reevaluation preregistration v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "scientific_role",
+    "sample_independent_from_phase6",
+    "pristine_first_read",
+    "prior_target_results_exist",
+    "prior_target_read_count",
+    "authorized_evaluation_count",
+    "corrected_evaluation_performed",
+    "selection_by_sign",
+    "all_signs_must_be_retained",
+    "tuning_after_freeze",
+    "target",
+    "information_sets",
+    "primary_comparisons",
+    "models",
+    "metrics",
+    "inference",
+    "timing",
+    "sample_limitation",
+    "b1_audit",
+    "input_hashes",
+    "source_hashes",
+    "source_commit",
+    "output_contract",
+    "target_or_metric_payload_read_during_freeze",
+    "model_fit_during_freeze",
+    "secret_values_emitted",
+    "personal_paths_emitted",
+    "preregistration_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "independent-corrected-reevaluation-v1.0"},
+    "status": {"const": "FROZEN_AUTHORIZED_BEFORE_CORRECTED_REEVALUATION"},
+    "scientific_role": {"const": "CORRECTED_FORENSIC_REEVALUATION"},
+    "sample_independent_from_phase6": {"const": true},
+    "pristine_first_read": {"const": false},
+    "prior_target_results_exist": {"const": true},
+    "prior_target_read_count": {"const": 1},
+    "authorized_evaluation_count": {"const": 1},
+    "corrected_evaluation_performed": {"const": false},
+    "selection_by_sign": {"const": "PROHIBITED"},
+    "all_signs_must_be_retained": {"const": true},
+    "tuning_after_freeze": {"const": "PROHIBITED"},
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "horizon_minutes", "price_count", "return_count"],
+      "properties": {
+        "name": {"const": "RV30"},
+        "horizon_minutes": {"const": 30},
+        "price_count": {"const": 31},
+        "return_count": {"const": 30}
+      }
+    },
+    "information_sets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["B0", "B1a_addition", "B2_addition"],
+      "properties": {
+        "B0": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "B1a_addition": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "B2_addition": {"type": "array", "minItems": 9, "maxItems": 9, "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "primary_comparisons": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "estimand", "positive_favors"],
+        "properties": {
+          "name": {"enum": ["B1a_vs_B0", "B2_vs_B1a"]},
+          "estimand": {"type": "string"},
+          "positive_favors": {"enum": ["B1a", "B2"]}
+        }
+      }
+    },
+    "models": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["confirmatory", "robustness"],
+      "properties": {
+        "confirmatory": {"const": "Gamma_GLM_log_link_fixed_parameters"},
+        "robustness": {"const": "LightGBM_fixed_parameters_no_tuning"}
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary", "secondary"],
+      "properties": {
+        "primary": {"const": "QLIKE"},
+        "secondary": {"const": ["MAE", "RMSE"]}
+      }
+    },
+    "inference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resampling", "repetitions", "multiplicity", "mde_source"],
+      "properties": {
+        "resampling": {"const": "PAIRED_TRADING_DAY_CLUSTER_BOOTSTRAP"},
+        "repetitions": {"const": 10000},
+        "multiplicity": {"const": "HOLM"},
+        "mde_source": {"const": "PHASE6_TRAINING_ONLY_FROZEN"}
+      }
+    },
+    "timing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fmp_primary", "fmp_sensitivity", "b1q", "b2"],
+      "properties": {
+        "fmp_primary": {"type": "string"},
+        "fmp_sensitivity": {"type": "string"},
+        "b1q": {"type": "string"},
+        "b2": {"type": "string"}
+      }
+    },
+    "sample_limitation": {"type": "string", "minLength": 1},
+    "b1_audit": {
+      "type": "object",
+      "required": [
+        "status",
+        "origin_count",
+        "attempt_count",
+        "b1a_coverage",
+        "b1b_coverage",
+        "b1c_coverage",
+        "nested_coverage_monotonic",
+        "quote_after_origin_count",
+        "rate_not_strictly_prior_count",
+        "outcome_columns_present"
+      ],
+      "properties": {
+        "status": {"const": "PASS_TARGET_BLIND_CORRECTED_B1"},
+        "origin_count": {"type": "integer", "minimum": 1},
+        "attempt_count": {"type": "integer", "minimum": 1},
+        "b1a_coverage": {"type": "number", "minimum": 0, "maximum": 1},
+        "b1b_coverage": {"type": "number", "minimum": 0, "maximum": 1},
+        "b1c_coverage": {"type": "number", "minimum": 0, "maximum": 1},
+        "nested_coverage_monotonic": {"const": true},
+        "quote_after_origin_count": {"const": 0},
+        "rate_not_strictly_prior_count": {"const": 0},
+        "outcome_columns_present": {"const": []}
+      }
+    },
+    "input_hashes": {"$ref": "#/$defs/hashMap"},
+    "source_hashes": {"$ref": "#/$defs/hashMap"},
+    "source_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "output_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["overwrite_existing_results", "result_status", "result_root", "bulk_root"],
+      "properties": {
+        "overwrite_existing_results": {"const": false},
+        "result_status": {"const": "CORRECTED_FORENSIC_REEVALUATION_COMPLETE"},
+        "result_root": {"const": "artifacts/independent_replication_pit_v2"},
+        "bulk_root": {"type": "string", "pattern": "^MDS650_DATA_ROOT/"}
+      }
+    },
+    "target_or_metric_payload_read_during_freeze": {"const": false},
+    "model_fit_during_freeze": {"const": false},
+    "secret_values_emitted": {"const": false},
+    "personal_paths_emitted": {"const": false},
+    "preregistration_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "hashMap": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"$ref": "#/$defs/sha256"}
+    }
+  }
+}
