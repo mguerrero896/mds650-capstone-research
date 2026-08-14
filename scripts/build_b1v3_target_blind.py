@@ -66,6 +66,13 @@ class BuildArtifacts:
     manifest_sha256: str
 
 
+@dataclass(frozen=True, slots=True)
+class _SourceBinding:
+    manifest_semantic_sha256: str
+    manifest_file_sha256: str
+    inventory_sha256: str
+
+
 def canonical_json_bytes(value: Mapping[str, Any]) -> bytes:
     """Serialize a mapping canonically for semantic hashing.
 
@@ -142,6 +149,64 @@ def _validate_json_schema(document: Mapping[str, Any], schema_path: Path) -> Non
     validator_type.check_schema(schema_value)
     if any(validator_type(schema_value).iter_errors(document)):
         raise ValueError("B1V3_MANIFEST_SCHEMA_VALIDATION_FAILED")
+
+
+def _load_source_binding(
+    *,
+    input_sha256: str,
+    manifest_path: Path | None,
+    schema_path: Path | None,
+    inventory_path: Path | None,
+) -> _SourceBinding | None:
+    supplied = (manifest_path, schema_path, inventory_path)
+    if all(value is None for value in supplied):
+        return None
+    if any(value is None for value in supplied):
+        raise ValueError("B1V3_SOURCE_BINDING_ARGUMENTS_INCOMPLETE")
+    assert manifest_path is not None
+    assert schema_path is not None
+    assert inventory_path is not None
+    try:
+        document = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ValueError("B1V3_SOURCE_BINDING_MANIFEST_INVALID") from exc
+    if not isinstance(document, dict):
+        raise ValueError("B1V3_SOURCE_BINDING_MANIFEST_INVALID")
+    _validate_json_schema(document, schema_path)
+    stored_hash = document.get("manifest_sha256")
+    unsigned = {key: value for key, value in document.items() if key != "manifest_sha256"}
+    attempts = document.get("attempts")
+    raw_binding = document.get("raw_payload_binding")
+    pit = document.get("pit_invariants")
+    security = document.get("security")
+    if (
+        not isinstance(stored_hash, str)
+        or stored_hash != canonical_sha256(unsigned)
+        or document.get("status") != "PASS_TARGET_BLIND_B1Q_SOURCE_BOUND"
+        or document.get("target_blind") is not True
+        or document.get("outcome_read_count") != 0
+        or document.get("safe_to_read_outcomes") is not False
+        or not isinstance(attempts, dict)
+        or attempts.get("sha256") != input_sha256
+        or not isinstance(raw_binding, dict)
+        or raw_binding.get("status") != "PRESENT_AND_VALIDATED"
+        or not isinstance(pit, dict)
+        or pit.get("future_selected_quote_rows") != 0
+        or not isinstance(security, dict)
+        or security.get("secret_values_emitted") is not False
+        or security.get("personal_paths_emitted") is not False
+    ):
+        raise ValueError("B1V3_SOURCE_BINDING_GATE_INVALID")
+    if (
+        not inventory_path.is_file()
+        or raw_binding.get("inventory_sha256") != sha256_file(inventory_path)
+    ):
+        raise ValueError("B1V3_SOURCE_BINDING_INVENTORY_HASH_INVALID")
+    return _SourceBinding(
+        manifest_semantic_sha256=stored_hash,
+        manifest_file_sha256=sha256_file(manifest_path),
+        inventory_sha256=sha256_file(inventory_path),
+    )
 
 
 def _validate_target_blind_input_path(path: Path) -> None:
@@ -324,6 +389,9 @@ def build_target_blind_package(
     design_path: Path,
     output_root: Path,
     manifest_schema_path: Path,
+    source_binding_manifest_path: Path | None = None,
+    source_binding_schema_path: Path | None = None,
+    source_inventory_path: Path | None = None,
     quote_cutoff_seconds: int = 0,
     minimum_free_gib: float = 80.0,
     batch_size: int = 65_536,
@@ -340,6 +408,11 @@ def build_target_blind_package(
         New package directory; conflicting files are never overwritten.
     manifest_schema_path:
         Draft 2020-12 JSON Schema for the manifest.
+    source_binding_manifest_path, source_binding_schema_path,
+    source_inventory_path:
+        Optional all-or-none B1Q raw-payload binding. When present, the input
+        hash, self-hashed source manifest, schema, and immutable inventory must
+        agree before the legacy provenance blocker can be removed.
     quote_cutoff_seconds:
         Registered quote cutoff: 0, 60 or 300 seconds. Shifted variants require
         matching reselection identity in the input table.
@@ -365,7 +438,22 @@ def build_target_blind_package(
     _validate_disk_gate(input_path, minimum_free_gib=minimum_free_gib)
     source_hash = sha256_file(input_path)
     design_hash = sha256_file(design_path)
-    run_id = f"b1v3-target-blind-{source_hash[:12]}-{design_hash[:12]}-c{quote_cutoff_seconds}"
+    source_binding = _load_source_binding(
+        input_sha256=source_hash,
+        manifest_path=source_binding_manifest_path,
+        schema_path=source_binding_schema_path,
+        inventory_path=source_inventory_path,
+    )
+    if source_binding is None:
+        run_id = (
+            f"b1v3-target-blind-{source_hash[:12]}-{design_hash[:12]}-"
+            f"c{quote_cutoff_seconds}"
+        )
+    else:
+        run_id = (
+            f"b1v3-source-bound-{source_hash[:12]}-{design_hash[:12]}-"
+            f"{source_binding.manifest_semantic_sha256[:12]}-c{quote_cutoff_seconds}"
+        )
     frame, input_rows = _build_streaming_features(
         input_path,
         quote_cutoff_seconds=quote_cutoff_seconds,
@@ -396,10 +484,38 @@ def build_target_blind_package(
         assets = sorted(str(value) for value in frame["asset"].unique().to_list())
         sessions = sorted(str(value) for value in frame["session_date"].unique().to_list())
         asset_day_count = frame.select(pl.struct("asset", "session_date").n_unique()).item()
+        provenance: dict[str, Any]
+        if source_binding is None:
+            provenance = {
+                "quote_request_hashes": "PRESENT_AND_VALIDATED",
+                "rate_source_dates": "PRE_ORIGIN_VALIDATED",
+                "dividend_assumptions": "ALLOWLIST_VALIDATED",
+                "exogenous_raw_payload_binding": "UNRESOLVED",
+                "evaluation_blocker": "EXOGENOUS_RAW_PAYLOAD_BINDING_NOT_PRESENT",
+            }
+        else:
+            provenance = {
+                "quote_request_hashes": "PRESENT_AND_VALIDATED",
+                "rate_source_dates": "PRE_ORIGIN_VALIDATED",
+                "dividend_assumptions": "ALLOWLIST_VALIDATED",
+                "exogenous_raw_payload_binding": "PRESENT_AND_VALIDATED",
+                "source_binding_manifest_sha256": (
+                    source_binding.manifest_semantic_sha256
+                ),
+                "source_binding_manifest_file_sha256": (
+                    source_binding.manifest_file_sha256
+                ),
+                "source_inventory_sha256": source_binding.inventory_sha256,
+                "evaluation_blocker": None,
+            }
         manifest: dict[str, Any] = {
-            "schema_version": "1.0",
+            "schema_version": "2.0" if source_binding is not None else "1.0",
             "run_id": run_id,
-            "status": "PASS_TARGET_BLIND_TECHNICAL_BUILD",
+            "status": (
+                "PASS_TARGET_BLIND_SOURCE_BOUND_TECHNICAL_BUILD"
+                if source_binding is not None
+                else "PASS_TARGET_BLIND_TECHNICAL_BUILD"
+            ),
             "target_blind": True,
             "safe_to_evaluate_scientifically": False,
             "source": {
@@ -436,13 +552,7 @@ def build_target_blind_package(
                     "b1v3c_complete",
                 ],
             },
-            "provenance": {
-                "quote_request_hashes": "PRESENT_AND_VALIDATED",
-                "rate_source_dates": "PRE_ORIGIN_VALIDATED",
-                "dividend_assumptions": "ALLOWLIST_VALIDATED",
-                "exogenous_raw_payload_binding": "UNRESOLVED",
-                "evaluation_blocker": "EXOGENOUS_RAW_PAYLOAD_BINDING_NOT_PRESENT",
-            },
+            "provenance": provenance,
             "coverage": {
                 "filename": temp_coverage.name,
                 "sha256": coverage_hash,
@@ -494,6 +604,9 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=Path("docs/superpowers/specs/2026-08-14-b1v3-target-blind-replication-design.md"),
     )
     parser.add_argument("--output-root", type=Path, required=True)
+    parser.add_argument("--source-binding-manifest", type=Path)
+    parser.add_argument("--source-binding-schema", type=Path)
+    parser.add_argument("--source-inventory", type=Path)
     parser.add_argument(
         "--manifest-schema",
         type=Path,
@@ -513,6 +626,9 @@ def main(argv: list[str] | None = None) -> int:
         design_path=args.design,
         output_root=args.output_root,
         manifest_schema_path=args.manifest_schema,
+        source_binding_manifest_path=args.source_binding_manifest,
+        source_binding_schema_path=args.source_binding_schema,
+        source_inventory_path=args.source_inventory,
         quote_cutoff_seconds=args.quote_cutoff_seconds,
         minimum_free_gib=args.minimum_free_gib,
         batch_size=args.batch_size,

@@ -37,3 +37,13 @@
 /specs/001-pit-options-rv30/contracts/b1v3-confirmation-b2-predictors-v1.schema.json text eol=lf
 /scripts/acquire_b1v3_confirmation_b1q.py text eol=lf
 /tests/unit/test_acquire_b1v3_confirmation_b1q.py text eol=lf
+/src/mds650/b1v3_b1q_source.py text eol=lf
+/scripts/seal_b1v3_confirmation_b1q_source.py text eol=lf
+/scripts/build_b1v3_target_blind.py text eol=lf
+/scripts/build_b1v3_confirmation_b1.py text eol=lf
+/tests/unit/test_b1v3_b1q_source.py text eol=lf
+/tests/unit/test_seal_b1v3_confirmation_b1q_source.py text eol=lf
+/tests/unit/test_build_b1v3_target_blind.py text eol=lf
+/tests/unit/test_build_b1v3_confirmation_b1.py text eol=lf
+/specs/001-pit-options-rv30/contracts/b1v3-confirmation-b1q-source-v1.schema.json text eol=lf
+/specs/001-pit-options-rv30/contracts/b1v3-target-blind-source-bound-manifest-v2.schema.json text eol=lf

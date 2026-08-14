@@ -22,6 +22,20 @@ ROOT = Path(__file__).parents[2]
 SCHEMA_PATH = (
     ROOT / "specs" / "001-pit-options-rv30" / "contracts" / "b1v3-target-blind-manifest.schema.json"
 )
+SOURCE_SCHEMA_PATH = (
+    ROOT
+    / "specs"
+    / "001-pit-options-rv30"
+    / "contracts"
+    / "b1v3-confirmation-b1q-source-v1.schema.json"
+)
+SOURCE_BOUND_SCHEMA_PATH = (
+    ROOT
+    / "specs"
+    / "001-pit-options-rv30"
+    / "contracts"
+    / "b1v3-target-blind-source-bound-manifest-v2.schema.json"
+)
 
 
 def _contract(*, expiry: date, strike: float, option_type: str) -> str:
@@ -114,6 +128,81 @@ def _build(tmp_path: Path) -> tuple[Path, Path, Path, BuildArtifacts]:
     return attempts_path, design_path, output_root, result
 
 
+def _source_binding(tmp_path: Path, attempts_path: Path) -> tuple[Path, Path]:
+    inventory_path = tmp_path / "b1q_raw_payload_inventory.parquet"
+    pl.DataFrame({"cache_file_sha256": ["e" * 64]}).write_parquet(inventory_path)
+    attempts = pl.read_parquet(attempts_path)
+    document: dict[str, object] = {
+        "schema_version": "1.0",
+        "status": "PASS_TARGET_BLIND_B1Q_SOURCE_BOUND",
+        "plan_sha256": "a" * 64,
+        "base_manifest_sha256": "b" * 64,
+        "target_blind": True,
+        "outcome_read_count": 0,
+        "safe_to_read_outcomes": False,
+        "scope": {
+            "training_session_count": 1,
+            "confirmation_session_count": 0,
+            "session_count": 1,
+            "asset_count": 6,
+            "assets": ["AAPL", "AMZN", "META", "MSFT", "NVDA", "TSLA"],
+            "origin_count": attempts["origin_id"].n_unique(),
+            "origin_identity_sha256": "c" * 64,
+        },
+        "attempts": {
+            "logical_path": (
+                "MDS650_B1V3_DATA_ROOT/tmp/b1q_acquisition_v1/"
+                "b1_iv_attempts_20d.parquet"
+            ),
+            "sha256": sha256_file(attempts_path),
+            "bytes": attempts_path.stat().st_size,
+            "row_count": attempts.height,
+            "columns": attempts.columns,
+            "unique_request_hash_count": attempts["source_request_hash"].n_unique(),
+        },
+        "contract_grid": {
+            "logical_path": (
+                "MDS650_B1V3_DATA_ROOT/cache/massive/"
+                "resolved_contracts_b1v3_canonical_spot_v1.json"
+            ),
+            "schema_version": "b1q-contract-grid-3.0",
+            "sha256": "d" * 64,
+            "asset_day_count": 1,
+            "contract_day_count": attempts["source_request_hash"].n_unique(),
+        },
+        "raw_payload_binding": {
+            "status": "PRESENT_AND_VALIDATED",
+            "inventory_logical_path": (
+                "MDS650_B1V3_DATA_ROOT/evidence/b1q_raw_payload_inventory.parquet"
+            ),
+            "inventory_sha256": sha256_file(inventory_path),
+            "contract_day_count": attempts["source_request_hash"].n_unique(),
+            "cache_bytes": 1,
+            "quote_row_count": 1,
+            "cache_schema_version": 4,
+            "route": "B1Q",
+        },
+        "pit_invariants": {
+            "future_selected_quote_rows": 0,
+            "rate_source_strictly_pre_session": True,
+            "request_scope_validated": True,
+            "pagination_validated": True,
+            "duplicate_attempt_identities": 0,
+            "duplicate_payload_hashes": 0,
+        },
+        "security": {
+            "secret_values_emitted": False,
+            "personal_paths_emitted": False,
+        },
+    }
+    document["manifest_sha256"] = canonical_sha256(document)
+    manifest_path = tmp_path / "b1q_source_manifest.json"
+    manifest_path.write_text(
+        json.dumps(document, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    return manifest_path, inventory_path
+
+
 def test_build_binds_sources_validates_schema_and_stays_target_blind(
     tmp_path: Path,
 ) -> None:
@@ -143,6 +232,58 @@ def test_build_binds_sources_validates_schema_and_stays_target_blind(
     assert "api_key" not in rendered.lower()
     feature_columns = set(pl.read_parquet(result.features_path).columns)
     assert not {"rv30", "qlike", "prediction", "outcome"} & feature_columns
+
+
+def test_source_bound_build_resolves_raw_payload_blocker(tmp_path: Path) -> None:
+    attempts_path, design_path, output_root = _inputs(tmp_path)
+    source_manifest, source_inventory = _source_binding(tmp_path, attempts_path)
+
+    result = build_target_blind_package(
+        input_path=attempts_path,
+        design_path=design_path,
+        output_root=output_root,
+        manifest_schema_path=SOURCE_BOUND_SCHEMA_PATH,
+        source_binding_manifest_path=source_manifest,
+        source_binding_schema_path=SOURCE_SCHEMA_PATH,
+        source_inventory_path=source_inventory,
+        quote_cutoff_seconds=0,
+        minimum_free_gib=0.0,
+        batch_size=17,
+    )
+
+    manifest = json.loads(result.manifest_path.read_text(encoding="utf-8"))
+    jsonschema.validate(
+        manifest,
+        json.loads(SOURCE_BOUND_SCHEMA_PATH.read_text(encoding="utf-8")),
+    )
+    assert manifest["schema_version"] == "2.0"
+    assert manifest["status"] == "PASS_TARGET_BLIND_SOURCE_BOUND_TECHNICAL_BUILD"
+    assert manifest["provenance"]["exogenous_raw_payload_binding"] == (
+        "PRESENT_AND_VALIDATED"
+    )
+    assert manifest["provenance"]["evaluation_blocker"] is None
+    assert manifest["provenance"]["source_binding_manifest_sha256"] == (
+        json.loads(source_manifest.read_text(encoding="utf-8"))["manifest_sha256"]
+    )
+    assert manifest["safe_to_evaluate_scientifically"] is False
+
+
+def test_source_bound_build_rejects_inventory_hash_drift(tmp_path: Path) -> None:
+    attempts_path, design_path, output_root = _inputs(tmp_path)
+    source_manifest, source_inventory = _source_binding(tmp_path, attempts_path)
+    pl.DataFrame({"tampered": [1]}).write_parquet(source_inventory)
+
+    with pytest.raises(ValueError, match="B1V3_SOURCE_BINDING_INVENTORY_HASH_INVALID"):
+        build_target_blind_package(
+            input_path=attempts_path,
+            design_path=design_path,
+            output_root=output_root,
+            manifest_schema_path=SOURCE_BOUND_SCHEMA_PATH,
+            source_binding_manifest_path=source_manifest,
+            source_binding_schema_path=SOURCE_SCHEMA_PATH,
+            source_inventory_path=source_inventory,
+            minimum_free_gib=0.0,
+        )
 
 
 def test_build_is_byte_identical_on_rerun(tmp_path: Path) -> None:
