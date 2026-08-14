@@ -33,6 +33,10 @@ _REQUIRED_PREREQUISITES: Final[tuple[str, ...]] = (
     "coverage",
     "json_schema",
     "no_leakage",
+    "hygiene",
+    "deterministic_replay",
+    "clean_install",
+    "spec_kit",
     "disk_gate",
 )
 
@@ -325,6 +329,10 @@ def build_b1v3_access_ledger(
     *,
     common_panel_sha256: str,
     method_freeze_sha256: str,
+    timing_panel_manifest_sha256: str,
+    quality_report_sha256: str,
+    confirmation_code_sha256: str,
+    uv_lock_sha256: str,
     prerequisites: Mapping[str, bool],
 ) -> dict[str, Any]:
     """Seal confirmation access after training-only method freeze.
@@ -352,6 +360,10 @@ def build_b1v3_access_ledger(
         or preregistration.get("common_predictor_panel_sha256") != common_panel_sha256
         or not _is_sha256(common_panel_sha256)
         or not _is_sha256(method_freeze_sha256)
+        or not _is_sha256(timing_panel_manifest_sha256)
+        or not _is_sha256(quality_report_sha256)
+        or not _is_sha256(confirmation_code_sha256)
+        or not _is_sha256(uv_lock_sha256)
     ):
         raise ValueError("B1V3_PREREGISTRATION_INVALID")
     document: dict[str, Any] = {
@@ -365,6 +377,10 @@ def build_b1v3_access_ledger(
         "results_inspected": False,
         "common_panel_sha256": common_panel_sha256,
         "method_freeze_sha256": method_freeze_sha256,
+        "timing_panel_manifest_sha256": timing_panel_manifest_sha256,
+        "quality_report_sha256": quality_report_sha256,
+        "confirmation_code_sha256": confirmation_code_sha256,
+        "uv_lock_sha256": uv_lock_sha256,
         "preregistration_manifest_sha256": str(preregistration["manifest_sha256"]),
         "prerequisites": dict(sorted(prerequisites.items())),
     }

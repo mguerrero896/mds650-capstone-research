@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1v3-confirmation-result-v1.schema.json",
+  "title": "MDS650 One-Read B1v3 Confirmation Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "outcome_read_count",
+    "training_read_count",
+    "confirmation_read_count",
+    "evaluation_attempt_count",
+    "all_signs_retained",
+    "source_bindings",
+    "sample",
+    "outputs",
+    "scientific_result",
+    "security",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "status": {"const": "COMPLETED_ONE_READ_B1V3_CONFIRMATION"},
+    "outcome_read_count": {"const": 2},
+    "training_read_count": {"const": 1},
+    "confirmation_read_count": {"const": 1},
+    "evaluation_attempt_count": {"const": 1},
+    "all_signs_retained": {"const": true},
+    "source_bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "preregistration_manifest_sha256",
+        "method_freeze_manifest_sha256",
+        "frozen_access_manifest_sha256",
+        "consumed_authorization_manifest_sha256",
+        "common_predictor_manifest_sha256",
+        "timing_panel_manifest_sha256",
+        "quality_report_manifest_sha256",
+        "confirmation_code_sha256",
+        "uv_lock_sha256"
+      ],
+      "properties": {
+        "preregistration_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "method_freeze_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "frozen_access_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "consumed_authorization_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "common_predictor_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "timing_panel_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "quality_report_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "confirmation_code_sha256": {"$ref": "#/$defs/sha256"},
+        "uv_lock_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "sample": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "training_rows",
+        "confirmation_rows",
+        "training_sessions",
+        "confirmation_sessions",
+        "asset_count",
+        "origin_identity_sha256",
+        "target_identity_sha256"
+      ],
+      "properties": {
+        "training_rows": {"type": "integer", "minimum": 1},
+        "confirmation_rows": {"type": "integer", "minimum": 1},
+        "training_sessions": {"const": 60},
+        "confirmation_sessions": {"const": 30},
+        "asset_count": {"const": 6},
+        "origin_identity_sha256": {"$ref": "#/$defs/sha256"},
+        "target_identity_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evaluation_panel", "primary_forecasts", "timing_forecasts"],
+      "properties": {
+        "evaluation_panel": {"$ref": "#/$defs/output"},
+        "primary_forecasts": {"$ref": "#/$defs/output"},
+        "timing_forecasts": {"$ref": "#/$defs/output"}
+      }
+    },
+    "scientific_result": {
+      "type": "object",
+      "required": [
+        "metrics",
+        "global",
+        "global_holm",
+        "stability",
+        "timing",
+        "claims",
+        "decision",
+        "all_signs_retained"
+      ],
+      "properties": {
+        "claims": {
+          "type": "object",
+          "required": ["delta_b1v3", "delta_b2"],
+          "properties": {
+            "delta_b1v3": {"$ref": "#/$defs/claim"},
+            "delta_b2": {"$ref": "#/$defs/claim"}
+          }
+        },
+        "decision": {
+          "enum": [
+            "GLOBAL_B1V3_AND_B2_EDGE_CONFIRMED",
+            "GLOBAL_B1V3_EDGE_CONFIRMED",
+            "GLOBAL_B2_EDGE_CONFIRMED",
+            "POSITIVE_BUT_NOT_GLOBALLY_CONFIRMED",
+            "GLOBAL_EDGE_NOT_CONFIRMED"
+          ]
+        },
+        "all_signs_retained": {"const": true}
+      }
+    },
+    "security": {
+      "const": {
+        "secret_values_emitted": false,
+        "personal_paths_emitted": false
+      }
+    },
+    "manifest_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["logical_path", "sha256", "rows"],
+      "properties": {
+        "logical_path": {"type": "string", "pattern": "^MDS650_B1V3_DATA_ROOT/"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "rows": {"type": "integer", "minimum": 1}
+      }
+    },
+    "claim": {
+      "type": "object",
+      "required": ["status", "mde", "conditions", "failed_conditions"],
+      "properties": {
+        "status": {
+          "enum": [
+            "GLOBAL_EDGE_CONFIRMED",
+            "POSITIVE_BUT_NOT_GLOBALLY_CONFIRMED",
+            "GLOBAL_EDGE_NOT_CONFIRMED"
+          ]
+        },
+        "mde": {"type": "number", "exclusiveMinimum": 0},
+        "conditions": {"type": "object"},
+        "failed_conditions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string"}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1v3-access-ledger-v1.schema.json",
+  "title": "MDS650 B1v3 One-Read Access Ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "safe_to_evaluate_b1v3",
+    "outcome_read_count",
+    "training_read_count",
+    "confirmation_read_count",
+    "evaluation_attempt_count",
+    "results_inspected",
+    "common_panel_sha256",
+    "method_freeze_sha256",
+    "timing_panel_manifest_sha256",
+    "quality_report_sha256",
+    "confirmation_code_sha256",
+    "uv_lock_sha256",
+    "preregistration_manifest_sha256",
+    "prerequisites",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "status": {
+      "enum": [
+        "METHOD_FROZEN_BEFORE_CONFIRMATION",
+        "CONFIRMATION_EVALUATION_IN_PROGRESS"
+      ]
+    },
+    "safe_to_evaluate_b1v3": {"const": "YES"},
+    "outcome_read_count": {"enum": [1, 2]},
+    "training_read_count": {"const": 1},
+    "confirmation_read_count": {"enum": [0, 1]},
+    "evaluation_attempt_count": {"enum": [0, 1]},
+    "results_inspected": {"const": false},
+    "common_panel_sha256": {"$ref": "#/$defs/sha256"},
+    "method_freeze_sha256": {"$ref": "#/$defs/sha256"},
+    "timing_panel_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "quality_report_sha256": {"$ref": "#/$defs/sha256"},
+    "confirmation_code_sha256": {"$ref": "#/$defs/sha256"},
+    "uv_lock_sha256": {"$ref": "#/$defs/sha256"},
+    "preregistration_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "prerequisites": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "coverage",
+        "clean_install",
+        "deterministic_replay",
+        "disk_gate",
+        "focused_tests",
+        "full_tests",
+        "hygiene",
+        "json_schema",
+        "mypy",
+        "no_leakage",
+        "ruff",
+        "spec_kit"
+      ],
+      "properties": {
+        "coverage": {"const": true},
+        "clean_install": {"const": true},
+        "deterministic_replay": {"const": true},
+        "disk_gate": {"const": true},
+        "focused_tests": {"const": true},
+        "full_tests": {"const": true},
+        "hygiene": {"const": true},
+        "json_schema": {"const": true},
+        "mypy": {"const": true},
+        "no_leakage": {"const": true},
+        "ruff": {"const": true},
+        "spec_kit": {"const": true}
+      }
+    },
+    "manifest_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"status": {"const": "METHOD_FROZEN_BEFORE_CONFIRMATION"}},
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "outcome_read_count": {"const": 1},
+          "confirmation_read_count": {"const": 0},
+          "evaluation_attempt_count": {"const": 0}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"status": {"const": "CONFIRMATION_EVALUATION_IN_PROGRESS"}},
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "outcome_read_count": {"const": 2},
+          "confirmation_read_count": {"const": 1},
+          "evaluation_attempt_count": {"const": 1}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

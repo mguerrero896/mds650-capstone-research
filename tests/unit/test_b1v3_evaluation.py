@@ -99,6 +99,10 @@ def _authorization(preregistration: dict[str, Any]) -> dict[str, Any]:
         preregistration,
         common_panel_sha256=_SHA_D,
         method_freeze_sha256="3" * 64,
+        timing_panel_manifest_sha256="4" * 64,
+        quality_report_sha256="5" * 64,
+        confirmation_code_sha256="6" * 64,
+        uv_lock_sha256="7" * 64,
         prerequisites={
             "focused_tests": True,
             "full_tests": True,
@@ -107,6 +111,10 @@ def _authorization(preregistration: dict[str, Any]) -> dict[str, Any]:
             "coverage": True,
             "json_schema": True,
             "no_leakage": True,
+            "hygiene": True,
+            "deterministic_replay": True,
+            "clean_install": True,
+            "spec_kit": True,
             "disk_gate": True,
         },
     )
@@ -254,12 +262,20 @@ def test_access_ledger_requires_every_gate_and_is_single_use() -> None:
         "coverage": True,
         "json_schema": True,
         "no_leakage": True,
+        "hygiene": True,
+        "deterministic_replay": True,
+        "clean_install": True,
+        "spec_kit": True,
         "disk_gate": True,
     }
     ledger = build_b1v3_access_ledger(
         preregistration,
         common_panel_sha256=_SHA_D,
         method_freeze_sha256="3" * 64,
+        timing_panel_manifest_sha256="4" * 64,
+        quality_report_sha256="5" * 64,
+        confirmation_code_sha256="6" * 64,
+        uv_lock_sha256="7" * 64,
         prerequisites=prerequisites,
     )
 
@@ -296,6 +312,10 @@ def test_access_ledger_requires_every_gate_and_is_single_use() -> None:
             preregistration,
             common_panel_sha256=_SHA_D,
             method_freeze_sha256="3" * 64,
+            timing_panel_manifest_sha256="4" * 64,
+            quality_report_sha256="5" * 64,
+            confirmation_code_sha256="6" * 64,
+            uv_lock_sha256="7" * 64,
             prerequisites=incomplete,
         )
 

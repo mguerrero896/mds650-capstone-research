@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1v3-pre-confirmation-quality-v1.schema.json",
+  "title": "MDS650 B1v3 Pre-Confirmation Quality Gate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "target_blind",
+    "outcome_read_count",
+    "training_read_count",
+    "confirmation_read_count",
+    "source_bindings",
+    "gates",
+    "security",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "status": {"const": "PASS_B1V3_PRE_CONFIRMATION_QUALITY"},
+    "target_blind": {"const": true},
+    "outcome_read_count": {"const": 1},
+    "training_read_count": {"const": 1},
+    "confirmation_read_count": {"const": 0},
+    "source_bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "preregistration_manifest_sha256",
+        "method_freeze_manifest_sha256",
+        "common_panel_sha256",
+        "timing_panel_manifest_sha256"
+      ],
+      "properties": {
+        "preregistration_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "method_freeze_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "common_panel_sha256": {"$ref": "#/$defs/sha256"},
+        "timing_panel_manifest_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "gates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "focused_tests",
+        "full_tests",
+        "ruff",
+        "mypy",
+        "coverage",
+        "json_schema",
+        "no_leakage",
+        "hygiene",
+        "deterministic_replay",
+        "clean_install",
+        "spec_kit",
+        "disk_gate"
+      ],
+      "properties": {
+        "focused_tests": {"$ref": "#/$defs/gate"},
+        "full_tests": {"$ref": "#/$defs/gate"},
+        "ruff": {"$ref": "#/$defs/gate"},
+        "mypy": {"$ref": "#/$defs/gate"},
+        "coverage": {"$ref": "#/$defs/gate"},
+        "json_schema": {"$ref": "#/$defs/gate"},
+        "no_leakage": {"$ref": "#/$defs/gate"},
+        "hygiene": {"$ref": "#/$defs/gate"},
+        "deterministic_replay": {"$ref": "#/$defs/gate"},
+        "clean_install": {"$ref": "#/$defs/gate"},
+        "spec_kit": {"$ref": "#/$defs/gate"},
+        "disk_gate": {"$ref": "#/$defs/gate"}
+      }
+    },
+    "security": {
+      "const": {
+        "secret_values_emitted": false,
+        "personal_paths_emitted": false
+      }
+    },
+    "manifest_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "evidence_sha256"],
+      "properties": {
+        "status": {"const": "PASS"},
+        "evidence_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}
