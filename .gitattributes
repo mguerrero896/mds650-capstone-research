@@ -35,3 +35,5 @@
 /scripts/build_b1v3_confirmation_b2.py text eol=lf
 /tests/unit/test_b1v3_b2_confirmation.py text eol=lf
 /specs/001-pit-options-rv30/contracts/b1v3-confirmation-b2-predictors-v1.schema.json text eol=lf
+/scripts/acquire_b1v3_confirmation_b1q.py text eol=lf
+/tests/unit/test_acquire_b1v3_confirmation_b1q.py text eol=lf

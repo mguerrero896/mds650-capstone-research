@@ -32,12 +32,19 @@ class B1BuildConfig:
     cache_root: Path
     sessions: tuple[str, ...]
     origins_path: Path | None = None
+    contract_cache_filename: str = "resolved_contracts_phase6_strict_v3.json"
 
     def __post_init__(self) -> None:
         if self.sessions and tuple(sorted(set(self.sessions))) != self.sessions:
             raise ValueError("B1_SESSION_ALLOWLIST_INVALID")
         if not self.sessions and self.origins_path is None:
             raise ValueError("B1_SESSION_ALLOWLIST_INVALID")
+        contract_cache = Path(self.contract_cache_filename)
+        if (
+            contract_cache.name != self.contract_cache_filename
+            or contract_cache.suffix.lower() != ".json"
+        ):
+            raise ValueError("B1_CONTRACT_CACHE_FILENAME_INVALID")
 
 
 DEFAULT_CONFIG = B1BuildConfig(
@@ -243,7 +250,7 @@ def _resolve_contracts(
         .agg(pl.col("spot").first())
         .sort(["asset", "session_date"])
     )
-    cache_path = config.cache_root / "resolved_contracts_phase6_strict_v3.json"
+    cache_path = config.cache_root / config.contract_cache_filename
     if cache_path.exists():
         payload = json.loads(cache_path.read_text(encoding="utf-8"))
         if (
