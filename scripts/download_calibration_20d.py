@@ -231,7 +231,10 @@ def _regular(timestamp: datetime, session_date: date) -> bool:
     session = XNYS.date_to_session(session_date.isoformat())
     session_open = XNYS.session_open(session).to_pydatetime()
     session_close = XNYS.session_close(session).to_pydatetime()
-    return session_open <= timestamp.astimezone(UTC) < session_close
+    # exchange_calendars exposes pandas timestamps whose comparison is typed
+    # as Any even though the runtime result is boolean.  Normalize the public
+    # helper boundary explicitly so strict static checking cannot leak Any.
+    return bool(session_open <= timestamp.astimezone(UTC) < session_close)
 
 
 def _event_row(row: dict[str, str]) -> dict[str, Any]:
