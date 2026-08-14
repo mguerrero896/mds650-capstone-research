@@ -489,7 +489,7 @@ current evidence and work that still requires explicit approval.
 - [x] T221 [US4] Implement the metadata-only selector in `src/mds650/b1v3_confirmation.py`,
   `scripts/plan_b1v3_confirmation.py` and
   `specs/001-pit-options-rv30/contracts/b1v3-confirmation-plan.schema.json`.
-- [ ] T222 [US1] Execute `scripts/run_date_level_pit_preflight_v2.py` for the frozen candidate
+- [x] T222 [US1] Execute `scripts/run_date_level_pit_preflight_v2.py` for the frozen candidate
   dates; permit acquisition only when its contract,
   attempt-budget and 80-GiB gates pass, otherwise retain the exact blocker without substitution.
 - [ ] T223 [US2] Build and seal `artifacts/b1v3_confirmation_panel/` as one predictor-only,

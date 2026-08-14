@@ -1,0 +1,44 @@
+B1v3 PROVIDER PREFLIGHT V2 TEST REPORT
+Date: 2026-08-14
+Python: 3.12 via uv
+
+FINAL STATUS
+PASS_PROVIDER_PREFLIGHT_ASSUMPTION_BOUND
+safe_to_acquire_predictors=true
+safe_to_read_outcomes=false
+pit_semantics_confirmed=false
+
+AUTHENTICATED EVIDENCE
+FMP: 720/720 exact asset-session probes passed
+Unusual Whales: 90/90 Full Tape ZIP metadata probes passed; bodies not downloaded
+Massive: 720/720 historical contract/reference/quote probes passed technically
+Massive primary filter: 698/720
+Massive sensitivity filter: 716/720
+HTTP attempts evidenced: 3690
+Minimum free-space gate: 80 GiB
+Observed free space at execution: 417795866624 bytes
+
+COMMANDS AND RESULTS
+uv run pytest -q tests/unit/test_b1v3.py tests/unit/test_build_b1v3_target_blind.py tests/unit/test_b1v3_confirmation.py tests/unit/test_b1v3_provider_preflight_v2.py tests/unit/test_run_b1v3_provider_preflight_v2.py tests/unit/test_run_date_level_pit_preflight_v2_cli.py tests/unit/test_date_level_pit_preflight_v2.py tests/unit/test_massive_contract_selection_v1.py
+RESULT: 96 passed
+
+uv run pytest -q --cov=mds650.b1v3_provider_preflight_v2 --cov=mds650.b1v3_provider_preflight_runner_v2 --cov-report=term-missing tests/unit/test_b1v3_provider_preflight_v2.py tests/unit/test_run_b1v3_provider_preflight_v2.py
+RESULT: 13 passed; 80.91% combined coverage; fail-under 80 satisfied
+
+uv run ruff check src/mds650/b1v3_provider_preflight_v2.py src/mds650/b1v3_provider_preflight_runner_v2.py scripts/run_date_level_pit_preflight_v2.py tests/unit/test_b1v3_provider_preflight_v2.py tests/unit/test_run_b1v3_provider_preflight_v2.py tests/unit/test_run_date_level_pit_preflight_v2_cli.py
+RESULT: all checks passed
+
+uv run mypy --strict src/mds650/b1v3_provider_preflight_v2.py src/mds650/b1v3_provider_preflight_runner_v2.py scripts/run_date_level_pit_preflight_v2.py
+RESULT: success; no issues in 3 source files
+
+Draft 2020-12 plan/report schema validation
+RESULT: PASS
+
+Artifact self-hash validation
+RESULT: PASS
+
+Secret-value and personal-path scan over 10 compact artifacts
+RESULT: 0 secret hits; 0 personal-path hits
+
+NOT EVALUATED
+RV30, QLIKE, predictions, models, outcome values and scientific edge.

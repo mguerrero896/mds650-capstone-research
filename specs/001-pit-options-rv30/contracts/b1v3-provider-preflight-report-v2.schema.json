@@ -1,0 +1,237 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1v3-provider-preflight-report-v2.schema.json",
+  "title": "B1v3 target-blind provider preflight report v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "authorization_id",
+    "target_blind",
+    "outcome_read_count",
+    "plan_sha256",
+    "contract_selection_rule_id",
+    "storage_gate",
+    "request_budget",
+    "network_attempt_count",
+    "provider_counts",
+    "records",
+    "blocking_reasons",
+    "safe_to_acquire_predictors",
+    "safe_to_read_outcomes",
+    "pit_semantics_confirmed",
+    "timing_boundary",
+    "security",
+    "report_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "b1v3-provider-preflight-report-2.0"},
+    "status": {
+      "enum": ["PASS_PROVIDER_PREFLIGHT_ASSUMPTION_BOUND", "BLOCKED_PROVIDER_PREFLIGHT"]
+    },
+    "authorization_id": {"const": "OWNER_APPROVED_B1V3_WRITTEN_SPEC_2026-08-14"},
+    "target_blind": {"const": true},
+    "outcome_read_count": {"const": 0},
+    "plan_sha256": {"$ref": "#/$defs/sha256"},
+    "contract_selection_rule_id": {
+      "const": "massive-contract-grid-v1-asof-dte-moneyness-tiebreak"
+    },
+    "storage_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimum_free_bytes", "observed_free_bytes", "status"],
+      "properties": {
+        "minimum_free_bytes": {"const": 85899345920},
+        "observed_free_bytes": {"type": "integer", "minimum": 85899345920},
+        "status": {"const": "PASS"}
+      }
+    },
+    "request_budget": {"$ref": "#/$defs/request_budget"},
+    "network_attempt_count": {"type": "integer", "minimum": 0},
+    "provider_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fmp", "unusual_whales", "massive"],
+      "properties": {
+        "fmp": {"$ref": "#/$defs/provider_count"},
+        "unusual_whales": {"$ref": "#/$defs/provider_count"},
+        "massive": {"$ref": "#/$defs/provider_count"}
+      }
+    },
+    "records": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fmp", "unusual_whales", "massive"],
+      "properties": {
+        "fmp": {"type": "array", "items": {"$ref": "#/$defs/fmp_record"}},
+        "unusual_whales": {"type": "array", "items": {"$ref": "#/$defs/uw_record"}},
+        "massive": {"type": "array", "items": {"$ref": "#/$defs/massive_record"}}
+      }
+    },
+    "blocking_reasons": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "safe_to_acquire_predictors": {"type": "boolean"},
+    "safe_to_read_outcomes": {"const": false},
+    "pit_semantics_confirmed": {"const": false},
+    "timing_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fmp", "unusual_whales", "massive"],
+      "properties": {
+        "fmp": {"const": "PLUS_1_MINUTE_RESEARCH_ASSUMPTION_PLUS_2_SENSITIVITY"},
+        "unusual_whales": {"const": "CREATED_AT_OPERATIONAL_PROXY_NOT_PUBLICATION_TIME"},
+        "massive": {"const": "SIP_SOURCE_TIME_ASOF_NOT_REST_RECEIPT_TIME"}
+      }
+    },
+    "security": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "secret_values_emitted",
+        "personal_paths_emitted",
+        "credentialed_urls_emitted",
+        "uw_zip_body_downloaded"
+      ],
+      "properties": {
+        "secret_values_emitted": {"const": false},
+        "personal_paths_emitted": {"const": false},
+        "credentialed_urls_emitted": {"const": false},
+        "uw_zip_body_downloaded": {"const": false}
+      }
+    },
+    "report_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "PASS_PROVIDER_PREFLIGHT_ASSUMPTION_BOUND"}}},
+      "then": {
+        "properties": {
+          "safe_to_acquire_predictors": {"const": true},
+          "blocking_reasons": {"maxItems": 0}
+        }
+      },
+      "else": {"properties": {"safe_to_acquire_predictors": {"const": false}}}
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "nullable_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "nullable_fingerprint": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "asset": {"type": ["string", "null"], "pattern": "^[A-Z]{1,5}$"},
+    "provider_count": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["expected", "passed"],
+      "properties": {
+        "expected": {"type": "integer", "minimum": 1},
+        "passed": {"type": "integer", "minimum": 0}
+      }
+    },
+    "request_budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "asset_count",
+        "session_count",
+        "fmp_requests",
+        "uw_requests",
+        "massive_initial_search_requests",
+        "massive_search_request_cap",
+        "massive_reference_requests",
+        "massive_quote_requests",
+        "http_attempt_cap"
+      ],
+      "properties": {
+        "asset_count": {"type": "integer", "minimum": 1},
+        "session_count": {"type": "integer", "minimum": 1},
+        "fmp_requests": {"type": "integer", "minimum": 1},
+        "uw_requests": {"type": "integer", "minimum": 1},
+        "massive_initial_search_requests": {"type": "integer", "minimum": 1},
+        "massive_search_request_cap": {"type": "integer", "minimum": 1},
+        "massive_reference_requests": {"type": "integer", "minimum": 1},
+        "massive_quote_requests": {"type": "integer", "minimum": 1},
+        "http_attempt_cap": {"type": "integer", "minimum": 1}
+      }
+    },
+    "base_record": {
+      "type": "object",
+      "required": ["provider", "asset", "session_date", "pass", "status", "reason", "network_attempts"],
+      "properties": {
+        "provider": {"enum": ["fmp", "unusual_whales", "massive"]},
+        "asset": {"$ref": "#/$defs/asset"},
+        "session_date": {"type": "string", "format": "date"},
+        "pass": {"type": "boolean"},
+        "status": {"type": "string"},
+        "reason": {"type": ["string", "null"]},
+        "network_attempts": {"type": "integer", "minimum": 0}
+      }
+    },
+    "fmp_record": {
+      "allOf": [
+        {"$ref": "#/$defs/base_record"},
+        {
+          "type": "object",
+          "properties": {
+            "provider": {"const": "fmp"},
+            "evidence_key": {"type": "string"},
+            "request_fingerprint": {"$ref": "#/$defs/nullable_fingerprint"},
+            "response_sha256": {"$ref": "#/$defs/nullable_sha256"},
+            "pit_claim": {"const": false},
+            "spot": {"type": "number", "exclusiveMinimum": 0},
+            "returned_row_count": {"type": "integer", "minimum": 0},
+            "exact_session_row_count": {"type": "integer", "minimum": 0},
+            "provider_over_return_count": {"type": "integer", "minimum": 0}
+          }
+        }
+      ]
+    },
+    "uw_record": {
+      "allOf": [
+        {"$ref": "#/$defs/base_record"},
+        {
+          "type": "object",
+          "properties": {
+            "provider": {"const": "unusual_whales"},
+            "evidence_key": {"type": "string"},
+            "request_fingerprint": {"$ref": "#/$defs/nullable_fingerprint"},
+            "response_sha256": {"$ref": "#/$defs/nullable_sha256"},
+            "pit_claim": {"const": false},
+            "content_length_bytes": {"type": "integer", "minimum": 1},
+            "request_id": {"type": ["string", "null"]},
+            "full_tape_downloaded": {"const": false}
+          }
+        }
+      ]
+    },
+    "massive_record": {
+      "allOf": [
+        {"$ref": "#/$defs/base_record"},
+        {
+          "type": "object",
+          "properties": {
+            "provider": {"const": "massive"},
+            "contract_id": {"type": "string", "pattern": "^O:"},
+            "expiry": {"type": "string", "format": "date"},
+            "dte": {"type": "integer", "minimum": 1},
+            "target_moneyness": {"type": "number", "exclusiveMinimum": 0},
+            "quote_age_seconds": {"type": "number", "minimum": 0},
+            "relative_spread": {"type": "number", "minimum": 0},
+            "sip_timestamp_ns": {"type": "integer", "minimum": 1000000000000000000},
+            "primary_filter_pass": {"type": "boolean"},
+            "sensitivity_filter_pass": {"type": "boolean"},
+            "evidence_keys": {"type": "array", "items": {"type": "string"}},
+            "request_fingerprints": {
+              "type": "array",
+              "items": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+            },
+            "response_sha256": {
+              "type": "array",
+              "items": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+            },
+            "pit_receipt_claim": {"const": false}
+          }
+        }
+      ]
+    }
+  }
+}
