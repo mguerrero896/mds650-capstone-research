@@ -1,0 +1,177 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1v3-confirmation-b2-predictors-v1.schema.json",
+  "title": "B1v3 confirmation target-blind B2 predictor manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "plan_sha256",
+    "base_manifest_sha256",
+    "full_tape_manifest_sha256",
+    "target_blind",
+    "outcome_read_count",
+    "safe_to_read_outcomes",
+    "session_count",
+    "asset_count",
+    "origin_count",
+    "feature_count",
+    "features",
+    "variants",
+    "availability",
+    "legacy_zero_coding_gate",
+    "sidecar",
+    "evidence",
+    "security",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "status": {"const": "PASS_TARGET_BLIND_B2_PREDICTORS"},
+    "plan_sha256": {"$ref": "#/$defs/sha256"},
+    "base_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "full_tape_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "target_blind": {"const": true},
+    "outcome_read_count": {"const": 0},
+    "safe_to_read_outcomes": {"const": false},
+    "session_count": {"const": 90},
+    "asset_count": {"const": 6},
+    "origin_count": {"const": 38664},
+    "feature_count": {"const": 9},
+    "features": {
+      "type": "array",
+      "prefixItems": [
+        {"const": "b2_log_trade_count"},
+        {"const": "b2_unique_contract_share"},
+        {"const": "b2_log_mean_trade_premium"},
+        {"const": "b2_log_max_trade_premium"},
+        {"const": "b2_call_put_premium_imbalance_scaled"},
+        {"const": "b2_execution_side_premium_imbalance"},
+        {"const": "b2_repeated_contract_premium_share"},
+        {"const": "b2_strike_concentration"},
+        {"const": "b2_expiry_concentration"}
+      ],
+      "minItems": 9,
+      "maxItems": 9
+    },
+    "variants": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary_5m_60s", "latency_5m_120s", "latency_5m_300s"],
+      "properties": {
+        "primary_5m_60s": {"$ref": "#/$defs/variant"},
+        "latency_5m_120s": {"$ref": "#/$defs/variant"},
+        "latency_5m_300s": {"$ref": "#/$defs/variant"}
+      }
+    },
+    "availability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "row_count",
+        "eligible_row_count",
+        "excluded_row_count",
+        "primary_delayed_raw_zero_exclusion_count",
+        "canonical_raw_count_mismatch_count",
+        "row_status_counts",
+        "variant_totals"
+      ],
+      "properties": {
+        "schema_version": {"const": "2.2"},
+        "row_count": {"const": 115992},
+        "eligible_row_count": {"type": "integer", "minimum": 0, "maximum": 115992},
+        "excluded_row_count": {"type": "integer", "minimum": 0, "maximum": 115992},
+        "primary_delayed_raw_zero_exclusion_count": {"type": "integer", "minimum": 0},
+        "canonical_raw_count_mismatch_count": {"type": "integer", "minimum": 0},
+        "row_status_counts": {
+          "type": "object",
+          "additionalProperties": {"type": "integer", "minimum": 0}
+        },
+        "variant_totals": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {"$ref": "#/$defs/variant_total"}
+        }
+      }
+    },
+    "legacy_zero_coding_gate": {
+      "enum": [
+        "PASS_NO_CONFOUNDED_ZERO_OBSERVED",
+        "FAIL_ZERO_ACTIVITY_NOT_DISAMBIGUATED"
+      ]
+    },
+    "sidecar": {"$ref": "#/$defs/output"},
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["incident_ledger_sha256", "traceability_ledger_sha256"],
+      "properties": {
+        "incident_ledger_sha256": {"$ref": "#/$defs/sha256"},
+        "traceability_ledger_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "security": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["secret_values_emitted", "personal_paths_emitted"],
+      "properties": {
+        "secret_values_emitted": {"const": false},
+        "personal_paths_emitted": {"const": false}
+      }
+    },
+    "manifest_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["logical_path", "sha256", "row_count"],
+      "properties": {
+        "logical_path": {
+          "type": "string",
+          "pattern": "^MDS650_B1V3_DATA_ROOT/predictors/[A-Za-z0-9_.-]+$"
+        },
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "row_count": {"const": 115992}
+      }
+    },
+    "variant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "logical_path",
+        "sha256",
+        "row_count",
+        "eligible_row_count",
+        "excluded_row_count"
+      ],
+      "properties": {
+        "logical_path": {
+          "type": "string",
+          "pattern": "^MDS650_B1V3_DATA_ROOT/predictors/[A-Za-z0-9_.-]+$"
+        },
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "row_count": {"const": 38664},
+        "eligible_row_count": {"type": "integer", "minimum": 0, "maximum": 38664},
+        "excluded_row_count": {"type": "integer", "minimum": 0, "maximum": 38664}
+      }
+    },
+    "variant_total": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canonical_variant", "row_count", "eligible_row_count", "excluded_row_count"],
+      "properties": {
+        "canonical_variant": {
+          "enum": ["primary_5m_60s", "latency_5m_120s", "latency_5m_300s"]
+        },
+        "row_count": {"const": 38664},
+        "eligible_row_count": {"type": "integer", "minimum": 0, "maximum": 38664},
+        "excluded_row_count": {"type": "integer", "minimum": 0, "maximum": 38664}
+      }
+    }
+  }
+}
