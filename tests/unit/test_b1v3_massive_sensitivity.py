@@ -14,6 +14,7 @@ from mds650.b1v3_massive_sensitivity import (
     reprice_attempt_row_for_fmp_delay,
     reselected_attempt_row,
     write_fmp_delayed_attempts,
+    write_massive_reselected_attempt_variants,
     write_massive_reselected_attempts,
 )
 
@@ -157,6 +158,49 @@ def test_write_massive_reselected_attempts_streams_and_preserves_rows(
     assert summary["input_sha256"] != summary["output_sha256"]
     assert len(result) == 3
     assert {row["quote_cutoff_seconds"] for row in result} == {60}
+
+
+def test_massive_variants_decode_each_contract_day_only_once(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    attempts = tmp_path / "attempts.parquet"
+    cache_root = tmp_path / "cache"
+    output_60 = tmp_path / "shifted-60.parquet"
+    output_300 = tmp_path / "shifted-300.parquet"
+    cache_root.mkdir()
+    _write_attempts(attempts, [_attempt()])
+    decode_count = 0
+
+    monkeypatch.setattr(timing, "_massive_cache_index", lambda _root: {})
+
+    def load_once(**_kwargs: object) -> tuple[str, list[tuple[int, int, float, float]]]:
+        nonlocal decode_count
+        decode_count += 1
+        return "OK", [(1_699_999_600_000_000_000, 7, 5.0, 5.2)]
+
+    monkeypatch.setattr(timing, "_load_and_validate_massive_cache", load_once)
+    monkeypatch.setattr(
+        timing,
+        "_select_prepared_quote",
+        lambda quotes, cutoff_ns: max(
+            (quote for quote in quotes if quote[0] <= cutoff_ns),
+            default=None,
+        ),
+    )
+
+    summary = write_massive_reselected_attempt_variants(
+        attempts_path=attempts,
+        cache_root=cache_root,
+        output_paths={60: output_60, 300: output_300},
+        batch_size=1,
+    )
+
+    assert decode_count == 1
+    assert summary["cache_decode_count"] == 1
+    assert set(summary["variants"]) == {"60", "300"}
+    assert pq.read_table(output_60)["quote_cutoff_seconds"].to_pylist() == [60]
+    assert pq.read_table(output_300)["quote_cutoff_seconds"].to_pylist() == [300]
 
 
 @pytest.mark.parametrize(

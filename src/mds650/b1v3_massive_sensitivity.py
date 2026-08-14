@@ -417,6 +417,208 @@ def write_massive_reselected_attempts(
     }
 
 
+def write_massive_reselected_attempt_variants(
+    *,
+    attempts_path: Path,
+    cache_root: Path,
+    output_paths: Mapping[int, Path],
+    batch_size: int = 65_536,
+) -> dict[str, Any]:
+    """Materialize multiple Massive cutoffs with one cache decode per contract-day.
+
+    Parameters
+    ----------
+    attempts_path, cache_root:
+        Primary target-free attempt table and existing Massive v4 cache root.
+    output_paths:
+        Non-empty mapping from registered cutoff seconds to distinct immutable
+        Parquet destinations.
+    batch_size:
+        Positive maximum Arrow input batch size.
+
+    Returns
+    -------
+    dict[str, Any]
+        Shared bounded-memory counters plus one source/output summary per cutoff.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the input or cache root is absent.
+    ValueError
+        If cutoffs, paths, source schema, cache identity, pagination, ordering,
+        row preservation or output immutability fail.
+
+    Notes
+    -----
+    Each contract-day cache envelope is decoded exactly once, then the last
+    quote is independently reselected at every registered cutoff.
+    """
+    cutoffs = tuple(sorted(output_paths))
+    if not cutoffs or not set(cutoffs) <= _CUTOFFS:
+        raise ValueError("B1V3_SENSITIVITY_CUTOFF_INVALID")
+    destinations = tuple(output_paths[cutoff] for cutoff in cutoffs)
+    if len(set(destinations)) != len(destinations):
+        raise ValueError("B1V3_SENSITIVITY_OUTPUT_PATH_DUPLICATE")
+    if batch_size <= 0:
+        raise ValueError("B1V3_SENSITIVITY_BATCH_SIZE_INVALID")
+    if not attempts_path.is_file():
+        raise FileNotFoundError("B1V3_SENSITIVITY_ATTEMPTS_MISSING")
+    if not cache_root.is_dir():
+        raise FileNotFoundError("B1V3_SENSITIVITY_CACHE_ROOT_MISSING")
+    for destination in destinations:
+        if destination.exists():
+            raise ValueError(f"B1V3_SENSITIVITY_OUTPUT_CONFLICT:{destination.name}")
+    reader = pq.ParquetFile(attempts_path)
+    names = reader.schema_arrow.names
+    if set(names) < _REQUIRED_IDENTITY_COLUMNS:
+        raise ValueError("B1V3_SENSITIVITY_ATTEMPT_SCHEMA_INVALID")
+    for name in names:
+        lower = name.lower()
+        if name != "target_moneyness" and any(
+            token in lower for token in _FORBIDDEN_INPUT_TOKENS
+        ):
+            raise ValueError(f"B1V3_SENSITIVITY_FORBIDDEN_COLUMN:{name}")
+    cache_index = timing._massive_cache_index(cache_root)
+    output_schema = _output_schema(reader.schema_arrow)
+    temporary_paths: dict[int, Path] = {}
+    writers: dict[int, pq.ParquetWriter | None] = {cutoff: None for cutoff in cutoffs}
+    for cutoff, destination in zip(cutoffs, destinations, strict=True):
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        descriptor, temporary_name = tempfile.mkstemp(
+            prefix=f".{destination.name}.", suffix=".part", dir=destination.parent
+        )
+        os.close(descriptor)
+        temporary_paths[cutoff] = Path(temporary_name)
+    shared = {
+        "asset_day_count": 0,
+        "contract_day_count": 0,
+        "cache_decode_count": 0,
+        "attempt_count": 0,
+        "max_asset_day_rows": 0,
+    }
+    variant_counts: dict[int, dict[str, int]] = {
+        cutoff: {
+            "selected_quote_count": 0,
+            "no_quote_count": 0,
+            "iv_success_count": 0,
+        }
+        for cutoff in cutoffs
+    }
+
+    def write_asset_day(asset: str, session_date: str, rows: list[dict[str, Any]]) -> None:
+        shared["asset_day_count"] += 1
+        shared["max_asset_day_rows"] = max(shared["max_asset_day_rows"], len(rows))
+        grouped: dict[str, dict[str, list[dict[str, Any]]]] = defaultdict(
+            lambda: defaultdict(list)
+        )
+        for row in rows:
+            grouped[str(row["contract"])][str(row["source_request_hash"])].append(row)
+        output_rows: dict[int, list[dict[str, Any]]] = {
+            cutoff: [] for cutoff in cutoffs
+        }
+        for contract in sorted(grouped):
+            by_hash = grouped[contract]
+            shared["contract_day_count"] += 1
+            if len(by_hash) != 1:
+                raise ValueError("B1V3_SENSITIVITY_ATTEMPT_SOURCE_HASH_AMBIGUOUS")
+            source_hash, contract_rows = next(iter(by_hash.items()))
+            shared["cache_decode_count"] += 1
+            cache_state, quotes = timing._load_and_validate_massive_cache(
+                cache_index=cache_index,
+                cache_root=cache_root,
+                asset=asset,
+                session_date=session_date,
+                contract=contract,
+                source_request_hash=source_hash,
+            )
+            if cache_state not in timing.VALID_MASSIVE_CACHE_STATES:
+                raise ValueError(f"B1V3_SENSITIVITY_CACHE_INVALID:{cache_state}")
+            for row in contract_rows:
+                shared["attempt_count"] += 1
+                for cutoff in cutoffs:
+                    cutoff_ns = int(row["forecast_origin_ns"]) - (
+                        cutoff * timing.NANOSECONDS_PER_SECOND
+                    )
+                    selected = timing._select_prepared_quote(quotes, cutoff_ns)
+                    transformed = reselected_attempt_row(
+                        row,
+                        quote=selected,
+                        cutoff_seconds=cutoff,
+                    )
+                    if selected is None:
+                        variant_counts[cutoff]["no_quote_count"] += 1
+                    else:
+                        variant_counts[cutoff]["selected_quote_count"] += 1
+                    if transformed["iv_success"] is True:
+                        variant_counts[cutoff]["iv_success_count"] += 1
+                    output_rows[cutoff].append(transformed)
+        for cutoff in cutoffs:
+            table = pa.Table.from_pylist(output_rows[cutoff], schema=output_schema)
+            writer = writers[cutoff]
+            if writer is None:
+                writer = pq.ParquetWriter(
+                    temporary_paths[cutoff],
+                    output_schema,
+                    compression="zstd",
+                    write_statistics=True,
+                )
+                writers[cutoff] = writer
+            writer.write_table(table)
+
+    closed_asset_days: set[tuple[str, str]] = set()
+    current_asset_day: tuple[str, str] | None = None
+    current_rows: list[dict[str, Any]] = []
+    try:
+        for batch in reader.iter_batches(batch_size=batch_size, columns=names):
+            for row in pa.Table.from_batches([batch]).to_pylist():
+                asset_day = (str(row["asset"]), str(row["session_date"]))
+                if current_asset_day is None:
+                    current_asset_day = asset_day
+                elif asset_day != current_asset_day:
+                    write_asset_day(current_asset_day[0], current_asset_day[1], current_rows)
+                    closed_asset_days.add(current_asset_day)
+                    if asset_day in closed_asset_days:
+                        raise ValueError(
+                            "B1V3_SENSITIVITY_ATTEMPT_ASSET_DAY_NONCONTIGUOUS"
+                        )
+                    current_asset_day = asset_day
+                    current_rows = []
+                current_rows.append(row)
+        if current_asset_day is not None:
+            write_asset_day(current_asset_day[0], current_asset_day[1], current_rows)
+        if any(writers[cutoff] is None for cutoff in cutoffs):
+            raise ValueError("B1V3_SENSITIVITY_EMPTY_INPUT")
+        for cutoff in cutoffs:
+            writer = writers[cutoff]
+            assert writer is not None
+            writer.close()
+            writers[cutoff] = None
+        if shared["attempt_count"] != reader.metadata.num_rows:
+            raise ValueError("B1V3_SENSITIVITY_ROW_PRESERVATION_FAILURE")
+        for cutoff, destination in zip(cutoffs, destinations, strict=True):
+            os.replace(temporary_paths[cutoff], destination)
+    finally:
+        for cutoff in cutoffs:
+            writer = writers[cutoff]
+            if writer is not None:
+                writer.close()
+            temporary_paths[cutoff].unlink(missing_ok=True)
+    return {
+        "status": "PASS_TARGET_BLIND_MASSIVE_MULTI_RESELECTION",
+        "input_sha256": sha256_file(attempts_path),
+        **shared,
+        "variants": {
+            str(cutoff): {
+                "cutoff_seconds": cutoff,
+                "output_sha256": sha256_file(output_paths[cutoff]),
+                **variant_counts[cutoff],
+            }
+            for cutoff in cutoffs
+        },
+    }
+
+
 def write_fmp_delayed_attempts(
     *,
     attempts_path: Path,
