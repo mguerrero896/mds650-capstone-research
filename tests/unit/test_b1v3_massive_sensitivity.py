@@ -11,7 +11,9 @@ import pytest
 
 import mds650.provider_timing_v21 as timing
 from mds650.b1v3_massive_sensitivity import (
+    reprice_attempt_row_for_fmp_delay,
     reselected_attempt_row,
+    write_fmp_delayed_attempts,
     write_massive_reselected_attempts,
 )
 
@@ -320,3 +322,59 @@ def test_reselected_attempt_handles_invalid_origin_nonfinite_and_invalid_iv_resu
     assert output["relative_spread"] is None
     assert output["iv_success"] is False
     assert output["failure_reason"] == "IV_RESULT_INVALID"
+
+
+def test_reprice_attempt_for_fmp_delay_recomputes_spot_moneyness_dividend_and_iv() -> None:
+    row = _attempt()
+    output = reprice_attempt_row_for_fmp_delay(
+        {**row, "dividend_yield": 0.02},
+        delayed_spot=198.0,
+        delay_minutes=2,
+    )
+
+    assert output["spot"] == 198.0
+    assert output["moneyness"] == pytest.approx(200.0 / 198.0)
+    assert output["dividend_yield"] == pytest.approx(0.02 * 200.0 / 198.0)
+    assert output["fmp_delay_minutes"] == 2
+    assert output["iv_success"] is True
+    with pytest.raises(ValueError, match="FMP_DELAY_INVALID"):
+        reprice_attempt_row_for_fmp_delay(row, delayed_spot=198.0, delay_minutes=3)
+    with pytest.raises(ValueError, match="FMP_SPOT_INVALID"):
+        reprice_attempt_row_for_fmp_delay(row, delayed_spot=float("nan"), delay_minutes=2)
+
+
+def test_write_fmp_delayed_attempts_binds_exact_origin_spot(
+    tmp_path: Path,
+) -> None:
+    attempts = tmp_path / "attempts.parquet"
+    spots = tmp_path / "spots.parquet"
+    output = tmp_path / "fmp-delayed.parquet"
+    row = _attempt()
+    _write_attempts(attempts, [row])
+    pq.write_table(
+        pa.Table.from_pylist(
+            [
+                {
+                    "origin_id": row["origin_id"],
+                    "spot": 198.0,
+                    "spot_available": True,
+                }
+            ]
+        ),
+        spots,
+    )
+
+    summary = write_fmp_delayed_attempts(
+        attempts_path=attempts,
+        delayed_spots_path=spots,
+        output_path=output,
+        delay_minutes=2,
+        batch_size=1,
+    )
+
+    result = pq.read_table(output).to_pylist()
+    assert summary["status"] == "PASS_TARGET_BLIND_FMP_DELAY_REPRICING"
+    assert summary["attempt_count"] == 1
+    assert summary["origin_count"] == 1
+    assert result[0]["spot"] == 198.0
+    assert result[0]["fmp_delay_minutes"] == 2

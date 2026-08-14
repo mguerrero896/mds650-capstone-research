@@ -34,6 +34,7 @@ _UPDATED_TYPES: Final[Mapping[str, pa.DataType]] = {
     "iv": pa.float64(),
     "failure_reason": pa.string(),
     "quote_cutoff_seconds": pa.int64(),
+    "fmp_delay_minutes": pa.int64(),
 }
 _REQUIRED_IDENTITY_COLUMNS: Final[frozenset[str]] = frozenset(
     {
@@ -146,6 +147,86 @@ def reselected_attempt_row(
         }
     )
     return output
+
+
+def reprice_attempt_row_for_fmp_delay(
+    row: Mapping[str, Any],
+    *,
+    delayed_spot: float,
+    delay_minutes: int,
+) -> dict[str, Any]:
+    """Recompute one attempt under a registered delayed FMP spot.
+
+    Parameters
+    ----------
+    row:
+        Source-bound target-free attempt selected at the forecast origin.
+    delayed_spot:
+        Exact earlier close available under the registered FMP delay.
+    delay_minutes:
+        One-minute primary assumption or two-minute sensitivity.
+
+    Returns
+    -------
+    dict[str, Any]
+        Attempt with spot, moneyness, dividend yield and IV recomputed while
+        preserving the original Massive quote identity.
+
+    Raises
+    ------
+    ValueError
+        If timing, spot, original exogenous inputs or quote identity is invalid.
+
+    Notes
+    -----
+    The cash-dividend equivalent is preserved as ``old_yield * old_spot`` and
+    divided by the delayed spot.  This avoids using a newly observed dividend
+    record or silently treating missing dividend evidence as zero.
+    """
+    if delay_minutes not in {1, 2}:
+        raise ValueError("B1V3_FMP_DELAY_INVALID")
+    if not math.isfinite(delayed_spot) or delayed_spot <= 0:
+        raise ValueError("B1V3_FMP_SPOT_INVALID")
+    old_spot = row.get("spot")
+    strike = row.get("strike")
+    dividend_yield = row.get("dividend_yield")
+    if (
+        not isinstance(old_spot, (int, float))
+        or not math.isfinite(float(old_spot))
+        or float(old_spot) <= 0
+        or not isinstance(strike, (int, float))
+        or not math.isfinite(float(strike))
+        or float(strike) <= 0
+        or not isinstance(dividend_yield, (int, float))
+        or not math.isfinite(float(dividend_yield))
+        or float(dividend_yield) < 0
+    ):
+        raise ValueError("B1V3_FMP_SOURCE_INPUT_INVALID")
+    updated = dict(row)
+    updated.update(
+        {
+            "spot": delayed_spot,
+            "moneyness": float(strike) / delayed_spot,
+            "dividend_yield": float(dividend_yield) * float(old_spot) / delayed_spot,
+            "fmp_delay_minutes": delay_minutes,
+        }
+    )
+    sip = row.get("sip_timestamp")
+    if sip is None:
+        quote = None
+    else:
+        sequence = row.get("sequence_number", 0)
+        bid = row.get("bid")
+        ask = row.get("ask")
+        if (
+            not isinstance(sip, int)
+            or not isinstance(sequence, int)
+            or not isinstance(bid, (int, float))
+            or not isinstance(ask, (int, float))
+        ):
+            raise ValueError("B1V3_FMP_QUOTE_IDENTITY_INVALID")
+        quote = (sip, sequence, float(bid), float(ask))
+    return reselected_attempt_row(updated, quote=quote, cutoff_seconds=0)
 
 
 def _output_schema(source: pa.Schema) -> pa.Schema:
@@ -333,4 +414,142 @@ def write_massive_reselected_attempts(
         "input_sha256": sha256_file(attempts_path),
         "output_sha256": sha256_file(output_path),
         **counters,
+    }
+
+
+def write_fmp_delayed_attempts(
+    *,
+    attempts_path: Path,
+    delayed_spots_path: Path,
+    output_path: Path,
+    delay_minutes: int,
+    batch_size: int = 65_536,
+) -> dict[str, Any]:
+    """Stream attempts repriced with the exact delayed FMP spot per origin.
+
+    Parameters
+    ----------
+    attempts_path:
+        Source-bound primary target-free attempt Parquet.
+    delayed_spots_path:
+        Predictor-only one-row-per-origin spot table produced under the same
+        registered FMP delay.
+    output_path:
+        New immutable target-free attempt Parquet.
+    delay_minutes:
+        Registered one- or two-minute FMP delay.
+    batch_size:
+        Positive maximum Arrow input batch size.
+
+    Returns
+    -------
+    dict[str, Any]
+        Sanitized source/output hashes and preservation counters.
+
+    Raises
+    ------
+    FileNotFoundError
+        If either input is absent.
+    ValueError
+        If schemas, identities, timing, PIT inputs, row preservation or output
+        immutability fail.
+    """
+    if delay_minutes not in {1, 2}:
+        raise ValueError("B1V3_FMP_DELAY_INVALID")
+    if batch_size <= 0:
+        raise ValueError("B1V3_FMP_BATCH_SIZE_INVALID")
+    if not attempts_path.is_file():
+        raise FileNotFoundError("B1V3_FMP_ATTEMPTS_MISSING")
+    if not delayed_spots_path.is_file():
+        raise FileNotFoundError("B1V3_FMP_SPOTS_MISSING")
+    if output_path.exists():
+        raise ValueError(f"B1V3_FMP_OUTPUT_CONFLICT:{output_path.name}")
+    spots = pq.read_table(delayed_spots_path)
+    required_spots = {"origin_id", "spot", "spot_available"}
+    if not required_spots <= set(spots.schema.names):
+        raise ValueError("B1V3_FMP_SPOT_SCHEMA_INVALID")
+    spot_rows = spots.select(list(sorted(required_spots))).to_pylist()
+    spot_map: dict[str, float] = {}
+    for row in spot_rows:
+        origin_id = row.get("origin_id")
+        spot = row.get("spot")
+        if (
+            not isinstance(origin_id, str)
+            or origin_id in spot_map
+            or row.get("spot_available") is not True
+            or not isinstance(spot, (int, float))
+            or not math.isfinite(float(spot))
+            or float(spot) <= 0
+        ):
+            raise ValueError("B1V3_FMP_SPOT_IDENTITY_INVALID")
+        spot_map[origin_id] = float(spot)
+    if not spot_map:
+        raise ValueError("B1V3_FMP_SPOT_IDENTITY_INVALID")
+    reader = pq.ParquetFile(attempts_path)
+    required_attempts = _REQUIRED_IDENTITY_COLUMNS | {
+        "origin_id",
+        "moneyness",
+        "sip_timestamp",
+        "bid",
+        "ask",
+    }
+    if set(reader.schema_arrow.names) < required_attempts:
+        raise ValueError("B1V3_FMP_ATTEMPT_SCHEMA_INVALID")
+    output_schema = _output_schema(reader.schema_arrow)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{output_path.name}.", suffix=".part", dir=output_path.parent
+    )
+    os.close(descriptor)
+    temporary = Path(temporary_name)
+    writer: pq.ParquetWriter | None = None
+    attempt_count = 0
+    origins_seen: set[str] = set()
+    iv_success_count = 0
+    try:
+        for batch in reader.iter_batches(batch_size=batch_size):
+            output_rows: list[dict[str, Any]] = []
+            for row in batch.to_pylist():
+                origin_id = row.get("origin_id")
+                if not isinstance(origin_id, str) or origin_id not in spot_map:
+                    raise ValueError("B1V3_FMP_ATTEMPT_ORIGIN_MISSING")
+                transformed = reprice_attempt_row_for_fmp_delay(
+                    row,
+                    delayed_spot=spot_map[origin_id],
+                    delay_minutes=delay_minutes,
+                )
+                output_rows.append(transformed)
+                origins_seen.add(origin_id)
+                attempt_count += 1
+                if transformed["iv_success"] is True:
+                    iv_success_count += 1
+            table = pa.Table.from_pylist(output_rows, schema=output_schema)
+            if writer is None:
+                writer = pq.ParquetWriter(
+                    temporary,
+                    output_schema,
+                    compression="zstd",
+                    write_statistics=True,
+                )
+            writer.write_table(table)
+        if writer is None:
+            raise ValueError("B1V3_FMP_EMPTY_INPUT")
+        writer.close()
+        writer = None
+        if attempt_count != reader.metadata.num_rows:
+            raise ValueError("B1V3_FMP_ROW_PRESERVATION_FAILURE")
+        os.replace(temporary, output_path)
+    finally:
+        if writer is not None:
+            writer.close()
+        temporary.unlink(missing_ok=True)
+    return {
+        "status": "PASS_TARGET_BLIND_FMP_DELAY_REPRICING",
+        "delay_minutes": delay_minutes,
+        "input_sha256": sha256_file(attempts_path),
+        "spots_sha256": sha256_file(delayed_spots_path),
+        "output_sha256": sha256_file(output_path),
+        "attempt_count": attempt_count,
+        "origin_count": len(origins_seen),
+        "iv_success_count": iv_success_count,
     }
