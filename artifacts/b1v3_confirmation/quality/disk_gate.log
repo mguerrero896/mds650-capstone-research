@@ -1,0 +1,3 @@
+status=PASS
+minimum_free_gib=80.00
+observed_free_gib=316.90

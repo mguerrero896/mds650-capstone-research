@@ -163,11 +163,27 @@ def bind_b1v3_confirmation_targets(
     ):
         raise ValueError("B1V3_CONFIRMATION_B0_DRIFT")
     if target_frame.filter(
+        pl.col("max_predictor_available_at_utc").is_not_null()
+        & (pl.col("max_predictor_available_at_utc") > pl.col("forecast_origin_utc"))
+    ).height:
+        raise ValueError("B1V3_CONFIRMATION_PREDICTOR_FUTURE")
+    eligible = confirmation.filter(
+        pl.col("b0_information_set_complete")
+        & pl.col("b1v3a_information_set_complete")
+        & pl.col("b2_information_set_complete")
+    )
+    eligible_targets = target_frame.join(
+        eligible.select("origin_id"),
+        on="origin_id",
+        how="inner",
+        validate="1:1",
+    )
+    if eligible_targets.filter(
         pl.col("max_predictor_available_at_utc").is_null()
         | (pl.col("max_predictor_available_at_utc") > pl.col("forecast_origin_utc"))
     ).height:
         raise ValueError("B1V3_CONFIRMATION_PREDICTOR_FUTURE")
-    if target_frame.filter(
+    if eligible_targets.filter(
         (pl.col("target_price_count") != 31)
         | (pl.col("target_return_count") != 30)
         | pl.col("drop_reason").is_not_null()
@@ -175,14 +191,14 @@ def bind_b1v3_confirmation_targets(
         | (pl.col("rv30") <= 0)
     ).height:
         raise ValueError("B1V3_CONFIRMATION_RV30_CONTRACT_INVALID")
-    target_values = target_frame.select(
+    target_values = eligible_targets.select(
         "origin_id",
         "target_price_count",
         "target_return_count",
         "rv30",
         pl.col("drop_reason").alias("rv30_drop_reason"),
     )
-    bound = confirmation.join(
+    bound = eligible.join(
         target_values,
         on="origin_id",
         how="left",

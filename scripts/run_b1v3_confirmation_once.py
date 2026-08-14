@@ -53,7 +53,8 @@ _FORBIDDEN: Final[tuple[bytes, ...]] = (
     b"d:/mds650",
     b"api_key",
     b"apikey",
-    b"authorization",
+    b"\"authorization\":",
+    b"authorization:",
     b"bearer ",
 )
 
@@ -200,6 +201,36 @@ def _validate_pre_read_sources(
         record = timing_records.get(variant)
         if not isinstance(record, Mapping) or record.get("sha256") != sha256_file(path):
             raise ValueError(f"B1V3_CONFIRMATION_TIMING_BINDING_INVALID:{variant}")
+
+
+def _recovery_authorization_valid(
+    frozen_access: Mapping[str, Any], consumed_access: Mapping[str, Any]
+) -> bool:
+    """Return whether ``consumed_access`` is the exact one-read transition.
+
+    This comparison permits recovery only after the registered ``0 -> 1``
+    confirmation transition and forbids manufacturing a second attempt ledger.
+    """
+
+    def self_hash_valid(document: Mapping[str, Any]) -> bool:
+        stored = document.get("manifest_sha256")
+        unsigned = {key: value for key, value in document.items() if key != "manifest_sha256"}
+        return isinstance(stored, str) and stored == canonical_sha256(unsigned)
+
+    if not self_hash_valid(frozen_access) or not self_hash_valid(consumed_access):
+        return False
+    unsigned = {
+        key: value for key, value in frozen_access.items() if key != "manifest_sha256"
+    }
+    expected: dict[str, Any] = {
+        **unsigned,
+        "status": "CONFIRMATION_EVALUATION_IN_PROGRESS",
+        "outcome_read_count": 2,
+        "confirmation_read_count": 1,
+        "evaluation_attempt_count": 1,
+    }
+    expected["manifest_sha256"] = canonical_sha256(expected)
+    return dict(consumed_access) == expected
 
 
 def _result_document(
@@ -542,6 +573,165 @@ def run_b1v3_confirmation_once(
     return result
 
 
+def finalize_b1v3_confirmation_from_sealed_outputs(
+    *,
+    preregistration_path: Path,
+    preregistration_schema_path: Path,
+    method_freeze_path: Path,
+    method_freeze_schema_path: Path,
+    common_manifest_path: Path,
+    common_manifest_schema_path: Path,
+    timing_manifest_path: Path,
+    timing_manifest_schema_path: Path,
+    quality_report_path: Path,
+    quality_report_schema_path: Path,
+    frozen_access_path: Path,
+    consumed_access_path: Path,
+    access_schema_path: Path,
+    evaluation_panel_path: Path,
+    primary_forecasts_path: Path,
+    timing_forecasts_path: Path,
+    result_path: Path,
+    result_schema_path: Path,
+    report_path: Path,
+    evidence_index_path: Path,
+) -> dict[str, Any]:
+    """Finalize a consumed run from its three already-sealed derived outputs.
+
+    This recovery path never opens FMP bars, common predictor inputs, provider
+    payloads, or model-training inputs.  It is valid only when the exact one-read
+    authorization has already been consumed, all three deterministic Parquet
+    outputs exist, and no final JSON/report/index exists.  Models are not fitted
+    again; registered inference is recomputed from the sealed forecast cube.
+
+    Returns
+    -------
+    dict[str, Any]
+        Schema-valid, self-hashed B1v3 result document.
+
+    Raises
+    ------
+    ValueError
+        If the authorization transition, contracts, output identities, pairing,
+        hygiene, or exclusive final-output state is invalid.
+    """
+    preregistration = _load_contract(
+        preregistration_path,
+        preregistration_schema_path,
+        error="B1V3_RECOVERY_PREREGISTRATION_INVALID",
+    )
+    method_freeze = _load_contract(
+        method_freeze_path,
+        method_freeze_schema_path,
+        error="B1V3_RECOVERY_METHOD_FREEZE_INVALID",
+    )
+    common_manifest = _load_contract(
+        common_manifest_path,
+        common_manifest_schema_path,
+        error="B1V3_RECOVERY_COMMON_MANIFEST_INVALID",
+    )
+    timing_manifest = _load_contract(
+        timing_manifest_path,
+        timing_manifest_schema_path,
+        error="B1V3_RECOVERY_TIMING_MANIFEST_INVALID",
+    )
+    quality_report = _load_contract(
+        quality_report_path,
+        quality_report_schema_path,
+        error="B1V3_RECOVERY_QUALITY_REPORT_INVALID",
+    )
+    frozen_access = _load_contract(
+        frozen_access_path,
+        access_schema_path,
+        error="B1V3_RECOVERY_FROZEN_ACCESS_INVALID",
+    )
+    consumed_access = _load_contract(
+        consumed_access_path,
+        access_schema_path,
+        error="B1V3_RECOVERY_CONSUMED_ACCESS_INVALID",
+    )
+    if not _recovery_authorization_valid(frozen_access, consumed_access):
+        raise ValueError("B1V3_RECOVERY_AUTHORIZATION_TRANSITION_INVALID")
+    if any(path.exists() for path in (result_path, report_path, evidence_index_path)):
+        raise ValueError("B1V3_RECOVERY_FINAL_OUTPUT_EXISTS")
+    sealed_outputs = (
+        evaluation_panel_path,
+        primary_forecasts_path,
+        timing_forecasts_path,
+    )
+    if any(not path.is_file() for path in sealed_outputs):
+        raise ValueError("B1V3_RECOVERY_SEALED_OUTPUT_MISSING")
+
+    primary_panel = validate_b1v3_evaluation_panel(
+        pl.read_parquet(evaluation_panel_path),
+        preregistration=preregistration,
+        authorization=consumed_access,
+    )
+    primary_forecasts = pl.read_parquet(primary_forecasts_path)
+    timing_forecasts = pl.read_parquet(timing_forecasts_path)
+    confirmation_targets = primary_panel.filter(pl.col("role") == "confirmation").select(
+        "origin_id", "rv30"
+    ).sort("origin_id")
+    forecast_targets = primary_forecasts.select("origin_id", "rv30").unique().sort("origin_id")
+    if not confirmation_targets.equals(forecast_targets, null_equal=True):
+        raise ValueError("B1V3_RECOVERY_FORECAST_TARGET_IDENTITY_INVALID")
+    evaluation = evaluate_b1v3_confirmation(
+        primary_forecasts,
+        method_freeze=method_freeze,
+        preregistration=preregistration,
+        timing_predictions=timing_forecasts,
+    )
+    evaluation_panel_sha = sha256_file(evaluation_panel_path)
+    primary_forecasts_sha = sha256_file(primary_forecasts_path)
+    timing_forecasts_sha = sha256_file(timing_forecasts_path)
+    result = _result_document(
+        preregistration=preregistration,
+        method_freeze=method_freeze,
+        frozen_access=frozen_access,
+        authorization=consumed_access,
+        common_manifest=common_manifest,
+        timing_manifest=timing_manifest,
+        quality_report=quality_report,
+        primary_panel=primary_panel,
+        primary_forecasts=primary_forecasts,
+        timing_forecasts=timing_forecasts,
+        primary_panel_sha256=evaluation_panel_sha,
+        primary_forecasts_sha256=primary_forecasts_sha,
+        timing_forecasts_sha256=timing_forecasts_sha,
+        evaluation=evaluation,
+    )
+    validate_confirmation_plan_schema(result, result_schema_path)
+    result_file_sha = _write_json_exclusive(result_path, result)
+    _write_bytes_exclusive(report_path, _render_report(result))
+    _write_evidence_index(
+        evidence_index_path,
+        (
+            (
+                "consumed_access",
+                "artifacts/b1v3_confirmation/access_authorization_consumed.json",
+                sha256_file(consumed_access_path),
+            ),
+            (
+                "evaluation_panel",
+                str(result["outputs"]["evaluation_panel"]["logical_path"]),
+                evaluation_panel_sha,
+            ),
+            (
+                "primary_forecasts",
+                str(result["outputs"]["primary_forecasts"]["logical_path"]),
+                primary_forecasts_sha,
+            ),
+            (
+                "timing_forecasts",
+                str(result["outputs"]["timing_forecasts"]["logical_path"]),
+                timing_forecasts_sha,
+            ),
+            ("result", "artifacts/b1v3_confirmation/result.json", result_file_sha),
+        ),
+    )
+    return result
+
+
 def _arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     contracts = ROOT / "specs/001-pit-options-rv30/contracts"
@@ -645,6 +835,11 @@ def _arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--report", type=Path, default=artifacts / "result_report.md")
     parser.add_argument("--evidence-index", type=Path, default=artifacts / "evidence_index.csv")
+    parser.add_argument(
+        "--finalize-sealed-outputs",
+        action="store_true",
+        help="Finalize a consumed run from its existing Parquet outputs without a new target read.",
+    )
     return parser.parse_args(argv)
 
 
@@ -654,34 +849,58 @@ def main(argv: Sequence[str] | None = None) -> int:
     timing_paths = {
         variant: getattr(args, f"timing_{variant.lower()}") for variant in _TIMING_VARIANTS
     }
-    result = run_b1v3_confirmation_once(
-        preregistration_path=args.preregistration,
-        preregistration_schema_path=args.preregistration_schema,
-        method_freeze_path=args.method_freeze,
-        method_freeze_schema_path=args.method_freeze_schema,
-        common_manifest_path=args.common_manifest,
-        common_manifest_schema_path=args.common_schema,
-        timing_manifest_path=args.timing_manifest,
-        timing_manifest_schema_path=args.timing_schema,
-        quality_report_path=args.quality_report,
-        quality_report_schema_path=args.quality_schema,
-        frozen_access_path=args.frozen_access,
-        access_schema_path=args.access_schema,
-        common_panel_path=args.common_panel,
-        training_panel_path=args.training_panel,
-        fmp_bars_path=args.fmp_bars,
-        timing_panel_paths=timing_paths,
-        confirmation_code_paths=args.confirmation_code,
-        uv_lock_path=args.uv_lock,
-        consumed_access_path=args.consumed_access,
-        evaluation_panel_path=args.evaluation_panel,
-        primary_forecasts_path=args.primary_forecasts,
-        timing_forecasts_path=args.timing_forecasts,
-        result_path=args.result,
-        result_schema_path=args.result_schema,
-        report_path=args.report,
-        evidence_index_path=args.evidence_index,
-    )
+    if args.finalize_sealed_outputs:
+        result = finalize_b1v3_confirmation_from_sealed_outputs(
+            preregistration_path=args.preregistration,
+            preregistration_schema_path=args.preregistration_schema,
+            method_freeze_path=args.method_freeze,
+            method_freeze_schema_path=args.method_freeze_schema,
+            common_manifest_path=args.common_manifest,
+            common_manifest_schema_path=args.common_schema,
+            timing_manifest_path=args.timing_manifest,
+            timing_manifest_schema_path=args.timing_schema,
+            quality_report_path=args.quality_report,
+            quality_report_schema_path=args.quality_schema,
+            frozen_access_path=args.frozen_access,
+            consumed_access_path=args.consumed_access,
+            access_schema_path=args.access_schema,
+            evaluation_panel_path=args.evaluation_panel,
+            primary_forecasts_path=args.primary_forecasts,
+            timing_forecasts_path=args.timing_forecasts,
+            result_path=args.result,
+            result_schema_path=args.result_schema,
+            report_path=args.report,
+            evidence_index_path=args.evidence_index,
+        )
+    else:
+        result = run_b1v3_confirmation_once(
+            preregistration_path=args.preregistration,
+            preregistration_schema_path=args.preregistration_schema,
+            method_freeze_path=args.method_freeze,
+            method_freeze_schema_path=args.method_freeze_schema,
+            common_manifest_path=args.common_manifest,
+            common_manifest_schema_path=args.common_schema,
+            timing_manifest_path=args.timing_manifest,
+            timing_manifest_schema_path=args.timing_schema,
+            quality_report_path=args.quality_report,
+            quality_report_schema_path=args.quality_schema,
+            frozen_access_path=args.frozen_access,
+            access_schema_path=args.access_schema,
+            common_panel_path=args.common_panel,
+            training_panel_path=args.training_panel,
+            fmp_bars_path=args.fmp_bars,
+            timing_panel_paths=timing_paths,
+            confirmation_code_paths=args.confirmation_code,
+            uv_lock_path=args.uv_lock,
+            consumed_access_path=args.consumed_access,
+            evaluation_panel_path=args.evaluation_panel,
+            primary_forecasts_path=args.primary_forecasts,
+            timing_forecasts_path=args.timing_forecasts,
+            result_path=args.result,
+            result_schema_path=args.result_schema,
+            report_path=args.report,
+            evidence_index_path=args.evidence_index,
+        )
     scientific = result["scientific_result"]
     assert isinstance(scientific, Mapping)
     print(

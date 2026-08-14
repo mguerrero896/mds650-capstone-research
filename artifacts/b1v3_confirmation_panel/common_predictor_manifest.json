@@ -1,0 +1,191 @@
+{
+  "completeness": {
+    "b0_complete_count": 35424,
+    "b1v3a_complete_count": 34897,
+    "b2_complete_count": 34897,
+    "by_role": [
+      {
+        "b0_complete_count": 11664,
+        "b1v3a_complete_count": 11577,
+        "b2_complete_count": 11577,
+        "origin_count": 12744,
+        "role": "confirmation"
+      },
+      {
+        "b0_complete_count": 23760,
+        "b1v3a_complete_count": 23320,
+        "b2_complete_count": 23320,
+        "origin_count": 25920,
+        "role": "development"
+      }
+    ]
+  },
+  "evaluation_blocker": "EVALUATION_TESTS_AND_PREREGISTRATION_PENDING",
+  "information_sets": {
+    "B0": {
+      "feature_count": 12,
+      "features": [
+        "b0v2_log_spot",
+        "b0v2_underlying_return_5m",
+        "b0v2_underlying_rv_5m",
+        "b0v2_underlying_rv_30m",
+        "b0v2_log_dollar_volume_5m",
+        "b0v2_spy_return_5m",
+        "b0v2_spy_rv_30m",
+        "b0v2_qqq_return_5m",
+        "b0v2_qqq_rv_30m",
+        "b0v2_session_sine",
+        "b0v2_session_cosine",
+        "b0v2_asset_identity"
+      ]
+    },
+    "B1v3a": {
+      "feature_count": 15,
+      "features": [
+        "b0v2_log_spot",
+        "b0v2_underlying_return_5m",
+        "b0v2_underlying_rv_5m",
+        "b0v2_underlying_rv_30m",
+        "b0v2_log_dollar_volume_5m",
+        "b0v2_spy_return_5m",
+        "b0v2_spy_rv_30m",
+        "b0v2_qqq_return_5m",
+        "b0v2_qqq_rv_30m",
+        "b0v2_session_sine",
+        "b0v2_session_cosine",
+        "b0v2_asset_identity",
+        "b1v3_log_atm_variance_30d",
+        "b1v3_log_atm_variance_change_5m",
+        "b1v3_log_atm_variance_change_30m"
+      ]
+    },
+    "B2": {
+      "feature_count": 24,
+      "features": [
+        "b0v2_log_spot",
+        "b0v2_underlying_return_5m",
+        "b0v2_underlying_rv_5m",
+        "b0v2_underlying_rv_30m",
+        "b0v2_log_dollar_volume_5m",
+        "b0v2_spy_return_5m",
+        "b0v2_spy_rv_30m",
+        "b0v2_qqq_return_5m",
+        "b0v2_qqq_rv_30m",
+        "b0v2_session_sine",
+        "b0v2_session_cosine",
+        "b0v2_asset_identity",
+        "b1v3_log_atm_variance_30d",
+        "b1v3_log_atm_variance_change_5m",
+        "b1v3_log_atm_variance_change_30m",
+        "b2_log_trade_count",
+        "b2_unique_contract_share",
+        "b2_log_mean_trade_premium",
+        "b2_log_max_trade_premium",
+        "b2_call_put_premium_imbalance_scaled",
+        "b2_execution_side_premium_imbalance",
+        "b2_repeated_contract_premium_share",
+        "b2_strike_concentration",
+        "b2_expiry_concentration"
+      ]
+    }
+  },
+  "manifest_sha256": "d7aae430e434c51fb5351938714444c0bcd6069f52443a5cfd13c5ca13c8d1a0",
+  "outcome_read_count": 0,
+  "output": {
+    "bytes": 7870665,
+    "columns": [
+      "origin_id",
+      "asset",
+      "session_date",
+      "forecast_origin_utc",
+      "forecast_origin_ny",
+      "forecast_origin_ns",
+      "role",
+      "session_minute",
+      "session_tercile",
+      "session_segment",
+      "max_predictor_available_at_utc",
+      "b0v2_log_spot",
+      "b0v2_underlying_return_5m",
+      "b0v2_underlying_rv_5m",
+      "b0v2_underlying_rv_30m",
+      "b0v2_log_dollar_volume_5m",
+      "b0v2_spy_return_5m",
+      "b0v2_spy_rv_30m",
+      "b0v2_qqq_return_5m",
+      "b0v2_qqq_rv_30m",
+      "b0v2_session_sine",
+      "b0v2_session_cosine",
+      "b0v2_asset_identity",
+      "b0_complete",
+      "b0_missing_reason",
+      "max_sip_timestamp_ns",
+      "source_request_hashes",
+      "b1v3_log_atm_variance_30d",
+      "b1v3_log_symmetric_skew_30d",
+      "b1v3_log_forward_variance_short_medium",
+      "b1v3_log_forward_variance_medium_long",
+      "b1v3_log_atm_variance_change_5m",
+      "b1v3_log_atm_variance_change_30m",
+      "b1v3_log_symmetric_skew_change_30m",
+      "b1v3_log_forward_variance_short_medium_change_30m",
+      "b1v3_log_forward_variance_medium_long_change_30m",
+      "b1v3a_complete",
+      "b1v3b_complete",
+      "b1v3c_complete",
+      "b1v3_missing_reason",
+      "b2v2_cutoff_utc",
+      "b2v2_max_created_at_utc",
+      "b2_log_trade_count",
+      "b2_unique_contract_share",
+      "b2_log_mean_trade_premium",
+      "b2_log_max_trade_premium",
+      "b2_call_put_premium_imbalance_scaled",
+      "b2_execution_side_premium_imbalance",
+      "b2_repeated_contract_premium_share",
+      "b2_strike_concentration",
+      "b2_expiry_concentration",
+      "b2v2_availability_status",
+      "b2v2_availability_eligible",
+      "source_temporal_state",
+      "b0_information_set_complete",
+      "b1v3a_information_set_complete",
+      "b2_information_set_complete"
+    ],
+    "logical_path": "MDS650_B1V3_DATA_ROOT/predictors/common_predictor_panel.parquet",
+    "row_count": 38664,
+    "sha256": "a95d905602f7782679fc7e22025bd4aa828224cb84b86048ec8e3a23c0467a31"
+  },
+  "plan_sha256": "8b68411094d2638b6608e02a4f9dc3205cb834e1a6205d5a0cf0f73a95544b70",
+  "safe_to_evaluate_scientifically": false,
+  "safe_to_read_outcomes": false,
+  "schema_version": "1.0",
+  "scope": {
+    "asset_count": 6,
+    "assets": [
+      "AAPL",
+      "AMZN",
+      "META",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "confirmation_session_count": 30,
+    "origin_count": 38664,
+    "origin_identity_sha256": "7aa1a1927ea3743f46eebfa6e0c1d0aa56f738408f5e9f2c1e1fe54b51670272",
+    "training_session_count": 60
+  },
+  "security": {
+    "personal_paths_emitted": false,
+    "secret_values_emitted": false
+  },
+  "source_bindings": {
+    "b1q_source_inventory_sha256": "7f89ec5ad0266a8c44a2a128a468f23954dd53c5c5b474b09979bf8856a30cc1",
+    "b1q_source_manifest_sha256": "440925c9e0987bae5aa0a0d59a7f34f130d9293ce2aea85374afbcd4a77cfae8",
+    "b1v3_feature_manifest_sha256": "b4b93283ef3b17e7a54ea11e415b3b060ae848e86a5696e1ce37507d8d12a084",
+    "b2_feature_manifest_sha256": "ad03858d4354ba97b8b66ca864ccd9980a353112c2c7c23bb460907649ca5899",
+    "base_manifest_sha256": "440911ab744a78081c7a7213345557712bfbd9cf6387e587f4d11360bdd0e642"
+  },
+  "status": "PASS_TARGET_BLIND_COMMON_PREDICTOR_PANEL",
+  "target_blind": true
+}

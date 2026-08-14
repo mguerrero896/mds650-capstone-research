@@ -1,0 +1,67 @@
+{
+  "manifest_sha256": "4bd9e36a97f0ca6e5e98038c3ee43273333c0e2b17904bad3e5d02cde296c866",
+  "outcome_read_count": 0,
+  "safe_to_read_outcomes": false,
+  "schema_version": "1.0",
+  "security": {
+    "personal_paths_emitted": false,
+    "secret_values_emitted": false
+  },
+  "source_bindings": {
+    "b2_manifest_sha256": "ad03858d4354ba97b8b66ca864ccd9980a353112c2c7c23bb460907649ca5899",
+    "builder_code_sha256": "cf435902cda05e5a91ba0cc668b2a9237edc693878743f8b3676b765aee5c3cb",
+    "common_manifest_sha256": "d7aae430e434c51fb5351938714444c0bcd6069f52443a5cfd13c5ca13c8d1a0",
+    "common_panel_sha256": "a95d905602f7782679fc7e22025bd4aa828224cb84b86048ec8e3a23c0467a31",
+    "origin_identity_sha256": "7aa1a1927ea3743f46eebfa6e0c1d0aa56f738408f5e9f2c1e1fe54b51670272",
+    "timing_predictor_manifest_sha256": "2933c9bfbb7a790203d23211d32e01f103c1d1a15e22730c0339b432ad58f267"
+  },
+  "status": "PASS_TARGET_BLIND_TIMING_COMMON_PANELS",
+  "target_blind": true,
+  "variants": {
+    "FMP_DELAY_2_MINUTES": {
+      "b0_complete_count": 35424,
+      "b1v3a_complete_count": 34892,
+      "b2_complete_count": 34892,
+      "bytes": 7873979,
+      "logical_path": "MDS650_B1V3_DATA_ROOT/predictors/timing/common/FMP_DELAY_2_MINUTES.parquet",
+      "origin_count": 38664,
+      "sha256": "73bc77493a7f8940a972b4c12c2881f80fb1b40db5327a74d6e8c69dd6786f83"
+    },
+    "MASSIVE_CUTOFF_300_SECONDS": {
+      "b0_complete_count": 35424,
+      "b1v3a_complete_count": 34366,
+      "b2_complete_count": 34366,
+      "bytes": 7789323,
+      "logical_path": "MDS650_B1V3_DATA_ROOT/predictors/timing/common/MASSIVE_CUTOFF_300_SECONDS.parquet",
+      "origin_count": 38664,
+      "sha256": "a49319960bd09f9c28c79a588260432330be9ab5480cfc67c65a2b30eb940821"
+    },
+    "MASSIVE_CUTOFF_60_SECONDS": {
+      "b0_complete_count": 35424,
+      "b1v3a_complete_count": 34946,
+      "b2_complete_count": 34946,
+      "bytes": 7871956,
+      "logical_path": "MDS650_B1V3_DATA_ROOT/predictors/timing/common/MASSIVE_CUTOFF_60_SECONDS.parquet",
+      "origin_count": 38664,
+      "sha256": "967e1d2b3ea3a6a142591a96ff7b73cc78242ef1fa8fd2db10be623944b25cbb"
+    },
+    "UW_CREATED_AT_120_SECONDS": {
+      "b0_complete_count": 35424,
+      "b1v3a_complete_count": 34897,
+      "b2_complete_count": 34897,
+      "bytes": 7873670,
+      "logical_path": "MDS650_B1V3_DATA_ROOT/predictors/timing/common/UW_CREATED_AT_120_SECONDS.parquet",
+      "origin_count": 38664,
+      "sha256": "672246fb902f1124c99617b6405f4feb83468d238d79256069a887be6d4fae83"
+    },
+    "UW_CREATED_AT_300_SECONDS": {
+      "b0_complete_count": 35424,
+      "b1v3a_complete_count": 34897,
+      "b2_complete_count": 34897,
+      "bytes": 7843254,
+      "logical_path": "MDS650_B1V3_DATA_ROOT/predictors/timing/common/UW_CREATED_AT_300_SECONDS.parquet",
+      "origin_count": 38664,
+      "sha256": "be03e0d37967200010d3ef79710b15ad91bcba8630f6f60f6d8e7f7e93672298"
+    }
+  }
+}

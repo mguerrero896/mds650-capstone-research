@@ -177,6 +177,42 @@ def test_training_target_binding_preserves_exact_sample_and_rv30_contract() -> N
     assert bound.filter(pl.col("rv30") <= 0).is_empty()
 
 
+def test_training_target_binding_excludes_registered_incomplete_b0_origin() -> None:
+    common, targets = _panels()
+    excluded_origin = str(common["origin_id"][0])
+    incomplete = pl.col("origin_id") == excluded_origin
+    common = common.with_columns(
+        pl.when(incomplete)
+        .then(pl.lit(False))
+        .otherwise(pl.col(name))
+        .alias(name)
+        for name in (
+            "b0_information_set_complete",
+            "b1v3a_information_set_complete",
+            "b2_information_set_complete",
+        )
+    )
+    targets = targets.with_columns(
+        pl.when(incomplete)
+        .then(pl.lit(None, dtype=pl.Datetime(time_zone="UTC")))
+        .otherwise(pl.col("max_predictor_available_at_utc"))
+        .alias("max_predictor_available_at_utc"),
+        pl.when(incomplete)
+        .then(pl.lit("B0V2_UNDERLYING_HISTORY_MISSING"))
+        .otherwise(pl.col("drop_reason"))
+        .alias("drop_reason"),
+    )
+
+    bound = bind_b1v3_training_targets(
+        common,
+        targets,
+        preregistration=_preregistration(),
+    )
+
+    assert bound.height == 60 * len(_ASSETS) - 1
+    assert excluded_origin not in set(bound["origin_id"])
+
+
 @pytest.mark.parametrize(
     ("mutation", "error"),
     [

@@ -218,6 +218,23 @@ def reprice_attempt_row_for_fmp_delay(
         sequence = row.get("sequence_number", 0)
         bid = row.get("bid")
         ask = row.get("ask")
+        if bid is None and ask is None:
+            failure_reason = row.get("failure_reason")
+            if (
+                not isinstance(sip, int)
+                or row.get("iv_success") is not False
+                or row.get("iv") is not None
+                or not isinstance(failure_reason, str)
+                or not failure_reason
+            ):
+                raise ValueError("B1V3_FMP_QUOTE_IDENTITY_INVALID")
+            # FMP latency changes only the underlying spot. A selected quote
+            # whose NBBO was already unusable remains unusable; it must not be
+            # recoded as an absent quote or sent through IV inversion.
+            updated["quote_cutoff_seconds"] = 0
+            updated["iv_success"] = False
+            updated["iv"] = None
+            return updated
         if (
             not isinstance(sip, int)
             or not isinstance(sequence, int)

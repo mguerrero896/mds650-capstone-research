@@ -425,6 +425,16 @@ def test_origin_builder_schema_cutoff_and_identity_guards() -> None:
         build_b1v3_features(attempts.drop("iv"))
     with pytest.raises(ValueError, match="B1V3_INPUT_COLUMN_NOT_ALLOWLISTED"):
         build_b1v3_features(attempts.with_columns(pl.lit(1).alias("unknown_metadata")))
+    delayed = attempts.with_columns(pl.lit(2).alias("fmp_delay_minutes"))
+    assert build_b1v3_features(delayed).height == 1
+    massive_schema_compatible = attempts.with_columns(
+        pl.lit(None, dtype=pl.Int64).alias("fmp_delay_minutes")
+    )
+    assert build_b1v3_features(massive_schema_compatible).height == 1
+    with pytest.raises(ValueError, match="B1V3_FMP_DELAY_IDENTITY_INVALID"):
+        build_b1v3_features(
+            attempts.with_columns(pl.lit(3).alias("fmp_delay_minutes"))
+        )
     with pytest.raises(ValueError, match="B1V3_SHIFTED_RESELECTION_IDENTITY_REQUIRED"):
         build_b1v3_features(attempts, quote_cutoff_seconds=60)
     shifted = attempts.with_columns(pl.lit(300).alias("quote_cutoff_seconds"))

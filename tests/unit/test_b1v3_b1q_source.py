@@ -340,6 +340,48 @@ def test_sealer_rejects_contract_grid_drift_and_unverified_pagination(
         _seal(paths)
 
 
+def test_sealer_accepts_sequence_reordering_within_equal_sip_timestamp(
+    tmp_path: Path,
+) -> None:
+    """Massive promises timestamp order, not sequence order inside timestamp ties."""
+    paths = _fixture(tmp_path)
+    cache_path = next(paths.cache_root.glob("*.json"))
+    cache = json.loads(cache_path.read_text(encoding="utf-8"))
+    first = dict(cache["results"][0])
+    cache["results"] = [
+        {**first, "sequence_number": 21},
+        {**first, "sequence_number": 1},
+    ]
+    _write_json(cache_path, cache)
+
+    artifacts = _seal(paths)
+    manifest = json.loads(artifacts.manifest_path.read_text(encoding="utf-8"))
+
+    assert manifest["status"] == "PASS_TARGET_BLIND_B1Q_SOURCE_BOUND"
+
+
+def test_sealer_rejects_decreasing_sip_timestamp_even_if_sequence_increases(
+    tmp_path: Path,
+) -> None:
+    """A genuine timestamp reversal still violates the requested ascending sort."""
+    paths = _fixture(tmp_path)
+    cache_path = next(paths.cache_root.glob("*.json"))
+    cache = json.loads(cache_path.read_text(encoding="utf-8"))
+    first = dict(cache["results"][0])
+    cache["results"] = [
+        {**first, "sequence_number": 1},
+        {
+            **first,
+            "sip_timestamp": int(first["sip_timestamp"]) - 1,
+            "sequence_number": 2,
+        },
+    ]
+    _write_json(cache_path, cache)
+
+    with pytest.raises(ValueError, match="B1V3_B1Q_SOURCE_CACHE_INVALID"):
+        _seal(paths)
+
+
 def test_sealer_rejects_base_hash_and_cache_identity_ambiguity(tmp_path: Path) -> None:
     paths = _fixture(tmp_path)
     base = json.loads(paths.base_manifest_path.read_text(encoding="utf-8"))

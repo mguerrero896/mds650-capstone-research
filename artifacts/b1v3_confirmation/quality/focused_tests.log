@@ -1,0 +1,11 @@
+command_index=1
+command=uv run pytest -q tests\unit\test_acquire_b1v3_confirmation_b1q.py tests\unit\test_acquire_b1v3_confirmation_full_tape.py tests\unit\test_b1v3.py tests\unit\test_b1v3_b1q_source.py tests\unit\test_b1v3_b2_confirmation.py tests\unit\test_b1v3_confirmation.py tests\unit\test_b1v3_confirmation_acquisition.py tests\unit\test_b1v3_confirmation_build.py tests\unit\test_b1v3_confirmation_common.py tests\unit\test_b1v3_confirmation_evaluation.py tests\unit\test_b1v3_confirmation_panel.py tests\unit\test_b1v3_confirmation_run.py tests\unit\test_b1v3_evaluation.py tests\unit\test_b1v3_massive_sensitivity.py tests\unit\test_b1v3_method_freeze.py tests\unit\test_b1v3_provider_preflight_v2.py tests\unit\test_b1v3_timing_panel.py tests\unit\test_build_b1v3_confirmation_b1.py tests\unit\test_build_b1v3_confirmation_common.py tests\unit\test_build_b1v3_confirmation_timing.py tests\unit\test_build_b1v3_confirmation_timing_panels.py tests\unit\test_build_b1v3_target_blind.py tests\unit\test_freeze_b1v3_confirmation_plan.py tests\unit\test_freeze_b1v3_method.py tests\unit\test_run_b1v3_confirmation_once.py tests\unit\test_run_b1v3_pre_confirmation_quality.py tests\unit\test_run_b1v3_provider_preflight_v2.py tests\unit\test_seal_b1v3_access_ledger.py tests\unit\test_seal_b1v3_confirmation_b1q_source.py tests\unit\test_seal_b1v3_preregistration.py tests\contract\test_b1v3_confirmation_base_artifact.py
+exit_code=0
+stdout:
+........................................................................ [ 29%]
+........................................................................ [ 59%]
+........................................................................ [ 88%]
+............................                                             [100%]
+
+stderr:
+

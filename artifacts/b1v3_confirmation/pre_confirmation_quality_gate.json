@@ -1,0 +1,69 @@
+{
+  "confirmation_read_count": 0,
+  "gates": {
+    "clean_install": {
+      "evidence_sha256": "b5c1318bd27f65f724c6852fd49e53d038f4207d52aa584633da74834012b3e0",
+      "status": "PASS"
+    },
+    "coverage": {
+      "evidence_sha256": "f2b4ecf80e1ddc0dd93697aa7329fec3b8fdc550b149f9109573ced9fa344d6e",
+      "status": "PASS"
+    },
+    "deterministic_replay": {
+      "evidence_sha256": "87b38529cb428691e885aaca5ab9d234f35bc96b690dc9bddc272f08bf82cd70",
+      "status": "PASS"
+    },
+    "disk_gate": {
+      "evidence_sha256": "e69c2c4090d09f394c1a056635eae6fca124558b89de18ea4dd76cda792dc7fc",
+      "status": "PASS"
+    },
+    "focused_tests": {
+      "evidence_sha256": "3cae83cd15b8cc51a58b071cc10014669ca58efca1c97abd5b58a70c0f0e5155",
+      "status": "PASS"
+    },
+    "full_tests": {
+      "evidence_sha256": "f2b4ecf80e1ddc0dd93697aa7329fec3b8fdc550b149f9109573ced9fa344d6e",
+      "status": "PASS"
+    },
+    "hygiene": {
+      "evidence_sha256": "da958bc933b1536f9aba706b32b1ff2c6ad2c6634e7e0460a5d4c5f0525f91e5",
+      "status": "PASS"
+    },
+    "json_schema": {
+      "evidence_sha256": "c8553c694a44bf06a594782ef96aaf48dee270fb8ba3bd32882744d944e5960b",
+      "status": "PASS"
+    },
+    "mypy": {
+      "evidence_sha256": "479f8f3f76f5692f6a1e7bb72f8bc45f30a7ef31a53e4b642336638916100ca9",
+      "status": "PASS"
+    },
+    "no_leakage": {
+      "evidence_sha256": "9c41ac321003680897180ccf2e29b45ed134ae7be2e19a8d60a84073aa742b75",
+      "status": "PASS"
+    },
+    "ruff": {
+      "evidence_sha256": "7b4daf5622f5e5437e353d5b6de297f4327f3ad5581558a90427e956fe4fc523",
+      "status": "PASS"
+    },
+    "spec_kit": {
+      "evidence_sha256": "691600277adadc75ea5005aea051e02ae390597a4dbead57572957629e0679d8",
+      "status": "PASS"
+    }
+  },
+  "manifest_sha256": "f63ca57900b1f400e6a30937d95c2cb35bb3353d28fe16d202b82d49356f42b2",
+  "outcome_read_count": 1,
+  "schema_version": "1.0",
+  "security": {
+    "personal_paths_emitted": false,
+    "secret_values_emitted": false
+  },
+  "source_bindings": {
+    "common_panel_sha256": "a95d905602f7782679fc7e22025bd4aa828224cb84b86048ec8e3a23c0467a31",
+    "method_freeze_manifest_sha256": "2011c0a7292d899d2106e77710e95809fc3a7f412c8294bc850995f0e85adb26",
+    "preregistration_manifest_sha256": "e538ad0052190fc502b0441fed9d5b17f27b0db40d6061860a57e83e6a55f99d",
+    "timing_panel_manifest_sha256": "4bd9e36a97f0ca6e5e98038c3ee43273333c0e2b17904bad3e5d02cde296c866"
+  },
+  "status": "PASS_B1V3_PRE_CONFIRMATION_QUALITY",
+  "target_blind": true,
+  "training_read_count": 1
+}

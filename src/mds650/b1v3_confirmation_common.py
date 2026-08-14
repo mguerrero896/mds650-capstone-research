@@ -93,6 +93,21 @@ def build_common_predictor_frame(
     they are not part of the primary B1v3a or B2 information sets.
     """
     panel = assemble_predictor_panel(origins=origins, b0=b0, b1=b1, b2=b2)
+    if "role" not in panel.columns:
+        raise ValueError("B1V3_COMMON_ROLE_MISSING")
+    invalid_roles = set(panel["role"].drop_nulls().cast(pl.String).unique()) - {
+        "training_warmup",
+        "development",
+        "confirmation",
+    }
+    if invalid_roles:
+        raise ValueError("B1V3_COMMON_ROLE_INVALID")
+    panel = panel.with_columns(
+        pl.when(pl.col("role") == "training_warmup")
+        .then(pl.lit("development"))
+        .otherwise(pl.col("role"))
+        .alias("role")
+    )
     b2_numeric_complete = pl.all_horizontal(
         pl.col(feature).cast(pl.Float64, strict=False).is_finite()
         & pl.col(feature).is_not_null()

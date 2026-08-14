@@ -1,0 +1,24 @@
+command_index=1
+command=uv run python scripts/build_b1v3_confirmation_common.py
+exit_code=0
+stdout:
+{"manifest_file_sha256": "aa922173ce0b610764ba38b4a9e8af5ca2bc24103736ca9509ab2ad4abb99fb2", "manifest_sha256": "d7aae430e434c51fb5351938714444c0bcd6069f52443a5cfd13c5ca13c8d1a0", "panel_sha256": "a95d905602f7782679fc7e22025bd4aa828224cb84b86048ec8e3a23c0467a31", "safe_to_evaluate_scientifically": false, "safe_to_read_outcomes": false, "status": "PASS_TARGET_BLIND_COMMON_PREDICTOR_PANEL"}
+
+stderr:
+
+command_index=2
+command=uv run python scripts/build_b1v3_confirmation_timing_panels.py
+exit_code=0
+stdout:
+{"manifest_sha256": "4bd9e36a97f0ca6e5e98038c3ee43273333c0e2b17904bad3e5d02cde296c866", "outcome_read_count": 0, "safe_to_read_outcomes": false, "status": "PASS_TARGET_BLIND_TIMING_COMMON_PANELS"}
+
+stderr:
+
+command_index=3
+command=uv run python scripts/seal_b1v3_preregistration.py
+exit_code=0
+stdout:
+{"manifest_sha256": "e538ad0052190fc502b0441fed9d5b17f27b0db40d6061860a57e83e6a55f99d", "safe_to_evaluate_b1v3": "NO", "status": "FROZEN_BEFORE_CONFIRMATION"}
+
+stderr:
+

@@ -387,6 +387,34 @@ def test_reprice_attempt_for_fmp_delay_recomputes_spot_moneyness_dividend_and_iv
         reprice_attempt_row_for_fmp_delay(row, delayed_spot=float("nan"), delay_minutes=2)
 
 
+def test_reprice_attempt_for_fmp_delay_preserves_invalid_spread_quote_state() -> None:
+    """A delayed spot cannot make an unusable selected NBBO valid or absent."""
+    row = {
+        **_attempt(),
+        "sequence_number": None,
+        "bid": None,
+        "ask": None,
+        "midpoint": None,
+        "relative_spread": None,
+        "iv_success": False,
+        "iv": None,
+        "failure_reason": "INVALID_SPREAD",
+    }
+
+    output = reprice_attempt_row_for_fmp_delay(
+        row,
+        delayed_spot=198.0,
+        delay_minutes=2,
+    )
+
+    assert output["spot"] == 198.0
+    assert output["sip_timestamp"] == row["sip_timestamp"]
+    assert output["failure_reason"] == "INVALID_SPREAD"
+    assert output["iv_success"] is False
+    assert output["iv"] is None
+    assert output["quote_cutoff_seconds"] == 0
+
+
 def test_write_fmp_delayed_attempts_binds_exact_origin_spot(
     tmp_path: Path,
 ) -> None:

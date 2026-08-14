@@ -1,0 +1,8 @@
+command_index=1
+command=uv run mypy src scripts
+exit_code=0
+stdout:
+Success: no issues found in 181 source files
+
+stderr:
+

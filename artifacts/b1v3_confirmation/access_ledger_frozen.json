@@ -1,0 +1,32 @@
+{
+  "common_panel_sha256": "a95d905602f7782679fc7e22025bd4aa828224cb84b86048ec8e3a23c0467a31",
+  "confirmation_code_sha256": "5ad7d21d002311737da1360d38b868c91396001bfef7a52226fbd3abc42a974d",
+  "confirmation_read_count": 0,
+  "evaluation_attempt_count": 0,
+  "manifest_sha256": "fbd33269ce84da69b22542dc2d01aac6df5e2db4835c5869300674babc397543",
+  "method_freeze_sha256": "2011c0a7292d899d2106e77710e95809fc3a7f412c8294bc850995f0e85adb26",
+  "outcome_read_count": 1,
+  "preregistration_manifest_sha256": "e538ad0052190fc502b0441fed9d5b17f27b0db40d6061860a57e83e6a55f99d",
+  "prerequisites": {
+    "clean_install": true,
+    "coverage": true,
+    "deterministic_replay": true,
+    "disk_gate": true,
+    "focused_tests": true,
+    "full_tests": true,
+    "hygiene": true,
+    "json_schema": true,
+    "mypy": true,
+    "no_leakage": true,
+    "ruff": true,
+    "spec_kit": true
+  },
+  "quality_report_sha256": "f63ca57900b1f400e6a30937d95c2cb35bb3353d28fe16d202b82d49356f42b2",
+  "results_inspected": false,
+  "safe_to_evaluate_b1v3": "YES",
+  "schema_version": "1.0",
+  "status": "METHOD_FROZEN_BEFORE_CONFIRMATION",
+  "timing_panel_manifest_sha256": "4bd9e36a97f0ca6e5e98038c3ee43273333c0e2b17904bad3e5d02cde296c866",
+  "training_read_count": 1,
+  "uv_lock_sha256": "f9df1a80f37212c81ef4d9ec466b1e94b764aed5daf84435fae75f345623eaac"
+}

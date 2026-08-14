@@ -471,7 +471,7 @@ def _validate_cache_payload(
     ):
         raise ValueError("B1V3_B1Q_SOURCE_CACHE_INVALID")
     seen: set[tuple[int, int]] = set()
-    prior: tuple[int, int] | None = None
+    prior_sip: int | None = None
     timestamps: list[int] = []
     for row in rows:
         if not isinstance(row, dict):
@@ -494,10 +494,13 @@ def _validate_cache_payload(
         ):
             raise ValueError("B1V3_B1Q_SOURCE_CACHE_INVALID")
         key = (sip, sequence)
-        if key in seen or (prior is not None and key < prior):
+        # The provider request is sorted by timestamp only. Sequence numbers are
+        # deterministic tie-breakers for local as-of selection, but their raw
+        # order is not contractually monotone within one SIP timestamp.
+        if key in seen or (prior_sip is not None and sip < prior_sip):
             raise ValueError("B1V3_B1Q_SOURCE_CACHE_INVALID")
         seen.add(key)
-        prior = key
+        prior_sip = sip
         timestamps.append(sip)
     return {
         "asset": asset,

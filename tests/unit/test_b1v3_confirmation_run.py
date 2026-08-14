@@ -144,6 +144,43 @@ def test_confirmation_binding_preserves_exact_target_contract_and_b0() -> None:
     assert set(bound["role"].unique()) == {"confirmation"}
 
 
+def test_confirmation_binding_excludes_registered_incomplete_b0_origin() -> None:
+    common, targets = _confirmation_inputs()
+    excluded_origin = str(common["origin_id"][0])
+    incomplete = pl.col("origin_id") == excluded_origin
+    common = common.with_columns(
+        pl.when(incomplete)
+        .then(pl.lit(False))
+        .otherwise(pl.col(name))
+        .alias(name)
+        for name in (
+            "b0_information_set_complete",
+            "b1v3a_information_set_complete",
+            "b2_information_set_complete",
+        )
+    )
+    targets = targets.with_columns(
+        pl.when(incomplete)
+        .then(pl.lit(None, dtype=pl.Datetime(time_zone="UTC")))
+        .otherwise(pl.col("max_predictor_available_at_utc"))
+        .alias("max_predictor_available_at_utc"),
+        pl.when(incomplete)
+        .then(pl.lit("B0V2_UNDERLYING_HISTORY_MISSING"))
+        .otherwise(pl.col("drop_reason"))
+        .alias("drop_reason"),
+    )
+
+    bound = bind_b1v3_confirmation_targets(
+        common,
+        targets,
+        preregistration=_preregistration(),
+        authorization=_authorization(),
+    )
+
+    assert bound.height == 30 * len(_ASSETS) - 1
+    assert excluded_origin not in set(bound["origin_id"])
+
+
 def test_confirmation_binding_rejects_predictor_drift_and_future_availability() -> None:
     common, targets = _confirmation_inputs()
     drift = targets.with_columns(

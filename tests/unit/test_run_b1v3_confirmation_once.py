@@ -16,6 +16,7 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from run_b1v3_confirmation_once import (  # noqa: E402
+    _recovery_authorization_valid,
     _result_document,
     _write_bytes_exclusive,
     _write_json_exclusive,
@@ -23,6 +24,7 @@ from run_b1v3_confirmation_once import (  # noqa: E402
 )
 
 from mds650.b1v3_confirmation import validate_confirmation_plan_schema  # noqa: E402
+from mds650.study_design import canonical_sha256  # noqa: E402
 
 _SHA = "a" * 64
 _ASSETS = ("AAPL", "AMZN", "META", "MSFT", "NVDA", "TSLA")
@@ -30,6 +32,30 @@ _ASSETS = ("AAPL", "AMZN", "META", "MSFT", "NVDA", "TSLA")
 
 def _manifest() -> dict[str, str]:
     return {"manifest_sha256": _SHA}
+
+
+def _access_ledgers() -> tuple[dict[str, Any], dict[str, Any]]:
+    frozen: dict[str, Any] = {
+        "status": "METHOD_FROZEN_BEFORE_CONFIRMATION",
+        "safe_to_evaluate_b1v3": "YES",
+        "outcome_read_count": 1,
+        "training_read_count": 1,
+        "confirmation_read_count": 0,
+        "evaluation_attempt_count": 0,
+        "results_inspected": False,
+        "common_panel_sha256": "1" * 64,
+        "preregistration_manifest_sha256": "2" * 64,
+    }
+    frozen["manifest_sha256"] = canonical_sha256(frozen)
+    consumed = {
+        **{key: value for key, value in frozen.items() if key != "manifest_sha256"},
+        "status": "CONFIRMATION_EVALUATION_IN_PROGRESS",
+        "outcome_read_count": 2,
+        "confirmation_read_count": 1,
+        "evaluation_attempt_count": 1,
+    }
+    consumed["manifest_sha256"] = canonical_sha256(consumed)
+    return frozen, consumed
 
 
 def _panel() -> pl.DataFrame:
@@ -74,7 +100,9 @@ def _scientific_result() -> dict[str, Any]:
     }
 
 
-def test_result_document_is_self_hashed_schema_valid_and_sign_complete() -> None:
+def test_result_document_is_self_hashed_schema_valid_and_sign_complete(
+    tmp_path: Path,
+) -> None:
     panel = _panel()
     forecasts = pl.DataFrame({"origin_id": ["one"]})
     authorization = {
@@ -107,6 +135,7 @@ def test_result_document_is_self_hashed_schema_valid_and_sign_complete() -> None
     assert result["sample"]["confirmation_sessions"] == 30
     assert result["all_signs_retained"] is True
     assert len(result["manifest_sha256"]) == 64
+    assert len(_write_json_exclusive(tmp_path / "result.json", result)) == 64
 
 
 def test_final_writers_are_exclusive_and_sanitized(tmp_path: Path) -> None:
@@ -124,3 +153,16 @@ def test_final_writers_are_exclusive_and_sanitized(tmp_path: Path) -> None:
         _write_parquet_exclusive(parquet_path, frame)
     with pytest.raises(ValueError, match="B1V3_CONFIRMATION_OUTPUT_HYGIENE_INVALID"):
         _write_bytes_exclusive(tmp_path / "unsafe.md", b"C:/Users/person/private")
+    with pytest.raises(ValueError, match="B1V3_CONFIRMATION_OUTPUT_HYGIENE_INVALID"):
+        _write_bytes_exclusive(tmp_path / "secret.txt", b"Authorization: Basic secret")
+
+
+def test_recovery_accepts_only_the_exact_consumed_one_read_ledger() -> None:
+    frozen, consumed = _access_ledgers()
+
+    assert _recovery_authorization_valid(frozen, consumed)
+    tampered = {**consumed, "evaluation_attempt_count": 2}
+    tampered["manifest_sha256"] = canonical_sha256(
+        {key: value for key, value in tampered.items() if key != "manifest_sha256"}
+    )
+    assert not _recovery_authorization_valid(frozen, tampered)

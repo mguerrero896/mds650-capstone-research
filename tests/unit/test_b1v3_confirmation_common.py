@@ -132,6 +132,16 @@ def test_common_panel_preserves_origins_and_nested_information_sets() -> None:
     )
 
 
+def test_common_panel_normalizes_training_warmup_to_development_role() -> None:
+    """The target-free grid label maps to the frozen scientific development role."""
+    origins, b0, b1, b2 = _frames()
+    origins = origins.with_columns(pl.lit("training_warmup").alias("role"))
+
+    panel = build_common_predictor_frame(origins=origins, b0=b0, b1=b1, b2=b2)
+
+    assert panel["role"].unique().to_list() == ["development"]
+
+
 def test_common_panel_rejects_outcome_column() -> None:
     origins, b0, b1, b2 = _frames()
     with pytest.raises(ValueError, match="B1V3_PANEL_TARGET_COLUMN_FORBIDDEN"):

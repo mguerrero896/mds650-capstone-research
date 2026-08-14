@@ -284,3 +284,21 @@ Spec Kit consistency and preregistration gates pass.
    inference uses 10,000 paired whole-day bootstrap resamples plus Holm, and MDE is training-only.
    If no eligible block exists, record `NO_PRISTINE_30_SESSION_BLOCK`; never reuse an exposed OOS
    period or choose a feature/timing/model variant because its result is favorable.
+48. **B1v3 one-read result (2026-08-14)** — The source-bound 60/30-session confirmation is
+   complete on 23,320 development and 11,577 confirmation common-complete origins. Under the
+   confirmatory Gamma model, `QLIKE(B0)-QLIKE(B1v3a)=-0.05030242` with 95% paired-day interval
+   `[-0.06532898,-0.03593304]`, so ordinary ATM option state did not improve B0. The registered
+   incremental contrast `QLIKE(B1v3a)-QLIKE(B2)=0.05339190` has interval
+   `[0.03857849,0.06817332]`, Holm-adjusted `p=0.00039996`, exceeds the training-only MDE
+   `0.01304182`, is positive in all six asset point estimates and remains positive under all five
+   timing sensitivities. Fixed LightGBM reverses both contrasts, including B2 at
+   `-0.00745281` with interval `[-0.01218466,-0.00355039]`. The binding conclusion is therefore
+   `POSITIVE_BUT_NOT_GLOBALLY_CONFIRMED`: B2 has strong Gamma-specific incremental evidence, not
+   a model-independent or production edge; B1v3a does not beat B0 in this confirmation.
+49. **One-read serialization recovery (2026-08-14)** — The confirmation token was consumed once
+   and the registered evaluation completed before a generic `authorization` sanitizer token
+   rejected the legitimate provenance key `consumed_authorization_manifest_sha256`. No second
+   target read or model fit was performed. Finalization used only the three already-sealed
+   derived Parquet outputs after testing the exact consumed-ledger transition, target identity,
+   schema, hashes and secret hygiene. The incident and immutable hashes are recorded in
+   `docs/recovery/b1v3_one_read_serialization_incident.md`.

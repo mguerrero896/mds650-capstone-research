@@ -1,0 +1,181 @@
+{
+  "common_panel_sha256": "a95d905602f7782679fc7e22025bd4aa828224cb84b86048ec8e3a23c0467a31",
+  "confirmation_policy": "EXACTLY_ONE_ANALYTICAL_READ_AFTER_ACCESS_LEDGER",
+  "confirmation_read_count": 0,
+  "confirmation_sessions": [
+    "2024-10-28",
+    "2024-10-29",
+    "2024-10-30",
+    "2024-10-31",
+    "2024-11-01",
+    "2024-11-04",
+    "2024-11-05",
+    "2024-11-06",
+    "2024-11-07",
+    "2024-11-08",
+    "2024-11-11",
+    "2024-11-12",
+    "2024-11-13",
+    "2024-11-14",
+    "2024-11-15",
+    "2024-11-18",
+    "2024-11-19",
+    "2024-11-20",
+    "2024-11-21",
+    "2024-11-22",
+    "2024-11-25",
+    "2024-11-26",
+    "2024-11-27",
+    "2024-11-29",
+    "2024-12-02",
+    "2024-12-03",
+    "2024-12-04",
+    "2024-12-05",
+    "2024-12-06",
+    "2024-12-09"
+  ],
+  "manifest_sha256": "2011c0a7292d899d2106e77710e95809fc3a7f412c8294bc850995f0e85adb26",
+  "oof_blocks": [
+    101,
+    102,
+    103
+  ],
+  "outcome_read_count": 1,
+  "preregistration_manifest_sha256": "e538ad0052190fc502b0441fed9d5b17f27b0db40d6061860a57e83e6a55f99d",
+  "retain_all_registered_signs": true,
+  "safe_to_read_confirmation": false,
+  "schema_version": "1.0",
+  "selected_parameters": {
+    "gamma_glm_confirmatory": {
+      "B0": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "B1v3a": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "B2": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      }
+    },
+    "lightgbm_robustness": {
+      "B0": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "B1v3a": {
+        "learning_rate": 0.05,
+        "max_depth": 5,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "B2": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      }
+    }
+  },
+  "source_hashes": {
+    "method_freeze_code_sha256": "09c028949a0bc57ea72b8d9b15bdbbe3327ab67ee6d75295662a8da8c46b9c1d",
+    "oof_forecasts_sha256": "a4663cc83320ff6d05b412663125140bef0d0448621d5df07e0c1387349e9f9d",
+    "training_panel_sha256": "f8eea2c04a286863d957561816e04bf1b0602e794e6e617127fc7068b3ba1957",
+    "training_target_source_sha256": "855c3cc2283338bed997f31d88d604434ebb452b034dc918e03e793be5d51ccb",
+    "tuning_ledger_sha256": "b5362b0301ee88450ef7634d4c881e9b7d83f2f3c943f66329f1572a0fc54fa3",
+    "uv_lock_sha256": "f9df1a80f37212c81ef4d9ec466b1e94b764aed5daf84435fae75f345623eaac"
+  },
+  "status": "FROZEN_AFTER_TRAINING_BEFORE_CONFIRMATION",
+  "training_mde": {
+    "delta_b1v3": 0.01890532256795044,
+    "delta_b2": 0.013041821324764561
+  },
+  "training_read_count": 1,
+  "training_sample": {
+    "asset_count": 6,
+    "identical_information_set_sample": true,
+    "row_count": 23320,
+    "session_count": 60,
+    "target_price_count": 31,
+    "target_return_count": 30
+  },
+  "training_sessions": [
+    "2024-08-02",
+    "2024-08-05",
+    "2024-08-06",
+    "2024-08-07",
+    "2024-08-08",
+    "2024-08-09",
+    "2024-08-12",
+    "2024-08-13",
+    "2024-08-14",
+    "2024-08-15",
+    "2024-08-16",
+    "2024-08-19",
+    "2024-08-20",
+    "2024-08-21",
+    "2024-08-22",
+    "2024-08-23",
+    "2024-08-26",
+    "2024-08-27",
+    "2024-08-28",
+    "2024-08-29",
+    "2024-08-30",
+    "2024-09-03",
+    "2024-09-04",
+    "2024-09-05",
+    "2024-09-06",
+    "2024-09-09",
+    "2024-09-10",
+    "2024-09-11",
+    "2024-09-12",
+    "2024-09-13",
+    "2024-09-16",
+    "2024-09-17",
+    "2024-09-18",
+    "2024-09-19",
+    "2024-09-20",
+    "2024-09-23",
+    "2024-09-24",
+    "2024-09-25",
+    "2024-09-26",
+    "2024-09-27",
+    "2024-09-30",
+    "2024-10-01",
+    "2024-10-02",
+    "2024-10-03",
+    "2024-10-04",
+    "2024-10-07",
+    "2024-10-08",
+    "2024-10-09",
+    "2024-10-10",
+    "2024-10-11",
+    "2024-10-14",
+    "2024-10-15",
+    "2024-10-16",
+    "2024-10-17",
+    "2024-10-18",
+    "2024-10-21",
+    "2024-10-22",
+    "2024-10-23",
+    "2024-10-24",
+    "2024-10-25"
+  ],
+  "volatility_regime_cutpoints": {
+    "lower": 6.582271729769248e-06,
+    "upper": 1.7472238825454338e-05
+  }
+}

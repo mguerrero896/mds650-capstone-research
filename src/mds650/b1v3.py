@@ -82,6 +82,7 @@ _OPTIONAL_INPUT_COLUMNS: Final[frozenset[str]] = frozenset(
         "iterations",
         "lower_bound",
         "upper_bound",
+        "fmp_delay_minutes",
         "quote_cutoff_seconds",
         "sequence_number",
         "session_tercile",
@@ -861,6 +862,11 @@ def build_b1v3_features(
         values = set(attempts["quote_cutoff_seconds"].drop_nulls().to_list())
         if values != {quote_cutoff_seconds}:
             raise ValueError("B1V3_SHIFTED_RESELECTION_IDENTITY_MISMATCH")
+    if "fmp_delay_minutes" in attempts.columns:
+        fmp_delay = attempts["fmp_delay_minutes"]
+        values = set(fmp_delay.drop_nulls().to_list())
+        if values and (fmp_delay.null_count() or values not in ({1}, {2})):
+            raise ValueError("B1V3_FMP_DELAY_IDENTITY_INVALID")
 
     order = [
         "asset",
