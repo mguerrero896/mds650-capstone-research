@@ -215,6 +215,47 @@ def test_spot_frame_uses_exact_prior_bar_and_never_silent_fill() -> None:
         build_spot_frame(bars.drop("close"), origins)
 
 
+def test_spot_frame_supports_registered_plus_two_minute_sensitivity() -> None:
+    origin = datetime(2024, 8, 2, 14, 35, tzinfo=UTC)
+    origins = pl.DataFrame(
+        {
+            "origin_id": ["AAPL:1"],
+            "asset": ["AAPL"],
+            "session_date": ["2024-08-02"],
+            "forecast_origin_utc": [origin],
+        }
+    )
+    bars = pl.DataFrame(
+        {
+            "asset": ["AAPL", "AAPL"],
+            "session_date": ["2024-08-02", "2024-08-02"],
+            "bar_timestamp_raw_utc": [
+                datetime(2024, 8, 2, 14, 33, tzinfo=UTC),
+                datetime(2024, 8, 2, 14, 34, tzinfo=UTC),
+            ],
+            "available_at_utc": [
+                datetime(2024, 8, 2, 14, 34, tzinfo=UTC),
+                origin,
+            ],
+            "available_at_plus_2m_utc": [
+                origin,
+                datetime(2024, 8, 2, 14, 36, tzinfo=UTC),
+            ],
+            "close": [218.0, 219.0],
+        }
+    )
+
+    spots = build_spot_frame(bars, origins, delay_minutes=2)
+
+    assert spots["spot"].item() == 218.0
+    assert spots["spot_bar_timestamp_raw_utc"].item() == datetime(
+        2024, 8, 2, 14, 33, tzinfo=UTC
+    )
+    assert spots["spot_available_at_utc"].item() == origin
+    with pytest.raises(ValueError, match="B1V3_SPOT_DELAY_INVALID"):
+        build_spot_frame(bars, origins, delay_minutes=3)
+
+
 def test_strip_target_columns_removes_all_target_scaffolding() -> None:
     frame = pl.DataFrame(
         {
@@ -265,7 +306,7 @@ def test_b0_wrapper_is_predictor_only_and_marks_completeness(
     ) -> pl.DataFrame:
         assert bars.is_empty()
         assert origins.is_empty()
-        assert delay_minutes == 1
+        assert delay_minutes in {1, 2}
         assert include_target is False
         return source
 
@@ -275,6 +316,9 @@ def test_b0_wrapper_is_predictor_only_and_marks_completeness(
     assert result["b0_complete"].item() is True
     assert result["b0_missing_reason"].item() is None
     assert not {"rv30", "target_price_count", "target_return_count"} & set(result.columns)
+
+    delayed = build_b0_target_blind(pl.DataFrame(), pl.DataFrame(), delay_minutes=2)
+    assert delayed["b0_complete"].item() is True
 
 
 def test_b2_sidecar_masks_delay_exclusion_instead_of_zero_coding() -> None:

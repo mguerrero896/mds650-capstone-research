@@ -233,13 +233,42 @@ def normalize_fmp_session_rows(
     return rows, tuple(sorted(returned_dates))
 
 
-def build_spot_frame(bars: pl.DataFrame, origins: pl.DataFrame) -> pl.DataFrame:
-    """Select the fully observed origin close under the FMP plus-one-minute rule."""
+def build_spot_frame(
+    bars: pl.DataFrame,
+    origins: pl.DataFrame,
+    *,
+    delay_minutes: int = 1,
+) -> pl.DataFrame:
+    """Select the fully observed spot under a registered FMP delay.
+
+    Parameters
+    ----------
+    bars, origins:
+        Target-free one-minute bars and canonical forecast-origin grid.
+    delay_minutes:
+        Registered conservative availability delay, either one minute
+        (primary) or two minutes (sensitivity).
+
+    Returns
+    -------
+    polars.DataFrame
+        One exact spot row per origin, with raw-bar and availability timing.
+
+    Raises
+    ------
+    ValueError
+        If the delay, input schema, uniqueness, or PIT relationship is invalid.
+    """
+    if delay_minutes not in {1, 2}:
+        raise ValueError("B1V3_SPOT_DELAY_INVALID")
+    availability_column = (
+        "available_at_utc" if delay_minutes == 1 else "available_at_plus_2m_utc"
+    )
     required_bars = {
         "asset",
         "session_date",
         "bar_timestamp_raw_utc",
-        "available_at_utc",
+        availability_column,
         "close",
     }
     if not required_bars.issubset(bars.columns) or not {
@@ -253,7 +282,7 @@ def build_spot_frame(bars: pl.DataFrame, origins: pl.DataFrame) -> pl.DataFrame:
         "asset",
         "session_date",
         pl.col("bar_timestamp_raw_utc").alias("spot_bar_timestamp_raw_utc"),
-        pl.col("available_at_utc").alias("spot_available_at_utc"),
+        pl.col(availability_column).alias("spot_available_at_utc"),
         pl.col("close").cast(pl.Float64).alias("spot"),
     )
     unique_bar_count = source.select(
@@ -264,7 +293,7 @@ def build_spot_frame(bars: pl.DataFrame, origins: pl.DataFrame) -> pl.DataFrame:
     frame = (
         origins.select("origin_id", "asset", "session_date", "forecast_origin_utc")
         .with_columns(
-            (pl.col("forecast_origin_utc") - pl.duration(minutes=1)).alias(
+            (pl.col("forecast_origin_utc") - pl.duration(minutes=delay_minutes)).alias(
                 "spot_bar_timestamp_raw_utc"
             )
         )
@@ -320,10 +349,22 @@ def strip_target_columns(frame: pl.DataFrame) -> pl.DataFrame:
     return cleaned
 
 
-def build_b0_target_blind(bars: pl.DataFrame, origins: pl.DataFrame) -> pl.DataFrame:
-    """Build B0 predictors while making any incomplete history explicit."""
+def build_b0_target_blind(
+    bars: pl.DataFrame,
+    origins: pl.DataFrame,
+    *,
+    delay_minutes: int = 1,
+) -> pl.DataFrame:
+    """Build B0 predictors under a registered one- or two-minute FMP delay."""
+    if delay_minutes not in {1, 2}:
+        raise ValueError("B1V3_B0_DELAY_INVALID")
     frame = strip_target_columns(
-        build_b0v2_features(bars, origins, delay_minutes=1, include_target=False)
+        build_b0v2_features(
+            bars,
+            origins,
+            delay_minutes=delay_minutes,
+            include_target=False,
+        )
     )
     numeric = [feature for feature in B0V2_FEATURES if feature != "b0v2_asset_identity"]
     return frame.with_columns(
