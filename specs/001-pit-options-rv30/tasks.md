@@ -492,20 +492,20 @@ current evidence and work that still requires explicit approval.
 - [x] T222 [US1] Execute `scripts/run_date_level_pit_preflight_v2.py` for the frozen candidate
   dates; permit acquisition only when its contract,
   attempt-budget and 80-GiB gates pass, otherwise retain the exact blocker without substitution.
-- [ ] T223 [US2] Build and seal `artifacts/b1v3_confirmation_panel/` as one predictor-only,
+- [x] T223 [US2] Build and seal `artifacts/b1v3_confirmation_panel/` as one predictor-only,
   source-bound B0/B1v3a/B2 panel; prove origin preservation, availability at/before origin,
   explicit missingness,
   deterministic hashes and zero outcome reads.
 - [x] T224 [P] [US4] Add failing tests in `tests/unit/test_b1v3_evaluation.py` for information-set
   nesting, fixed methods, inference and one-read gates.
-- [ ] T225 [US4] Implement the additive Phase 6 adapter in `src/mds650/b1v3_evaluation.py` and
+- [x] T225 [US4] Implement the additive Phase 6 adapter in `src/mds650/b1v3_evaluation.py` and
   seal `docs/b1v3_preregistration.md` against the exact B0/B1v3a/B2 panel and 60/30 session arrays;
   keep `SAFE_TO_EVALUATE_B1V3=NO` until every prerequisite passes.
-- [ ] T226 [US4] Execute exactly one frozen confirmation into `artifacts/b1v3_confirmation/` only
+- [x] T226 [US4] Execute exactly one frozen confirmation into `artifacts/b1v3_confirmation/` only
   after T219–T225 pass, using Gamma confirmatory, fixed LightGBM challenger, QLIKE, 10,000 paired
   whole-day bootstrap resamples,
   Holm and training-only MDE; preserve every registered sign and do not retune.
-- [ ] T227 [US4] Produce `reports/B1V3_IMPLEMENTATION_HANDOFF.md` and the final institutional
+- [x] T227 [US4] Produce `reports/B1V3_IMPLEMENTATION_HANDOFF.md` and the final institutional
   release with code/data/method/result hashes, environment lock, sanitized fixtures, evidence
   index, limitations and a strict distinction between technical readiness, scientific evidence
   and any future economic/P&L validation.
