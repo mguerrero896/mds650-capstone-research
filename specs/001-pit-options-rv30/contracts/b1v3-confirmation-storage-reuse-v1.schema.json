@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1v3-confirmation-storage-reuse-v1.schema.json",
+  "title": "B1v3 confirmation storage and verified-reuse manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "target_blind",
+    "safe_to_continue",
+    "minimum_free_bytes",
+    "current_free_bytes",
+    "projected_minimum_free_bytes",
+    "session_count",
+    "reusable_session_count",
+    "missing_session_count",
+    "missing_sessions",
+    "uw_missing_raw_bytes",
+    "uw_filtered_projection_ratio",
+    "uw_filtered_projected_bytes",
+    "massive_daily_sample_count",
+    "massive_daily_mean_bytes",
+    "massive_daily_p95_bytes",
+    "massive_missing_mean_bytes",
+    "massive_missing_p95_bytes",
+    "temporary_peak_bytes",
+    "engineering_margin_bytes",
+    "final_resident_additional_bytes",
+    "peak_additional_bytes",
+    "outcome_read_count",
+    "secret_values_emitted",
+    "personal_paths_emitted",
+    "source_bindings",
+    "reuse",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "b1v3-confirmation-storage-1.0"},
+    "status": {
+      "enum": [
+        "PASS_STORAGE_PREFLIGHT_LINKS_NOT_EXECUTED",
+        "PASS_STORAGE_AND_REUSE_PREPARED"
+      ]
+    },
+    "target_blind": {"const": true},
+    "safe_to_continue": {"const": true},
+    "minimum_free_bytes": {"const": 85899345920},
+    "current_free_bytes": {"type": "integer", "minimum": 85899345920},
+    "projected_minimum_free_bytes": {"type": "integer", "minimum": 85899345920},
+    "session_count": {"const": 90},
+    "reusable_session_count": {"type": "integer", "minimum": 0, "maximum": 90},
+    "missing_session_count": {"type": "integer", "minimum": 0, "maximum": 90},
+    "missing_sessions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "format": "date"}
+    },
+    "uw_missing_raw_bytes": {"type": "integer", "minimum": 0},
+    "uw_filtered_projection_ratio": {"type": "number", "minimum": 0},
+    "uw_filtered_projected_bytes": {"type": "integer", "minimum": 0},
+    "massive_daily_sample_count": {"type": "integer", "minimum": 1},
+    "massive_daily_mean_bytes": {"type": "number", "exclusiveMinimum": 0},
+    "massive_daily_p95_bytes": {"type": "integer", "minimum": 1},
+    "massive_missing_mean_bytes": {"type": "integer", "minimum": 0},
+    "massive_missing_p95_bytes": {"type": "integer", "minimum": 0},
+    "temporary_peak_bytes": {"type": "integer", "minimum": 0},
+    "engineering_margin_bytes": {"type": "integer", "minimum": 0},
+    "final_resident_additional_bytes": {"type": "integer", "minimum": 0},
+    "peak_additional_bytes": {"type": "integer", "minimum": 0},
+    "outcome_read_count": {"const": 0},
+    "secret_values_emitted": {"const": false},
+    "personal_paths_emitted": {"const": false},
+    "source_bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "confirmation_plan_sha256",
+        "provider_report_sha256",
+        "reusable_manifest_sha256"
+      ],
+      "properties": {
+        "confirmation_plan_sha256": {"$ref": "#/$defs/sha256"},
+        "provider_report_sha256": {"$ref": "#/$defs/sha256"},
+        "reusable_manifest_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "reuse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "executed",
+        "method",
+        "full_tape_file_count",
+        "full_tape_logical_bytes",
+        "massive_file_count",
+        "massive_logical_bytes",
+        "massive_inventory_sha256",
+        "session_records"
+      ],
+      "properties": {
+        "executed": {"type": "boolean"},
+        "method": {"const": "NTFS_HARDLINK_SAME_VOLUME_VERIFIED_BY_SHA256"},
+        "full_tape_file_count": {"type": "integer", "minimum": 0},
+        "full_tape_logical_bytes": {"type": "integer", "minimum": 0},
+        "massive_file_count": {"type": "integer", "minimum": 0},
+        "massive_logical_bytes": {"type": "integer", "minimum": 0},
+        "massive_inventory_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "session_records": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/session_record"}
+        }
+      }
+    },
+    "manifest_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {"const": "PASS_STORAGE_AND_REUSE_PREPARED"}
+        }
+      },
+      "then": {
+        "properties": {
+          "reuse": {
+            "properties": {
+              "executed": {"const": true},
+              "full_tape_file_count": {"minimum": 1},
+              "massive_file_count": {"minimum": 1},
+              "massive_inventory_sha256": {"$ref": "#/$defs/sha256"}
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "reuse": {
+            "properties": {
+              "executed": {"const": false},
+              "full_tape_file_count": {"const": 0},
+              "full_tape_logical_bytes": {"const": 0},
+              "massive_file_count": {"const": 0},
+              "massive_logical_bytes": {"const": 0},
+              "massive_inventory_sha256": {"const": null},
+              "session_records": {"maxItems": 0}
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "session_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "session_date",
+        "source_checkpoint_sha256",
+        "raw_sha256",
+        "parquet_file_count",
+        "logical_bytes",
+        "file_identity_verified"
+      ],
+      "properties": {
+        "session_date": {"type": "string", "format": "date"},
+        "source_checkpoint_sha256": {"$ref": "#/$defs/sha256"},
+        "raw_sha256": {"$ref": "#/$defs/sha256"},
+        "parquet_file_count": {"type": "integer", "minimum": 1},
+        "logical_bytes": {"type": "integer", "minimum": 1},
+        "file_identity_verified": {"const": true}
+      }
+    }
+  }
+}

@@ -15,3 +15,11 @@
 /src/mds650/b1v3_confirmation.py text eol=lf
 /tests/unit/test_b1v3_confirmation.py text eol=lf
 /tests/unit/test_freeze_b1v3_confirmation_plan.py text eol=lf
+/artifacts/b1v3_confirmation_panel/** text eol=lf
+/scripts/prepare_b1v3_confirmation_acquisition.py text eol=lf
+/scripts/acquire_b1v3_confirmation_full_tape.py text eol=lf
+/specs/001-pit-options-rv30/contracts/b1v3-confirmation-storage-reuse-v1.schema.json text eol=lf
+/specs/001-pit-options-rv30/contracts/b1v3-full-tape-acquisition-manifest-v1.schema.json text eol=lf
+/src/mds650/b1v3_confirmation_acquisition.py text eol=lf
+/tests/unit/test_b1v3_confirmation_acquisition.py text eol=lf
+/tests/unit/test_acquire_b1v3_confirmation_full_tape.py text eol=lf

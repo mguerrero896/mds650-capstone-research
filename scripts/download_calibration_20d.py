@@ -22,11 +22,11 @@ import tempfile
 import time as time_module
 import zipfile
 from collections import Counter
-from datetime import UTC, date, datetime, time
+from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
-from zoneinfo import ZoneInfo
 
+import exchange_calendars as xcals  # type: ignore[import-untyped]
 import httpx
 import pyarrow as pa  # type: ignore[import-untyped]
 import pyarrow.parquet as pq  # type: ignore[import-untyped]
@@ -72,7 +72,7 @@ SESSIONS: tuple[date, ...] = (
     date(2026, 7, 10),
 )
 ASSETS = tuple(sorted(CANDIDATE_ASSETS))
-NY = ZoneInfo("America/New_York")
+XNYS = xcals.get_calendar("XNYS")
 ENDPOINT = "https://api.unusualwhales.com/api/option-trades/full-tape/{day}"
 EVENT_FIELDS = (
     "id",
@@ -221,10 +221,17 @@ def _number(value: str | None, *, integer: bool = False) -> int | float | None:
         raise ValueError("NUMERIC_FIELD_INVALID") from exc
 
 
-def _regular(timestamp: datetime) -> bool:
-    """Return whether a UTC timestamp is inside the regular New York session."""
-    local = timestamp.astimezone(NY)
-    return local.weekday() < 5 and time(9, 30) <= local.time() < time(16, 0)
+def _regular(timestamp: datetime, session_date: date) -> bool:
+    """Return whether a UTC timestamp is inside the official XNYS session.
+
+    The calendar-derived close is material for early-close sessions. A static
+    16:00 New York bound would otherwise retain trades that occurred after the
+    regular session and contaminate the point-in-time feature window.
+    """
+    session = XNYS.date_to_session(session_date.isoformat())
+    session_open = XNYS.session_open(session).to_pydatetime()
+    session_close = XNYS.session_close(session).to_pydatetime()
+    return session_open <= timestamp.astimezone(UTC) < session_close
 
 
 def _event_row(row: dict[str, str]) -> dict[str, Any]:
@@ -484,7 +491,7 @@ def filter_session(
         for row in unique_rows:
             executed = _dt(row["executed_at"])
             _dt(row["created_at"])
-            if not _regular(executed):
+            if not _regular(executed, day):
                 continue
             asset = row["underlying_symbol"]
             normalized = _event_row(row)

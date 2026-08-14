@@ -6,7 +6,7 @@ import importlib
 import json
 import sys
 from collections import namedtuple
-from datetime import date
+from datetime import UTC, date, datetime
 from pathlib import Path
 
 import pytest
@@ -235,6 +235,20 @@ def test_downloader_rejects_date_outside_explicit_config(tmp_path: Path) -> None
             None,
             config,
         )
+
+
+def test_full_tape_regular_session_filter_respects_xnys_early_close() -> None:
+    early_close = date(2024, 11, 29)
+
+    assert downloader._regular(
+        datetime(2024, 11, 29, 17, 59, tzinfo=UTC), early_close
+    )
+    assert not downloader._regular(
+        datetime(2024, 11, 29, 18, 0, tzinfo=UTC), early_close
+    )
+    assert not downloader._regular(
+        datetime(2024, 11, 29, 20, 0, tzinfo=UTC), early_close
+    )
 
 
 def test_b1_and_b2_builders_expose_explicit_roots_and_allowlists(tmp_path: Path) -> None:
