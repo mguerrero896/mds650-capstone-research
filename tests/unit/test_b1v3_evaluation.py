@@ -98,6 +98,7 @@ def _authorization(preregistration: dict[str, Any]) -> dict[str, Any]:
     ledger = build_b1v3_access_ledger(
         preregistration,
         common_panel_sha256=_SHA_D,
+        method_freeze_sha256="3" * 64,
         prerequisites={
             "focused_tests": True,
             "full_tests": True,
@@ -258,11 +259,14 @@ def test_access_ledger_requires_every_gate_and_is_single_use() -> None:
     ledger = build_b1v3_access_ledger(
         preregistration,
         common_panel_sha256=_SHA_D,
+        method_freeze_sha256="3" * 64,
         prerequisites=prerequisites,
     )
 
-    assert ledger["status"] == "SEALED_BEFORE_CONFIRMATION"
+    assert ledger["status"] == "METHOD_FROZEN_BEFORE_CONFIRMATION"
     assert ledger["safe_to_evaluate_b1v3"] == "YES"
+    assert ledger["training_read_count"] == 1
+    assert ledger["outcome_read_count"] == 1
     assert ledger["confirmation_read_count"] == 0
     assert ledger["evaluation_attempt_count"] == 0
 
@@ -274,6 +278,8 @@ def test_access_ledger_requires_every_gate_and_is_single_use() -> None:
     )
     assert authorized["status"] == "CONFIRMATION_EVALUATION_IN_PROGRESS"
     assert authorized["confirmation_read_count"] == 1
+    assert authorized["training_read_count"] == 1
+    assert authorized["outcome_read_count"] == 2
     assert authorized["evaluation_attempt_count"] == 1
 
     with pytest.raises(ValueError, match="B1V3_CONFIRMATION_ACCESS_DENIED"):
@@ -289,6 +295,7 @@ def test_access_ledger_requires_every_gate_and_is_single_use() -> None:
         build_b1v3_access_ledger(
             preregistration,
             common_panel_sha256=_SHA_D,
+            method_freeze_sha256="3" * 64,
             prerequisites=incomplete,
         )
 

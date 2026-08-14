@@ -324,14 +324,16 @@ def build_b1v3_access_ledger(
     preregistration: Mapping[str, Any],
     *,
     common_panel_sha256: str,
+    method_freeze_sha256: str,
     prerequisites: Mapping[str, bool],
 ) -> dict[str, Any]:
-    """Seal a zero-read access ledger only after every technical gate passes.
+    """Seal confirmation access after training-only method freeze.
 
     Returns
     -------
     dict[str, Any]
-        Self-hashed ledger authorizing exactly one later confirmation read.
+        Self-hashed ledger recording one training read and authorizing exactly
+        one later confirmation read.
 
     Raises
     ------
@@ -349,17 +351,20 @@ def build_b1v3_access_ledger(
         or preregistration.get("confirmation_read_count") != 0
         or preregistration.get("common_predictor_panel_sha256") != common_panel_sha256
         or not _is_sha256(common_panel_sha256)
+        or not _is_sha256(method_freeze_sha256)
     ):
         raise ValueError("B1V3_PREREGISTRATION_INVALID")
     document: dict[str, Any] = {
         "schema_version": "1.0",
-        "status": "SEALED_BEFORE_CONFIRMATION",
+        "status": "METHOD_FROZEN_BEFORE_CONFIRMATION",
         "safe_to_evaluate_b1v3": "YES",
-        "outcome_read_count": 0,
+        "outcome_read_count": 1,
+        "training_read_count": 1,
         "confirmation_read_count": 0,
         "evaluation_attempt_count": 0,
         "results_inspected": False,
         "common_panel_sha256": common_panel_sha256,
+        "method_freeze_sha256": method_freeze_sha256,
         "preregistration_manifest_sha256": str(preregistration["manifest_sha256"]),
         "prerequisites": dict(sorted(prerequisites.items())),
     }
@@ -388,9 +393,10 @@ def authorize_b1v3_confirmation(
     """
     if (
         not _self_hash_valid(ledger)
-        or ledger.get("status") != "SEALED_BEFORE_CONFIRMATION"
+        or ledger.get("status") != "METHOD_FROZEN_BEFORE_CONFIRMATION"
         or ledger.get("safe_to_evaluate_b1v3") != "YES"
-        or ledger.get("outcome_read_count") != 0
+        or ledger.get("outcome_read_count") != 1
+        or ledger.get("training_read_count") != 1
         or ledger.get("confirmation_read_count") != 0
         or ledger.get("evaluation_attempt_count") != 0
         or ledger.get("results_inspected") is not False
@@ -404,7 +410,7 @@ def authorize_b1v3_confirmation(
     authorized: dict[str, Any] = {
         **unsigned,
         "status": "CONFIRMATION_EVALUATION_IN_PROGRESS",
-        "outcome_read_count": 1,
+        "outcome_read_count": 2,
         "confirmation_read_count": 1,
         "evaluation_attempt_count": 1,
     }
@@ -471,7 +477,8 @@ def validate_b1v3_evaluation_panel(
         _self_hash_valid(authorization)
         and authorization.get("status") == "CONFIRMATION_EVALUATION_IN_PROGRESS"
         and authorization.get("confirmation_read_count") == 1
-        and authorization.get("outcome_read_count") == 1
+        and authorization.get("outcome_read_count") == 2
+        and authorization.get("training_read_count") == 1
         and authorization.get("evaluation_attempt_count") == 1
         and authorization.get("preregistration_manifest_sha256")
         == preregistration.get("manifest_sha256")
