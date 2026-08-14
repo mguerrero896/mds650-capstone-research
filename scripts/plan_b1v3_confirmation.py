@@ -4,52 +4,26 @@ from __future__ import annotations
 
 import argparse
 import json
-from collections.abc import Iterable, Mapping
+from collections.abc import Mapping
 from datetime import date
-from importlib import import_module
 from pathlib import Path
-from typing import Any, Protocol, cast
+from typing import Any
 
 from mds650.b1v3_confirmation import (
     ExposureSource,
     build_confirmation_plan,
     build_session_exposure_ledger,
     enumerate_xnys_sessions,
+    provider_passed_sessions_from_report,
+    validate_confirmation_plan_schema,
     write_json_if_identical,
 )
-
-
-class _SchemaValidator(Protocol):
-    """Minimal runtime boundary for untyped jsonschema."""
-
-    @classmethod
-    def check_schema(cls, schema: Mapping[str, Any]) -> None: ...
-
-    def __init__(self, schema: Mapping[str, Any]) -> None: ...
-
-    def iter_errors(self, instance: object) -> Iterable[object]: ...
 
 
 def _pretty_json_bytes(value: Mapping[str, Any]) -> bytes:
     return (
         json.dumps(value, ensure_ascii=True, allow_nan=False, indent=2, sort_keys=True) + "\n"
     ).encode("utf-8")
-
-
-def _validate_schema(document: Mapping[str, Any], schema_path: Path) -> None:
-    if not schema_path.is_file():
-        raise ValueError("B1V3_CONFIRMATION_SCHEMA_MISSING")
-    schema = json.loads(schema_path.read_text(encoding="utf-8"))
-    if not isinstance(schema, dict):
-        raise ValueError("B1V3_CONFIRMATION_SCHEMA_INVALID")
-    module = import_module("jsonschema")
-    raw = getattr(module, "Draft202012Validator", None)
-    if raw is None or not callable(raw):
-        raise ValueError("B1V3_CONFIRMATION_JSONSCHEMA_RUNTIME_INVALID")
-    validator_type = cast(type[_SchemaValidator], raw)
-    validator_type.check_schema(schema)
-    if any(validator_type(schema).iter_errors(document)):
-        raise ValueError("B1V3_CONFIRMATION_SCHEMA_VALIDATION_FAILED")
 
 
 def _load_provider_passed_sessions(path: Path | None) -> list[str] | None:
@@ -60,10 +34,7 @@ def _load_provider_passed_sessions(path: Path | None) -> list[str] | None:
     document = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(document, dict):
         raise ValueError("B1V3_PROVIDER_PREFLIGHT_INVALID")
-    sessions = document.get("common_passed_sessions")
-    if not isinstance(sessions, list) or not all(isinstance(value, str) for value in sessions):
-        raise ValueError("B1V3_PROVIDER_PREFLIGHT_INVALID")
-    return list(sessions)
+    return list(provider_passed_sessions_from_report(document))
 
 
 def plan_confirmation(
@@ -85,8 +56,9 @@ def plan_confirmation(
     candidate_start, candidate_end:
         Bounds used only to enumerate official XNYS sessions.
     provider_preflight_path:
-        Optional schema-controlled result whose ``common_passed_sessions`` are
-        the only dates allowed to become a frozen 60/30 plan.
+        Optional self-hashed v2 report from which complete technical provider
+        dates are derived; these are the only dates allowed to become a frozen
+        60/30 plan.
     ledger_path, plan_path:
         New immutable JSON outputs.
     schema_path:
@@ -110,7 +82,7 @@ def plan_confirmation(
         candidate_sessions=candidates,
         provider_passed_sessions=provider_sessions,
     )
-    _validate_schema(plan, schema_path)
+    validate_confirmation_plan_schema(plan, schema_path)
     ledger_bytes = _pretty_json_bytes(ledger)
     plan_bytes = _pretty_json_bytes(plan)
     lowered = (ledger_bytes + plan_bytes).decode("utf-8").lower()

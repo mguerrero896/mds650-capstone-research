@@ -66,7 +66,8 @@
         },
         "required_session_count": {"const": 90},
         "passed_session_count": {"type": "integer", "minimum": 0},
-        "status": {"enum": ["NOT_ESTABLISHED", "PASS_DAILY_CONTINUITY_90_OF_90"]}
+        "status": {"enum": ["NOT_ESTABLISHED", "PASS_DAILY_CONTINUITY_90_OF_90"]},
+        "report_sha256": {"$ref": "#/$defs/sha256"}
       }
     },
     "training_session_count": {"enum": [0, 60]},

@@ -11,8 +11,9 @@ from collections import defaultdict
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import date
+from importlib import import_module
 from pathlib import Path
-from typing import Any, Final
+from typing import Any, Final, Protocol, cast
 
 import exchange_calendars as xcals  # type: ignore[import-untyped]
 
@@ -25,6 +26,32 @@ _FORBIDDEN_SOURCE_TOKENS: Final[tuple[str, ...]] = (
     "rv30",
     "outcome",
 )
+B1V3_PREFLIGHT_ASSETS: Final[tuple[str, ...]] = (
+    "SPY",
+    "QQQ",
+    "AAPL",
+    "MSFT",
+    "NVDA",
+    "TSLA",
+    "AMZN",
+    "META",
+)
+_PREFLIGHT_PROVIDERS: Final[tuple[str, ...]] = (
+    "fmp",
+    "massive",
+    "unusual_whales",
+)
+
+
+class _SchemaValidator(Protocol):
+    """Minimal typed boundary for the untyped jsonschema runtime."""
+
+    @classmethod
+    def check_schema(cls, schema: Mapping[str, Any]) -> None: ...
+
+    def __init__(self, schema: Mapping[str, Any]) -> None: ...
+
+    def iter_errors(self, instance: object) -> Iterable[object]: ...
 
 
 @dataclass(frozen=True, slots=True)
@@ -70,6 +97,25 @@ def canonical_json_bytes(value: Mapping[str, Any]) -> bytes:
 def canonical_sha256(value: Mapping[str, Any]) -> str:
     """Return the lower-case SHA-256 of canonical JSON."""
     return hashlib.sha256(canonical_json_bytes(value)).hexdigest()
+
+
+def validate_confirmation_plan_schema(
+    document: Mapping[str, Any], schema_path: Path
+) -> None:
+    """Validate one B1v3 confirmation plan against Draft 2020-12 JSON Schema."""
+    if not schema_path.is_file():
+        raise ValueError("B1V3_CONFIRMATION_SCHEMA_MISSING")
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    if not isinstance(schema, dict):
+        raise ValueError("B1V3_CONFIRMATION_SCHEMA_INVALID")
+    module = import_module("jsonschema")
+    raw = getattr(module, "Draft202012Validator", None)
+    if raw is None or not callable(raw):
+        raise ValueError("B1V3_CONFIRMATION_JSONSCHEMA_RUNTIME_INVALID")
+    validator_type = cast(type[_SchemaValidator], raw)
+    validator_type.check_schema(schema)
+    if any(validator_type(schema).iter_errors(document)):
+        raise ValueError("B1V3_CONFIRMATION_SCHEMA_VALIDATION_FAILED")
 
 
 def sha256_file(path: Path, *, chunk_size: int = 1024 * 1024) -> str:
@@ -193,6 +239,116 @@ def enumerate_xnys_sessions(start: date, end: date) -> tuple[str, ...]:
     return tuple(value.date().isoformat() for value in values)
 
 
+def provider_passed_sessions_from_report(
+    report: Mapping[str, Any],
+) -> tuple[str, ...]:
+    """Derive the common technical provider dates from a v2 preflight report.
+
+    A date passes only when FMP and Massive each have one technically passing
+    record for every audited asset and Unusual Whales has one passing daily
+    Full Tape transport record. Massive quote freshness is intentionally not a
+    date-level exclusion: downstream B1v3 construction must retain it as
+    explicit origin-level missingness.
+
+    Parameters
+    ----------
+    report:
+        Sanitized, self-hashed B1v3 provider preflight report v2.
+
+    Returns
+    -------
+    tuple[str, ...]
+        Exactly ninety ordered common XNYS sessions.
+
+    Raises
+    ------
+    ValueError
+        If the report hash, target-blind gates, counts, identities or required
+        provider/asset coverage are invalid.
+    """
+    unsigned = {key: value for key, value in report.items() if key != "report_sha256"}
+    if report.get("report_sha256") != canonical_sha256(unsigned):
+        raise ValueError("B1V3_PROVIDER_PREFLIGHT_HASH_INVALID")
+    if (
+        report.get("schema_version") != "b1v3-provider-preflight-report-2.0"
+        or report.get("status") != "PASS_PROVIDER_PREFLIGHT_ASSUMPTION_BOUND"
+        or report.get("target_blind") is not True
+        or report.get("safe_to_acquire_predictors") is not True
+        or report.get("safe_to_read_outcomes") is not False
+        or report.get("outcome_read_count") != 0
+    ):
+        raise ValueError("B1V3_PROVIDER_PREFLIGHT_GATE_INVALID")
+    records_value = report.get("records")
+    counts_value = report.get("provider_counts")
+    if not isinstance(records_value, Mapping) or not isinstance(counts_value, Mapping):
+        raise ValueError("B1V3_PROVIDER_PREFLIGHT_SCHEMA_INVALID")
+    if set(records_value) != set(_PREFLIGHT_PROVIDERS):
+        raise ValueError("B1V3_PROVIDER_PREFLIGHT_SCHEMA_INVALID")
+
+    asset_passes: dict[str, dict[str, set[str]]] = {
+        "fmp": defaultdict(set),
+        "massive": defaultdict(set),
+    }
+    uw_passes: set[str] = set()
+    seen: set[tuple[str, str, str]] = set()
+    actual_counts: dict[str, tuple[int, int]] = {}
+    for provider in _PREFLIGHT_PROVIDERS:
+        provider_records = records_value.get(provider)
+        if not isinstance(provider_records, list) or not provider_records:
+            raise ValueError("B1V3_PROVIDER_PREFLIGHT_SCHEMA_INVALID")
+        passed_count = 0
+        for raw_record in provider_records:
+            if not isinstance(raw_record, Mapping):
+                raise ValueError("B1V3_PROVIDER_PREFLIGHT_SCHEMA_INVALID")
+            session = raw_record.get("session_date")
+            asset = raw_record.get("asset")
+            if (
+                raw_record.get("provider") != provider
+                or not isinstance(session, str)
+                or not _DATE_RE.fullmatch(session)
+                or not _is_xnys_session(session)
+            ):
+                raise ValueError("B1V3_PROVIDER_PREFLIGHT_RECORD_INVALID")
+            if provider == "unusual_whales":
+                if asset is not None:
+                    raise ValueError("B1V3_PROVIDER_PREFLIGHT_RECORD_INVALID")
+                identity_asset = "__DAILY_FILE__"
+            else:
+                if not isinstance(asset, str) or asset not in B1V3_PREFLIGHT_ASSETS:
+                    raise ValueError("B1V3_PROVIDER_PREFLIGHT_RECORD_INVALID")
+                identity_asset = asset
+            identity = (provider, session, identity_asset)
+            if identity in seen:
+                raise ValueError("B1V3_PROVIDER_PREFLIGHT_DUPLICATE_RECORD")
+            seen.add(identity)
+            if raw_record.get("pass") is True:
+                passed_count += 1
+                if provider == "unusual_whales":
+                    uw_passes.add(session)
+                else:
+                    asset_passes[provider][session].add(identity_asset)
+        actual_counts[provider] = (len(provider_records), passed_count)
+
+    for provider in _PREFLIGHT_PROVIDERS:
+        raw_count = counts_value.get(provider)
+        if not isinstance(raw_count, Mapping):
+            raise ValueError("B1V3_PROVIDER_PREFLIGHT_COUNT_INVALID")
+        expected, passed = actual_counts[provider]
+        if raw_count.get("expected") != expected or raw_count.get("passed") != passed:
+            raise ValueError("B1V3_PROVIDER_PREFLIGHT_COUNT_INVALID")
+
+    required_assets = set(B1V3_PREFLIGHT_ASSETS)
+    common = sorted(
+        session
+        for session in uw_passes
+        if asset_passes["fmp"].get(session) == required_assets
+        and asset_passes["massive"].get(session) == required_assets
+    )
+    if len(common) != 90:
+        raise ValueError("B1V3_PROVIDER_PREFLIGHT_COUNT_INVALID")
+    return _validated_sessions(common, code="B1V3_PROVIDER_PASSED_SESSIONS_INVALID")
+
+
 def _validated_sessions(values: Sequence[str], *, code: str) -> tuple[str, ...]:
     sessions = tuple(values)
     if not sessions or list(sessions) != sorted(set(sessions)):
@@ -266,6 +422,7 @@ def build_confirmation_plan(
     exposure_ledger: Mapping[str, Any],
     candidate_sessions: Sequence[str],
     provider_passed_sessions: Sequence[str] | None,
+    provider_report_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Build a target-free plan, pending or frozen according to provider evidence.
 
@@ -290,10 +447,16 @@ def build_confirmation_plan(
     exposed = tuple(exposed_value)
     provider_passed: tuple[str, ...] = ()
     if provider_passed_sessions is None:
+        if provider_report_sha256 is not None:
+            raise ValueError("B1V3_PROVIDER_REPORT_HASH_UNEXPECTED")
         selection_source = candidates
         status = "PENDING_DATE_LEVEL_PROVIDER_PREFLIGHT"
         safe_to_acquire = False
     else:
+        if provider_report_sha256 is not None and not re.fullmatch(
+            r"[0-9a-f]{64}", provider_report_sha256
+        ):
+            raise ValueError("B1V3_PROVIDER_REPORT_HASH_INVALID")
         provider_passed = _validated_sessions(
             provider_passed_sessions,
             code="B1V3_PROVIDER_PASSED_SESSIONS_INVALID",
@@ -346,6 +509,11 @@ def build_confirmation_plan(
         "exposed_overlap": overlap,
         "outcome_read_count": 0,
     }
+    if provider_report_sha256 is not None:
+        provider_preflight = plan["provider_preflight"]
+        if not isinstance(provider_preflight, dict):
+            raise AssertionError("B1V3_PROVIDER_PREFLIGHT_INTERNAL_INVALID")
+        provider_preflight["report_sha256"] = provider_report_sha256
     plan["plan_sha256"] = canonical_sha256(plan)
     return plan
 
