@@ -16,6 +16,7 @@ from mds650.b1v3_confirmation_panel import (
     build_b0_target_blind,
     build_origin_grid,
     build_spot_frame,
+    normalize_fmp_session_rows,
     strip_target_columns,
     validate_fmp_cache_document,
 )
@@ -109,6 +110,76 @@ def test_fmp_cache_rejects_non_list_payload() -> None:
     }
     with pytest.raises(ValueError, match="B1V3_FMP_CACHE_PAYLOAD_INVALID"):
         validate_fmp_cache_document(document, report)
+
+
+def test_fmp_normalization_filters_over_return_and_freezes_availability() -> None:
+    rows, returned = normalize_fmp_session_rows(
+        asset="AAPL",
+        session_date="2024-08-02",
+        payload=(
+            {
+                "date": "2024-08-01 15:59:00",
+                "open": 1,
+                "high": 1,
+                "low": 1,
+                "close": 1,
+                "volume": 1,
+            },
+            {
+                "date": "2024-08-02 09:30:00",
+                "open": 219.0,
+                "high": 220.0,
+                "low": 218.5,
+                "close": 219.5,
+                "volume": 1000,
+            },
+        ),
+    )
+
+    assert returned == ("2024-08-01", "2024-08-02")
+    assert len(rows) == 1
+    assert rows[0]["bar_timestamp_raw_utc"] == datetime(2024, 8, 2, 13, 30, tzinfo=UTC)
+    assert rows[0]["available_at_utc"] == datetime(2024, 8, 2, 13, 31, tzinfo=UTC)
+    assert rows[0]["available_at_plus_2m_utc"] == datetime(
+        2024, 8, 2, 13, 32, tzinfo=UTC
+    )
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        ({"date": "2024-08-02 09:30:00"},),
+        (
+            {
+                "date": "not-a-time",
+                "open": 1,
+                "high": 1,
+                "low": 1,
+                "close": 1,
+                "volume": 1,
+            },
+        ),
+        (
+            {
+                "date": "2024-08-02 09:30:00",
+                "open": 2,
+                "high": 1,
+                "low": 1,
+                "close": 1,
+                "volume": 1,
+            },
+        ),
+    ],
+)
+def test_fmp_normalization_rejects_invalid_bar_payload(
+    payload: tuple[dict[str, object], ...],
+) -> None:
+    with pytest.raises(ValueError, match="B1V3_FMP_BAR_"):
+        normalize_fmp_session_rows(
+            asset="AAPL",
+            session_date="2024-08-02",
+            payload=payload,
+        )
 
 
 def test_spot_frame_uses_exact_prior_bar_and_never_silent_fill() -> None:

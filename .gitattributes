@@ -22,6 +22,12 @@
 /specs/001-pit-options-rv30/contracts/b1v3-full-tape-acquisition-manifest-v1.schema.json text eol=lf
 /src/mds650/b1v3_confirmation_acquisition.py text eol=lf
 /src/mds650/b1v3_confirmation_panel.py text eol=lf
+/src/mds650/b1v3_confirmation_build.py text eol=lf
 /tests/unit/test_b1v3_confirmation_acquisition.py text eol=lf
 /tests/unit/test_b1v3_confirmation_panel.py text eol=lf
+/tests/unit/test_b1v3_confirmation_build.py text eol=lf
 /tests/unit/test_acquire_b1v3_confirmation_full_tape.py text eol=lf
+/scripts/build_b1v3_confirmation_base.py text eol=lf
+/tests/contract/test_b1v3_confirmation_base_artifact.py text eol=lf
+/artifacts/b1v3_confirmation_panel/base_predictor_manifest.json text eol=lf
+/specs/001-pit-options-rv30/contracts/b1v3-confirmation-base-predictors-v1.schema.json text eol=lf

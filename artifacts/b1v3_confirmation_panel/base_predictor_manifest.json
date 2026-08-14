@@ -1,0 +1,65 @@
+{
+  "asset_count": 6,
+  "assets": [
+    "AAPL",
+    "AMZN",
+    "META",
+    "MSFT",
+    "NVDA",
+    "TSLA"
+  ],
+  "b0": {
+    "complete_row_count": 35424,
+    "missing_row_count": 3240,
+    "row_count": 38664
+  },
+  "confirmation_session_count": 30,
+  "fmp": {
+    "asset_count": 8,
+    "availability_primary": "timestamp_raw_plus_1_minute",
+    "availability_sensitivity": "timestamp_raw_plus_2_minutes",
+    "bar_count": 279360,
+    "provider_semantics_status": "CONSERVATIVE_RESEARCH_ASSUMPTION",
+    "records_sha256": "f6e29e94688bfcbb1c79c5d67602b6cd5e91c925ded16899c2f62ea12961703e",
+    "session_asset_count": 720
+  },
+  "manifest_sha256": "440911ab744a78081c7a7213345557712bfbd9cf6387e587f4d11360bdd0e642",
+  "origin_count": 38664,
+  "origin_identity_sha256": "7aa1a1927ea3743f46eebfa6e0c1d0aa56f738408f5e9f2c1e1fe54b51670272",
+  "outcome_read_count": 0,
+  "outputs": {
+    "b0": {
+      "logical_path": "MDS650_B1V3_DATA_ROOT/b0_target_blind.parquet",
+      "row_count": 38664,
+      "sha256": "aa15107bfdeb17cd2af7379cf8ba71de357cbd3321163890b2aee8f828b248a1"
+    },
+    "b1_origins": {
+      "logical_path": "MDS650_B1V3_DATA_ROOT/b1_origins_target_blind.parquet",
+      "row_count": 38664,
+      "sha256": "e1ad7d984d06b504f7fd8174ecb024549cb4859a486375a505c0f10b328f4ab2"
+    },
+    "fmp_bars": {
+      "logical_path": "MDS650_B1V3_DATA_ROOT/underlying_1min_target_blind.parquet",
+      "row_count": 279360,
+      "sha256": "855c3cc2283338bed997f31d88d604434ebb452b034dc918e03e793be5d51ccb"
+    },
+    "origins": {
+      "logical_path": "MDS650_B1V3_DATA_ROOT/forecast_origins_target_blind.parquet",
+      "row_count": 38664,
+      "sha256": "819fb84070ebdbb9116e21ce97803917b1195d0496a18dc934bb06500601a485"
+    }
+  },
+  "plan_sha256": "8b68411094d2638b6608e02a4f9dc3205cb834e1a6205d5a0cf0f73a95544b70",
+  "provider_candidate_plan_sha256": "5417726ea376f2baac9e2a599025f8751f85caca9e09390fc558c6fed632bc1d",
+  "provider_report_sha256": "7a47deb463185e4204af394888eab7a6d2e24adce160da2cc4eed6b20be081b3",
+  "safe_to_read_outcomes": false,
+  "schema_version": "1.0",
+  "security": {
+    "personal_paths_emitted": false,
+    "secret_values_emitted": false
+  },
+  "source_confirmation_plan_sha256": "0f78a9625cc5e1ac58992d6d6f5330fe21555755529d64a44b9d3e6b80809c5c",
+  "status": "PASS_TARGET_BLIND_BASE_PREDICTORS",
+  "target_blind": true,
+  "training_session_count": 60
+}

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from datetime import timedelta
+from datetime import UTC, date, datetime, timedelta
 from typing import Any, Final
 from zoneinfo import ZoneInfo
 
@@ -136,6 +136,101 @@ def validate_fmp_cache_document(
     if not isinstance(payload, list) or not all(isinstance(row, dict) for row in payload):
         raise ValueError("B1V3_FMP_CACHE_PAYLOAD_INVALID")
     return payload
+
+
+def normalize_fmp_session_rows(
+    *,
+    asset: str,
+    session_date: str,
+    payload: Sequence[Mapping[str, Any]],
+) -> tuple[list[dict[str, Any]], tuple[str, ...]]:
+    """Normalize one authenticated FMP payload to its exact XNYS session.
+
+    Naive provider timestamps are interpreted in ``America/New_York`` under
+    the frozen research convention.  A bar becomes available one minute after
+    its raw timestamp; the two-minute sensitivity timestamp is retained
+    separately.  Rows from provider over-return are reported but never mixed
+    into the requested session.
+
+    Parameters
+    ----------
+    asset:
+        Requested underlying or market-control symbol.
+    session_date:
+        Requested XNYS session in ISO ``YYYY-MM-DD`` form.
+    payload:
+        Authenticated FMP response rows already bound to the provider report.
+
+    Returns
+    -------
+    tuple[list[dict[str, Any]], tuple[str, ...]]
+        Exact-session normalized rows and all distinct raw dates observed.
+
+    Raises
+    ------
+    ValueError
+        If the date, timestamp, OHLCV schema, or numeric values are invalid.
+    """
+    try:
+        requested = date.fromisoformat(session_date).isoformat()
+    except ValueError as exc:
+        raise ValueError("B1V3_FMP_SESSION_DATE_INVALID") from exc
+    required = {"date", "open", "high", "low", "close", "volume"}
+    returned_dates: set[str] = set()
+    rows: list[dict[str, Any]] = []
+    for item in payload:
+        if not required.issubset(item):
+            raise ValueError("B1V3_FMP_BAR_SCHEMA_INVALID")
+        raw_value = str(item["date"])
+        raw_date = raw_value[:10]
+        try:
+            date.fromisoformat(raw_date)
+        except ValueError as exc:
+            raise ValueError("B1V3_FMP_BAR_TIMESTAMP_INVALID") from exc
+        returned_dates.add(raw_date)
+        if raw_date != requested:
+            continue
+        normalized = raw_value.replace(" ", "T")
+        try:
+            parsed = datetime.fromisoformat(normalized.replace("Z", "+00:00"))
+        except ValueError as exc:
+            raise ValueError("B1V3_FMP_BAR_TIMESTAMP_INVALID") from exc
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=_NEW_YORK)
+        raw_utc = parsed.astimezone(UTC)
+        try:
+            open_price = float(item["open"])
+            high_price = float(item["high"])
+            low_price = float(item["low"])
+            close_price = float(item["close"])
+            volume = float(item["volume"])
+        except (TypeError, ValueError) as exc:
+            raise ValueError("B1V3_FMP_BAR_NUMERIC_INVALID") from exc
+        values = (open_price, high_price, low_price, close_price, volume)
+        if (
+            not all(value == value and abs(value) != float("inf") for value in values)
+            or min(open_price, high_price, low_price, close_price) <= 0
+            or high_price < max(open_price, close_price, low_price)
+            or low_price > min(open_price, close_price, high_price)
+            or volume < 0
+        ):
+            raise ValueError("B1V3_FMP_BAR_NUMERIC_INVALID")
+        rows.append(
+            {
+                "asset": asset,
+                "session_date": requested,
+                "bar_timestamp_raw_utc": raw_utc,
+                "bar_timestamp_ny": raw_utc.astimezone(_NEW_YORK),
+                "available_at_utc": raw_utc + timedelta(minutes=1),
+                "available_at_plus_2m_utc": raw_utc + timedelta(minutes=2),
+                "open": open_price,
+                "high": high_price,
+                "low": low_price,
+                "close": close_price,
+                "volume": volume,
+            }
+        )
+    return rows, tuple(sorted(returned_dates))
 
 
 def build_spot_frame(bars: pl.DataFrame, origins: pl.DataFrame) -> pl.DataFrame:
