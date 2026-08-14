@@ -426,6 +426,8 @@ def build_b1v3_method_freeze(
     training_target_source_sha256: str,
     oof_forecasts_sha256: str,
     tuning_ledger_sha256: str,
+    method_freeze_code_sha256: str,
+    uv_lock_sha256: str,
     selected_parameters: Mapping[str, Mapping[str, Mapping[str, float | int]]],
     training_mde: Mapping[str, float],
     volatility_regime_cutpoints: Mapping[str, float],
@@ -450,6 +452,8 @@ def build_b1v3_method_freeze(
         training_target_source_sha256,
         oof_forecasts_sha256,
         tuning_ledger_sha256,
+        method_freeze_code_sha256,
+        uv_lock_sha256,
     )
     if (
         preregistration.get("common_predictor_panel_sha256") != common_panel_sha256
@@ -469,6 +473,31 @@ def build_b1v3_method_freeze(
         for information_set in expected_sets
     ):
         raise ValueError("B1V3_METHOD_FREEZE_PARAMETERS_INVALID")
+    method = preregistration["method"]
+    confirmatory = method["confirmatory"]
+    robustness = method["robustness"]
+    gamma_expected_keys = {"alpha", "max_iter", "tol"}
+    lightgbm_expected_keys = {
+        "learning_rate",
+        "max_depth",
+        "min_child_samples",
+        "n_estimators",
+        "num_leaves",
+        "reg_lambda",
+    }
+    for information_set in expected_sets:
+        gamma = selected_parameters["gamma_glm_confirmatory"][information_set]
+        lightgbm = selected_parameters["lightgbm_robustness"][information_set]
+        grid = robustness["grid"]
+        if (
+            set(gamma) != gamma_expected_keys
+            or float(gamma["alpha"]) not in confirmatory["alpha_grid"]
+            or int(gamma["max_iter"]) != int(confirmatory["max_iter"])
+            or float(gamma["tol"]) != float(confirmatory["tolerance"])
+            or set(lightgbm) != lightgbm_expected_keys
+            or any(lightgbm[name] not in grid[name] for name in lightgbm_expected_keys)
+        ):
+            raise ValueError("B1V3_METHOD_FREEZE_PARAMETERS_INVALID")
     if set(training_mde) != {"delta_b1v3", "delta_b2"} or any(
         not math.isfinite(float(value)) or float(value) <= 0
         for value in training_mde.values()
@@ -504,6 +533,8 @@ def build_b1v3_method_freeze(
             "training_target_source_sha256": training_target_source_sha256,
             "oof_forecasts_sha256": oof_forecasts_sha256,
             "tuning_ledger_sha256": tuning_ledger_sha256,
+            "method_freeze_code_sha256": method_freeze_code_sha256,
+            "uv_lock_sha256": uv_lock_sha256,
         },
         "oof_blocks": [101, 102, 103],
         "selected_parameters": {
@@ -522,4 +553,3 @@ def build_b1v3_method_freeze(
     }
     document["manifest_sha256"] = canonical_sha256(document)
     return document
-

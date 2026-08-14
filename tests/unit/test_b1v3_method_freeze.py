@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+import json
 from datetime import UTC, datetime, timedelta
+from pathlib import Path
 from typing import Any
 
 import polars as pl
 import pytest
+from jsonschema import Draft202012Validator
 
 import mds650.b1v3_method_freeze as method_freeze
 from mds650.b1v3_confirmation_common import B1V3_PRIMARY_INFORMATION_SETS
@@ -123,6 +126,26 @@ def _panels() -> tuple[pl.DataFrame, pl.DataFrame]:
                 }
             )
     return pl.DataFrame(rows), pl.DataFrame(targets)
+
+
+def _selected_parameters() -> dict[str, dict[str, dict[str, float | int]]]:
+    return {
+        "gamma_glm_confirmatory": {
+            information_set: {"alpha": 0.1, "max_iter": 2000, "tol": 1e-8}
+            for information_set in ("B0", "B1v3a", "B2")
+        },
+        "lightgbm_robustness": {
+            information_set: {
+                "learning_rate": 0.03,
+                "max_depth": 3,
+                "min_child_samples": 50,
+                "n_estimators": 200,
+                "num_leaves": 7,
+                "reg_lambda": 1.0,
+            }
+            for information_set in ("B0", "B1v3a", "B2")
+        },
+    }
 
 
 def test_training_folds_are_three_chronological_ten_session_blocks() -> None:
@@ -317,13 +340,6 @@ def test_training_oof_and_final_selection_reuse_registered_primitives(
 
 def test_method_freeze_binds_training_only_outputs_and_self_hash() -> None:
     preregistration = _preregistration()
-    selected = {
-        role: {
-            information_set: {"alpha": 0.1}
-            for information_set in ("B0", "B1v3a", "B2")
-        }
-        for role in ("gamma_glm_confirmatory", "lightgbm_robustness")
-    }
 
     document = build_b1v3_method_freeze(
         preregistration,
@@ -332,7 +348,9 @@ def test_method_freeze_binds_training_only_outputs_and_self_hash() -> None:
         training_target_source_sha256="b" * 64,
         oof_forecasts_sha256="c" * 64,
         tuning_ledger_sha256="d" * 64,
-        selected_parameters=selected,
+        method_freeze_code_sha256="e" * 64,
+        uv_lock_sha256="f" * 64,
+        selected_parameters=_selected_parameters(),
         training_mde={"delta_b1v3": 0.01, "delta_b2": 0.02},
         volatility_regime_cutpoints={"lower": 0.1, "upper": 0.2},
         row_count=360,
@@ -344,6 +362,14 @@ def test_method_freeze_binds_training_only_outputs_and_self_hash() -> None:
     assert document["confirmation_read_count"] == 0
     assert document["safe_to_read_confirmation"] is False
     assert document["manifest_sha256"] == canonical_sha256(unsigned)
+    schema = json.loads(
+        Path(
+            "specs/001-pit-options-rv30/contracts/"
+            "b1v3-method-freeze-v1.schema.json"
+        ).read_text(encoding="utf-8")
+    )
+    Draft202012Validator.check_schema(schema)
+    assert list(Draft202012Validator(schema).iter_errors(document)) == []
 
 
 @pytest.mark.parametrize(
@@ -379,20 +405,15 @@ def test_method_freeze_binds_training_only_outputs_and_self_hash() -> None:
     ],
 )
 def test_method_freeze_fails_closed_on_drift(mutation: Any, error: str) -> None:
-    selected = {
-        role: {
-            information_set: {"alpha": 0.1}
-            for information_set in ("B0", "B1v3a", "B2")
-        }
-        for role in ("gamma_glm_confirmatory", "lightgbm_robustness")
-    }
     arguments: dict[str, Any] = {
         "common_panel_sha256": "4" * 64,
         "training_panel_sha256": _SHA,
         "training_target_source_sha256": "b" * 64,
         "oof_forecasts_sha256": "c" * 64,
         "tuning_ledger_sha256": "d" * 64,
-        "selected_parameters": selected,
+        "method_freeze_code_sha256": "e" * 64,
+        "uv_lock_sha256": "f" * 64,
+        "selected_parameters": _selected_parameters(),
         "training_mde": {"delta_b1v3": 0.01, "delta_b2": 0.02},
         "volatility_regime_cutpoints": {"lower": 0.1, "upper": 0.2},
         "row_count": 360,

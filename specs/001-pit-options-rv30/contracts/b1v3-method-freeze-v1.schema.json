@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1v3-method-freeze-v1.schema.json",
+  "title": "MDS650 B1v3 training-only method freeze",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "safe_to_read_confirmation",
+    "outcome_read_count",
+    "training_read_count",
+    "confirmation_read_count",
+    "preregistration_manifest_sha256",
+    "common_panel_sha256",
+    "training_sessions",
+    "confirmation_sessions",
+    "training_sample",
+    "source_hashes",
+    "oof_blocks",
+    "selected_parameters",
+    "training_mde",
+    "volatility_regime_cutpoints",
+    "confirmation_policy",
+    "retain_all_registered_signs",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "status": {"const": "FROZEN_AFTER_TRAINING_BEFORE_CONFIRMATION"},
+    "safe_to_read_confirmation": {"const": false},
+    "outcome_read_count": {"const": 1},
+    "training_read_count": {"const": 1},
+    "confirmation_read_count": {"const": 0},
+    "preregistration_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "common_panel_sha256": {"$ref": "#/$defs/sha256"},
+    "training_sessions": {
+      "type": "array",
+      "minItems": 60,
+      "maxItems": 60,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/date"}
+    },
+    "confirmation_sessions": {
+      "type": "array",
+      "minItems": 30,
+      "maxItems": 30,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/date"}
+    },
+    "training_sample": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "row_count",
+        "session_count",
+        "asset_count",
+        "identical_information_set_sample",
+        "target_price_count",
+        "target_return_count"
+      ],
+      "properties": {
+        "row_count": {"type": "integer", "minimum": 1},
+        "session_count": {"const": 60},
+        "asset_count": {"const": 6},
+        "identical_information_set_sample": {"const": true},
+        "target_price_count": {"const": 31},
+        "target_return_count": {"const": 30}
+      }
+    },
+    "source_hashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "training_panel_sha256",
+        "training_target_source_sha256",
+        "oof_forecasts_sha256",
+        "tuning_ledger_sha256",
+        "method_freeze_code_sha256",
+        "uv_lock_sha256"
+      ],
+      "properties": {
+        "training_panel_sha256": {"$ref": "#/$defs/sha256"},
+        "training_target_source_sha256": {"$ref": "#/$defs/sha256"},
+        "oof_forecasts_sha256": {"$ref": "#/$defs/sha256"},
+        "tuning_ledger_sha256": {"$ref": "#/$defs/sha256"},
+        "method_freeze_code_sha256": {"$ref": "#/$defs/sha256"},
+        "uv_lock_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "oof_blocks": {"const": [101, 102, 103]},
+    "selected_parameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["gamma_glm_confirmatory", "lightgbm_robustness"],
+      "properties": {
+        "gamma_glm_confirmatory": {"$ref": "#/$defs/gamma_sets"},
+        "lightgbm_robustness": {"$ref": "#/$defs/lightgbm_sets"}
+      }
+    },
+    "training_mde": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["delta_b1v3", "delta_b2"],
+      "properties": {
+        "delta_b1v3": {"type": "number", "exclusiveMinimum": 0},
+        "delta_b2": {"type": "number", "exclusiveMinimum": 0}
+      }
+    },
+    "volatility_regime_cutpoints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lower", "upper"],
+      "properties": {
+        "lower": {"type": "number", "minimum": 0},
+        "upper": {"type": "number", "exclusiveMinimum": 0}
+      }
+    },
+    "confirmation_policy": {
+      "const": "EXACTLY_ONE_ANALYTICAL_READ_AFTER_ACCESS_LEDGER"
+    },
+    "retain_all_registered_signs": {"const": true},
+    "manifest_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "date": {
+      "type": "string",
+      "format": "date",
+      "pattern": "^20[0-9]{2}-[0-9]{2}-[0-9]{2}$"
+    },
+    "gamma": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["alpha", "max_iter", "tol"],
+      "properties": {
+        "alpha": {"enum": [0.0, 0.01, 0.1, 1.0]},
+        "max_iter": {"const": 2000},
+        "tol": {"const": 1e-8}
+      }
+    },
+    "lightgbm": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "learning_rate",
+        "max_depth",
+        "min_child_samples",
+        "n_estimators",
+        "num_leaves",
+        "reg_lambda"
+      ],
+      "properties": {
+        "learning_rate": {"enum": [0.03, 0.05]},
+        "max_depth": {"enum": [3, 5]},
+        "min_child_samples": {"const": 50},
+        "n_estimators": {"enum": [200, 500]},
+        "num_leaves": {"enum": [7, 15]},
+        "reg_lambda": {"const": 1.0}
+      }
+    },
+    "gamma_sets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["B0", "B1v3a", "B2"],
+      "properties": {
+        "B0": {"$ref": "#/$defs/gamma"},
+        "B1v3a": {"$ref": "#/$defs/gamma"},
+        "B2": {"$ref": "#/$defs/gamma"}
+      }
+    },
+    "lightgbm_sets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["B0", "B1v3a", "B2"],
+      "properties": {
+        "B0": {"$ref": "#/$defs/lightgbm"},
+        "B1v3a": {"$ref": "#/$defs/lightgbm"},
+        "B2": {"$ref": "#/$defs/lightgbm"}
+      }
+    }
+  }
+}
