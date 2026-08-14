@@ -496,7 +496,7 @@ current evidence and work that still requires explicit approval.
   source-bound B0/B1v3a/B2 panel; prove origin preservation, availability at/before origin,
   explicit missingness,
   deterministic hashes and zero outcome reads.
-- [ ] T224 [P] [US4] Add failing tests in `tests/unit/test_b1v3_evaluation.py` for information-set
+- [x] T224 [P] [US4] Add failing tests in `tests/unit/test_b1v3_evaluation.py` for information-set
   nesting, fixed methods, inference and one-read gates.
 - [ ] T225 [US4] Implement the additive Phase 6 adapter in `src/mds650/b1v3_evaluation.py` and
   seal `docs/b1v3_preregistration.md` against the exact B0/B1v3a/B2 panel and 60/30 session arrays;

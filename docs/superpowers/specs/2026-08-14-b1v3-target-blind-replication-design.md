@@ -6,9 +6,9 @@
 
 **Owner authorization date:** 2026-08-14
 
-**Implementation status:** `NOT_STARTED`
+**Implementation status:** `IN_PROGRESS_TARGET_BLIND`
 
-**Outcome-access status:** `BLOCKED_UNTIL_SPEC_REVIEW_AND_METHOD_FREEZE`
+**Outcome-access status:** `BLOCKED_UNTIL_SOURCE_BOUND_PANEL_AND_METHOD_FREEZE`
 
 The owner granted full methodological authorization after reviewing the proposed B1v3 direction.
 That authorization permits this design to be frozen and then implemented through the project's

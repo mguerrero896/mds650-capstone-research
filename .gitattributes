@@ -52,3 +52,10 @@
 /tests/unit/test_b1v3_confirmation_common.py text eol=lf
 /tests/unit/test_build_b1v3_confirmation_common.py text eol=lf
 /specs/001-pit-options-rv30/contracts/b1v3-confirmation-common-predictor-v1.schema.json text eol=lf
+/src/mds650/b1v3_evaluation.py text eol=lf
+/scripts/seal_b1v3_preregistration.py text eol=lf
+/tests/unit/test_b1v3_evaluation.py text eol=lf
+/tests/unit/test_seal_b1v3_preregistration.py text eol=lf
+/specs/001-pit-options-rv30/contracts/b1v3-preregistration-v1.schema.json text eol=lf
+/artifacts/b1v3_confirmation_preregistration/preregistration.json text eol=lf
+/docs/b1v3_preregistration.md text eol=lf

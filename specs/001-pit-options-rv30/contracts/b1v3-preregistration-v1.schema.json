@@ -1,0 +1,217 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1v3-preregistration-v1.schema.json",
+  "title": "MDS650 B1v3 Independent Confirmation Preregistration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "target_blind",
+    "safe_to_evaluate_b1v3",
+    "outcome_read_count",
+    "confirmation_read_count",
+    "plan_sha256",
+    "common_predictor_manifest_sha256",
+    "common_predictor_manifest_file_sha256",
+    "common_predictor_panel_sha256",
+    "origin_identity_sha256",
+    "outcome_assets",
+    "training_sessions",
+    "confirmation_sessions",
+    "information_sets",
+    "method",
+    "estimands",
+    "mde_policy",
+    "timing_sensitivities",
+    "stability_dimensions",
+    "one_read_policy",
+    "retain_all_registered_signs",
+    "source_hashes",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "status": {"const": "FROZEN_BEFORE_CONFIRMATION"},
+    "target_blind": {"const": true},
+    "safe_to_evaluate_b1v3": {"const": "NO"},
+    "outcome_read_count": {"const": 0},
+    "confirmation_read_count": {"const": 0},
+    "plan_sha256": {"$ref": "#/$defs/sha256"},
+    "common_predictor_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "common_predictor_manifest_file_sha256": {"$ref": "#/$defs/sha256"},
+    "common_predictor_panel_sha256": {"$ref": "#/$defs/sha256"},
+    "origin_identity_sha256": {"$ref": "#/$defs/sha256"},
+    "outcome_assets": {
+      "const": ["AAPL", "AMZN", "META", "MSFT", "NVDA", "TSLA"]
+    },
+    "training_sessions": {
+      "type": "array",
+      "minItems": 60,
+      "maxItems": 60,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/date"}
+    },
+    "confirmation_sessions": {
+      "type": "array",
+      "minItems": 30,
+      "maxItems": 30,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/date"}
+    },
+    "information_sets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["B0", "B1v3a", "B2"],
+      "properties": {
+        "B0": {"$ref": "#/$defs/b0"},
+        "B1v3a": {"$ref": "#/$defs/b1v3a"},
+        "B2": {"$ref": "#/$defs/b2"}
+      }
+    },
+    "method": {"$ref": "#/$defs/method"},
+    "estimands": {
+      "const": {
+        "delta_b1v3": "QLIKE(B0)-QLIKE(B1v3a)",
+        "delta_b2": "QLIKE(B1v3a)-QLIKE(B2)",
+        "positive_value_favors": "EXPANDED_INFORMATION_SET"
+      }
+    },
+    "mde_policy": {"const": "TRAINING_ONLY_DAILY_CLUSTERS_BEFORE_CONFIRMATION"},
+    "timing_sensitivities": {
+      "const": {
+        "fmp_minutes": [1, 2],
+        "massive_cutoff_seconds": [0, 60, 300],
+        "uw_created_at_cutoff_seconds": [60, 120, 300]
+      }
+    },
+    "stability_dimensions": {
+      "const": [
+        "asset",
+        "session_tercile",
+        "training_defined_volatility_regime",
+        "provider_timing_assumption"
+      ]
+    },
+    "one_read_policy": {"const": "EXACTLY_ONE_ANALYTICAL_CONFIRMATION_READ"},
+    "retain_all_registered_signs": {"const": true},
+    "source_hashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["design_sha256", "evaluation_code_sha256", "uv_lock_sha256"],
+      "properties": {
+        "design_sha256": {"$ref": "#/$defs/sha256"},
+        "evaluation_code_sha256": {"$ref": "#/$defs/sha256"},
+        "uv_lock_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "manifest_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "date": {
+      "type": "string",
+      "format": "date",
+      "pattern": "^20[0-9]{2}-[0-9]{2}-[0-9]{2}$"
+    },
+    "b0": {
+      "const": [
+        "b0v2_log_spot",
+        "b0v2_underlying_return_5m",
+        "b0v2_underlying_rv_5m",
+        "b0v2_underlying_rv_30m",
+        "b0v2_log_dollar_volume_5m",
+        "b0v2_spy_return_5m",
+        "b0v2_spy_rv_30m",
+        "b0v2_qqq_return_5m",
+        "b0v2_qqq_rv_30m",
+        "b0v2_session_sine",
+        "b0v2_session_cosine",
+        "b0v2_asset_identity"
+      ]
+    },
+    "b1v3a": {
+      "const": [
+        "b0v2_log_spot",
+        "b0v2_underlying_return_5m",
+        "b0v2_underlying_rv_5m",
+        "b0v2_underlying_rv_30m",
+        "b0v2_log_dollar_volume_5m",
+        "b0v2_spy_return_5m",
+        "b0v2_spy_rv_30m",
+        "b0v2_qqq_return_5m",
+        "b0v2_qqq_rv_30m",
+        "b0v2_session_sine",
+        "b0v2_session_cosine",
+        "b0v2_asset_identity",
+        "b1v3_log_atm_variance_30d",
+        "b1v3_log_atm_variance_change_5m",
+        "b1v3_log_atm_variance_change_30m"
+      ]
+    },
+    "b2": {
+      "const": [
+        "b0v2_log_spot",
+        "b0v2_underlying_return_5m",
+        "b0v2_underlying_rv_5m",
+        "b0v2_underlying_rv_30m",
+        "b0v2_log_dollar_volume_5m",
+        "b0v2_spy_return_5m",
+        "b0v2_spy_rv_30m",
+        "b0v2_qqq_return_5m",
+        "b0v2_qqq_rv_30m",
+        "b0v2_session_sine",
+        "b0v2_session_cosine",
+        "b0v2_asset_identity",
+        "b1v3_log_atm_variance_30d",
+        "b1v3_log_atm_variance_change_5m",
+        "b1v3_log_atm_variance_change_30m",
+        "b2_log_trade_count",
+        "b2_unique_contract_share",
+        "b2_log_mean_trade_premium",
+        "b2_log_max_trade_premium",
+        "b2_call_put_premium_imbalance_scaled",
+        "b2_execution_side_premium_imbalance",
+        "b2_repeated_contract_premium_share",
+        "b2_strike_concentration",
+        "b2_expiry_concentration"
+      ]
+    },
+    "method": {
+      "const": {
+        "confirmatory": {
+          "name": "GammaRegressor",
+          "role": "gamma_glm_confirmatory",
+          "link": "log_fixed_by_estimator",
+          "alpha_grid": [0.0, 0.01, 0.1, 1.0],
+          "max_iter": 2000,
+          "tolerance": 1e-8
+        },
+        "robustness": {
+          "name": "LGBMRegressor",
+          "role": "lightgbm_robustness",
+          "objective": "gamma",
+          "grid": {
+            "num_leaves": [7, 15],
+            "max_depth": [3, 5],
+            "learning_rate": [0.03, 0.05],
+            "n_estimators": [200, 500],
+            "min_child_samples": [50],
+            "reg_lambda": [1.0]
+          }
+        },
+        "metrics": {"primary": "QLIKE", "descriptive": ["MAE", "RMSE"]},
+        "inference": {
+          "bootstrap_unit": "XNYS_SESSION_DATE_WITH_ALL_ASSETS",
+          "bootstrap_repetitions": 10000,
+          "multiplicity": "Holm",
+          "confirmatory_family": ["delta_b1v3", "delta_b2"],
+          "seed": 650
+        },
+        "purge_minutes": 30,
+        "embargo_minutes": 30,
+        "feature_or_method_selection_from_confirmation": "PROHIBITED"
+      }
+    }
+  }
+}
