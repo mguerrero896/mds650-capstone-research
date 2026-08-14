@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1v3-confirmation-timing-panels-v1.schema.json",
+  "title": "MDS650 B1v3 Target-Blind Timing Common Panels",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "target_blind",
+    "outcome_read_count",
+    "safe_to_read_outcomes",
+    "source_bindings",
+    "variants",
+    "security",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "status": {"const": "PASS_TARGET_BLIND_TIMING_COMMON_PANELS"},
+    "target_blind": {"const": true},
+    "outcome_read_count": {"const": 0},
+    "safe_to_read_outcomes": {"const": false},
+    "source_bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "common_manifest_sha256",
+        "common_panel_sha256",
+        "timing_predictor_manifest_sha256",
+        "b2_manifest_sha256",
+        "origin_identity_sha256",
+        "builder_code_sha256"
+      ],
+      "properties": {
+        "common_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "common_panel_sha256": {"$ref": "#/$defs/sha256"},
+        "timing_predictor_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "b2_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "origin_identity_sha256": {"$ref": "#/$defs/sha256"},
+        "builder_code_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "variants": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "FMP_DELAY_2_MINUTES",
+        "MASSIVE_CUTOFF_60_SECONDS",
+        "MASSIVE_CUTOFF_300_SECONDS",
+        "UW_CREATED_AT_120_SECONDS",
+        "UW_CREATED_AT_300_SECONDS"
+      ],
+      "properties": {
+        "FMP_DELAY_2_MINUTES": {"$ref": "#/$defs/variant"},
+        "MASSIVE_CUTOFF_60_SECONDS": {"$ref": "#/$defs/variant"},
+        "MASSIVE_CUTOFF_300_SECONDS": {"$ref": "#/$defs/variant"},
+        "UW_CREATED_AT_120_SECONDS": {"$ref": "#/$defs/variant"},
+        "UW_CREATED_AT_300_SECONDS": {"$ref": "#/$defs/variant"}
+      }
+    },
+    "security": {
+      "const": {
+        "secret_values_emitted": false,
+        "personal_paths_emitted": false
+      }
+    },
+    "manifest_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "variant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "logical_path",
+        "sha256",
+        "bytes",
+        "origin_count",
+        "b0_complete_count",
+        "b1v3a_complete_count",
+        "b2_complete_count"
+      ],
+      "properties": {
+        "logical_path": {
+          "type": "string",
+          "pattern": "^MDS650_B1V3_DATA_ROOT/predictors/timing/common/[A-Z0-9_]+\\.parquet$"
+        },
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "origin_count": {"const": 38664},
+        "b0_complete_count": {"type": "integer", "minimum": 0, "maximum": 38664},
+        "b1v3a_complete_count": {"type": "integer", "minimum": 0, "maximum": 38664},
+        "b2_complete_count": {"type": "integer", "minimum": 0, "maximum": 38664}
+      }
+    }
+  }
+}
