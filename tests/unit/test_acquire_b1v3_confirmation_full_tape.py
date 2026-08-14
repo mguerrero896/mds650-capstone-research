@@ -81,6 +81,26 @@ def test_pending_sessions_rejects_duplicate_checkpoint_date() -> None:
         acquisition.pending_sessions(plan, [record, record])
 
 
+def test_missing_session_config_excludes_exact_complement_not_first_block(
+    tmp_path: Path,
+) -> None:
+    sessions = ("2024-08-02", "2024-08-05", "2024-08-06", "2024-08-07")
+    pending = ("2024-08-05", "2024-08-07")
+
+    config = acquisition.build_missing_session_config(
+        sessions=sessions,
+        pending=pending,
+        data_root=tmp_path,
+        projected_peak_additional_bytes=1,
+    )
+
+    assert config.sessions == (date(2024, 8, 5), date(2024, 8, 7))
+    assert config.excluded_dates == frozenset(
+        {date(2024, 8, 2), date(2024, 8, 6)}
+    )
+    assert not set(config.sessions) & config.excluded_dates
+
+
 def test_acquire_session_is_resumable_after_verified_checkpoint(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,

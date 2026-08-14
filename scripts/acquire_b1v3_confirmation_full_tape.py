@@ -361,6 +361,27 @@ def _write_manifest(plan: dict[str, Any]) -> dict[str, Any]:
     return payload
 
 
+def build_missing_session_config(
+    *,
+    sessions: Sequence[str],
+    pending: Sequence[str],
+    data_root: Path,
+    projected_peak_additional_bytes: int,
+) -> Phase5StorageConfig:
+    """Build the exact missing-date allowlist and exclude every reusable date."""
+    all_dates = tuple(date.fromisoformat(value) for value in sessions)
+    pending_dates = tuple(date.fromisoformat(value) for value in pending)
+    if not set(pending_dates) < set(all_dates):
+        raise RuntimeError("B1V3_ACQUISITION_PENDING_SET_INVALID")
+    return Phase5StorageConfig(
+        sessions=pending_dates,
+        excluded_dates=frozenset(set(all_dates) - set(pending_dates)),
+        data_root=data_root,
+        minimum_free_bytes=80 * GIB,
+        projected_peak_additional_bytes=projected_peak_additional_bytes,
+    )
+
+
 def run() -> dict[str, object]:
     """Import 60 verified sessions, then resume only the frozen 30 missing dates."""
     plan = _load_json(PLAN_PATH, code="B1V3_ACQUISITION_PLAN_INVALID")
@@ -402,11 +423,10 @@ def run() -> dict[str, object]:
     expected_pending = tuple(str(value) for value in storage["missing_sessions"])
     if reused_count != 60 or pending != expected_pending or len(pending) != 30:
         raise RuntimeError("B1V3_ACQUISITION_REUSE_OR_PENDING_SET_INVALID")
-    missing_config = Phase5StorageConfig(
-        sessions=tuple(date.fromisoformat(value) for value in pending),
-        excluded_dates=frozenset(date.fromisoformat(value) for value in sessions[:60]),
+    missing_config = build_missing_session_config(
+        sessions=sessions,
+        pending=pending,
         data_root=DATA_ROOT,
-        minimum_free_bytes=80 * GIB,
         projected_peak_additional_bytes=int(storage["peak_additional_bytes"]),
     )
     for index, session_date in enumerate(pending, start=1):
