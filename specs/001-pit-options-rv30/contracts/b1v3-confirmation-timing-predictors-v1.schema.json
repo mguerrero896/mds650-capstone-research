@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1v3-confirmation-timing-predictors-v1.schema.json",
+  "title": "MDS650 B1v3 Target-Blind Timing Predictor Package",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "target_blind",
+    "outcome_read_count",
+    "safe_to_read_outcomes",
+    "source_bindings",
+    "variants",
+    "security",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "status": {"const": "PASS_TARGET_BLIND_TIMING_PREDICTORS"},
+    "target_blind": {"const": true},
+    "outcome_read_count": {"const": 0},
+    "safe_to_read_outcomes": {"const": false},
+    "source_bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "plan_sha256",
+        "base_manifest_sha256",
+        "b1q_source_manifest_sha256",
+        "primary_attempts_sha256",
+        "source_inventory_sha256",
+        "fmp_bars_sha256",
+        "origins_sha256",
+        "design_sha256",
+        "builder_code_sha256",
+        "reselection_code_sha256",
+        "orchestrator_code_sha256"
+      ],
+      "properties": {
+        "plan_sha256": {"$ref": "#/$defs/sha256"},
+        "base_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "b1q_source_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "primary_attempts_sha256": {"$ref": "#/$defs/sha256"},
+        "source_inventory_sha256": {"$ref": "#/$defs/sha256"},
+        "fmp_bars_sha256": {"$ref": "#/$defs/sha256"},
+        "origins_sha256": {"$ref": "#/$defs/sha256"},
+        "design_sha256": {"$ref": "#/$defs/sha256"},
+        "builder_code_sha256": {"$ref": "#/$defs/sha256"},
+        "reselection_code_sha256": {"$ref": "#/$defs/sha256"},
+        "orchestrator_code_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "variants": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "FMP_DELAY_2_MINUTES",
+        "MASSIVE_CUTOFF_60_SECONDS",
+        "MASSIVE_CUTOFF_300_SECONDS"
+      ],
+      "properties": {
+        "FMP_DELAY_2_MINUTES": {"$ref": "#/$defs/fmpVariant"},
+        "MASSIVE_CUTOFF_60_SECONDS": {"$ref": "#/$defs/massiveVariant"},
+        "MASSIVE_CUTOFF_300_SECONDS": {"$ref": "#/$defs/massiveVariant"}
+      }
+    },
+    "security": {
+      "const": {
+        "secret_values_emitted": false,
+        "personal_paths_emitted": false
+      }
+    },
+    "manifest_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["logical_path", "sha256", "bytes"],
+      "properties": {
+        "logical_path": {"type": "string", "pattern": "^MDS650_B1V3_DATA_ROOT/"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "technicalBuild": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["features", "coverage", "manifest"],
+      "properties": {
+        "features": {"$ref": "#/$defs/file"},
+        "coverage": {"$ref": "#/$defs/file"},
+        "manifest": {"$ref": "#/$defs/file"}
+      }
+    },
+    "fmpVariant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fmp_delay_minutes",
+        "spots",
+        "b0",
+        "attempts",
+        "attempt_count",
+        "origin_count",
+        "technical_build"
+      ],
+      "properties": {
+        "fmp_delay_minutes": {"const": 2},
+        "spots": {"$ref": "#/$defs/file"},
+        "b0": {"$ref": "#/$defs/file"},
+        "attempts": {"$ref": "#/$defs/file"},
+        "attempt_count": {"type": "integer", "minimum": 1},
+        "origin_count": {"type": "integer", "minimum": 1},
+        "technical_build": {"$ref": "#/$defs/technicalBuild"}
+      }
+    },
+    "massiveVariant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "quote_cutoff_seconds",
+        "attempts",
+        "attempt_count",
+        "cache_decode_count",
+        "future_selected_quote_count",
+        "technical_build"
+      ],
+      "properties": {
+        "quote_cutoff_seconds": {"enum": [60, 300]},
+        "attempts": {"$ref": "#/$defs/file"},
+        "attempt_count": {"type": "integer", "minimum": 1},
+        "cache_decode_count": {"type": "integer", "minimum": 1},
+        "future_selected_quote_count": {"const": 0},
+        "technical_build": {"$ref": "#/$defs/technicalBuild"}
+      }
+    }
+  }
+}
