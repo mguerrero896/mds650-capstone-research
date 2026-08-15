@@ -253,3 +253,36 @@ exposure.
   timing estimand and can introduce stale information.
 - Clip negative forward variance to zero: rejected because it hides invalid quote/geometry states.
 - Reuse a prior OOS interval: rejected because it is not a pristine independent confirmation.
+
+## Decision 16: Diagnose B1 on development evidence and replicate B2 without a sign target
+
+**Decision**: Preserve the sealed B1v3 result and diagnose the negative B1 contrast using only
+the rolling 60-session training block from `2024-09-16` through `2024-12-09` and previously
+exposed development evidence. Freeze a new, disjoint 30-session XNYS replication block from
+`2024-12-10` through `2025-01-24` before any
+provider payload or outcome access. Reuse the exact B0/B1v3a/B2 information sets, Gamma GLM,
+fixed LightGBM challenger, QLIKE, descriptive MAE/RMSE, paired whole-day bootstrap, Holm family,
+seed, timing assumptions and training-only MDE. Accept and retain positive, null or negative
+replication outcomes without retrying or modifying the design by sign.
+
+**Rationale**: The sealed evidence supports a Gamma-specific B2 improvement but does not show
+that B1 improves B0 and does not establish model-independent replication. A development-only
+mechanism diagnostic explains where B1 can fail without contaminating a fresh temporal test.
+The date choice is a recorded replication-only amendment to the default study-window rule. The
+default `2025-07-21`–`2026-07-21` interval has no 30-session block absent from prior Phase 5/6
+exposure ledgers. The selected block is the earliest 30-session XNYS interval after the sealed
+B1v3 evidence cutoff and before the next exposed interval. It is authorized only if FMP, UW and
+Massive pass authenticated historical preflight for every frozen date. This preserves a
+falsifiable replication without feature, asset, model or timing selection based on its result.
+
+**Alternatives considered**:
+
+- Declare the existing Gamma B2 result globally confirmed: rejected because the frozen
+  LightGBM challenger disagrees and the same evaluation cannot be its own replication.
+- Tune B1/B2 until both deltas are positive: rejected as outcome-driven model selection.
+- Diagnose B1 with the new replication outcomes: rejected because it would contaminate the
+  confirmatory block.
+- Add RL, DL or another model family: rejected because this phase tests information-set
+  replication, not an expanded model search.
+- Replace RV30 or alter the six-asset universe: rejected because neither change is justified by
+  target-blind data-quality evidence in this phase.

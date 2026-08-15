@@ -1,0 +1,265 @@
+{
+  "estimands": {
+    "delta_b1v3": "QLIKE(B0)-QLIKE(B1v3a)",
+    "delta_b2": "QLIKE(B1v3a)-QLIKE(B2)",
+    "positive_value_favors": "EXPANDED_INFORMATION_SET"
+  },
+  "exposure_ledger_sha256": "1d26548c36c0c8616541386bbd19788847b275d28e07ac89a803397ec23af6df",
+  "information_sets": {
+    "B0": [
+      "b0v2_log_spot",
+      "b0v2_underlying_return_5m",
+      "b0v2_underlying_rv_5m",
+      "b0v2_underlying_rv_30m",
+      "b0v2_log_dollar_volume_5m",
+      "b0v2_spy_return_5m",
+      "b0v2_spy_rv_30m",
+      "b0v2_qqq_return_5m",
+      "b0v2_qqq_rv_30m",
+      "b0v2_session_sine",
+      "b0v2_session_cosine",
+      "b0v2_asset_identity"
+    ],
+    "B1v3a": [
+      "b0v2_log_spot",
+      "b0v2_underlying_return_5m",
+      "b0v2_underlying_rv_5m",
+      "b0v2_underlying_rv_30m",
+      "b0v2_log_dollar_volume_5m",
+      "b0v2_spy_return_5m",
+      "b0v2_spy_rv_30m",
+      "b0v2_qqq_return_5m",
+      "b0v2_qqq_rv_30m",
+      "b0v2_session_sine",
+      "b0v2_session_cosine",
+      "b0v2_asset_identity",
+      "b1v3_log_atm_variance_30d",
+      "b1v3_log_atm_variance_change_5m",
+      "b1v3_log_atm_variance_change_30m"
+    ],
+    "B2": [
+      "b0v2_log_spot",
+      "b0v2_underlying_return_5m",
+      "b0v2_underlying_rv_5m",
+      "b0v2_underlying_rv_30m",
+      "b0v2_log_dollar_volume_5m",
+      "b0v2_spy_return_5m",
+      "b0v2_spy_rv_30m",
+      "b0v2_qqq_return_5m",
+      "b0v2_qqq_rv_30m",
+      "b0v2_session_sine",
+      "b0v2_session_cosine",
+      "b0v2_asset_identity",
+      "b1v3_log_atm_variance_30d",
+      "b1v3_log_atm_variance_change_5m",
+      "b1v3_log_atm_variance_change_30m",
+      "b2_log_trade_count",
+      "b2_unique_contract_share",
+      "b2_log_mean_trade_premium",
+      "b2_log_max_trade_premium",
+      "b2_call_put_premium_imbalance_scaled",
+      "b2_execution_side_premium_imbalance",
+      "b2_repeated_contract_premium_share",
+      "b2_strike_concentration",
+      "b2_expiry_concentration"
+    ]
+  },
+  "manifest_sha256": "f233adb30209386d49670b8e035156d0949d5345f60421d745899eda05d58136",
+  "mde_policy": "TRAINING_ONLY_DAILY_CLUSTERS_BEFORE_REPLICATION",
+  "method": {
+    "confirmatory": {
+      "alpha_grid": [
+        0.0,
+        0.01,
+        0.1,
+        1.0
+      ],
+      "link": "log_fixed_by_estimator",
+      "max_iter": 2000,
+      "name": "GammaRegressor",
+      "role": "gamma_glm_confirmatory",
+      "tolerance": 1e-08
+    },
+    "embargo_minutes": 30,
+    "feature_or_method_selection_from_confirmation": "PROHIBITED",
+    "inference": {
+      "bootstrap_repetitions": 10000,
+      "bootstrap_unit": "XNYS_SESSION_DATE_WITH_ALL_ASSETS",
+      "confirmatory_family": [
+        "delta_b1v3",
+        "delta_b2"
+      ],
+      "multiplicity": "Holm",
+      "seed": 650
+    },
+    "metrics": {
+      "descriptive": [
+        "MAE",
+        "RMSE"
+      ],
+      "primary": "QLIKE"
+    },
+    "purge_minutes": 30,
+    "robustness": {
+      "grid": {
+        "learning_rate": [
+          0.03,
+          0.05
+        ],
+        "max_depth": [
+          3,
+          5
+        ],
+        "min_child_samples": [
+          50
+        ],
+        "n_estimators": [
+          200,
+          500
+        ],
+        "num_leaves": [
+          7,
+          15
+        ],
+        "reg_lambda": [
+          1.0
+        ]
+      },
+      "name": "LGBMRegressor",
+      "objective": "gamma",
+      "role": "lightgbm_robustness"
+    }
+  },
+  "permitted_terminal_states": [
+    "REPLICATED_MODEL_INDEPENDENT",
+    "REPLICATED_GAMMA_ONLY",
+    "NOT_REPLICATED",
+    "INVALID_REPLICATION"
+  ],
+  "provider_payload_reads_at_freeze": 0,
+  "replication_sessions": [
+    "2024-12-10",
+    "2024-12-11",
+    "2024-12-12",
+    "2024-12-13",
+    "2024-12-16",
+    "2024-12-17",
+    "2024-12-18",
+    "2024-12-19",
+    "2024-12-20",
+    "2024-12-23",
+    "2024-12-24",
+    "2024-12-26",
+    "2024-12-27",
+    "2024-12-30",
+    "2024-12-31",
+    "2025-01-02",
+    "2025-01-03",
+    "2025-01-06",
+    "2025-01-07",
+    "2025-01-08",
+    "2025-01-10",
+    "2025-01-13",
+    "2025-01-14",
+    "2025-01-15",
+    "2025-01-16",
+    "2025-01-17",
+    "2025-01-21",
+    "2025-01-22",
+    "2025-01-23",
+    "2025-01-24"
+  ],
+  "replication_target_reads": 0,
+  "result_sign_selection": "PROHIBITED",
+  "safe_to_access_replication_targets": "NO",
+  "schema_version": "b1-independent-replication-preregistration-1.0",
+  "source_hashes": {
+    "code_sha256": "0d401482fa6a0197c56c6696fc563e36e09dfdbfeaf8f0c984272daaedc53ca9",
+    "design_sha256": "45738baa5f87b1e6348283b7d96b0fbcf5d3cb13daff7a653748b721b4b43ec7",
+    "uv_lock_sha256": "f9df1a80f37212c81ef4d9ec466b1e94b764aed5daf84435fae75f345623eaac"
+  },
+  "status": "FROZEN_BEFORE_PROVIDER_PAYLOAD",
+  "storage_policy": {
+    "heavy_root": "MDS650_B1_REPLICATION_DATA_ROOT",
+    "minimum_projected_free_gib": 80
+  },
+  "target_blind": true,
+  "timing_sensitivities": {
+    "fmp_minutes": [
+      1,
+      2
+    ],
+    "massive_cutoff_seconds": [
+      0,
+      60,
+      300
+    ],
+    "uw_created_at_cutoff_seconds": [
+      60,
+      120,
+      300
+    ]
+  },
+  "training_sessions": [
+    "2024-09-16",
+    "2024-09-17",
+    "2024-09-18",
+    "2024-09-19",
+    "2024-09-20",
+    "2024-09-23",
+    "2024-09-24",
+    "2024-09-25",
+    "2024-09-26",
+    "2024-09-27",
+    "2024-09-30",
+    "2024-10-01",
+    "2024-10-02",
+    "2024-10-03",
+    "2024-10-04",
+    "2024-10-07",
+    "2024-10-08",
+    "2024-10-09",
+    "2024-10-10",
+    "2024-10-11",
+    "2024-10-14",
+    "2024-10-15",
+    "2024-10-16",
+    "2024-10-17",
+    "2024-10-18",
+    "2024-10-21",
+    "2024-10-22",
+    "2024-10-23",
+    "2024-10-24",
+    "2024-10-25",
+    "2024-10-28",
+    "2024-10-29",
+    "2024-10-30",
+    "2024-10-31",
+    "2024-11-01",
+    "2024-11-04",
+    "2024-11-05",
+    "2024-11-06",
+    "2024-11-07",
+    "2024-11-08",
+    "2024-11-11",
+    "2024-11-12",
+    "2024-11-13",
+    "2024-11-14",
+    "2024-11-15",
+    "2024-11-18",
+    "2024-11-19",
+    "2024-11-20",
+    "2024-11-21",
+    "2024-11-22",
+    "2024-11-25",
+    "2024-11-26",
+    "2024-11-27",
+    "2024-11-29",
+    "2024-12-02",
+    "2024-12-03",
+    "2024-12-04",
+    "2024-12-05",
+    "2024-12-06",
+    "2024-12-09"
+  ]
+}

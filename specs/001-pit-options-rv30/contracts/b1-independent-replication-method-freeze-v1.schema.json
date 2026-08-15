@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1-independent-replication-method-freeze-v1.schema.json",
+  "title": "MDS650 Independent Replication Method Freeze",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "preregistration_manifest_sha256",
+    "target_blind_replication",
+    "training_outcome_read_count",
+    "replication_target_read_count",
+    "safe_to_read_replication_targets",
+    "result_sign_selection",
+    "scope",
+    "selected_parameters",
+    "training_mde",
+    "volatility_regime_cutpoints",
+    "source_bindings",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "b1-independent-replication-method-freeze-1.0"},
+    "status": {"const": "FROZEN_AFTER_TRAINING_BEFORE_REPLICATION"},
+    "preregistration_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "target_blind_replication": {"const": true},
+    "training_outcome_read_count": {"const": 1},
+    "replication_target_read_count": {"const": 0},
+    "safe_to_read_replication_targets": {"const": false},
+    "result_sign_selection": {"const": "PROHIBITED"},
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["training_session_count", "replication_session_count", "asset_count", "assets", "training_row_count"],
+      "properties": {
+        "training_session_count": {"const": 60},
+        "replication_session_count": {"const": 30},
+        "asset_count": {"const": 6},
+        "assets": {
+          "type": "array",
+          "prefixItems": [
+            {"const": "AAPL"}, {"const": "AMZN"}, {"const": "META"},
+            {"const": "MSFT"}, {"const": "NVDA"}, {"const": "TSLA"}
+          ],
+          "items": false
+        },
+        "training_row_count": {"type": "integer", "minimum": 1}
+      }
+    },
+    "selected_parameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["gamma_glm_confirmatory", "lightgbm_robustness"],
+      "properties": {
+        "gamma_glm_confirmatory": {"$ref": "#/$defs/informationSetParameters"},
+        "lightgbm_robustness": {"$ref": "#/$defs/informationSetParameters"}
+      }
+    },
+    "training_mde": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["delta_b1v3", "delta_b2"],
+      "properties": {
+        "delta_b1v3": {"type": "number", "exclusiveMinimum": 0},
+        "delta_b2": {"type": "number", "exclusiveMinimum": 0}
+      }
+    },
+    "volatility_regime_cutpoints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lower", "upper"],
+      "properties": {
+        "lower": {"type": "number"},
+        "upper": {"type": "number"}
+      }
+    },
+    "source_bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "preregistration_file_sha256", "development_source_panel_sha256",
+        "training_snapshot_sha256", "oof_forecasts_sha256", "tuning_ledger_sha256",
+        "method_module_sha256", "runner_sha256", "uv_lock_sha256"
+      ],
+      "properties": {
+        "preregistration_file_sha256": {"$ref": "#/$defs/sha256"},
+        "development_source_panel_sha256": {"$ref": "#/$defs/sha256"},
+        "training_snapshot_sha256": {"$ref": "#/$defs/sha256"},
+        "oof_forecasts_sha256": {"$ref": "#/$defs/sha256"},
+        "tuning_ledger_sha256": {"$ref": "#/$defs/sha256"},
+        "method_module_sha256": {"$ref": "#/$defs/sha256"},
+        "runner_sha256": {"$ref": "#/$defs/sha256"},
+        "uv_lock_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "manifest_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "informationSetParameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["B0", "B1v3a", "B2"],
+      "properties": {
+        "B0": {"type": "object", "minProperties": 1},
+        "B1v3a": {"type": "object", "minProperties": 1},
+        "B2": {"type": "object", "minProperties": 1}
+      }
+    }
+  }
+}

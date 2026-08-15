@@ -404,6 +404,45 @@ def _validate_zip(path: Path, expected_fields: set[str] | None) -> tuple[str, se
         return member.filename, fields, member.file_size
 
 
+def _event_partition_path(
+    event_root: Path,
+    day: date,
+    asset: str,
+    *,
+    partial: bool,
+) -> Path:
+    """Return the final or in-progress path for one session/asset partition."""
+    filename = "events.parquet.partial" if partial else "events.parquet"
+    return event_root / f"date={day.isoformat()}" / f"asset={asset}" / filename
+
+
+def _prepare_event_partitions(event_root: Path, day: date) -> None:
+    """Remove only disposable partial outputs left by an interrupted attempt."""
+    for asset in ASSETS:
+        partial = _event_partition_path(event_root, day, asset, partial=True)
+        if partial.exists():
+            partial.unlink()
+
+
+def _promote_event_partitions(event_root: Path, day: date) -> None:
+    """Validate every partial Parquet before atomically replacing final files."""
+    pairs: list[tuple[Path, Path]] = []
+    for asset in ASSETS:
+        partial = _event_partition_path(event_root, day, asset, partial=True)
+        final = _event_partition_path(event_root, day, asset, partial=False)
+        if not partial.is_file():
+            raise RuntimeError(f"FULL_TAPE_PARTIAL_MISSING:{day.isoformat()}:{asset}")
+        try:
+            _ = pq.ParquetFile(partial).metadata
+        except (OSError, pa.ArrowInvalid) as exc:
+            raise RuntimeError(
+                f"FULL_TAPE_PARTIAL_INVALID:{day.isoformat()}:{asset}"
+            ) from exc
+        pairs.append((partial, final))
+    for partial, final in pairs:
+        os.replace(partial, final)
+
+
 def _flush(
     writers: dict[str, pq.ParquetWriter],
     batches: dict[str, list[dict[str, Any]]],
@@ -414,8 +453,11 @@ def _flush(
     if not batches[asset]:
         return
     root = EVENT_ROOT if event_root is None else event_root
-    target = (
-        root / f"date={batches[asset][0]['_session_date']}" / f"asset={asset}" / "events.parquet"
+    target = _event_partition_path(
+        root,
+        date.fromisoformat(str(batches[asset][0]["_session_date"])),
+        asset,
+        partial=True,
     )
     target.parent.mkdir(parents=True, exist_ok=True)
     writer = writers.get(asset)
@@ -441,6 +483,7 @@ def filter_session(
         raise RuntimeError("SESSION_NOT_IN_EXPLICIT_ALLOWLIST")
     event_root = EVENT_ROOT if config is None else config.event_root
     dedup_root = OUT / ".dedup" if config is None else config.temporary_root / ".dedup"
+    _prepare_event_partitions(event_root, day)
     started = time_module.perf_counter()
     member, fields, csv_bytes = _validate_zip(zip_path, expected_fields)
     counts: Counter[str] = Counter()
@@ -529,8 +572,8 @@ def filter_session(
         for asset in ASSETS:
             _flush(writers, batches, asset, event_root)
             if asset not in writers:
-                target = (
-                    event_root / f"date={day.isoformat()}" / f"asset={asset}" / "events.parquet"
+                target = _event_partition_path(
+                    event_root, day, asset, partial=True
                 )
                 target.parent.mkdir(parents=True, exist_ok=True)
                 pq.write_table(
@@ -544,6 +587,7 @@ def filter_session(
         for writer in writers.values():
             writer.close()
         peak_working_set = max(peak_working_set, _working_set_bytes() or 0)
+    _promote_event_partitions(event_root, day)
     parquet_bytes = sum(
         path.stat().st_size
         for path in event_root.glob(f"date={day.isoformat()}/asset=*/events.parquet")

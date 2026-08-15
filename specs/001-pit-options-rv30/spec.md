@@ -77,6 +77,14 @@ the prospective holdout remain closed.
   not authorize opening legacy/OOS results during predictor construction or choosing variants by
   RV30, QLIKE, predictions or result sign.
 
+### Session 2026-08-15
+
+- Q: What replaces the blocked objective that required a favourable universal edge? → A: Diagnose
+  why B1v3a did not improve B0 using only previously exposed development evidence, then execute one
+  preregistered temporal replication of B2 on an untouched 30-session block. Positive, null and
+  negative outcomes are equally admissible; no feature, model, date, asset, cutoff or claim may be
+  selected because of its RV30 or QLIKE sign.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### Recovery iteration boundary
@@ -1001,3 +1009,88 @@ read RV30, QLIKE, predictions, losses, model results or any prospective-holdout 
   predictor coverage and scientific confirmation. No positive-edge claim is permitted unless the
   preregistered independent evaluation passes its sign, uncertainty, materiality and stability
   criteria.
+
+## Phase 7 — B1 Diagnostic and Sign-Agnostic Temporal Replication
+
+This phase supersedes only the blocked outcome-forcing objective. It does not alter, rerun or hide
+the sealed B1v3 confirmation. Diagnostic work may use previously exposed development outcomes and
+sealed aggregate results, but the new replication block remains inaccessible until its predictor
+panel, methods, hypotheses, MDE policy and one-read ledger are frozen.
+
+The rolling training block is the 60 XNYS sessions from `2024-09-16` through `2024-12-09`. The
+untouched replication block is exactly these 30 consecutive XNYS sessions:
+
+```text
+2024-12-10, 2024-12-11, 2024-12-12, 2024-12-13, 2024-12-16,
+2024-12-17, 2024-12-18, 2024-12-19, 2024-12-20, 2024-12-23,
+2024-12-24, 2024-12-26, 2024-12-27, 2024-12-30, 2024-12-31,
+2025-01-02, 2025-01-03, 2025-01-06, 2025-01-07, 2025-01-08,
+2025-01-10, 2025-01-13, 2025-01-14, 2025-01-15, 2025-01-16,
+2025-01-17, 2025-01-21, 2025-01-22, 2025-01-23, 2025-01-24
+```
+
+This phase records a narrow study-window amendment for the independent replication only. The
+previously frozen `2025-07-21`–`2026-07-21` window contains no pristine 30-session block: its
+candidate dates already appear in prior Phase 5/6 exposure ledgers. The amendment extends only
+to `2024-09-16`–`2025-01-24`, uses the earliest unexposed 30-session block immediately after the
+sealed B1v3 evidence through `2024-12-09`, and remains conditional on an authenticated provider
+preflight. No unavailable date may be substituted.
+
+- **FR-101**: The B1 diagnostic MUST use only the registered rolling training block and evidence
+  already exposed before this phase. It MUST NOT read replication RV30, QLIKE, predictions or
+  losses. It MUST retain every tested diagnostic hypothesis and distinguish data-coverage,
+  quote-quality, IV-geometry, feature-distribution, collinearity, specification and temporal-drift
+  mechanisms without selecting an explanation by a favourable replication result.
+- **FR-102**: The diagnostic artifact MUST reconcile, globally and by asset/session tercile, the
+  B1v3 feature coverage, quote age, relative spread, IV inversion failures, interpolation/fallback
+  usage, within-session lag availability, distributional scale, correlation/condition diagnostics,
+  Gamma coefficients and chronological development-only loss deltas. Any causal language is
+  prohibited; findings are mechanism evidence and model diagnostics.
+- **FR-103**: A date-only exposure ledger MUST prove that all 30 replication dates are XNYS
+  sessions, occur strictly after the frozen training/evidence cutoff `2024-12-09`, and have never
+  appeared in a reported
+  prediction, loss, OOS read or scientific result. Training and replication arrays, their roles and
+  SHA-256 identities MUST be frozen before provider payload or outcome access for the new block.
+- **FR-104**: Predictor acquisition MUST be resumable and source-bound for exact-session FMP bars,
+  UW Full Tape and directed Massive contract-day quotes. It MUST reuse a file only after hash and
+  manifest equality, preserve the registered FMP `+1`/`+2` assumptions, UW operational
+  `created_at` cutoffs and Massive SIP as-of rules, and stop before every batch if projected free
+  space would fall below 80 GiB. Predictor construction MUST remain target-blind.
+- **FR-105**: The primary replication MUST preserve the exact nested B0, B1v3a and B2 information
+  sets, six assets, Gamma confirmatory model, fixed LightGBM robustness challenger, QLIKE primary
+  loss, descriptive MAE/RMSE, 10,000 paired whole-session bootstrap draws, Holm family, seeds,
+  timing variants and training-only MDE policy used by the sealed B1v3 protocol. No post-result
+  tuning, model promotion, sample substitution or information-set change is permitted.
+- **FR-106**: A self-hashed access ledger MUST authorize exactly one analytical read of the
+  30-session replication target after schema, hash, common-origin, PIT, leakage, coverage,
+  deterministic-replay, quality and storage gates pass. A failed pre-read gate leaves the read
+  count at zero; a consumed token forbids refitting or a second evaluation attempt.
+- **FR-107**: Replication status MUST be determined separately for `delta_B1v3 = QLIKE(B0) -
+  QLIKE(B1v3a)` and `delta_B2 = QLIKE(B1v3a) - QLIKE(B2)`. The report MUST retain estimates,
+  confidence intervals, raw and Holm-adjusted p-values, MDE comparison, both model signs and every
+  registered stability/timing result. Gamma-specific support MUST NOT be described as
+  model-independent when LightGBM disagrees.
+- **FR-108**: The final handoff MUST separate (a) the diagnosis of why B1 failed in development,
+  (b) the untouched replication outcome, (c) limitations from provider timing assumptions and
+  30 daily clusters, and (d) the absence of any trading/P&L or causal informed-trading claim. It
+  MUST preserve all earlier positive, negative and null artifacts without overwrite.
+
+- **SC-048**: A deterministic, schema-valid B1 diagnostic reconciles exactly the rolling
+  training origins and emits a complete reason-code waterfall whose mutually exclusive terminal
+  counts equal the eligible input count; it records zero replication-target reads.
+- **SC-049**: The exposure ledger proves 60 ordered unique training sessions, 30 ordered unique
+  replication sessions, zero overlap with every exposed result date and exact agreement with the
+  official XNYS calendar.
+- **SC-050**: The target-blind replication predictor panel contains one unique row per frozen
+  asset-origin, nested B1v3 completeness, explicit B2 availability, no future predictor timestamp,
+  source hashes and deterministic bytes; no unavailable activity window is encoded as a genuine
+  zero.
+- **SC-051**: Preregistration and method-freeze artifacts bind every date, feature, model,
+  parameter, metric, inference rule, MDE source, sensitivity, code hash and one-read transition
+  before the first replication-target read.
+- **SC-052**: The single evaluation emits finite positive forecasts, both global contrasts,
+  complete stability/timing ledgers and all signs; its evidence index validates every output hash
+  and proves no second analytical read or refit.
+- **SC-053**: The final conclusion is one of `REPLICATED_MODEL_INDEPENDENT`,
+  `REPLICATED_GAMMA_ONLY`, `NOT_REPLICATED` or `INVALID_REPLICATION`, using only preregistered
+  rules. Engineering completion and scientific sign remain separate statuses.

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1-independent-replication-exposure-v1.schema.json",
+  "title": "MDS650 independent replication date-only exposure ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "status", "training_sessions", "replication_sessions",
+    "exposed_result_dates", "prior_evidence_cutoff_session", "overlap_count",
+    "provider_payload_reads", "replication_target_reads", "design_sha256", "ledger_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "b1-independent-replication-exposure-1.0"},
+    "status": {"const": "FROZEN_DATE_ONLY_ZERO_READS"},
+    "training_sessions": {"$ref": "#/$defs/trainingSessions"},
+    "replication_sessions": {"$ref": "#/$defs/replicationSessions"},
+    "exposed_result_dates": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/date"}},
+    "prior_evidence_cutoff_session": {"const": "2024-12-09"},
+    "overlap_count": {"const": 0},
+    "provider_payload_reads": {"const": 0},
+    "replication_target_reads": {"const": 0},
+    "design_sha256": {"$ref": "#/$defs/sha256"},
+    "ledger_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "date": {"type": "string", "format": "date"},
+    "trainingSessions": {"type": "array", "minItems": 60, "maxItems": 60, "uniqueItems": true, "items": {"$ref": "#/$defs/date"}},
+    "replicationSessions": {"type": "array", "minItems": 30, "maxItems": 30, "uniqueItems": true, "items": {"$ref": "#/$defs/date"}}
+  }
+}

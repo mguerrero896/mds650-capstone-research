@@ -187,7 +187,7 @@
 - [x] CHK017 Are FMP 90/90 exact-session availability and Unusual Whales 90/90 Full Tape
   metadata availability explicitly separated from unresolved provider timestamp semantics?
   [Clarity, Spec §FR-083]
-- [ ] CHK018 Does the corrected release bind an exact-80-session source (not a filtered
+- [x] CHK018 Does the corrected release bind an exact-80-session source (not a filtered
   180-session panel) by SHA-256, reject the ten holdout dates and result-like inputs, prohibit
   target or metric payload reads during predictor construction, and reject same-session, stale,
   carried-forward, unhashed or post-origin B1Q exogenous inputs? [Security and Reproducibility,
@@ -240,3 +240,28 @@
 - [x] CHK033 Are the model roles, primary/descriptive losses, bootstrap unit/count, Holm family,
   training-only MDE, one-read control, sign retention and implementation-versus-evidence boundary
   all frozen before outcome access? [Completeness, Spec §FR-099–FR-100 and §SC-046–SC-047]
+
+## B1 Diagnostic and Sign-Agnostic Replication Requirements
+
+- [x] CHK034 Is the superseded outcome-forcing objective explicitly separated from the new
+  diagnostic and falsifiable replication objective? [Scientific Integrity, Spec Phase 7]
+- [x] CHK035 Are the exact 60 training sessions and 30 replication sessions frozen, ordered,
+  XNYS-valid and required to be disjoint from every exposed result date? [Completeness,
+  Spec §FR-103 and §SC-049]
+- [x] CHK036 Are all seven B1 diagnostic families, target exclusions, reason-code reconciliation
+  and non-causal interpretation requirements explicit? [Clarity, Spec §FR-101–FR-102 and
+  §SC-048]
+- [x] CHK037 Are provider reuse, exact-session acquisition, registered timing assumptions,
+  target-blind construction, resumability and the 80-GiB floor measurable? [Security and
+  Reproducibility, Spec §FR-104 and §SC-050]
+- [x] CHK038 Are the exact B0/B1v3a/B2 information sets, two frozen models, losses, bootstrap,
+  Holm family, seed, timing variants and training-only MDE preserved? [Consistency,
+  Spec §FR-105 and §SC-051]
+- [x] CHK039 Does the one-read ledger fail closed before access and irrevocably forbid a second
+  analytical read, refit or sign-based retry after consumption? [Scientific Integrity,
+  Spec §FR-106 and §SC-052]
+- [x] CHK040 Are B1 and B2 contrasts interpreted separately with both model signs, intervals,
+  adjusted p-values, MDE and stability evidence retained? [Measurability, Spec §FR-107]
+- [x] CHK041 Are the four terminal result states exhaustive and is the boundary against causal,
+  informed-trading, P&L and trading-readiness claims explicit? [Claim Safety, Spec §FR-108 and
+  §SC-053]

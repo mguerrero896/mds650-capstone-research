@@ -209,6 +209,62 @@ It MUST be safe to share without provider tokens or raw licensed payloads.
 Development and holdout arrays are ordered, unique and disjoint. A holdout date is never a
 valid development acquisition input.
 
+## B1DiagnosticRecord
+
+| Field | Type | Rule |
+|---|---|---|
+| `diagnostic_run_id` | string | Stable identity bound to design, code and input hashes |
+| `asset` | enum | One of the frozen six assets or `ALL` for aggregates |
+| `session_date` | date/null | Training date for date-level rows; null for aggregates |
+| `session_tercile` | enum | `OPEN`, `MIDDLE`, `CLOSE`, or `ALL` |
+| `diagnostic_family` | enum | Coverage, quote quality, IV geometry, lags, distribution, collinearity/specification or drift |
+| `eligible_origin_count` | integer | Non-negative denominator from rolling training only |
+| `terminal_reason_code` | string | Mutually exclusive reason for a waterfall terminal row |
+| `terminal_count` | integer | Counts sum exactly to the applicable eligible origins |
+| `metrics` | object | Finite descriptive values; no replication target/loss fields |
+| `source_sha256` | string | SHA-256 of the source artifact used by the row |
+
+## ReplicationExposureLedger
+
+| Field | Type | Rule |
+|---|---|---|
+| `training_sessions` | list[date] | Exactly 60 ordered unique XNYS sessions |
+| `replication_sessions` | list[date] | Exactly 30 ordered unique XNYS sessions |
+| `exposed_result_dates` | list[date] | Complete date-only inventory of prior predictions/losses/results |
+| `overlap_count` | integer | Must be zero for replication versus training/exposed dates |
+| `prior_evidence_cutoff_session` | date | Frozen as 2024-12-09 and must precede every replication session |
+| `target_reads` | integer | Zero until the one-read gate is consumed |
+| `ledger_sha256` | string | Canonical self-hash excluding this field |
+
+## B1IndependentReplicationPreregistration
+
+| Field | Type | Rule |
+|---|---|---|
+| `status` | enum | `FROZEN_TARGET_BLIND` or `INVALID` before outcome access |
+| `design_sha256` | string | Binds the approved Phase 7 design |
+| `exposure_ledger_sha256` | string | Must bind the exact 60/30 arrays |
+| `information_sets` | object | Exact nested B0, B1v3a and B2 column lists |
+| `models` | object | Frozen Gamma confirmatory and LightGBM robustness contracts |
+| `estimands` | object | Exact signed B1v3 and B2 QLIKE contrasts |
+| `inference` | object | 10,000 whole-day bootstrap draws, Holm family and seed |
+| `mde_policy` | enum | `TRAINING_ONLY` |
+| `timing_variants` | list[string] | Registered primary and conservative sensitivities only |
+| `replication_target_reads` | integer | Must equal zero at freeze |
+| `preregistration_sha256` | string | Canonical self-hash excluding this field |
+
+## B1IndependentReplicationResult
+
+| Field | Type | Rule |
+|---|---|---|
+| `status` | enum | One of the four SC-053 states |
+| `preregistration_sha256` | string | Exact frozen preregistration identity |
+| `access_ledger_sha256` | string | Ledger proving exactly one analytical target read |
+| `model_results` | object | Complete Gamma and LightGBM signs and losses |
+| `contrasts` | object | Estimates, intervals, raw/adjusted p-values and MDE comparisons |
+| `stability_ledger` | object | All registered asset/hour/regime/timing results |
+| `refit_count_after_read` | integer | Must equal zero |
+| `result_sha256` | string | Canonical self-hash excluding this field |
+
 ## PreregistrationManifest
 
 | Field | Type | Rule |

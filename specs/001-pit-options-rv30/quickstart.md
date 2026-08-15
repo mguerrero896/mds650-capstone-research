@@ -180,3 +180,39 @@ uv run python scripts\plan_b1v3_confirmation.py `
 Expected pre-evaluation state: exactly 60 training/warmup sessions and 30 contiguous pristine
 confirmation sessions, or literal `NO_PRISTINE_30_SESSION_BLOCK`; `confirmation_reads=0` and
 `SAFE_TO_EVALUATE_B1V3=NO`. QLIKE must not run from this quickstart checkpoint.
+
+## Phase 7 B1 diagnostic and independent-replication checkpoint
+
+First create the development-only diagnostic and the date-only exposure ledger. Neither command
+may receive a replication target, loss, prediction or result path:
+
+```powershell
+$env:UV_PROJECT_ENVIRONMENT='D:\MDS650\venvs\MDS650-Capstone-defense-uv312'
+uv run --no-sync pytest -q tests\unit\test_b1_diagnostics.py `
+  tests\unit\test_plan_b1_independent_replication.py
+uv run --no-sync python scripts\run_b1_diagnostics.py `
+  --output-root artifacts\b1_diagnostic_replication\diagnostic
+uv run --no-sync python scripts\plan_b1_independent_replication.py `
+  --output-root artifacts\b1_diagnostic_replication\preregistration
+```
+
+The plan must freeze 60 training sessions (`2024-09-16`–`2024-12-09`) and the exact 30-session
+replication array (`2024-12-10`–`2025-01-24`), prove zero exposed-date overlap and report
+`replication_target_reads=0`. Before any provider request, verify all three credential names by
+presence only, validate exact-session endpoints against the provider contract, and require that
+the projected minimum free space on D: remains at least 80 GiB. Large raw and panel outputs go to
+`D:\MDS650\b1_diagnostic_replication`; compact manifests remain in the repository.
+
+Build and validate the predictor-only replication panel before binding RV30. Freeze the method,
+information sets, code/data hashes, timing variants, training-only MDE and one-read token. Only
+after every preregistered gate passes may the following single-use command exist in an authorized
+run:
+
+```powershell
+uv run --no-sync python scripts\run_b1_independent_replication_once.py `
+  --preregistration artifacts\b1_diagnostic_replication\preregistration\preregistration.json `
+  --consume-one-read-token
+```
+
+The command must refuse a second read and must retain positive, null and negative results. It may
+not refit, change assets/features/models/timing or retry because of the observed sign.

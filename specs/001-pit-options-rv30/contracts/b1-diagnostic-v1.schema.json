@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1-diagnostic-v1.schema.json",
+  "title": "MDS650 B1 development-only diagnostic",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "target_blind_replication",
+    "replication_target_reads",
+    "training_sessions",
+    "replication_sessions_metadata_only",
+    "diagnostic_families",
+    "source_hashes",
+    "scope",
+    "reason_waterfall",
+    "quote_quality",
+    "iv_geometry",
+    "lag_availability",
+    "feature_distributions",
+    "collinearity",
+    "chronological_loss_deltas",
+    "gamma_coefficients",
+    "interpretation_boundary",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "b1-diagnostic-1.0"},
+    "status": {"const": "PASS_DEVELOPMENT_ONLY_DIAGNOSTIC"},
+    "target_blind_replication": {"const": true},
+    "replication_target_reads": {"const": 0},
+    "training_sessions": {"$ref": "#/$defs/trainingSessions"},
+    "replication_sessions_metadata_only": {"$ref": "#/$defs/replicationSessions"},
+    "diagnostic_families": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "source_hashes": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"$ref": "#/$defs/sha256"}
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["feature_origin_count", "attempt_count", "asset_count", "training_session_count"],
+      "properties": {
+        "feature_origin_count": {"type": "integer", "minimum": 1},
+        "attempt_count": {"type": "integer", "minimum": 1},
+        "asset_count": {"type": "integer", "minimum": 1},
+        "training_session_count": {"const": 60}
+      }
+    },
+    "reason_waterfall": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+    "quote_quality": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+    "iv_geometry": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+    "lag_availability": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+    "feature_distributions": {"type": "array", "minItems": 3, "items": {"type": "object"}},
+    "collinearity": {"type": "object"},
+    "chronological_loss_deltas": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+    "gamma_coefficients": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+    "interpretation_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["causal_claim", "replication_sign_used_for_diagnosis", "trading_or_pnl_claim"],
+      "properties": {
+        "causal_claim": {"const": "PROHIBITED"},
+        "replication_sign_used_for_diagnosis": {"const": false},
+        "trading_or_pnl_claim": {"const": "PROHIBITED"}
+      }
+    },
+    "manifest_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "date": {"type": "string", "format": "date"},
+    "trainingSessions": {
+      "type": "array", "minItems": 60, "maxItems": 60, "uniqueItems": true,
+      "items": {"$ref": "#/$defs/date"}
+    },
+    "replicationSessions": {
+      "type": "array", "minItems": 30, "maxItems": 30, "uniqueItems": true,
+      "items": {"$ref": "#/$defs/date"}
+    }
+  }
+}

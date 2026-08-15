@@ -1,0 +1,40 @@
+{
+  "available_read_tokens": 0,
+  "code_bundle_sha256": "dc4d42db1b14a5b39597ae8eec27cfdc18c1ec9798dad0efd8757e2c152a726f",
+  "common_panel_sha256": "cd7d3ee83b40760d0883e5b7e985350797b330699901857ca8a7408d1e82b126",
+  "evaluation_attempt_count": 1,
+  "fmp_bars_sha256": "11b3461746435a21bddde1fb7c38628310c47fb7e0f62c399aafaab898228ff2",
+  "manifest_sha256": "5665e7cee20c5086f845eff2b731addbdc08c08959e3270df8d7b7e7552c0bc4",
+  "method_freeze_manifest_sha256": "e8a819c4cd5f1556142e3d662bed3554afdf26aea7aa0b12ca2da31a684d35fe",
+  "preregistration_manifest_sha256": "f233adb30209386d49670b8e035156d0949d5345f60421d745899eda05d58136",
+  "quality_manifest_sha256": "36999bf4b4df3674b10ba4306cf791fcfcb787a6daea3f0eb941ea73050c0721",
+  "replication_target_read_count": 1,
+  "result_sign_selection": "PROHIBITED",
+  "results_inspected": false,
+  "schema_version": "b1-independent-replication-access-1.0",
+  "security": {
+    "personal_paths_emitted": false,
+    "secret_values_emitted": false
+  },
+  "status": "REPLICATION_EVALUATION_IN_PROGRESS",
+  "terminal_rule": {
+    "gamma_required": [
+      "delta_b2_estimate_positive",
+      "delta_b2_ci_low_above_zero",
+      "delta_b2_holm_p_below_0_05",
+      "delta_b2_estimate_at_least_training_mde"
+    ],
+    "model_independent_additional_requirement": "lightgbm_delta_b2_estimate_positive",
+    "otherwise": "NOT_REPLICATED",
+    "valid_states": [
+      "REPLICATED_MODEL_INDEPENDENT",
+      "REPLICATED_GAMMA_ONLY",
+      "NOT_REPLICATED",
+      "INVALID_REPLICATION"
+    ],
+    "version": "b1-independent-replication-terminal-rule-1.0"
+  },
+  "timing_common_manifest_sha256": "9e27eb8c5804bcee1051addb92fc869c03d1c66aa5593b439f1fbd44aa1ea8b9",
+  "training_timing_manifest_sha256": "4bd9e36a97f0ca6e5e98038c3ee43273333c0e2b17904bad3e5d02cde296c866",
+  "uv_lock_sha256": "f9df1a80f37212c81ef4d9ec466b1e94b764aed5daf84435fae75f345623eaac"
+}

@@ -513,3 +513,87 @@ the full pytest suite and JSON Schema validation.
   bootstrap, Holm, training-only MDE and complete sign reporting are preregistered.
 - Implementation/evidence separation: PASS — technical coverage cannot authorize or imply a
   scientific edge.
+
+## Phase 7: B1 Diagnostic and Sign-Agnostic Temporal Replication
+
+### 7.1 Evidence boundary and immutable inputs
+
+Treat the sealed B1v3 confirmation as immutable prior evidence. Use its development-side
+artifacts only to establish the observed B1 failure and to define diagnostic questions. The new
+replication target block is not an input to diagnostics, feature design, model configuration or
+minimum-effect estimation. Record every previously exposed result date in a date-only ledger and
+freeze the following arrays before acquiring a new target payload:
+
+- rolling training: 60 XNYS sessions, `2024-09-16` through `2024-12-09`;
+- independent replication: the 30 exact XNYS sessions in FR-103, `2024-12-10` through
+  `2025-01-24`.
+
+This is a recorded, replication-only study-window amendment. It is necessary because the
+previously frozen window has no unexposed 30-session block. The provider preflight must validate
+the amended dates before acquisition; failure produces a blocker and never a replacement sample.
+
+The ledger binds the design, session arrays, code, schemas and exposure inventory by SHA-256 and
+starts with zero replication outcome reads.
+
+### 7.2 Development-only B1 diagnostic
+
+Add `src/mds650/b1_diagnostics.py` and a thin CLI
+`scripts/run_b1_diagnostics.py`. Consume only the registered rolling-training panel and
+previously exposed aggregate evidence. Reconcile B1 in seven predeclared families:
+
+1. source and nested-feature coverage;
+2. quote age, spread and session-tercile concentration;
+3. IV inversion, interpolation, fallback and geometry failures;
+4. exact 5/30-minute lag availability;
+5. feature scale, tails and near-constant columns;
+6. correlation, rank and condition diagnostics plus frozen Gamma coefficients;
+7. chronological training-only loss deltas and temporal drift.
+
+Emit a schema-valid, deterministic diagnostic JSON and tabular reason-code ledgers. The output
+may identify supported mechanisms but cannot make a causal claim or alter the replication method.
+
+### 7.3 Target-blind replication acquisition and panel
+
+Reuse the existing 60-session FMP/UW/Massive inputs only when their manifests and hashes match.
+Acquire the 30 new predictor sessions under `D:\MDS650\b1_diagnostic_replication` using
+daily checkpoints and immutable raw evidence. Before each batch validate exact dates,
+presence-only credentials, rate/cost bounds, destination writeability and a projected minimum
+of 80 GiB free. Preserve the registered FMP `+1` primary/`+2` sensitivity, UW `created_at`
+operational cutoffs and Massive last-SIP-quote as-of semantics. Build predictors without opening
+RV30 or any result surface; encode unavailable B2 windows as missing plus reason, never as zero.
+
+### 7.4 Frozen method and one-read evaluation
+
+Add an additive preregistration/evaluation shell over the existing B1v3 primitives rather than
+changing their formulas. Bind B0, B1v3a and B2 features; six assets; Gamma GLM confirmatory and
+fixed LightGBM robustness models; QLIKE; descriptive MAE/RMSE; 10,000 whole-day paired bootstrap
+draws; Holm adjustment; seed 650; timing variants; and training-only MDE. A self-hashed access
+ledger may transition from zero to one analytical read only after all source, PIT, leakage,
+schema, hash, common-origin, replay and storage gates pass. The consumed read cannot be reset.
+
+### 7.5 Outputs and result taxonomy
+
+Keep compact evidence under `artifacts/b1_diagnostic_replication/` and large source/panel data on
+D:. The final report retains every sign and assigns exactly one status:
+
+- `REPLICATED_MODEL_INDEPENDENT`;
+- `REPLICATED_GAMMA_ONLY`;
+- `NOT_REPLICATED`;
+- `INVALID_REPLICATION`.
+
+No status authorizes a trading, P&L, causal or informed-trading claim.
+
+### Phase 7 constitution check
+
+- Evidence/PIT truth: PASS by design — predictor construction is target-blind and provider
+  assumptions remain explicit rather than upgraded to contractual facts.
+- Frozen objective/scope: PASS — RV30, exact sessions, information sets, models and inferential
+  rules are fixed without conditioning on the desired sign.
+- Tests first: PASS by plan — diagnostic, exposure, acquisition, panel and one-read evaluator
+  tests precede their implementations.
+- Reproducibility/security: PASS by plan — immutable evidence, schemas, hashes, idempotence,
+  presence-only secrets, D: storage and the 80-GiB floor are mandatory.
+- Statistical validity: PASS by design — the new block is disjoint, the MDE is training-only,
+  inference clusters by whole session and all positive, null and negative outcomes survive.
+- Claim boundary: PASS — diagnostic mechanisms, predictive replication and economic usefulness
+  are reported as separate questions.

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1-independent-replication-provider-plan-v1.schema.json",
+  "title": "MDS650 independent-replication provider preflight plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "status", "target_blind", "outcome_read_count", "assets",
+    "sessions", "training_session_count", "confirmation_session_count",
+    "source_confirmation_plan_sha256", "plan_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "b1-independent-replication-provider-plan-1.0"},
+    "status": {"const": "FROZEN_TARGET_BLIND_PENDING_PROVIDER_EXECUTION"},
+    "target_blind": {"const": true},
+    "outcome_read_count": {"const": 0},
+    "assets": {
+      "const": ["AAPL", "AMZN", "META", "MSFT", "NVDA", "TSLA"]
+    },
+    "sessions": {
+      "type": "array", "minItems": 30, "maxItems": 30,
+      "items": {"$ref": "#/$defs/session"}
+    },
+    "training_session_count": {"const": 0},
+    "confirmation_session_count": {"const": 30},
+    "source_confirmation_plan_sha256": {"$ref": "#/$defs/sha256"},
+    "plan_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "session": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "date", "role", "open_utc", "close_utc", "forecast_origin_utc",
+        "forecast_origin_ns", "expected_regular_minutes"
+      ],
+      "properties": {
+        "date": {"type": "string", "format": "date"},
+        "role": {"const": "confirmation"},
+        "open_utc": {"type": "string", "format": "date-time"},
+        "close_utc": {"type": "string", "format": "date-time"},
+        "forecast_origin_utc": {"type": "string", "format": "date-time"},
+        "forecast_origin_ns": {"type": "integer", "minimum": 1000000000000000000},
+        "expected_regular_minutes": {"enum": [210, 390]}
+      }
+    }
+  }
+}

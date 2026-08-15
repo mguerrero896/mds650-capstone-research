@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1-independent-replication-common-v1.schema.json",
+  "title": "MDS650 Independent Replication Common Predictor Panel",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "preregistration_manifest_sha256", "target_blind", "outcome_read_count", "safe_to_read_outcomes", "scope", "source_bindings", "information_sets", "technical_acceptance", "coverage", "output", "security", "manifest_sha256"],
+  "properties": {
+    "schema_version": {"const": "b1-independent-replication-common-1.0"},
+    "status": {"enum": ["PASS_TARGET_BLIND_COMMON_PREDICTOR_PANEL", "FAIL_TARGET_BLIND_COMMON_PREDICTOR_PANEL"]},
+    "preregistration_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "target_blind": {"const": true},
+    "outcome_read_count": {"const": 0},
+    "safe_to_read_outcomes": {"const": false},
+    "scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["replication_session_count", "asset_count", "assets", "origin_count", "origin_identity_sha256"],
+      "properties": {
+        "replication_session_count": {"const": 30}, "asset_count": {"const": 6},
+        "assets": {"type": "array", "prefixItems": [{"const": "AAPL"}, {"const": "AMZN"}, {"const": "META"}, {"const": "MSFT"}, {"const": "NVDA"}, {"const": "TSLA"}], "items": false},
+        "origin_count": {"const": 12744}, "origin_identity_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "source_bindings": {
+      "type": "object", "additionalProperties": false,
+      "required": ["base_manifest_sha256", "b1q_source_manifest_sha256", "b1v3_feature_manifest_sha256", "b2_feature_manifest_sha256"],
+      "properties": {
+        "base_manifest_sha256": {"$ref": "#/$defs/sha256"}, "b1q_source_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "b1v3_feature_manifest_sha256": {"$ref": "#/$defs/sha256"}, "b2_feature_manifest_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "information_sets": {
+      "type": "object", "additionalProperties": false, "required": ["B0", "B1v3a", "B2"],
+      "properties": {"B0": {"$ref": "#/$defs/info"}, "B1v3a": {"$ref": "#/$defs/info"}, "B2": {"$ref": "#/$defs/info"}}
+    },
+    "technical_acceptance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "conditions", "b1v3a_global_coverage", "common_complete_origin_count"],
+      "properties": {
+        "status": {"enum": ["PASS", "FAIL"]},
+        "conditions": {"type": "object", "minProperties": 6, "additionalProperties": {"type": "boolean"}},
+        "b1v3a_global_coverage": {"type": "number", "minimum": 0, "maximum": 1},
+        "common_complete_origin_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "coverage": {
+      "type": "object", "additionalProperties": false, "required": ["by_asset", "by_session_tercile", "by_date"],
+      "properties": {"by_asset": {"$ref": "#/$defs/coverageRows"}, "by_session_tercile": {"$ref": "#/$defs/coverageRows"}, "by_date": {"$ref": "#/$defs/coverageRows"}}
+    },
+    "output": {
+      "type": "object", "additionalProperties": false, "required": ["logical_path", "sha256", "bytes", "row_count", "columns"],
+      "properties": {
+        "logical_path": {"const": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/common_predictor_panel.parquet"},
+        "sha256": {"$ref": "#/$defs/sha256"}, "bytes": {"type": "integer", "minimum": 1}, "row_count": {"const": 12744},
+        "columns": {"type": "array", "minItems": 30, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "security": {"type": "object", "additionalProperties": false, "required": ["secret_values_emitted", "personal_paths_emitted"], "properties": {"secret_values_emitted": {"const": false}, "personal_paths_emitted": {"const": false}}},
+    "manifest_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "info": {"type": "object", "additionalProperties": false, "required": ["feature_count", "features"], "properties": {"feature_count": {"type": "integer", "minimum": 1}, "features": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}}},
+    "coverageRows": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": {"type": ["string", "integer", "number"]}, "required": ["origin_count", "b0_coverage", "b1v3a_coverage", "b2_coverage"]}}
+  }
+}

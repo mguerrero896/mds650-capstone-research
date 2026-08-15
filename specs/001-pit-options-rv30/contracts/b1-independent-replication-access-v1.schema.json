@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1-independent-replication-access-v1.schema.json",
+  "title": "Independent-replication one-read access ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "status", "replication_target_read_count",
+    "evaluation_attempt_count", "available_read_tokens", "results_inspected",
+    "result_sign_selection", "preregistration_manifest_sha256",
+    "method_freeze_manifest_sha256", "quality_manifest_sha256",
+    "common_panel_sha256", "timing_common_manifest_sha256",
+    "training_timing_manifest_sha256", "fmp_bars_sha256",
+    "code_bundle_sha256", "uv_lock_sha256", "terminal_rule", "security",
+    "manifest_sha256"
+  ],
+  "oneOf": [
+    {
+      "properties": {
+        "status": {"const": "READY_FOR_SINGLE_REPLICATION_READ"},
+        "replication_target_read_count": {"const": 0},
+        "evaluation_attempt_count": {"const": 0},
+        "available_read_tokens": {"const": 1}
+      }
+    },
+    {
+      "properties": {
+        "status": {"const": "REPLICATION_EVALUATION_IN_PROGRESS"},
+        "replication_target_read_count": {"const": 1},
+        "evaluation_attempt_count": {"const": 1},
+        "available_read_tokens": {"const": 0}
+      }
+    }
+  ],
+  "properties": {
+    "schema_version": {"const": "b1-independent-replication-access-1.0"},
+    "status": {
+      "enum": [
+        "READY_FOR_SINGLE_REPLICATION_READ",
+        "REPLICATION_EVALUATION_IN_PROGRESS"
+      ]
+    },
+    "replication_target_read_count": {"enum": [0, 1]},
+    "evaluation_attempt_count": {"enum": [0, 1]},
+    "available_read_tokens": {"enum": [0, 1]},
+    "results_inspected": {"const": false},
+    "result_sign_selection": {"const": "PROHIBITED"},
+    "preregistration_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "method_freeze_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "quality_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "common_panel_sha256": {"$ref": "#/$defs/sha256"},
+    "timing_common_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "training_timing_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "fmp_bars_sha256": {"$ref": "#/$defs/sha256"},
+    "code_bundle_sha256": {"$ref": "#/$defs/sha256"},
+    "uv_lock_sha256": {"$ref": "#/$defs/sha256"},
+    "terminal_rule": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "version", "gamma_required", "model_independent_additional_requirement",
+        "otherwise", "valid_states"
+      ],
+      "properties": {
+        "version": {"const": "b1-independent-replication-terminal-rule-1.0"},
+        "gamma_required": {"type": "array", "minItems": 4, "maxItems": 4},
+        "model_independent_additional_requirement": {
+          "const": "lightgbm_delta_b2_estimate_positive"
+        },
+        "otherwise": {"const": "NOT_REPLICATED"},
+        "valid_states": {
+          "type": "array",
+          "prefixItems": [
+            {"const": "REPLICATED_MODEL_INDEPENDENT"},
+            {"const": "REPLICATED_GAMMA_ONLY"},
+            {"const": "NOT_REPLICATED"},
+            {"const": "INVALID_REPLICATION"}
+          ],
+          "minItems": 4, "maxItems": 4
+        }
+      }
+    },
+    "security": {"$ref": "#/$defs/security"},
+    "manifest_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "security": {
+      "type": "object", "additionalProperties": false,
+      "required": ["secret_values_emitted", "personal_paths_emitted"],
+      "properties": {
+        "secret_values_emitted": {"const": false},
+        "personal_paths_emitted": {"const": false}
+      }
+    }
+  }
+}

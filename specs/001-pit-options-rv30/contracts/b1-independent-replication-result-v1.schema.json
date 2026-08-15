@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1-independent-replication-result-v1.schema.json",
+  "title": "Independent B1/B2 replication result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "status", "terminal_state", "replication_target_read_count",
+    "evaluation_attempt_count", "all_registered_signs_retained", "sample",
+    "source_bindings", "outputs", "scientific_evaluation", "replication_decision",
+    "claim_boundary", "security", "manifest_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "b1-independent-replication-result-1.0"},
+    "status": {"const": "COMPLETED_ONE_READ_INDEPENDENT_REPLICATION"},
+    "terminal_state": {
+      "enum": [
+        "REPLICATED_MODEL_INDEPENDENT", "REPLICATED_GAMMA_ONLY",
+        "NOT_REPLICATED", "INVALID_REPLICATION"
+      ]
+    },
+    "replication_target_read_count": {"const": 1},
+    "evaluation_attempt_count": {"const": 1},
+    "all_registered_signs_retained": {"const": true},
+    "sample": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "training_rows", "replication_rows", "training_sessions",
+        "replication_sessions", "asset_count", "origin_identity_sha256",
+        "target_identity_sha256"
+      ],
+      "properties": {
+        "training_rows": {"type": "integer", "minimum": 1},
+        "replication_rows": {"type": "integer", "minimum": 1},
+        "training_sessions": {"const": 60},
+        "replication_sessions": {"const": 30},
+        "asset_count": {"const": 6},
+        "origin_identity_sha256": {"$ref": "#/$defs/sha256"},
+        "target_identity_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "source_bindings": {
+      "type": "object", "minProperties": 10,
+      "additionalProperties": {"$ref": "#/$defs/sha256"}
+    },
+    "outputs": {
+      "type": "object", "additionalProperties": false,
+      "required": ["evaluation_panel", "primary_forecasts", "timing_forecasts"],
+      "properties": {
+        "evaluation_panel": {"$ref": "#/$defs/output"},
+        "primary_forecasts": {"$ref": "#/$defs/output"},
+        "timing_forecasts": {"$ref": "#/$defs/output"}
+      }
+    },
+    "scientific_evaluation": {"type": "object"},
+    "replication_decision": {
+      "type": "object",
+      "required": [
+        "terminal_state", "rule_version", "conditions", "values",
+        "positive_null_negative_retained"
+      ],
+      "properties": {
+        "terminal_state": {
+          "enum": [
+            "REPLICATED_MODEL_INDEPENDENT", "REPLICATED_GAMMA_ONLY",
+            "NOT_REPLICATED"
+          ]
+        },
+        "rule_version": {"const": "b1-independent-replication-terminal-rule-1.0"},
+        "conditions": {"type": "object"},
+        "values": {"type": "object"},
+        "positive_null_negative_retained": {"const": true}
+      }
+    },
+    "claim_boundary": {
+      "type": "array", "minItems": 4, "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "security": {"$ref": "#/$defs/security"},
+    "manifest_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "output": {
+      "type": "object", "additionalProperties": false,
+      "required": ["logical_path", "sha256", "rows"],
+      "properties": {
+        "logical_path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "rows": {"type": "integer", "minimum": 1}
+      }
+    },
+    "security": {
+      "type": "object", "additionalProperties": false,
+      "required": ["secret_values_emitted", "personal_paths_emitted"],
+      "properties": {
+        "secret_values_emitted": {"const": false},
+        "personal_paths_emitted": {"const": false}
+      }
+    }
+  }
+}

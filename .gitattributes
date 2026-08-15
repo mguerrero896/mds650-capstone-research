@@ -1,3 +1,19 @@
+/.gitattributes text eol=lf
+*.json text eol=lf
+*.csv text eol=lf
+*.md text eol=lf
+*.py text eol=lf
+
+/artifacts/provider_timing_v21/** text eol=lf
+/artifacts/provider_timing_v22/** text eol=lf
+/artifacts/provider_timing_v21/massive_reselection_sensitivity_v21_recomputed_20260812.json text eol=crlf
+/artifacts/provider_timing_v22/b2_availability_manifest_v22.json text eol=crlf
+/artifacts/preflight/date_level_pit_preflight_status_v2_1_current.json text eol=lf
+/artifacts/target_blind_v23_sourcebound_20260812/** text eol=crlf
+/artifacts/target_blind_v24_sourcebound_20260812/** text eol=lf
+/artifacts/target_blind_v24_sourcebound_20260812/target_blind_common_predictor_manifest_v24.json text eol=crlf
+/artifacts/corrected_development_v1/source_coverage_ledger.json text eol=crlf
+
 /artifacts/b1v3_provider_preflight_v2/** text eol=lf
 /docs/recovery/b1v3_provider_preflight_v2.md text eol=lf
 /scripts/run_date_level_pit_preflight_v2.py text eol=lf

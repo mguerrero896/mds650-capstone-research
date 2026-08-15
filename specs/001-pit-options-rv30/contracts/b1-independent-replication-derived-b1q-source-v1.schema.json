@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1-independent-replication-derived-b1q-source-v1.schema.json",
+  "title": "Source-bound derived B1Q timing attempt manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "status", "preregistration_manifest_sha256",
+    "base_manifest_sha256", "primary_source_manifest_sha256", "target_blind",
+    "outcome_read_count", "safe_to_read_outcomes", "scope", "attempts",
+    "derivation", "raw_payload_binding", "pit_invariants", "security",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "b1-independent-replication-derived-b1q-source-1.0"},
+    "status": {"const": "PASS_TARGET_BLIND_B1Q_SOURCE_BOUND"},
+    "preregistration_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "base_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "primary_source_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "target_blind": {"const": true},
+    "outcome_read_count": {"const": 0},
+    "safe_to_read_outcomes": {"const": false},
+    "scope": {"type": "object"},
+    "attempts": {"$ref": "#/$defs/file"},
+    "derivation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "variant", "quote_cutoff_seconds", "fmp_delay_minutes",
+        "input_attempts_sha256", "derivation_code_sha256", "summary"
+      ],
+      "properties": {
+        "variant": {
+          "enum": [
+            "FMP_DELAY_2_MINUTES", "MASSIVE_CUTOFF_60_SECONDS",
+            "MASSIVE_CUTOFF_300_SECONDS"
+          ]
+        },
+        "quote_cutoff_seconds": {"enum": [0, 60, 300]},
+        "fmp_delay_minutes": {"enum": [1, 2]},
+        "input_attempts_sha256": {"$ref": "#/$defs/sha256"},
+        "derivation_code_sha256": {"$ref": "#/$defs/sha256"},
+        "summary": {"type": "object"}
+      }
+    },
+    "raw_payload_binding": {"type": "object"},
+    "pit_invariants": {
+      "type": "object",
+      "required": ["future_selected_quote_rows", "derived_cutoff_validated"],
+      "properties": {
+        "future_selected_quote_rows": {"const": 0},
+        "derived_cutoff_validated": {"const": true}
+      }
+    },
+    "security": {"$ref": "#/$defs/security"},
+    "manifest_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["logical_path", "sha256", "bytes", "row_count", "columns"],
+      "properties": {
+        "logical_path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "row_count": {"type": "integer", "minimum": 1},
+        "columns": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "security": {
+      "type": "object", "additionalProperties": false,
+      "required": ["secret_values_emitted", "personal_paths_emitted"],
+      "properties": {
+        "secret_values_emitted": {"const": false},
+        "personal_paths_emitted": {"const": false}
+      }
+    }
+  }
+}

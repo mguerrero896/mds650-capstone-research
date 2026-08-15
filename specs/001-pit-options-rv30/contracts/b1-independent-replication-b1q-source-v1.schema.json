@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1-independent-replication-b1q-source-v1.schema.json",
+  "title": "MDS650 Independent Replication Massive B1Q Source Binding",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "status", "preregistration_manifest_sha256",
+    "base_manifest_sha256", "target_blind", "outcome_read_count",
+    "safe_to_read_outcomes", "scope", "attempts", "contract_grid",
+    "raw_payload_binding", "pit_invariants", "security", "manifest_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "b1-independent-replication-b1q-source-1.0"},
+    "status": {"const": "PASS_TARGET_BLIND_B1Q_SOURCE_BOUND"},
+    "preregistration_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "base_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "target_blind": {"const": true},
+    "outcome_read_count": {"const": 0},
+    "safe_to_read_outcomes": {"const": false},
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["replication_session_count", "asset_count", "assets", "origin_count", "origin_identity_sha256"],
+      "properties": {
+        "replication_session_count": {"const": 30},
+        "asset_count": {"const": 6},
+        "assets": {
+          "type": "array",
+          "prefixItems": [
+            {"const": "AAPL"}, {"const": "AMZN"}, {"const": "META"},
+            {"const": "MSFT"}, {"const": "NVDA"}, {"const": "TSLA"}
+          ],
+          "items": false
+        },
+        "origin_count": {"type": "integer", "minimum": 1},
+        "origin_identity_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "attempts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["logical_path", "sha256", "bytes", "row_count", "columns", "unique_request_hash_count"],
+      "properties": {
+        "logical_path": {"const": "MDS650_B1_REPLICATION_DATA_ROOT/tmp/b1q_acquisition_v1/b1_iv_attempts_20d.parquet"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "row_count": {"type": "integer", "minimum": 1},
+        "columns": {"type": "array", "minItems": 28, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "unique_request_hash_count": {"type": "integer", "minimum": 1}
+      }
+    },
+    "contract_grid": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["logical_path", "schema_version", "sha256", "asset_day_count", "contract_day_count"],
+      "properties": {
+        "logical_path": {"const": "MDS650_B1_REPLICATION_DATA_ROOT/cache/massive/resolved_contracts_b1_independent_replication_v1.json"},
+        "schema_version": {"const": "b1q-contract-grid-3.0"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "asset_day_count": {"const": 180},
+        "contract_day_count": {"type": "integer", "minimum": 1}
+      }
+    },
+    "raw_payload_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "inventory_logical_path", "inventory_sha256", "contract_day_count", "cache_bytes", "quote_row_count", "cache_schema_version", "route"],
+      "properties": {
+        "status": {"const": "PRESENT_AND_VALIDATED"},
+        "inventory_logical_path": {"const": "MDS650_B1_REPLICATION_DATA_ROOT/evidence/b1q_raw_payload_inventory.parquet"},
+        "inventory_sha256": {"$ref": "#/$defs/sha256"},
+        "contract_day_count": {"type": "integer", "minimum": 1},
+        "cache_bytes": {"type": "integer", "minimum": 1},
+        "quote_row_count": {"type": "integer", "minimum": 0},
+        "cache_schema_version": {"const": 4},
+        "route": {"const": "B1Q"}
+      }
+    },
+    "pit_invariants": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["future_selected_quote_rows", "rate_source_strictly_pre_session", "request_scope_validated", "pagination_validated", "duplicate_attempt_identities", "duplicate_payload_hashes"],
+      "properties": {
+        "future_selected_quote_rows": {"const": 0},
+        "rate_source_strictly_pre_session": {"const": true},
+        "request_scope_validated": {"const": true},
+        "pagination_validated": {"const": true},
+        "duplicate_attempt_identities": {"const": 0},
+        "duplicate_payload_hashes": {"const": 0}
+      }
+    },
+    "security": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["secret_values_emitted", "personal_paths_emitted"],
+      "properties": {
+        "secret_values_emitted": {"const": false},
+        "personal_paths_emitted": {"const": false}
+      }
+    },
+    "manifest_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

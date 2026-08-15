@@ -1,0 +1,88 @@
+{
+  "manifest_sha256": "e8a819c4cd5f1556142e3d662bed3554afdf26aea7aa0b12ca2da31a684d35fe",
+  "preregistration_manifest_sha256": "f233adb30209386d49670b8e035156d0949d5345f60421d745899eda05d58136",
+  "replication_target_read_count": 0,
+  "result_sign_selection": "PROHIBITED",
+  "safe_to_read_replication_targets": false,
+  "schema_version": "b1-independent-replication-method-freeze-1.0",
+  "scope": {
+    "asset_count": 6,
+    "assets": [
+      "AAPL",
+      "AMZN",
+      "META",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "replication_session_count": 30,
+    "training_row_count": 23134,
+    "training_session_count": 60
+  },
+  "selected_parameters": {
+    "gamma_glm_confirmatory": {
+      "B0": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "B1v3a": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "B2": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      }
+    },
+    "lightgbm_robustness": {
+      "B0": {
+        "learning_rate": 0.03,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 500,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      },
+      "B1v3a": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 7,
+        "reg_lambda": 1.0
+      },
+      "B2": {
+        "learning_rate": 0.05,
+        "max_depth": 3,
+        "min_child_samples": 50,
+        "n_estimators": 200,
+        "num_leaves": 15,
+        "reg_lambda": 1.0
+      }
+    }
+  },
+  "source_bindings": {
+    "development_source_panel_sha256": "d688000d86d5752ab5d553d4616f7ea94f301f7e148b81c1aa2044e16db6d3dd",
+    "method_module_sha256": "59102b08a10a595d9028c9c64eaccd9f24f74fc7e3dc18f7bce1e3f65b783300",
+    "oof_forecasts_sha256": "e2d358ca47d79b663ddc2c382ebe25b4ce6d490b6a7f4f4477b9e0c2654f3a92",
+    "preregistration_file_sha256": "0497b969ac7c9d0611f9954d44a73b4f825cf21b47e62d000266dafd6bb49e3a",
+    "runner_sha256": "27b74f65c3e8f4b7933fb607fe8941e23633634d20598e68e38032262e975d91",
+    "training_snapshot_sha256": "8237a4521870f50f9c4191a5e5b7350ce9157ba340caa72667568f72d44f8c13",
+    "tuning_ledger_sha256": "bd1c9846e403dad97e74081342a1a147dfc3e9271ce38046c5f68d3dfa812755",
+    "uv_lock_sha256": "f9df1a80f37212c81ef4d9ec466b1e94b764aed5daf84435fae75f345623eaac"
+  },
+  "status": "FROZEN_AFTER_TRAINING_BEFORE_REPLICATION",
+  "target_blind_replication": true,
+  "training_mde": {
+    "delta_b1v3": 0.01289700726128434,
+    "delta_b2": 0.008129959895593704
+  },
+  "training_outcome_read_count": 1,
+  "volatility_regime_cutpoints": {
+    "lower": 5.436695271298849e-06,
+    "upper": 1.3609499142462227e-05
+  }
+}

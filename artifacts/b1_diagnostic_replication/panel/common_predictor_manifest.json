@@ -1,0 +1,460 @@
+{
+  "coverage": {
+    "by_asset": [
+      {
+        "asset": "AAPL",
+        "b0_coverage": 0.9152542372881356,
+        "b1v3a_coverage": 0.905367231638418,
+        "b2_coverage": 0.905367231638418,
+        "origin_count": 2124
+      },
+      {
+        "asset": "AMZN",
+        "b0_coverage": 0.9152542372881356,
+        "b1v3a_coverage": 0.9096045197740112,
+        "b2_coverage": 0.9096045197740112,
+        "origin_count": 2124
+      },
+      {
+        "asset": "META",
+        "b0_coverage": 0.9152542372881356,
+        "b1v3a_coverage": 0.9096045197740112,
+        "b2_coverage": 0.9096045197740112,
+        "origin_count": 2124
+      },
+      {
+        "asset": "MSFT",
+        "b0_coverage": 0.9152542372881356,
+        "b1v3a_coverage": 0.9006591337099812,
+        "b2_coverage": 0.9006591337099812,
+        "origin_count": 2124
+      },
+      {
+        "asset": "NVDA",
+        "b0_coverage": 0.9152542372881356,
+        "b1v3a_coverage": 0.9152542372881356,
+        "b2_coverage": 0.9152542372881356,
+        "origin_count": 2124
+      },
+      {
+        "asset": "TSLA",
+        "b0_coverage": 0.9152542372881356,
+        "b1v3a_coverage": 0.9152542372881356,
+        "b2_coverage": 0.9152542372881356,
+        "origin_count": 2124
+      }
+    ],
+    "by_date": [
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9166666666666666,
+        "b2_coverage": 0.9166666666666666,
+        "origin_count": 432,
+        "session_date": "2024-12-10"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9027777777777778,
+        "b2_coverage": 0.9027777777777778,
+        "origin_count": 432,
+        "session_date": "2024-12-11"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9166666666666666,
+        "b2_coverage": 0.9166666666666666,
+        "origin_count": 432,
+        "session_date": "2024-12-12"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9166666666666666,
+        "b2_coverage": 0.9166666666666666,
+        "origin_count": 432,
+        "session_date": "2024-12-13"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9166666666666666,
+        "b2_coverage": 0.9166666666666666,
+        "origin_count": 432,
+        "session_date": "2024-12-16"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9166666666666666,
+        "b2_coverage": 0.9166666666666666,
+        "origin_count": 432,
+        "session_date": "2024-12-17"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9097222222222222,
+        "b2_coverage": 0.9097222222222222,
+        "origin_count": 432,
+        "session_date": "2024-12-18"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9166666666666666,
+        "b2_coverage": 0.9166666666666666,
+        "origin_count": 432,
+        "session_date": "2024-12-19"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9166666666666666,
+        "b2_coverage": 0.9166666666666666,
+        "origin_count": 432,
+        "session_date": "2024-12-20"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9027777777777778,
+        "b2_coverage": 0.9027777777777778,
+        "origin_count": 432,
+        "session_date": "2024-12-23"
+      },
+      {
+        "b0_coverage": 0.8333333333333334,
+        "b1v3a_coverage": 0.8240740740740741,
+        "b2_coverage": 0.8240740740740741,
+        "origin_count": 216,
+        "session_date": "2024-12-24"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.8726851851851852,
+        "b2_coverage": 0.8726851851851852,
+        "origin_count": 432,
+        "session_date": "2024-12-26"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9027777777777778,
+        "b2_coverage": 0.9027777777777778,
+        "origin_count": 432,
+        "session_date": "2024-12-27"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9097222222222222,
+        "b2_coverage": 0.9097222222222222,
+        "origin_count": 432,
+        "session_date": "2024-12-30"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.8726851851851852,
+        "b2_coverage": 0.8726851851851852,
+        "origin_count": 432,
+        "session_date": "2024-12-31"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9166666666666666,
+        "b2_coverage": 0.9166666666666666,
+        "origin_count": 432,
+        "session_date": "2025-01-02"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.8888888888888888,
+        "b2_coverage": 0.8888888888888888,
+        "origin_count": 432,
+        "session_date": "2025-01-03"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9166666666666666,
+        "b2_coverage": 0.9166666666666666,
+        "origin_count": 432,
+        "session_date": "2025-01-06"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9166666666666666,
+        "b2_coverage": 0.9166666666666666,
+        "origin_count": 432,
+        "session_date": "2025-01-07"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9166666666666666,
+        "b2_coverage": 0.9166666666666666,
+        "origin_count": 432,
+        "session_date": "2025-01-08"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9166666666666666,
+        "b2_coverage": 0.9166666666666666,
+        "origin_count": 432,
+        "session_date": "2025-01-10"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9166666666666666,
+        "b2_coverage": 0.9166666666666666,
+        "origin_count": 432,
+        "session_date": "2025-01-13"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9166666666666666,
+        "b2_coverage": 0.9166666666666666,
+        "origin_count": 432,
+        "session_date": "2025-01-14"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9166666666666666,
+        "b2_coverage": 0.9166666666666666,
+        "origin_count": 432,
+        "session_date": "2025-01-15"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9166666666666666,
+        "b2_coverage": 0.9166666666666666,
+        "origin_count": 432,
+        "session_date": "2025-01-16"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9166666666666666,
+        "b2_coverage": 0.9166666666666666,
+        "origin_count": 432,
+        "session_date": "2025-01-17"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9166666666666666,
+        "b2_coverage": 0.9166666666666666,
+        "origin_count": 432,
+        "session_date": "2025-01-21"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9166666666666666,
+        "b2_coverage": 0.9166666666666666,
+        "origin_count": 432,
+        "session_date": "2025-01-22"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9166666666666666,
+        "b2_coverage": 0.9166666666666666,
+        "origin_count": 432,
+        "session_date": "2025-01-23"
+      },
+      {
+        "b0_coverage": 0.9166666666666666,
+        "b1v3a_coverage": 0.9166666666666666,
+        "b2_coverage": 0.9166666666666666,
+        "origin_count": 432,
+        "session_date": "2025-01-24"
+      }
+    ],
+    "by_session_tercile": [
+      {
+        "b0_coverage": 0.76,
+        "b1v3a_coverage": 0.7588888888888888,
+        "b2_coverage": 0.7588888888888888,
+        "origin_count": 4500,
+        "session_tercile": "first"
+      },
+      {
+        "b0_coverage": 1.0,
+        "b1v3a_coverage": 0.9865900383141762,
+        "b2_coverage": 0.9865900383141762,
+        "origin_count": 3654,
+        "session_tercile": "last"
+      },
+      {
+        "b0_coverage": 1.0,
+        "b1v3a_coverage": 0.9952069716775599,
+        "b2_coverage": 0.9952069716775599,
+        "origin_count": 4590,
+        "session_tercile": "middle"
+      }
+    ]
+  },
+  "information_sets": {
+    "B0": {
+      "feature_count": 12,
+      "features": [
+        "b0v2_log_spot",
+        "b0v2_underlying_return_5m",
+        "b0v2_underlying_rv_5m",
+        "b0v2_underlying_rv_30m",
+        "b0v2_log_dollar_volume_5m",
+        "b0v2_spy_return_5m",
+        "b0v2_spy_rv_30m",
+        "b0v2_qqq_return_5m",
+        "b0v2_qqq_rv_30m",
+        "b0v2_session_sine",
+        "b0v2_session_cosine",
+        "b0v2_asset_identity"
+      ]
+    },
+    "B1v3a": {
+      "feature_count": 15,
+      "features": [
+        "b0v2_log_spot",
+        "b0v2_underlying_return_5m",
+        "b0v2_underlying_rv_5m",
+        "b0v2_underlying_rv_30m",
+        "b0v2_log_dollar_volume_5m",
+        "b0v2_spy_return_5m",
+        "b0v2_spy_rv_30m",
+        "b0v2_qqq_return_5m",
+        "b0v2_qqq_rv_30m",
+        "b0v2_session_sine",
+        "b0v2_session_cosine",
+        "b0v2_asset_identity",
+        "b1v3_log_atm_variance_30d",
+        "b1v3_log_atm_variance_change_5m",
+        "b1v3_log_atm_variance_change_30m"
+      ]
+    },
+    "B2": {
+      "feature_count": 24,
+      "features": [
+        "b0v2_log_spot",
+        "b0v2_underlying_return_5m",
+        "b0v2_underlying_rv_5m",
+        "b0v2_underlying_rv_30m",
+        "b0v2_log_dollar_volume_5m",
+        "b0v2_spy_return_5m",
+        "b0v2_spy_rv_30m",
+        "b0v2_qqq_return_5m",
+        "b0v2_qqq_rv_30m",
+        "b0v2_session_sine",
+        "b0v2_session_cosine",
+        "b0v2_asset_identity",
+        "b1v3_log_atm_variance_30d",
+        "b1v3_log_atm_variance_change_5m",
+        "b1v3_log_atm_variance_change_30m",
+        "b2_log_trade_count",
+        "b2_unique_contract_share",
+        "b2_log_mean_trade_premium",
+        "b2_log_max_trade_premium",
+        "b2_call_put_premium_imbalance_scaled",
+        "b2_execution_side_premium_imbalance",
+        "b2_repeated_contract_premium_share",
+        "b2_strike_concentration",
+        "b2_expiry_concentration"
+      ]
+    }
+  },
+  "manifest_sha256": "7a3917211f2994c25bd22ffd1143ed44895885cac2bfdf2d04425c11ac956e80",
+  "outcome_read_count": 0,
+  "output": {
+    "bytes": 2656016,
+    "columns": [
+      "origin_id",
+      "asset",
+      "session_date",
+      "forecast_origin_utc",
+      "forecast_origin_ny",
+      "forecast_origin_ns",
+      "role",
+      "session_minute",
+      "session_tercile",
+      "session_segment",
+      "max_predictor_available_at_utc",
+      "b0v2_log_spot",
+      "b0v2_underlying_return_5m",
+      "b0v2_underlying_rv_5m",
+      "b0v2_underlying_rv_30m",
+      "b0v2_log_dollar_volume_5m",
+      "b0v2_spy_return_5m",
+      "b0v2_spy_rv_30m",
+      "b0v2_qqq_return_5m",
+      "b0v2_qqq_rv_30m",
+      "b0v2_session_sine",
+      "b0v2_session_cosine",
+      "b0v2_asset_identity",
+      "b0_complete",
+      "b0_missing_reason",
+      "max_sip_timestamp_ns",
+      "source_request_hashes",
+      "b1v3_log_atm_variance_30d",
+      "b1v3_log_symmetric_skew_30d",
+      "b1v3_log_forward_variance_short_medium",
+      "b1v3_log_forward_variance_medium_long",
+      "b1v3_log_atm_variance_change_5m",
+      "b1v3_log_atm_variance_change_30m",
+      "b1v3_log_symmetric_skew_change_30m",
+      "b1v3_log_forward_variance_short_medium_change_30m",
+      "b1v3_log_forward_variance_medium_long_change_30m",
+      "b1v3a_complete",
+      "b1v3b_complete",
+      "b1v3c_complete",
+      "b1v3_missing_reason",
+      "b2v2_cutoff_utc",
+      "b2v2_max_created_at_utc",
+      "b2_log_trade_count",
+      "b2_unique_contract_share",
+      "b2_log_mean_trade_premium",
+      "b2_log_max_trade_premium",
+      "b2_call_put_premium_imbalance_scaled",
+      "b2_execution_side_premium_imbalance",
+      "b2_repeated_contract_premium_share",
+      "b2_strike_concentration",
+      "b2_expiry_concentration",
+      "b2v2_availability_status",
+      "b2v2_availability_eligible",
+      "source_temporal_state",
+      "b0_information_set_complete",
+      "b1v3a_information_set_complete",
+      "b2_information_set_complete"
+    ],
+    "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/common_predictor_panel.parquet",
+    "row_count": 12744,
+    "sha256": "cd7d3ee83b40760d0883e5b7e985350797b330699901857ca8a7408d1e82b126"
+  },
+  "preregistration_manifest_sha256": "f233adb30209386d49670b8e035156d0949d5345f60421d745899eda05d58136",
+  "safe_to_read_outcomes": false,
+  "schema_version": "b1-independent-replication-common-1.0",
+  "scope": {
+    "asset_count": 6,
+    "assets": [
+      "AAPL",
+      "AMZN",
+      "META",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "origin_count": 12744,
+    "origin_identity_sha256": "e0b90cafe39a62d4a4685eaf24dfa18217af3c2c0bc9d37b3f4dad688b2d3b42",
+    "replication_session_count": 30
+  },
+  "security": {
+    "personal_paths_emitted": false,
+    "secret_values_emitted": false
+  },
+  "source_bindings": {
+    "b1q_source_manifest_sha256": "47c50ee4926e87c5a17253394c58dd19673183a614498f23f34f3f1cd71b1c54",
+    "b1v3_feature_manifest_sha256": "342c73729e030f86d762501ac2ed0e5727990fd2cd17eacaccb1603b7e5a0312",
+    "b2_feature_manifest_sha256": "96c3f6fc733880112fb8acb67f0440cef9eda76273c272cbf4dfbda7c5710360",
+    "base_manifest_sha256": "ef39c16cffb887ca048728026d9d6646455082b3ea1a62a982ac51c9f6798d27"
+  },
+  "status": "PASS_TARGET_BLIND_COMMON_PREDICTOR_PANEL",
+  "target_blind": true,
+  "technical_acceptance": {
+    "b1v3a_global_coverage": 0.9092906465787822,
+    "common_complete_origin_count": 11588,
+    "conditions": {
+      "b1v3a_each_asset_at_least_65_percent": true,
+      "b1v3a_each_tercile_at_least_60_percent": true,
+      "b1v3a_global_at_least_80_percent": true,
+      "common_sample_has_all_30_sessions": true,
+      "common_sample_has_all_6_assets": true,
+      "common_sample_nonempty": true
+    },
+    "status": "PASS"
+  }
+}

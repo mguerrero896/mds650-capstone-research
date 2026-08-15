@@ -239,6 +239,29 @@ def _atomic_json(path: Path, payload: dict[str, Any]) -> None:
             time_module.sleep(0.05 * 2**attempt)
 
 
+def _write_parquet_atomic(frame: pl.DataFrame, path: Path) -> None:
+    """Write one Parquet completely before atomically exposing its final name."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".part")
+    temporary.unlink(missing_ok=True)
+    try:
+        frame.write_parquet(temporary, compression="zstd")
+        _ = pl.read_parquet_schema(temporary)
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def _run_metadata(session_count: int) -> dict[str, str]:
+    """Return session-count-accurate metadata for a target-blind B1Q run."""
+    if session_count < 1:
+        raise ValueError("B1Q_SESSION_COUNT_INVALID")
+    return {
+        "status": "PASS_B1Q_RECOMPUTATION",
+        "scope": f"TARGET_BLIND_{session_count}_SESSIONS",
+    }
+
+
 def _resolve_contracts(
     origins: pl.DataFrame,
     massive_key: str,
@@ -646,14 +669,17 @@ def main(config: B1BuildConfig = DEFAULT_CONFIG) -> None:
             if not item.get("iv_success")
         )
     frame = pl.DataFrame(rows, infer_schema_length=None, strict=False)
-    frame.write_parquet(config.output_root / "b1_origin_matrix_20d.parquet", compression="zstd")
-    pl.DataFrame(
-        attempt_rows,
-        infer_schema_length=None,
-        strict=False,
-    ).write_parquet(
+    _write_parquet_atomic(
+        frame,
+        config.output_root / "b1_origin_matrix_20d.parquet",
+    )
+    _write_parquet_atomic(
+        pl.DataFrame(
+            attempt_rows,
+            infer_schema_length=None,
+            strict=False,
+        ),
         config.output_root / "b1_iv_attempts_20d.parquet",
-        compression="zstd",
     )
     frame.group_by("asset").agg(
         [
@@ -687,10 +713,10 @@ def main(config: B1BuildConfig = DEFAULT_CONFIG) -> None:
         for row in frame.select("session_date").unique().iter_rows(named=True)
     }
     by_route = {"B1Q": global_cov, "B1T": {"status": "DIAGNOSTIC_ONLY", "coverage": None}}
+    session_count = frame["session_date"].n_unique()
     summary = {
-        "status": "PASS_B1Q_20_SESSION_RECOMPUTATION",
-        "scope": "B2_CONFIRMATION_60_SESSIONS",
-        "session_count": frame["session_date"].n_unique(),
+        **_run_metadata(session_count),
+        "session_count": session_count,
         "origins": frame.height,
         "iv_attempt_rows": len(attempt_rows),
         "global": global_cov,

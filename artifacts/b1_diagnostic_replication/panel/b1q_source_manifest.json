@@ -1,0 +1,95 @@
+{
+  "attempts": {
+    "bytes": 13325443,
+    "columns": [
+      "contract",
+      "expiry",
+      "strike",
+      "option_type",
+      "dte",
+      "bucket",
+      "target_moneyness",
+      "reference_request_id",
+      "instrument_type",
+      "asset",
+      "session_date",
+      "origin_id",
+      "forecast_origin_utc",
+      "forecast_origin_ns",
+      "spot",
+      "moneyness",
+      "rate",
+      "rate_source_date",
+      "dividend_yield",
+      "dividend_assumption",
+      "source_request_hash",
+      "iv_success",
+      "iv",
+      "failure_reason",
+      "sip_timestamp",
+      "bid",
+      "ask",
+      "quote_age_seconds",
+      "relative_spread",
+      "midpoint",
+      "iterations",
+      "lower_bound",
+      "upper_bound"
+    ],
+    "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/tmp/b1q_acquisition_v1/b1_iv_attempts_20d.parquet",
+    "row_count": 382320,
+    "sha256": "b04648d85e32768e55d98e908898a3d23db402016aac580a2b9345c87977701c",
+    "unique_request_hash_count": 5400
+  },
+  "base_manifest_sha256": "ef39c16cffb887ca048728026d9d6646455082b3ea1a62a982ac51c9f6798d27",
+  "contract_grid": {
+    "asset_day_count": 180,
+    "contract_day_count": 5400,
+    "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/cache/massive/resolved_contracts_b1_independent_replication_v1.json",
+    "schema_version": "b1q-contract-grid-3.0",
+    "sha256": "4a6a061405605063a6962a6aae82b14d2b1b5f1a85380e14621b2bfbe663cd76"
+  },
+  "manifest_sha256": "47c50ee4926e87c5a17253394c58dd19673183a614498f23f34f3f1cd71b1c54",
+  "outcome_read_count": 0,
+  "pit_invariants": {
+    "duplicate_attempt_identities": 0,
+    "duplicate_payload_hashes": 0,
+    "future_selected_quote_rows": 0,
+    "pagination_validated": true,
+    "rate_source_strictly_pre_session": true,
+    "request_scope_validated": true
+  },
+  "preregistration_manifest_sha256": "f233adb30209386d49670b8e035156d0949d5345f60421d745899eda05d58136",
+  "raw_payload_binding": {
+    "cache_bytes": 20676630154,
+    "cache_schema_version": 4,
+    "contract_day_count": 5400,
+    "inventory_logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/evidence/b1q_raw_payload_inventory.parquet",
+    "inventory_sha256": "dde35f3ae15dab07419a774cc9dedf73ad9c0e756ce4124c56ff1a26cd5a875f",
+    "quote_row_count": 206298041,
+    "route": "B1Q",
+    "status": "PRESENT_AND_VALIDATED"
+  },
+  "safe_to_read_outcomes": false,
+  "schema_version": "b1-independent-replication-b1q-source-1.0",
+  "scope": {
+    "asset_count": 6,
+    "assets": [
+      "AAPL",
+      "AMZN",
+      "META",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "origin_count": 12744,
+    "origin_identity_sha256": "e0b90cafe39a62d4a4685eaf24dfa18217af3c2c0bc9d37b3f4dad688b2d3b42",
+    "replication_session_count": 30
+  },
+  "security": {
+    "personal_paths_emitted": false,
+    "secret_values_emitted": false
+  },
+  "status": "PASS_TARGET_BLIND_B1Q_SOURCE_BOUND",
+  "target_blind": true
+}

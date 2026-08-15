@@ -1,0 +1,69 @@
+{
+  "asset_count": 6,
+  "assets": [
+    "AAPL",
+    "AMZN",
+    "META",
+    "MSFT",
+    "NVDA",
+    "TSLA"
+  ],
+  "b0": {
+    "complete_row_count": 11664,
+    "missing_row_count": 1080,
+    "row_count": 12744
+  },
+  "fmp": {
+    "asset_count": 8,
+    "availability_primary": "timestamp_raw_plus_1_minute",
+    "availability_sensitivity": "timestamp_raw_plus_2_minutes",
+    "bar_count": 92160,
+    "provider_semantics_status": "CONSERVATIVE_RESEARCH_ASSUMPTION",
+    "records_sha256": "af8876071a70fbb2def1cfd1d24d20cf66b9a0ea06875f988ae16ecb37489bbe",
+    "session_asset_count": 240
+  },
+  "manifest_sha256": "ef39c16cffb887ca048728026d9d6646455082b3ea1a62a982ac51c9f6798d27",
+  "market_controls": [
+    "SPY",
+    "QQQ"
+  ],
+  "market_plan_sha256": "7f3f11a121f2170c596f34b2165f9dc6be65c975d425d82c05f06d53613421d9",
+  "market_report_sha256": "63efd477f7e65201630d0f963c2e43b0f6756766ca922bd8341390fa0ce0376a",
+  "origin_count": 12744,
+  "origin_identity_sha256": "e0b90cafe39a62d4a4685eaf24dfa18217af3c2c0bc9d37b3f4dad688b2d3b42",
+  "outcome_read_count": 0,
+  "outputs": {
+    "b0": {
+      "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/b0_target_blind.parquet",
+      "row_count": 12744,
+      "sha256": "29aa5a1d82d6c86a1bae28dc5743dfa980114c9ecc3714ee4974f5b692c90c02"
+    },
+    "b1_origins": {
+      "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/b1_origins_target_blind.parquet",
+      "row_count": 12744,
+      "sha256": "4ce0b8579b7ba2a2bc1c121ce1f22010b10272ee186a0a251a1b1a13604199c6"
+    },
+    "fmp_bars": {
+      "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/underlying_1min_target_blind.parquet",
+      "row_count": 92160,
+      "sha256": "11b3461746435a21bddde1fb7c38628310c47fb7e0f62c399aafaab898228ff2"
+    },
+    "origins": {
+      "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/forecast_origins_target_blind.parquet",
+      "row_count": 12744,
+      "sha256": "44e69fdda554a1147fe76180faf1fc781189b6147e15b811d86f17192be808f3"
+    }
+  },
+  "preregistration_sha256": "f233adb30209386d49670b8e035156d0949d5345f60421d745899eda05d58136",
+  "primary_plan_sha256": "0d6a1f9d30ee7c04e3f51e6f31b9c048452cfd4b5cbdb39e9aa1a378a65e6b5d",
+  "primary_report_sha256": "d8d078d6862d246b5fd05a0dda0e35a48abd2fd6c04b23a488dfa3f3cb2be35a",
+  "safe_to_read_outcomes": false,
+  "schema_version": "b1-independent-replication-base-1.0",
+  "security": {
+    "personal_paths_emitted": false,
+    "secret_values_emitted": false
+  },
+  "session_count": 30,
+  "status": "PASS_TARGET_BLIND_BASE_PREDICTORS",
+  "target_blind": true
+}

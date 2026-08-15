@@ -1,0 +1,21 @@
+B1 diagnostic and independent replication quality report
+Date: 2026-08-15
+
+pytest: 1004 collected; 992 passed; 12 skipped; 0 failed; 0 errors
+coverage: 81.57% (required minimum: 80%)
+ruff: PASS
+mypy --strict: 206 source files; 0 errors
+JSON Schema: 21 release documents; PASS
+self-hash validation: 22 documents; PASS
+result evidence hashes: 6/6; PASS
+secret/personal-path hygiene: PASS
+Full Tape raw/Parquet independent audit: 30 ZIP + 240 Parquet; PASS
+replication_target_read_count: 1
+evaluation_attempt_count: 1
+terminal_state: NOT_REPLICATED
+
+Primary commands:
+- uv run --no-sync pytest -q --cov=mds650 --cov-fail-under=80
+- uv run --no-sync ruff check .
+- uv run --no-sync mypy --strict src/mds650 scripts
+- uv run --no-sync python scripts/run_b1_independent_replication_once.py --execute

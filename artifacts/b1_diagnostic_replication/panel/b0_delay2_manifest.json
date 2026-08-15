@@ -1,0 +1,22 @@
+{
+  "base_manifest_sha256": "ef39c16cffb887ca048728026d9d6646455082b3ea1a62a982ac51c9f6798d27",
+  "complete_origin_count": 11664,
+  "delay_minutes": 2,
+  "manifest_sha256": "e82b505932cc7ede5d3a93a4800b52c517a5bb717e6d2b47de79bc260aaeac22",
+  "origin_count": 12744,
+  "outcome_read_count": 0,
+  "output": {
+    "bytes": 534529,
+    "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/b0_delay2_target_blind.parquet",
+    "row_count": 12744,
+    "sha256": "f8823de80ee478dacfa2c585de95bc031c8580fe3e174abcbaeb98bd2a2626ce"
+  },
+  "safe_to_read_outcomes": false,
+  "schema_version": "b1-independent-replication-fmp-delay2-1.0",
+  "security": {
+    "personal_paths_emitted": false,
+    "secret_values_emitted": false
+  },
+  "status": "PASS_TARGET_BLIND_FMP_DELAY_2_MINUTES",
+  "target_blind": true
+}

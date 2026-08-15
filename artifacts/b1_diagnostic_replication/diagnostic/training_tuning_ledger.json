@@ -1,0 +1,757 @@
+{
+  "final_gamma_records": [
+    {
+      "failure_reason": null,
+      "fold": 900,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 19415,
+      "n_validation": 3719,
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.13634638645555736,
+      "variant_id": "dcaa9e79ee4a5b84aa3a"
+    },
+    {
+      "failure_reason": null,
+      "fold": 900,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 19415,
+      "n_validation": 3719,
+      "parameters": {
+        "alpha": 0.01,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1374021024378815,
+      "variant_id": "c7711ecc0995f72aa128"
+    },
+    {
+      "failure_reason": null,
+      "fold": 900,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 19415,
+      "n_validation": 3719,
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1503674902836257,
+      "variant_id": "f33a82eb64a31362eef5"
+    },
+    {
+      "failure_reason": null,
+      "fold": 900,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 19415,
+      "n_validation": 3719,
+      "parameters": {
+        "alpha": 1.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.21695644349905818,
+      "variant_id": "9f7991c196f1333b2e17"
+    },
+    {
+      "failure_reason": null,
+      "fold": 900,
+      "information_set": "B1v3a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 19415,
+      "n_validation": 3719,
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.15496232743021027,
+      "variant_id": "c54ac10b2f5ed35ad0c8"
+    },
+    {
+      "failure_reason": null,
+      "fold": 900,
+      "information_set": "B1v3a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 19415,
+      "n_validation": 3719,
+      "parameters": {
+        "alpha": 0.01,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.14193668099953163,
+      "variant_id": "833eb84946a8395e8880"
+    },
+    {
+      "failure_reason": null,
+      "fold": 900,
+      "information_set": "B1v3a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 19415,
+      "n_validation": 3719,
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.1418482702853364,
+      "variant_id": "6dfabf19b6ff87c3ee88"
+    },
+    {
+      "failure_reason": null,
+      "fold": 900,
+      "information_set": "B1v3a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 19415,
+      "n_validation": 3719,
+      "parameters": {
+        "alpha": 1.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.18381049600239288,
+      "variant_id": "844105ae895075cdbc68"
+    }
+  ],
+  "manifest_sha256": "3643913ab1b48a1757317e3672271a2f3acc82a8f774b0c590ed815b483cde01",
+  "oof_records": [
+    {
+      "failure_reason": null,
+      "fold": 101,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 7631,
+      "n_validation": 3926,
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.18607898337887704,
+      "variant_id": "f644d1b2e1f021787226"
+    },
+    {
+      "failure_reason": null,
+      "fold": 101,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 7631,
+      "n_validation": 3926,
+      "parameters": {
+        "alpha": 0.01,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.16494330589113743,
+      "variant_id": "ed902d2da3ca4db1339d"
+    },
+    {
+      "failure_reason": null,
+      "fold": 101,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 7631,
+      "n_validation": 3926,
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.16460478777193407,
+      "variant_id": "b31edc19e044a977bc9e"
+    },
+    {
+      "failure_reason": null,
+      "fold": 101,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 7631,
+      "n_validation": 3926,
+      "parameters": {
+        "alpha": 1.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.21971669861574264,
+      "variant_id": "70fc5a9a5f22d7efb41c"
+    },
+    {
+      "failure_reason": null,
+      "fold": 101,
+      "information_set": "B1v3a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 7631,
+      "n_validation": 3926,
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.19584735151430938,
+      "variant_id": "fe3a511c7797ab705898"
+    },
+    {
+      "failure_reason": null,
+      "fold": 101,
+      "information_set": "B1v3a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 7631,
+      "n_validation": 3926,
+      "parameters": {
+        "alpha": 0.01,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.16331721311168756,
+      "variant_id": "dc08a1282945f2c3fd4b"
+    },
+    {
+      "failure_reason": null,
+      "fold": 101,
+      "information_set": "B1v3a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 7631,
+      "n_validation": 3926,
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.17080485935402848,
+      "variant_id": "9964a34e5fae7080b5b4"
+    },
+    {
+      "failure_reason": null,
+      "fold": 101,
+      "information_set": "B1v3a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 7631,
+      "n_validation": 3926,
+      "parameters": {
+        "alpha": 1.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.2129946390351118,
+      "variant_id": "c4ca06c1deea68aba2e9"
+    },
+    {
+      "failure_reason": null,
+      "fold": 101,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 7631,
+      "n_validation": 3926,
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.19045833727547654,
+      "variant_id": "283d613c1d071afd3ce9"
+    },
+    {
+      "failure_reason": null,
+      "fold": 101,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 7631,
+      "n_validation": 3926,
+      "parameters": {
+        "alpha": 0.01,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.17062178128669547,
+      "variant_id": "0195a10e2d65c9e79ad3"
+    },
+    {
+      "failure_reason": null,
+      "fold": 101,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 7631,
+      "n_validation": 3926,
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.18013517394636397,
+      "variant_id": "394a229abda45356773a"
+    },
+    {
+      "failure_reason": null,
+      "fold": 101,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 7631,
+      "n_validation": 3926,
+      "parameters": {
+        "alpha": 1.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.20003787397001666,
+      "variant_id": "b351d1947cb99cba494f"
+    },
+    {
+      "failure_reason": null,
+      "fold": 102,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11557,
+      "n_validation": 3910,
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1289709748446408,
+      "variant_id": "863809967cc80cb34787"
+    },
+    {
+      "failure_reason": null,
+      "fold": 102,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11557,
+      "n_validation": 3910,
+      "parameters": {
+        "alpha": 0.01,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.1275609278453982,
+      "variant_id": "cc0b1ee717f9eb93f920"
+    },
+    {
+      "failure_reason": null,
+      "fold": 102,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11557,
+      "n_validation": 3910,
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.13933993416215837,
+      "variant_id": "d61f24ba416943d2b9dc"
+    },
+    {
+      "failure_reason": null,
+      "fold": 102,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11557,
+      "n_validation": 3910,
+      "parameters": {
+        "alpha": 1.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.19899500261305036,
+      "variant_id": "3b88801357a2245fa844"
+    },
+    {
+      "failure_reason": null,
+      "fold": 102,
+      "information_set": "B1v3a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11557,
+      "n_validation": 3910,
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.1251366936463682,
+      "variant_id": "42d2d2b82a2c67cec1c9"
+    },
+    {
+      "failure_reason": null,
+      "fold": 102,
+      "information_set": "B1v3a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11557,
+      "n_validation": 3910,
+      "parameters": {
+        "alpha": 0.01,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1262085789496089,
+      "variant_id": "6278d40137814d642b33"
+    },
+    {
+      "failure_reason": null,
+      "fold": 102,
+      "information_set": "B1v3a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11557,
+      "n_validation": 3910,
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.14303666010094127,
+      "variant_id": "1b786d40c4d8052db21e"
+    },
+    {
+      "failure_reason": null,
+      "fold": 102,
+      "information_set": "B1v3a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11557,
+      "n_validation": 3910,
+      "parameters": {
+        "alpha": 1.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1841227385221847,
+      "variant_id": "b52e4e2f519688da6871"
+    },
+    {
+      "failure_reason": null,
+      "fold": 102,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11557,
+      "n_validation": 3910,
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.12242856005497502,
+      "variant_id": "dc28c2c26395e584da63"
+    },
+    {
+      "failure_reason": null,
+      "fold": 102,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11557,
+      "n_validation": 3910,
+      "parameters": {
+        "alpha": 0.01,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.12428299207423446,
+      "variant_id": "c5059fd630985572cc02"
+    },
+    {
+      "failure_reason": null,
+      "fold": 102,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11557,
+      "n_validation": 3910,
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.1405144387776623,
+      "variant_id": "1b9c3d465c5cf80b0d35"
+    },
+    {
+      "failure_reason": null,
+      "fold": 102,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 11557,
+      "n_validation": 3910,
+      "parameters": {
+        "alpha": 1.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.16364382014457216,
+      "variant_id": "a8cbd4bf907d0721d5a5"
+    },
+    {
+      "failure_reason": null,
+      "fold": 103,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15467,
+      "n_validation": 3948,
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.26626412038036873,
+      "variant_id": "7f4fe1ba5d060d55412d"
+    },
+    {
+      "failure_reason": null,
+      "fold": 103,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15467,
+      "n_validation": 3948,
+      "parameters": {
+        "alpha": 0.01,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.22240538560072276,
+      "variant_id": "5c46ff1e84f67709048f"
+    },
+    {
+      "failure_reason": null,
+      "fold": 103,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15467,
+      "n_validation": 3948,
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.22513852474488913,
+      "variant_id": "f67fc1eb0b26c267f072"
+    },
+    {
+      "failure_reason": null,
+      "fold": 103,
+      "information_set": "B0",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15467,
+      "n_validation": 3948,
+      "parameters": {
+        "alpha": 1.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.2996878257236208,
+      "variant_id": "b5a5c4068fecb65331e3"
+    },
+    {
+      "failure_reason": null,
+      "fold": 103,
+      "information_set": "B1v3a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15467,
+      "n_validation": 3948,
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.25398916905035024,
+      "variant_id": "6dcaafbf9fbcbb64f165"
+    },
+    {
+      "failure_reason": null,
+      "fold": 103,
+      "information_set": "B1v3a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15467,
+      "n_validation": 3948,
+      "parameters": {
+        "alpha": 0.01,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.21954243518409347,
+      "variant_id": "381839baf7aed86a8fe3"
+    },
+    {
+      "failure_reason": null,
+      "fold": 103,
+      "information_set": "B1v3a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15467,
+      "n_validation": 3948,
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.23329959189599578,
+      "variant_id": "ba44da90216339dd3c16"
+    },
+    {
+      "failure_reason": null,
+      "fold": 103,
+      "information_set": "B1v3a",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15467,
+      "n_validation": 3948,
+      "parameters": {
+        "alpha": 1.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.2821561216654342,
+      "variant_id": "929f3c6c65eb27459b88"
+    },
+    {
+      "failure_reason": null,
+      "fold": 103,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15467,
+      "n_validation": 3948,
+      "parameters": {
+        "alpha": 0.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.23691374985090935,
+      "variant_id": "3351649097d310e6e62c"
+    },
+    {
+      "failure_reason": null,
+      "fold": 103,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15467,
+      "n_validation": 3948,
+      "parameters": {
+        "alpha": 0.01,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": true,
+      "status": "RUN",
+      "validation_qlike": 0.21669688573114243,
+      "variant_id": "aa08ee0a5c1c2a5ab0ca"
+    },
+    {
+      "failure_reason": null,
+      "fold": 103,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15467,
+      "n_validation": 3948,
+      "parameters": {
+        "alpha": 0.1,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.22784760572365673,
+      "variant_id": "fddbbe179e47dc9dfec5"
+    },
+    {
+      "failure_reason": null,
+      "fold": 103,
+      "information_set": "B2",
+      "model_role": "gamma_glm_confirmatory",
+      "n_fit": 15467,
+      "n_validation": 3948,
+      "parameters": {
+        "alpha": 1.0,
+        "max_iter": 2000,
+        "tol": 1e-08
+      },
+      "selected": false,
+      "status": "RUN",
+      "validation_qlike": 0.2619732489236605,
+      "variant_id": "ca70833cc6db61d8f3bc"
+    }
+  ],
+  "replication_target_reads": 0,
+  "schema_version": "b1-diagnostic-tuning-ledger-1.0"
+}

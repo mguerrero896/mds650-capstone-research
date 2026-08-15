@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1-independent-replication-timing-common-v1.schema.json",
+  "title": "Independent-replication target-blind common timing panels",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "status", "target_blind", "outcome_read_count",
+    "safe_to_read_outcomes", "source_bindings", "variants", "security",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "b1-independent-replication-timing-common-1.0"},
+    "status": {"const": "PASS_TARGET_BLIND_TIMING_COMMON_PANELS"},
+    "target_blind": {"const": true},
+    "outcome_read_count": {"const": 0},
+    "safe_to_read_outcomes": {"const": false},
+    "source_bindings": {
+      "type": "object", "additionalProperties": {"$ref": "#/$defs/sha256"},
+      "minProperties": 4
+    },
+    "variants": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "FMP_DELAY_2_MINUTES", "MASSIVE_CUTOFF_60_SECONDS",
+        "MASSIVE_CUTOFF_300_SECONDS", "UW_CREATED_AT_120_SECONDS",
+        "UW_CREATED_AT_300_SECONDS"
+      ],
+      "properties": {
+        "FMP_DELAY_2_MINUTES": {"$ref": "#/$defs/variant"},
+        "MASSIVE_CUTOFF_60_SECONDS": {"$ref": "#/$defs/variant"},
+        "MASSIVE_CUTOFF_300_SECONDS": {"$ref": "#/$defs/variant"},
+        "UW_CREATED_AT_120_SECONDS": {"$ref": "#/$defs/variant"},
+        "UW_CREATED_AT_300_SECONDS": {"$ref": "#/$defs/variant"}
+      }
+    },
+    "security": {"$ref": "#/$defs/security"},
+    "manifest_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "output": {
+      "type": "object", "additionalProperties": false,
+      "required": ["logical_path", "sha256", "bytes", "row_count"],
+      "properties": {
+        "logical_path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "row_count": {"const": 12744}
+      }
+    },
+    "variant": {
+      "type": "object", "additionalProperties": false,
+      "required": ["output", "technical_acceptance", "coverage"],
+      "properties": {
+        "output": {"$ref": "#/$defs/output"},
+        "technical_acceptance": {"type": "object"},
+        "coverage": {
+          "type": "object", "additionalProperties": false,
+          "required": ["by_asset", "by_session_tercile"],
+          "properties": {
+            "by_asset": {"type": "array", "minItems": 6, "maxItems": 6},
+            "by_session_tercile": {"type": "array", "minItems": 3, "maxItems": 3}
+          }
+        }
+      }
+    },
+    "security": {
+      "type": "object", "additionalProperties": false,
+      "required": ["secret_values_emitted", "personal_paths_emitted"],
+      "properties": {
+        "secret_values_emitted": {"const": false},
+        "personal_paths_emitted": {"const": false}
+      }
+    }
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1-independent-replication-base-v1.schema.json",
+  "title": "Independent-replication target-blind base predictor manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "target_blind",
+    "outcome_read_count",
+    "safe_to_read_outcomes",
+    "preregistration_sha256",
+    "primary_plan_sha256",
+    "primary_report_sha256",
+    "market_plan_sha256",
+    "market_report_sha256",
+    "session_count",
+    "asset_count",
+    "assets",
+    "market_controls",
+    "origin_count",
+    "origin_identity_sha256",
+    "fmp",
+    "b0",
+    "outputs",
+    "security",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "b1-independent-replication-base-1.0"},
+    "status": {"const": "PASS_TARGET_BLIND_BASE_PREDICTORS"},
+    "target_blind": {"const": true},
+    "outcome_read_count": {"const": 0},
+    "safe_to_read_outcomes": {"const": false},
+    "preregistration_sha256": {"$ref": "#/$defs/sha256"},
+    "primary_plan_sha256": {"$ref": "#/$defs/sha256"},
+    "primary_report_sha256": {"$ref": "#/$defs/sha256"},
+    "market_plan_sha256": {"$ref": "#/$defs/sha256"},
+    "market_report_sha256": {"$ref": "#/$defs/sha256"},
+    "session_count": {"const": 30},
+    "asset_count": {"const": 6},
+    "assets": {
+      "type": "array",
+      "prefixItems": [
+        {"const": "AAPL"}, {"const": "AMZN"}, {"const": "META"},
+        {"const": "MSFT"}, {"const": "NVDA"}, {"const": "TSLA"}
+      ],
+      "minItems": 6,
+      "maxItems": 6
+    },
+    "market_controls": {
+      "type": "array",
+      "prefixItems": [{"const": "SPY"}, {"const": "QQQ"}],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "origin_count": {"const": 12744},
+    "origin_identity_sha256": {"$ref": "#/$defs/sha256"},
+    "fmp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "asset_count", "session_asset_count", "bar_count",
+        "availability_primary", "availability_sensitivity",
+        "provider_semantics_status", "records_sha256"
+      ],
+      "properties": {
+        "asset_count": {"const": 8},
+        "session_asset_count": {"const": 240},
+        "bar_count": {"const": 92160},
+        "availability_primary": {"const": "timestamp_raw_plus_1_minute"},
+        "availability_sensitivity": {"const": "timestamp_raw_plus_2_minutes"},
+        "provider_semantics_status": {"const": "CONSERVATIVE_RESEARCH_ASSUMPTION"},
+        "records_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "b0": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["row_count", "complete_row_count", "missing_row_count"],
+      "properties": {
+        "row_count": {"const": 12744},
+        "complete_row_count": {"type": "integer", "minimum": 0, "maximum": 12744},
+        "missing_row_count": {"type": "integer", "minimum": 0, "maximum": 12744}
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["origins", "fmp_bars", "b1_origins", "b0"],
+      "properties": {
+        "origins": {"$ref": "#/$defs/output"},
+        "fmp_bars": {"$ref": "#/$defs/output"},
+        "b1_origins": {"$ref": "#/$defs/output"},
+        "b0": {"$ref": "#/$defs/output"}
+      }
+    },
+    "security": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["secret_values_emitted", "personal_paths_emitted"],
+      "properties": {
+        "secret_values_emitted": {"const": false},
+        "personal_paths_emitted": {"const": false}
+      }
+    },
+    "manifest_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["logical_path", "sha256", "row_count"],
+      "properties": {
+        "logical_path": {
+          "type": "string",
+          "pattern": "^MDS650_B1_REPLICATION_DATA_ROOT/predictors/[A-Za-z0-9_.-]+$"
+        },
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "row_count": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

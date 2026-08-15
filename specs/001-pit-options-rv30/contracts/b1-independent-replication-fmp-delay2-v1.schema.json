@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1-independent-replication-fmp-delay2-v1.schema.json",
+  "title": "MDS650 FMP Plus-Two-Minute Replication Sensitivity",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "base_manifest_sha256", "target_blind", "outcome_read_count", "safe_to_read_outcomes", "delay_minutes", "origin_count", "complete_origin_count", "output", "security", "manifest_sha256"],
+  "properties": {
+    "schema_version": {"const": "b1-independent-replication-fmp-delay2-1.0"},
+    "status": {"const": "PASS_TARGET_BLIND_FMP_DELAY_2_MINUTES"},
+    "base_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "target_blind": {"const": true}, "outcome_read_count": {"const": 0}, "safe_to_read_outcomes": {"const": false},
+    "delay_minutes": {"const": 2}, "origin_count": {"const": 12744}, "complete_origin_count": {"type": "integer", "minimum": 1, "maximum": 12744},
+    "output": {
+      "type": "object", "additionalProperties": false, "required": ["logical_path", "sha256", "bytes", "row_count"],
+      "properties": {
+        "logical_path": {"const": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/b0_delay2_target_blind.parquet"},
+        "sha256": {"$ref": "#/$defs/sha256"}, "bytes": {"type": "integer", "minimum": 1}, "row_count": {"const": 12744}
+      }
+    },
+    "security": {"type": "object", "additionalProperties": false, "required": ["secret_values_emitted", "personal_paths_emitted"], "properties": {"secret_values_emitted": {"const": false}, "personal_paths_emitted": {"const": false}}},
+    "manifest_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {"sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}

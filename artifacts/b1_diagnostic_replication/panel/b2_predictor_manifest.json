@@ -1,0 +1,95 @@
+{
+  "asset_count": 6,
+  "availability": {
+    "canonical_raw_count_mismatch_count": 0,
+    "eligible_row_count": 38232,
+    "excluded_row_count": 0,
+    "primary_delayed_raw_zero_exclusion_count": 0,
+    "row_count": 38232,
+    "row_status_counts": {
+      "PIT_USABLE_ELIGIBLE_ACTIVITY": 38052,
+      "PIT_USABLE_ZERO_NO_DELAY_INCIDENT": 180
+    },
+    "schema_version": "2.2",
+    "variant_totals": [
+      {
+        "canonical_variant": "latency_5m_120s",
+        "eligible_row_count": 12744,
+        "excluded_row_count": 0,
+        "row_count": 12744
+      },
+      {
+        "canonical_variant": "latency_5m_300s",
+        "eligible_row_count": 12744,
+        "excluded_row_count": 0,
+        "row_count": 12744
+      },
+      {
+        "canonical_variant": "primary_5m_60s",
+        "eligible_row_count": 12744,
+        "excluded_row_count": 0,
+        "row_count": 12744
+      }
+    ]
+  },
+  "base_manifest_sha256": "ef39c16cffb887ca048728026d9d6646455082b3ea1a62a982ac51c9f6798d27",
+  "evidence": {
+    "incident_ledger_sha256": "ac51e4d0470a210c4d6612cb66fcc1f0dae272aecd1f2a43772fc1bbc3d371c7",
+    "traceability_ledger_sha256": "181fb526d3b8ea68c51a45a4ba1b172a7d56551ed787acba81f8683a7fc9fcda"
+  },
+  "feature_count": 9,
+  "features": [
+    "b2_log_trade_count",
+    "b2_unique_contract_share",
+    "b2_log_mean_trade_premium",
+    "b2_log_max_trade_premium",
+    "b2_call_put_premium_imbalance_scaled",
+    "b2_execution_side_premium_imbalance",
+    "b2_repeated_contract_premium_share",
+    "b2_strike_concentration",
+    "b2_expiry_concentration"
+  ],
+  "full_tape_manifest_sha256": "cd3430ebf70e77deffeadc5bd251391e6aa6d79dc72bb88a937355ea14460f93",
+  "legacy_zero_coding_gate": "PASS_NO_CONFOUNDED_ZERO_OBSERVED",
+  "manifest_sha256": "96c3f6fc733880112fb8acb67f0440cef9eda76273c272cbf4dfbda7c5710360",
+  "origin_count": 12744,
+  "outcome_read_count": 0,
+  "preregistration_sha256": "f233adb30209386d49670b8e035156d0949d5345f60421d745899eda05d58136",
+  "safe_to_read_outcomes": false,
+  "schema_version": "b1-independent-replication-b2-1.0",
+  "security": {
+    "personal_paths_emitted": false,
+    "secret_values_emitted": false
+  },
+  "session_count": 30,
+  "sidecar": {
+    "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/b2_availability_sidecar.parquet",
+    "row_count": 38232,
+    "sha256": "b5efcaf0b97ed4d9574281ca26ef7d90185bf847e701990e0430a1e9e4fcc719"
+  },
+  "status": "PASS_TARGET_BLIND_B2_PREDICTORS",
+  "target_blind": true,
+  "variants": {
+    "latency_5m_120s": {
+      "eligible_row_count": 12744,
+      "excluded_row_count": 0,
+      "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/b2_latency_5m_120s_target_blind.parquet",
+      "row_count": 12744,
+      "sha256": "bb71428a59104c75d7890c98c4413ea058c27ac5d78029f0fb76cad35fd91362"
+    },
+    "latency_5m_300s": {
+      "eligible_row_count": 12744,
+      "excluded_row_count": 0,
+      "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/b2_latency_5m_300s_target_blind.parquet",
+      "row_count": 12744,
+      "sha256": "8c9beb3f347334560035a9e032836885c2b9ad2800b83d8eacfc1e80c3a86535"
+    },
+    "primary_5m_60s": {
+      "eligible_row_count": 12744,
+      "excluded_row_count": 0,
+      "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/b2_primary_target_blind.parquet",
+      "row_count": 12744,
+      "sha256": "6c22712198c4c1fd5f37f22b6cb6e35d4f47593562f5c9edcfcf1a42436bc01a"
+    }
+  }
+}

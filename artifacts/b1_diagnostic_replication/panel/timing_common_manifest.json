@@ -1,0 +1,473 @@
+{
+  "manifest_sha256": "9e27eb8c5804bcee1051addb92fc869c03d1c66aa5593b439f1fbd44aa1ea8b9",
+  "outcome_read_count": 0,
+  "safe_to_read_outcomes": false,
+  "schema_version": "b1-independent-replication-timing-common-1.0",
+  "security": {
+    "personal_paths_emitted": false,
+    "secret_values_emitted": false
+  },
+  "source_bindings": {
+    "b1_feature_manifest_sha256": "342c73729e030f86d762501ac2ed0e5727990fd2cd17eacaccb1603b7e5a0312",
+    "b2_manifest_sha256": "96c3f6fc733880112fb8acb67f0440cef9eda76273c272cbf4dfbda7c5710360",
+    "base_manifest_sha256": "ef39c16cffb887ca048728026d9d6646455082b3ea1a62a982ac51c9f6798d27",
+    "fmp_delay2_manifest_sha256": "e82b505932cc7ede5d3a93a4800b52c517a5bb717e6d2b47de79bc260aaeac22",
+    "preregistration_manifest_sha256": "f233adb30209386d49670b8e035156d0949d5345f60421d745899eda05d58136",
+    "primary_common_manifest_sha256": "7a3917211f2994c25bd22ffd1143ed44895885cac2bfdf2d04425c11ac956e80",
+    "timing_predictor_manifest_sha256": "71f78ddcf09c7ce2051aeb3772ca5b2f1ca9073f3cb567d47988f46d1ac6fa0d"
+  },
+  "status": "PASS_TARGET_BLIND_TIMING_COMMON_PANELS",
+  "target_blind": true,
+  "variants": {
+    "FMP_DELAY_2_MINUTES": {
+      "coverage": {
+        "by_asset": [
+          {
+            "asset": "AAPL",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.905367231638418,
+            "b2_coverage": 0.905367231638418,
+            "origin_count": 2124
+          },
+          {
+            "asset": "AMZN",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.9096045197740112,
+            "b2_coverage": 0.9096045197740112,
+            "origin_count": 2124
+          },
+          {
+            "asset": "META",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.9096045197740112,
+            "b2_coverage": 0.9096045197740112,
+            "origin_count": 2124
+          },
+          {
+            "asset": "MSFT",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.9006591337099812,
+            "b2_coverage": 0.9006591337099812,
+            "origin_count": 2124
+          },
+          {
+            "asset": "NVDA",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.9152542372881356,
+            "b2_coverage": 0.9152542372881356,
+            "origin_count": 2124
+          },
+          {
+            "asset": "TSLA",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.9152542372881356,
+            "b2_coverage": 0.9152542372881356,
+            "origin_count": 2124
+          }
+        ],
+        "by_session_tercile": [
+          {
+            "b0_coverage": 0.76,
+            "b1v3a_coverage": 0.7588888888888888,
+            "b2_coverage": 0.7588888888888888,
+            "origin_count": 4500,
+            "session_tercile": "first"
+          },
+          {
+            "b0_coverage": 1.0,
+            "b1v3a_coverage": 0.9865900383141762,
+            "b2_coverage": 0.9865900383141762,
+            "origin_count": 3654,
+            "session_tercile": "last"
+          },
+          {
+            "b0_coverage": 1.0,
+            "b1v3a_coverage": 0.9952069716775599,
+            "b2_coverage": 0.9952069716775599,
+            "origin_count": 4590,
+            "session_tercile": "middle"
+          }
+        ]
+      },
+      "output": {
+        "bytes": 2658421,
+        "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/timing_common/FMP_DELAY_2_MINUTES/common_predictor_panel.parquet",
+        "row_count": 12744,
+        "sha256": "b949b5675aa2ed35c397879713d5d1903329b92b7ce95b46e85ff585f53ee027"
+      },
+      "technical_acceptance": {
+        "b1v3a_global_coverage": 0.9092906465787822,
+        "common_complete_origin_count": 11588,
+        "conditions": {
+          "b1v3a_each_asset_at_least_65_percent": true,
+          "b1v3a_each_tercile_at_least_60_percent": true,
+          "b1v3a_global_at_least_80_percent": true,
+          "common_sample_has_all_30_sessions": true,
+          "common_sample_has_all_6_assets": true,
+          "common_sample_nonempty": true
+        },
+        "status": "PASS"
+      }
+    },
+    "MASSIVE_CUTOFF_300_SECONDS": {
+      "coverage": {
+        "by_asset": [
+          {
+            "asset": "AAPL",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.891713747645951,
+            "b2_coverage": 0.891713747645951,
+            "origin_count": 2124
+          },
+          {
+            "asset": "AMZN",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.8954802259887006,
+            "b2_coverage": 0.8954802259887006,
+            "origin_count": 2124
+          },
+          {
+            "asset": "META",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.8954802259887006,
+            "b2_coverage": 0.8954802259887006,
+            "origin_count": 2124
+          },
+          {
+            "asset": "MSFT",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.8870056497175142,
+            "b2_coverage": 0.8870056497175142,
+            "origin_count": 2124
+          },
+          {
+            "asset": "NVDA",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.9011299435028248,
+            "b2_coverage": 0.9011299435028248,
+            "origin_count": 2124
+          },
+          {
+            "asset": "TSLA",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.9011299435028248,
+            "b2_coverage": 0.9011299435028248,
+            "origin_count": 2124
+          }
+        ],
+        "by_session_tercile": [
+          {
+            "b0_coverage": 0.76,
+            "b1v3a_coverage": 0.7188888888888889,
+            "b2_coverage": 0.7188888888888889,
+            "origin_count": 4500,
+            "session_tercile": "first"
+          },
+          {
+            "b0_coverage": 1.0,
+            "b1v3a_coverage": 0.986863711001642,
+            "b2_coverage": 0.986863711001642,
+            "origin_count": 3654,
+            "session_tercile": "last"
+          },
+          {
+            "b0_coverage": 1.0,
+            "b1v3a_coverage": 0.9954248366013072,
+            "b2_coverage": 0.9954248366013072,
+            "origin_count": 4590,
+            "session_tercile": "middle"
+          }
+        ]
+      },
+      "output": {
+        "bytes": 2644144,
+        "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/timing_common/MASSIVE_CUTOFF_300_SECONDS/common_predictor_panel.parquet",
+        "row_count": 12744,
+        "sha256": "552a846c0839e82c2f3cca8b2fdad91f19b30e1fb6cc0b43a98abe5646d7fbaa"
+      },
+      "technical_acceptance": {
+        "b1v3a_global_coverage": 0.895323289391086,
+        "common_complete_origin_count": 11410,
+        "conditions": {
+          "b1v3a_each_asset_at_least_65_percent": true,
+          "b1v3a_each_tercile_at_least_60_percent": true,
+          "b1v3a_global_at_least_80_percent": true,
+          "common_sample_has_all_30_sessions": true,
+          "common_sample_has_all_6_assets": true,
+          "common_sample_nonempty": true
+        },
+        "status": "PASS"
+      }
+    },
+    "MASSIVE_CUTOFF_60_SECONDS": {
+      "coverage": {
+        "by_asset": [
+          {
+            "asset": "AAPL",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.908662900188324,
+            "b2_coverage": 0.908662900188324,
+            "origin_count": 2124
+          },
+          {
+            "asset": "AMZN",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.9067796610169492,
+            "b2_coverage": 0.9067796610169492,
+            "origin_count": 2124
+          },
+          {
+            "asset": "META",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.9091337099811676,
+            "b2_coverage": 0.9091337099811676,
+            "origin_count": 2124
+          },
+          {
+            "asset": "MSFT",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.9034839924670434,
+            "b2_coverage": 0.9034839924670434,
+            "origin_count": 2124
+          },
+          {
+            "asset": "NVDA",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.9138418079096046,
+            "b2_coverage": 0.9138418079096046,
+            "origin_count": 2124
+          },
+          {
+            "asset": "TSLA",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.9152542372881356,
+            "b2_coverage": 0.9152542372881356,
+            "origin_count": 2124
+          }
+        ],
+        "by_session_tercile": [
+          {
+            "b0_coverage": 0.76,
+            "b1v3a_coverage": 0.76,
+            "b2_coverage": 0.76,
+            "origin_count": 4500,
+            "session_tercile": "first"
+          },
+          {
+            "b0_coverage": 1.0,
+            "b1v3a_coverage": 0.9893267651888341,
+            "b2_coverage": 0.9893267651888341,
+            "origin_count": 3654,
+            "session_tercile": "last"
+          },
+          {
+            "b0_coverage": 1.0,
+            "b1v3a_coverage": 0.9925925925925926,
+            "b2_coverage": 0.9925925925925926,
+            "origin_count": 4590,
+            "session_tercile": "middle"
+          }
+        ]
+      },
+      "output": {
+        "bytes": 2656996,
+        "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/timing_common/MASSIVE_CUTOFF_60_SECONDS/common_predictor_panel.parquet",
+        "row_count": 12744,
+        "sha256": "16f8f66fccee14bf89f3dce22818fc9d19a63a868086ce7c940cdcb9d4046793"
+      },
+      "technical_acceptance": {
+        "b1v3a_global_coverage": 0.909526051475204,
+        "common_complete_origin_count": 11591,
+        "conditions": {
+          "b1v3a_each_asset_at_least_65_percent": true,
+          "b1v3a_each_tercile_at_least_60_percent": true,
+          "b1v3a_global_at_least_80_percent": true,
+          "common_sample_has_all_30_sessions": true,
+          "common_sample_has_all_6_assets": true,
+          "common_sample_nonempty": true
+        },
+        "status": "PASS"
+      }
+    },
+    "UW_CREATED_AT_120_SECONDS": {
+      "coverage": {
+        "by_asset": [
+          {
+            "asset": "AAPL",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.905367231638418,
+            "b2_coverage": 0.905367231638418,
+            "origin_count": 2124
+          },
+          {
+            "asset": "AMZN",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.9096045197740112,
+            "b2_coverage": 0.9096045197740112,
+            "origin_count": 2124
+          },
+          {
+            "asset": "META",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.9096045197740112,
+            "b2_coverage": 0.9096045197740112,
+            "origin_count": 2124
+          },
+          {
+            "asset": "MSFT",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.9006591337099812,
+            "b2_coverage": 0.9006591337099812,
+            "origin_count": 2124
+          },
+          {
+            "asset": "NVDA",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.9152542372881356,
+            "b2_coverage": 0.9152542372881356,
+            "origin_count": 2124
+          },
+          {
+            "asset": "TSLA",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.9152542372881356,
+            "b2_coverage": 0.9152542372881356,
+            "origin_count": 2124
+          }
+        ],
+        "by_session_tercile": [
+          {
+            "b0_coverage": 0.76,
+            "b1v3a_coverage": 0.7588888888888888,
+            "b2_coverage": 0.7588888888888888,
+            "origin_count": 4500,
+            "session_tercile": "first"
+          },
+          {
+            "b0_coverage": 1.0,
+            "b1v3a_coverage": 0.9865900383141762,
+            "b2_coverage": 0.9865900383141762,
+            "origin_count": 3654,
+            "session_tercile": "last"
+          },
+          {
+            "b0_coverage": 1.0,
+            "b1v3a_coverage": 0.9952069716775599,
+            "b2_coverage": 0.9952069716775599,
+            "origin_count": 4590,
+            "session_tercile": "middle"
+          }
+        ]
+      },
+      "output": {
+        "bytes": 2656298,
+        "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/timing_common/UW_CREATED_AT_120_SECONDS/common_predictor_panel.parquet",
+        "row_count": 12744,
+        "sha256": "7f32fc51d981fe31807e111c7f6c68dcda88e9ce0f1e17f4313e5738b5b33992"
+      },
+      "technical_acceptance": {
+        "b1v3a_global_coverage": 0.9092906465787822,
+        "common_complete_origin_count": 11588,
+        "conditions": {
+          "b1v3a_each_asset_at_least_65_percent": true,
+          "b1v3a_each_tercile_at_least_60_percent": true,
+          "b1v3a_global_at_least_80_percent": true,
+          "common_sample_has_all_30_sessions": true,
+          "common_sample_has_all_6_assets": true,
+          "common_sample_nonempty": true
+        },
+        "status": "PASS"
+      }
+    },
+    "UW_CREATED_AT_300_SECONDS": {
+      "coverage": {
+        "by_asset": [
+          {
+            "asset": "AAPL",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.905367231638418,
+            "b2_coverage": 0.905367231638418,
+            "origin_count": 2124
+          },
+          {
+            "asset": "AMZN",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.9096045197740112,
+            "b2_coverage": 0.9096045197740112,
+            "origin_count": 2124
+          },
+          {
+            "asset": "META",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.9096045197740112,
+            "b2_coverage": 0.9096045197740112,
+            "origin_count": 2124
+          },
+          {
+            "asset": "MSFT",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.9006591337099812,
+            "b2_coverage": 0.9006591337099812,
+            "origin_count": 2124
+          },
+          {
+            "asset": "NVDA",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.9152542372881356,
+            "b2_coverage": 0.9152542372881356,
+            "origin_count": 2124
+          },
+          {
+            "asset": "TSLA",
+            "b0_coverage": 0.9152542372881356,
+            "b1v3a_coverage": 0.9152542372881356,
+            "b2_coverage": 0.9152542372881356,
+            "origin_count": 2124
+          }
+        ],
+        "by_session_tercile": [
+          {
+            "b0_coverage": 0.76,
+            "b1v3a_coverage": 0.7588888888888888,
+            "b2_coverage": 0.7588888888888888,
+            "origin_count": 4500,
+            "session_tercile": "first"
+          },
+          {
+            "b0_coverage": 1.0,
+            "b1v3a_coverage": 0.9865900383141762,
+            "b2_coverage": 0.9865900383141762,
+            "origin_count": 3654,
+            "session_tercile": "last"
+          },
+          {
+            "b0_coverage": 1.0,
+            "b1v3a_coverage": 0.9952069716775599,
+            "b2_coverage": 0.9952069716775599,
+            "origin_count": 4590,
+            "session_tercile": "middle"
+          }
+        ]
+      },
+      "output": {
+        "bytes": 2645978,
+        "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/timing_common/UW_CREATED_AT_300_SECONDS/common_predictor_panel.parquet",
+        "row_count": 12744,
+        "sha256": "9e03a33301430a5de2b04f366d319bb346f95f94f2d67f3860bab439defa3311"
+      },
+      "technical_acceptance": {
+        "b1v3a_global_coverage": 0.9092906465787822,
+        "common_complete_origin_count": 11588,
+        "conditions": {
+          "b1v3a_each_asset_at_least_65_percent": true,
+          "b1v3a_each_tercile_at_least_60_percent": true,
+          "b1v3a_global_at_least_80_percent": true,
+          "common_sample_has_all_30_sessions": true,
+          "common_sample_has_all_6_assets": true,
+          "common_sample_nonempty": true
+        },
+        "status": "PASS"
+      }
+    }
+  }
+}

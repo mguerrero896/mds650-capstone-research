@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1-independent-replication-full-tape-v1.schema.json",
+  "title": "Target-blind independent-replication Full Tape manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "target_blind",
+    "preregistration_sha256",
+    "provider_plan_sha256",
+    "provider_report_sha256",
+    "authorized_session_count",
+    "completed_session_count",
+    "pending_session_count",
+    "pending_sessions",
+    "projected_peak_additional_bytes",
+    "sessions",
+    "raw_location",
+    "derived_location",
+    "target_outcome_read",
+    "outcome_read_count",
+    "secret_values_emitted",
+    "personal_paths_emitted",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "b1-independent-replication-full-tape-1.0"},
+    "status": {"enum": ["IN_PROGRESS", "PASS"]},
+    "target_blind": {"const": true},
+    "preregistration_sha256": {"$ref": "#/$defs/sha256"},
+    "provider_plan_sha256": {"$ref": "#/$defs/sha256"},
+    "provider_report_sha256": {"$ref": "#/$defs/sha256"},
+    "authorized_session_count": {"const": 30},
+    "completed_session_count": {"type": "integer", "minimum": 0, "maximum": 30},
+    "pending_session_count": {"type": "integer", "minimum": 0, "maximum": 30},
+    "pending_sessions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "format": "date"}
+    },
+    "projected_peak_additional_bytes": {"type": "integer", "minimum": 1},
+    "sessions": {
+      "type": "array",
+      "maxItems": 30,
+      "items": {"$ref": "#/$defs/session_record"}
+    },
+    "raw_location": {"const": "MDS650_B1_DIAGNOSTIC_REPLICATION_DATA_ROOT/raw/full_tape"},
+    "derived_location": {"const": "MDS650_B1_DIAGNOSTIC_REPLICATION_DATA_ROOT/data/option_events"},
+    "target_outcome_read": {"const": false},
+    "outcome_read_count": {"const": 0},
+    "secret_values_emitted": {"const": false},
+    "personal_paths_emitted": {"const": false},
+    "manifest_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "PASS"}}},
+      "then": {
+        "properties": {
+          "completed_session_count": {"const": 30},
+          "pending_session_count": {"const": 0},
+          "pending_sessions": {"maxItems": 0},
+          "sessions": {"minItems": 30, "maxItems": 30}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "parquet_file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["relative_path", "bytes", "sha256"],
+      "properties": {
+        "relative_path": {
+          "type": "string",
+          "pattern": "^data/option_events/date=\\d{4}-\\d{2}-\\d{2}/asset=[A-Z]+/events\\.parquet$"
+        },
+        "bytes": {"type": "integer", "minimum": 0},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "session_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "session_date",
+        "source_kind",
+        "completed_at_utc",
+        "preregistration_sha256",
+        "provider_plan_sha256",
+        "provider_report_sha256",
+        "session_contract_sha256",
+        "raw_sha256",
+        "raw_bytes",
+        "http_status",
+        "request_id",
+        "request_endpoint",
+        "download_attempts",
+        "download_seconds",
+        "reused_raw_archive",
+        "schema_fields",
+        "schema_fingerprint",
+        "rows_seen",
+        "rows_retained",
+        "duplicate_event_ids",
+        "parquet_bytes",
+        "filter_seconds",
+        "parquet_files",
+        "raw_location",
+        "derived_location",
+        "target_outcome_read",
+        "outcome_read_count",
+        "secret_values_emitted",
+        "personal_paths_emitted",
+        "checkpoint_sha256"
+      ],
+      "properties": {
+        "status": {"const": "PASS"},
+        "session_date": {"type": "string", "format": "date"},
+        "source_kind": {"const": "AUTHENTICATED_DOWNLOAD"},
+        "completed_at_utc": {"type": "string", "format": "date-time"},
+        "preregistration_sha256": {"$ref": "#/$defs/sha256"},
+        "provider_plan_sha256": {"$ref": "#/$defs/sha256"},
+        "provider_report_sha256": {"$ref": "#/$defs/sha256"},
+        "session_contract_sha256": {"$ref": "#/$defs/sha256"},
+        "raw_sha256": {"$ref": "#/$defs/sha256"},
+        "raw_bytes": {"type": "integer", "minimum": 1},
+        "http_status": {"type": ["integer", "null"], "minimum": 100, "maximum": 599},
+        "request_id": {"type": ["string", "null"]},
+        "request_endpoint": {"const": "/api/option-trades/full-tape/{date}"},
+        "download_attempts": {"type": "integer", "minimum": 0, "maximum": 4},
+        "download_seconds": {"type": "number", "minimum": 0},
+        "reused_raw_archive": {"type": "boolean"},
+        "schema_fields": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "schema_fingerprint": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "rows_seen": {"type": "integer", "minimum": 0},
+        "rows_retained": {"type": "integer", "minimum": 0},
+        "duplicate_event_ids": {"const": 0},
+        "parquet_bytes": {"type": "integer", "minimum": 0},
+        "filter_seconds": {"type": "number", "minimum": 0},
+        "parquet_files": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/parquet_file"}},
+        "raw_location": {"const": "MDS650_B1_DIAGNOSTIC_REPLICATION_DATA_ROOT/raw/full_tape"},
+        "derived_location": {"const": "MDS650_B1_DIAGNOSTIC_REPLICATION_DATA_ROOT/data/option_events"},
+        "target_outcome_read": {"const": false},
+        "outcome_read_count": {"const": 0},
+        "secret_values_emitted": {"const": false},
+        "personal_paths_emitted": {"const": false},
+        "checkpoint_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

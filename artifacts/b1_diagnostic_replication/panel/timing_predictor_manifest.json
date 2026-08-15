@@ -1,0 +1,103 @@
+{
+  "manifest_sha256": "71f78ddcf09c7ce2051aeb3772ca5b2f1ca9073f3cb567d47988f46d1ac6fa0d",
+  "outcome_read_count": 0,
+  "safe_to_read_outcomes": false,
+  "schema_version": "b1-independent-replication-timing-predictors-1.0",
+  "security": {
+    "personal_paths_emitted": false,
+    "secret_values_emitted": false
+  },
+  "source_bindings": {
+    "base_manifest_sha256": "ef39c16cffb887ca048728026d9d6646455082b3ea1a62a982ac51c9f6798d27",
+    "fmp_delay2_manifest_sha256": "e82b505932cc7ede5d3a93a4800b52c517a5bb717e6d2b47de79bc260aaeac22",
+    "orchestrator_code_sha256": "23b64e776e87a8a7a05a39e0ef1915c60c54503895a01938e587b22e2e289063",
+    "preregistration_manifest_sha256": "f233adb30209386d49670b8e035156d0949d5345f60421d745899eda05d58136",
+    "primary_b1q_source_manifest_sha256": "47c50ee4926e87c5a17253394c58dd19673183a614498f23f34f3f1cd71b1c54",
+    "source_inventory_sha256": "dde35f3ae15dab07419a774cc9dedf73ad9c0e756ce4124c56ff1a26cd5a875f"
+  },
+  "status": "PASS_TARGET_BLIND_TIMING_PREDICTORS",
+  "target_blind": true,
+  "variants": {
+    "FMP_DELAY_2_MINUTES": {
+      "attempts": {
+        "bytes": 16553962,
+        "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/timing/FMP_DELAY_2_MINUTES/attempts.parquet",
+        "sha256": "26501f94d01f1f4c01fcaa16ddf949a47ef7a4d42bf866c6040f7e246e0bf9bf"
+      },
+      "coverage": {
+        "bytes": 9199,
+        "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/timing/FMP_DELAY_2_MINUTES/coverage.json",
+        "sha256": "18e01d03e659c5bf2d11849e491a8820e032fec3069f0fd6286be73edfe395b8"
+      },
+      "feature_manifest": {
+        "bytes": 3997,
+        "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/timing/FMP_DELAY_2_MINUTES/manifest.json",
+        "sha256": "d0b3b46fc037948517a465bea12e621b982cbb095c997403150777024eeed32f"
+      },
+      "features": {
+        "bytes": 1145421,
+        "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/timing/FMP_DELAY_2_MINUTES/b1.parquet",
+        "sha256": "b0a53894fe416bdf6ccdc66ddb55b80598fd866488256d9f3a026a2ae2c8c72e"
+      },
+      "source_manifest": {
+        "bytes": 3530,
+        "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/timing/FMP_DELAY_2_MINUTES/source.json",
+        "sha256": "2b23afa865694e8bb870cda1ddfbb9387dd2edb7ef1994144089fa54295f9015"
+      }
+    },
+    "MASSIVE_CUTOFF_300_SECONDS": {
+      "attempts": {
+        "bytes": 19997602,
+        "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/timing/MASSIVE_CUTOFF_300_SECONDS/attempts.parquet",
+        "sha256": "10eefa3625a67dd1bdadd2ed286c1b922149d5251c34b09d9b018c26a9fc0728"
+      },
+      "coverage": {
+        "bytes": 9153,
+        "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/timing/MASSIVE_CUTOFF_300_SECONDS/coverage.json",
+        "sha256": "cd92506036ccae1ad5aa3484254e78204399fff07a2681aa41de982f84d339ea"
+      },
+      "feature_manifest": {
+        "bytes": 4001,
+        "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/timing/MASSIVE_CUTOFF_300_SECONDS/manifest.json",
+        "sha256": "86836537b0b7aaf3cb4a77ca06e44598ba0f86935b3f7542d06ea9258166e84f"
+      },
+      "features": {
+        "bytes": 1140491,
+        "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/timing/MASSIVE_CUTOFF_300_SECONDS/b1.parquet",
+        "sha256": "311465956edfe75d95823c5bfa37b91efa608ee859fbdff39d36a70fa8bf5d04"
+      },
+      "source_manifest": {
+        "bytes": 3313,
+        "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/timing/MASSIVE_CUTOFF_300_SECONDS/source.json",
+        "sha256": "90c982cb78b54567e9f9aaecca82fde11fcb19fa95a97ad5193c9735f377fb60"
+      }
+    },
+    "MASSIVE_CUTOFF_60_SECONDS": {
+      "attempts": {
+        "bytes": 20170431,
+        "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/timing/MASSIVE_CUTOFF_60_SECONDS/attempts.parquet",
+        "sha256": "604fb3e6ef16c48e833570f1fbf4c6058890b480f3dfe8ec8629d4a4ef708a78"
+      },
+      "coverage": {
+        "bytes": 9204,
+        "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/timing/MASSIVE_CUTOFF_60_SECONDS/coverage.json",
+        "sha256": "573586459b320c3e9faf2e586f5b0ba0693eb19f78cef7b1b764d137d8c4497a"
+      },
+      "feature_manifest": {
+        "bytes": 3999,
+        "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/timing/MASSIVE_CUTOFF_60_SECONDS/manifest.json",
+        "sha256": "dd56c646648a7b43ffd3a3435df830b9c27ad8935c4df630a6162595b23101a1"
+      },
+      "features": {
+        "bytes": 1144325,
+        "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/timing/MASSIVE_CUTOFF_60_SECONDS/b1.parquet",
+        "sha256": "401b556c8a6dbc71b72e3311d1f984570fa1b5033b785786e7db9c627454c9c7"
+      },
+      "source_manifest": {
+        "bytes": 3307,
+        "logical_path": "MDS650_B1_REPLICATION_DATA_ROOT/predictors/timing/MASSIVE_CUTOFF_60_SECONDS/source.json",
+        "sha256": "160f3e3ced9057d5be4704fb0816ab9c15c1655a40b27c91b9330d8891de93e5"
+      }
+    }
+  }
+}

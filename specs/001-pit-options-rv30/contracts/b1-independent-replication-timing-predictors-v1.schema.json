@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mds650.local/contracts/b1-independent-replication-timing-predictors-v1.schema.json",
+  "title": "Independent-replication target-blind timing predictor manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "status", "target_blind", "outcome_read_count",
+    "safe_to_read_outcomes", "source_bindings", "variants", "security",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "b1-independent-replication-timing-predictors-1.0"},
+    "status": {"const": "PASS_TARGET_BLIND_TIMING_PREDICTORS"},
+    "target_blind": {"const": true},
+    "outcome_read_count": {"const": 0},
+    "safe_to_read_outcomes": {"const": false},
+    "source_bindings": {
+      "type": "object", "additionalProperties": {"$ref": "#/$defs/sha256"},
+      "minProperties": 6
+    },
+    "variants": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "FMP_DELAY_2_MINUTES", "MASSIVE_CUTOFF_60_SECONDS",
+        "MASSIVE_CUTOFF_300_SECONDS"
+      ],
+      "properties": {
+        "FMP_DELAY_2_MINUTES": {"$ref": "#/$defs/variant"},
+        "MASSIVE_CUTOFF_60_SECONDS": {"$ref": "#/$defs/variant"},
+        "MASSIVE_CUTOFF_300_SECONDS": {"$ref": "#/$defs/variant"}
+      }
+    },
+    "security": {"$ref": "#/$defs/security"},
+    "manifest_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "file": {
+      "type": "object", "additionalProperties": false,
+      "required": ["logical_path", "sha256", "bytes"],
+      "properties": {
+        "logical_path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "variant": {
+      "type": "object", "additionalProperties": false,
+      "required": ["attempts", "source_manifest", "features", "coverage", "feature_manifest"],
+      "properties": {
+        "attempts": {"$ref": "#/$defs/file"},
+        "source_manifest": {"$ref": "#/$defs/file"},
+        "features": {"$ref": "#/$defs/file"},
+        "coverage": {"$ref": "#/$defs/file"},
+        "feature_manifest": {"$ref": "#/$defs/file"}
+      }
+    },
+    "security": {
+      "type": "object", "additionalProperties": false,
+      "required": ["secret_values_emitted", "personal_paths_emitted"],
+      "properties": {
+        "secret_values_emitted": {"const": false},
+        "personal_paths_emitted": {"const": false}
+      }
+    }
+  }
+}

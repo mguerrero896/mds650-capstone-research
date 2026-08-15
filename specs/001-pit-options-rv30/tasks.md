@@ -510,6 +510,63 @@ current evidence and work that still requires explicit approval.
   index, limitations and a strict distinction between technical readiness, scientific evidence
   and any future economic/P&L validation.
 
+## Phase 14: B1 diagnostic and sign-agnostic independent replication
+
+**Goal**: Explain the observed B1 failure using development evidence and run one new,
+preregistered temporal replication of B2 without optimizing any design choice for the result
+sign.
+
+**Independent test**: A reviewer can prove that the diagnostic never read the new replication
+targets, the exact 60/30 session arrays were frozen before acquisition/outcome access, the
+replication target was read analytically once, and positive, null or negative findings were
+reported under the same registered method.
+
+- [x] T228 [US4] Record the owner-approved Phase 7 objective in
+  `docs/superpowers/specs/2026-08-15-b1-diagnosis-independent-replication-design.md`; update
+  Spec Kit artifacts, complete the requirements checklist and save a zero-critical-contradiction
+  analysis at `docs/recovery/b1_diagnostic_replication_spec_analysis.md`.
+- [x] T229 [P] [US4] Add failing unit tests in `tests/unit/test_b1_diagnostics.py` for the seven
+  diagnostic families, target/result denylist, deterministic hashes, finite statistics,
+  mutually exclusive reason waterfall and zero replication-target reads.
+- [x] T230 [US4] Implement `src/mds650/b1_diagnostics.py`,
+  `scripts/run_b1_diagnostics.py` and
+  `specs/001-pit-options-rv30/contracts/b1-diagnostic-v1.schema.json` until T229 is green.
+- [x] T231 [US4] Execute the deterministic 60-session development-only diagnosis into
+  `artifacts/b1_diagnostic_replication/diagnostic/`; reconcile coverage, quotes, IV geometry,
+  lags, distributions, collinearity/specification and chronological drift without opening the
+  new replication targets.
+- [x] T232 [P] [US4] Add failing tests in
+  `tests/unit/test_plan_b1_independent_replication.py` for XNYS membership, exact 60/30 arrays,
+  complete exposed-date exclusion, canonical hashes, target-blind path/column policy and a zero
+  read count.
+- [x] T233 [US4] Implement `scripts/plan_b1_independent_replication.py` plus exposure-ledger and
+  preregistration JSON Schemas; freeze exact sessions, information sets, models, inference,
+  timing variants and training-only MDE policy before any new target access.
+- [x] T234 [US1] Execute the provider/storage preflight with presence-only credential checks,
+  exact-session FMP/UW/Massive request contracts, bounded request budget, daily checkpoints and
+  a projected D: minimum of 80 GiB; stop with an exact blocker if any gate fails.
+- [x] T235 [US1] Acquire or hash-reuse only the 30 frozen replication predictor sessions under
+  `D:\MDS650\b1_diagnostic_replication`, preserving immutable raw evidence and resumable
+  manifests; do not read RV30, predictions, losses or result artifacts.
+- [x] T236 [US2] Build and validate a source-bound predictor-only B0/B1v3a/B2 panel for the 30
+  sessions; prove common origins, no future timestamp, nested B1 completeness, explicit B2
+  unavailable-state missingness, deterministic bytes and zero outcome reads.
+- [x] T237 [P] [US4] Add failing tests for the frozen evaluator and access ledger: exact methods,
+  10,000 day-cluster bootstrap draws, Holm family, training-only MDE, one successful token
+  transition, no second read/refit and exhaustive sign-independent result states.
+- [x] T238 [US4] Freeze the final preregistration, code/data/schema identities and access ledger;
+  run all schema, hash, PIT, leakage, coverage, replay, quality and storage gates while the
+  replication read count remains zero.
+- [x] T239 [US4] Execute `scripts/run_b1_independent_replication_once.py` exactly once after
+  T238 passes; emit both model results, B1/B2 contrasts, bootstrap/Holm/MDE and every registered
+  stability/timing result without tuning or retrying by sign.
+- [x] T240 [US4] Run focused and full pytest, Ruff, strict Mypy, coverage, JSON Schema, secret/path
+  hygiene, deterministic replay and Spec Kit analysis; preserve any historical or automated
+  Graphify/GBrain changes outside the intentional diff.
+- [x] T241 [US4] Produce the final evidence index and
+  `reports/B1_DIAGNOSTIC_INDEPENDENT_REPLICATION_HANDOFF.md`, separating B1 mechanisms, the new
+  scientific outcome, provider-timing limitations and the absence of causal/P&L claims.
+
 ## Dependencies and parallel execution
 
 - Setup T001–T006 precedes foundational work.
@@ -559,6 +616,11 @@ current evidence and work that still requires explicit approval.
   GREEN gates. T222 performs no network request unless the declarative provider contract and
   attempt budget pass. T226 is forbidden until a pristine source-bound panel and preregistration
   are sealed; no task may select a feature, asset, timing variant or model by result sign.
+- Phase 14 follows T228 → T229 → T230 → T231 and T232 → T233 → T234 → T235 → T236 → T237 →
+  T238 → T239 → T240 → T241. T229/T232/T237 are mandatory RED-before-GREEN gates. T231 may use
+  rolling-training outcomes but no replication target; T234–T236 are target-blind; T239 is the
+  only task permitted to consume the irrevocable one-read token. No Phase 14 task may retry,
+  replace dates, alter features/models or suppress a result because of its sign.
 
 ## Requirement traceability
 
@@ -588,6 +650,10 @@ current evidence and work that still requires explicit approval.
 | FR-089–FR-097, SC-042–SC-044 | T212–T219 |
 | FR-098, SC-045 | T220–T223 |
 | FR-099–FR-100, SC-046–SC-047 | T224–T227 |
+| FR-101–FR-102, SC-048 | T229–T231 |
+| FR-103–FR-104, SC-049–SC-050 | T232–T236 |
+| FR-105–FR-107, SC-051–SC-052 | T237–T240 |
+| FR-108, SC-053 | T241 |
 | SC-001–SC-003 | T018A–T018D, T024, T031A–T031E, T033 |
 | SC-004–SC-006 | T034–T048, T070–T076 |
 | SC-007 | T049–T054 |
