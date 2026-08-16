@@ -49,8 +49,27 @@ La reproducción académica sin licencias usa fixtures sanitizados. La reproducc
 requiere credenciales y derechos vigentes de los tres proveedores, además de respetar los
 manifiestos, calendarios, cutoffs y puertas de almacenamiento registrados.
 
-## Próxima decisión metodológica
+## Estado tras la consolidación del 17 de agosto de 2026
 
-`B1v3` es una propuesta target-blind para reconstruir ATM IV, skew y estructura temporal con
-geometría coherente de contratos. Su implementación y cualquier nueva evaluación permanecen
-`PENDING_EXPLICIT_APPROVAL`; no se seleccionará una variante por el signo de RV30 o QLIKE.
+- `main` es la única rama canónica (decisión 50); el estado sucio pre-consolidación quedó
+  preservado íntegro en `archive/meeting-dirty-20260816` y en
+  `D:\MDS650\backups\repo_20260817\`. Registro completo:
+  [`docs/consolidation_record_20260817.md`](docs/consolidation_record_20260817.md).
+- `B1v3` completó su confirmación one-read el 14 de agosto (decisión 48): resultado
+  vinculante `POSITIVE_BUT_NOT_GLOBALLY_CONFIRMED` — incremento B2 positivo y robusto a las
+  cinco sensibilidades de timing bajo Gamma, invertido bajo LightGBM; B1v3a no supera a B0.
+- La vista canónica de todas las campañas está en
+  [`docs/results_reconciliation_v2.md`](docs/results_reconciliation_v2.md); la jerarquía de
+  reporte vinculante es la decisión 53.
+- Cohortes selladas (Validation A/B, Phase 8): disposición pendiente del propietario (D006,
+  [`docs/sealed_cohorts_disposition_v1.md`](docs/sealed_cohorts_disposition_v1.md));
+  moratoria de nuevas campañas retrospectivas (decisión 52).
+- Evidencia pesada montada en `D:\MDS650\evidence_root` (`MDS650_EVIDENCE_ROOT`);
+  `MDS650_DATA_ROOT=D:\MDS650`.
+
+## Nota sobre el notebook
+
+`notebooks/MDS650_Research_Pipeline.ipynb` es una plantilla de orquestación para
+Colab/entornos hospedados. Nunca ha sido ejecutado de extremo a extremo y no es la vía de
+reproducción de ningún resultado reportado; la reproducción real usa los scripts y las
+puertas descritas arriba. No lo cites como pipeline ejecutado.
