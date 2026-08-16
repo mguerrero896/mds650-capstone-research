@@ -205,7 +205,11 @@ def select_phase6_parameters(
             )["qlike"]
             record.update({"status": "RUN", "validation_qlike": score, "failure_reason": None})
             successful.append((score, json.dumps(parameters, sort_keys=True), parameters))
-        except Exception as error:
+        except (ValueError, RuntimeError, ArithmeticError, np.linalg.LinAlgError) as error:
+            # Only expected numerical/fitting failures may exclude a variant.
+            # A coding bug (TypeError, KeyError, ...) must propagate: silently
+            # dropping variants would turn the bug into an unregistered,
+            # data-dependent hyperparameter selection pressure.
             record.update(
                 {
                     "status": "FAILED_WITH_REASON",

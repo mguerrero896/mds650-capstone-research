@@ -408,10 +408,16 @@ def aggregate_b2_activity(
                 <= pl.col("forecast_origin_utc") - pl.duration(seconds=delay_seconds)
             )
         )
-        .with_columns(pl.col("premium").fill_null(0.0).clip(0.0).alias("_premium"))
+        .with_columns(
+            pl.col("premium").is_null().alias("_premium_was_null"),
+            (pl.col("premium") < 0.0).fill_null(value=False).alias("_premium_was_negative"),
+            pl.col("premium").fill_null(0.0).clip(0.0).alias("_premium"),
+        )
     )
     counts = eligible.group_by("origin_id").agg(
         pl.col("created_at").max().alias("b2v2_max_created_at_utc"),
+        pl.col("_premium_was_null").sum().cast(pl.Float64).alias("null_premium_count_5m"),
+        pl.col("_premium_was_negative").sum().cast(pl.Float64).alias("negative_premium_count_5m"),
         pl.len().cast(pl.Float64).alias("option_trade_count_5m"),
         pl.col("option_chain_id").n_unique().cast(pl.Float64).alias("unique_contract_count_5m"),
         pl.col("_premium").sum().alias("total_premium_5m"),
@@ -468,6 +474,8 @@ def aggregate_b2_activity(
             for column in (
                 "option_trade_count_5m",
                 "unique_contract_count_5m",
+                "null_premium_count_5m",
+                "negative_premium_count_5m",
                 "total_premium_5m",
                 "max_trade_premium_5m",
                 "call_premium_5m",

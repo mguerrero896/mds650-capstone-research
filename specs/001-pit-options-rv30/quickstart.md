@@ -70,7 +70,12 @@ least 80 GB.
 Only after preregistration:
 
 ```powershell
-uv run python scripts/run_phase5_development.py --development-only --resume
+# Historical note (2026-08-17): the planned single runner
+# scripts/run_phase5_development.py was never created under that name. The
+# executed path was: scripts/run_phase5_b1q_missing_55.py (acquisition of the
+# 55 missing development sessions) followed by the two commands below, with
+# results produced by scripts/run_phase5_development_evaluation.py. Phase 5 is
+# complete and its holdout read was consumed; do not re-run acquisition.
 uv run python scripts/build_phase5_common_panel.py
 uv run pytest tests\unit\test_phase5_features.py tests\contract\test_phase5_panel.py -q
 ```

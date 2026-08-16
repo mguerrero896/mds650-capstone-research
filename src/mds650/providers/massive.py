@@ -147,7 +147,12 @@ def _results(payload: Any, error_code: str) -> list[Mapping[str, Any]]:
         return []
     if not isinstance(payload, Mapping):
         raise SchemaDriftError(error_code)
-    results = payload.get("results", [])
+    if "results" not in payload:
+        # A non-empty response body without a "results" key is a shape change,
+        # not a provider statement of zero rows; fail closed instead of
+        # treating the window as silently illiquid.
+        raise SchemaDriftError(error_code)
+    results = payload["results"]
     if not isinstance(results, list) or not all(isinstance(item, Mapping) for item in results):
         raise SchemaDriftError(error_code)
     return list(results)

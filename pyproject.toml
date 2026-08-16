@@ -18,6 +18,8 @@ dependencies = [
   "tzdata>=2025.2,<2027",
   "scikit-learn>=1.7,<2",
   "lightgbm>=4.6,<5",
+  "exchange-calendars>=4.11,<5",
+  "pandas>=2.2,<3",
 ]
 
 [dependency-groups]
@@ -27,7 +29,6 @@ dev = [
   "pytest>=8.4,<9",
   "pytest-cov>=7,<8",
   "jsonschema>=4.23,<5",
-  "exchange-calendars>=4.11,<5",
   "ruff>=0.14,<1",
 ]
 
