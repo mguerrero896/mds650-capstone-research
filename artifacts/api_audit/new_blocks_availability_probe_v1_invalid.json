@@ -1,0 +1,1906 @@
+{
+  "blocks": {
+    "block_a_2024_08_02_2024_09_13": [
+      "2024-08-02",
+      "2024-08-05",
+      "2024-08-06",
+      "2024-08-07",
+      "2024-08-08",
+      "2024-08-09",
+      "2024-08-12",
+      "2024-08-13",
+      "2024-08-14",
+      "2024-08-15",
+      "2024-08-16",
+      "2024-08-19",
+      "2024-08-20",
+      "2024-08-21",
+      "2024-08-22",
+      "2024-08-23",
+      "2024-08-26",
+      "2024-08-27",
+      "2024-08-28",
+      "2024-08-29",
+      "2024-08-30",
+      "2024-09-03",
+      "2024-09-04",
+      "2024-09-05",
+      "2024-09-06",
+      "2024-09-09",
+      "2024-09-10",
+      "2024-09-11",
+      "2024-09-12",
+      "2024-09-13"
+    ],
+    "block_b_2024_10_01_2024_11_11": [
+      "2024-10-01",
+      "2024-10-02",
+      "2024-10-03",
+      "2024-10-04",
+      "2024-10-07",
+      "2024-10-08",
+      "2024-10-09",
+      "2024-10-10",
+      "2024-10-11",
+      "2024-10-14",
+      "2024-10-15",
+      "2024-10-16",
+      "2024-10-17",
+      "2024-10-18",
+      "2024-10-21",
+      "2024-10-22",
+      "2024-10-23",
+      "2024-10-24",
+      "2024-10-25",
+      "2024-10-28",
+      "2024-10-29",
+      "2024-10-30",
+      "2024-10-31",
+      "2024-11-01",
+      "2024-11-04",
+      "2024-11-05",
+      "2024-11-06",
+      "2024-11-07",
+      "2024-11-08",
+      "2024-11-11"
+    ]
+  },
+  "full_tape_downloaded": false,
+  "note": "UW Range/Content-Range proves file metadata availability only; it does not prove row-level PIT.",
+  "pit_claim": false,
+  "records": [
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-08-02",
+      "fmp_sample": {
+        "assets": {
+          "AAPL": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-08-02"
+            ],
+            "rows_exact_session": 390,
+            "spot": 219.8,
+            "spot_available": true
+          },
+          "AMZN": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-08-02"
+            ],
+            "rows_exact_session": 390,
+            "spot": 167.83,
+            "spot_available": true
+          },
+          "META": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-08-02"
+            ],
+            "rows_exact_session": 390,
+            "spot": 488.2,
+            "spot_available": true
+          },
+          "MSFT": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-08-02"
+            ],
+            "rows_exact_session": 390,
+            "spot": 408.49,
+            "spot_available": true
+          },
+          "NVDA": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-08-02"
+            ],
+            "rows_exact_session": 390,
+            "spot": 107.28,
+            "spot_available": true
+          },
+          "QQQ": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-08-02"
+            ],
+            "rows_exact_session": 390,
+            "spot": 448.71,
+            "spot_available": true
+          },
+          "SPY": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-08-02"
+            ],
+            "rows_exact_session": 390,
+            "spot": 532.98,
+            "spot_available": true
+          },
+          "TSLA": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-08-02"
+            ],
+            "rows_exact_session": 390,
+            "spot": 207.67,
+            "spot_available": true
+          }
+        },
+        "date": "2024-08-02"
+      },
+      "massive_sample": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1722614400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1722614400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1722614400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1722614400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1722614400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1722614400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1722614400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1722614400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        }
+      },
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 1145169531,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-08-05",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 965494941,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-08-06",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 869398330,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-08-07",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 924519318,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-08-08",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 852654035,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-08-09",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 773831404,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-08-12",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 717118474,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-08-13",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 796489236,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-08-14",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 760333067,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-08-15",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 927541367,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-08-16",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 827219721,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-08-19",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 793533592,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-08-20",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 744738300,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-08-21",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 732273078,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-08-22",
+      "fmp_sample": {
+        "assets": {
+          "AAPL": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-08-22"
+            ],
+            "rows_exact_session": 390,
+            "spot": 224.53,
+            "spot_available": true
+          },
+          "AMZN": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-08-22"
+            ],
+            "rows_exact_session": 390,
+            "spot": 176.15,
+            "spot_available": true
+          },
+          "META": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-08-22"
+            ],
+            "rows_exact_session": 390,
+            "spot": 532.1,
+            "spot_available": true
+          },
+          "MSFT": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-08-22"
+            ],
+            "rows_exact_session": 390,
+            "spot": 415.62,
+            "spot_available": true
+          },
+          "NVDA": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-08-22"
+            ],
+            "rows_exact_session": 390,
+            "spot": 123.83,
+            "spot_available": true
+          },
+          "QQQ": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-08-22"
+            ],
+            "rows_exact_session": 390,
+            "spot": 474.83,
+            "spot_available": true
+          },
+          "SPY": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-08-22"
+            ],
+            "rows_exact_session": 390,
+            "spot": 556.21,
+            "spot_available": true
+          },
+          "TSLA": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-08-22"
+            ],
+            "rows_exact_session": 390,
+            "spot": 210.66,
+            "spot_available": true
+          }
+        },
+        "date": "2024-08-22"
+      },
+      "massive_sample": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1724342400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1724342400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1724342400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1724342400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1724342400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1724342400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1724342400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1724342400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        }
+      },
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 860183239,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-08-23",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 920914476,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-08-26",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 740874232,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-08-27",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 643423221,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-08-28",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 802511583,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-08-29",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 893810802,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-08-30",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 817500316,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-09-03",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 912196387,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-09-04",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 779215989,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-09-05",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 791663023,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-09-06",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 983914057,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-09-09",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 758392712,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-09-10",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 727344570,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-09-11",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 926933212,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-09-12",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 876640329,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_a_2024_08_02_2024_09_13",
+      "date": "2024-09-13",
+      "fmp_sample": {
+        "assets": {
+          "AAPL": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-09-13"
+            ],
+            "rows_exact_session": 390,
+            "spot": 222.46,
+            "spot_available": true
+          },
+          "AMZN": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-09-13"
+            ],
+            "rows_exact_session": 390,
+            "spot": 186.47,
+            "spot_available": true
+          },
+          "META": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-09-13"
+            ],
+            "rows_exact_session": 390,
+            "spot": 524.51,
+            "spot_available": true
+          },
+          "MSFT": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-09-13"
+            ],
+            "rows_exact_session": 390,
+            "spot": 430.57,
+            "spot_available": true
+          },
+          "NVDA": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-09-13"
+            ],
+            "rows_exact_session": 390,
+            "spot": 119.07,
+            "spot_available": true
+          },
+          "QQQ": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-09-13"
+            ],
+            "rows_exact_session": 390,
+            "spot": 475.34,
+            "spot_available": true
+          },
+          "SPY": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-09-13"
+            ],
+            "rows_exact_session": 390,
+            "spot": 561.94,
+            "spot_available": true
+          },
+          "TSLA": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-09-13"
+            ],
+            "rows_exact_session": 390,
+            "spot": 230.28,
+            "spot_available": true
+          }
+        },
+        "date": "2024-09-13"
+      },
+      "massive_sample": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1726243200000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1726243200000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1726243200000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1726243200000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1726243200000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1726243200000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1726243200000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1726243200000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        }
+      },
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 882963297,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-10-01",
+      "fmp_sample": {
+        "assets": {
+          "AAPL": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-10-01"
+            ],
+            "rows_exact_session": 390,
+            "spot": 226.26,
+            "spot_available": true
+          },
+          "AMZN": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-10-01"
+            ],
+            "rows_exact_session": 390,
+            "spot": 185.14,
+            "spot_available": true
+          },
+          "META": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-10-01"
+            ],
+            "rows_exact_session": 390,
+            "spot": 576.45,
+            "spot_available": true
+          },
+          "MSFT": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-10-01"
+            ],
+            "rows_exact_session": 390,
+            "spot": 420.73,
+            "spot_available": true
+          },
+          "NVDA": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-10-01"
+            ],
+            "rows_exact_session": 390,
+            "spot": 116.95,
+            "spot_available": true
+          },
+          "QQQ": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-10-01"
+            ],
+            "rows_exact_session": 390,
+            "spot": 481.17,
+            "spot_available": true
+          },
+          "SPY": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-10-01"
+            ],
+            "rows_exact_session": 390,
+            "spot": 568.69,
+            "spot_available": true
+          },
+          "TSLA": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-10-01"
+            ],
+            "rows_exact_session": 390,
+            "spot": 258.02,
+            "spot_available": true
+          }
+        },
+        "date": "2024-10-01"
+      },
+      "massive_sample": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1727798400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1727798400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1727798400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1727798400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1727798400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1727798400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1727798400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1727798400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        }
+      },
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 954937509,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-10-02",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 774637204,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-10-03",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 814575329,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-10-04",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 971724039,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-10-07",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 876647100,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-10-08",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 792063543,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-10-09",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 810177097,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-10-10",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 798182573,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-10-11",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 939736642,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-10-14",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 781339947,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-10-15",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 932768976,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-10-16",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 796433832,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-10-17",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 850357535,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-10-18",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 859917943,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-10-21",
+      "fmp_sample": {
+        "assets": {
+          "AAPL": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-10-21"
+            ],
+            "rows_exact_session": 390,
+            "spot": 236.58,
+            "spot_available": true
+          },
+          "AMZN": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-10-21"
+            ],
+            "rows_exact_session": 390,
+            "spot": 189.09,
+            "spot_available": true
+          },
+          "META": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-10-21"
+            ],
+            "rows_exact_session": 390,
+            "spot": 575.16,
+            "spot_available": true
+          },
+          "MSFT": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-10-21"
+            ],
+            "rows_exact_session": 390,
+            "spot": 418.8,
+            "spot_available": true
+          },
+          "NVDA": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-10-21"
+            ],
+            "rows_exact_session": 390,
+            "spot": 143.7,
+            "spot_available": true
+          },
+          "QQQ": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-10-21"
+            ],
+            "rows_exact_session": 390,
+            "spot": 495.48,
+            "spot_available": true
+          },
+          "SPY": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-10-21"
+            ],
+            "rows_exact_session": 390,
+            "spot": 583.67,
+            "spot_available": true
+          },
+          "TSLA": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-10-21"
+            ],
+            "rows_exact_session": 390,
+            "spot": 218.9,
+            "spot_available": true
+          }
+        },
+        "date": "2024-10-21"
+      },
+      "massive_sample": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1729526400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1729526400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1729526400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1729526400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1729526400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1729526400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1729526400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1729526400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        }
+      },
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 790718594,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-10-22",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 733593377,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-10-23",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 920526521,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-10-24",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 863523643,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-10-25",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 1026132939,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-10-28",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 793849438,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-10-29",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 834482956,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-10-30",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 920963203,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-10-31",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 1039575266,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-11-01",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 925406888,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-11-04",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 763836328,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-11-05",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 778721340,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-11-06",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 1132505442,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-11-07",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 1024803878,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-11-08",
+      "fmp_sample": null,
+      "massive_sample": null,
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 1098935857,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    },
+    {
+      "block_id": "block_b_2024_10_01_2024_11_11",
+      "date": "2024-11-11",
+      "fmp_sample": {
+        "assets": {
+          "AAPL": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-11-11"
+            ],
+            "rows_exact_session": 390,
+            "spot": 224.25,
+            "spot_available": true
+          },
+          "AMZN": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-11-11"
+            ],
+            "rows_exact_session": 390,
+            "spot": 206.89,
+            "spot_available": true
+          },
+          "META": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-11-11"
+            ],
+            "rows_exact_session": 390,
+            "spot": 583.42,
+            "spot_available": true
+          },
+          "MSFT": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-11-11"
+            ],
+            "rows_exact_session": 390,
+            "spot": 418.19,
+            "spot_available": true
+          },
+          "NVDA": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-11-11"
+            ],
+            "rows_exact_session": 390,
+            "spot": 145.28,
+            "spot_available": true
+          },
+          "QQQ": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-11-11"
+            ],
+            "rows_exact_session": 390,
+            "spot": 513.83,
+            "spot_available": true
+          },
+          "SPY": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-11-11"
+            ],
+            "rows_exact_session": 390,
+            "spot": 598.72,
+            "spot_available": true
+          },
+          "TSLA": {
+            "http_status": 200,
+            "returned_dates": [
+              "2024-11-11"
+            ],
+            "rows_exact_session": 390,
+            "spot": 350.62,
+            "spot_available": true
+          }
+        },
+        "date": "2024-11-11"
+      },
+      "massive_sample": {
+        "AAPL": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1731344400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "AMZN": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1731344400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "META": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1731344400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "MSFT": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1731344400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "NVDA": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1731344400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "QQQ": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1731344400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "SPY": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1731344400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        },
+        "TSLA": {
+          "contract": null,
+          "expiry": null,
+          "origin_timestamp_ns": 1731344400000000000,
+          "pass": false,
+          "quote_http_status": null,
+          "reference_http_status": 200,
+          "selected_sip_timestamp": null,
+          "underlying_ticker": null,
+          "valid_quote_before_midday": false
+        }
+      },
+      "secret_values_emitted": false,
+      "uw": {
+        "bytes_total": 1004311775,
+        "content_range_present": true,
+        "full_tape_downloaded": false,
+        "http_status": 206,
+        "pit_claim": false
+      }
+    }
+  ],
+  "schema_version": "new-blocks-availability-probe-1.0",
+  "secret_values_emitted": false,
+  "status": "METADATA_ONLY_NO_FULL_TAPE_DOWNLOAD"
+}

@@ -1,0 +1,34 @@
+{
+  "schema_version": "pit-gate-authorization-1.0",
+  "authorization_date": "2026-07-22",
+  "authorized_by_project_owner": true,
+  "decisions": {
+    "target_horizon": "RV30",
+    "rv10_introduced": false,
+    "fmp_available_at": "timestamp_raw + 1 minute",
+    "fmp_available_at_status": "CONSERVATIVE_RESEARCH_ASSUMPTION",
+    "uw_cutoff": "created_at <= forecast_origin - 60 seconds",
+    "uw_cutoff_status": "OPERATIONAL_AVAILABILITY_PROXY_ONLY",
+    "uw_created_at_is_publication_time": false,
+    "daily_continuity_audit_authorized": true,
+    "full_tape_download_authorized": false,
+    "backfill_authorized": false,
+    "modeling_authorized": false,
+    "qlike_authorized": false,
+    "earnings_in_primary_benchmark": false
+  },
+  "evidence": {
+    "daily_continuity_artifact": "artifacts/api_audit/common_history_continuity_v5.json",
+    "full_tape_downloaded": false,
+    "raw_payloads_retained": false,
+    "secret_values_emitted": false,
+    "personal_paths_emitted": false
+  },
+  "provider_documentation": {
+    "fmp": "https://site.financialmodelingprep.com/how-to/how-to-get-stock-intraday-data-with-fmp-apis",
+    "unusual_whales_flow_alerts": "https://api.unusualwhales.com/docs/operations/PublicApi.OptionTradeController.flow_alerts",
+    "unusual_whales_option_trade": "https://api.unusualwhales.com/docs/kafka/types/OptionTrade",
+    "massive_contracts": "https://massive.com/docs/rest/options/contracts",
+    "massive_quotes": "https://massive.com/docs/rest/options/quotes"
+  }
+}

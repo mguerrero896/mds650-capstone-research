@@ -1,0 +1,132 @@
+git_status,path,category
+ M,.gitignore,UNKNOWN
+ M,artifacts/provider_audit/2026-07-20/provider_audit_summary.md,DOCUMENTATION
+ M,docs/handoffs/CODEX_UNBLOCK_20260721.md,DOCUMENTATION
+ M,docs/methodology_decisions.md,DOCUMENTATION
+ M,docs/recovery/compatibility_matrix.md,DOCUMENTATION
+ M,docs/recovery/completion_audit.md,DOCUMENTATION
+ M,docs/recovery/current_state_verification.md,DOCUMENTATION
+ M,docs/recovery/initial_repository_state.md,DOCUMENTATION
+ M,docs/recovery/spec_kit_analysis_report.md,DOCUMENTATION
+ M,docs/risk_register.md,DOCUMENTATION
+ M,notebooks/MDS650_Research_Pipeline.ipynb,DOCUMENTATION
+ M,scripts/fix_fmp_missing_window.py,SOURCE_CODE
+ M,scripts/materialize_backfill_from_raw.py,COMMERCIAL_RAW_DATA
+ M,scripts/pit_verify_term_structure.py,SOURCE_CODE
+ M,scripts/provider_audit_v1.py,SOURCE_CODE
+ M,scripts/run_window_pipeline.py,SOURCE_CODE
+ M,specs/001-pit-options-rv30/checklists/requirements.md,DOCUMENTATION
+ M,specs/001-pit-options-rv30/contracts/pilot-dataset-contract.md,DOCUMENTATION
+ M,specs/001-pit-options-rv30/plan.md,DOCUMENTATION
+ M,specs/001-pit-options-rv30/spec.md,DOCUMENTATION
+ M,specs/001-pit-options-rv30/tasks.md,DOCUMENTATION
+ M,src/mds650/events.py,SOURCE_CODE
+ M,tests/unit/test_audit_manifest.py,TEST
+??,artifacts/api_audit/b1_coverage_v1_20260721/,UNKNOWN
+??,artifacts/api_audit/common_history_all_assets_v3.json,COMPACT_MANIFEST
+??,artifacts/api_audit/common_history_continuity_v5.json,COMPACT_MANIFEST
+??,artifacts/api_audit/common_history_probe_v1_invalid.json,COMPACT_MANIFEST
+??,artifacts/api_audit/common_history_probe_v2.json,COMPACT_MANIFEST
+??,artifacts/api_audit/twenty_session_availability_probe.json,COMPACT_MANIFEST
+??,artifacts/audits/,UNKNOWN
+??,artifacts/b1_forensic/,UNKNOWN
+??,artifacts/b1_full_origin/,UNKNOWN
+??,artifacts/b1_repair/,UNKNOWN
+??,artifacts/backfill/,UNKNOWN
+??,artifacts/calibration_20d/,UNKNOWN
+??,artifacts/common_sample/,UNKNOWN
+??,artifacts/feasibility/,UNKNOWN
+??,artifacts/methodology/,UNKNOWN
+??,artifacts/phase4a_run_summary.json,COMPACT_MANIFEST
+??,artifacts/pilot/,UNKNOWN
+??,artifacts/pilot_v2/,UNKNOWN
+??,artifacts/pit/,UNKNOWN
+??,artifacts/repository/,UNKNOWN
+??,artifacts/validation/,UNKNOWN
+??,docs/20_session_calibration_decision.md,DOCUMENTATION
+??,docs/20_session_calibration_decision_v2.md,DOCUMENTATION
+??,docs/20_session_calibration_decision_v3.md,DOCUMENTATION
+??,docs/20_session_calibration_request.md,DOCUMENTATION
+??,docs/b1_benchmark_selection.md,DOCUMENTATION
+??,docs/b1_coverage_decision.md,DOCUMENTATION
+??,docs/b1_data_contract.md,DOCUMENTATION
+??,docs/b1_zero_coverage_diagnosis.md,DOCUMENTATION
+??,docs/b2_calibration_contract.md,DOCUMENTATION
+??,docs/b2_feature_contract.md,DOCUMENTATION
+??,docs/b2_feature_contract_v2.md,DOCUMENTATION
+??,docs/b2_unusualness_definition.md,DOCUMENTATION
+??,docs/backfill_execution_plan_v2.md,DOCUMENTATION
+??,docs/backfill_feasibility.md,DOCUMENTATION
+??,docs/backfill_feasibility_v2.md,DOCUMENTATION
+??,docs/backfill_feasibility_v3.md,DOCUMENTATION
+??,docs/backfill_window_decision_v2.md,DOCUMENTATION
+??,docs/calibrated_asset_quality_decision.md,DOCUMENTATION
+??,docs/common_sample_data_contract_v1.md,DOCUMENTATION
+??,docs/common_sample_quality_and_bias_v1.md,DOCUMENTATION
+??,docs/corporate_event_contract.md,DOCUMENTATION
+??,docs/cross_provider_alignment_audit_v1.md,DOCUMENTATION
+??,docs/earnings_pit_contract_v2.md,DOCUMENTATION
+??,docs/effective_sample_size_and_power_planning_v1.md,DOCUMENTATION
+??,docs/etf_role_decision.md,DOCUMENTATION
+??,docs/literature_evidence_ledger.csv,COMPACT_MANIFEST
+??,docs/literature_evidence_ledger_v2.csv,COMPACT_MANIFEST
+??,docs/literature_sources/index.csv,COMPACT_MANIFEST
+??,docs/literature_synthesis.md,DOCUMENTATION
+??,docs/literature_synthesis_v2.md,DOCUMENTATION
+??,docs/method_claim_source_map_v1.csv,COMPACT_MANIFEST
+??,docs/model_and_inference_candidate_dossier_v1.md,DOCUMENTATION
+??,docs/phase4a_scientific_design_freeze_v1.md,DOCUMENTATION
+??,docs/pit_field_classification.md,DOCUMENTATION
+??,docs/pit_gate_authorization_20260722.md,DOCUMENTATION
+??,docs/pit_sensitivity_analysis_v1.md,DOCUMENTATION
+??,docs/provider_time_semantics_and_pit_register_v2.md,DOCUMENTATION
+??,docs/recovery/b1_closure_spec_analysis.md,DOCUMENTATION
+??,docs/recovery/b1_forensic_spec_analysis.md,DOCUMENTATION
+??,docs/recovery/b1_integration_repair_analysis.md,DOCUMENTATION
+??,docs/recovery/daily_continuity_audit_v5.md,DOCUMENTATION
+??,docs/recovery/pilot_v2_spec_analysis.md,DOCUMENTATION
+??,docs/recovery/twenty_session_calibration_spec_analysis.md,DOCUMENTATION
+??,docs/repository_hygiene_decision_v1.md,DOCUMENTATION
+??,docs/target_horizon_decision.md,DOCUMENTATION
+??,docs/temporal_validation_protocol_v2.md,DOCUMENTATION
+??,docs/unusual_activity_definition.md,DOCUMENTATION
+??,reports/,UNKNOWN
+??,scripts/build_b1_repair_artifacts.py,SOURCE_CODE
+??,scripts/build_b1_v2.py,SOURCE_CODE
+??,scripts/build_b1t_route.py,SOURCE_CODE
+??,scripts/build_b2_calibration_20d.py,SOURCE_CODE
+??,scripts/build_literature_evidence_ledger.py,SOURCE_CODE
+??,scripts/build_phase3f_evidence_index.py,SOURCE_CODE
+??,scripts/build_pilot_v2.py,SOURCE_CODE
+??,scripts/close_pit_gates.py,SOURCE_CODE
+??,scripts/common_history_all_assets_v3.py,SOURCE_CODE
+??,scripts/download_calibration_20d.py,SOURCE_CODE
+??,scripts/finalize_calibration_20d.py,SOURCE_CODE
+??,scripts/generate_pilot_evidence.py,SOURCE_CODE
+??,scripts/phase4a_common.py,SOURCE_CODE
+??,scripts/probe_common_history.py,SOURCE_CODE
+??,scripts/probe_common_history_v2.py,SOURCE_CODE
+??,scripts/probe_daily_common_history_v5.py,SOURCE_CODE
+??,scripts/probe_fmp_earnings_v2.py,SOURCE_CODE
+??,scripts/probe_massive_origin.py,SOURCE_CODE
+??,scripts/profile_backfill_feasibility_v2.py,SOURCE_CODE
+??,scripts/reprocess_calibration_20d.py,SOURCE_CODE
+??,scripts/run_authorized_pilot.py,SOURCE_CODE
+??,scripts/run_b1_calibration_20d.py,SOURCE_CODE
+??,scripts/run_b1_closure.py,SOURCE_CODE
+??,scripts/run_b1_controlled.py,SOURCE_CODE
+??,scripts/run_phase4a.py,SOURCE_CODE
+??,scripts/run_zero_coverage_diagnostics.py,SOURCE_CODE
+??,scripts/twenty_session_availability_probe.py,SOURCE_CODE
+??,scripts/validate_b1_forensic.py,SOURCE_CODE
+??,scripts/write_b1_cache_index.py,CACHE
+??,tests/contract/test_b1_closure_artifacts.py,TEST
+??,tests/contract/test_b1_forensic.py,TEST
+??,tests/contract/test_calibration_20d.py,TEST
+??,tests/contract/test_phase4a_artifacts.py,TEST
+??,tests/contract/test_pilot_v2_artifacts.py,TEST
+??,tests/contract/test_pit_gate_artifacts.py,TEST
+??,tests/unit/test_b2_calibration.py,TEST
+??,tests/unit/test_corporate_event_contract.py,TEST
+??,tests/unit/test_coverage_boost_phase4a.py,TEST
+??,tests/unit/test_phase4a_common.py,TEST

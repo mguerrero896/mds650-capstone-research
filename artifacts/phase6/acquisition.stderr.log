@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "C:\Users\mguer\Dev\MDS650-Capstone\scripts\acquire_phase6.py", line 355, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "C:\Users\mguer\Dev\MDS650-Capstone\scripts\acquire_phase6.py", line 349, in main
+    result = run()
+             ^^^^^
+  File "C:\Users\mguer\Dev\MDS650-Capstone\scripts\acquire_phase6.py", line 320, in run
+    record = acquire_session(session_date, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\mguer\Dev\MDS650-Capstone\scripts\acquire_phase6.py", line 215, in acquire_session
+    filtered = downloader.filter_session(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\mguer\Dev\MDS650-Capstone\scripts\download_calibration_20d.py", line 348, in filter_session
+    member, fields, csv_bytes = _validate_zip(zip_path, expected_fields)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\mguer\Dev\MDS650-Capstone\scripts\download_calibration_20d.py", line 299, in _validate_zip
+    raise RuntimeError("FULL_TAPE_ZIP_CRC_FAILURE")
+RuntimeError: FULL_TAPE_ZIP_CRC_FAILURE

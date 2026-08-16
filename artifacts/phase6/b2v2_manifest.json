@@ -1,0 +1,20 @@
+{
+  "b2v2_sha256": "6ecfd9a9e34b9be58c37b3781c88aef462ef64c2d3f46dd52734ab7052cd5cfe",
+  "complete_origin_count": 68688,
+  "normalization_ledger_sha256": "996aec8d9a9dc117a776c4e8bc5fd25002a49aa1b32dc8c93349495b385e7c1a",
+  "oos_results_inspected": false,
+  "origin_count": 77328,
+  "personal_paths_emitted": false,
+  "schema_version": "phase6-b2v2-1.0",
+  "secret_values_emitted": false,
+  "sensitivity_sha256": "5dae0a2c76d12ace0bc88a0e6ea47679adb92caa955800bd1456f6d812556065",
+  "sensitivity_specs": [
+    "primary_5m_60s",
+    "window_15m_60s",
+    "window_30m_60s",
+    "latency_5m_120s",
+    "latency_5m_300s"
+  ],
+  "status": "PASS_PHASE6_B2V2",
+  "warmup_origin_count": 8640
+}

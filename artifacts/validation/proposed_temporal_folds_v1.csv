@@ -1,0 +1,10 @@
+window_sessions,fold,role,start_date,end_date,purge_minutes,embargo_minutes,same_origin_ids_across_benchmarks,random_split
+60,fold_1,TRAIN,2026-04-15,2026-06-10,30,30,true,false
+60,fold_1,VALIDATION,2026-06-11,2026-06-25,30,30,true,false
+60,fold_1,TEST_FINAL_UNTOUCHED,2026-06-26,2026-07-10,30,30,true,false
+120,fold_1,TRAIN,2026-01-16,2026-05-12,30,30,true,false
+120,fold_1,VALIDATION,2026-05-13,2026-06-10,30,30,true,false
+120,fold_1,TEST_FINAL_UNTOUCHED,2026-06-11,2026-07-10,30,30,true,false
+180,fold_1,TRAIN,2025-10-21,2026-04-14,30,30,true,false
+180,fold_1,VALIDATION,2026-04-15,2026-05-27,30,30,true,false
+180,fold_1,TEST_FINAL_UNTOUCHED,2026-05-28,2026-07-10,30,30,true,false

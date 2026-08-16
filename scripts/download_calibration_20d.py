@@ -22,9 +22,11 @@ import tempfile
 import time as time_module
 import zipfile
 from collections import Counter
+from collections.abc import Iterator
+from contextlib import contextmanager
 from datetime import UTC, date, datetime, time
 from pathlib import Path
-from typing import Any
+from typing import Any, BinaryIO
 from zoneinfo import ZoneInfo
 
 import httpx
@@ -292,9 +294,84 @@ def _stream_download(day: date, key: str, destination: Path) -> dict[str, Any]:
     raise AssertionError("UNREACHABLE_DOWNLOAD_LOOP")
 
 
+class _BoundedZipView(io.RawIOBase):
+    """Expose an immutable file only through its logical ZIP boundary."""
+
+    def __init__(self, raw: BinaryIO, size: int) -> None:
+        self._raw = raw
+        self._size = size
+        self._position = 0
+
+    def readable(self) -> bool:
+        return True
+
+    def seekable(self) -> bool:
+        return True
+
+    def tell(self) -> int:
+        return self._position
+
+    def seek(self, offset: int, whence: int = io.SEEK_SET) -> int:
+        if whence == io.SEEK_SET:
+            position = offset
+        elif whence == io.SEEK_CUR:
+            position = self._position + offset
+        elif whence == io.SEEK_END:
+            position = self._size + offset
+        else:
+            raise ValueError("INVALID_SEEK_MODE")
+        if position < 0:
+            raise OSError("NEGATIVE_ZIP_SEEK")
+        self._raw.seek(position)
+        self._position = position
+        return position
+
+    def read(self, size: int = -1) -> bytes:
+        remaining = max(0, self._size - self._position)
+        bounded_size = remaining if size < 0 else min(size, remaining)
+        data = self._raw.read(bounded_size)
+        self._position += len(data)
+        return data
+
+
+def _logical_zip_size(path: Path) -> int:
+    """Ignore only an exact duplicate of the final central directory and EOCD."""
+    file_size = path.stat().st_size
+    eocd_size = 22
+    with path.open("rb") as raw:
+        scan_size = min(file_size, zipfile.ZIP_MAX_COMMENT + eocd_size)
+        raw.seek(file_size - scan_size)
+        tail = raw.read(scan_size)
+        relative_eocd = tail.rfind(b"PK\x05\x06")
+        if relative_eocd < 0 or relative_eocd + eocd_size > len(tail):
+            return file_size
+        eocd = tail[relative_eocd : relative_eocd + eocd_size]
+        directory_size = int.from_bytes(eocd[12:16], "little")
+        directory_offset = int.from_bytes(eocd[16:20], "little")
+        comment_size = int.from_bytes(eocd[20:22], "little")
+        logical_size = directory_offset + directory_size + eocd_size + comment_size
+        duplicate_size = file_size - logical_size
+        if duplicate_size != directory_size + eocd_size + comment_size:
+            return file_size
+        raw.seek(directory_offset)
+        original_directory = raw.read(duplicate_size)
+        raw.seek(logical_size)
+        duplicated_directory = raw.read(duplicate_size)
+    return logical_size if original_directory == duplicated_directory else file_size
+
+
+@contextmanager
+def _open_zip(path: Path) -> Iterator[zipfile.ZipFile]:
+    """Open a provider ZIP without rewriting immutable raw evidence."""
+    with path.open("rb") as raw:
+        view = _BoundedZipView(raw, _logical_zip_size(path))
+        with zipfile.ZipFile(view) as archive:
+            yield archive
+
+
 def _validate_zip(path: Path, expected_fields: set[str] | None) -> tuple[str, set[str], int]:
     """Validate ZIP CRC and return its CSV member, header and compressed bytes."""
-    with zipfile.ZipFile(path) as archive:
+    with _open_zip(path) as archive:
         if archive.testzip() is not None:
             raise RuntimeError("FULL_TAPE_ZIP_CRC_FAILURE")
         members = [info for info in archive.infolist() if info.filename.lower().endswith(".csv")]
@@ -409,7 +486,7 @@ def filter_session(
 
     peak_working_set = _working_set_bytes() or 0
     try:
-        with zipfile.ZipFile(zip_path) as archive, archive.open(member) as raw:
+        with _open_zip(zip_path) as archive, archive.open(member) as raw:
             reader = csv.DictReader(io.TextIOWrapper(raw, encoding="utf-8", newline=""))
             if set(reader.fieldnames or []) != fields:
                 raise RuntimeError("FULL_TAPE_SCHEMA_DRIFT_DURING_READ")

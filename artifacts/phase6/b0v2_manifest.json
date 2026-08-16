@@ -1,0 +1,15 @@
+{
+  "b0v2_sha256": "20da23d15ead7b8d9b43497299cb79c71c5e4f2b2e4447a9f8e54e8df7ecc0d8",
+  "oos_results_inspected": false,
+  "origins": 77328,
+  "personal_paths_emitted": false,
+  "rows": 77328,
+  "schema_version": "phase6-b0v2-1.0",
+  "secret_values_emitted": false,
+  "sensitivity_sha256": "e20a2c237a617cb115ea328ee897b2daecc4749ed72078270338c023c9f69b10",
+  "sensitivity_specs": [
+    "FMP_DELAY_2_MINUTES"
+  ],
+  "sessions": 180,
+  "status": "PASS_PHASE6_B0V2"
+}

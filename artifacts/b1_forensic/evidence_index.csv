@@ -1,0 +1,9 @@
+artifact,purpose,status,secret_values_emitted
+artifacts/b1_full_origin/invalid_nested_coverage_v1.json,immutable archive of invalid prior result,PRESERVED,false
+artifacts/b1_forensic/b1_nested_coverage.json,component and nested coverage with invariants,PASS,false
+artifacts/b1_forensic/failure_waterfall.csv,17-stage B1Q origin diagnostics,PASS,false
+artifacts/b1_forensic/controlled_asset_tests.json,controlled AAPL SPY META TSLA trace,PASS_WITH_ZERO_SPY_CASES,false
+artifacts/b1_forensic/zero_coverage_controlled.json,controlled SPY QQQ META TSLA trace,PASS_WITH_DIAGNOSTIC_FAILURES,false
+artifacts/b1_forensic/iv_failures.csv,per-attempt IV diagnostics,PASS_WITH_FAILURE_CODES,false
+docs/literature_evidence_ledger.csv,ten-study claim-evidence ledger,INCOMPLETE_COORDINATES,false
+artifacts/api_audit/twenty_session_availability_probe.json,metadata-only twenty-session probe,20_SESSIONS_METADATA_PASS_NO_PIT_CLAIM,false

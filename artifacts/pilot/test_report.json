@@ -1,0 +1,19 @@
+{
+  "command": "uv run pytest -q",
+  "status": "passed",
+  "tests_passed": 87,
+  "tests_failed": 0,
+  "system_python_used": false,
+  "production_backfill_run": false,
+  "modeling_run": false,
+  "pilot_contract_checks": {
+    "rv30_exact_31_prices": true,
+    "missing_target_rows": 0,
+    "event_no_event_requirement": false,
+    "full_tape_duplicate_ids_sample": 0,
+    "secret_and_personal_path_scan": "passed",
+    "ruff_new_scripts": "passed",
+    "json_parse": "passed"
+  },
+  "secret_values_emitted": false
+}

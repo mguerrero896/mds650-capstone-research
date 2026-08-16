@@ -1,0 +1,14 @@
+artifact,role,status
+artifacts/pilot_v2/pilot_manifest_v2.json,diagnosis and provenance,valid
+artifacts/pilot_v2/b2_features_v2.parquet,continuous B2 features for all valid origins,valid
+artifacts/pilot_v2/b2_feature_coverage_v2.json,B2 coverage and cutoff contract,valid
+artifacts/pilot_v2/b1_origin_coverage_v2.json,B1a/B1b/B1c origin matrix,exploratory
+artifacts/pilot_v2/b1_component_coverage_v2.csv,B1 component diagnostics,exploratory
+artifacts/pilot_v2/iv_robustness_v2.json,506 IV successes and nine failures,exploratory
+artifacts/pilot_v2/massive_controlled_origin_probe.json,Massive nanosecond controlled probe,pass
+artifacts/pilot_v2/fmp_timestamp_validation_v2.json,FMP symbol-specific earnings timing,pass
+artifacts/api_audit/common_history_probe_v1_invalid.json,archived invalid V1 probe,invalid_archived
+artifacts/api_audit/common_history_probe_v2.json,corrected common-history probe,pass
+docs/backfill_feasibility_v2.md,preliminary capacity estimate,blocked
+docs/b2_feature_contract_v2.md,B2 feature definitions,valid
+docs/b2_unusualness_definition.md,deferred unusualness calibration,not_calibrated

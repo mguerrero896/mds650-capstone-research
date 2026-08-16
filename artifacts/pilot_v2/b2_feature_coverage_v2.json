@@ -1,0 +1,17 @@
+{
+  "status": "PILOT_V2_B2_CONTINUOUS_FEATURES",
+  "origins": 2840,
+  "origins_with_option_activity": 2840,
+  "origins_without_option_activity": 0,
+  "natural_option_activity_prevalence": 1.0,
+  "unusual_event_status": "NOT_CALIBRATED",
+  "availability_specs": {
+    "primary_60s": 60,
+    "sensitivity_15s": 15,
+    "sensitivity_0s": 0
+  },
+  "operational_availability_proxy": "created_at cutoff; not publication time",
+  "provider_cumulative_fields_used": false,
+  "artificial_balancing": false,
+  "no_full_backfill": true
+}

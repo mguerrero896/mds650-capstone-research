@@ -1,0 +1,10 @@
+artifact,purpose,status,secret_values_emitted
+artifacts/b1_repair/controlled_vs_pipeline_diff.csv,row-level controlled/full reconciliation,PASS_WITH_CONTRACT_SELECTION_DIFFERENCES,false
+artifacts/b1_repair/cache_key_audit.json,cache identity and duplicate audit,PASS_ACTIVE_KEYS_WITH_LEGACY_MISSING_KEYS,false
+artifacts/b1_repair/dte_failure_diagnosis.csv,diagnosis of invalid DTE attempts,PASS_ZERO_INVALID_DTE,false
+artifacts/b1_repair/first_failure_waterfall.csv,mutually-exclusive sequential first failure,PASS_2840_ORIGINS,false
+artifacts/b1_repair/all_failed_checks.csv,additional non-exclusive checks,PASS,false
+artifacts/b1_repair/b1_nested_coverage_v2.json,corrected nested B1Q coverage,PASS,false
+docs/corporate_event_contract.md,equity and ETF earnings contract,PASS,false
+docs/etf_role_decision.md,non-predictive ETF role decision,MARKET_CONTROL_ONLY_FOR_CURRENT_PHASE,false
+docs/literature_evidence_ledger.csv,claim evidence and allowed strength,CORRECTLY_LIMITED,false

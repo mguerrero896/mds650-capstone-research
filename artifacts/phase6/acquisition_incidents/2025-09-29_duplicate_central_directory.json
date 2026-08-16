@@ -1,0 +1,27 @@
+{
+  "status": "RESOLVED_READER_COMPATIBILITY",
+  "session_date": "2025-09-29",
+  "provider": "unusual_whales",
+  "component": "full_tape",
+  "failure_code": "FULL_TAPE_ZIP_CRC_FAILURE",
+  "root_cause": "EXACT_DUPLICATE_CENTRAL_DIRECTORY_AND_EOCD_SUFFIX",
+  "raw_sha256": "e5668274ff99adde0bf2c2a3521a64d3f9a00b7f77f4d04e92184746628ddfe4",
+  "provider_metadata_bytes": 1150791948,
+  "raw_bytes": 1150791948,
+  "logical_zip_bytes": 1150791828,
+  "trailing_duplicate_bytes": 120,
+  "raw_immutable": true,
+  "raw_rewritten": false,
+  "seven_zip_validation": "PASS_WITH_TRAILING_DATA_WARNING",
+  "python_zipfile_before": "CRC_FAILURE_FOR_ONLY_CSV_MEMBER",
+  "python_zipfile_after_bounded_view": "PASS",
+  "remediation": "READ_THROUGH_EXACT_DUPLICATE_AWARE_BOUNDED_VIEW",
+  "regression_test": "tests/contract/test_calibration_20d.py::test_duplicate_central_directory_tail_is_read_without_mutating_raw",
+  "verification": {
+    "pytest": "18 passed",
+    "ruff": "PASS",
+    "mypy": "PASS"
+  },
+  "secret_values_emitted": false,
+  "personal_paths_emitted": false
+}

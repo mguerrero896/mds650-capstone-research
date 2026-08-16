@@ -8,7 +8,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-RAW_ROOT = Path(r"C:\Users\Public\MDS650\raw\unusual_whales")
+RAW_ROOT = Path("data/raw/unusual_whales")
 OUT = Path("artifacts/api_audit/pit_verification_20260721")
 PROBES = (
     "uw-ordinary-term-structure-recent-aapl",

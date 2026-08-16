@@ -1,0 +1,23 @@
+{
+  "status": "CONDITIONAL_USABLE",
+  "underlying_1min": {
+    "observed_raw_format": "YYYY-MM-DD HH:MM:SS",
+    "observed_timezone": "offset-free; labels match America/New_York regular-session clock",
+    "pilot_conversion": "attach America/New_York then convert to UTC; available_at = timestamp_raw + 1 minute",
+    "provider_confirmation": "PENDING",
+    "to_parameter_inclusive": true,
+    "required_follow_up": ["winter", "summer", "DST transition", "early close", "halt/missing-minute classification", "adjusted vs unadjusted", "split consistency"]
+  },
+  "structured_earnings": {
+    "endpoint": "/stable/earnings",
+    "http_status": 200,
+    "schema_fields_observed": ["date", "epsActual", "epsEstimated", "lastUpdated", "revenueActual", "revenueEstimated", "symbol"],
+    "bmo_amc_field_present": false,
+    "release_time_confirmed": false,
+    "SPY": "not_applicable",
+    "QQQ": "not_applicable",
+    "equity_assets": "date-only event flag only until BMO/AMC timing is independently validated",
+    "actual_eps_revenue_as_predictors": false
+  },
+  "secret_values_emitted": false
+}

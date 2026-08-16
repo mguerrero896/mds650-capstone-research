@@ -20,7 +20,7 @@ from uuid import uuid4
 from zoneinfo import ZoneInfo
 
 import httpx
-from exchange_calendars import get_calendar
+from exchange_calendars import get_calendar  # type: ignore[import-untyped]
 
 from mds650.config import ResearchSettings
 from mds650.storage import write_immutable_raw
@@ -29,7 +29,7 @@ ASSETS = ("SPY", "QQQ", "AAPL", "MSFT", "NVDA", "TSLA", "AMZN", "META")
 NEW_YORK = ZoneInfo("America/New_York")
 XNYS = get_calendar("XNYS")
 OUT_DIR = Path(os.environ.get("MDS650_AUDIT_OUT_DIR", "artifacts/api_audit/authenticated_v1"))
-RAW_ROOT = Path(os.environ.get("MDS650_AUDIT_RAW_ROOT", "C:/Users/Public/MDS650/raw"))
+RAW_ROOT = Path(os.environ.get("MDS650_AUDIT_RAW_ROOT", "data/raw"))
 RUN_ID = str(uuid4())
 
 
@@ -380,10 +380,15 @@ def _run() -> dict[str, Any]:
     """Run all bounded probes and return the sanitized manifest."""
     settings = ResearchSettings()
     settings.require_provider_secrets()
+    fmp_key = settings.fmp_api_key
+    uw_key = settings.unusualwhales_api_key
+    massive_key = settings.massive_api_key
+    if fmp_key is None or uw_key is None or massive_key is None:
+        raise RuntimeError("PROVIDER_SECRET_VALIDATION_FAILED")
     keys = {
-        "fmp": settings.fmp_api_key.get_secret_value(),
-        "unusual_whales": settings.unusualwhales_api_key.get_secret_value(),
-        "massive": settings.massive_api_key.get_secret_value(),
+        "fmp": fmp_key.get_secret_value(),
+        "unusual_whales": uw_key.get_secret_value(),
+        "massive": massive_key.get_secret_value(),
     }
     records: list[dict[str, Any]] = []
     with httpx.Client(timeout=25.0) as client:

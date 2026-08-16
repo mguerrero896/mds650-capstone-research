@@ -1,0 +1,215 @@
+{
+  "status": "COMMON_HISTORY_NOT_ESTABLISHED",
+  "probe_type": "monthly_small_endpoint_probes_only",
+  "months": [
+    "2024-01-16",
+    "2024-07-16",
+    "2025-01-16",
+    "2025-07-16",
+    "2026-01-16",
+    "2026-07-16"
+  ],
+  "observed_intersection_dates": [],
+  "records": [
+    {
+      "provider": "FMP",
+      "component": "underlying_1min",
+      "date": "2024-01-16",
+      "endpoint": "/stable/historical-chart/1min",
+      "http_status": 200,
+      "rows": 780,
+      "timestamp_sample_raw": "2024-01-17 15:59:00",
+      "request_id": "7ed15a18105ea738"
+    },
+    {
+      "provider": "Massive",
+      "component": "contract_quotes",
+      "date": "2024-01-16",
+      "endpoint": "/v3/reference/options/contracts + /v3/quotes/{contract}",
+      "http_status": 200,
+      "reference_http_status": 200,
+      "quote_http_status": 200,
+      "rows": 0,
+      "contract_present": true,
+      "request_id": "2cf200b4738176fd"
+    },
+    {
+      "provider": "Unusual Whales",
+      "component": "full_tape",
+      "date": "2024-01-16",
+      "endpoint": "/api/option-trades/full-tape/2024-01-16",
+      "http_status": 206,
+      "content_type": "application/zip",
+      "content_range": "bytes 0-1023/773786856",
+      "bytes_sampled": 1024,
+      "request_id": "ef6c921c49348e55"
+    },
+    {
+      "provider": "FMP",
+      "component": "underlying_1min",
+      "date": "2024-07-16",
+      "endpoint": "/stable/historical-chart/1min",
+      "http_status": 200,
+      "rows": 780,
+      "timestamp_sample_raw": "2024-07-17 15:59:00",
+      "request_id": "e46a2407d4ac900d"
+    },
+    {
+      "provider": "Massive",
+      "component": "contract_quotes",
+      "date": "2024-07-16",
+      "endpoint": "/v3/reference/options/contracts + /v3/quotes/{contract}",
+      "http_status": 200,
+      "reference_http_status": 200,
+      "quote_http_status": 200,
+      "rows": 0,
+      "contract_present": true,
+      "request_id": "cd84a5c77a21ec60"
+    },
+    {
+      "provider": "Unusual Whales",
+      "component": "full_tape",
+      "date": "2024-07-16",
+      "endpoint": "/api/option-trades/full-tape/2024-07-16",
+      "http_status": 206,
+      "content_type": "application/zip",
+      "content_range": "bytes 0-1023/869285034",
+      "bytes_sampled": 1024,
+      "request_id": "a126581db763a58a"
+    },
+    {
+      "provider": "FMP",
+      "component": "underlying_1min",
+      "date": "2025-01-16",
+      "endpoint": "/stable/historical-chart/1min",
+      "http_status": 200,
+      "rows": 780,
+      "timestamp_sample_raw": "2025-01-17 15:59:00",
+      "request_id": "53f3ac4086fa1a2d"
+    },
+    {
+      "provider": "Massive",
+      "component": "contract_quotes",
+      "date": "2025-01-16",
+      "endpoint": "/v3/reference/options/contracts + /v3/quotes/{contract}",
+      "http_status": 200,
+      "reference_http_status": 200,
+      "quote_http_status": 200,
+      "rows": 0,
+      "contract_present": true,
+      "request_id": "bcf3e2a7091e2314"
+    },
+    {
+      "provider": "Unusual Whales",
+      "component": "full_tape",
+      "date": "2025-01-16",
+      "endpoint": "/api/option-trades/full-tape/2025-01-16",
+      "http_status": 206,
+      "content_type": "application/zip",
+      "content_range": "bytes 0-1023/947734129",
+      "bytes_sampled": 1024,
+      "request_id": "499da8ff2efe258a"
+    },
+    {
+      "provider": "FMP",
+      "component": "underlying_1min",
+      "date": "2025-07-16",
+      "endpoint": "/stable/historical-chart/1min",
+      "http_status": 200,
+      "rows": 780,
+      "timestamp_sample_raw": "2025-07-17 15:59:00",
+      "request_id": "3e62b704665710d9"
+    },
+    {
+      "provider": "Massive",
+      "component": "contract_quotes",
+      "date": "2025-07-16",
+      "endpoint": "/v3/reference/options/contracts + /v3/quotes/{contract}",
+      "http_status": 200,
+      "reference_http_status": 200,
+      "quote_http_status": 200,
+      "rows": 0,
+      "contract_present": true,
+      "request_id": "1fbc516ed1472200"
+    },
+    {
+      "provider": "Unusual Whales",
+      "component": "full_tape",
+      "date": "2025-07-16",
+      "endpoint": "/api/option-trades/full-tape/2025-07-16",
+      "http_status": 206,
+      "content_type": "application/zip",
+      "content_range": "bytes 0-1023/1109326501",
+      "bytes_sampled": 1024,
+      "request_id": "37b910ca048d81d7"
+    },
+    {
+      "provider": "FMP",
+      "component": "underlying_1min",
+      "date": "2026-01-16",
+      "endpoint": "/stable/historical-chart/1min",
+      "http_status": 200,
+      "rows": 390,
+      "timestamp_sample_raw": "2026-01-16 15:59:00",
+      "request_id": "d7125895f1c315a4"
+    },
+    {
+      "provider": "Massive",
+      "component": "contract_quotes",
+      "date": "2026-01-16",
+      "endpoint": "/v3/reference/options/contracts + /v3/quotes/{contract}",
+      "http_status": 200,
+      "reference_http_status": 200,
+      "quote_http_status": 200,
+      "rows": 0,
+      "contract_present": true,
+      "request_id": "9254d55d5a1a119c"
+    },
+    {
+      "provider": "Unusual Whales",
+      "component": "full_tape",
+      "date": "2026-01-16",
+      "endpoint": "/api/option-trades/full-tape/2026-01-16",
+      "http_status": 206,
+      "content_type": "application/zip",
+      "content_range": "bytes 0-1023/1339713472",
+      "bytes_sampled": 1024,
+      "request_id": "4410438a83265b5f"
+    },
+    {
+      "provider": "FMP",
+      "component": "underlying_1min",
+      "date": "2026-07-16",
+      "endpoint": "/stable/historical-chart/1min",
+      "http_status": 200,
+      "rows": 780,
+      "timestamp_sample_raw": "2026-07-17 15:59:00",
+      "request_id": "087182dc2326af03"
+    },
+    {
+      "provider": "Massive",
+      "component": "contract_quotes",
+      "date": "2026-07-16",
+      "endpoint": "/v3/reference/options/contracts + /v3/quotes/{contract}",
+      "http_status": 200,
+      "reference_http_status": 200,
+      "quote_http_status": 200,
+      "rows": 0,
+      "contract_present": true,
+      "request_id": "c87e280430edb88d"
+    },
+    {
+      "provider": "Unusual Whales",
+      "component": "full_tape",
+      "date": "2026-07-16",
+      "endpoint": "/api/option-trades/full-tape/2026-07-16",
+      "http_status": 206,
+      "content_type": "application/zip",
+      "content_range": "bytes 0-1023/1538329354",
+      "bytes_sampled": 1024,
+      "request_id": "8aa8d1d2206f1034"
+    }
+  ],
+  "full_history_downloaded": false,
+  "secret_values_emitted": false
+}

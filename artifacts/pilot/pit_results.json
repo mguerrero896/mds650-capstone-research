@@ -1,0 +1,30 @@
+{
+  "status": "PIT_EVENT_TIME_VERIFIED_FOR_FULL_TAPE_SAMPLE",
+  "sample_date": "2026-07-16",
+  "event_time": "executed_at",
+  "vendor_record_time": "created_at",
+  "primary_cutoff": "created_at <= forecast_origin - 60 seconds",
+  "sensitivity_cutoffs": {
+    "sensitivity_15s": "created_at <= origin - 15 seconds",
+    "sensitivity_0s": "created_at <= origin"
+  },
+  "negative_latency_count": 0,
+  "latency_seconds": {
+    "n": 11559720,
+    "min": 0.018624,
+    "mean": 0.09421578394242447,
+    "p50_reservoir": 0.060753,
+    "p95_reservoir": 6.793806,
+    "p99_reservoir": 14.096743,
+    "max": 56.810113,
+    "negative_count": 0,
+    "reservoir_n": 200000
+  },
+  "duplicate_id_rows": 0,
+  "malformed_rows": 0,
+  "order_regressions": 1464891,
+  "out_of_regular_session_rows": 65436,
+  "implied_volatility_missing": 23122,
+  "full_tape_primary_ready": true,
+  "flow_alerts_primary": false
+}

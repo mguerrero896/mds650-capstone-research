@@ -1,0 +1,282 @@
+{
+  "status": "COMMON_HISTORY_V2_PROBED",
+  "probe_type": "exact_session_plus_as_of_contract_plus_timestamp_lte_quote",
+  "months": [
+    {
+      "month": "2024-01-16",
+      "fmp_session_available": true,
+      "uw_full_tape_file_available": true,
+      "massive_historical_contract_resolved": true,
+      "massive_valid_quote_before_origin": true,
+      "common_component_pass": true
+    },
+    {
+      "month": "2024-07-16",
+      "fmp_session_available": true,
+      "uw_full_tape_file_available": true,
+      "massive_historical_contract_resolved": true,
+      "massive_valid_quote_before_origin": true,
+      "common_component_pass": true
+    },
+    {
+      "month": "2025-01-16",
+      "fmp_session_available": true,
+      "uw_full_tape_file_available": true,
+      "massive_historical_contract_resolved": true,
+      "massive_valid_quote_before_origin": true,
+      "common_component_pass": true
+    },
+    {
+      "month": "2025-07-16",
+      "fmp_session_available": true,
+      "uw_full_tape_file_available": true,
+      "massive_historical_contract_resolved": true,
+      "massive_valid_quote_before_origin": true,
+      "common_component_pass": true
+    },
+    {
+      "month": "2026-01-16",
+      "fmp_session_available": true,
+      "uw_full_tape_file_available": true,
+      "massive_historical_contract_resolved": true,
+      "massive_valid_quote_before_origin": true,
+      "common_component_pass": true
+    },
+    {
+      "month": "2026-07-16",
+      "fmp_session_available": true,
+      "uw_full_tape_file_available": true,
+      "massive_historical_contract_resolved": true,
+      "massive_valid_quote_before_origin": true,
+      "common_component_pass": true
+    }
+  ],
+  "common_months": [
+    "2024-01-16",
+    "2024-07-16",
+    "2025-01-16",
+    "2025-07-16",
+    "2026-01-16",
+    "2026-07-16"
+  ],
+  "full_history_downloaded": false,
+  "secret_values_emitted": false,
+  "records": [
+    {
+      "month": "2024-01-16",
+      "component": "FMP",
+      "session_available": true,
+      "http_status": 200,
+      "requested_date": "2024-01-16",
+      "returned_dates": [
+        "2024-01-16"
+      ],
+      "rows_returned": 390,
+      "rows_session": 390,
+      "spot_sample": 183.61,
+      "provider_over_return": false
+    },
+    {
+      "month": "2024-01-16",
+      "component": "Massive",
+      "historical_contract_resolved": true,
+      "contract": "O:AAPL240216C00185000",
+      "reference_http_status": 200,
+      "quote_http_status": 200,
+      "quote_rows": 1,
+      "origin_utc": "2024-01-16T14:35:00+00:00",
+      "timestamp_lte_ns": 1705415700000000000,
+      "selected_sip_timestamp": 1705415693981041664,
+      "valid_quote_before_origin": true
+    },
+    {
+      "month": "2024-01-16",
+      "component": "Unusual Whales",
+      "full_tape_file_available": true,
+      "http_status": 206,
+      "bytes_total": 773786856,
+      "bytes_sampled": 1024,
+      "pit_claim": false
+    },
+    {
+      "month": "2024-07-16",
+      "component": "FMP",
+      "session_available": true,
+      "http_status": 200,
+      "requested_date": "2024-07-16",
+      "returned_dates": [
+        "2024-07-16"
+      ],
+      "rows_returned": 390,
+      "rows_session": 390,
+      "spot_sample": 234.81,
+      "provider_over_return": false
+    },
+    {
+      "month": "2024-07-16",
+      "component": "Massive",
+      "historical_contract_resolved": true,
+      "contract": "O:AAPL240816C00235000",
+      "reference_http_status": 200,
+      "quote_http_status": 200,
+      "quote_rows": 1,
+      "origin_utc": "2024-07-16T14:35:00+00:00",
+      "timestamp_lte_ns": 1721140500000000000,
+      "selected_sip_timestamp": 1721140499500229632,
+      "valid_quote_before_origin": true
+    },
+    {
+      "month": "2024-07-16",
+      "component": "Unusual Whales",
+      "full_tape_file_available": true,
+      "http_status": 206,
+      "bytes_total": 869285034,
+      "bytes_sampled": 1024,
+      "pit_claim": false
+    },
+    {
+      "month": "2025-01-16",
+      "component": "FMP",
+      "session_available": true,
+      "http_status": 200,
+      "requested_date": "2025-01-16",
+      "returned_dates": [
+        "2025-01-16"
+      ],
+      "rows_returned": 390,
+      "rows_session": 390,
+      "spot_sample": 228.24,
+      "provider_over_return": false
+    },
+    {
+      "month": "2025-01-16",
+      "component": "Massive",
+      "historical_contract_resolved": true,
+      "contract": "O:AAPL250221C00230000",
+      "reference_http_status": 200,
+      "quote_http_status": 200,
+      "quote_rows": 1,
+      "origin_utc": "2025-01-16T14:35:00+00:00",
+      "timestamp_lte_ns": 1737038100000000000,
+      "selected_sip_timestamp": 1737038099661117952,
+      "valid_quote_before_origin": true
+    },
+    {
+      "month": "2025-01-16",
+      "component": "Unusual Whales",
+      "full_tape_file_available": true,
+      "http_status": 206,
+      "bytes_total": 947734129,
+      "bytes_sampled": 1024,
+      "pit_claim": false
+    },
+    {
+      "month": "2025-07-16",
+      "component": "FMP",
+      "session_available": true,
+      "http_status": 200,
+      "requested_date": "2025-07-16",
+      "returned_dates": [
+        "2025-07-16"
+      ],
+      "rows_returned": 390,
+      "rows_session": 390,
+      "spot_sample": 210.21,
+      "provider_over_return": false
+    },
+    {
+      "month": "2025-07-16",
+      "component": "Massive",
+      "historical_contract_resolved": true,
+      "contract": "O:AAPL250815C00210000",
+      "reference_http_status": 200,
+      "quote_http_status": 200,
+      "quote_rows": 1,
+      "origin_utc": "2025-07-16T14:35:00+00:00",
+      "timestamp_lte_ns": 1752676500000000000,
+      "selected_sip_timestamp": 1752676498690128736,
+      "valid_quote_before_origin": true
+    },
+    {
+      "month": "2025-07-16",
+      "component": "Unusual Whales",
+      "full_tape_file_available": true,
+      "http_status": 206,
+      "bytes_total": 1109326501,
+      "bytes_sampled": 1024,
+      "pit_claim": false
+    },
+    {
+      "month": "2026-01-16",
+      "component": "FMP",
+      "session_available": true,
+      "http_status": 200,
+      "requested_date": "2026-01-16",
+      "returned_dates": [
+        "2026-01-16"
+      ],
+      "rows_returned": 390,
+      "rows_session": 390,
+      "spot_sample": 255.48,
+      "provider_over_return": false
+    },
+    {
+      "month": "2026-01-16",
+      "component": "Massive",
+      "historical_contract_resolved": true,
+      "contract": "O:AAPL260220C00255000",
+      "reference_http_status": 200,
+      "quote_http_status": 200,
+      "quote_rows": 1,
+      "origin_utc": "2026-01-16T14:35:00+00:00",
+      "timestamp_lte_ns": 1768574100000000000,
+      "selected_sip_timestamp": 1768574099688306202,
+      "valid_quote_before_origin": true
+    },
+    {
+      "month": "2026-01-16",
+      "component": "Unusual Whales",
+      "full_tape_file_available": true,
+      "http_status": 206,
+      "bytes_total": 1339713472,
+      "bytes_sampled": 1024,
+      "pit_claim": false
+    },
+    {
+      "month": "2026-07-16",
+      "component": "FMP",
+      "session_available": true,
+      "http_status": 200,
+      "requested_date": "2026-07-16",
+      "returned_dates": [
+        "2026-07-16"
+      ],
+      "rows_returned": 390,
+      "rows_session": 390,
+      "spot_sample": 333.23,
+      "provider_over_return": false
+    },
+    {
+      "month": "2026-07-16",
+      "component": "Massive",
+      "historical_contract_resolved": true,
+      "contract": "O:AAPL260821C00335000",
+      "reference_http_status": 200,
+      "quote_http_status": 200,
+      "quote_rows": 1,
+      "origin_utc": "2026-07-16T14:35:00+00:00",
+      "timestamp_lte_ns": 1784212500000000000,
+      "selected_sip_timestamp": 1784212498863843842,
+      "valid_quote_before_origin": true
+    },
+    {
+      "month": "2026-07-16",
+      "component": "Unusual Whales",
+      "full_tape_file_available": true,
+      "http_status": 206,
+      "bytes_total": 1538329354,
+      "bytes_sampled": 1024,
+      "pit_claim": false
+    }
+  ]
+}

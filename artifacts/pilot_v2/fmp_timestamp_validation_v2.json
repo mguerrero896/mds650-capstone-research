@@ -1,0 +1,307 @@
+{
+  "status": "FMP_SYMBOL_SPECIFIC_EARNINGS_TIMING_PROBED",
+  "window": [
+    "2026-07-13",
+    "2026-07-18"
+  ],
+  "rows": [
+    {
+      "requested_symbol": "SPY",
+      "returned_symbols": [
+        "SPY"
+      ],
+      "http_status": 200,
+      "schema_fields": [
+        "date",
+        "eps",
+        "epsEstimated",
+        "fiscalDateEnding",
+        "revenue",
+        "revenueEstimated",
+        "symbol",
+        "time",
+        "updatedFromDate"
+      ],
+      "event_count": 12,
+      "sample_timing": [
+        {
+          "date": "2017-11-29",
+          "time": "bmo",
+          "symbol": "SPY"
+        },
+        {
+          "date": "2017-08-15",
+          "time": "bmo",
+          "symbol": "SPY"
+        },
+        {
+          "date": "2017-05-15",
+          "time": "bmo",
+          "symbol": "SPY"
+        }
+      ],
+      "applicability": "not_applicable"
+    },
+    {
+      "requested_symbol": "QQQ",
+      "returned_symbols": [
+        "QQQ"
+      ],
+      "http_status": 200,
+      "schema_fields": [
+        "date",
+        "eps",
+        "epsEstimated",
+        "fiscalDateEnding",
+        "revenue",
+        "revenueEstimated",
+        "symbol",
+        "time",
+        "updatedFromDate"
+      ],
+      "event_count": 9,
+      "sample_timing": [
+        {
+          "date": "2008-02-16",
+          "time": "bmo",
+          "symbol": "QQQ"
+        },
+        {
+          "date": "2007-11-15",
+          "time": "bmo",
+          "symbol": "QQQ"
+        },
+        {
+          "date": "2007-08-14",
+          "time": "bmo",
+          "symbol": "QQQ"
+        }
+      ],
+      "applicability": "not_applicable"
+    },
+    {
+      "requested_symbol": "AAPL",
+      "returned_symbols": [
+        "AAPL"
+      ],
+      "http_status": 200,
+      "schema_fields": [
+        "date",
+        "eps",
+        "epsEstimated",
+        "fiscalDateEnding",
+        "revenue",
+        "revenueEstimated",
+        "symbol",
+        "time",
+        "updatedFromDate"
+      ],
+      "event_count": 164,
+      "sample_timing": [
+        {
+          "date": "2026-07-30",
+          "time": "amc",
+          "symbol": "AAPL"
+        },
+        {
+          "date": "2026-04-29",
+          "time": "amc",
+          "symbol": "AAPL"
+        },
+        {
+          "date": "2026-01-29",
+          "time": "amc",
+          "symbol": "AAPL"
+        }
+      ],
+      "applicability": "applicable"
+    },
+    {
+      "requested_symbol": "MSFT",
+      "returned_symbols": [
+        "MSFT"
+      ],
+      "http_status": 200,
+      "schema_fields": [
+        "date",
+        "eps",
+        "epsEstimated",
+        "fiscalDateEnding",
+        "revenue",
+        "revenueEstimated",
+        "symbol",
+        "time",
+        "updatedFromDate"
+      ],
+      "event_count": 164,
+      "sample_timing": [
+        {
+          "date": "2026-07-29",
+          "time": "amc",
+          "symbol": "MSFT"
+        },
+        {
+          "date": "2026-04-29",
+          "time": "amc",
+          "symbol": "MSFT"
+        },
+        {
+          "date": "2026-01-28",
+          "time": "amc",
+          "symbol": "MSFT"
+        }
+      ],
+      "applicability": "applicable"
+    },
+    {
+      "requested_symbol": "NVDA",
+      "returned_symbols": [
+        "NVDA"
+      ],
+      "http_status": 200,
+      "schema_fields": [
+        "date",
+        "eps",
+        "epsEstimated",
+        "fiscalDateEnding",
+        "revenue",
+        "revenueEstimated",
+        "symbol",
+        "time",
+        "updatedFromDate"
+      ],
+      "event_count": 109,
+      "sample_timing": [
+        {
+          "date": "2026-08-26",
+          "time": "amc",
+          "symbol": "NVDA"
+        },
+        {
+          "date": "2026-05-20",
+          "time": "amc",
+          "symbol": "NVDA"
+        },
+        {
+          "date": "2026-02-25",
+          "time": "amc",
+          "symbol": "NVDA"
+        }
+      ],
+      "applicability": "applicable"
+    },
+    {
+      "requested_symbol": "TSLA",
+      "returned_symbols": [
+        "TSLA"
+      ],
+      "http_status": 200,
+      "schema_fields": [
+        "date",
+        "eps",
+        "epsEstimated",
+        "fiscalDateEnding",
+        "revenue",
+        "revenueEstimated",
+        "symbol",
+        "time",
+        "updatedFromDate"
+      ],
+      "event_count": 74,
+      "sample_timing": [
+        {
+          "date": "2026-07-22",
+          "time": "amc",
+          "symbol": "TSLA"
+        },
+        {
+          "date": "2026-04-22",
+          "time": "amc",
+          "symbol": "TSLA"
+        },
+        {
+          "date": "2026-01-28",
+          "time": "amc",
+          "symbol": "TSLA"
+        }
+      ],
+      "applicability": "applicable"
+    },
+    {
+      "requested_symbol": "AMZN",
+      "returned_symbols": [
+        "AMZN"
+      ],
+      "http_status": 200,
+      "schema_fields": [
+        "date",
+        "eps",
+        "epsEstimated",
+        "fiscalDateEnding",
+        "revenue",
+        "revenueEstimated",
+        "symbol",
+        "time",
+        "updatedFromDate"
+      ],
+      "event_count": 122,
+      "sample_timing": [
+        {
+          "date": "2026-07-30",
+          "time": "amc",
+          "symbol": "AMZN"
+        },
+        {
+          "date": "2026-04-29",
+          "time": "amc",
+          "symbol": "AMZN"
+        },
+        {
+          "date": "2026-02-05",
+          "time": "amc",
+          "symbol": "AMZN"
+        }
+      ],
+      "applicability": "applicable"
+    },
+    {
+      "requested_symbol": "META",
+      "returned_symbols": [
+        "META"
+      ],
+      "http_status": 200,
+      "schema_fields": [
+        "date",
+        "eps",
+        "epsEstimated",
+        "fiscalDateEnding",
+        "revenue",
+        "revenueEstimated",
+        "symbol",
+        "time",
+        "updatedFromDate"
+      ],
+      "event_count": 62,
+      "sample_timing": [
+        {
+          "date": "2026-07-29",
+          "time": "amc",
+          "symbol": "META"
+        },
+        {
+          "date": "2026-04-29",
+          "time": "amc",
+          "symbol": "META"
+        },
+        {
+          "date": "2026-01-28",
+          "time": "amc",
+          "symbol": "META"
+        }
+      ],
+      "applicability": "applicable"
+    }
+  ],
+  "actual_eps_revenue_retained": false,
+  "secret_values_emitted": false
+}

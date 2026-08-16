@@ -157,3 +157,24 @@ Spec Kit consistency and preregistration gates pass.
    provider request before `2026-07-31T20:00:00Z`, runs under the isolated
    `D:\MDS650\data\phase5_holdout` root, may construct and hash the common panel and timing
    sidecar, and must leave `holdout_reads=0` without model fitting, QLIKE or outcome summaries.
+35. **Mechanism-aware replication authority** — On 2026-08-01 the owner approved the design in
+   `docs/superpowers/specs/2026-08-01-rv30-mechanism-aware-replication-design.md`. Phase 5 remains
+   immutable evidence. Phase 6 uses twenty causal warm-up, sixty initial-training and one hundred
+   OOS sessions ending 2026-03-23; no Phase 5 result is reclassified or removed.
+36. **Strengthened nested information sets** — B0v2 includes lagged underlying/market state;
+   B1v2a includes 30–60 DTE ATM-IV level and changes; B1v2b adds skew; B1v2c adds term slopes.
+   B2v2 adds exactly nine prior-history abnormal-activity deviations to B1v2a. Failure of the
+   B1v2a coverage gate returns `REVISE_B1V2`, not a B2-versus-B0 substitution.
+37. **Causal B2v2 normalization** — Normalize each registered mechanism from at most sixty prior
+   sessions for the same asset and thirty-minute New York band, minimum twenty, with
+   MAD/IQR/asset/constant fallbacks. Five minutes/60 seconds is primary; 15/30-minute windows and
+   120/300-second delays are robustness only. RV30, QLIKE, residuals and OOS outcomes are never
+   feature-design inputs.
+38. **Phase 6 inference families** — The global Holm family contains only `Delta_B1v2` and
+   `Delta_B2v2`. META, MSFT and the last session tercile form a separate Holm-three targeted
+   replication family that cannot establish a global claim. The MDE is training-only and frozen
+   before one locked five-fold OOS execution.
+39. **Honest result boundary** — Phase 6 seeks practically useful evidence but does not guarantee
+   a positive result. Global confirmation requires all preregistered sign, uncertainty,
+   multiplicity, MDE, challenger, asset and timing gates. Otherwise the registered conclusion is
+   `GLOBAL_EDGE_NOT_CONFIRMED`; positive, negative and null results are retained.

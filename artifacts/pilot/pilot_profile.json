@@ -1,0 +1,43 @@
+{
+  "pilot_id": "pilot_20260713_20260717",
+  "raw_days": 5,
+  "raw_gb": 7.586991365,
+  "filtered_rows": 23595732,
+  "retention_rate": null,
+  "origins": 2840,
+  "rv30_valid": 2840,
+  "b2": {
+    "rows": 8520,
+    "primary_origins": 2840,
+    "primary_event_origins": 2840,
+    "primary_no_event_origins": 0,
+    "natural_event_prevalence": 1.0,
+    "availability_specs": {
+      "primary_60s": 60,
+      "sensitivity_15s": 15,
+      "sensitivity_0s": 0
+    },
+    "volume_final_daily_excluded": true,
+    "primary_cutoff": "created_at <= origin - 60 seconds"
+  },
+  "acceptance_gaps": {
+    "natural_no_event_origins": 0,
+    "event_no_event_requirement_met": false,
+    "fmp_bar_semantics": "OBSERVED_OFFSET_FREE_LOCAL_TIME_ASSUMED_AMERICA_NEW_YORK_PENDING_PROVIDER_CONFIRMATION",
+    "option_state_pit": "NOT_VERIFIED"
+  },
+  "b0": {
+    "features": [
+      "rv_5m_lag",
+      "rv_30m_lag",
+      "return_5m_lag",
+      "volume_5m_lag",
+      "session_minute"
+    ]
+  },
+  "pit": {
+    "b2_primary": "created_at <= origin - 60 seconds",
+    "fmp_available_at": "timestamp_raw + 1 minute"
+  },
+  "predictive_evaluation": "NOT_RUN"
+}

@@ -1,0 +1,51 @@
+MDS650 Phase 6 final validation report
+Run date: 2026-08-02 Australia/Sydney
+Branch: 001-pit-options-rv30-recovery
+Base commit: f0b031a394a256bd3012ed0433139d5a47fc5604
+
+OOS EXECUTION
+PASS: five of five frozen expanding folds completed.
+PASS: 38,976 common forecast origins and 233,856 forecast rows evaluated.
+PASS: the OOS access ledger records exactly one analytical read and results_inspected=true.
+PASS: prediction, sensitivity and variant-ledger SHA-256 hashes match replication_manifest.json.
+
+PYTEST AND COVERAGE
+Command: uv run pytest --override-ini addopts='' -q
+Result: PASS; 343 passed; 0 failed; 0 skipped.
+Command: uv run coverage run -m pytest -q; uv run coverage report
+Result: PASS; total branch coverage 83%.
+
+RUFF
+Command: uv run ruff check .
+Result: PASS; all checks passed.
+
+MYPY
+Command: uv run mypy src scripts
+Result: PASS; no issues found in 85 source files.
+Regression gate: tests/contract/test_mypy_clean.py executes the repository-wide command.
+Remediation: the initial 135 errors across 25 files were reduced to zero without changing Phase 6 OOS artifacts.
+
+JSON SCHEMA
+PASS: artifacts/phase6/preregistration.json validates against phase6-preregistration.schema.json.
+
+SPEC KIT
+PASS: prerequisites and Phase 6 contract tests pass; 26/26 Phase 6 tasks completed.
+PASS: zero unchecked Phase 6 tasks, zero missing referenced paths and zero critical contradictions.
+
+HASH AND ONE-READ GATES
+PASS: preregistration, common panel, method freeze, replication manifest, access ledger and results retain their validated hashes.
+PASS: oos_predictions.parquet SHA-256 is 5f9b503d56e1a7449384d938627963617afbee4963b18dcdae8478b36ff7b24a.
+PASS: oos_sensitivity_predictions.parquet SHA-256 is e95fb3cc33c6f517888c2cf2ba583262840e86e0c47849f6860a80f1e92bc04e.
+PASS: oos_variant_ledger.json SHA-256 is 05bd9056a08dd60a95ff7641bf9ed5a3e620faa020da127ee0b34f198180ff63.
+
+SECRET AND PATH GATES
+PASS: 22 release evidence files contain no configured provider secret values.
+PASS: 22 release evidence files contain no personal Windows paths.
+
+SCIENTIFIC RESULT CONTRACT
+PASS: all positive, negative and null registered outcomes are retained.
+PASS: no result-driven feature, asset, model or timing redesign occurred.
+PASS: Gamma GLM is confirmatory; LightGBM remains robustness-only.
+
+OVERALL
+PASS_REGISTERED_EVALUATION_COMPLETE.

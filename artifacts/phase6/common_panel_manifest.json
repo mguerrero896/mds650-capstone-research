@@ -1,0 +1,17 @@
+{
+  "all_origin_count": 77328,
+  "all_origins_sha256": "e35502a2b18d0c7f9b0df15cbfc3103705f8ac0ac312e79937d6a536769a02bb",
+  "asset_count": 6,
+  "common_coverage": 0.8104050279329609,
+  "common_origin_count": 62667,
+  "common_panel_sha256": "8ba5f0c8e736d27fe78e1887cc4cfc37e2dfbd7f3b6546d1ddf1fe75a782da32",
+  "manifest_sha256": "4594cc8b7327d5132e9397b369efb1d912c0a012a9fab2bee345c82fb2c5cfe1",
+  "oos_read_count": 0,
+  "oos_results_inspected": false,
+  "personal_paths_emitted": false,
+  "preregistration_manifest_sha256": "45d76306c3d2f37527b3ffbfbfd169befa9c6e6ae95aa3a33d162fafd41a4a5b",
+  "schema_version": "phase6-common-panel-1.0",
+  "secret_values_emitted": false,
+  "session_count": 160,
+  "status": "SEALED_BEFORE_OOS"
+}

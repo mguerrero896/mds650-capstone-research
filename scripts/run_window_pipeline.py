@@ -13,6 +13,7 @@ import math
 import os
 import time
 from bisect import bisect_left, bisect_right
+from collections.abc import Mapping
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -20,7 +21,7 @@ from uuid import uuid4
 
 import httpx
 import polars as pl
-from exchange_calendars import get_calendar
+from exchange_calendars import get_calendar  # type: ignore[import-untyped]
 
 from mds650.asset_selection import AssetQuality, freeze_assets
 from mds650.config import ResearchSettings
@@ -37,8 +38,8 @@ ASSETS = tuple(sorted(CANDIDATE_ASSETS))
 START = date(2025, 7, 21)
 END = date(2026, 7, 21)  # exclusive: last fully closed session is included
 PILOT_END = date(2025, 7, 29)
-RAW_ROOT = Path(os.environ.get("MDS650_RAW_ROOT", r"C:\Users\Public\MDS650\raw"))
-DATA_ROOT = Path(os.environ.get("MDS650_DATA_ROOT", r"C:\Users\Public\MDS650\datasets"))
+RAW_ROOT = Path(os.environ.get("MDS650_RAW_ROOT", "data/raw"))
+DATA_ROOT = Path(os.environ.get("MDS650_DATA_ROOT", "data/datasets"))
 OUT_ROOT = Path("artifacts/pipeline_runs/window_20260721")
 XNYS = get_calendar("XNYS")
 
@@ -227,10 +228,15 @@ def _write_pilot(
     }
     counts: dict[str, int] = {}
     for name, values in tables.items():
-        rows = [
-            value.model_dump(mode="json") if hasattr(value, "model_dump") else dict(value)
-            for value in values
-        ]
+        rows = []
+        for value in values:
+            model_dump = getattr(value, "model_dump", None)
+            if callable(model_dump):
+                rows.append(model_dump(mode="json"))
+            elif isinstance(value, Mapping):
+                rows.append(dict(value))
+            else:
+                raise TypeError(f"UNSUPPORTED_TABLE_ROW:{type(value).__name__}")
         frame = pl.DataFrame(rows, strict=False)
         frame.write_parquet(output / f"{name}.parquet")
         counts[name] = frame.height

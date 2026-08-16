@@ -159,7 +159,7 @@ if os.name == 'nt':
 else:
     subprocess.Popen(_cmd, start_new_session=True, **_kw)
 "
-# GBrain is synchronized after the commit, scoped to this repository's source.
-# It never pulls, embeds, extracts, reads provider secrets, or touches other sources.
+# GBrain is synchronized after the commit using the local MDS650-only profile.
+# It never pulls, reads provider secrets, or touches another project's corpus.
 _GBRAIN_SYNC
 # graphify-hook-end

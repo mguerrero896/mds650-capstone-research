@@ -1,0 +1,58 @@
+{
+  "status": "CONTROLLED_AAPL_ORIGIN_PROBE",
+  "timestamp_unit": "nanoseconds since Unix epoch",
+  "results": [
+    {
+      "origin": "2026-07-20T13:35:00Z",
+      "contract": "O:AAPL260731C00335000",
+      "http_status": 200,
+      "request_params_sanitized": {
+        "timestamp.lte": "1784554500000000000",
+        "sort": "timestamp",
+        "order": "desc",
+        "limit": "1"
+      },
+      "rows": 1,
+      "selected_sip_timestamp": 1784554499941623377,
+      "sip_le_origin": true,
+      "bid_price": 7.4,
+      "ask_price": 7.8,
+      "request_id": "68988405eb8e10fa6ba09b0bbcaddc53"
+    },
+    {
+      "origin": "2026-07-20T16:00:00Z",
+      "contract": "O:AAPL260731C00335000",
+      "http_status": 200,
+      "request_params_sanitized": {
+        "timestamp.lte": "1784563200000000000",
+        "sort": "timestamp",
+        "order": "desc",
+        "limit": "1"
+      },
+      "rows": 1,
+      "selected_sip_timestamp": 1784563199403360658,
+      "sip_le_origin": true,
+      "bid_price": 4.7,
+      "ask_price": 4.95,
+      "request_id": "ceed6318dcd147715fb8d9c068b9e5a9"
+    },
+    {
+      "origin": "2026-07-20T19:30:00Z",
+      "contract": "O:AAPL260731C00335000",
+      "http_status": 200,
+      "request_params_sanitized": {
+        "timestamp.lte": "1784575800000000000",
+        "sort": "timestamp",
+        "order": "desc",
+        "limit": "1"
+      },
+      "rows": 1,
+      "selected_sip_timestamp": 1784575799823220090,
+      "sip_le_origin": true,
+      "bid_price": 5.8,
+      "ask_price": 6.2,
+      "request_id": "9e74b97067a0b1d567346be3ad2870b0"
+    }
+  ],
+  "secret_values_emitted": false
+}

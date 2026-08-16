@@ -1,0 +1,10 @@
+{
+  "b0_plus1_valid": 14200,
+  "b0_plus2_valid": 14200,
+  "b2_core_rows": 11993,
+  "common_rows": 11993,
+  "models_trained": 0,
+  "origins": 14200,
+  "provider_requests": 0,
+  "status": "PHASE4B_LOCAL_ONLY"
+}

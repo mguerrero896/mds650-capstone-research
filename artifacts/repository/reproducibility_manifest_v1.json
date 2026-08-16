@@ -1,0 +1,93 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1784779,
+      "path": "artifacts/common_sample/common_matrix_strict_25d.parquet",
+      "sha256": "0993b04ae011165f441dd47cf4998ef269c1cccc43dcac5807d2fd098f77a765"
+    },
+    {
+      "bytes": 2396953,
+      "path": "artifacts/common_sample/common_matrix_available_25d.parquet",
+      "sha256": "d28ed8635c1ff2240072d5c4a34f938f34a4ebebd5b6f989760f52189c4d2881"
+    },
+    {
+      "bytes": 140559,
+      "path": "artifacts/common_sample/common_matrix_targets_25d.parquet",
+      "sha256": "661078254429683eb9d6e4b2866e3df494ec208a260220609237ef5d19111297"
+    },
+    {
+      "bytes": 20259,
+      "path": "artifacts/common_sample/common_matrix_exclusions_v1.parquet",
+      "sha256": "44ad132847f0bf9af6203090a5a25ca70930410de3f45ef46c95a573f7ee906b"
+    },
+    {
+      "bytes": 14126,
+      "path": "artifacts/common_sample/common_matrix_profile_v1.json",
+      "sha256": "1b87d3fb6cdb5e79db1aae939b10c3abb0fd6ee5f7014bf060468ffb3dc4d39f"
+    },
+    {
+      "bytes": 196868,
+      "path": "artifacts/pit/pit_sensitivity_grid_v1.parquet",
+      "sha256": "69c9c016113d8b86a2e9698a95fe8c1e3f3ebd32e5ebf45970dfd5936c4670db"
+    },
+    {
+      "bytes": 775,
+      "path": "artifacts/pit/pit_sensitivity_summary_v1.csv",
+      "sha256": "3f6882c75120b4ffc138edceeb5d595f1bc4f203cb91cca7778f612ffef1a4bb"
+    },
+    {
+      "bytes": 12959,
+      "path": "artifacts/pit/provider_time_semantics_register_v2.json",
+      "sha256": "52936f6edcad4d2dadb4cbeb1fd21d4482a24d1e3437484e000f8bfe5748147a"
+    },
+    {
+      "bytes": 479,
+      "path": "artifacts/backfill/restart_dry_run_v1.json",
+      "sha256": "c3e75217b44f45c322906f81d1eb2a625e482e83344bd1d91b76d7fdd3a977e5"
+    },
+    {
+      "bytes": 684,
+      "path": "artifacts/validation/proposed_temporal_folds_v1.csv",
+      "sha256": "402e913f0c669f6311844335b3f7ade4c8fdd5a5569b60ae07d59313cb9e447c"
+    },
+    {
+      "bytes": 3696,
+      "path": "artifacts/methodology/model_candidate_decision_matrix_v1.csv",
+      "sha256": "dd3163e2d88893246deaeb5d2f83f084c704a52052c04da10b8220b92a24f6ee"
+    },
+    {
+      "bytes": 2788,
+      "path": "artifacts/methodology/inference_candidate_decision_matrix_v1.csv",
+      "sha256": "ffe43191d51cc652c560e28734ed72e3f9a5f17d2b29106a1a213d823bcdfc0e"
+    },
+    {
+      "bytes": 52180,
+      "path": "artifacts/methodology/collinearity_diagnostics_v1.json",
+      "sha256": "981af3bcf8b3349b065ce76d3dfb407393d0031e1ea7e8afa85c64827bf18f8d"
+    }
+  ],
+  "commands": [
+    "uv run python scripts/run_phase4a.py",
+    "uv run python scripts/run_phase4a.py (second deterministic rebuild)",
+    "compare SHA-256 for deterministic artifacts; exclude live disk telemetry projection",
+    "uv run pytest -q",
+    "uv run pytest --cov=src --cov-report=term --cov-fail-under=85 -q",
+    "uv run ruff check .",
+    "uv run mypy src",
+    "git diff --check"
+  ],
+  "deterministic_hash_scope": "retained-input derived artifacts; two independent rebuilds MUST match SHA-256",
+  "environment_dependent_artifacts": [
+    {
+      "bytes": 6056,
+      "path": "artifacts/backfill/backfill_resource_projection_v2.json",
+      "sha256": "81abd127a48998db17ba4bcb3eb5944723b32eaed1d776c2515f1230d82327a8"
+    }
+  ],
+  "environment_dependent_reason": "backfill_resource_projection_v2 records the current free-disk telemetry snapshot and observed local timings; it is not a deterministic scientific artifact",
+  "no_provider_requests": true,
+  "personal_paths_emitted": false,
+  "profile_status": "PASS_RECONCILED_LOCAL_INPUTS",
+  "schema_version": "phase4a-reproducibility-manifest-v1",
+  "secret_values_emitted": false
+}

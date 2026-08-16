@@ -1,0 +1,26 @@
+{
+  "b0_complete": 13000,
+  "b1q_complete": 11993,
+  "b2_core_complete": 11993,
+  "common_intersection": 11993,
+  "nominal_origins": 14200,
+  "pilot_strict_core_diagnostics": [
+    {
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 240
+    },
+    {
+      "exclusion_reason": "B1Q_PIT_OR_QUOTE_COVERAGE",
+      "len": 196
+    }
+  ],
+  "row_set_nesting": {
+    "B1Q_subset_B0": true,
+    "B2_subset_B1Q": true
+  },
+  "target_hash_all": "5567a5c160d2bad50a757ea18a62a245d2b5d00a4c567d97181e3d7a32974dac",
+  "target_hash_common": "acd1efd6d798cf3c62a124d40025b696b3a0d8473472e1b447e36975e042da84",
+  "target_hash_common_in_b0": "acd1efd6d798cf3c62a124d40025b696b3a0d8473472e1b447e36975e042da84",
+  "target_hash_common_in_b1q": "acd1efd6d798cf3c62a124d40025b696b3a0d8473472e1b447e36975e042da84",
+  "target_hash_common_in_b2": "acd1efd6d798cf3c62a124d40025b696b3a0d8473472e1b447e36975e042da84"
+}

@@ -379,3 +379,62 @@ authorized holdout read.
   manifests are hashed and holdout reads are ledgered.
 - Statistical validity: PASS — expanding folds, purge/embargo, QLIKE, day-cluster bootstrap,
   Holm and honest sign reporting are predeclared.
+
+## Phase 6: Mechanism-Aware Historical Replication
+
+Phase 6 is a new owner-approved replication; Phase 5 artifacts and one-read results remain
+immutable. The implementation reuses `mds650.study_design`, `phase5_storage`, `modeling`,
+`metrics` and `stability`, adds only Phase 6-specific calendar/feature/orchestration code, and
+does not modify Phase 5 evidence.
+
+### 6.1 Coherence and preregistration
+
+Run clarify, plan, requirements checklist, tasks and analyze in order. Freeze exactly 180 XNYS
+sessions: twenty warm-up (2025-07-07–2025-08-01), sixty initial training
+(2025-08-04–2025-10-27) and five twenty-session OOS folds (2025-10-28–2026-03-23). Record the
+study-window amendment for the ten pre-2025-07-21 warm-up dates. Hash features, models, folds,
+MDE protocol, inference families, success rules, code, lockfile and contracts before OOS access.
+
+### 6.2 Continuity, storage and acquisition gates
+
+Authenticate a metadata-only FMP/UW/Massive continuity check over every allow-listed session
+before full download. Use the configured `D:\MDS650` roots, immutable raw evidence, per-session
+checkpoints and hash-verified reuse. No batch starts below the projected 80-GiB peak-free floor.
+Failure emits `REPLICATION_SESSION_ALLOWLIST_INCOMPLETE`, `STORAGE_FLOOR_BREACH` or the exact
+provider/schema/hash blocker; no date substitution is allowed.
+
+### 6.3 Causal information sets
+
+B0v2 adds lagged underlying state, SPY/QQQ market state and deterministic time/asset controls.
+B1v2a adds 30–60 DTE ATM-IV level and 5/30-minute changes; B1v2b adds skew; B1v2c adds term
+slopes. Massive quotes use a local contract-day cache and last SIP quote at or before origin.
+B1v2a must pass 80% global, 65% every-asset and 60% every-tercile coverage or stop with
+`REVISE_B1V2`.
+
+B2v2 contains exactly nine target-blind prior-history deviations. For each asset and
+thirty-minute New York band, normalization uses the most recent sixty prior sessions, minimum
+twenty, with MAD/IQR/asset/constant fallback. Five-minute activity and a 60-second UW delay are
+primary; 15/30-minute windows and 120/300-second delays are robustness variants. Warm-up rows
+inform normalization only.
+
+### 6.4 Locked evaluation
+
+Fit GammaRegressor confirmatory models and frozen-grid LightGBM challengers on expanding
+60/80/100/120/140-session histories. Inner selection is chronological and training-only with
+at least a thirty-minute purge/embargo. Compute the training-only MDE and seal `oos_read_count=0`.
+One noninteractive execution transitions the ledger once and creates all five OOS folds without
+intermediate adaptation.
+
+The global Holm family contains only `Delta_B1v2` and `Delta_B2v2`. Ten-thousand paired
+whole-day bootstrap draws provide uncertainty. META, MSFT and the last session tercile form a
+separate Holm-three replication family. All other asset, timing, window, volatility-regime and
+B1v2b/B1v2c results are labelled robustness.
+
+### 6.5 Phase 6 constitution check
+
+- RV30, point-in-time truth and 31-price/30-return arithmetic remain unchanged.
+- The six outcome assets remain frozen without predictive reselection.
+- B1v2/B2v2 are nested and no B2-versus-B0 fallback is allowed.
+- Features, methods, MDE and multiplicity freeze before OOS access.
+- Positive, negative and null outcomes are all retained; no favorable-sign optimization occurs.
+- Secrets, licensed raw data, email, publication, deployment and trading remain outside scope.

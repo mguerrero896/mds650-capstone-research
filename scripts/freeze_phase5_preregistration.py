@@ -9,7 +9,7 @@ import sys
 from datetime import date
 from pathlib import Path
 
-from jsonschema import Draft202012Validator, FormatChecker
+from jsonschema import Draft202012Validator, FormatChecker  # type: ignore[import-untyped]
 
 from mds650.study_design import (
     build_preregistration,

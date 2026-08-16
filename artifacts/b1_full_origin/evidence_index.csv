@@ -1,0 +1,9 @@
+artifact,description,rows_or_status,source,secret_values_emitted
+b1_origin_matrix.parquet,Per-origin B1Q/B1T matrix,2840,Massive cache plus UW Full Tape,false
+b1_coverage_summary.json,Route coverage and gate status,REVISE_B1,Derived locally,false
+b1_coverage_by_asset.csv,Coverage by asset,8 assets,Derived locally,false
+b1_coverage_by_session_segment.csv,Coverage by session tercile,3 segments,Derived locally,false
+b1q_vs_b1t_comparison.csv,Route comparison,2 routes,Derived locally,false
+iv_inversion_diagnostics.json,BSM inversion diagnostics,9159 attempts / 7651 successes,FMP rates and declared dividends,false
+massive_contract_day_cache/cache_index.json,Deterministic contract-day request hashes,180 cache entries,Massive quotes,false
+../api_audit/common_history_all_assets_v3.json,Sampled common-history probe,48 asset-date records,FMP/UW/Massive,false

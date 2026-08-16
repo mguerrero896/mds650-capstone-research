@@ -45,7 +45,7 @@ tasks remain intentionally pending.
 - [x] T018A [P] Import `artifacts/api_audit/exploratory_v0/provider_audit_manifest.json` as byte-preserved sanitized fixtures and record its provenance.
 - [x] T018B [P] Validate fixture hashes and fail on duplicate manifest composite keys or duplicate hashes under distinct requests in `tests/contract/test_authenticated_audit_manifest.py` and `tests/unit/test_audit_manifest.py`.
 - [x] T018C [P] Create and validate JSON Schema 1.1 at `specs/001-pit-options-rv30/contracts/provider-audit-manifest.schema.json`.
-- [x] T018D [P] Plan and exercise schema-validation, secret-scan, personal-path, deterministic-order and idempotency tests without executing production provider connectors.
+- [x] T018D [P] Plan and exercise schema-validation, secret-scan, personal-path, deterministic-order and idempotency tests in `tests/contract/test_authenticated_audit_manifest.py` without executing production provider connectors.
 - [ ] T019 Run foundational tests and static gates after T011–T018; record red baseline and contract status in `docs/recovery/spec_kit_analysis_report.md`.
 
 **Checkpoint**: foundational contracts, safety controls, time semantics, and
@@ -71,7 +71,7 @@ explicit blocked failure code.
 - [ ] T025 [P] [US1] Add failing small live integration smoke tests guarded by presence-only secret checks in `tests/integration/test_provider_smoke.py`.
 - [x] T025A [P] [US1] Diagnose Massive host, authentication, contract format and entitlement status in `docs/recovery/provider_audit_v1_plan.md`; do not download full OPRA quotes. The initial raw-ticker probe returned 404/403; the corrected `O:`-prefixed event-returned contract on `api.massive.com` returned 200 for reference, trades and quotes, while broader coverage remains unverified.
 - [x] T025B [P] [US1] Resolve Unusual Whales canonical aliases and field-by-field time semantics for `created_at`, `start_time` and `end_time`; prohibit undocumented `executed_at`. Aliases, official term-structure/skew field coverage and timestamp metadata are recorded; PIT ordinary option state remains unverified because availability timing is absent.
-- [x] T025C [P] [US1] Probe FMP timezone using winter, summer, DST-transition and early-close requests; exact bar semantics remain an acceptance blocker pending official-calendar comparison.
+- [x] T025C [P] [US1] Probe FMP timezone using winter, summer, DST-transition and early-close requests and record it in `docs/recovery/audit_v0_findings.md`; exact bar semantics remain an acceptance blocker pending official-calendar comparison.
 - [x] T025D [P] [US1] Classify FMP earnings applicability as `applicable`, `not_applicable`, `unsupported` or `invalid_response` and require returned/requested symbol equality; SPY/QQQ are `not_applicable` unless evidence changes that classification.
 - [x] T025E [P] [US1] Probe whether FMP timestamps are bar starts or closes and define the exact origin close/last valid origin in `docs/methodology_decisions.md`; result remains unresolved and blocks RV30 implementation.
 - [x] T025F [P] [US1] Locate the missing AMZN and TSLA minute candidates and classify them as `unclassified_provider_calendar_or_halt` without interpolation; further official-calendar/halt resolution remains required.
@@ -183,7 +183,7 @@ B1T reaches the declared B1a threshold; it never authorizes the twenty-session d
 - [ ] T120 [P] [US2] Audit contract, quote and origin keys and join cardinality in `artifacts/b1_repair/cache_key_audit.json`.
 - [ ] T121 [US2] Diagnose every `INVALID_DTE` row by asset/date/origin/side/bucket/contract in `artifacts/b1_repair/dte_failure_diagnosis.csv`.
 - [ ] T122 [US2] Emit mutually exclusive `first_failure_code` and separate `all_failed_checks` artifacts for B1Q.
-- [ ] T123 [US2] Recompute corrected B1Q nested coverage and stratified CSVs after the integration repair.
+- [ ] T123 [US2] Recompute corrected B1Q nested coverage and stratified CSVs in `artifacts/b1_repair/` after the integration repair.
 - [ ] T124 [P] [US2] Create `docs/corporate_event_contract.md` and ETF/equity earnings tests.
 - [ ] T125 [US2] Create `docs/etf_role_decision.md` using only data-quality and PIT criteria.
 - [ ] T126 [US2] Complete literature `claim_strength_allowed` classification and evidence coordinates.
@@ -225,7 +225,7 @@ artifact is produced.
 - [x] T147 [US2] Produce `artifacts/calibration_20d/b2_feature_distributions.csv`, `unusual_score_distribution.csv`, `b2_calibration_parameters.json` and `unusual_event_prevalence.csv`.
 - [x] T148 [US2] Write `artifacts/calibration_20d/test_report.txt` and `evidence_index.csv` after pytest, Ruff, Mypy, coverage, JSON Schema, hash, secret/path and reproducibility gates.
 - [x] T149 [US2] Add the Phase 3F result and one explicit recommendation to `docs/recovery/twenty_session_calibration_spec_analysis.md`, preserving model, QLIKE, backfill, freeze and Word gates as blocked.
-- [x] T150 [US2] Run the complete Phase 3F quality gate and record final status; do not download further sessions or start predictive evaluation.
+- [x] T150 [US2] Run the complete Phase 3F quality gate and record final status in `artifacts/calibration_20d/test_report.txt`; do not download further sessions or start predictive evaluation.
 
 **Phase 3F checkpoint**: the method-freeze/backfill-plan recommendation is eligible only when
 all twenty sessions are valid and resumable, B2 calibration is leakage-safe, B1Q nested coverage
@@ -302,14 +302,14 @@ IDs are not active execution tasks.
 
 ## Phase 4B: Local PIT Repair and Staged-Backfill Readiness
 
-- [x] T151 [P] Add Phase 4B unit and contract tests for fixed UW windows, FMP +2 sensitivity as-of snapshots, canonical aliases, optional IV missingness, matrix nesting, checkpoints and holdout read guards.
+- [x] T151 [P] Add Phase 4B unit and contract tests for fixed UW windows, FMP +2 sensitivity as-of snapshots, canonical aliases, optional IV missingness, matrix nesting, checkpoints and holdout read guards in `tests/unit/test_phase4b_common.py` and `tests/contract/test_phase4b_artifacts.py`.
 - [x] T152 Implement the local-only `scripts/run_phase4b.py` runner and shared `scripts/phase4b_common.py` contracts using retained Parquet inputs only.
 - [x] T153 Repair the FMP +2 sensitivity with `source_timestamp + 2 minutes <= forecast_origin`; preserve the +1 primary assumption, origin IDs, RV30 targets, source timestamps and feature ages.
 - [x] T154 Replace truncated UW bins with exact `[origin-delay-5m, origin-delay)` windows for 60/120/300 seconds and enforce both event-time and operational cutoff predicates.
 - [x] T155 Canonicalize `b2_within_bin_iv_change`, reject aliases/exact duplicate predictor identities, preserve optional IV missingness and exclude no row solely for IV-change absence.
-- [x] T156 Emit B0, B1Q, B2-core, exact-intersection matrices, row-set/target hashes and non-IV Pilot exclusion diagnostics.
+- [x] T156 Emit B0, B1Q, B2-core, exact-intersection matrices, row-set/target hashes and non-IV Pilot exclusion diagnostics under `artifacts/phase4b/`.
 - [x] T157 Emit verifiable per-session checkpoints, restart/corruption evidence and a deterministic metadata-only ten-session `SEALED_NOT_ACQUIRED` holdout with a read guard.
-- [x] T158 Run the full local pytest, coverage, Ruff, Mypy and two-rebuild hash gates; no provider request or performance computation is permitted.
+- [x] T158 Run the full local pytest, coverage, Ruff, Mypy and two-rebuild hash gates and record them in `artifacts/phase4b/test_report.txt`; no provider request or performance computation is permitted.
 - [x] T159 Generate `reports/CODEX_PHASE4B_HANDOFF.md` and preserve all V1/V2 artifacts unchanged.
 
 **Phase 4B checkpoint**: Stage A data acquisition remains out of scope. The phase is accepted only
@@ -358,19 +358,51 @@ explicitly attributed to non-IV B0/B1Q coverage rather than optional IV missingn
 
 - [x] T189 [P] [US4] Add failing incomplete-session, pre-freeze, hash-mismatch and second-read tests in `tests/contract/test_phase5_holdout_guard.py`.
 - [x] T190 [US4] Implement the fail-closed `0 -> 1` holdout access transition in `src/mds650/holdout.py` and `scripts/run_phase5_holdout.py`.
-- [x] T190A [P] [US4] Implement and test the resumable, isolated
-  `scripts/acquire_phase5_holdout.py` path, exact ten-session allow-list, pre-network release
+- [x] T190A [P] [US4] Implement and test the resumable, isolated `scripts/acquire_phase5_holdout.py`
+  path, exact ten-session allow-list, pre-network release
   guard, provider/source hashing, common-panel seal and target-blind stability sidecar without
   fitting models or computing QLIKE.
-- [ ] T191 [US4] After all ten sessions complete, acquire holdout provider evidence into restricted D: roots without analytical outcome reads and record `artifacts/phase5/holdout_access_ledger.json`.
-- [ ] T192 [US4] Execute the sole authorized holdout read and write `artifacts/phase5/holdout_results.json`; a second invocation MUST fail.
-- [ ] T193 [P] [US4] During the sole T192 read, report asset, frozen session-tercile,
-  development-B0 volatility-regime, FMP +1/+2 and B2 60/120/300-second stability in
-  `artifacts/phase5/stability_results.json`; reuse frozen hyperparameters without retuning and
+- [x] T191 [US4] After all ten sessions complete, acquire holdout provider evidence into restricted D: roots without analytical outcome reads and record `artifacts/phase5/holdout_access_ledger.json`.
+- [x] T192 [US4] Execute the sole authorized holdout read and write `artifacts/phase5/holdout_results.json`; a second invocation MUST fail.
+- [x] T193 [P] [US4] Write registered stability results to `artifacts/phase5/stability_results.json` during the sole T192 read; include asset, frozen session-tercile, development-B0
+  volatility-regime, FMP +1/+2 and B2 60/120/300-second stability, reuse frozen hyperparameters without retuning and
   apply the FR-080 material-reversal rule without expanding Holm.
-- [ ] T194 [US4] Run pytest, Ruff, Mypy, coverage, JSON Schema, secret/path and deterministic-hash gates and write `artifacts/phase5/test_report.txt`.
+- [x] T194 [US4] Run pytest, Ruff, Mypy, coverage, JSON Schema, secret/path and deterministic-hash gates and write `artifacts/phase5/test_report.txt`.
 - [ ] T195 [P] [US4] Reproduce the locked install and compact validation path in Colab and record sanitized parity hashes in `artifacts/phase5/colab_compatibility.json`.
-- [ ] T196 [US4] Write `reports/CODEX_PHASE5_FINAL_HANDOFF.md` with both deltas, uncertainty, Holm, all registered variants and every positive, negative or null result.
+- [x] T196 [US4] Write `reports/CODEX_PHASE5_FINAL_HANDOFF.md` with both deltas, uncertainty, Holm, all registered variants and every positive, negative or null result.
+
+## Phase 12: Mechanism-Aware Historical Replication (owner approved)
+
+**Independent test**: With fixture provider data, generate the exact 180-session manifest,
+causal B0v2/B1v2/B2v2 panel, method freeze and five locked folds; prove no future predictor,
+warm-up fitting, OOS pre-read or outcome-driven configuration change is possible.
+
+- [x] T197 [US4] Add Phase 6 requirements and owner approval to `specs/001-pit-options-rv30/spec.md`.
+- [x] T198 [P] [US4] Add Phase 6 architecture and constitution gates to `specs/001-pit-options-rv30/plan.md`.
+- [x] T199 [P] [US4] Add Phase 6 requirements-quality items to `specs/001-pit-options-rv30/checklists/requirements.md`.
+- [x] T200 [P] [US4] Record Phase 6 authority and fail-closed risks in `docs/methodology_decisions.md` and `docs/risk_register.md`.
+- [x] T201 [US4] Run Spec Kit clarify, plan, checklist, tasks and analyze for SC-037 and save zero-critical evidence in `docs/recovery/phase6_spec_analysis.md`.
+- [x] T202 [P] [US2] Write FR-083/FR-084/SC-038 exact calendar/fold tests in `tests/unit/test_phase6_design.py` and preregistration schema tests in `tests/contract/test_phase6_preregistration.py`.
+- [x] T203 [US2] Implement the FR-083/FR-084/FR-086/SC-038 180-session/five-fold manifest and hash freeze in `src/mds650/phase6.py`, `scripts/freeze_phase6_preregistration.py` and `specs/001-pit-options-rv30/contracts/phase6-preregistration.schema.json`.
+- [x] T204 [P] [US1] Write all-date/provider continuity and 80-GiB storage-floor tests in `tests/unit/test_phase6_continuity.py` and `tests/live/test_phase6_continuity_live.py`.
+- [x] T205 [US1] Run the FR-084/FR-098/FR-099 metadata-only continuity/storage gate from `scripts/probe_phase6_continuity.py` and write `artifacts/phase6/continuity_probe.json` and `artifacts/phase6/storage_preflight.json` without Full Tape body downloads.
+- [x] T206 [P] [US1] Write allow-list, hash-reuse, idempotency and sanitized-manifest tests in `tests/unit/test_phase6_acquisition.py` and `tests/contract/test_phase6_acquisition_manifest.py`.
+- [x] T207 [US1] Implement FR-098/FR-099 resumable one-session acquisition in `scripts/acquire_phase6.py`, reusing `src/mds650/phase5_storage.py` and `scripts/download_calibration_20d.py` without modifying Phase 5 evidence.
+- [x] T208 [P] [US2] Write FR-085/FR-087 B0v2 PIT, FMP delay and 31-price/30-return tests in `tests/unit/test_phase6_b0.py`.
+- [x] T209 [US2] Implement FR-085/FR-087 causal B0v2 features and RV30 origins in `src/mds650/phase6.py` and `scripts/build_phase6_panel.py`.
+- [x] T210 [P] [US2] Write FR-088/FR-089/SC-040 Massive as-of, IV change, nesting and coverage-gate tests in `tests/unit/test_phase6_b1.py`.
+- [x] T211 [US2] Implement FR-088/FR-089/SC-040 B1v2a/B1v2b/B1v2c and `REVISE_B1V2` coverage decisions in `src/mds650/phase6.py` and `scripts/build_phase6_panel.py`.
+- [x] T212 [P] [US2] Write FR-090/FR-091/FR-092/SC-041 exact-nine-feature, prior-history, no-target and delay/window tests in `tests/unit/test_phase6_b2.py`.
+- [x] T213 [US2] Implement FR-090/FR-091/FR-092/SC-041 causal robust B2v2 normalization and its ledger in `src/mds650/phase6.py` and `scripts/build_phase6_panel.py`.
+- [x] T214 [US2] Assemble the FR-085/FR-086/SC-039 canonical common-origin panel and execute PIT/role/hash invariants in `scripts/build_phase6_panel.py` and `tests/unit/test_phase6_common_panel.py`.
+- [x] T215 [P] [US4] Write FR-093/FR-096/SC-042 training-only MDE, deterministic freeze and zero-OOS-read tests in `tests/unit/test_phase6_method_freeze.py`.
+- [x] T216 [US4] Freeze FR-093/FR-096/SC-042 model grids, folds, MDE, success rules and evidence hashes with `scripts/freeze_phase6_method.py` into `artifacts/phase6/method_freeze.json`.
+- [x] T217 [P] [US4] Write FR-093/FR-096/SC-042 expanding-fold, purge/embargo and one-read tests in `tests/unit/test_phase6_evaluation.py`, `tests/unit/test_phase6_method_freeze.py` and `tests/unit/test_phase6_inference.py`.
+- [x] T218 [US4] Execute the FR-096/SC-042 five folds once through `scripts/run_phase6_replication.py`, producing `artifacts/phase6/oos_predictions.parquet` and `artifacts/phase6/oos_access_ledger.json` without intermediate adaptation.
+- [x] T219 [P] [US4] Write FR-094/FR-095/FR-097/SC-043 QLIKE, paired-day bootstrap, Holm-two/Holm-three and honest-decision tests in `tests/unit/test_phase6_inference.py` and `tests/contract/test_phase6_results.py`.
+- [x] T220 [US4] Generate FR-094/FR-095/FR-097/SC-043 registered inference/stability outputs using `scripts/report_phase6_results.py` and preserve positive, negative and null results in `artifacts/phase6/results.json`.
+- [x] T221 [US4] Run pytest, Ruff, Mypy, coverage, JSON Schema, secret/path and deterministic-hash gates and save `artifacts/phase6/test_report.txt`.
+- [x] T222 [US4] Satisfy FR-099/SC-044 by producing `reports/CODEX_PHASE6_FINAL_HANDOFF.md` and `artifacts/phase6/evidence_index.csv` solely from validated frozen artifacts.
 
 ## Dependencies and parallel execution
 
@@ -412,6 +444,11 @@ explicitly attributed to non-IV B0/B1Q coverage rather than optional IV missingn
   T192 requires T188, T189–T191 and permits exactly one analytical holdout read.
 - No Phase 5 task selects assets, features, models or thresholds using RV30 association, QLIKE,
   preliminary prediction quality or holdout outcomes.
+- Phase 6 follows T197–T201 → T202–T205 → T206–T214 → T215–T217 → T218–T222. T201 is the
+  Spec Kit barrier; T205 is the continuity/storage barrier; T211 is the B1v2a coverage barrier;
+  and T216 is the zero-OOS-read method-freeze barrier. T218 is one locked nonadaptive OOS run.
+  Test tasks marked `[P]` may run in parallel only within their completed upstream gate. No
+  Phase 6 task changes Phase 5 evidence or selects a design from Phase 6 OOS outcomes.
 
 ## Requirement traceability
 
@@ -437,6 +474,10 @@ explicitly attributed to non-IV B0/B1Q coverage rather than optional IV missingn
 | FR-071–FR-074, FR-080, SC-032–SC-033 | T169–T178 |
 | FR-075–FR-078, FR-081, SC-034, SC-036 | T179–T188, T193–T196 |
 | FR-082 | T166–T173, T191 |
+| FR-083–FR-086, SC-037–SC-039 | T197–T205, T208–T209 |
+| FR-087–FR-092, SC-040–SC-041 | T208–T214 |
+| FR-093–FR-097, SC-042–SC-044 | T215–T222 |
+| FR-098–FR-099 | T204–T207, T221–T222 |
 | SC-001–SC-003 | T018A–T018D, T024, T031A–T031E, T033 |
 | SC-004–SC-006 | T034–T048, T070–T076 |
 | SC-007 | T049–T054 |

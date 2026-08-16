@@ -73,3 +73,29 @@ dataset hashes, preregistration hash, method-freeze hash, seed, provider audit i
 holdout-read count, registered-variant ledger and test status. The pipeline is research-only:
 no broker, order, payment, email,
 publication, or deployment side effect is permitted.
+
+## Phase 6 replication addendum
+
+Phase 5 remains immutable. Phase 6 evaluates exactly 180 XNYS sessions: twenty warm-up,
+sixty initial training and five twenty-session OOS folds ending 2026-03-23. Warm-up sessions
+may inform prior-history B2v2 normalization only.
+
+The nested information sets are B0v2, B1v2a and B2v2. B1v2a must pass 80% global, 65% each
+asset and 60% each session-tercile coverage; otherwise the contract status is `REVISE_B1V2`
+and no B2-versus-B0 claim is permitted. B1v2b and B1v2c are enriched robustness sets.
+
+The global confirmatory records are exactly:
+
+- `Delta_B1v2 = QLIKE(B0v2) - QLIKE(B1v2a)`;
+- `Delta_B2v2 = QLIKE(B1v2a) - QLIKE(B2v2)`.
+
+Delta_B2v2 is primary and Delta_B1v2 is the key secondary confirmatory comparison. Both use
+GammaRegressor, ten-thousand paired whole-day bootstrap draws and Holm across these two
+p-values. LightGBM supplies a frozen-grid sign robustness check. META, MSFT and the last
+session tercile form a separate Holm-three B2v2 replication family and cannot establish the
+global claim.
+
+The Phase 6 method freeze includes the training-only MDE and an OOS ledger at zero. A single
+nonadaptive run produces all five folds and transitions the ledger once. Every positive,
+negative and null registered result is retained. The absence of a passing global rule yields
+`GLOBAL_EDGE_NOT_CONFIRMED`, not a revised feature/model specification.

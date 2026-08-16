@@ -1,0 +1,11 @@
+{
+  "checkpoint_count": 25,
+  "config_sha256": "2978a23d68d02758ca87391130f7a0cf9ccf9ed98b636ee767d362b0c8cbccf0",
+  "corrupted_checkpoint_detected": true,
+  "duplicate_output_rows": 0,
+  "full_backfill_executed": false,
+  "hashes_identical": true,
+  "provider_requests": 0,
+  "schema_version": "phase4b-checkpoint-restart-v1",
+  "session_list_sha256": "7921d1019e72256af21cef97bb645837af6e9c3f5fe2986c68f9e4f5b13d2229"
+}

@@ -1,0 +1,19 @@
+B1Q INTEGRATION REPAIR TEST REPORT
+==================================
+status: AUTHORIZE_20_SESSION_CALIBRATION_PENDING_HUMAN_APPROVAL
+
+- bucket-scoped contract resolution: PASS
+- invalid DTE rows after repair: 0 / 22,720 attempts
+- B1Q origins recomputed: 2,840
+- first-failure waterfall: 2,840 mutually exclusive origin rows
+- nested B1a/B1b/B1c invariants: PASS (0 violations)
+- active cache keys: 320 unique; 199 legacy files without explicit key retained
+- ETF/equity earnings contract tests: PASS
+- twenty-session Full Tape download: NOT RUN
+- models, QLIKE, asset freeze, Word/PowerPoint: NOT RUN
+- pytest: PASS (all tests)
+- ruff: PASS (full repository)
+- mypy src: PASS
+- coverage: PASS (82.16%)
+- JSON Schema validation: PASS
+- Spec Kit coherence: PASS_WITH_RESEARCH_GATE

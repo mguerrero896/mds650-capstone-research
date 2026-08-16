@@ -32,4 +32,6 @@ Rules:
 - Dirty graphify-out/ files are expected after hooks or incremental updates; dirty graph files are not a reason to skip graphify. Only skip graphify if the task is about stale or incorrect graph output, or the user explicitly says not to use it.
 - If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
 - Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
-  - The project hooks run Graphify after commits/branch switches and synchronize the isolated GBrain source after the same events. For an immediate uncommitted refresh, run `graphify update .` and `scripts/gbrain_sync.ps1` manually (both local-only, without embeddings).
+  - MDS650 knowledge MUST remain isolated from Earnings, GenIA and global transcripts. Use the dedicated GBrain profile `%USERPROFILE%\.mds650`, database `gbrain_mds650`, and the project-only sources `mds650-research` and `mds650-code`; never use the global GBrain corpus to answer an MDS650 question.
+  - For natural-language project search, run `scripts/query_project_knowledge.ps1`. It queries the isolated GBrain corpus and the repository-local Graphify graph.
+  - The project hooks run Graphify after commits/branch switches and synchronize the isolated GBrain source after the same events. `MDS650_Knowledge_AutoSync` also refreshes both engines every fifteen minutes and at logon. For an immediate refresh, run `scripts/sync_project_knowledge.ps1`.

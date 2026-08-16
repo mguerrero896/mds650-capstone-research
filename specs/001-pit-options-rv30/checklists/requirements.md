@@ -180,3 +180,39 @@
 - [x] CHK016 Does holdout acquisition have an exact UTC release instant, isolated storage,
   resumable provider checkpoints, zero model/QLIKE execution, source hashes and a tested
   pre-network fail-closed path? [Security and Reproducibility, Spec §FR-079 and §SC-035]
+
+## Phase 6 Mechanism-Aware Replication Requirements
+
+- [x] CHK017 Are the twenty warm-up, sixty initial-training and five twenty-session OOS blocks
+  specified with exact XNYS boundaries, roles and disjointness? [Completeness, Spec §FR-083]
+- [x] CHK018 Is the pre-2025-07-21 window amendment conditioned on authenticated metadata-only
+  continuity without substituting missing dates? [Consistency, Spec §FR-084]
+- [x] CHK019 Are the canonical row, RV30 31-price/30-return rule and missing-minute/session
+  boundary outcomes objectively defined? [Clarity, Spec §FR-085]
+- [x] CHK020 Are the six outcome assets distinguished from SPY/QQQ controls and protected from
+  predictive reselection? [Consistency, Spec §FR-086]
+- [x] CHK021 Is every B0v2 predictor and its FMP primary/sensitivity availability rule listed
+  without an earnings or future-data ambiguity? [Completeness, Spec §FR-087]
+- [x] CHK022 Are B1v2a/B1v2b/B1v2c nested components, quote validity conditions and change
+  horizons unambiguous? [Clarity, Spec §FR-088]
+- [x] CHK023 Are B1v2 coverage gates measurable globally, by asset and by session tercile, with
+  an explicit no-fallback consequence? [Acceptance Criteria, Spec §FR-089]
+- [x] CHK024 Are exactly nine B2v2 abnormal-activity mechanisms named without target-dependent
+  selection or provider cumulative fields? [Completeness, Spec §FR-090]
+- [x] CHK025 Are prior-history length, minimum sample, time-band grouping and every robust-scale
+  fallback explicitly specified? [Measurability, Spec §FR-091]
+- [x] CHK026 Are UW `created_at` semantics, primary/sensitivity delays and prohibited intention
+  interpretations consistent with the PIT contract? [Consistency, Spec §FR-092]
+- [x] CHK027 Are confirmatory/challenger roles, exact grids, expanding histories and minimum
+  purge/embargo fixed before OOS access? [Completeness, Spec §FR-093]
+- [x] CHK028 Are both global estimands, sign convention, primary metric, clustering unit,
+  bootstrap draws and Holm family objectively defined? [Measurability, Spec §FR-094]
+- [x] CHK029 Is the separate META/MSFT/last-tercile family prevented from substituting for a
+  failed global claim? [Consistency, Spec §FR-095]
+- [x] CHK030 Does the method-freeze requirement enumerate all method/data hashes and the exact
+  zero-to-one OOS access transition? [Security and Reproducibility, Spec §FR-096]
+- [x] CHK031 Are global success, targeted replication, honest null and every fail-closed stop
+  state mutually distinguishable? [Clarity, Spec §FR-097–FR-099]
+- [x] CHK032 Do the success criteria cover Spec Kit coherence, calendar/schema integrity,
+  B1v2 coverage, causal B2v2, deterministic one-read inference and Phase 5 preservation?
+  [Coverage, Spec §SC-037–SC-044]

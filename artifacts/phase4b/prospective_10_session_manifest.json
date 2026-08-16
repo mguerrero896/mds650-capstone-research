@@ -1,0 +1,25 @@
+{
+  "acquired": false,
+  "overlap_with_retained_origins": false,
+  "provider_requests": 0,
+  "raw_payloads_written": false,
+  "read_guard": "deny before method freeze and human approval",
+  "role": "PROSPECTIVE_HOLDOUT",
+  "schema_version": "prospective-holdout-v1",
+  "seal_timestamp_utc": "2026-07-17T19:25:01+00:00",
+  "selection_rule": "first ten XNYS sessions strictly after Phase 4B seal timestamp",
+  "session_dates": [
+    "2026-07-20",
+    "2026-07-21",
+    "2026-07-22",
+    "2026-07-23",
+    "2026-07-24",
+    "2026-07-27",
+    "2026-07-28",
+    "2026-07-29",
+    "2026-07-30",
+    "2026-07-31"
+  ],
+  "session_list_sha256": "95d774945e0d2a70118a779d342ea495bb1a69234624dc41eb9eb53729b81cca",
+  "status": "SEALED_NOT_ACQUIRED"
+}

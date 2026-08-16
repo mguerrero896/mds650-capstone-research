@@ -1,0 +1,24 @@
+B1 FORENSIC VALIDATION TEST REPORT
+==================================
+status: REVISE_B1_AGAIN
+
+Validated artifacts:
+- b1_nested_coverage.json: global and stratified monotonicity assertions = PASS (0 errors)
+- failure_waterfall.csv: 2,840 origins x 17 stages = 48,280 rows; every origin has every stage
+- controlled_asset_tests.json: 12 origins and 72 contract cases across AAPL, SPY, META, TSLA
+- zero_coverage_controlled.json: 12 origins and 72 cases across SPY, QQQ, META, TSLA
+- iv_failures.csv: 9,159 per-attempt rows with explicit failure codes
+- literature_evidence_ledger.csv: 10 rows; conservative status vocabulary = PASS
+
+Gates intentionally not run in this phase:
+- 20-session Full Tape download
+- backfill, model training, tuning, QLIKE, final test, asset freeze, Word updates
+
+Quality gates executed:
+- uv run pytest -q: PASS (all collected tests)
+- uv run pytest --cov=src --cov-report=term-missing -q: PASS; 82.26% total
+- uv run ruff check src tests scripts: PASS
+- uv run mypy src: PASS (20 source files)
+- uv run pytest -q tests/contract/test_manifest_json_schema.py: PASS (13 tests)
+- git diff --check: PASS (line-ending warnings only)
+- full repository ruff: BLOCKED by five pre-existing notebook E501 findings; no notebook was modified in this phase

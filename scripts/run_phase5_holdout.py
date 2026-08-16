@@ -14,7 +14,7 @@ from typing import Any
 import numpy as np
 import polars as pl
 import run_phase5_development_evaluation as development
-from jsonschema import Draft202012Validator
+from jsonschema import Draft202012Validator  # type: ignore[import-untyped]
 
 from mds650.holdout import (
     EXPECTED_HOLDOUT_SESSIONS,
@@ -34,7 +34,7 @@ from mds650.stability import (
     b2_sensitivity_column,
     development_volatility_cutpoints,
 )
-from mds650.study_design import canonical_sha256, source_sha256
+from mds650.study_design import B2_FEATURE_NAMES, canonical_sha256, source_sha256
 
 ROOT = Path(__file__).resolve().parents[1]
 PHASE5 = ROOT / "artifacts" / "phase5"
@@ -199,7 +199,7 @@ def _validate_stability_sidecar(
                 f"b2_option_activity_present__{delay}s",
                 *(
                     b2_sensitivity_column(feature, delay)
-                    for feature in development.B2_FEATURE_NAMES
+                    for feature in B2_FEATURE_NAMES
                 ),
             }
         )
@@ -232,7 +232,7 @@ def _validate_stability_sidecar(
             | pl.any_horizontal(
                 [
                     ~pl.col(b2_sensitivity_column(feature, delay)).cast(pl.Float64).is_finite()
-                    for feature in development.B2_FEATURE_NAMES
+                    for feature in B2_FEATURE_NAMES
                 ]
             )
         )

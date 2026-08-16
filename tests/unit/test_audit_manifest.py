@@ -168,7 +168,7 @@ def test_v11_manifest_rejects_personal_absolute_paths(tmp_path: Path) -> None:
         raw_hash="a" * 64,
         request_id="req-1",
     )
-    record["sanitized_response_path"] = r"C:\Users\person\AppData\Local\Temp\raw.json"
+    record["sanitized_response_path"] = str(Path.home() / "raw.json")
     manifest["provider_results"] = [record]
     path = tmp_path / "manifest.json"
     path.write_text(json.dumps(manifest), encoding="utf-8")

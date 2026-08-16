@@ -1,0 +1,2207 @@
+{
+  "fmp_bar_availability": "CONSERVATIVE_RESEARCH_ASSUMPTION",
+  "records": [
+    {
+      "asset": "SPY",
+      "http_status": 200,
+      "payload_sha256": "c104a9f9e32d50a9edf7d52d949c8e04df98a1a260108aa699f91192fdd465cc",
+      "provider_over_return": true,
+      "request_hash": "28f4d6818bcc34b0304ceee0715cdb0edb69a9b3cc3b81f0aa9cc938fede3d07",
+      "requested_date": "2026-06-11",
+      "returned_dates": [
+        "2026-06-11",
+        "2026-06-12"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-11"
+    },
+    {
+      "asset": "SPY",
+      "http_status": 200,
+      "payload_sha256": "ac5c191f4a91db5de7264a2c1aabf101c486133ef64b53095bb1f3261cebe029",
+      "provider_over_return": false,
+      "request_hash": "b48c248750a2a4eccf6e3905111824d1614b469a871cbc039f3867d88274781e",
+      "requested_date": "2026-06-12",
+      "returned_dates": [
+        "2026-06-12"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-12"
+    },
+    {
+      "asset": "SPY",
+      "http_status": 200,
+      "payload_sha256": "7d9618469a7c74c7009cc0c907cf92f9604b2d25a78e6022a2729eb520b24152",
+      "provider_over_return": true,
+      "request_hash": "5d8874d19d601e65b3355fb9f645cf12a4f3db7d39fed0d7527036016085f770",
+      "requested_date": "2026-06-15",
+      "returned_dates": [
+        "2026-06-15",
+        "2026-06-16"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-15"
+    },
+    {
+      "asset": "SPY",
+      "http_status": 200,
+      "payload_sha256": "9208783d759b4cd8e695ff58d558bbf6859910f5812a6ddad6c5b16bdb4c87bb",
+      "provider_over_return": true,
+      "request_hash": "fc057f15e61c0755f50c312f47f7f031ab8300d4b1f03d6b1f1365e15019b6ab",
+      "requested_date": "2026-06-16",
+      "returned_dates": [
+        "2026-06-16",
+        "2026-06-17"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-16"
+    },
+    {
+      "asset": "SPY",
+      "http_status": 200,
+      "payload_sha256": "e6be4d185dda015256742bd292cc45438f977c3d4b8b2bc349a28ae53ae21b0f",
+      "provider_over_return": true,
+      "request_hash": "73dca676edd405b1f65d1c50565bb3a9fedbfa20222481d865b84d135dbe38e8",
+      "requested_date": "2026-06-17",
+      "returned_dates": [
+        "2026-06-17",
+        "2026-06-18"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-17"
+    },
+    {
+      "asset": "SPY",
+      "http_status": 200,
+      "payload_sha256": "7b464e5be8f42c2335d2af4e2c0f0913e41947ddbd99bf09b64a61ccc22de892",
+      "provider_over_return": false,
+      "request_hash": "dac4ce564ccc0f8707b40fb7315b57376e327ea61dfe442b13ec6e8627023858",
+      "requested_date": "2026-06-18",
+      "returned_dates": [
+        "2026-06-18"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-18"
+    },
+    {
+      "asset": "SPY",
+      "http_status": 200,
+      "payload_sha256": "dc684ca0cf0eda08e08b662246cbd95f9e00d6b1c3b7932fc1aa544dd3a90991",
+      "provider_over_return": true,
+      "request_hash": "7e4607115bc60ce837ead2b004436a2edcd1066a3d07ad09596c1aad9ee6b714",
+      "requested_date": "2026-06-22",
+      "returned_dates": [
+        "2026-06-22",
+        "2026-06-23"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-22"
+    },
+    {
+      "asset": "SPY",
+      "http_status": 200,
+      "payload_sha256": "d1539f062f58d91f6b20ab14f4bfc4419deb47ada963e18921267154c33379f8",
+      "provider_over_return": true,
+      "request_hash": "d4435a8af23111864b2a76c7d08b48d1ec8994cc0a175da1b862de8159c42183",
+      "requested_date": "2026-06-23",
+      "returned_dates": [
+        "2026-06-23",
+        "2026-06-24"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-23"
+    },
+    {
+      "asset": "SPY",
+      "http_status": 200,
+      "payload_sha256": "57363e3631025add9760fad9ad1e9d4d588f19f9e50a1c876a55dd809593dd0f",
+      "provider_over_return": true,
+      "request_hash": "f4f61e010e062011ceff9c3d01252c6f60391a4aeff106f53a9e74b4c04e0c45",
+      "requested_date": "2026-06-24",
+      "returned_dates": [
+        "2026-06-24",
+        "2026-06-25"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-24"
+    },
+    {
+      "asset": "SPY",
+      "http_status": 200,
+      "payload_sha256": "2a440251b4b05df77d255c0cf545a1977661325e1692f53ab3a215fe5d7bf4c1",
+      "provider_over_return": true,
+      "request_hash": "954b1437fba2c9b23aa3d870c6044b873d8f05e395f3fa6a251bdeb901ac2de7",
+      "requested_date": "2026-06-25",
+      "returned_dates": [
+        "2026-06-25",
+        "2026-06-26"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-25"
+    },
+    {
+      "asset": "SPY",
+      "http_status": 200,
+      "payload_sha256": "fbe81e243e49145c22a8d33ccf5ea34a30fe15aba3ce92bfe4363e06d632b487",
+      "provider_over_return": false,
+      "request_hash": "d3fe8a2626e39f0ecab1281c29e538f175d86375929a6e16c6a0ac3770ba611a",
+      "requested_date": "2026-06-26",
+      "returned_dates": [
+        "2026-06-26"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-26"
+    },
+    {
+      "asset": "SPY",
+      "http_status": 200,
+      "payload_sha256": "6e0bb4deb4078bceb3de47df4357d9bd21e69273c808955be59f6083f5a6ce2a",
+      "provider_over_return": true,
+      "request_hash": "f42f4d7d081636572fddc4f6aa82c33791929ed19ec9afa585e37d25df2b3796",
+      "requested_date": "2026-06-29",
+      "returned_dates": [
+        "2026-06-29",
+        "2026-06-30"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-29"
+    },
+    {
+      "asset": "SPY",
+      "http_status": 200,
+      "payload_sha256": "7d1cc7f44ebb97a54cf34ded147a9d61f664d675196b6a401f2e399a4f353d9b",
+      "provider_over_return": true,
+      "request_hash": "e25c50522888597bdead7ab719a145b6e2060bbfcc8dd624100cdac9238fb507",
+      "requested_date": "2026-06-30",
+      "returned_dates": [
+        "2026-06-30",
+        "2026-07-01"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-30"
+    },
+    {
+      "asset": "SPY",
+      "http_status": 200,
+      "payload_sha256": "072ffe22b010eb21f1433ec9909221491a2e7f8f07bf1946e44f78284514fed3",
+      "provider_over_return": true,
+      "request_hash": "44a1f2de00763c59ad1d96306dadf70edef66c6f38e69038960fffec3bd58be8",
+      "requested_date": "2026-07-01",
+      "returned_dates": [
+        "2026-07-01",
+        "2026-07-02"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-01"
+    },
+    {
+      "asset": "SPY",
+      "http_status": 200,
+      "payload_sha256": "97a4a6589e5e5de0330915fef1a396d27c7d700757567df42a05dd719583a22f",
+      "provider_over_return": false,
+      "request_hash": "fda6fa7ed0c1da5c6a2dd9b624fb623449829f5dbd4c687b845b84c7c1ab24e5",
+      "requested_date": "2026-07-02",
+      "returned_dates": [
+        "2026-07-02"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-02"
+    },
+    {
+      "asset": "SPY",
+      "http_status": 200,
+      "payload_sha256": "f1e2125d7dd349cf9f8a6810a023a847432443230ce0e06ba470d79088478020",
+      "provider_over_return": true,
+      "request_hash": "a95e398b1330b68a4891d9c0ca9a81022200b202243695561e728d8cd69808ce",
+      "requested_date": "2026-07-06",
+      "returned_dates": [
+        "2026-07-06",
+        "2026-07-07"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-06"
+    },
+    {
+      "asset": "SPY",
+      "http_status": 200,
+      "payload_sha256": "fc9c813b38b841fb876f23168c7347f52db2e2fabd18b8fd49b2b4b8f1525edb",
+      "provider_over_return": true,
+      "request_hash": "229c90c2e6aa9535e42acab54ef8f61321dd0fd72090e422652bf9ec3aabcc49",
+      "requested_date": "2026-07-07",
+      "returned_dates": [
+        "2026-07-07",
+        "2026-07-08"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-07"
+    },
+    {
+      "asset": "SPY",
+      "http_status": 200,
+      "payload_sha256": "129376406ae86a510c77e0e5741290d7d1b76a36d88d3c96a90c1e828dc50b9f",
+      "provider_over_return": true,
+      "request_hash": "e5e315746b0ca77bbf49d20e59b1090e302773f5bf9dfe8dd76387f74dc6126a",
+      "requested_date": "2026-07-08",
+      "returned_dates": [
+        "2026-07-08",
+        "2026-07-09"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-08"
+    },
+    {
+      "asset": "SPY",
+      "http_status": 200,
+      "payload_sha256": "b21a70185803e52869751022788226954533f4764f1e508ffae6c67a46caf8cd",
+      "provider_over_return": true,
+      "request_hash": "c5101f107527062cb9cac1318bc802ca304130a6ea29d767b906cb573c208a18",
+      "requested_date": "2026-07-09",
+      "returned_dates": [
+        "2026-07-09",
+        "2026-07-10"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-09"
+    },
+    {
+      "asset": "SPY",
+      "http_status": 200,
+      "payload_sha256": "73c26d77d551a515b0c97661371e50cf27a1b0c1644b27363881a02331b136cf",
+      "provider_over_return": false,
+      "request_hash": "b23cbabaf720d713ccb941a25a9d668806af565c51021f527068aa1ad6c6939b",
+      "requested_date": "2026-07-10",
+      "returned_dates": [
+        "2026-07-10"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-10"
+    },
+    {
+      "asset": "QQQ",
+      "http_status": 200,
+      "payload_sha256": "c2964ef8fb38ddfac7a5c6cf8998275e95da581539a2d3503bc17067c189730b",
+      "provider_over_return": true,
+      "request_hash": "f9521d889f264ec717a9a99b700dbb12533df0dcebc813d6949e4995aa8c510d",
+      "requested_date": "2026-06-11",
+      "returned_dates": [
+        "2026-06-11",
+        "2026-06-12"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-11"
+    },
+    {
+      "asset": "QQQ",
+      "http_status": 200,
+      "payload_sha256": "f657c9da718973f2cb7eeab0246e5be2d342c1f9f23b18bc033d4a8362f8db0c",
+      "provider_over_return": false,
+      "request_hash": "f3e71b244badba433d802882221a9cea5ed027538e114d83bcca38c04b2f27f3",
+      "requested_date": "2026-06-12",
+      "returned_dates": [
+        "2026-06-12"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-12"
+    },
+    {
+      "asset": "QQQ",
+      "http_status": 200,
+      "payload_sha256": "048441ddf4aa3c3baf9fda5c75e49cbd770c1ea5a79a801784ce81eb04185612",
+      "provider_over_return": true,
+      "request_hash": "28229482a4e8a0b1580fd5e5eaa1e1bd03c130f12d7928348fd6b39899c583af",
+      "requested_date": "2026-06-15",
+      "returned_dates": [
+        "2026-06-15",
+        "2026-06-16"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-15"
+    },
+    {
+      "asset": "QQQ",
+      "http_status": 200,
+      "payload_sha256": "f621021c77573e27743847ac1473ff0810683f43aa189df86f0dc20c97580ece",
+      "provider_over_return": true,
+      "request_hash": "bb52f346b0ab59e8bac09b77563b99aa6a383dc1bb3e66e4df9a117ddb4fd509",
+      "requested_date": "2026-06-16",
+      "returned_dates": [
+        "2026-06-16",
+        "2026-06-17"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-16"
+    },
+    {
+      "asset": "QQQ",
+      "http_status": 200,
+      "payload_sha256": "1e1f8e4aa8698c955dd55a6392d545c5d703dc51348a05c4628d3660ad3a5909",
+      "provider_over_return": true,
+      "request_hash": "755fdd738de0ed916de6444bb2b566c2b74a77ce2578a02f8c1ac0b45fb05535",
+      "requested_date": "2026-06-17",
+      "returned_dates": [
+        "2026-06-17",
+        "2026-06-18"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-17"
+    },
+    {
+      "asset": "QQQ",
+      "http_status": 200,
+      "payload_sha256": "83455db992d08d35a475582953f2b8f52346706c9b1370fd184dda2713b93623",
+      "provider_over_return": false,
+      "request_hash": "cafa4442f59d085177f5a9054c0873462a652f9d62a2d01a4c7f12289a49f545",
+      "requested_date": "2026-06-18",
+      "returned_dates": [
+        "2026-06-18"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-18"
+    },
+    {
+      "asset": "QQQ",
+      "http_status": 200,
+      "payload_sha256": "b8ee64faafc0c735dc730990bce2522fc53593a9a5d443c6ed0cc16c4467996d",
+      "provider_over_return": true,
+      "request_hash": "83f459cf9a9f4412f8c13d0da7569ba0135b027d642076a4bab71daaba7303f8",
+      "requested_date": "2026-06-22",
+      "returned_dates": [
+        "2026-06-22",
+        "2026-06-23"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-22"
+    },
+    {
+      "asset": "QQQ",
+      "http_status": 200,
+      "payload_sha256": "e402853fa4b9dcf89c1eb15cc80e961554f0273eea473ac2290dd6882a0a3e2e",
+      "provider_over_return": true,
+      "request_hash": "751fc2b14df235ca627957ee05d570ed8b987c9b9e5a77182eb402b9c37e45e0",
+      "requested_date": "2026-06-23",
+      "returned_dates": [
+        "2026-06-23",
+        "2026-06-24"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-23"
+    },
+    {
+      "asset": "QQQ",
+      "http_status": 200,
+      "payload_sha256": "e70747a8ed976b728f965b18e49d29b222f6afb2be136a13464a6c0dd6bac5eb",
+      "provider_over_return": true,
+      "request_hash": "dc7520e17c29a6f28cf718a525de1eda030984233015442286e1612351a2f0c6",
+      "requested_date": "2026-06-24",
+      "returned_dates": [
+        "2026-06-24",
+        "2026-06-25"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-24"
+    },
+    {
+      "asset": "QQQ",
+      "http_status": 200,
+      "payload_sha256": "acb5c983b9251d52263dbd1b6acab3e3a5ddedfb449a632f97f37db610319f9c",
+      "provider_over_return": true,
+      "request_hash": "6bb4b489e0afafd90b087edd1405599c074123cc3d73bd91c19545dec5da6605",
+      "requested_date": "2026-06-25",
+      "returned_dates": [
+        "2026-06-25",
+        "2026-06-26"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-25"
+    },
+    {
+      "asset": "QQQ",
+      "http_status": 200,
+      "payload_sha256": "f4c9908ddf9d2ecdc847093b558c399cb519ddf91418e2ad17f227d53749961a",
+      "provider_over_return": false,
+      "request_hash": "3fa86af6693a8b97f7681c2903a35267ca0deeed40e24802b8cd45801bafc33f",
+      "requested_date": "2026-06-26",
+      "returned_dates": [
+        "2026-06-26"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-26"
+    },
+    {
+      "asset": "QQQ",
+      "http_status": 200,
+      "payload_sha256": "d8b0c51c0f95052643df9d8d241012f89469f2931d989bc266060c10e1cb77bc",
+      "provider_over_return": true,
+      "request_hash": "e1ed25f468811c3fe27a75617201e872c09d358375feef4d14ea16f97189a7eb",
+      "requested_date": "2026-06-29",
+      "returned_dates": [
+        "2026-06-29",
+        "2026-06-30"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-29"
+    },
+    {
+      "asset": "QQQ",
+      "http_status": 200,
+      "payload_sha256": "67b909e96970a443db8494104d05e321f949f526b21fb96a9d8b14587799f929",
+      "provider_over_return": true,
+      "request_hash": "4e10f58e9bb129bfeca0e33c5c2540438c9e43477155baef772a8b94f17f6d18",
+      "requested_date": "2026-06-30",
+      "returned_dates": [
+        "2026-06-30",
+        "2026-07-01"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-30"
+    },
+    {
+      "asset": "QQQ",
+      "http_status": 200,
+      "payload_sha256": "498c1b93b7d426ffb59b161577ed15ca1de5ebf73e51c04a49980d9943fc4903",
+      "provider_over_return": true,
+      "request_hash": "eaafadd53de8461ff013397645b4e9b3fd9201d70e469a424985ce2fba4f097d",
+      "requested_date": "2026-07-01",
+      "returned_dates": [
+        "2026-07-01",
+        "2026-07-02"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-01"
+    },
+    {
+      "asset": "QQQ",
+      "http_status": 200,
+      "payload_sha256": "933fb2767a6a3c021647b3985831e88ec348616da230c30ccdd44c21f2c466a9",
+      "provider_over_return": false,
+      "request_hash": "23dcfc21af41c0f7f9cccd4b0e18b51117475b8e83faa74be0dda7538b826695",
+      "requested_date": "2026-07-02",
+      "returned_dates": [
+        "2026-07-02"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-02"
+    },
+    {
+      "asset": "QQQ",
+      "http_status": 200,
+      "payload_sha256": "6faf86c0eb1c7b18901c80aa7fe7c06cb1a00d9751070f3ab4441eeab5bccca8",
+      "provider_over_return": true,
+      "request_hash": "08b9a1011ad2d5c26e241637bd18bbe942889dcdc6ce1b950c85f1b9221ee101",
+      "requested_date": "2026-07-06",
+      "returned_dates": [
+        "2026-07-06",
+        "2026-07-07"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-06"
+    },
+    {
+      "asset": "QQQ",
+      "http_status": 200,
+      "payload_sha256": "8bdb9cc90b796d9424fc0fe581aa24006c17fb261ec5fe1401806db2ab7eee9c",
+      "provider_over_return": true,
+      "request_hash": "7ecc02634fe4b7ae1e32445aa7472307964483534577fa013106fad4b3621d7a",
+      "requested_date": "2026-07-07",
+      "returned_dates": [
+        "2026-07-07",
+        "2026-07-08"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-07"
+    },
+    {
+      "asset": "QQQ",
+      "http_status": 200,
+      "payload_sha256": "bddf4703fc91333dbf86c765a65ecd3c3d1469ee0d2609e9921c15c9c0280cab",
+      "provider_over_return": true,
+      "request_hash": "a017f73e8b14184877925ad86f7ca3904f6487707c3f9bc5568edcdf2b9e864d",
+      "requested_date": "2026-07-08",
+      "returned_dates": [
+        "2026-07-08",
+        "2026-07-09"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-08"
+    },
+    {
+      "asset": "QQQ",
+      "http_status": 200,
+      "payload_sha256": "168d92649c3006ad15fbc74b97a4c8b1be42b24335b4a88c51005e0fe1353c18",
+      "provider_over_return": true,
+      "request_hash": "fe9db533bf00a01b7abb4f76e1eab70179bbc8eeb5a6637d1f6a0c8d22d06fe5",
+      "requested_date": "2026-07-09",
+      "returned_dates": [
+        "2026-07-09",
+        "2026-07-10"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-09"
+    },
+    {
+      "asset": "QQQ",
+      "http_status": 200,
+      "payload_sha256": "791e6fdd9dbfeae43a517eb702d7bc2c374438028b757b636b1a661c4738260c",
+      "provider_over_return": false,
+      "request_hash": "1e872af145d0369e026c943644aee7191c421ab1403116738a359ce490881cd2",
+      "requested_date": "2026-07-10",
+      "returned_dates": [
+        "2026-07-10"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-10"
+    },
+    {
+      "asset": "AAPL",
+      "http_status": 200,
+      "payload_sha256": "bc7773e7dfb5dcc4ecfccf203e113ed1d1e12f1d1ff86123d44ff6b6fbcc2fce",
+      "provider_over_return": true,
+      "request_hash": "e60acbcaa4bcdcf2a2a678214e56210efbbfeb4731f98ec38ae8f5d15d13f6e6",
+      "requested_date": "2026-06-11",
+      "returned_dates": [
+        "2026-06-11",
+        "2026-06-12"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-11"
+    },
+    {
+      "asset": "AAPL",
+      "http_status": 200,
+      "payload_sha256": "cbe2e4121b6d1d7bd72bf84f084e031a686ac9c6f0db99d57ea1e61d51593f98",
+      "provider_over_return": false,
+      "request_hash": "2a739dd947e54a5553e59137851096912d65e46fb7b074e0167cf944d21d5dcc",
+      "requested_date": "2026-06-12",
+      "returned_dates": [
+        "2026-06-12"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-12"
+    },
+    {
+      "asset": "AAPL",
+      "http_status": 200,
+      "payload_sha256": "15c70c72ca0418b90d0b689d4ed7a3bc5261c79e01124150580e22e0bd9b4d11",
+      "provider_over_return": true,
+      "request_hash": "3ef7114cd3840eaf0344206b4df24e2f063dc553d830bd0f61534d653f8beaf4",
+      "requested_date": "2026-06-15",
+      "returned_dates": [
+        "2026-06-15",
+        "2026-06-16"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-15"
+    },
+    {
+      "asset": "AAPL",
+      "http_status": 200,
+      "payload_sha256": "b4b4be87254b5857f1b8e0d18002c6b4b9e4303d8b8fd4d387288c31db87cc71",
+      "provider_over_return": true,
+      "request_hash": "25bb0cec794ab6986331fdab4451b4e96290d1bc08977375f098b5c8333154e0",
+      "requested_date": "2026-06-16",
+      "returned_dates": [
+        "2026-06-16",
+        "2026-06-17"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-16"
+    },
+    {
+      "asset": "AAPL",
+      "http_status": 200,
+      "payload_sha256": "20bc3303d9223fb2f00939ff702d743f3e8263a8a8429dc9c2d383162a02cb03",
+      "provider_over_return": true,
+      "request_hash": "ff4564466b78de0f727b2c010db3a30e4917f3eac851c277214496f39427a583",
+      "requested_date": "2026-06-17",
+      "returned_dates": [
+        "2026-06-17",
+        "2026-06-18"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-17"
+    },
+    {
+      "asset": "AAPL",
+      "http_status": 200,
+      "payload_sha256": "5a02f80c72d7d835181ac78ac32f8ad46cb43405176eee2ed79af58b326ccb57",
+      "provider_over_return": false,
+      "request_hash": "6164af4be4e2adfdcdee87f455a4450a39bdc18e096896d251a6a897bc01b1cb",
+      "requested_date": "2026-06-18",
+      "returned_dates": [
+        "2026-06-18"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-18"
+    },
+    {
+      "asset": "AAPL",
+      "http_status": 200,
+      "payload_sha256": "10af86f363b4acf23cfb0bc88547efb52e48016ba5113d75d0bc222799ed2745",
+      "provider_over_return": true,
+      "request_hash": "52d0d2bc259e80d156a1f51534e1b3166e287e78d16124ebf422eaae584e387f",
+      "requested_date": "2026-06-22",
+      "returned_dates": [
+        "2026-06-22",
+        "2026-06-23"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-22"
+    },
+    {
+      "asset": "AAPL",
+      "http_status": 200,
+      "payload_sha256": "e3b4a982e1a300b29226a96430bc0c9174cd870c0bee32658ecdd9a5d3e1f99d",
+      "provider_over_return": true,
+      "request_hash": "39934195780fa0c62a4a68c4b94fa87fe41a525d262d41fb7f716800ba92d769",
+      "requested_date": "2026-06-23",
+      "returned_dates": [
+        "2026-06-23",
+        "2026-06-24"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-23"
+    },
+    {
+      "asset": "AAPL",
+      "http_status": 200,
+      "payload_sha256": "8aa3dc609a4183bad18972fbc24476b09c170610994307ef31226377f9dd0e65",
+      "provider_over_return": true,
+      "request_hash": "3467354de9965e9cd931401e8de75f2ea29a4eda6d6cf26a84cf8b72f91e073a",
+      "requested_date": "2026-06-24",
+      "returned_dates": [
+        "2026-06-24",
+        "2026-06-25"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-24"
+    },
+    {
+      "asset": "AAPL",
+      "http_status": 200,
+      "payload_sha256": "a2d495a2593ffe55297a0fb9f9482702db38b0b482970d3d6c574807bf71dc6a",
+      "provider_over_return": true,
+      "request_hash": "9ebcee4ad421191b4778dc03d53b118e44cf4c3624c94b6ed24b9f5b7685fd9f",
+      "requested_date": "2026-06-25",
+      "returned_dates": [
+        "2026-06-25",
+        "2026-06-26"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-25"
+    },
+    {
+      "asset": "AAPL",
+      "http_status": 200,
+      "payload_sha256": "d6c37939fffcc36b4527f68b9bd4e20636125fb9448cfee4bd1b4c0b117a5a19",
+      "provider_over_return": false,
+      "request_hash": "71b24208a4f3e041a73063f7c0e9e5f950dcdbbc1bb3d1f486311fe767060d47",
+      "requested_date": "2026-06-26",
+      "returned_dates": [
+        "2026-06-26"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-26"
+    },
+    {
+      "asset": "AAPL",
+      "http_status": 200,
+      "payload_sha256": "0968b274d3294c54326ba065deb5116019619bf9513e9bad5935dc3178b891c0",
+      "provider_over_return": true,
+      "request_hash": "e3d2ef9fd520ba08cc91dbe58159d9c0287ee56a48e2a650defdde7e78c05268",
+      "requested_date": "2026-06-29",
+      "returned_dates": [
+        "2026-06-29",
+        "2026-06-30"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-29"
+    },
+    {
+      "asset": "AAPL",
+      "http_status": 200,
+      "payload_sha256": "d4c328f57ecb4fd658d522cf88a45587850abf5e4309208ed80649baabd51d04",
+      "provider_over_return": true,
+      "request_hash": "428f347ba64e6ad79dcd31dbc1120c1815ebb4826a96190307464df84b12f72a",
+      "requested_date": "2026-06-30",
+      "returned_dates": [
+        "2026-06-30",
+        "2026-07-01"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-30"
+    },
+    {
+      "asset": "AAPL",
+      "http_status": 200,
+      "payload_sha256": "d394499495c1cb719de5933859208b1958c7e46b8f099597d53d0792657663b4",
+      "provider_over_return": true,
+      "request_hash": "2c6daf6d9ecf79d11d76a6a792356faf87656ab4157130e6d988e61ae17ad5f1",
+      "requested_date": "2026-07-01",
+      "returned_dates": [
+        "2026-07-01",
+        "2026-07-02"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-01"
+    },
+    {
+      "asset": "AAPL",
+      "http_status": 200,
+      "payload_sha256": "e8eaac10aef8f2b423e7cba5987a080a207fd4e6b51e763906c69d24319d57d9",
+      "provider_over_return": false,
+      "request_hash": "e9d3f124c1a29503f2bef69c9a1d1edc0475d480e1cf903cf8dc01202e4d78f5",
+      "requested_date": "2026-07-02",
+      "returned_dates": [
+        "2026-07-02"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-02"
+    },
+    {
+      "asset": "AAPL",
+      "http_status": 200,
+      "payload_sha256": "5f6f4301a2d5c8aa03ea0f8cb0b64c7a043ce9d56cd25dc8094a66003df88671",
+      "provider_over_return": true,
+      "request_hash": "c05644fd2c5a6d79fbfb097378bb6a230de9055953682701d8e936b308781299",
+      "requested_date": "2026-07-06",
+      "returned_dates": [
+        "2026-07-06",
+        "2026-07-07"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-06"
+    },
+    {
+      "asset": "AAPL",
+      "http_status": 200,
+      "payload_sha256": "c4680e15467dcd30fad6292a19eea1606dd6bd6472814924edd46502ec3c0abc",
+      "provider_over_return": true,
+      "request_hash": "dc18d5cb00349bd7f44887c2bf99302dca92a3c7e39a71568111a4656908684c",
+      "requested_date": "2026-07-07",
+      "returned_dates": [
+        "2026-07-07",
+        "2026-07-08"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-07"
+    },
+    {
+      "asset": "AAPL",
+      "http_status": 200,
+      "payload_sha256": "5ad0c0855331c4e185f5ed7535eaf70e26e62bf2de580418163a65f55ec93ce7",
+      "provider_over_return": true,
+      "request_hash": "9ee5269569f4c4746aaee4585ecd9009669bdcf5962071973092a1e28fb512c6",
+      "requested_date": "2026-07-08",
+      "returned_dates": [
+        "2026-07-08",
+        "2026-07-09"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-08"
+    },
+    {
+      "asset": "AAPL",
+      "http_status": 200,
+      "payload_sha256": "b62eb4f1892794ad2d291dd21463cff0bb89c05062814a065e9198820b516394",
+      "provider_over_return": true,
+      "request_hash": "47a2e43d562d5c4e7a83577ad59d70b28b57e0e4cb8a947a1fa3e33da40a0660",
+      "requested_date": "2026-07-09",
+      "returned_dates": [
+        "2026-07-09",
+        "2026-07-10"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-09"
+    },
+    {
+      "asset": "AAPL",
+      "http_status": 200,
+      "payload_sha256": "4191b715b3d919a0f6e6ed1db05a0f17630107fb03f3c923ce3ae2741aacc92d",
+      "provider_over_return": false,
+      "request_hash": "d51cc4f93fa477637d060e924dc34ec2b6fe879a763c66844db9e3e47125e53f",
+      "requested_date": "2026-07-10",
+      "returned_dates": [
+        "2026-07-10"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-10"
+    },
+    {
+      "asset": "MSFT",
+      "http_status": 200,
+      "payload_sha256": "55624e3325ecea2e7d01270121e511269d3386522e10fd58945739802bdaaf2f",
+      "provider_over_return": true,
+      "request_hash": "b6ca6a8466d5f6255a3d276481df81256a57482c33f8a5f11856c6ef035ad9e0",
+      "requested_date": "2026-06-11",
+      "returned_dates": [
+        "2026-06-11",
+        "2026-06-12"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-11"
+    },
+    {
+      "asset": "MSFT",
+      "http_status": 200,
+      "payload_sha256": "033f0ed08dd930c58bdc693a1c4e4f31bdf05aa5b116468328879e86c5d582c6",
+      "provider_over_return": false,
+      "request_hash": "814299c9c0fea0f8b00feffa5bfccb6a5b9fe582af8737b73458bd6a0a151ffc",
+      "requested_date": "2026-06-12",
+      "returned_dates": [
+        "2026-06-12"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-12"
+    },
+    {
+      "asset": "MSFT",
+      "http_status": 200,
+      "payload_sha256": "d2e36833dae56285f6220b8c67096a9533a0aef0af40d123e52faa4cf6989fcc",
+      "provider_over_return": true,
+      "request_hash": "015bd49b356c9ce0cca2c67715ccc173dd7fb2565d461405fa0c70c00d58ffac",
+      "requested_date": "2026-06-15",
+      "returned_dates": [
+        "2026-06-15",
+        "2026-06-16"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-15"
+    },
+    {
+      "asset": "MSFT",
+      "http_status": 200,
+      "payload_sha256": "76072934080bd2e4360ac0191b8b21d19e522865eade6c7555fd191230f96a4a",
+      "provider_over_return": true,
+      "request_hash": "dc8f52ecc1b75008fbe93c53f2dbaf16d77f74a110051139f29dd013924b8210",
+      "requested_date": "2026-06-16",
+      "returned_dates": [
+        "2026-06-16",
+        "2026-06-17"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-16"
+    },
+    {
+      "asset": "MSFT",
+      "http_status": 200,
+      "payload_sha256": "eb5c2a50618bca7ab630b97302b592c386efa6eb9e69217e59e018d1ae46cbb8",
+      "provider_over_return": true,
+      "request_hash": "3b56dae9025962ec1d2f3d945abffcc4916f9f434b016b6be90ae75ec7097d51",
+      "requested_date": "2026-06-17",
+      "returned_dates": [
+        "2026-06-17",
+        "2026-06-18"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-17"
+    },
+    {
+      "asset": "MSFT",
+      "http_status": 200,
+      "payload_sha256": "3c02f648919c70900d614a662d01d18cf8fb72c5fb0b8d2f13caa1c2b254b4b4",
+      "provider_over_return": false,
+      "request_hash": "edf10fd7617022280af4137ba98acfd7a17919799bccf3f2dfa8fdb30e012717",
+      "requested_date": "2026-06-18",
+      "returned_dates": [
+        "2026-06-18"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-18"
+    },
+    {
+      "asset": "MSFT",
+      "http_status": 200,
+      "payload_sha256": "7664438732f9dfa0f9ad849d4c65c825ba2c6761f9b1aaac979e3bea8bbc9da0",
+      "provider_over_return": true,
+      "request_hash": "16c3b1cbcf147c03c71aabd341a988271668d327ddc1290eaf3bd23676cf471e",
+      "requested_date": "2026-06-22",
+      "returned_dates": [
+        "2026-06-22",
+        "2026-06-23"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-22"
+    },
+    {
+      "asset": "MSFT",
+      "http_status": 200,
+      "payload_sha256": "f6b3a5d6ab6d56bcf089ea11f56ae18c06df8113324c716710288c1a8971d4a7",
+      "provider_over_return": true,
+      "request_hash": "9c15418603f50de79d1455a3d084791f04a7d68c5344c21c0e98f8b90d71047d",
+      "requested_date": "2026-06-23",
+      "returned_dates": [
+        "2026-06-23",
+        "2026-06-24"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-23"
+    },
+    {
+      "asset": "MSFT",
+      "http_status": 200,
+      "payload_sha256": "eeadcfecfe2bb4c29ed3b92402743ccc20442398a118ad172ca3c37abb1df931",
+      "provider_over_return": true,
+      "request_hash": "94a9ea18419e70b23a3227a51efab1eb3f2fda719982ae171503adf14f7693c3",
+      "requested_date": "2026-06-24",
+      "returned_dates": [
+        "2026-06-24",
+        "2026-06-25"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-24"
+    },
+    {
+      "asset": "MSFT",
+      "http_status": 200,
+      "payload_sha256": "83693b70f591c6dd2d4ad330e820b178b8dc17f7659de55ee6c41a6bb03b5e68",
+      "provider_over_return": true,
+      "request_hash": "d5c7d06c4291a3e010d7bd01fd147d2ee9f9fa595e46a647025b60009cadca65",
+      "requested_date": "2026-06-25",
+      "returned_dates": [
+        "2026-06-25",
+        "2026-06-26"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-25"
+    },
+    {
+      "asset": "MSFT",
+      "http_status": 200,
+      "payload_sha256": "3db02d01ba67c4fd986a5e6b2b9af0f43a0935f45fd78a437ef6940e7dfa010e",
+      "provider_over_return": false,
+      "request_hash": "08c30d47628e45110979737d4c52b39e148f16e5ed697ad5836e8ac20f4236a6",
+      "requested_date": "2026-06-26",
+      "returned_dates": [
+        "2026-06-26"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-26"
+    },
+    {
+      "asset": "MSFT",
+      "http_status": 200,
+      "payload_sha256": "bc953772ace1e07da513d81129805b8874643de57ff6916d3915f59d1906bf6d",
+      "provider_over_return": true,
+      "request_hash": "77a27cff3ab5d88284632f4a365097c5828a911d2bbf12729ffb7ca0f7e82b85",
+      "requested_date": "2026-06-29",
+      "returned_dates": [
+        "2026-06-29",
+        "2026-06-30"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-29"
+    },
+    {
+      "asset": "MSFT",
+      "http_status": 200,
+      "payload_sha256": "684fbd8ef23fb18fb453cdd6ee3dc9038fb083e690f6f955aee9e9dbe9a1f7b0",
+      "provider_over_return": true,
+      "request_hash": "0e664373529caab57cb266edf52dcaa3410884a5aec5d3b3e6cadfd5bef10e7e",
+      "requested_date": "2026-06-30",
+      "returned_dates": [
+        "2026-06-30",
+        "2026-07-01"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-30"
+    },
+    {
+      "asset": "MSFT",
+      "http_status": 200,
+      "payload_sha256": "edcff6c5678551834ee42b6d8dc814a0a3ba0144f2b4016931731e2ca28dc2ef",
+      "provider_over_return": true,
+      "request_hash": "be1ac4eceada6c603809147cfc2ee2d6d9185329fb052a59816813f528cf45c9",
+      "requested_date": "2026-07-01",
+      "returned_dates": [
+        "2026-07-01",
+        "2026-07-02"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-01"
+    },
+    {
+      "asset": "MSFT",
+      "http_status": 200,
+      "payload_sha256": "88bb551bd65572bcf5966b56ecfec7070fb1ea2328a7f27372f9d8bcbd9c6c47",
+      "provider_over_return": false,
+      "request_hash": "5e4e081d144957c7501fae8e6c6de713b2e8c8b916cd6715142859a714e71c8e",
+      "requested_date": "2026-07-02",
+      "returned_dates": [
+        "2026-07-02"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-02"
+    },
+    {
+      "asset": "MSFT",
+      "http_status": 200,
+      "payload_sha256": "3ef5be612c2d21a7e3e0a5520a02ffdd1ebc6211c0d48e0530bb5022e09fc16f",
+      "provider_over_return": true,
+      "request_hash": "3dc677cef242646b683b14bd0543bb7036015363b576669472fc5a8e3b4f0499",
+      "requested_date": "2026-07-06",
+      "returned_dates": [
+        "2026-07-06",
+        "2026-07-07"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-06"
+    },
+    {
+      "asset": "MSFT",
+      "http_status": 200,
+      "payload_sha256": "8656b5402f080f87890a5caedff2ceed4f38d5994217c6dfb6596502c3220675",
+      "provider_over_return": true,
+      "request_hash": "b48686c5400fc1ef1e3cf2f0af77309b1877912c33a9d14c95ccb0e7a80d9486",
+      "requested_date": "2026-07-07",
+      "returned_dates": [
+        "2026-07-07",
+        "2026-07-08"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-07"
+    },
+    {
+      "asset": "MSFT",
+      "http_status": 200,
+      "payload_sha256": "97a76c9e9b0c369d0d47a2d8ffd9a418375aac5c06db11ea9c1293ac17afeec5",
+      "provider_over_return": true,
+      "request_hash": "117b7f507fad77abc9f2f525bfb1a5ae30b005e2f5dc58a1077c725b3276d181",
+      "requested_date": "2026-07-08",
+      "returned_dates": [
+        "2026-07-08",
+        "2026-07-09"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-08"
+    },
+    {
+      "asset": "MSFT",
+      "http_status": 200,
+      "payload_sha256": "7cf1161aeff9d65b902278fd5b99e39315bade01be1a99c13c722d4d03f785f0",
+      "provider_over_return": true,
+      "request_hash": "e3412fb71bfc5918fc4e7fb3663d1ffd6e0e7c1fef7d2385b39bb2a411c845e7",
+      "requested_date": "2026-07-09",
+      "returned_dates": [
+        "2026-07-09",
+        "2026-07-10"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-09"
+    },
+    {
+      "asset": "MSFT",
+      "http_status": 200,
+      "payload_sha256": "37cab338b9dac027c351b112c85d0040422890bf4a70eb8d05d82afb82bd27a9",
+      "provider_over_return": false,
+      "request_hash": "b78b15dfaab9188a467304bb44ef3e331be8a90cd800828218782ec5c3c83606",
+      "requested_date": "2026-07-10",
+      "returned_dates": [
+        "2026-07-10"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-10"
+    },
+    {
+      "asset": "NVDA",
+      "http_status": 200,
+      "payload_sha256": "935034a815e73abc08d320930e80e9e2081fbc5ef724d7adf762fcc61e59059f",
+      "provider_over_return": true,
+      "request_hash": "890150e7ba487415d01d2d277f0b8b0ebc9e2afab90cd92529e660d2c0ee53ed",
+      "requested_date": "2026-06-11",
+      "returned_dates": [
+        "2026-06-11",
+        "2026-06-12"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-11"
+    },
+    {
+      "asset": "NVDA",
+      "http_status": 200,
+      "payload_sha256": "8c60981cb8f47b460836edf943cba83d7a475ec8fc2f766ed183de94ed079ef0",
+      "provider_over_return": false,
+      "request_hash": "28c06de15d618545182777c5e0f58cad5f8f9ed492c66d8f49bf073e4be0e943",
+      "requested_date": "2026-06-12",
+      "returned_dates": [
+        "2026-06-12"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-12"
+    },
+    {
+      "asset": "NVDA",
+      "http_status": 200,
+      "payload_sha256": "5459b01cc73a1b70aa0fbf0f53ff8eed3963057e42b5e481622352f1196fbcb6",
+      "provider_over_return": true,
+      "request_hash": "2ff0f97aae41a4c9f95d7076cc7d2033e04234b821f47c23dfa457671c6c5bcf",
+      "requested_date": "2026-06-15",
+      "returned_dates": [
+        "2026-06-15",
+        "2026-06-16"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-15"
+    },
+    {
+      "asset": "NVDA",
+      "http_status": 200,
+      "payload_sha256": "2c517d650b56894c913ac5802b86444bfe6cc48fe1e7ec69514aec340b5a1b91",
+      "provider_over_return": true,
+      "request_hash": "b69d79228a4a83a9c9c376e809471e7517103498501d7e3a7725711d4f744cd7",
+      "requested_date": "2026-06-16",
+      "returned_dates": [
+        "2026-06-16",
+        "2026-06-17"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-16"
+    },
+    {
+      "asset": "NVDA",
+      "http_status": 200,
+      "payload_sha256": "2c2f0388bc07954c588c4b6c2df8ad162bd426a7655b903b8aa22ab1a0fb7354",
+      "provider_over_return": true,
+      "request_hash": "554df3fdd1f761400a359159f241f3305183d40f258f50bfdf7d2ca958d75ee4",
+      "requested_date": "2026-06-17",
+      "returned_dates": [
+        "2026-06-17",
+        "2026-06-18"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-17"
+    },
+    {
+      "asset": "NVDA",
+      "http_status": 200,
+      "payload_sha256": "3e46c10686e23c6a843a237946149bbcea5f73713bf7073856299de7f47e69d7",
+      "provider_over_return": false,
+      "request_hash": "c57cc084c03dfab4a0e6d21c2419f89160116a059fbcef909dc3baca613d1f08",
+      "requested_date": "2026-06-18",
+      "returned_dates": [
+        "2026-06-18"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-18"
+    },
+    {
+      "asset": "NVDA",
+      "http_status": 200,
+      "payload_sha256": "956e5f1a1fbdcbd1ea90b95744909943bd74777556a6b73fc428b4b0ac1a6f1a",
+      "provider_over_return": true,
+      "request_hash": "df2a0b64c70bc9d07d4e9c91ef85dee5c66d64ce486aed5548fa3d53bd069b21",
+      "requested_date": "2026-06-22",
+      "returned_dates": [
+        "2026-06-22",
+        "2026-06-23"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-22"
+    },
+    {
+      "asset": "NVDA",
+      "http_status": 200,
+      "payload_sha256": "de6afc7865f58e5b506a6a019d9fd3d9bdbd59c8a07108fbbeacf9bd16a67fe3",
+      "provider_over_return": true,
+      "request_hash": "3d14ec408bb7308d9358ef21fdc0400621990f55638f08a481eb68e78695e765",
+      "requested_date": "2026-06-23",
+      "returned_dates": [
+        "2026-06-23",
+        "2026-06-24"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-23"
+    },
+    {
+      "asset": "NVDA",
+      "http_status": 200,
+      "payload_sha256": "36fc7b60f8c097802225e6903734be6097bda202e66d7709d4e28f0af2cf3044",
+      "provider_over_return": true,
+      "request_hash": "f1def413db6f79d42245b3e7336ca8e02508f5879c10609a80aa491eb25f4f16",
+      "requested_date": "2026-06-24",
+      "returned_dates": [
+        "2026-06-24",
+        "2026-06-25"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-24"
+    },
+    {
+      "asset": "NVDA",
+      "http_status": 200,
+      "payload_sha256": "c5735cdbf57e4b193b0c302ab0a2f8bdc69ee46a40cd7d8401fa17cba4fc2351",
+      "provider_over_return": true,
+      "request_hash": "162005e065cc852d35795fdd69add4d5c92da527a7aae2742f3f436fdebf4ffc",
+      "requested_date": "2026-06-25",
+      "returned_dates": [
+        "2026-06-25",
+        "2026-06-26"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-25"
+    },
+    {
+      "asset": "NVDA",
+      "http_status": 200,
+      "payload_sha256": "4bd028ac0b2451c86a500ff789182fcd485c0ab49443cd59b2cd8d02fc083137",
+      "provider_over_return": false,
+      "request_hash": "ec20c72e024a2eff2960ad85962ec03598e8ad3ad5f542c8e4fc8acd2649ed20",
+      "requested_date": "2026-06-26",
+      "returned_dates": [
+        "2026-06-26"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-26"
+    },
+    {
+      "asset": "NVDA",
+      "http_status": 200,
+      "payload_sha256": "70f77e78413b099f80c3aed9c73148fea8f1eafe7e7d40c7427ea72a6ec5f7ed",
+      "provider_over_return": true,
+      "request_hash": "31d4d064107e1f5a8575edcbf6bd4a3d321bfcfc1e18751ce6b56c6b2b6434de",
+      "requested_date": "2026-06-29",
+      "returned_dates": [
+        "2026-06-29",
+        "2026-06-30"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-29"
+    },
+    {
+      "asset": "NVDA",
+      "http_status": 200,
+      "payload_sha256": "686cdf313fdf3f19efe0b5268a5cb350474282d42ca5d18d39a5aba2bdfa65ec",
+      "provider_over_return": true,
+      "request_hash": "5fac7b27cb66624cb5ededeac45b5abc49c95dfe12e0a0843364a44b0e3f9d43",
+      "requested_date": "2026-06-30",
+      "returned_dates": [
+        "2026-06-30",
+        "2026-07-01"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-30"
+    },
+    {
+      "asset": "NVDA",
+      "http_status": 200,
+      "payload_sha256": "89ee20b76891a84a94627e8498fb00e85e8fbde392d804274820aa2ae769fee0",
+      "provider_over_return": true,
+      "request_hash": "5a914c852839cc080f8f5812475f13dfbae449f5f386b02f080eea344fd3a576",
+      "requested_date": "2026-07-01",
+      "returned_dates": [
+        "2026-07-01",
+        "2026-07-02"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-01"
+    },
+    {
+      "asset": "NVDA",
+      "http_status": 200,
+      "payload_sha256": "99394205ee6d472d915cc7ce5db6e76ce2b560f7a9c3348432b93470f32dc31c",
+      "provider_over_return": false,
+      "request_hash": "e154f29dc4357c29fb2366297245b068128a711f4f922d3cc33ba23a32b17b82",
+      "requested_date": "2026-07-02",
+      "returned_dates": [
+        "2026-07-02"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-02"
+    },
+    {
+      "asset": "NVDA",
+      "http_status": 200,
+      "payload_sha256": "1e01665c225bdc0fbce380988ce9257f34253a72b3791e281f2bb2b40438be80",
+      "provider_over_return": true,
+      "request_hash": "1eb0aa099ac47700809047000f4f6d8ec93d8af05f74f09e2d3766f02cea9c17",
+      "requested_date": "2026-07-06",
+      "returned_dates": [
+        "2026-07-06",
+        "2026-07-07"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-06"
+    },
+    {
+      "asset": "NVDA",
+      "http_status": 200,
+      "payload_sha256": "98616c57a89a6b63ac60f9d8f51db18f5239026afc711de531bd03044806b2d5",
+      "provider_over_return": true,
+      "request_hash": "412b42ef078edcb8243d1b03e96ef6e721fb7761187f853f07ee54f30f166e30",
+      "requested_date": "2026-07-07",
+      "returned_dates": [
+        "2026-07-07",
+        "2026-07-08"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-07"
+    },
+    {
+      "asset": "NVDA",
+      "http_status": 200,
+      "payload_sha256": "e6362be3f95f199b38e54524a9e9b3565e0c5d3b5cb68a40e190d7a2aef48632",
+      "provider_over_return": true,
+      "request_hash": "60ba983c553d9556b13ccde2877b01076e1737c96df59dad0bfbff23811f3177",
+      "requested_date": "2026-07-08",
+      "returned_dates": [
+        "2026-07-08",
+        "2026-07-09"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-08"
+    },
+    {
+      "asset": "NVDA",
+      "http_status": 200,
+      "payload_sha256": "3a33c4735a4b92b890bd086ef602edd0a4b56651cd33888589f44cf9db1119ca",
+      "provider_over_return": true,
+      "request_hash": "2d751c76c53019fda7b1c630583204bdaadac045a4ecf60262d558bbdbf4f87f",
+      "requested_date": "2026-07-09",
+      "returned_dates": [
+        "2026-07-09",
+        "2026-07-10"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-09"
+    },
+    {
+      "asset": "NVDA",
+      "http_status": 200,
+      "payload_sha256": "9f4a39c40f6b1e25a9b799b8f1c0d7669035d724c1b1c574d0eb7b1cd258c029",
+      "provider_over_return": false,
+      "request_hash": "b5d46c5ef55082ef818bc6cdd3355a43d56dd4c7ec6cce6dc7bf7d05941e3384",
+      "requested_date": "2026-07-10",
+      "returned_dates": [
+        "2026-07-10"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-10"
+    },
+    {
+      "asset": "TSLA",
+      "http_status": 200,
+      "payload_sha256": "63d4b8bdb388978717bf0175a7044e98b7240db5a0760b2985a5bf009bd59bdd",
+      "provider_over_return": true,
+      "request_hash": "f303ba04c93339346a953465e88a6bed4e98f1b2070d63587ab409718dbe4f49",
+      "requested_date": "2026-06-11",
+      "returned_dates": [
+        "2026-06-11",
+        "2026-06-12"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-11"
+    },
+    {
+      "asset": "TSLA",
+      "http_status": 200,
+      "payload_sha256": "828ee48302e589d121f997037c6cb996c96361af9d853ea04138aa4eb3a49de7",
+      "provider_over_return": false,
+      "request_hash": "fe4e2008dac1df45db362eb30d6b1ee7849def69db203579dafdef16a440f88b",
+      "requested_date": "2026-06-12",
+      "returned_dates": [
+        "2026-06-12"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-12"
+    },
+    {
+      "asset": "TSLA",
+      "http_status": 200,
+      "payload_sha256": "6e9d36fb0f16c3c32f1ec3840f8026877f300ed3eca27b3c7490cd5c5eda18fd",
+      "provider_over_return": true,
+      "request_hash": "852f61f74bf0c40c7050032401fc20d2bc873c3a9004113c2d12a19b9aec062a",
+      "requested_date": "2026-06-15",
+      "returned_dates": [
+        "2026-06-15",
+        "2026-06-16"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-15"
+    },
+    {
+      "asset": "TSLA",
+      "http_status": 200,
+      "payload_sha256": "7782a4af92325edca2c1764ccb8f93bfb19014b1a45593e2334822e19148734a",
+      "provider_over_return": true,
+      "request_hash": "8835f82f25a30a25b259a01c02b992929d13a876f2e736f107da7b9899105146",
+      "requested_date": "2026-06-16",
+      "returned_dates": [
+        "2026-06-16",
+        "2026-06-17"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-16"
+    },
+    {
+      "asset": "TSLA",
+      "http_status": 200,
+      "payload_sha256": "cd3fbea4272a9ef4d83b2c3563543a97dca44ab264b3f7b09e28aeb533083497",
+      "provider_over_return": true,
+      "request_hash": "1f2850294db89979b398604d43cd569c2b1d15ed7a2c4b1ee3433c6cceb601ed",
+      "requested_date": "2026-06-17",
+      "returned_dates": [
+        "2026-06-17",
+        "2026-06-18"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-17"
+    },
+    {
+      "asset": "TSLA",
+      "http_status": 200,
+      "payload_sha256": "79fbdc35e27d93aeb7726d26cec8f5ee29a42cf2040d47abb62cab2092e097e8",
+      "provider_over_return": false,
+      "request_hash": "6884b2f59b8ca74acc1482a6b166631f776f83fa3c0f6ec0f8386427c8b8978b",
+      "requested_date": "2026-06-18",
+      "returned_dates": [
+        "2026-06-18"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-18"
+    },
+    {
+      "asset": "TSLA",
+      "http_status": 200,
+      "payload_sha256": "b89929cae97d3a830123674c8011a9c3f06b1cdc93f79623f24d6a145830602a",
+      "provider_over_return": true,
+      "request_hash": "8ece4555e6b7674205e03559b4f4b5683af01ca45c74384fdc7d42a76008da18",
+      "requested_date": "2026-06-22",
+      "returned_dates": [
+        "2026-06-22",
+        "2026-06-23"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-22"
+    },
+    {
+      "asset": "TSLA",
+      "http_status": 200,
+      "payload_sha256": "732d15d2ac0576a91ecf6902c7651aeaa7b1ce273146d13567d071f432a25f33",
+      "provider_over_return": true,
+      "request_hash": "d58eb1bed8f2c9f3eff4bf7757ff8ad52282d2251be6630aa02fb4bd4427bfb3",
+      "requested_date": "2026-06-23",
+      "returned_dates": [
+        "2026-06-23",
+        "2026-06-24"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-23"
+    },
+    {
+      "asset": "TSLA",
+      "http_status": 200,
+      "payload_sha256": "889156cfd13a99747b83d4de7ae19157bc2d792be4b4606d17ae3c649e1b72c6",
+      "provider_over_return": true,
+      "request_hash": "defbafc5ac6b323f7f400e9ea3d19e97acff3f78cb053784e48036d02450a3d0",
+      "requested_date": "2026-06-24",
+      "returned_dates": [
+        "2026-06-24",
+        "2026-06-25"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-24"
+    },
+    {
+      "asset": "TSLA",
+      "http_status": 200,
+      "payload_sha256": "93308de23401ad5ebf212be886da26323cd9560144721487632e6ba7a0016847",
+      "provider_over_return": true,
+      "request_hash": "1dee6cd000772e6afc1039bcab1adfe84576b06c5a49cae4e84f7c2b158df027",
+      "requested_date": "2026-06-25",
+      "returned_dates": [
+        "2026-06-25",
+        "2026-06-26"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-25"
+    },
+    {
+      "asset": "TSLA",
+      "http_status": 200,
+      "payload_sha256": "2c95a40fa23a98e72e2280bbde8d68618d53745d23cbdfa154c219375c2e96b6",
+      "provider_over_return": false,
+      "request_hash": "9307c169fc55363a67eb7fa9e80977c84b221d456c0f738315dfaa54c9895429",
+      "requested_date": "2026-06-26",
+      "returned_dates": [
+        "2026-06-26"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-26"
+    },
+    {
+      "asset": "TSLA",
+      "http_status": 200,
+      "payload_sha256": "26704215ff190d7eba8cda3f12e48fae03eed8e19e995372c132db1b63042f04",
+      "provider_over_return": true,
+      "request_hash": "ec9d7e434d42c04246d08fb71930e0da8f748a77b118b7b7eed250e38b589e1f",
+      "requested_date": "2026-06-29",
+      "returned_dates": [
+        "2026-06-29",
+        "2026-06-30"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-29"
+    },
+    {
+      "asset": "TSLA",
+      "http_status": 200,
+      "payload_sha256": "423216c1de4cf507208d39f38036e18b1debdb35d8992135c58c30e7e2da051f",
+      "provider_over_return": true,
+      "request_hash": "e7ef6f524b7e3b6923bf1e80b9467d054d2bfd3bed25a1e32b4d570886b32150",
+      "requested_date": "2026-06-30",
+      "returned_dates": [
+        "2026-06-30",
+        "2026-07-01"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-30"
+    },
+    {
+      "asset": "TSLA",
+      "http_status": 200,
+      "payload_sha256": "3e868b72836d55a4ab6c99cfe178bd91ebff87332fe4bb336900ac42c4de6c95",
+      "provider_over_return": true,
+      "request_hash": "7d7652c9fe9bca03ef0b6839bc4a791b61a276c207e62926cda53a2dc1ef209e",
+      "requested_date": "2026-07-01",
+      "returned_dates": [
+        "2026-07-01",
+        "2026-07-02"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-01"
+    },
+    {
+      "asset": "TSLA",
+      "http_status": 200,
+      "payload_sha256": "842993e53e9146f08062b2a2c05dad52555b958ca8e73f84e3f425cab0db6db9",
+      "provider_over_return": false,
+      "request_hash": "6c32549dfa95b5fdca14445f46e5d745564115595d2093f09240d031904b9803",
+      "requested_date": "2026-07-02",
+      "returned_dates": [
+        "2026-07-02"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-02"
+    },
+    {
+      "asset": "TSLA",
+      "http_status": 200,
+      "payload_sha256": "734243990c54a361fa51bd216ab1bd5b8bda3847f354d3edf2df9f2970cd45c9",
+      "provider_over_return": true,
+      "request_hash": "c7adb81e976c56c4fca3b1f535e2718f1ba0be8abcccdac7ea3a87a152086c3c",
+      "requested_date": "2026-07-06",
+      "returned_dates": [
+        "2026-07-06",
+        "2026-07-07"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-06"
+    },
+    {
+      "asset": "TSLA",
+      "http_status": 200,
+      "payload_sha256": "bc6570e7b09edee91cfc94af74790929b4b6470b3b3da3ad23d2a81075d03fef",
+      "provider_over_return": true,
+      "request_hash": "bcf96b4e5481d63b4079b57d465069d4579b4702b6ce41d7ce37ac70370c55a4",
+      "requested_date": "2026-07-07",
+      "returned_dates": [
+        "2026-07-07",
+        "2026-07-08"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-07"
+    },
+    {
+      "asset": "TSLA",
+      "http_status": 200,
+      "payload_sha256": "1bd2a1f9f87c32d6acc0676984b191467265d7b14d10d33209f45c2caee5d602",
+      "provider_over_return": true,
+      "request_hash": "63647036241a457397ff0e813671a4155f77ec21320d2aebefc1b53fcc0e3893",
+      "requested_date": "2026-07-08",
+      "returned_dates": [
+        "2026-07-08",
+        "2026-07-09"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-08"
+    },
+    {
+      "asset": "TSLA",
+      "http_status": 200,
+      "payload_sha256": "ba2a31d180f7b45f6d6b060aca95b42fb35cb8429d7d705fb6cc9e5341eaf33c",
+      "provider_over_return": true,
+      "request_hash": "6f79b1d2a3d479b8b18242fc003a6636e203f1f9f2b0c8a99edbc76c999a69a8",
+      "requested_date": "2026-07-09",
+      "returned_dates": [
+        "2026-07-09",
+        "2026-07-10"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-09"
+    },
+    {
+      "asset": "TSLA",
+      "http_status": 200,
+      "payload_sha256": "b05d894df1ecf35921db057aea36b08975423a4025e9f67ee458b906ba5eea45",
+      "provider_over_return": false,
+      "request_hash": "aad3a3dcf13eb3db6074a4f8ed6742c2c550396b4eadbb6ed312c5dc69b9e253",
+      "requested_date": "2026-07-10",
+      "returned_dates": [
+        "2026-07-10"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-10"
+    },
+    {
+      "asset": "AMZN",
+      "http_status": 200,
+      "payload_sha256": "fc6abdbf3a5f797e29b2ebfc638a176730a5723de44f68745b1f43b4eb319f4d",
+      "provider_over_return": true,
+      "request_hash": "1f9361fd9af4b617d07c0deddb2e7d01dbd35e19dc249b5d1a7efa5a3e471992",
+      "requested_date": "2026-06-11",
+      "returned_dates": [
+        "2026-06-11",
+        "2026-06-12"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-11"
+    },
+    {
+      "asset": "AMZN",
+      "http_status": 200,
+      "payload_sha256": "7cf2c9641c33cb6605bd17bec060faea0ab3f28effd3bf486e7a793ee898d013",
+      "provider_over_return": false,
+      "request_hash": "cfc73153d883d5cdf428d468f4bdf1ad6ae8cc2f48517fd55a06af84ef2e9f38",
+      "requested_date": "2026-06-12",
+      "returned_dates": [
+        "2026-06-12"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-12"
+    },
+    {
+      "asset": "AMZN",
+      "http_status": 200,
+      "payload_sha256": "b7c4cc0560e3d0b0cf4a308a3bd9d2c6aaec34d3c12d6dacc3269ffda6759246",
+      "provider_over_return": true,
+      "request_hash": "dd00336d84821de18975b24c6232bd62fc5d84ab06695ccb7a80d34da068e0ee",
+      "requested_date": "2026-06-15",
+      "returned_dates": [
+        "2026-06-15",
+        "2026-06-16"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-15"
+    },
+    {
+      "asset": "AMZN",
+      "http_status": 200,
+      "payload_sha256": "27a79db745e8b768f640ddc15a104bd666c8567d89848a4aa2532919283e60c6",
+      "provider_over_return": true,
+      "request_hash": "6e2f65ae8f1a8be280a69990cbe116d85b7e2ba22edb316714206949408621b8",
+      "requested_date": "2026-06-16",
+      "returned_dates": [
+        "2026-06-16",
+        "2026-06-17"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-16"
+    },
+    {
+      "asset": "AMZN",
+      "http_status": 200,
+      "payload_sha256": "b4b62c2b3299c62359c3ebde1929c32ebaffc5ad97150bc85806a5d6f5816056",
+      "provider_over_return": true,
+      "request_hash": "2f5f4676f1e74d39c1e13990d980134b657cf23b32c08bc81eee30a8062282f5",
+      "requested_date": "2026-06-17",
+      "returned_dates": [
+        "2026-06-17",
+        "2026-06-18"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-17"
+    },
+    {
+      "asset": "AMZN",
+      "http_status": 200,
+      "payload_sha256": "ccfafa379985680ca2cec03f9089cb35a9ababa605123b4c67db7d4987955754",
+      "provider_over_return": false,
+      "request_hash": "052a4480eb28a5010b204c444d898359bfeddca5c09add98c2d0b9d99e17bb18",
+      "requested_date": "2026-06-18",
+      "returned_dates": [
+        "2026-06-18"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-18"
+    },
+    {
+      "asset": "AMZN",
+      "http_status": 200,
+      "payload_sha256": "de03a01e909a202409202e4a8d5954f08c3e01df219f4ada650bc3cee279fba1",
+      "provider_over_return": true,
+      "request_hash": "354050addddd818ac7596d827d712bed3d43cfbc0df6faf379c9cc4aaed32c85",
+      "requested_date": "2026-06-22",
+      "returned_dates": [
+        "2026-06-22",
+        "2026-06-23"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-22"
+    },
+    {
+      "asset": "AMZN",
+      "http_status": 200,
+      "payload_sha256": "9de5b1aa8682fc523a857e8b26f1b6c32fbb20874d74cc7babf01e3558557da7",
+      "provider_over_return": true,
+      "request_hash": "0310ec5f86e0fce6efc7ce1edffcb3340c5a0e02ddf45206ee008cfd4a90936c",
+      "requested_date": "2026-06-23",
+      "returned_dates": [
+        "2026-06-23",
+        "2026-06-24"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-23"
+    },
+    {
+      "asset": "AMZN",
+      "http_status": 200,
+      "payload_sha256": "b686ecf40147354c9ac08e3956f23ae4885f269f07434ebf7b938095538d0cf2",
+      "provider_over_return": true,
+      "request_hash": "d40c15ebcfe55e74d6ca9f18e1beec453361ca6a578a998cb6884f70d7872970",
+      "requested_date": "2026-06-24",
+      "returned_dates": [
+        "2026-06-24",
+        "2026-06-25"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-24"
+    },
+    {
+      "asset": "AMZN",
+      "http_status": 200,
+      "payload_sha256": "dfd2ca3f9b7bec40aa93819035241728ebdb3b06c2fc94133677a7d73dacbb40",
+      "provider_over_return": true,
+      "request_hash": "f4534f6dff4fbedd78e7d1b49be24323435d507513938661a28546081222d4aa",
+      "requested_date": "2026-06-25",
+      "returned_dates": [
+        "2026-06-25",
+        "2026-06-26"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-25"
+    },
+    {
+      "asset": "AMZN",
+      "http_status": 200,
+      "payload_sha256": "40ea04f93d7473f1049cfcfa4dacf5608b0acdd2624f70a3d4f4239f1c5e73da",
+      "provider_over_return": false,
+      "request_hash": "7b69a839f36d6cc1acabe5ee98505ad683d2608b4c1f6d6e6af98ce39a3e39e6",
+      "requested_date": "2026-06-26",
+      "returned_dates": [
+        "2026-06-26"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-26"
+    },
+    {
+      "asset": "AMZN",
+      "http_status": 200,
+      "payload_sha256": "9f9b077b5218bc9acb59710480c9ae2d7df47b1af09dfb6098cbc8ae96cb1450",
+      "provider_over_return": true,
+      "request_hash": "ef1e1722e988311f5b97b4c0c24209a5c8ee4984e8e06a3f8bb442c29f04c681",
+      "requested_date": "2026-06-29",
+      "returned_dates": [
+        "2026-06-29",
+        "2026-06-30"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-29"
+    },
+    {
+      "asset": "AMZN",
+      "http_status": 200,
+      "payload_sha256": "88710c145799be13a5790beadc2c9781552cada6e60e20c2189070605be77677",
+      "provider_over_return": true,
+      "request_hash": "7786a630758319735369b7aadfaba54b87ba27b7d98e628d57f21cda4c734061",
+      "requested_date": "2026-06-30",
+      "returned_dates": [
+        "2026-06-30",
+        "2026-07-01"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-30"
+    },
+    {
+      "asset": "AMZN",
+      "http_status": 200,
+      "payload_sha256": "ab6728c75f3d8a6fe6ac2ad698afc23cfea3bfc7a049f4dfcc4b71fccccc706b",
+      "provider_over_return": true,
+      "request_hash": "de3183875ff54da3771ccad3443640b235893c9417fc8bc55c9966211fd0b21d",
+      "requested_date": "2026-07-01",
+      "returned_dates": [
+        "2026-07-01",
+        "2026-07-02"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-01"
+    },
+    {
+      "asset": "AMZN",
+      "http_status": 200,
+      "payload_sha256": "04c648476b06ab4eb833e5edea51c600294a4d6f431a09a2cf860264f4a29b69",
+      "provider_over_return": false,
+      "request_hash": "5379cbb1928edb0adf9ac53305a6f36ef9bf3ee56c0776de677a6492eee74067",
+      "requested_date": "2026-07-02",
+      "returned_dates": [
+        "2026-07-02"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-02"
+    },
+    {
+      "asset": "AMZN",
+      "http_status": 200,
+      "payload_sha256": "0b91d166d9493ab24b433a1c52ce55677c08b57ddafd49827fd754e9fd5b5bea",
+      "provider_over_return": true,
+      "request_hash": "89f27b90502e31e1402b21dd1e240dbf32aab0a7280c12c711a678454bda255b",
+      "requested_date": "2026-07-06",
+      "returned_dates": [
+        "2026-07-06",
+        "2026-07-07"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-06"
+    },
+    {
+      "asset": "AMZN",
+      "http_status": 200,
+      "payload_sha256": "350fb8c8cb7f4729634d46e4827a385caf580d41bb2ed92d50e7accff1c3c6e7",
+      "provider_over_return": true,
+      "request_hash": "f8b5feb640cfae7e9b432c4456cf0b92a94aae1de17099acb28d75266e6379ad",
+      "requested_date": "2026-07-07",
+      "returned_dates": [
+        "2026-07-07",
+        "2026-07-08"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-07"
+    },
+    {
+      "asset": "AMZN",
+      "http_status": 200,
+      "payload_sha256": "be3c20ac73725e2cc9c2c95e0a6a3a63519404d2c65e37a35fa984b32eb9f894",
+      "provider_over_return": true,
+      "request_hash": "5188a300eed6c61ad269ba321866b6c47cb5a4d8204f1004a294e49e155d46d3",
+      "requested_date": "2026-07-08",
+      "returned_dates": [
+        "2026-07-08",
+        "2026-07-09"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-08"
+    },
+    {
+      "asset": "AMZN",
+      "http_status": 200,
+      "payload_sha256": "1f77f393e24cb0709378da6d932a63a9da38f093ca5f1ed405a04bfb389570f8",
+      "provider_over_return": true,
+      "request_hash": "e8280612b6cc231c5ba1cacda3f25d0b57ae31b38676fdd76ea46462e491dee6",
+      "requested_date": "2026-07-09",
+      "returned_dates": [
+        "2026-07-09",
+        "2026-07-10"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-09"
+    },
+    {
+      "asset": "AMZN",
+      "http_status": 200,
+      "payload_sha256": "e703e9a6fb6e31564d3ca32eeec3c8577e5239b215bf4e8774f947b8fa3b19bf",
+      "provider_over_return": false,
+      "request_hash": "03e25b3a367bec95f06af8274559efdc8bbf892a628d4da53df07ba19464a0d2",
+      "requested_date": "2026-07-10",
+      "returned_dates": [
+        "2026-07-10"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-10"
+    },
+    {
+      "asset": "META",
+      "http_status": 200,
+      "payload_sha256": "d750c2078d795568a52752f51e9631e391bfa16279faf6460eaca658b727d848",
+      "provider_over_return": true,
+      "request_hash": "5d248d0419d0992f49a5758f4673671f5c6fc91b8b0e0eaae302c8a47dee2a48",
+      "requested_date": "2026-06-11",
+      "returned_dates": [
+        "2026-06-11",
+        "2026-06-12"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-11"
+    },
+    {
+      "asset": "META",
+      "http_status": 200,
+      "payload_sha256": "817fbee034eea374f48050e5735ca525c849042c0ca8db4d287d7e6b559060d0",
+      "provider_over_return": false,
+      "request_hash": "8a4fec4f8dc20ecc56ee42fbb2007782d6c8318da211bae929f7534e6fa12ede",
+      "requested_date": "2026-06-12",
+      "returned_dates": [
+        "2026-06-12"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-12"
+    },
+    {
+      "asset": "META",
+      "http_status": 200,
+      "payload_sha256": "433bf1e2cd4652fc2b50c2829970d31cd8dcdf10f95587fec8c7019f007c05f3",
+      "provider_over_return": true,
+      "request_hash": "ea5a1592860ef7875be5b572a341bcd35381de40d0f2bd6a59359b3bca7952bd",
+      "requested_date": "2026-06-15",
+      "returned_dates": [
+        "2026-06-15",
+        "2026-06-16"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-15"
+    },
+    {
+      "asset": "META",
+      "http_status": 200,
+      "payload_sha256": "8c1ea4649e337f14c9dd621402aa904a0d67ab76feb05e6d1f832972e50e7dfa",
+      "provider_over_return": true,
+      "request_hash": "36cc94de4793f4fd322d8e8741aa384ed65791c9d8eedbc5b23269bbf7f98066",
+      "requested_date": "2026-06-16",
+      "returned_dates": [
+        "2026-06-16",
+        "2026-06-17"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-16"
+    },
+    {
+      "asset": "META",
+      "http_status": 200,
+      "payload_sha256": "8072b7837ec433e7c2910cb870668a9a9d4511b0c391820e0a8be42a8503c3e0",
+      "provider_over_return": true,
+      "request_hash": "4dff704e1c9b17e7f18cdbcf6f1571638a031ec88e96b07ec6d50480b88987f1",
+      "requested_date": "2026-06-17",
+      "returned_dates": [
+        "2026-06-17",
+        "2026-06-18"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-17"
+    },
+    {
+      "asset": "META",
+      "http_status": 200,
+      "payload_sha256": "9d85a81691e6943ba3ae2b496f70c9848f3f5aa86d3f3dd496b649b66641f20a",
+      "provider_over_return": false,
+      "request_hash": "6b8e55333df90f3248d25864cd4ea9984a30930a259c9b9a1c94086e8fddb004",
+      "requested_date": "2026-06-18",
+      "returned_dates": [
+        "2026-06-18"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-18"
+    },
+    {
+      "asset": "META",
+      "http_status": 200,
+      "payload_sha256": "025459054910b0a8b951dc7dd02bf2567d0c42fef92753464124befc009b791e",
+      "provider_over_return": true,
+      "request_hash": "84dfb109ecdb676455f84ff3b85b853b3bd88a9c178626e3273c0f99a13046d6",
+      "requested_date": "2026-06-22",
+      "returned_dates": [
+        "2026-06-22",
+        "2026-06-23"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-22"
+    },
+    {
+      "asset": "META",
+      "http_status": 200,
+      "payload_sha256": "d14cc5175ed10911d079da583315ea99a6e310b5a4d7356d237a85c16afe9ebb",
+      "provider_over_return": true,
+      "request_hash": "4f33f8d8818d3ef246e39188e3bb65a06abac228e44833c9250d6fcae28a205b",
+      "requested_date": "2026-06-23",
+      "returned_dates": [
+        "2026-06-23",
+        "2026-06-24"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-23"
+    },
+    {
+      "asset": "META",
+      "http_status": 200,
+      "payload_sha256": "6f566671a7924bd7ed0d0830bfb31328ab61b4b2a997cc65739a9087db47aa25",
+      "provider_over_return": true,
+      "request_hash": "980a2abf049f73eb190d0c97f8d03b7d89a5fe96cee5a1fbdeed0c8830c9b0f9",
+      "requested_date": "2026-06-24",
+      "returned_dates": [
+        "2026-06-24",
+        "2026-06-25"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-24"
+    },
+    {
+      "asset": "META",
+      "http_status": 200,
+      "payload_sha256": "95560359f64012e7c8a0899c8ff39a88304229c9c57399d5915be282a9125d94",
+      "provider_over_return": true,
+      "request_hash": "10c6f62241d5c13a186168389c29007b5b9ec97637d4fe323647673d8afd0cae",
+      "requested_date": "2026-06-25",
+      "returned_dates": [
+        "2026-06-25",
+        "2026-06-26"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-25"
+    },
+    {
+      "asset": "META",
+      "http_status": 200,
+      "payload_sha256": "dedbbc37d87431d1ea7fb33629bc84dfbf004648f55cc1901dab148138fa71c8",
+      "provider_over_return": false,
+      "request_hash": "a6fbdd263813f9e68af71766792ead79d3c04e9d306370495dfabb7b2207944b",
+      "requested_date": "2026-06-26",
+      "returned_dates": [
+        "2026-06-26"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-26"
+    },
+    {
+      "asset": "META",
+      "http_status": 200,
+      "payload_sha256": "683e7a8071813d5efa43c76f3a7a9846ac3af925d1a4c4e96fccc09968bd0f0a",
+      "provider_over_return": true,
+      "request_hash": "8849dfbe2d97b5ec5b481c0280ff777042df4936e7e24f17c73469602364f6ba",
+      "requested_date": "2026-06-29",
+      "returned_dates": [
+        "2026-06-29",
+        "2026-06-30"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-29"
+    },
+    {
+      "asset": "META",
+      "http_status": 200,
+      "payload_sha256": "ae246c6742fbc2e3d3f0598a57a24444ba4976cfb5f66927926d555f59e9039d",
+      "provider_over_return": true,
+      "request_hash": "c82038761f3b71c9057c97096bdf09a2e7bb03db1f05309df0c05e966cba9dfa",
+      "requested_date": "2026-06-30",
+      "returned_dates": [
+        "2026-06-30",
+        "2026-07-01"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-06-30"
+    },
+    {
+      "asset": "META",
+      "http_status": 200,
+      "payload_sha256": "cffefbef80d4fe7aed97a30bedb3ae57fc09d35ef9e09c831c5bddc8be6a2fdc",
+      "provider_over_return": true,
+      "request_hash": "d0f4ad6272508c5bcad31fd2dfa30c1100d0be106fa1659fcb240c4e1e73e4d4",
+      "requested_date": "2026-07-01",
+      "returned_dates": [
+        "2026-07-01",
+        "2026-07-02"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-01"
+    },
+    {
+      "asset": "META",
+      "http_status": 200,
+      "payload_sha256": "6a338c78872dcba2e6318b5c4738867adcd77eb1445d2e625e93a7c0ab2ee41a",
+      "provider_over_return": false,
+      "request_hash": "e048a4c7ec9011f833ac6b689b5aeac23d3da39e2e33416b3f8086694b476f18",
+      "requested_date": "2026-07-02",
+      "returned_dates": [
+        "2026-07-02"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-02"
+    },
+    {
+      "asset": "META",
+      "http_status": 200,
+      "payload_sha256": "bba3a436f09f46a0a8ff05a3533d8c1b09c2709aba4d3cc0eef385730b6cfdd0",
+      "provider_over_return": true,
+      "request_hash": "5cd706fd5830a3114d5944aa3d78676924d2911be304a6687724839b030a80da",
+      "requested_date": "2026-07-06",
+      "returned_dates": [
+        "2026-07-06",
+        "2026-07-07"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-06"
+    },
+    {
+      "asset": "META",
+      "http_status": 200,
+      "payload_sha256": "920219ff8b8714f10e832b55d24b1cab7fbf2e6dc724296e0708a20cc54ce4dd",
+      "provider_over_return": true,
+      "request_hash": "9e6b179cebd7be273de05d7a2482b3d1734ed416a79c4c8b0a16125f1f079a57",
+      "requested_date": "2026-07-07",
+      "returned_dates": [
+        "2026-07-07",
+        "2026-07-08"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-07"
+    },
+    {
+      "asset": "META",
+      "http_status": 200,
+      "payload_sha256": "42b9a7e049dd03b31e43ba2c30de740dc11e0faa4bde5b4bc5b2f8002e663a96",
+      "provider_over_return": true,
+      "request_hash": "38ff0d2571c96c28dbf993698c14032fb5f6b4c92132bb324cf05c9e5a5f3aaa",
+      "requested_date": "2026-07-08",
+      "returned_dates": [
+        "2026-07-08",
+        "2026-07-09"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-08"
+    },
+    {
+      "asset": "META",
+      "http_status": 200,
+      "payload_sha256": "bf4b18d1562a95ed0f9cbd289271d959a7163a6183a8bb0e1568228f731318f3",
+      "provider_over_return": true,
+      "request_hash": "c5abc6d341329c2bfc7cca08260904ffe6b0b13adeb5e47c727e012d9a3de82c",
+      "requested_date": "2026-07-09",
+      "returned_dates": [
+        "2026-07-09",
+        "2026-07-10"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-09"
+    },
+    {
+      "asset": "META",
+      "http_status": 200,
+      "payload_sha256": "ce4260357661fdd1bed06c6f47ee04f0a9553243c5e7243764cd79ec244fc5cc",
+      "provider_over_return": false,
+      "request_hash": "dc935fbd17d2de6fc53f5506c94fbca9f20a0921b08c9c05a6061d200f7f478f",
+      "requested_date": "2026-07-10",
+      "returned_dates": [
+        "2026-07-10"
+      ],
+      "rows_exact": 390,
+      "session_date": "2026-07-10"
+    }
+  ],
+  "secret_values_emitted": false,
+  "status": "PASS"
+}

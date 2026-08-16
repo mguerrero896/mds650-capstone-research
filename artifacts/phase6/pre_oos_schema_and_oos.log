@@ -1,0 +1,5 @@
+PHASE6_PREREGISTRATION_SCHEMA_PASS
+preregistration.json oos_read_count= 0 status= FROZEN_BEFORE_OOS
+common_panel_manifest.json oos_read_count= 0 status= SEALED_BEFORE_OOS
+oos_access_ledger.json oos_read_count= 0 status= SEALED_BEFORE_OOS
+method_freeze.json oos_read_count= 0 status= FROZEN_AFTER_TRAINING_BEFORE_OOS

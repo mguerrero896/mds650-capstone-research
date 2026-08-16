@@ -1,0 +1,53 @@
+{
+  "artifacts": {
+    "authorization": "artifacts/pit/pit_gate_authorization_20260722.json",
+    "canonical_forecast_origins": "artifacts/pit/canonical_forecast_origins.parquet",
+    "common_history_continuity": "artifacts/api_audit/common_history_continuity_v5.json",
+    "earnings_pit": "artifacts/pit/earnings_pit_probe_v2.json",
+    "fmp_bar_semantics": "artifacts/pit/fmp_bar_semantics_v3.json",
+    "uw_created_at_semantics": "artifacts/pit/uw_created_at_semantics_v1.json"
+  },
+  "critical_gates_all_pass": false,
+  "facts_vs_assumptions": {
+    "authenticated_probes": [
+      "FMP bounded matrix recorded exact-session, DST, winter, summer and early-close observations.",
+      "UW recent/historical Flow Alerts requests and retained Full Tape schemas were inspected without printing rows.",
+      "A metadata-only daily continuity probe covered 251 XNYS sessions, eight assets, FMP exact-session responses, UW Range metadata, and one historical Massive contract/quote per asset-day without downloading Full Tape contents.",
+      "Massive expired=true empty responses and explicit expired=false fallbacks were recorded for all 2,008 asset-days; the fallback was not silent."
+    ],
+    "conservative_assumptions": [
+      "FMP available_at = timestamp_raw + 1 minute.",
+      "UW created_at is an operational availability proxy with a 60-second cutoff, not publication time.",
+      "The owner explicitly approved RV30, the FMP +1 minute assumption, the UW operational proxy and the bounded daily audit; these approvals do not turn assumptions into provider publication evidence."
+    ],
+    "provider_documentation": [
+      "FMP exposes one-minute OHLCV, states a point appears after the candle closes and timestamps use exchange local time, but does not label the date as start or close.",
+      "UW documents OptionTrade created_at as the time the trade record was created and Full Tape executed_at as execution time; publication and historical availability semantics are not defined."
+    ],
+    "interpretation_guardrails": [
+      "created_at, bid/ask side, sweep, call/put and premium are descriptive fields only; they are not interpreted as trader intention, informed trading or directional sentiment.",
+      "B2 continuous activity features remain distinct from the secondary unusual_event label, which is not calibrated by this gate run."
+    ],
+    "unresolved": [
+      "FMP bar start-versus-close label.",
+      "UW created_at publication/availability semantics.",
+      "Uninterrupted daily common history across the full study window."
+    ]
+  },
+  "gates": {
+    "canonical_forecast_origins": "PASS",
+    "common_history_continuity": "NO_VERIFICADO",
+    "earnings_pit": "PASS_EXCLUDED_FROM_PRIMARY_PENDING_INTEGRATION",
+    "fmp_bar_semantics": "NO_VERIFICADO",
+    "predictors_after_origin": "PASS",
+    "target_horizon": "PASS_RV30_APPROVED_BY_OWNER",
+    "uw_created_at_semantics": "NO_VERIFICADO"
+  },
+  "generated_at_utc": "2026-07-22T03:52:32Z",
+  "next_action": "STOP_BEFORE_MODELING_BACKFILL_QLIKE",
+  "overall_status": "FAIL_CLOSED",
+  "personal_paths_emitted": false,
+  "schema_version": "pit-gate-final-1.0",
+  "secret_values_emitted": false,
+  "target_decision_path": "docs/target_horizon_decision.md"
+}

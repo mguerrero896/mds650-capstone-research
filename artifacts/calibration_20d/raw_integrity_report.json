@@ -1,0 +1,51 @@
+{
+  "active_cache_status": "ACTIVE_CALIBRATION_CACHE_V2_ONLY",
+  "authorized_sessions": [
+    "2026-06-11",
+    "2026-06-12",
+    "2026-06-15",
+    "2026-06-16",
+    "2026-06-17",
+    "2026-06-18",
+    "2026-06-22",
+    "2026-06-23",
+    "2026-06-24",
+    "2026-06-25",
+    "2026-06-26",
+    "2026-06-29",
+    "2026-06-30",
+    "2026-07-01",
+    "2026-07-02",
+    "2026-07-06",
+    "2026-07-07",
+    "2026-07-08",
+    "2026-07-09",
+    "2026-07-10"
+  ],
+  "crc_validated": true,
+  "dedup_key": "id",
+  "duplicate_event_ids_total": 0,
+  "duplicate_hashes": [],
+  "larger_backfill": "BLOCKED",
+  "legacy_cache_status": "LEGACY_CACHE_READ_ONLY",
+  "parquet_partitions": 160,
+  "parquet_read_failures": [],
+  "personal_paths_emitted": false,
+  "pilot_dates_excluded": [
+    "2026-07-13",
+    "2026-07-14",
+    "2026-07-15",
+    "2026-07-16",
+    "2026-07-17"
+  ],
+  "root_manifest_status": "PASS",
+  "schema_fingerprints": {
+    "3a2285fa84f0683df7334cbf0d6670805ea3a7b007c4b5a511779e7c4413581d": 20
+  },
+  "schema_stable": true,
+  "secret_values_emitted": false,
+  "sessions_validated": 20,
+  "source_manifest": "artifacts/calibration_20d/download_manifest.json",
+  "status": "PASS",
+  "unique_raw_hashes": 20
+}

@@ -1,0 +1,1620 @@
+{
+  "approved_on": "2026-08-01",
+  "b1v2_coverage": {
+    "B1v2a": {
+      "asset_min": 0.65,
+      "global_min": 0.8,
+      "session_tercile_min": 0.6
+    },
+    "B1v2b_B1v2c": {
+      "asset_min": 0.5,
+      "global_min": 0.7,
+      "session_tercile_min": 0.4
+    },
+    "b2_vs_b0_fallback": false,
+    "failure_status": "REVISE_B1V2"
+  },
+  "b2v2_feature_names": [
+    "b2v2_z_log_trade_count",
+    "b2v2_z_unique_contract_share",
+    "b2v2_z_log_mean_trade_premium",
+    "b2v2_z_log_max_trade_premium",
+    "b2v2_deviation_call_put_premium_imbalance",
+    "b2v2_deviation_execution_side_premium_imbalance",
+    "b2v2_z_repeated_contract_premium_share",
+    "b2v2_z_strike_concentration",
+    "b2v2_z_expiry_concentration"
+  ],
+  "b2v2_normalization": {
+    "forbidden_inputs": [
+      "RV30",
+      "QLIKE",
+      "MODEL_RESIDUAL",
+      "OOS_RESULT"
+    ],
+    "grouping": [
+      "asset",
+      "new_york_30_minute_band"
+    ],
+    "history_rule": "PRIOR_SESSIONS_ONLY",
+    "history_sessions_max": 60,
+    "history_sessions_min": 20,
+    "scale_fallback": [
+      "MAD_1_4826",
+      "IQR_DIV_1_349",
+      "PRIOR_ASSET",
+      "CONSTANT_ZERO"
+    ]
+  },
+  "estimands": {
+    "delta_b1v2": "QLIKE(B0v2)-QLIKE(B1v2a)",
+    "delta_b2v2": "QLIKE(B1v2a)-QLIKE(B2v2)",
+    "key_secondary": "delta_b1v2",
+    "positive_direction": "EXPANDED_INFORMATION_SET_BETTER",
+    "primary": "delta_b2v2"
+  },
+  "feature_design_outcome_blind": true,
+  "folds": [
+    {
+      "fold": 1,
+      "test_count": 20,
+      "test_dates": [
+        "2025-10-28",
+        "2025-10-29",
+        "2025-10-30",
+        "2025-10-31",
+        "2025-11-03",
+        "2025-11-04",
+        "2025-11-05",
+        "2025-11-06",
+        "2025-11-07",
+        "2025-11-10",
+        "2025-11-11",
+        "2025-11-12",
+        "2025-11-13",
+        "2025-11-14",
+        "2025-11-17",
+        "2025-11-18",
+        "2025-11-19",
+        "2025-11-20",
+        "2025-11-21",
+        "2025-11-24"
+      ],
+      "train_count": 60,
+      "train_dates": [
+        "2025-08-04",
+        "2025-08-05",
+        "2025-08-06",
+        "2025-08-07",
+        "2025-08-08",
+        "2025-08-11",
+        "2025-08-12",
+        "2025-08-13",
+        "2025-08-14",
+        "2025-08-15",
+        "2025-08-18",
+        "2025-08-19",
+        "2025-08-20",
+        "2025-08-21",
+        "2025-08-22",
+        "2025-08-25",
+        "2025-08-26",
+        "2025-08-27",
+        "2025-08-28",
+        "2025-08-29",
+        "2025-09-02",
+        "2025-09-03",
+        "2025-09-04",
+        "2025-09-05",
+        "2025-09-08",
+        "2025-09-09",
+        "2025-09-10",
+        "2025-09-11",
+        "2025-09-12",
+        "2025-09-15",
+        "2025-09-16",
+        "2025-09-17",
+        "2025-09-18",
+        "2025-09-19",
+        "2025-09-22",
+        "2025-09-23",
+        "2025-09-24",
+        "2025-09-25",
+        "2025-09-26",
+        "2025-09-29",
+        "2025-09-30",
+        "2025-10-01",
+        "2025-10-02",
+        "2025-10-03",
+        "2025-10-06",
+        "2025-10-07",
+        "2025-10-08",
+        "2025-10-09",
+        "2025-10-10",
+        "2025-10-13",
+        "2025-10-14",
+        "2025-10-15",
+        "2025-10-16",
+        "2025-10-17",
+        "2025-10-20",
+        "2025-10-21",
+        "2025-10-22",
+        "2025-10-23",
+        "2025-10-24",
+        "2025-10-27"
+      ]
+    },
+    {
+      "fold": 2,
+      "test_count": 20,
+      "test_dates": [
+        "2025-11-25",
+        "2025-11-26",
+        "2025-11-28",
+        "2025-12-01",
+        "2025-12-02",
+        "2025-12-03",
+        "2025-12-04",
+        "2025-12-05",
+        "2025-12-08",
+        "2025-12-09",
+        "2025-12-10",
+        "2025-12-11",
+        "2025-12-12",
+        "2025-12-15",
+        "2025-12-16",
+        "2025-12-17",
+        "2025-12-18",
+        "2025-12-19",
+        "2025-12-22",
+        "2025-12-23"
+      ],
+      "train_count": 80,
+      "train_dates": [
+        "2025-08-04",
+        "2025-08-05",
+        "2025-08-06",
+        "2025-08-07",
+        "2025-08-08",
+        "2025-08-11",
+        "2025-08-12",
+        "2025-08-13",
+        "2025-08-14",
+        "2025-08-15",
+        "2025-08-18",
+        "2025-08-19",
+        "2025-08-20",
+        "2025-08-21",
+        "2025-08-22",
+        "2025-08-25",
+        "2025-08-26",
+        "2025-08-27",
+        "2025-08-28",
+        "2025-08-29",
+        "2025-09-02",
+        "2025-09-03",
+        "2025-09-04",
+        "2025-09-05",
+        "2025-09-08",
+        "2025-09-09",
+        "2025-09-10",
+        "2025-09-11",
+        "2025-09-12",
+        "2025-09-15",
+        "2025-09-16",
+        "2025-09-17",
+        "2025-09-18",
+        "2025-09-19",
+        "2025-09-22",
+        "2025-09-23",
+        "2025-09-24",
+        "2025-09-25",
+        "2025-09-26",
+        "2025-09-29",
+        "2025-09-30",
+        "2025-10-01",
+        "2025-10-02",
+        "2025-10-03",
+        "2025-10-06",
+        "2025-10-07",
+        "2025-10-08",
+        "2025-10-09",
+        "2025-10-10",
+        "2025-10-13",
+        "2025-10-14",
+        "2025-10-15",
+        "2025-10-16",
+        "2025-10-17",
+        "2025-10-20",
+        "2025-10-21",
+        "2025-10-22",
+        "2025-10-23",
+        "2025-10-24",
+        "2025-10-27",
+        "2025-10-28",
+        "2025-10-29",
+        "2025-10-30",
+        "2025-10-31",
+        "2025-11-03",
+        "2025-11-04",
+        "2025-11-05",
+        "2025-11-06",
+        "2025-11-07",
+        "2025-11-10",
+        "2025-11-11",
+        "2025-11-12",
+        "2025-11-13",
+        "2025-11-14",
+        "2025-11-17",
+        "2025-11-18",
+        "2025-11-19",
+        "2025-11-20",
+        "2025-11-21",
+        "2025-11-24"
+      ]
+    },
+    {
+      "fold": 3,
+      "test_count": 20,
+      "test_dates": [
+        "2025-12-24",
+        "2025-12-26",
+        "2025-12-29",
+        "2025-12-30",
+        "2025-12-31",
+        "2026-01-02",
+        "2026-01-05",
+        "2026-01-06",
+        "2026-01-07",
+        "2026-01-08",
+        "2026-01-09",
+        "2026-01-12",
+        "2026-01-13",
+        "2026-01-14",
+        "2026-01-15",
+        "2026-01-16",
+        "2026-01-20",
+        "2026-01-21",
+        "2026-01-22",
+        "2026-01-23"
+      ],
+      "train_count": 100,
+      "train_dates": [
+        "2025-08-04",
+        "2025-08-05",
+        "2025-08-06",
+        "2025-08-07",
+        "2025-08-08",
+        "2025-08-11",
+        "2025-08-12",
+        "2025-08-13",
+        "2025-08-14",
+        "2025-08-15",
+        "2025-08-18",
+        "2025-08-19",
+        "2025-08-20",
+        "2025-08-21",
+        "2025-08-22",
+        "2025-08-25",
+        "2025-08-26",
+        "2025-08-27",
+        "2025-08-28",
+        "2025-08-29",
+        "2025-09-02",
+        "2025-09-03",
+        "2025-09-04",
+        "2025-09-05",
+        "2025-09-08",
+        "2025-09-09",
+        "2025-09-10",
+        "2025-09-11",
+        "2025-09-12",
+        "2025-09-15",
+        "2025-09-16",
+        "2025-09-17",
+        "2025-09-18",
+        "2025-09-19",
+        "2025-09-22",
+        "2025-09-23",
+        "2025-09-24",
+        "2025-09-25",
+        "2025-09-26",
+        "2025-09-29",
+        "2025-09-30",
+        "2025-10-01",
+        "2025-10-02",
+        "2025-10-03",
+        "2025-10-06",
+        "2025-10-07",
+        "2025-10-08",
+        "2025-10-09",
+        "2025-10-10",
+        "2025-10-13",
+        "2025-10-14",
+        "2025-10-15",
+        "2025-10-16",
+        "2025-10-17",
+        "2025-10-20",
+        "2025-10-21",
+        "2025-10-22",
+        "2025-10-23",
+        "2025-10-24",
+        "2025-10-27",
+        "2025-10-28",
+        "2025-10-29",
+        "2025-10-30",
+        "2025-10-31",
+        "2025-11-03",
+        "2025-11-04",
+        "2025-11-05",
+        "2025-11-06",
+        "2025-11-07",
+        "2025-11-10",
+        "2025-11-11",
+        "2025-11-12",
+        "2025-11-13",
+        "2025-11-14",
+        "2025-11-17",
+        "2025-11-18",
+        "2025-11-19",
+        "2025-11-20",
+        "2025-11-21",
+        "2025-11-24",
+        "2025-11-25",
+        "2025-11-26",
+        "2025-11-28",
+        "2025-12-01",
+        "2025-12-02",
+        "2025-12-03",
+        "2025-12-04",
+        "2025-12-05",
+        "2025-12-08",
+        "2025-12-09",
+        "2025-12-10",
+        "2025-12-11",
+        "2025-12-12",
+        "2025-12-15",
+        "2025-12-16",
+        "2025-12-17",
+        "2025-12-18",
+        "2025-12-19",
+        "2025-12-22",
+        "2025-12-23"
+      ]
+    },
+    {
+      "fold": 4,
+      "test_count": 20,
+      "test_dates": [
+        "2026-01-26",
+        "2026-01-27",
+        "2026-01-28",
+        "2026-01-29",
+        "2026-01-30",
+        "2026-02-02",
+        "2026-02-03",
+        "2026-02-04",
+        "2026-02-05",
+        "2026-02-06",
+        "2026-02-09",
+        "2026-02-10",
+        "2026-02-11",
+        "2026-02-12",
+        "2026-02-13",
+        "2026-02-17",
+        "2026-02-18",
+        "2026-02-19",
+        "2026-02-20",
+        "2026-02-23"
+      ],
+      "train_count": 120,
+      "train_dates": [
+        "2025-08-04",
+        "2025-08-05",
+        "2025-08-06",
+        "2025-08-07",
+        "2025-08-08",
+        "2025-08-11",
+        "2025-08-12",
+        "2025-08-13",
+        "2025-08-14",
+        "2025-08-15",
+        "2025-08-18",
+        "2025-08-19",
+        "2025-08-20",
+        "2025-08-21",
+        "2025-08-22",
+        "2025-08-25",
+        "2025-08-26",
+        "2025-08-27",
+        "2025-08-28",
+        "2025-08-29",
+        "2025-09-02",
+        "2025-09-03",
+        "2025-09-04",
+        "2025-09-05",
+        "2025-09-08",
+        "2025-09-09",
+        "2025-09-10",
+        "2025-09-11",
+        "2025-09-12",
+        "2025-09-15",
+        "2025-09-16",
+        "2025-09-17",
+        "2025-09-18",
+        "2025-09-19",
+        "2025-09-22",
+        "2025-09-23",
+        "2025-09-24",
+        "2025-09-25",
+        "2025-09-26",
+        "2025-09-29",
+        "2025-09-30",
+        "2025-10-01",
+        "2025-10-02",
+        "2025-10-03",
+        "2025-10-06",
+        "2025-10-07",
+        "2025-10-08",
+        "2025-10-09",
+        "2025-10-10",
+        "2025-10-13",
+        "2025-10-14",
+        "2025-10-15",
+        "2025-10-16",
+        "2025-10-17",
+        "2025-10-20",
+        "2025-10-21",
+        "2025-10-22",
+        "2025-10-23",
+        "2025-10-24",
+        "2025-10-27",
+        "2025-10-28",
+        "2025-10-29",
+        "2025-10-30",
+        "2025-10-31",
+        "2025-11-03",
+        "2025-11-04",
+        "2025-11-05",
+        "2025-11-06",
+        "2025-11-07",
+        "2025-11-10",
+        "2025-11-11",
+        "2025-11-12",
+        "2025-11-13",
+        "2025-11-14",
+        "2025-11-17",
+        "2025-11-18",
+        "2025-11-19",
+        "2025-11-20",
+        "2025-11-21",
+        "2025-11-24",
+        "2025-11-25",
+        "2025-11-26",
+        "2025-11-28",
+        "2025-12-01",
+        "2025-12-02",
+        "2025-12-03",
+        "2025-12-04",
+        "2025-12-05",
+        "2025-12-08",
+        "2025-12-09",
+        "2025-12-10",
+        "2025-12-11",
+        "2025-12-12",
+        "2025-12-15",
+        "2025-12-16",
+        "2025-12-17",
+        "2025-12-18",
+        "2025-12-19",
+        "2025-12-22",
+        "2025-12-23",
+        "2025-12-24",
+        "2025-12-26",
+        "2025-12-29",
+        "2025-12-30",
+        "2025-12-31",
+        "2026-01-02",
+        "2026-01-05",
+        "2026-01-06",
+        "2026-01-07",
+        "2026-01-08",
+        "2026-01-09",
+        "2026-01-12",
+        "2026-01-13",
+        "2026-01-14",
+        "2026-01-15",
+        "2026-01-16",
+        "2026-01-20",
+        "2026-01-21",
+        "2026-01-22",
+        "2026-01-23"
+      ]
+    },
+    {
+      "fold": 5,
+      "test_count": 20,
+      "test_dates": [
+        "2026-02-24",
+        "2026-02-25",
+        "2026-02-26",
+        "2026-02-27",
+        "2026-03-02",
+        "2026-03-03",
+        "2026-03-04",
+        "2026-03-05",
+        "2026-03-06",
+        "2026-03-09",
+        "2026-03-10",
+        "2026-03-11",
+        "2026-03-12",
+        "2026-03-13",
+        "2026-03-16",
+        "2026-03-17",
+        "2026-03-18",
+        "2026-03-19",
+        "2026-03-20",
+        "2026-03-23"
+      ],
+      "train_count": 140,
+      "train_dates": [
+        "2025-08-04",
+        "2025-08-05",
+        "2025-08-06",
+        "2025-08-07",
+        "2025-08-08",
+        "2025-08-11",
+        "2025-08-12",
+        "2025-08-13",
+        "2025-08-14",
+        "2025-08-15",
+        "2025-08-18",
+        "2025-08-19",
+        "2025-08-20",
+        "2025-08-21",
+        "2025-08-22",
+        "2025-08-25",
+        "2025-08-26",
+        "2025-08-27",
+        "2025-08-28",
+        "2025-08-29",
+        "2025-09-02",
+        "2025-09-03",
+        "2025-09-04",
+        "2025-09-05",
+        "2025-09-08",
+        "2025-09-09",
+        "2025-09-10",
+        "2025-09-11",
+        "2025-09-12",
+        "2025-09-15",
+        "2025-09-16",
+        "2025-09-17",
+        "2025-09-18",
+        "2025-09-19",
+        "2025-09-22",
+        "2025-09-23",
+        "2025-09-24",
+        "2025-09-25",
+        "2025-09-26",
+        "2025-09-29",
+        "2025-09-30",
+        "2025-10-01",
+        "2025-10-02",
+        "2025-10-03",
+        "2025-10-06",
+        "2025-10-07",
+        "2025-10-08",
+        "2025-10-09",
+        "2025-10-10",
+        "2025-10-13",
+        "2025-10-14",
+        "2025-10-15",
+        "2025-10-16",
+        "2025-10-17",
+        "2025-10-20",
+        "2025-10-21",
+        "2025-10-22",
+        "2025-10-23",
+        "2025-10-24",
+        "2025-10-27",
+        "2025-10-28",
+        "2025-10-29",
+        "2025-10-30",
+        "2025-10-31",
+        "2025-11-03",
+        "2025-11-04",
+        "2025-11-05",
+        "2025-11-06",
+        "2025-11-07",
+        "2025-11-10",
+        "2025-11-11",
+        "2025-11-12",
+        "2025-11-13",
+        "2025-11-14",
+        "2025-11-17",
+        "2025-11-18",
+        "2025-11-19",
+        "2025-11-20",
+        "2025-11-21",
+        "2025-11-24",
+        "2025-11-25",
+        "2025-11-26",
+        "2025-11-28",
+        "2025-12-01",
+        "2025-12-02",
+        "2025-12-03",
+        "2025-12-04",
+        "2025-12-05",
+        "2025-12-08",
+        "2025-12-09",
+        "2025-12-10",
+        "2025-12-11",
+        "2025-12-12",
+        "2025-12-15",
+        "2025-12-16",
+        "2025-12-17",
+        "2025-12-18",
+        "2025-12-19",
+        "2025-12-22",
+        "2025-12-23",
+        "2025-12-24",
+        "2025-12-26",
+        "2025-12-29",
+        "2025-12-30",
+        "2025-12-31",
+        "2026-01-02",
+        "2026-01-05",
+        "2026-01-06",
+        "2026-01-07",
+        "2026-01-08",
+        "2026-01-09",
+        "2026-01-12",
+        "2026-01-13",
+        "2026-01-14",
+        "2026-01-15",
+        "2026-01-16",
+        "2026-01-20",
+        "2026-01-21",
+        "2026-01-22",
+        "2026-01-23",
+        "2026-01-26",
+        "2026-01-27",
+        "2026-01-28",
+        "2026-01-29",
+        "2026-01-30",
+        "2026-02-02",
+        "2026-02-03",
+        "2026-02-04",
+        "2026-02-05",
+        "2026-02-06",
+        "2026-02-09",
+        "2026-02-10",
+        "2026-02-11",
+        "2026-02-12",
+        "2026-02-13",
+        "2026-02-17",
+        "2026-02-18",
+        "2026-02-19",
+        "2026-02-20",
+        "2026-02-23"
+      ]
+    }
+  ],
+  "inference": {
+    "bootstrap_cluster": "XNYS_SESSION_DATE_WITH_ALL_ASSETS",
+    "bootstrap_repetitions": 10000,
+    "descriptive_metrics": [
+      "MAE",
+      "RMSE"
+    ],
+    "global_holm_family": [
+      "delta_b1v2",
+      "delta_b2v2"
+    ],
+    "mde": "TRAINING_ONLY_FROZEN_BEFORE_OOS",
+    "multiplicity": "Holm",
+    "primary_metric": "QLIKE",
+    "seed": 650,
+    "targeted_holm_family": [
+      "META",
+      "MSFT",
+      "last_session_tercile"
+    ]
+  },
+  "information_sets": {
+    "B0v2": [
+      "b0v2_log_spot",
+      "b0v2_underlying_return_5m",
+      "b0v2_underlying_rv_5m",
+      "b0v2_underlying_rv_30m",
+      "b0v2_log_dollar_volume_5m",
+      "b0v2_spy_return_5m",
+      "b0v2_spy_rv_30m",
+      "b0v2_qqq_return_5m",
+      "b0v2_qqq_rv_30m",
+      "b0v2_session_sine",
+      "b0v2_session_cosine",
+      "b0v2_asset_identity"
+    ],
+    "B1v2a_addition": [
+      "b1v2_atm_iv_30_60_dte",
+      "b1v2_atm_iv_change_5m",
+      "b1v2_atm_iv_change_30m"
+    ],
+    "B1v2b_addition": [
+      "b1v2_skew_symmetric_moneyness",
+      "b1v2_skew_change_30m"
+    ],
+    "B1v2c_addition": [
+      "b1v2_term_short_to_medium",
+      "b1v2_term_medium_to_long",
+      "b1v2_term_short_to_medium_change_30m",
+      "b1v2_term_medium_to_long_change_30m"
+    ],
+    "B2v2_addition": [
+      "b2v2_z_log_trade_count",
+      "b2v2_z_unique_contract_share",
+      "b2v2_z_log_mean_trade_premium",
+      "b2v2_z_log_max_trade_premium",
+      "b2v2_deviation_call_put_premium_imbalance",
+      "b2v2_deviation_execution_side_premium_imbalance",
+      "b2v2_z_repeated_contract_premium_share",
+      "b2v2_z_strike_concentration",
+      "b2v2_z_expiry_concentration"
+    ]
+  },
+  "manifest_sha256": "45d76306c3d2f37527b3ffbfbfd169befa9c6e6ae95aa3a33d162fafd41a4a5b",
+  "market_controls": [
+    "SPY",
+    "QQQ"
+  ],
+  "models": {
+    "confirmatory": {
+      "alpha_grid": [
+        0.0,
+        0.01,
+        0.1,
+        1.0
+      ],
+      "link": "log_fixed_by_estimator",
+      "max_iter": 2000,
+      "name": "GammaRegressor",
+      "tolerance": 1e-08
+    },
+    "purge_embargo_minutes": 30,
+    "robustness": {
+      "grid": {
+        "learning_rate": [
+          0.03,
+          0.05
+        ],
+        "max_depth": [
+          3,
+          5
+        ],
+        "min_child_samples": [
+          50
+        ],
+        "n_estimators": [
+          200,
+          500
+        ],
+        "num_leaves": [
+          7,
+          15
+        ],
+        "reg_lambda": [
+          1.0
+        ]
+      },
+      "name": "LGBMRegressor",
+      "objective": "gamma"
+    },
+    "selection": "CHRONOLOGICAL_TRAINING_ONLY"
+  },
+  "oos_read_count": 0,
+  "outcome_assets": [
+    "AAPL",
+    "AMZN",
+    "META",
+    "MSFT",
+    "NVDA",
+    "TSLA"
+  ],
+  "outcome_reporting": "RETAIN_ALL_POSITIVE_NEGATIVE_AND_NULL_RESULTS",
+  "provenance": {
+    "analysis_sha256": "fde58e01ad818e75166b56ff9a0ada19ed0d6d68fc06eebafc941d182c06b4c0",
+    "branch": "001-pit-options-rv30-recovery",
+    "design_sha256": "62c0dd7c98bc0a3a0a91d2e83c0c84afb0d000cbfb585832da0c01041e8a39bf",
+    "phase6_source_sha256": "87dd4bc3b6f7828686b2f9d96f90dfac0c1c59d22fa57ef8ed912bb7344a84b4",
+    "plan_sha256": "04b9b19e6f565ffbec0720eff054f97115e45cacdb1d2e343e56090fe02eae7d",
+    "python_version": "3.12.12",
+    "repository_commit": "f0b031a394a256bd3012ed0433139d5a47fc5604",
+    "schema_sha256": "dbb9aa7bc29900e85b9c97dd0054b1db28eaf14d61019d971ced428c27370ebc",
+    "spec_sha256": "102dfd2f2c86e38086875e0c871b87bd990afa4e549bf41a1b8f079ae3bf2e23",
+    "tasks_sha256": "62fef2eb04b3794c4ce1ed1390a07ae38edf7aa1eef5ffd2f40404e82b41a4c1",
+    "uv_lock_sha256": "97382a973be6cede8621050748b1409e4cb6c70591063217e05896d8b03be241",
+    "worktree_dirty": true
+  },
+  "schema_version": "phase6-preregistration-1.0",
+  "session_counts": {
+    "initial_train": 60,
+    "oos": 100,
+    "total": 180,
+    "warmup": 20
+  },
+  "session_manifest_sha256": "49b9e7791a7e5c1e61208a78b7b2e594bde85aea8d7166038ccf8f0402f6e19b",
+  "sessions": [
+    {
+      "role": "warmup",
+      "session_date": "2025-07-07"
+    },
+    {
+      "role": "warmup",
+      "session_date": "2025-07-08"
+    },
+    {
+      "role": "warmup",
+      "session_date": "2025-07-09"
+    },
+    {
+      "role": "warmup",
+      "session_date": "2025-07-10"
+    },
+    {
+      "role": "warmup",
+      "session_date": "2025-07-11"
+    },
+    {
+      "role": "warmup",
+      "session_date": "2025-07-14"
+    },
+    {
+      "role": "warmup",
+      "session_date": "2025-07-15"
+    },
+    {
+      "role": "warmup",
+      "session_date": "2025-07-16"
+    },
+    {
+      "role": "warmup",
+      "session_date": "2025-07-17"
+    },
+    {
+      "role": "warmup",
+      "session_date": "2025-07-18"
+    },
+    {
+      "role": "warmup",
+      "session_date": "2025-07-21"
+    },
+    {
+      "role": "warmup",
+      "session_date": "2025-07-22"
+    },
+    {
+      "role": "warmup",
+      "session_date": "2025-07-23"
+    },
+    {
+      "role": "warmup",
+      "session_date": "2025-07-24"
+    },
+    {
+      "role": "warmup",
+      "session_date": "2025-07-25"
+    },
+    {
+      "role": "warmup",
+      "session_date": "2025-07-28"
+    },
+    {
+      "role": "warmup",
+      "session_date": "2025-07-29"
+    },
+    {
+      "role": "warmup",
+      "session_date": "2025-07-30"
+    },
+    {
+      "role": "warmup",
+      "session_date": "2025-07-31"
+    },
+    {
+      "role": "warmup",
+      "session_date": "2025-08-01"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-08-04"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-08-05"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-08-06"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-08-07"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-08-08"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-08-11"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-08-12"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-08-13"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-08-14"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-08-15"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-08-18"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-08-19"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-08-20"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-08-21"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-08-22"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-08-25"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-08-26"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-08-27"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-08-28"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-08-29"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-09-02"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-09-03"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-09-04"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-09-05"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-09-08"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-09-09"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-09-10"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-09-11"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-09-12"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-09-15"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-09-16"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-09-17"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-09-18"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-09-19"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-09-22"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-09-23"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-09-24"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-09-25"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-09-26"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-09-29"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-09-30"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-10-01"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-10-02"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-10-03"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-10-06"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-10-07"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-10-08"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-10-09"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-10-10"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-10-13"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-10-14"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-10-15"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-10-16"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-10-17"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-10-20"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-10-21"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-10-22"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-10-23"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-10-24"
+    },
+    {
+      "role": "initial_train",
+      "session_date": "2025-10-27"
+    },
+    {
+      "role": "oos_fold_1",
+      "session_date": "2025-10-28"
+    },
+    {
+      "role": "oos_fold_1",
+      "session_date": "2025-10-29"
+    },
+    {
+      "role": "oos_fold_1",
+      "session_date": "2025-10-30"
+    },
+    {
+      "role": "oos_fold_1",
+      "session_date": "2025-10-31"
+    },
+    {
+      "role": "oos_fold_1",
+      "session_date": "2025-11-03"
+    },
+    {
+      "role": "oos_fold_1",
+      "session_date": "2025-11-04"
+    },
+    {
+      "role": "oos_fold_1",
+      "session_date": "2025-11-05"
+    },
+    {
+      "role": "oos_fold_1",
+      "session_date": "2025-11-06"
+    },
+    {
+      "role": "oos_fold_1",
+      "session_date": "2025-11-07"
+    },
+    {
+      "role": "oos_fold_1",
+      "session_date": "2025-11-10"
+    },
+    {
+      "role": "oos_fold_1",
+      "session_date": "2025-11-11"
+    },
+    {
+      "role": "oos_fold_1",
+      "session_date": "2025-11-12"
+    },
+    {
+      "role": "oos_fold_1",
+      "session_date": "2025-11-13"
+    },
+    {
+      "role": "oos_fold_1",
+      "session_date": "2025-11-14"
+    },
+    {
+      "role": "oos_fold_1",
+      "session_date": "2025-11-17"
+    },
+    {
+      "role": "oos_fold_1",
+      "session_date": "2025-11-18"
+    },
+    {
+      "role": "oos_fold_1",
+      "session_date": "2025-11-19"
+    },
+    {
+      "role": "oos_fold_1",
+      "session_date": "2025-11-20"
+    },
+    {
+      "role": "oos_fold_1",
+      "session_date": "2025-11-21"
+    },
+    {
+      "role": "oos_fold_1",
+      "session_date": "2025-11-24"
+    },
+    {
+      "role": "oos_fold_2",
+      "session_date": "2025-11-25"
+    },
+    {
+      "role": "oos_fold_2",
+      "session_date": "2025-11-26"
+    },
+    {
+      "role": "oos_fold_2",
+      "session_date": "2025-11-28"
+    },
+    {
+      "role": "oos_fold_2",
+      "session_date": "2025-12-01"
+    },
+    {
+      "role": "oos_fold_2",
+      "session_date": "2025-12-02"
+    },
+    {
+      "role": "oos_fold_2",
+      "session_date": "2025-12-03"
+    },
+    {
+      "role": "oos_fold_2",
+      "session_date": "2025-12-04"
+    },
+    {
+      "role": "oos_fold_2",
+      "session_date": "2025-12-05"
+    },
+    {
+      "role": "oos_fold_2",
+      "session_date": "2025-12-08"
+    },
+    {
+      "role": "oos_fold_2",
+      "session_date": "2025-12-09"
+    },
+    {
+      "role": "oos_fold_2",
+      "session_date": "2025-12-10"
+    },
+    {
+      "role": "oos_fold_2",
+      "session_date": "2025-12-11"
+    },
+    {
+      "role": "oos_fold_2",
+      "session_date": "2025-12-12"
+    },
+    {
+      "role": "oos_fold_2",
+      "session_date": "2025-12-15"
+    },
+    {
+      "role": "oos_fold_2",
+      "session_date": "2025-12-16"
+    },
+    {
+      "role": "oos_fold_2",
+      "session_date": "2025-12-17"
+    },
+    {
+      "role": "oos_fold_2",
+      "session_date": "2025-12-18"
+    },
+    {
+      "role": "oos_fold_2",
+      "session_date": "2025-12-19"
+    },
+    {
+      "role": "oos_fold_2",
+      "session_date": "2025-12-22"
+    },
+    {
+      "role": "oos_fold_2",
+      "session_date": "2025-12-23"
+    },
+    {
+      "role": "oos_fold_3",
+      "session_date": "2025-12-24"
+    },
+    {
+      "role": "oos_fold_3",
+      "session_date": "2025-12-26"
+    },
+    {
+      "role": "oos_fold_3",
+      "session_date": "2025-12-29"
+    },
+    {
+      "role": "oos_fold_3",
+      "session_date": "2025-12-30"
+    },
+    {
+      "role": "oos_fold_3",
+      "session_date": "2025-12-31"
+    },
+    {
+      "role": "oos_fold_3",
+      "session_date": "2026-01-02"
+    },
+    {
+      "role": "oos_fold_3",
+      "session_date": "2026-01-05"
+    },
+    {
+      "role": "oos_fold_3",
+      "session_date": "2026-01-06"
+    },
+    {
+      "role": "oos_fold_3",
+      "session_date": "2026-01-07"
+    },
+    {
+      "role": "oos_fold_3",
+      "session_date": "2026-01-08"
+    },
+    {
+      "role": "oos_fold_3",
+      "session_date": "2026-01-09"
+    },
+    {
+      "role": "oos_fold_3",
+      "session_date": "2026-01-12"
+    },
+    {
+      "role": "oos_fold_3",
+      "session_date": "2026-01-13"
+    },
+    {
+      "role": "oos_fold_3",
+      "session_date": "2026-01-14"
+    },
+    {
+      "role": "oos_fold_3",
+      "session_date": "2026-01-15"
+    },
+    {
+      "role": "oos_fold_3",
+      "session_date": "2026-01-16"
+    },
+    {
+      "role": "oos_fold_3",
+      "session_date": "2026-01-20"
+    },
+    {
+      "role": "oos_fold_3",
+      "session_date": "2026-01-21"
+    },
+    {
+      "role": "oos_fold_3",
+      "session_date": "2026-01-22"
+    },
+    {
+      "role": "oos_fold_3",
+      "session_date": "2026-01-23"
+    },
+    {
+      "role": "oos_fold_4",
+      "session_date": "2026-01-26"
+    },
+    {
+      "role": "oos_fold_4",
+      "session_date": "2026-01-27"
+    },
+    {
+      "role": "oos_fold_4",
+      "session_date": "2026-01-28"
+    },
+    {
+      "role": "oos_fold_4",
+      "session_date": "2026-01-29"
+    },
+    {
+      "role": "oos_fold_4",
+      "session_date": "2026-01-30"
+    },
+    {
+      "role": "oos_fold_4",
+      "session_date": "2026-02-02"
+    },
+    {
+      "role": "oos_fold_4",
+      "session_date": "2026-02-03"
+    },
+    {
+      "role": "oos_fold_4",
+      "session_date": "2026-02-04"
+    },
+    {
+      "role": "oos_fold_4",
+      "session_date": "2026-02-05"
+    },
+    {
+      "role": "oos_fold_4",
+      "session_date": "2026-02-06"
+    },
+    {
+      "role": "oos_fold_4",
+      "session_date": "2026-02-09"
+    },
+    {
+      "role": "oos_fold_4",
+      "session_date": "2026-02-10"
+    },
+    {
+      "role": "oos_fold_4",
+      "session_date": "2026-02-11"
+    },
+    {
+      "role": "oos_fold_4",
+      "session_date": "2026-02-12"
+    },
+    {
+      "role": "oos_fold_4",
+      "session_date": "2026-02-13"
+    },
+    {
+      "role": "oos_fold_4",
+      "session_date": "2026-02-17"
+    },
+    {
+      "role": "oos_fold_4",
+      "session_date": "2026-02-18"
+    },
+    {
+      "role": "oos_fold_4",
+      "session_date": "2026-02-19"
+    },
+    {
+      "role": "oos_fold_4",
+      "session_date": "2026-02-20"
+    },
+    {
+      "role": "oos_fold_4",
+      "session_date": "2026-02-23"
+    },
+    {
+      "role": "oos_fold_5",
+      "session_date": "2026-02-24"
+    },
+    {
+      "role": "oos_fold_5",
+      "session_date": "2026-02-25"
+    },
+    {
+      "role": "oos_fold_5",
+      "session_date": "2026-02-26"
+    },
+    {
+      "role": "oos_fold_5",
+      "session_date": "2026-02-27"
+    },
+    {
+      "role": "oos_fold_5",
+      "session_date": "2026-03-02"
+    },
+    {
+      "role": "oos_fold_5",
+      "session_date": "2026-03-03"
+    },
+    {
+      "role": "oos_fold_5",
+      "session_date": "2026-03-04"
+    },
+    {
+      "role": "oos_fold_5",
+      "session_date": "2026-03-05"
+    },
+    {
+      "role": "oos_fold_5",
+      "session_date": "2026-03-06"
+    },
+    {
+      "role": "oos_fold_5",
+      "session_date": "2026-03-09"
+    },
+    {
+      "role": "oos_fold_5",
+      "session_date": "2026-03-10"
+    },
+    {
+      "role": "oos_fold_5",
+      "session_date": "2026-03-11"
+    },
+    {
+      "role": "oos_fold_5",
+      "session_date": "2026-03-12"
+    },
+    {
+      "role": "oos_fold_5",
+      "session_date": "2026-03-13"
+    },
+    {
+      "role": "oos_fold_5",
+      "session_date": "2026-03-16"
+    },
+    {
+      "role": "oos_fold_5",
+      "session_date": "2026-03-17"
+    },
+    {
+      "role": "oos_fold_5",
+      "session_date": "2026-03-18"
+    },
+    {
+      "role": "oos_fold_5",
+      "session_date": "2026-03-19"
+    },
+    {
+      "role": "oos_fold_5",
+      "session_date": "2026-03-20"
+    },
+    {
+      "role": "oos_fold_5",
+      "session_date": "2026-03-23"
+    }
+  ],
+  "stability": [
+    "asset",
+    "session_tercile",
+    "training_defined_volatility_regime",
+    "fmp_delay_1_vs_2_minutes",
+    "uw_delay_60_120_300_seconds",
+    "b2_window_5_15_30_minutes"
+  ],
+  "status": "FROZEN_BEFORE_OOS",
+  "stop_states": [
+    "CRITICAL_SPEC_KIT_CONTRADICTION",
+    "REPLICATION_SESSION_ALLOWLIST_INCOMPLETE",
+    "STORAGE_FLOOR_BREACH",
+    "REVISE_B1V2",
+    "PIT_VIOLATION",
+    "SCHEMA_DRIFT",
+    "SECRET_LEAK",
+    "HASH_MISMATCH"
+  ],
+  "success_rules": {
+    "bootstrap_lower_bound_above_zero": true,
+    "effect_at_least_training_mde": true,
+    "holm_adjusted_p_below": 0.05,
+    "lightgbm_positive_sign": true,
+    "material_timing_reversal_allowed": false,
+    "materially_negative_asset_intervals_max": 1,
+    "positive_asset_estimates_min": 4,
+    "positive_gamma_estimate": true
+  },
+  "target": {
+    "horizon_minutes": 30,
+    "name": "RV30",
+    "price_count": 31,
+    "return_count": 30
+  },
+  "timing": {
+    "b2_primary_window_minutes": 5,
+    "b2_sensitivity_window_minutes": [
+      15,
+      30
+    ],
+    "created_at_semantics": "OPERATIONAL_AVAILABILITY_PROXY_NOT_PUBLICATION_TIME",
+    "fmp_primary_delay_minutes": 1,
+    "fmp_sensitivity_delay_minutes": 2,
+    "uw_primary_delay_seconds": 60,
+    "uw_sensitivity_delay_seconds": [
+      120,
+      300
+    ]
+  }
+}

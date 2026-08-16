@@ -1,0 +1,75 @@
+MDS650 Phase 3F — controlled twenty-session calibration test report
+Run date: 2026-07-22
+Runtime: Python 3.12.12 via uv
+
+Spec Kit
+--------
+speckit-clarify: PASS
+speckit-plan: PASS
+speckit-checklist: PASS
+speckit-tasks: PASS
+speckit-analyze: PASS_WITH_RESEARCH_GATE; no critical contradiction
+
+Evidence integrity
+------------------
+authorized sessions: 20
+Pilot V2 dates included: 0
+raw SHA-256 unique: 20
+schema stable: PASS
+CRC validation: PASS
+Parquet partitions: 160
+Parquet full page reads: PASS (0 failures)
+duplicate event IDs: 0
+secrets emitted: false
+personal paths emitted: false
+
+B2 calibration
+--------------
+origins: 11360
+panel rows: 34080
+parameter groups: 96
+calibration runner elapsed seconds: 93.5669
+primary cutoff: created_at <= origin - 60 seconds
+sensitivity cutoffs: 15 seconds, 0 seconds
+RV30 used for calibration: false
+Pilot V2 application status: CALIBRATED_SECONDARY_EXPLORATORY
+Pilot V2 calibration source bundle hash: present on all 2840 rows
+natural prevalence retained: true
+percentile sensitivities: PASS (requested p90/p95/p97.5 quantiles)
+
+B1Q Massive
+-----------
+origins: 11360
+ATM component / B1a: 0.9113556338
+skew component / B1b: 0.5994718310
+term component: 0.8912852113
+B1c: 0.1881161972
+IV inversion success: 0.8513057512
+nested invariants: PASS globally and by asset/date/session segment/instrument type
+B1T: diagnostic only; not an independent benchmark
+
+Quality gates
+-------------
+FMP requests: 160/160 HTTP 200, 390 exact-session rows each
+Massive quote route: PASS with SIP <= origin assertion
+Full Tape: 20/20 sessions PASS
+literature evidence ledger: 10 rows; 4 VERIFIED_FULL_TEXT, 3 VERIFIED_ABSTRACT_ONLY,
+3 VERIFIED_PUBLISHER_METADATA_ONLY
+
+Automated checks
+----------------
+pytest: PASS (129 tests)
+ruff: PASS
+mypy src: PASS (20 source files)
+coverage: PASS (82.16%; threshold 80%)
+JSON Schema/manifest contract tests: PASS
+git diff --check: PASS (line-ending warnings only)
+
+Scope gates
+-----------
+full backfill: BLOCKED
+modeling: BLOCKED
+QLIKE: BLOCKED
+final test: BLOCKED
+definitive asset freeze: BLOCKED
+Word/PowerPoint/publication/email: BLOCKED

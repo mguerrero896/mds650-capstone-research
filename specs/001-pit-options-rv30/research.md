@@ -199,3 +199,28 @@ backfill if B1 or the minimum asset gate fails.
 
 **Rationale**: This preserves the distinction between regenerated artifacts and fresh provider
 evidence and creates a durable handoff for the supervisor.
+
+## Decision 14: Run a mechanism-aware historical replication
+
+**Decision**: Preserve Phase 5 unchanged and run a new 180-session replication with twenty
+causal warm-up sessions, sixty initial-training sessions and five locked twenty-session OOS
+folds. Strengthen B0 with lagged SPY/QQQ and underlying state; strengthen B1 with ATM-IV level
+and changes; express B2 as nine prior-history robust deviations. Use GammaRegressor as
+confirmatory, LightGBM as challenger, QLIKE as primary loss, whole-day bootstrap and separately
+corrected global and targeted families.
+
+**Rationale**: The Phase 5 global Gamma B2 estimate was positive but small and uncertain, while
+META, MSFT and the last session tercile were positive secondary signals. Extending the unchanged
+Phase 5 specification would require an impractical number of daily clusters under the observed
+effect/dispersion. A target-blind mechanism redesign and an independent historical OOS period
+test whether those signals replicate without selecting a favorable result.
+
+**Alternatives considered**:
+
+- Add days to the unchanged Phase 5 feature set: rejected as inefficient under the observed
+  daily-cluster dispersion.
+- Restrict the global claim to META/MSFT or the close: rejected because it changes the estimand
+  after observing the holdout; those views remain a separately corrected replication family.
+- Tune features or models until QLIKE is positive: rejected as data snooping.
+- Use B2 versus B0 when B1v2 is sparse: rejected because it does not answer the incremental
+  question; the correct state is `REVISE_B1V2`.

@@ -1,0 +1,14 @@
+{
+  "common_panel_sha256": "8ba5f0c8e736d27fe78e1887cc4cfc37e2dfbd7f3b6546d1ddf1fe75a782da32",
+  "decision": "TARGETED_B2V2_REPLICATION_CONFIRMED",
+  "evaluation_attempt_count": 1,
+  "manifest_sha256": "30ef405168229b0e644a8cc7aee4f9573ddbc50dbaf03a32b15cc172803a5414",
+  "oos_read_count": 1,
+  "preregistration_manifest_sha256": "45d76306c3d2f37527b3ffbfbfd169befa9c6e6ae95aa3a33d162fafd41a4a5b",
+  "replication_manifest_sha256": "063bd0257155956b07bf1a5f5b2262ff75e91afc3fee0c2f00345fd41580a9ac",
+  "results_inspected": true,
+  "results_sha256": "4bcfcb3a917ebb011ab13278bf4a4cac9331f6bda79fcce25f7e4fb7e70da259",
+  "schema_version": "phase6-oos-access-1.0",
+  "stability_results_sha256": "12ddd9fd778dd3512bcfa17f0a488244f931c613e29dee0ad1ef9398c64a340a",
+  "status": "OOS_CONSUMED_RESULTS_REPORTED"
+}

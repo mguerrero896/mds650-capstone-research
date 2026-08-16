@@ -1,0 +1,108 @@
+{
+  "b1_summary_sha256": "6cdd968907ebec808f4a305a4f1b9db3bd0bd3aebff71bcb276f6da1f8e3849f",
+  "common_origin_count": 4807,
+  "event_source_file_count": 60,
+  "fmp_manifest_sha256": "5403801d3ec23445f4a25d99973f8d2d8c54ea2522a7294a04ce0695c54aa064",
+  "holdout_reads": 0,
+  "holdout_sessions": [
+    "2026-07-20",
+    "2026-07-21",
+    "2026-07-22",
+    "2026-07-23",
+    "2026-07-24",
+    "2026-07-27",
+    "2026-07-28",
+    "2026-07-29",
+    "2026-07-30",
+    "2026-07-31"
+  ],
+  "manifest_sha256": "278d327d8e79eaae5648585b30a593afc9f38b9af4cdec11815b22e81b39e6ba",
+  "method_freeze_sha256": "4fc2b58fd6e62bc63c3bc8473980a8af4b3fa3dd8ccaa49053c68d5dc147d64d",
+  "nominal_origin_count": 5680,
+  "outcomes_inspected": false,
+  "panel_sha256": "fb9df093291086cc1916c13e0263c620e2b300553f3f984c2c82a897294efe40",
+  "personal_paths_emitted": false,
+  "qlike_computed": false,
+  "release_gates": {
+    "common_panel_valid": true,
+    "full_test_suite_green": true,
+    "leakage_tests_passed": true,
+    "provider_source_hashes_valid": true
+  },
+  "schema_version": "phase5-holdout-acquisition-1.0",
+  "secret_values_emitted": false,
+  "selected_assets": [
+    "AAPL",
+    "AMZN",
+    "META",
+    "MSFT",
+    "NVDA",
+    "TSLA"
+  ],
+  "selected_common_origin_count": 3877,
+  "session_statuses": [
+    {
+      "full_tape_sha256": "f7c06ba262c41aa31d737802df557044190793ce6e8de20b01ddad999aee5cbf",
+      "raw_bytes": 1475399621,
+      "session_date": "2026-07-20",
+      "status": "PASS"
+    },
+    {
+      "full_tape_sha256": "d453b40f8ed07b4372e372eddd0aa70fb06b4cbc93f8cbd39c4b0baebe66730c",
+      "raw_bytes": 1285868418,
+      "session_date": "2026-07-21",
+      "status": "PASS"
+    },
+    {
+      "full_tape_sha256": "9d81ca03848e86eb5b81e0d9160dc3fd87dd9e067d64d1dea6ad83eed0536a75",
+      "raw_bytes": 1304375295,
+      "session_date": "2026-07-22",
+      "status": "PASS"
+    },
+    {
+      "full_tape_sha256": "eefc32cd19d40062ba883ab7f24d726f5fc15dee347dd03cd13fb3d1de14cbe2",
+      "raw_bytes": 1504244879,
+      "session_date": "2026-07-23",
+      "status": "PASS"
+    },
+    {
+      "full_tape_sha256": "6105750181153302efb76a19e2de0cb2e739f37ad7d4a536046908eb408cb93f",
+      "raw_bytes": 1604632169,
+      "session_date": "2026-07-24",
+      "status": "PASS"
+    },
+    {
+      "full_tape_sha256": "6d739596140301a8c3910c16dfa0d0a38dbb18ccd4d773231210fd6e90130641",
+      "raw_bytes": 1545762435,
+      "session_date": "2026-07-27",
+      "status": "PASS"
+    },
+    {
+      "full_tape_sha256": "31f89a4ca058b4b6e95ebe5949cc1de02a04e739f64a54da8d9c340b9037162e",
+      "raw_bytes": 1424852170,
+      "session_date": "2026-07-28",
+      "status": "PASS"
+    },
+    {
+      "full_tape_sha256": "38ee1af973b2facbfd3f6d3d3539749a48666ce2bf483012742c48a03b57ea62",
+      "raw_bytes": 1592602049,
+      "session_date": "2026-07-29",
+      "status": "PASS"
+    },
+    {
+      "full_tape_sha256": "b728992325acd98faa6956452cec0c28a217ae8a8e22e581e75712ac24ede741",
+      "raw_bytes": 1553168485,
+      "session_date": "2026-07-30",
+      "status": "PASS"
+    },
+    {
+      "full_tape_sha256": "0daf2d0388f0fd0f78c0b690e03089354956e85db3edae5e4ff2f4238fc74145",
+      "raw_bytes": 1720741914,
+      "session_date": "2026-07-31",
+      "status": "PASS"
+    }
+  ],
+  "stability_panel_sha256": "e72c41ab745cb5e0a9307dd1e738fa78c55199dd3bf808e50f606f18a892c722",
+  "status": "PASS_ACQUIRED_NOT_ANALYSED",
+  "test_report_sha256": "7d5127064bad953d9a583547b6d53aa90888db23e2e255a19ce1eb4575c3b29a"
+}

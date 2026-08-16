@@ -1,0 +1,14 @@
+{
+  "status": "B1Q_IV_DIAGNOSTICS",
+  "attempts": 22720,
+  "successes": 18539,
+  "failure_counts": {
+    "INVALID_SPREAD": 56,
+    "STALE_QUOTE": 84,
+    "NO_QUOTE": 4041
+  },
+  "rates_source": "FMP stable treasury-rates month3 before origin",
+  "dividend_source": "FMP stable dividends declarationDate <= origin, trailing 365-day sum divided by spot",
+  "future_rates_or_dividends_used": false,
+  "bsm_american_approximation": true
+}

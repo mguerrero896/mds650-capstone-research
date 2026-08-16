@@ -1,0 +1,13 @@
+{
+  "checkpoint_rows": 6620,
+  "corrupted_checkpoint_detected": true,
+  "duplicate_output_rows": 0,
+  "full_backfill_executed": false,
+  "hashes_identical": true,
+  "input_rows": 13240,
+  "partial_output_cleanup": true,
+  "provider_requests": 0,
+  "resume_hash": "f20e387eb1697292e67ec244340ffd6891fa56d6773d4ec5264bd080b562e112",
+  "schema_version": "restart-dry-run-v1",
+  "uninterrupted_hash": "f20e387eb1697292e67ec244340ffd6891fa56d6773d4ec5264bd080b562e112"
+}

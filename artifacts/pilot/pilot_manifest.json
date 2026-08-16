@@ -1,0 +1,147 @@
+{
+  "pilot_id": "pilot_20260713_20260717",
+  "sessions": [
+    "2026-07-13",
+    "2026-07-14",
+    "2026-07-15",
+    "2026-07-16",
+    "2026-07-17"
+  ],
+  "candidate_assets": [
+    "AAPL",
+    "AMZN",
+    "META",
+    "MSFT",
+    "NVDA",
+    "QQQ",
+    "SPY",
+    "TSLA"
+  ],
+  "raw_full_tape": [
+    {
+      "date": "2026-07-13",
+      "raw_bytes": 1446379218,
+      "raw_sha256": "b052c0105e8672fa65bcbe2d1f7d178b2419399885d2810dd98f7f17d1082f49",
+      "rows_seen": null,
+      "rows_retained": 4680362,
+      "retained_by_asset": {
+        "AAPL": 335762,
+        "AMZN": 174889,
+        "META": 192348,
+        "MSFT": 178984,
+        "NVDA": 452141,
+        "QQQ": 1214147,
+        "SPY": 1560381,
+        "TSLA": 571710
+      },
+      "parquet": "artifacts\\pilot\\option_events\\date=2026-07-13\\events.parquet",
+      "reused_existing": true
+    },
+    {
+      "date": "2026-07-14",
+      "raw_bytes": 1308114924,
+      "raw_sha256": "7fd976599a7fa09438c4ab06b1879a42a4fc82f0d801d7e9e130930185ae4122",
+      "rows_seen": null,
+      "rows_retained": 3879799,
+      "retained_by_asset": {
+        "AAPL": 153811,
+        "AMZN": 121706,
+        "META": 115529,
+        "MSFT": 110710,
+        "NVDA": 531366,
+        "QQQ": 1100760,
+        "SPY": 1398048,
+        "TSLA": 347869
+      },
+      "parquet": "artifacts\\pilot\\option_events\\date=2026-07-14\\events.parquet",
+      "reused_existing": true
+    },
+    {
+      "date": "2026-07-15",
+      "raw_bytes": 1553487942,
+      "raw_sha256": "5c89db5cd9cb46c23cf22fffb90171e5cbe0278c79dd2af49dd278e317de5767",
+      "rows_seen": null,
+      "rows_retained": 5142043,
+      "retained_by_asset": {
+        "AAPL": 410019,
+        "AMZN": 209978,
+        "META": 232292,
+        "MSFT": 201342,
+        "NVDA": 559057,
+        "QQQ": 1323387,
+        "SPY": 1592162,
+        "TSLA": 613806
+      },
+      "parquet": "artifacts\\pilot\\option_events\\date=2026-07-15\\events.parquet",
+      "reused_existing": true
+    },
+    {
+      "date": "2026-07-16",
+      "raw_bytes": 1538329354,
+      "raw_sha256": "ddf2336e7b94209bc690f2ffb9fb6b7ba06b41925e9558f742bda83568197979",
+      "rows_seen": null,
+      "rows_retained": 4692011,
+      "retained_by_asset": {
+        "AAPL": 318112,
+        "AMZN": 131754,
+        "META": 115249,
+        "MSFT": 188098,
+        "NVDA": 409673,
+        "QQQ": 1364192,
+        "SPY": 1696994,
+        "TSLA": 467939
+      },
+      "parquet": "artifacts\\pilot\\option_events\\date=2026-07-16\\events.parquet",
+      "reused_existing": true
+    },
+    {
+      "date": "2026-07-17",
+      "raw_bytes": 1740679927,
+      "raw_sha256": "9996dbd5b49950998f13b25ce53104aef1b672e930a6777021568c40a26f1785",
+      "rows_seen": null,
+      "rows_retained": 5201517,
+      "retained_by_asset": {
+        "AAPL": 361033,
+        "AMZN": 140850,
+        "META": 255057,
+        "MSFT": 133906,
+        "NVDA": 542218,
+        "QQQ": 1476503,
+        "SPY": 1758868,
+        "TSLA": 533082
+      },
+      "parquet": "artifacts\\pilot\\option_events\\date=2026-07-17\\events.parquet",
+      "reused_existing": true
+    }
+  ],
+  "origin_count": 2840,
+  "rv30_target_count": 2840,
+  "target_contract": "anchor close + 30 future one-minute closes = 31 prices / 30 returns",
+  "fmp_timestamp_validation": "artifacts/pilot/fmp_timestamp_validation.json",
+  "b1_origin_coverage": "artifacts/pilot/b1_origin_coverage.json",
+  "iv_robustness": "artifacts/pilot/iv_robustness.json",
+  "pit_results": "artifacts/pilot/pit_results.json",
+  "b2": {
+    "rows": 8520,
+    "primary_origins": 2840,
+    "primary_event_origins": 2840,
+    "primary_no_event_origins": 0,
+    "natural_event_prevalence": 1.0,
+    "availability_specs": {
+      "primary_60s": 60,
+      "sensitivity_15s": 15,
+      "sensitivity_0s": 0
+    },
+    "volume_final_daily_excluded": true,
+    "primary_cutoff": "created_at <= origin - 60 seconds"
+  },
+  "b1_status": "EXPLORATORY_ORIGIN_MATRIX_NOT_PIT_VERIFIED",
+  "pilot_status": "BOUNDED_REAL_DATA_BUILT_WITH_ACCEPTANCE_GAP",
+  "pilot_acceptance_gaps": ["natural_no_event_origins_absent", "B1_option_state_PIT_not_verified", "FMP_bar_semantics_pending"],
+  "asset_freeze": "BLOCKED",
+  "backfill": "BLOCKED",
+  "modeling": "BLOCKED",
+  "final_test": "BLOCKED",
+  "synthetic_data_used": false,
+  "secret_values_emitted": false
+}

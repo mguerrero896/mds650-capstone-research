@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "evidence_date": "2026-08-13",
+  "scope": "sanitized_authenticated_probes_and_target_free_timestamp_diagnostics",
+  "fmp": {
+    "official_documentation": "https://site.financialmodelingprep.com/developer/docs/stable/intraday-1-min",
+    "tests": [
+      {"requested_date": "2025-01-17", "http_status": 200, "session_rows": 390, "first_local_time": "09:30:00", "last_local_time": "15:59:00", "returned_dates": ["2025-01-17"]},
+      {"requested_date": "2025-07-15", "http_status": 200, "session_rows": 390, "first_local_time": "09:30:00", "last_local_time": "15:59:00", "returned_dates": ["2025-07-15"]},
+      {"requested_date": "2026-03-09", "http_status": 200, "session_rows": 390, "first_local_time": "09:30:00", "last_local_time": "15:59:00", "returned_dates": ["2026-03-09"]},
+      {"requested_date": "2025-11-28", "http_status": 200, "session_rows": 210, "first_local_time": "09:30:00", "last_local_time": "12:59:00", "returned_dates": ["2025-11-28"]}
+    ],
+    "bar_boundary_semantics": "UNVERIFIED",
+    "timezone_semantics": "EMPIRICALLY_ALIGNED_TO_AMERICA_NEW_YORK; CONTRACT_NOT_FOUND",
+    "available_at_rule": "timestamp_raw_plus_one_minute",
+    "available_at_rule_status": "CONSERVATIVE_RESEARCH_ASSUMPTION"
+  },
+  "massive": {
+    "official_documentation": "https://massive.com/docs/rest/options/trades-quotes/quotes",
+    "endpoint": "/v3/quotes/{optionsTicker}",
+    "contract": "O:SPY250221C00592000",
+    "forecast_origin_utc": "2025-01-16T14:35:00Z",
+    "timestamp_lte_ns": 1737038100000000000,
+    "http_status": 200,
+    "request_id": "5485c4db9ae0c19b51eb1ee2642f1d64",
+    "rows_returned": 1,
+    "sip_timestamp": 1737038099918070272,
+    "sip_le_origin": true,
+    "bid_price": 12.2,
+    "ask_price": 12.25,
+    "relative_spread": 0.004089979550102308,
+    "status": "TECHNICAL_AS_OF_QUOTE_PASS"
+  },
+  "unusual_whales": {
+    "official_openapi": "https://api.unusualwhales.com/api/openapi",
+    "option_trade_semantics": "executed_at_is_trade_execution_time; created_at_is_record_creation_time",
+    "option_trade_documentation": "https://api.unusualwhales.com/docs/kafka/types/OptionTrade",
+    "openapi_http_status": 200,
+    "openapi_bytes": 941804,
+    "openapi_request_id": "GMsjRwDiPkfQ61oA3rFC",
+    "raw_timestamp_dtype": "datetime[us, UTC]",
+    "created_at_publication_time": "NOT_ESTABLISHED",
+    "created_at_operational_proxy": true,
+    "target_free_lag_diagnostics_2025_10_20_seconds": {
+      "AAPL": {"rows": 253880, "min": 2707, "median": 18003, "p95": 22539},
+      "AMZN": {"rows": 123784, "min": 2660, "median": 17796, "p95": 22707},
+      "META": {"rows": 74551, "min": 2915, "median": 18678, "p95": 22400},
+      "MSFT": {"rows": 43348, "min": 2562, "median": 16823, "p95": 22380},
+      "NVDA": {"rows": 209751, "min": 2071, "median": 17913, "p95": 22495},
+      "QQQ": {"rows": 483296, "min": 2780, "median": 17370, "p95": 22558},
+      "SPY": {"rows": 828930, "min": 981, "median": 16811, "p95": 22437},
+      "TSLA": {"rows": 258417, "min": 3633, "median": 19633, "p95": 23541}
+    },
+    "status": "RECORD_CREATION_PROXY_ONLY"
+  },
+  "decision": {
+    "historical_positive_signal": "MODEL_AND_BLOCK_DEPENDENT; NOT_GLOBAL_CONFIRMATION",
+    "b1_vs_b0": "TECHNICALLY_SUPPORTED_IN_RETAINED_SAMPLES; PIT_SEMANTICS_NOT_FULLY_CLOSED",
+    "b2_incremental_edge": "NOT_GLOBALLY_CONFIRMED",
+    "safe_to_reconcile_existing_results": false,
+    "safe_to_open_or_evaluate_oos": false,
+    "blockers": [
+      "FMP_BAR_BOUNDARY_SEMANTICS_UNVERIFIED",
+      "UW_PUBLICATION_OR_AVAILABILITY_SEMANTICS_UNVERIFIED",
+      "B1Q_EXOGENOUS_RATE_AND_DIVIDEND_PIT_PROVENANCE_UNRESOLVED"
+    ],
+    "secret_values_emitted": false
+  }
+}

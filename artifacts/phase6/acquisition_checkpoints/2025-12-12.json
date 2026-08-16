@@ -1,0 +1,110 @@
+{
+  "checkpoint_sha256": "65e9a57edcf9b95622ee01f51ad70633c3ec915590e62fb5ab290fa9006f1190",
+  "completed_at_utc": "2026-08-01T11:38:28.395554Z",
+  "derived_location": "MDS650_DATA_ROOT/phase6/data/option_events",
+  "download_attempts": 1,
+  "download_seconds": 126.90143410000019,
+  "duplicate_event_ids": 0,
+  "filter_seconds": 215.16077430004952,
+  "http_status": 200,
+  "parquet_bytes": 232290853,
+  "parquet_files": [
+    {
+      "bytes": 6533196,
+      "relative_path": "data/option_events/date=2025-12-12/asset=AAPL/events.parquet",
+      "sha256": "e16fc668abc4a33cba17e8e80f67d8477bd8e3f935b20eebce21009f0da1ee32"
+    },
+    {
+      "bytes": 6080836,
+      "relative_path": "data/option_events/date=2025-12-12/asset=AMZN/events.parquet",
+      "sha256": "ffe6956fefdd273bf3857672d18bc75e3df913af1dcd6b392810cea2665ab982"
+    },
+    {
+      "bytes": 6338290,
+      "relative_path": "data/option_events/date=2025-12-12/asset=META/events.parquet",
+      "sha256": "a65e3bf8dbf4842165199904e29c8610375e49993bb328cbd6563c487c60924a"
+    },
+    {
+      "bytes": 3556604,
+      "relative_path": "data/option_events/date=2025-12-12/asset=MSFT/events.parquet",
+      "sha256": "30c6462549eca729a3b01a35452eac9f1ea261bff34e89a0ccf710550b56382f"
+    },
+    {
+      "bytes": 22943959,
+      "relative_path": "data/option_events/date=2025-12-12/asset=NVDA/events.parquet",
+      "sha256": "95e82f31f1b5e0726fd3e94ca84399783ec00ed534c9ef570987314a10225620"
+    },
+    {
+      "bytes": 55990640,
+      "relative_path": "data/option_events/date=2025-12-12/asset=QQQ/events.parquet",
+      "sha256": "06d95cd90961401a92fdb17376f86a65dd88bf3b4a5ecf074c2b7972856257b0"
+    },
+    {
+      "bytes": 79923617,
+      "relative_path": "data/option_events/date=2025-12-12/asset=SPY/events.parquet",
+      "sha256": "9915a6484d7e08efa77e22406af6b2198e5c608d16700b48bd5324b3d3238743"
+    },
+    {
+      "bytes": 50923711,
+      "relative_path": "data/option_events/date=2025-12-12/asset=TSLA/events.parquet",
+      "sha256": "c8156dafd184ea8b6e5fdda8d039b990992bdad15bcc337c6ffad827e7351a6f"
+    }
+  ],
+  "personal_paths_emitted": false,
+  "preregistration_sha256": "45d76306c3d2f37527b3ffbfbfd169befa9c6e6ae95aa3a33d162fafd41a4a5b",
+  "raw_bytes": 1453100110,
+  "raw_location": "MDS650_DATA_ROOT/phase6/raw/full_tape",
+  "raw_sha256": "52dfd5ca53f5b91a5576ef06e9a2e9f8802de8396c21e25bedfa4c972a92cc78",
+  "request_endpoint": "/api/option-trades/full-tape/{date}",
+  "request_id": null,
+  "reused_raw_archive": false,
+  "rows_retained": 3957557,
+  "rows_seen": 10255627,
+  "schema_fields": [
+    "aggregated_trade_id",
+    "alert_score",
+    "ask_vol",
+    "bid_vol",
+    "canceled",
+    "created_at",
+    "delta",
+    "ewma_nbbo_ask",
+    "ewma_nbbo_bid",
+    "exchange",
+    "executed_at",
+    "expiry",
+    "gamma",
+    "id",
+    "implied_volatility",
+    "market_center_locate",
+    "mid_vol",
+    "multi_vol",
+    "nbbo_ask",
+    "nbbo_bid",
+    "no_side_vol",
+    "open_interest",
+    "option_chain_id",
+    "option_type",
+    "premium",
+    "price",
+    "report_flags",
+    "rho",
+    "size",
+    "stock_multi_vol",
+    "strike",
+    "tags",
+    "theo",
+    "theta",
+    "trade_id",
+    "underlying_price",
+    "underlying_symbol",
+    "upstream_condition_detail",
+    "vega",
+    "volume"
+  ],
+  "schema_fingerprint": "3a2285fa84f0683df7334cbf0d6670805ea3a7b007c4b5a511779e7c4413581d",
+  "secret_values_emitted": false,
+  "session_contract_sha256": "b845470356d57d0f22154ab6cc5ef14d9f11752224d6d9f969c26d93e945375d",
+  "session_date": "2025-12-12",
+  "status": "PASS"
+}

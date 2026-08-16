@@ -1,0 +1,35 @@
+Name                                     Stmts   Miss Branch BrPart  Cover
+--------------------------------------------------------------------------
+src\mds650\__init__.py                       2      0      0      0   100%
+src\mds650\asset_selection.py               40      4     14      4    85%
+src\mds650\config.py                        23      0      4      1    96%
+src\mds650\contracts.py                    223     12     26     11    91%
+src\mds650\errors.py                        14      0      0      0   100%
+src\mds650\events.py                        22      1     10      1    94%
+src\mds650\holdout.py                       53     10     28     10    75%
+src\mds650\logging.py                       38      2      8      2    91%
+src\mds650\manifests.py                    115     19     64     14    82%
+src\mds650\metrics.py                       62      9     22      9    79%
+src\mds650\modeling.py                      74     13     32     14    75%
+src\mds650\normalize.py                     26      2      6      0    94%
+src\mds650\origins.py                       28      3     10      3    84%
+src\mds650\phase5_features.py               16      1      4      1    90%
+src\mds650\phase5_panel.py                  49      2     18      2    94%
+src\mds650\phase5_storage.py               117     21     46     15    78%
+src\mds650\phase6.py                       493     62    206     55    83%
+src\mds650\phase6_evaluation.py            251     23     96     17    88%
+src\mds650\pilot.py                         82      4     18      4    92%
+src\mds650\providers\__init__.py             0      0      0      0   100%
+src\mds650\providers\base.py                90      9     26      5    88%
+src\mds650\providers\fmp.py                 39      3     12      3    88%
+src\mds650\providers\massive.py             82      9     30     11    82%
+src\mds650\providers\unusual_whales.py      75     15     28     11    73%
+src\mds650\quality.py                       38      4     10      3    85%
+src\mds650\stability.py                     53     11     26     11    72%
+src\mds650\storage.py                       40      3      8      3    88%
+src\mds650\study_design.py                  73     12     26     10    78%
+src\mds650\targets.py                       10      0      4      0   100%
+src\mds650\temporal_validation.py           65     22     26     10    58%
+src\mds650\time.py                          40      7     12      2    83%
+--------------------------------------------------------------------------
+TOTAL                                     2333    283    820    232    83%

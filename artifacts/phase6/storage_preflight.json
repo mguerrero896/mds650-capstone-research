@@ -1,0 +1,22 @@
+{
+  "authorized_session_count": 180,
+  "code_and_manifests_remain_in_repository": true,
+  "data_root": "MDS650_DATA_ROOT",
+  "excluded_holdout_count": 0,
+  "free_bytes": 1426590334976,
+  "free_space_pass": true,
+  "manifest_sha256": "0d33c650a37a4848b9b008398c19ecc4aed9187816083b49adc7be250c8ca74a",
+  "minimum_free_bytes": 85899345920,
+  "personal_paths_emitted": false,
+  "projected_minimum_free_bytes": 1022863409152,
+  "projected_parquet_gib": 37,
+  "projected_peak_additional_bytes": 403726925824,
+  "projected_raw_gib": 252,
+  "projected_resident_gib": 289,
+  "projection_formula": "ceil((252 GiB raw + 37 GiB Parquet) * 1.30)",
+  "safety_margin_rate": 0.3,
+  "schema_version": "phase6-storage-preflight-1.0",
+  "status": "PASS_PHASE6_STORAGE",
+  "volume_label_expected": "Samsung",
+  "write_probe_pass": true
+}

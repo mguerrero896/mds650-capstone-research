@@ -1,0 +1,28 @@
+B1 closure artifact test report (2026-07-21)
+
+Scope: B1Q Massive feasibility, dependent B1T Full Tape diagnostics and sampled
+common-history only. No 20-session extension, backfill, models, QLIKE or final test.
+
+Expected origin rows: 2840
+Expected common-history asset-date records: 48
+B1Q primary quote filters: SIP <= origin; age <= 60 seconds; relative spread <= 25%; bid > 0; ask > bid
+B1T primary cutoff: created_at <= origin - 60 seconds; five-minute operational window; valid NBBO
+Route independence: B1T is NOT independent of B2.
+
+Observed B1Q coverage: B1a 46.55%; B1b 22.85%; B1c 44.01%
+Observed B1T coverage: B1a 100.00%; B1b 100.00%; B1c 100.00% (diagnostic only)
+Observed IV inversion: 9159 attempts; 7651 successes; 83.54% success rate
+Failure breakdown: 1,405 no-quote rows; 103 inversion failures retained as explicit UNKNOWN diagnostics
+Observed common-history: 8/8 assets at each of six sampled dates; daily continuity not established
+
+Decision: REVISE_B1
+
+Quality gates:
+- `uv run pytest -ra`: PASS (104 passed)
+- targeted B1/literature contracts: PASS (9 tests)
+- `uv run ruff check` on closure scripts/tests: PASS
+- `uv run mypy src`: PASS (20 files)
+- coverage: PASS (82% total source coverage; no minimum threshold was changed)
+- provider manifest JSON Schema 1.1: PASS through the existing contract suite
+- secret/personal-path scan on sanitized closure artifacts: PASS
+- contract-day cache keys and source request hashes: deterministic/idempotent

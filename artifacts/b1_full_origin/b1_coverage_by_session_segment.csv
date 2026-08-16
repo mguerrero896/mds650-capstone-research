@@ -1,0 +1,4 @@
+session_segment,origins,b1q_b1a_coverage,b1q_b1c_coverage,b1t_b1a_coverage,b1t_b1c_coverage
+first,120,0.65,0.4666666666666667,1.0,1.0
+last,240,1.0,1.0,1.0,1.0
+middle,2480,0.905241935483871,0.8209677419354838,1.0,1.0

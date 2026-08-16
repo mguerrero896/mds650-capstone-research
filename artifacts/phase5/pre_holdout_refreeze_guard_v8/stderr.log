@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "C:\Users\mguer\Dev\MDS650-Capstone\scripts\run_phase5_development_evaluation.py", line 764, in <module>
+    main()
+  File "C:\Users\mguer\Dev\MDS650-Capstone\scripts\run_phase5_development_evaluation.py", line 748, in main
+    freeze_json(METHOD_FREEZE_PATH, method_freeze)
+  File "C:\Users\mguer\Dev\MDS650-Capstone\src\mds650\study_design.py", line 399, in freeze_json
+    raise ValueError("FROZEN_MANIFEST_DRIFT")
+ValueError: FROZEN_MANIFEST_DRIFT

@@ -1,0 +1,1643 @@
+{
+  "available_at_assumption": "timestamp_raw + 1 minute",
+  "available_at_assumption_status": "CONSERVATIVE_RESEARCH_ASSUMPTION",
+  "bar_boundary_semantics": "NO VERIFICADO",
+  "cross_interval_probe": {
+    "asset": "AAPL",
+    "date": "2026-07-13",
+    "five_min_first_label": "2026-07-13 09:30:00",
+    "five_min_http_status": 200,
+    "five_min_labels_matching_four_minutes_before_one_min_labels": 0,
+    "five_min_labels_matching_one_min_start_labels": 78,
+    "five_min_last_label": "2026-07-13 15:55:00",
+    "five_min_rows": 78,
+    "interpretation": "CONSISTENT_WITH_START_LABELS_NOT_CONTRACTUAL_PROOF",
+    "one_min_first_label": "2026-07-13 09:30:00",
+    "one_min_http_status": 200,
+    "one_min_last_label": "2026-07-13 15:59:00",
+    "one_min_rows": 390,
+    "secret_values_emitted": false
+  },
+  "documentation": {
+    "confirmed": "A new one-minute point becomes available after the one-minute candle closes; FMP states intraday timestamps correspond to the exchange local timezone.",
+    "not_confirmed": "The documentation does not identify whether the date label is interval start or interval close.",
+    "url": "https://site.financialmodelingprep.com/how-to/how-to-get-stock-intraday-data-with-fmp-apis"
+  },
+  "gate": "FAIL_CLOSED",
+  "personal_paths_emitted": false,
+  "records": [
+    {
+      "asset": "SPY",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 210,
+        "expected_end": "2025-11-28T12:59:00-05:00",
+        "expected_start": "2025-11-28T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2025-11-28T09:30:00-05:00",
+      "first_raw_timestamp": "2025-11-28 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2025-11-28T12:59:00-05:00",
+      "last_raw_timestamp": "2025-11-28 12:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2025-11-28",
+        "symbol": "SPY",
+        "to": "2025-11-28"
+      },
+      "requested_date": "2025-11-28",
+      "returned_dates": [
+        "2025-11-28"
+      ],
+      "rows_exact_session": 210,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "SPY",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2025-11-03T15:59:00-05:00",
+        "expected_start": "2025-11-03T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2025-11-03T09:30:00-05:00",
+      "first_raw_timestamp": "2025-11-03 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2025-11-03T15:59:00-05:00",
+      "last_raw_timestamp": "2025-11-03 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2025-11-03",
+        "symbol": "SPY",
+        "to": "2025-11-03"
+      },
+      "requested_date": "2025-11-03",
+      "returned_dates": [
+        "2025-11-03"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "SPY",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-01-12T15:59:00-05:00",
+        "expected_start": "2026-01-12T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-01-12T09:30:00-05:00",
+      "first_raw_timestamp": "2026-01-12 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2026-01-12T15:59:00-05:00",
+      "last_raw_timestamp": "2026-01-12 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-01-12",
+        "symbol": "SPY",
+        "to": "2026-01-12"
+      },
+      "requested_date": "2026-01-12",
+      "returned_dates": [
+        "2026-01-12"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "SPY",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": false,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-03-09T15:59:00-04:00",
+        "expected_start": "2026-03-09T09:30:00-04:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-03-09T09:30:00-04:00",
+      "first_raw_timestamp": "2026-03-09 09:30:00",
+      "full_start_sequence_alignment": false,
+      "http_status": 200,
+      "last_local_timestamp": "2026-03-09T15:59:00-04:00",
+      "last_raw_timestamp": "2026-03-09 15:59:00",
+      "missing_expected_start_labels": [
+        "2026-03-09T15:19:00-04:00"
+      ],
+      "missing_minute_reason": "UNRESOLVED_PROVIDER_CALENDAR_OR_HALT",
+      "ny_offsets_observed": [
+        "-0400"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-03-09",
+        "symbol": "SPY",
+        "to": "2026-03-09"
+      },
+      "requested_date": "2026-03-09",
+      "returned_dates": [
+        "2026-03-09"
+      ],
+      "rows_exact_session": 389,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "SPY",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-07-13T15:59:00-04:00",
+        "expected_start": "2026-07-13T09:30:00-04:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-07-13T09:30:00-04:00",
+      "first_raw_timestamp": "2026-07-13 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2026-07-13T15:59:00-04:00",
+      "last_raw_timestamp": "2026-07-13 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0400"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-07-13",
+        "symbol": "SPY",
+        "to": "2026-07-13"
+      },
+      "requested_date": "2026-07-13",
+      "returned_dates": [
+        "2026-07-13"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "QQQ",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 210,
+        "expected_end": "2025-11-28T12:59:00-05:00",
+        "expected_start": "2025-11-28T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2025-11-28T09:30:00-05:00",
+      "first_raw_timestamp": "2025-11-28 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2025-11-28T12:59:00-05:00",
+      "last_raw_timestamp": "2025-11-28 12:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2025-11-28",
+        "symbol": "QQQ",
+        "to": "2025-11-28"
+      },
+      "requested_date": "2025-11-28",
+      "returned_dates": [
+        "2025-11-28"
+      ],
+      "rows_exact_session": 210,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "QQQ",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2025-11-03T15:59:00-05:00",
+        "expected_start": "2025-11-03T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2025-11-03T09:30:00-05:00",
+      "first_raw_timestamp": "2025-11-03 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2025-11-03T15:59:00-05:00",
+      "last_raw_timestamp": "2025-11-03 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2025-11-03",
+        "symbol": "QQQ",
+        "to": "2025-11-03"
+      },
+      "requested_date": "2025-11-03",
+      "returned_dates": [
+        "2025-11-03"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "QQQ",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-01-12T15:59:00-05:00",
+        "expected_start": "2026-01-12T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-01-12T09:30:00-05:00",
+      "first_raw_timestamp": "2026-01-12 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2026-01-12T15:59:00-05:00",
+      "last_raw_timestamp": "2026-01-12 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-01-12",
+        "symbol": "QQQ",
+        "to": "2026-01-12"
+      },
+      "requested_date": "2026-01-12",
+      "returned_dates": [
+        "2026-01-12"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "QQQ",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-03-09T15:59:00-04:00",
+        "expected_start": "2026-03-09T09:30:00-04:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-03-09T09:30:00-04:00",
+      "first_raw_timestamp": "2026-03-09 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2026-03-09T15:59:00-04:00",
+      "last_raw_timestamp": "2026-03-09 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0400"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-03-09",
+        "symbol": "QQQ",
+        "to": "2026-03-09"
+      },
+      "requested_date": "2026-03-09",
+      "returned_dates": [
+        "2026-03-09"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "QQQ",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-07-13T15:59:00-04:00",
+        "expected_start": "2026-07-13T09:30:00-04:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-07-13T09:30:00-04:00",
+      "first_raw_timestamp": "2026-07-13 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2026-07-13T15:59:00-04:00",
+      "last_raw_timestamp": "2026-07-13 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0400"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-07-13",
+        "symbol": "QQQ",
+        "to": "2026-07-13"
+      },
+      "requested_date": "2026-07-13",
+      "returned_dates": [
+        "2026-07-13"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "AAPL",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 210,
+        "expected_end": "2025-11-28T12:59:00-05:00",
+        "expected_start": "2025-11-28T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2025-11-28T09:30:00-05:00",
+      "first_raw_timestamp": "2025-11-28 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2025-11-28T12:59:00-05:00",
+      "last_raw_timestamp": "2025-11-28 12:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2025-11-28",
+        "symbol": "AAPL",
+        "to": "2025-11-28"
+      },
+      "requested_date": "2025-11-28",
+      "returned_dates": [
+        "2025-11-28"
+      ],
+      "rows_exact_session": 210,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "AAPL",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2025-11-03T15:59:00-05:00",
+        "expected_start": "2025-11-03T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2025-11-03T09:30:00-05:00",
+      "first_raw_timestamp": "2025-11-03 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2025-11-03T15:59:00-05:00",
+      "last_raw_timestamp": "2025-11-03 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2025-11-03",
+        "symbol": "AAPL",
+        "to": "2025-11-03"
+      },
+      "requested_date": "2025-11-03",
+      "returned_dates": [
+        "2025-11-03"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "AAPL",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-01-12T15:59:00-05:00",
+        "expected_start": "2026-01-12T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-01-12T09:30:00-05:00",
+      "first_raw_timestamp": "2026-01-12 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2026-01-12T15:59:00-05:00",
+      "last_raw_timestamp": "2026-01-12 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-01-12",
+        "symbol": "AAPL",
+        "to": "2026-01-12"
+      },
+      "requested_date": "2026-01-12",
+      "returned_dates": [
+        "2026-01-12"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "AAPL",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-03-09T15:59:00-04:00",
+        "expected_start": "2026-03-09T09:30:00-04:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-03-09T09:30:00-04:00",
+      "first_raw_timestamp": "2026-03-09 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2026-03-09T15:59:00-04:00",
+      "last_raw_timestamp": "2026-03-09 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0400"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-03-09",
+        "symbol": "AAPL",
+        "to": "2026-03-09"
+      },
+      "requested_date": "2026-03-09",
+      "returned_dates": [
+        "2026-03-09"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "AAPL",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-07-13T15:59:00-04:00",
+        "expected_start": "2026-07-13T09:30:00-04:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-07-13T09:30:00-04:00",
+      "first_raw_timestamp": "2026-07-13 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2026-07-13T15:59:00-04:00",
+      "last_raw_timestamp": "2026-07-13 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0400"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-07-13",
+        "symbol": "AAPL",
+        "to": "2026-07-13"
+      },
+      "requested_date": "2026-07-13",
+      "returned_dates": [
+        "2026-07-13"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "MSFT",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 210,
+        "expected_end": "2025-11-28T12:59:00-05:00",
+        "expected_start": "2025-11-28T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2025-11-28T09:30:00-05:00",
+      "first_raw_timestamp": "2025-11-28 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2025-11-28T12:59:00-05:00",
+      "last_raw_timestamp": "2025-11-28 12:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2025-11-28",
+        "symbol": "MSFT",
+        "to": "2025-11-28"
+      },
+      "requested_date": "2025-11-28",
+      "returned_dates": [
+        "2025-11-28"
+      ],
+      "rows_exact_session": 210,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "MSFT",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2025-11-03T15:59:00-05:00",
+        "expected_start": "2025-11-03T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2025-11-03T09:30:00-05:00",
+      "first_raw_timestamp": "2025-11-03 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2025-11-03T15:59:00-05:00",
+      "last_raw_timestamp": "2025-11-03 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2025-11-03",
+        "symbol": "MSFT",
+        "to": "2025-11-03"
+      },
+      "requested_date": "2025-11-03",
+      "returned_dates": [
+        "2025-11-03"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "MSFT",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-01-12T15:59:00-05:00",
+        "expected_start": "2026-01-12T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-01-12T09:30:00-05:00",
+      "first_raw_timestamp": "2026-01-12 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2026-01-12T15:59:00-05:00",
+      "last_raw_timestamp": "2026-01-12 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-01-12",
+        "symbol": "MSFT",
+        "to": "2026-01-12"
+      },
+      "requested_date": "2026-01-12",
+      "returned_dates": [
+        "2026-01-12"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "MSFT",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-03-09T15:59:00-04:00",
+        "expected_start": "2026-03-09T09:30:00-04:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-03-09T09:30:00-04:00",
+      "first_raw_timestamp": "2026-03-09 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2026-03-09T15:59:00-04:00",
+      "last_raw_timestamp": "2026-03-09 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0400"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-03-09",
+        "symbol": "MSFT",
+        "to": "2026-03-09"
+      },
+      "requested_date": "2026-03-09",
+      "returned_dates": [
+        "2026-03-09"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "MSFT",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-07-13T15:59:00-04:00",
+        "expected_start": "2026-07-13T09:30:00-04:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-07-13T09:30:00-04:00",
+      "first_raw_timestamp": "2026-07-13 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2026-07-13T15:59:00-04:00",
+      "last_raw_timestamp": "2026-07-13 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0400"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-07-13",
+        "symbol": "MSFT",
+        "to": "2026-07-13"
+      },
+      "requested_date": "2026-07-13",
+      "returned_dates": [
+        "2026-07-13"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "NVDA",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 210,
+        "expected_end": "2025-11-28T12:59:00-05:00",
+        "expected_start": "2025-11-28T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2025-11-28T09:30:00-05:00",
+      "first_raw_timestamp": "2025-11-28 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2025-11-28T12:59:00-05:00",
+      "last_raw_timestamp": "2025-11-28 12:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2025-11-28",
+        "symbol": "NVDA",
+        "to": "2025-11-28"
+      },
+      "requested_date": "2025-11-28",
+      "returned_dates": [
+        "2025-11-28"
+      ],
+      "rows_exact_session": 210,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "NVDA",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2025-11-03T15:59:00-05:00",
+        "expected_start": "2025-11-03T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2025-11-03T09:30:00-05:00",
+      "first_raw_timestamp": "2025-11-03 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2025-11-03T15:59:00-05:00",
+      "last_raw_timestamp": "2025-11-03 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2025-11-03",
+        "symbol": "NVDA",
+        "to": "2025-11-03"
+      },
+      "requested_date": "2025-11-03",
+      "returned_dates": [
+        "2025-11-03"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "NVDA",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-01-12T15:59:00-05:00",
+        "expected_start": "2026-01-12T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-01-12T09:30:00-05:00",
+      "first_raw_timestamp": "2026-01-12 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2026-01-12T15:59:00-05:00",
+      "last_raw_timestamp": "2026-01-12 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-01-12",
+        "symbol": "NVDA",
+        "to": "2026-01-12"
+      },
+      "requested_date": "2026-01-12",
+      "returned_dates": [
+        "2026-01-12"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "NVDA",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-03-09T15:59:00-04:00",
+        "expected_start": "2026-03-09T09:30:00-04:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-03-09T09:30:00-04:00",
+      "first_raw_timestamp": "2026-03-09 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2026-03-09T15:59:00-04:00",
+      "last_raw_timestamp": "2026-03-09 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0400"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-03-09",
+        "symbol": "NVDA",
+        "to": "2026-03-09"
+      },
+      "requested_date": "2026-03-09",
+      "returned_dates": [
+        "2026-03-09"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "NVDA",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-07-13T15:59:00-04:00",
+        "expected_start": "2026-07-13T09:30:00-04:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-07-13T09:30:00-04:00",
+      "first_raw_timestamp": "2026-07-13 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2026-07-13T15:59:00-04:00",
+      "last_raw_timestamp": "2026-07-13 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0400"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-07-13",
+        "symbol": "NVDA",
+        "to": "2026-07-13"
+      },
+      "requested_date": "2026-07-13",
+      "returned_dates": [
+        "2026-07-13"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "TSLA",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": false,
+      "expected_xnys_session": {
+        "expected_count": 210,
+        "expected_end": "2025-11-28T12:59:00-05:00",
+        "expected_start": "2025-11-28T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2025-11-28T09:32:00-05:00",
+      "first_raw_timestamp": "2025-11-28 09:32:00",
+      "full_start_sequence_alignment": false,
+      "http_status": 200,
+      "last_local_timestamp": "2025-11-28T12:59:00-05:00",
+      "last_raw_timestamp": "2025-11-28 12:59:00",
+      "missing_expected_start_labels": [
+        "2025-11-28T09:30:00-05:00",
+        "2025-11-28T09:31:00-05:00"
+      ],
+      "missing_minute_reason": "UNRESOLVED_PROVIDER_CALENDAR_OR_HALT",
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2025-11-28",
+        "symbol": "TSLA",
+        "to": "2025-11-28"
+      },
+      "requested_date": "2025-11-28",
+      "returned_dates": [
+        "2025-11-28"
+      ],
+      "rows_exact_session": 208,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "TSLA",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2025-11-03T15:59:00-05:00",
+        "expected_start": "2025-11-03T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2025-11-03T09:30:00-05:00",
+      "first_raw_timestamp": "2025-11-03 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2025-11-03T15:59:00-05:00",
+      "last_raw_timestamp": "2025-11-03 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2025-11-03",
+        "symbol": "TSLA",
+        "to": "2025-11-03"
+      },
+      "requested_date": "2025-11-03",
+      "returned_dates": [
+        "2025-11-03"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "TSLA",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-01-12T15:59:00-05:00",
+        "expected_start": "2026-01-12T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-01-12T09:30:00-05:00",
+      "first_raw_timestamp": "2026-01-12 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2026-01-12T15:59:00-05:00",
+      "last_raw_timestamp": "2026-01-12 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-01-12",
+        "symbol": "TSLA",
+        "to": "2026-01-12"
+      },
+      "requested_date": "2026-01-12",
+      "returned_dates": [
+        "2026-01-12"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "TSLA",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-03-09T15:59:00-04:00",
+        "expected_start": "2026-03-09T09:30:00-04:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-03-09T09:30:00-04:00",
+      "first_raw_timestamp": "2026-03-09 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2026-03-09T15:59:00-04:00",
+      "last_raw_timestamp": "2026-03-09 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0400"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-03-09",
+        "symbol": "TSLA",
+        "to": "2026-03-09"
+      },
+      "requested_date": "2026-03-09",
+      "returned_dates": [
+        "2026-03-09"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "TSLA",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-07-13T15:59:00-04:00",
+        "expected_start": "2026-07-13T09:30:00-04:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-07-13T09:30:00-04:00",
+      "first_raw_timestamp": "2026-07-13 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2026-07-13T15:59:00-04:00",
+      "last_raw_timestamp": "2026-07-13 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0400"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-07-13",
+        "symbol": "TSLA",
+        "to": "2026-07-13"
+      },
+      "requested_date": "2026-07-13",
+      "returned_dates": [
+        "2026-07-13"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "AMZN",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 210,
+        "expected_end": "2025-11-28T12:59:00-05:00",
+        "expected_start": "2025-11-28T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2025-11-28T09:30:00-05:00",
+      "first_raw_timestamp": "2025-11-28 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2025-11-28T12:59:00-05:00",
+      "last_raw_timestamp": "2025-11-28 12:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2025-11-28",
+        "symbol": "AMZN",
+        "to": "2025-11-28"
+      },
+      "requested_date": "2025-11-28",
+      "returned_dates": [
+        "2025-11-28"
+      ],
+      "rows_exact_session": 210,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "AMZN",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2025-11-03T15:59:00-05:00",
+        "expected_start": "2025-11-03T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2025-11-03T09:30:00-05:00",
+      "first_raw_timestamp": "2025-11-03 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2025-11-03T15:59:00-05:00",
+      "last_raw_timestamp": "2025-11-03 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2025-11-03",
+        "symbol": "AMZN",
+        "to": "2025-11-03"
+      },
+      "requested_date": "2025-11-03",
+      "returned_dates": [
+        "2025-11-03"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "AMZN",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-01-12T15:59:00-05:00",
+        "expected_start": "2026-01-12T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-01-12T09:30:00-05:00",
+      "first_raw_timestamp": "2026-01-12 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2026-01-12T15:59:00-05:00",
+      "last_raw_timestamp": "2026-01-12 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-01-12",
+        "symbol": "AMZN",
+        "to": "2026-01-12"
+      },
+      "requested_date": "2026-01-12",
+      "returned_dates": [
+        "2026-01-12"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "AMZN",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-03-09T15:59:00-04:00",
+        "expected_start": "2026-03-09T09:30:00-04:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-03-09T09:30:00-04:00",
+      "first_raw_timestamp": "2026-03-09 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2026-03-09T15:59:00-04:00",
+      "last_raw_timestamp": "2026-03-09 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0400"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-03-09",
+        "symbol": "AMZN",
+        "to": "2026-03-09"
+      },
+      "requested_date": "2026-03-09",
+      "returned_dates": [
+        "2026-03-09"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "AMZN",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-07-13T15:59:00-04:00",
+        "expected_start": "2026-07-13T09:30:00-04:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-07-13T09:30:00-04:00",
+      "first_raw_timestamp": "2026-07-13 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2026-07-13T15:59:00-04:00",
+      "last_raw_timestamp": "2026-07-13 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0400"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-07-13",
+        "symbol": "AMZN",
+        "to": "2026-07-13"
+      },
+      "requested_date": "2026-07-13",
+      "returned_dates": [
+        "2026-07-13"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "META",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 210,
+        "expected_end": "2025-11-28T12:59:00-05:00",
+        "expected_start": "2025-11-28T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2025-11-28T09:30:00-05:00",
+      "first_raw_timestamp": "2025-11-28 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2025-11-28T12:59:00-05:00",
+      "last_raw_timestamp": "2025-11-28 12:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2025-11-28",
+        "symbol": "META",
+        "to": "2025-11-28"
+      },
+      "requested_date": "2025-11-28",
+      "returned_dates": [
+        "2025-11-28"
+      ],
+      "rows_exact_session": 210,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "META",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2025-11-03T15:59:00-05:00",
+        "expected_start": "2025-11-03T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2025-11-03T09:30:00-05:00",
+      "first_raw_timestamp": "2025-11-03 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2025-11-03T15:59:00-05:00",
+      "last_raw_timestamp": "2025-11-03 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2025-11-03",
+        "symbol": "META",
+        "to": "2025-11-03"
+      },
+      "requested_date": "2025-11-03",
+      "returned_dates": [
+        "2025-11-03"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "META",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-01-12T15:59:00-05:00",
+        "expected_start": "2026-01-12T09:30:00-05:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-01-12T09:30:00-05:00",
+      "first_raw_timestamp": "2026-01-12 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2026-01-12T15:59:00-05:00",
+      "last_raw_timestamp": "2026-01-12 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0500"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-01-12",
+        "symbol": "META",
+        "to": "2026-01-12"
+      },
+      "requested_date": "2026-01-12",
+      "returned_dates": [
+        "2026-01-12"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "META",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-03-09T15:59:00-04:00",
+        "expected_start": "2026-03-09T09:30:00-04:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-03-09T09:30:00-04:00",
+      "first_raw_timestamp": "2026-03-09 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2026-03-09T15:59:00-04:00",
+      "last_raw_timestamp": "2026-03-09 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0400"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-03-09",
+        "symbol": "META",
+        "to": "2026-03-09"
+      },
+      "requested_date": "2026-03-09",
+      "returned_dates": [
+        "2026-03-09"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    },
+    {
+      "asset": "META",
+      "close_label_alignment": false,
+      "content_type": "application/json; charset=utf-8",
+      "exact_session_pass": true,
+      "expected_xnys_session": {
+        "expected_count": 390,
+        "expected_end": "2026-07-13T15:59:00-04:00",
+        "expected_start": "2026-07-13T09:30:00-04:00",
+        "is_session": true
+      },
+      "first_local_timestamp": "2026-07-13T09:30:00-04:00",
+      "first_raw_timestamp": "2026-07-13 09:30:00",
+      "full_start_sequence_alignment": true,
+      "http_status": 200,
+      "last_local_timestamp": "2026-07-13T15:59:00-04:00",
+      "last_raw_timestamp": "2026-07-13 15:59:00",
+      "missing_expected_start_labels": [],
+      "missing_minute_reason": null,
+      "ny_offsets_observed": [
+        "-0400"
+      ],
+      "observed_labels_consistent_with_start_bars": true,
+      "provider_over_return": false,
+      "rate_limit_headers_observed": [],
+      "raw_timestamp_format": "YYYY-MM-DD HH:mm:ss",
+      "raw_timestamp_timezone": "naive; exchange-local interpretation only",
+      "request_id": null,
+      "request_params_sanitized": {
+        "from": "2026-07-13",
+        "symbol": "META",
+        "to": "2026-07-13"
+      },
+      "requested_date": "2026-07-13",
+      "returned_dates": [
+        "2026-07-13"
+      ],
+      "rows_exact_session": 390,
+      "unexpected_timestamp_labels": []
+    }
+  ],
+  "secret_values_emitted": false,
+  "semantic_dimensions": {
+    "exchange_timezone": "PASS_DOCUMENTED_AND_PROBED",
+    "interval_label_start_or_close": "NO VERIFICADO",
+    "session_calendar_and_missing_minutes": "PARTIAL_UNRESOLVED"
+  },
+  "start_label_consistency_is_not_proof": true,
+  "status": "NO_VERIFICADO"
+}

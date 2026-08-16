@@ -259,3 +259,58 @@ never masks missing provider data. RV30, loss and forecast fields are prohibited
 | `authorized_at_utc` | timestamp/null | Recorded on the sole read |
 
 Any early, mismatched or second analytical read fails closed.
+
+## Phase6SessionManifest
+
+| Field | Type | Rule |
+|---|---|---|
+| `calendar` | enum | `XNYS` |
+| `sessions` | list[object] | Exactly 180 ordered unique dates |
+| `role` | enum | `warmup`, `initial_train`, `oos_fold_1` … `oos_fold_5` |
+| `warmup_sessions` | integer | Exactly 20; normalization only |
+| `initial_train_sessions` | integer | Exactly 60 |
+| `oos_sessions` | integer | Exactly 100 across five folds |
+| `window_amendment_status` | enum | `PASS`, `REPLICATION_SESSION_ALLOWLIST_INCOMPLETE` |
+| `manifest_sha256` | string | Canonical lowercase SHA-256 |
+
+## Phase6FeatureRow
+
+| Field | Type | Rule |
+|---|---|---|
+| `origin_id` | string | Unique asset/origin foreign key |
+| `role`, `fold` | enum/integer | Frozen from Phase6SessionManifest |
+| `max_predictor_available_at_utc` | timestamp | Not after forecast origin |
+| `b0v2_*` | float | Registered underlying/market predictors only |
+| `b1v2a_complete` | boolean | ATM-IV level and registered changes present |
+| `b1v2b_complete` | boolean | B1v2a and skew present |
+| `b1v2c_complete` | boolean | B1v2b and term slopes present |
+| `b2v2_*` | nine floats | Prior-session target-blind deviations |
+| `b2_history_sessions` | integer | 20–60 prior sessions |
+| `b2_scale_fallback` | enum | `MAD`, `IQR`, `ASSET`, `CONSTANT_PRIOR_HISTORY` |
+| `rv30_price_count` | integer | Exactly 31 for accepted target |
+| `rv30_return_count` | integer | Exactly 30 for accepted target |
+
+## Phase6MethodFreeze
+
+| Field | Type | Rule |
+|---|---|---|
+| `status` | enum | `FROZEN_BEFORE_OOS` |
+| `session_manifest_sha256` | string | Must match Phase6SessionManifest |
+| `panel_sha256` | string | Canonical common panel hash |
+| `models`, `features`, `folds` | object | Exact registered definitions |
+| `training_mde` | decimal | Estimated from training only |
+| `global_holm_family` | list[string] | Exactly `delta_b1v2`, `delta_b2v2` |
+| `targeted_holm_family` | list[string] | Exactly `META`, `MSFT`, `last_session_tercile` |
+| `bootstrap_repetitions` | integer | 10,000 |
+| `oos_read_count` | integer | Zero before locked execution |
+| `method_freeze_sha256` | string | Canonical lowercase SHA-256 |
+
+## Phase6OOSAccessLedger
+
+| Field | Type | Rule |
+|---|---|---|
+| `status` | enum | `SEALED`, `RUNNING`, `READ_ONCE`, `FAILED_LOCKED` |
+| `method_freeze_sha256` | string | Exact frozen method |
+| `oos_read_count` | integer | Single transition `0 -> 1` |
+| `fold_checkpoints` | list[object] | Five frozen fold hashes; no method changes |
+| `started_at_utc`, `completed_at_utc` | timestamp/null | Audit timestamps |

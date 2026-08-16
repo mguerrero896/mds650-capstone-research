@@ -1,0 +1,3989 @@
+{
+  "band": "asset and 30-minute New York band",
+  "calibration_sessions": [
+    "2026-06-11",
+    "2026-06-12",
+    "2026-06-15",
+    "2026-06-16",
+    "2026-06-17",
+    "2026-06-18",
+    "2026-06-22",
+    "2026-06-23",
+    "2026-06-24",
+    "2026-06-25",
+    "2026-06-26",
+    "2026-06-29",
+    "2026-06-30",
+    "2026-07-01",
+    "2026-07-02",
+    "2026-07-06",
+    "2026-07-07",
+    "2026-07-08",
+    "2026-07-09",
+    "2026-07-10"
+  ],
+  "core_features": [
+    "log1p(total_premium_5m)",
+    "log1p(option_trade_count_5m)",
+    "log1p(unique_contract_count_5m)",
+    "log1p(max_trade_premium_5m)",
+    "log1p(repeated_contract_premium)"
+  ],
+  "natural_prevalence": true,
+  "parameter_count": 96,
+  "parameters": {
+    "AAPL|B30_00": {
+      "asset": "AAPL",
+      "band": "B30_00",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7446823628036396,
+          "median": 12.501529762653163,
+          "scale": 1.104066071092676
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.36635608822646315,
+          "median": 8.596735998621671,
+          "scale": 0.5431595364045543
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.4210572808302624,
+          "median": 15.45861838601867,
+          "scale": 0.624259524558947
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.41501172479971515,
+          "median": 15.575635489451768,
+          "scale": 0.6152963831880577
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.16395343688114483,
+          "median": 5.755742213586912,
+          "scale": 0.24307736551998532
+        }
+      },
+      "p95_threshold": 2.0266454048602536,
+      "percentile": 0.95,
+      "sample_size": 100
+    },
+    "AAPL|B30_01": {
+      "asset": "AAPL",
+      "band": "B30_01",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6475649880231913,
+          "median": 12.219128473690263,
+          "scale": 0.9600798512431834
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.22618384111272727,
+          "median": 8.126812148871121,
+          "scale": 0.3353401628337294
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.36711789897643854,
+          "median": 15.106453751696701,
+          "scale": 0.5442889970224678
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.32596119418371927,
+          "median": 15.269158562107798,
+          "scale": 0.48327006649678217
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.13901008077002208,
+          "median": 5.592849180056348,
+          "scale": 0.20609634574963473
+        }
+      },
+      "p95_threshold": 2.0014806341394586,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "AAPL|B30_02": {
+      "asset": "AAPL",
+      "band": "B30_02",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6537842406021834,
+          "median": 12.166537154018268,
+          "scale": 0.969300515116797
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.32010711935561265,
+          "median": 7.8359726288673714,
+          "scale": 0.47459081515663126
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.40234247100079923,
+          "median": 14.954272480477215,
+          "scale": 0.5965129475057849
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.40784104156715095,
+          "median": 15.110326662093497,
+          "scale": 0.604665128227458
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.18096541094328256,
+          "median": 5.5093883366279774,
+          "scale": 0.2682993182645107
+        }
+      },
+      "p95_threshold": 1.9097122301250742,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "AAPL|B30_03": {
+      "asset": "AAPL",
+      "band": "B30_03",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7083560659453445,
+          "median": 11.932725502398302,
+          "scale": 1.0502087033705676
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.3683848745300433,
+          "median": 7.691885081203006,
+          "scale": 0.5461674149782422
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.43856579368875437,
+          "median": 14.829984076284198,
+          "scale": 0.6502176457229472
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.4431079589532114,
+          "median": 14.955592121425315,
+          "scale": 0.6569518599440313
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.18943511743902075,
+          "median": 5.407131551861086,
+          "scale": 0.28085650511509214
+        }
+      },
+      "p95_threshold": 2.118582025969803,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "AAPL|B30_04": {
+      "asset": "AAPL",
+      "band": "B30_04",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6088513733300553,
+          "median": 12.012520067951407,
+          "scale": 0.90268304609914
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.34922518530797086,
+          "median": 7.559528945682275,
+          "scale": 0.5177612597375976
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.46135373675839375,
+          "median": 14.725012068508619,
+          "scale": 0.6840030501179946
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.40904890027759233,
+          "median": 14.917277627653757,
+          "scale": 0.6064558995515583
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.179090849346486,
+          "median": 5.377587880612312,
+          "scale": 0.26552009324110015
+        }
+      },
+      "p95_threshold": 1.7756705971859728,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "AAPL|B30_05": {
+      "asset": "AAPL",
+      "band": "B30_05",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.4850639889530912,
+          "median": 11.96726478210629,
+          "scale": 0.719155870021853
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.3319080115758579,
+          "median": 7.388320975345783,
+          "scale": 0.4920868179623669
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.4631001406710036,
+          "median": 14.553996543764509,
+          "scale": 0.6865922685588298
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.41617820608420164,
+          "median": 14.73661625587686,
+          "scale": 0.6170258083404373
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.17614339951242108,
+          "median": 5.349460263318411,
+          "scale": 0.2611502041171155
+        }
+      },
+      "p95_threshold": 1.5378267998650872,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "AAPL|B30_06": {
+      "asset": "AAPL",
+      "band": "B30_06",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7287053884833874,
+          "median": 11.89301595715673,
+          "scale": 1.08037860896547
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.34439018069680216,
+          "median": 7.1697081316328095,
+          "scale": 0.5105928819010789
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.5029813300278452,
+          "median": 14.414476642220183,
+          "scale": 0.7457201198992832
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.4426639293010224,
+          "median": 14.593870749209007,
+          "scale": 0.6562935415816957
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.15786409556874226,
+          "median": 5.272999558563747,
+          "scale": 0.23404930809021726
+        }
+      },
+      "p95_threshold": 1.9460652213345244,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "AAPL|B30_07": {
+      "asset": "AAPL",
+      "band": "B30_07",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7142123111922718,
+          "median": 11.911793874076558,
+          "scale": 1.058891172573662
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.25808635209053543,
+          "median": 7.152257817902545,
+          "scale": 0.3826388256094278
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.39877537776355876,
+          "median": 14.358770282868244,
+          "scale": 0.5912243750722522
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.4526304046913685,
+          "median": 14.637094458086706,
+          "scale": 0.6710698379954229
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.1658071853412748,
+          "median": 5.2094712223428905,
+          "scale": 0.24582573298697402
+        }
+      },
+      "p95_threshold": 1.8979674552705679,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "AAPL|B30_08": {
+      "asset": "AAPL",
+      "band": "B30_08",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6767763832397327,
+          "median": 11.760689462186006,
+          "scale": 1.0033886657912277
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.2794835013388255,
+          "median": 7.011096482502243,
+          "scale": 0.41436223908494263
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.4565241951549872,
+          "median": 14.266201646846259,
+          "scale": 0.676842771736784
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.4380162924867834,
+          "median": 14.544734912156745,
+          "scale": 0.6494029552409051
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.17867292988198313,
+          "median": 5.181783550292085,
+          "scale": 0.26490048584302817
+        }
+      },
+      "p95_threshold": 1.8303182703285041,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "AAPL|B30_09": {
+      "asset": "AAPL",
+      "band": "B30_09",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6722142995654927,
+          "median": 11.663842097058614,
+          "scale": 0.9966249205357994
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.2851594915176503,
+          "median": 7.0741153822578795,
+          "scale": 0.4227774621240683
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.377122049946359,
+          "median": 14.327296076544478,
+          "scale": 0.5591211512504718
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.3557146558512416,
+          "median": 14.519261122330686,
+          "scale": 0.5273825487650508
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.17598175500870727,
+          "median": 5.217645791343655,
+          "scale": 0.2609105499759094
+        }
+      },
+      "p95_threshold": 2.3454637068297886,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "AAPL|B30_10": {
+      "asset": "AAPL",
+      "band": "B30_10",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.582796909922453,
+          "median": 11.805974889697104,
+          "scale": 0.8640546986510288
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.21617760440198364,
+          "median": 7.073691114094959,
+          "scale": 0.32050491628638095
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.3985511726752602,
+          "median": 14.29451542815649,
+          "scale": 0.5908919686083407
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.3734045210492454,
+          "median": 14.524004905863492,
+          "scale": 0.5536095429076111
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.13190729552256863,
+          "median": 5.198497031265826,
+          "scale": 0.19556575634176024
+        }
+      },
+      "p95_threshold": 2.073686575963525,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "AAPL|B30_11": {
+      "asset": "AAPL",
+      "band": "B30_11",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7640964991390513,
+          "median": 11.845677185226311,
+          "scale": 1.1328494696235574
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.25096937758789384,
+          "median": 7.005335504483181,
+          "scale": 0.3720871992118114
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.5144954322409951,
+          "median": 14.33374299432947,
+          "scale": 0.7627909278404994
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.5064053623929121,
+          "median": 14.644869032385952,
+          "scale": 0.7507965902837315
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.15234072458201897,
+          "median": 5.214935757608986,
+          "scale": 0.22586035826530132
+        }
+      },
+      "p95_threshold": 2.1967335268974306,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "AMZN|B30_00": {
+      "asset": "AMZN",
+      "band": "B30_00",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.5806297659691904,
+          "median": 12.404497158630356,
+          "scale": 0.8608416910259216
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.266808197050866,
+          "median": 8.096941891141183,
+          "scale": 0.3955698329476139
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.30679394179029185,
+          "median": 15.47486587746356,
+          "scale": 0.45485269809828666
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.2845586604237633,
+          "median": 15.622530588450037,
+          "scale": 0.4218866699442715
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.1762203198999721,
+          "median": 5.821555633671827,
+          "scale": 0.26126424628369865
+        }
+      },
+      "p95_threshold": 2.1791348388166094,
+      "percentile": 0.95,
+      "sample_size": 100
+    },
+    "AMZN|B30_01": {
+      "asset": "AMZN",
+      "band": "B30_01",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.5339090957886015,
+          "median": 12.36246172524727,
+          "scale": 0.7915736254161805
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.21610630823759625,
+          "median": 7.818628931799573,
+          "scale": 0.3203992125930602
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.24244694079126639,
+          "median": 15.455523734879637,
+          "scale": 0.3594518344171315
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.2147858118921535,
+          "median": 15.570555983374458,
+          "scale": 0.31844144471130675
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.14968905610748617,
+          "median": 5.69204579656338,
+          "scale": 0.221928994584959
+        }
+      },
+      "p95_threshold": 2.665067134328851,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "AMZN|B30_02": {
+      "asset": "AMZN",
+      "band": "B30_02",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7360803764122794,
+          "median": 12.454807811513291,
+          "scale": 1.0913127660688453
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.29484725771788955,
+          "median": 7.494152050907562,
+          "scale": 0.437140544292543
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.32276883563046965,
+          "median": 15.310034280951275,
+          "scale": 0.4785370757057343
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.31264948060999487,
+          "median": 15.461759218160612,
+          "scale": 0.46353411995237837
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.1477564267571494,
+          "median": 5.609465086342034,
+          "scale": 0.21906367831014967
+        }
+      },
+      "p95_threshold": 1.9974649056726241,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "AMZN|B30_03": {
+      "asset": "AMZN",
+      "band": "B30_03",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7476177574874301,
+          "median": 12.245444478445211,
+          "scale": 1.1084180872508638
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.31189071356517406,
+          "median": 7.336610014468702,
+          "scale": 0.46240917193172704
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.38392905467995586,
+          "median": 15.264299264889322,
+          "scale": 0.5692132164685025
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.3740523400883671,
+          "median": 15.359633868763984,
+          "scale": 0.554569999415013
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.16794208713482917,
+          "median": 5.5432204948189945,
+          "scale": 0.2489909383860977
+        }
+      },
+      "p95_threshold": 2.011684164035136,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "AMZN|B30_04": {
+      "asset": "AMZN",
+      "band": "B30_04",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7505728710863462,
+          "median": 12.176636031182737,
+          "scale": 1.1127993386726167
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.312590238214153,
+          "median": 7.191040765498947,
+          "scale": 0.4634462871763032
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.4287873406014011,
+          "median": 15.046060726675256,
+          "scale": 0.6357201111756372
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.43495761247027165,
+          "median": 15.184317999109712,
+          "scale": 0.6448681562484248
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.13845498773493503,
+          "median": 5.486867329823671,
+          "scale": 0.20527336481581468
+        }
+      },
+      "p95_threshold": 1.6647151229117858,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "AMZN|B30_05": {
+      "asset": "AMZN",
+      "band": "B30_05",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6370380930369963,
+          "median": 12.003503189578458,
+          "scale": 0.9444726767366507
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.2640494395305044,
+          "median": 7.000330720884194,
+          "scale": 0.39147969904792584
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.3229533973718679,
+          "median": 14.750756081974405,
+          "scale": 0.47881070694353134
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.3234490326958914,
+          "median": 14.909129827179438,
+          "scale": 0.4795455358749286
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.12879565329897735,
+          "median": 5.35184690269474,
+          "scale": 0.1909524355810638
+        }
+      },
+      "p95_threshold": 2.033298551065664,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "AMZN|B30_06": {
+      "asset": "AMZN",
+      "band": "B30_06",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6545335485986827,
+          "median": 11.819608097198476,
+          "scale": 0.970411439152407
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.25341208522062253,
+          "median": 6.91670716237093,
+          "scale": 0.37570875754809496
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.3377242396128741,
+          "median": 14.797335974818747,
+          "scale": 0.5007099576500471
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.3178245210828585,
+          "median": 14.918807466122622,
+          "scale": 0.471206634957446
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.13008202177894423,
+          "median": 5.295811095636264,
+          "scale": 0.1928596054894627
+        }
+      },
+      "p95_threshold": 1.9052159259596964,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "AMZN|B30_07": {
+      "asset": "AMZN",
+      "band": "B30_07",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7327838759544214,
+          "median": 11.984495398129413,
+          "scale": 1.0864253744900252
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.24562111551283605,
+          "median": 6.856459768523193,
+          "scale": 0.3641578658593307
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.3346593648198928,
+          "median": 14.661785213228622,
+          "scale": 0.496165974281973
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.29936280001872984,
+          "median": 14.85020404363432,
+          "scale": 0.44383528730776883
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.1271921275356891,
+          "median": 5.236441962829949,
+          "scale": 0.18857504828441263
+        }
+      },
+      "p95_threshold": 2.0298978510894767,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "AMZN|B30_08": {
+      "asset": "AMZN",
+      "band": "B30_08",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6575129285682086,
+          "median": 11.825953107764988,
+          "scale": 0.974828667895226
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.22427434712223793,
+          "median": 6.757505343700918,
+          "scale": 0.33250914704342993
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.33738387517331514,
+          "median": 14.661712708847528,
+          "scale": 0.500205333331957
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.3395225758878082,
+          "median": 14.800950571833814,
+          "scale": 0.5033761710112644
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.11631114763437678,
+          "median": 5.2390944889447955,
+          "scale": 0.172442907482727
+        }
+      },
+      "p95_threshold": 1.8937417357364295,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "AMZN|B30_09": {
+      "asset": "AMZN",
+      "band": "B30_09",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6722379532361735,
+          "median": 11.759983399287771,
+          "scale": 0.9966599894679508
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.1557463605727496,
+          "median": 6.770778902798371,
+          "scale": 0.23090955418515854
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.3432308331075582,
+          "median": 14.549413845144025,
+          "scale": 0.5088740331652658
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.30464845859838974,
+          "median": 14.699143302741923,
+          "scale": 0.4516718047179726
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.10977213364228122,
+          "median": 5.225746673713202,
+          "scale": 0.16274816533804612
+        }
+      },
+      "p95_threshold": 2.140810125594955,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "AMZN|B30_10": {
+      "asset": "AMZN",
+      "band": "B30_10",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6309630395068337,
+          "median": 11.664911174913579,
+          "scale": 0.9354658023728316
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.18202171587531568,
+          "median": 6.72021724493957,
+          "scale": 0.269865395956743
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.3288342171814733,
+          "median": 14.542556535084966,
+          "scale": 0.4875296103932523
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.33996173096387583,
+          "median": 14.68776189714131,
+          "scale": 0.5040272623270423
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.13234765695107953,
+          "median": 5.201251859171311,
+          "scale": 0.1962186361956705
+        }
+      },
+      "p95_threshold": 1.917576778992272,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "AMZN|B30_11": {
+      "asset": "AMZN",
+      "band": "B30_11",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7403116632618918,
+          "median": 11.93369407183045,
+          "scale": 1.0975860719520807
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.22842277233411235,
+          "median": 6.866924603830974,
+          "scale": 0.3386596022625549
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.3905892413480423,
+          "median": 14.658780592813862,
+          "scale": 0.5790876092226075
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.37557607172689966,
+          "median": 14.819018290377635,
+          "scale": 0.5568290839423015
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.14682611971914206,
+          "median": 5.265274173984107,
+          "scale": 0.2176844050956
+        }
+      },
+      "p95_threshold": 2.113356725228104,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "META|B30_00": {
+      "asset": "META",
+      "band": "B30_00",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.5519054978030526,
+          "median": 12.992473505182653,
+          "scale": 0.8182550910428058
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.3130830235532498,
+          "median": 8.203800130788991,
+          "scale": 0.46417689072004814
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.4825713944502912,
+          "median": 15.876480143187312,
+          "scale": 0.7154603494120017
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.410278173738571,
+          "median": 16.059401396142267,
+          "scale": 0.6082784203848053
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.1809145347362775,
+          "median": 6.295264299390208,
+          "scale": 0.268223889200005
+        }
+      },
+      "p95_threshold": 2.976869354014043,
+      "percentile": 0.95,
+      "sample_size": 100
+    },
+    "META|B30_01": {
+      "asset": "META",
+      "band": "B30_01",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.9134841576171446,
+          "median": 12.98235083191771,
+          "scale": 1.3543316120831785
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.36888013296583466,
+          "median": 7.744135125804025,
+          "scale": 0.5469016851351465
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.46020777627781584,
+          "median": 15.58889881312601,
+          "scale": 0.6823040491094897
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.4529855801957714,
+          "median": 15.76011445978545,
+          "scale": 0.6715964211982507
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.17706105658322135,
+          "median": 6.041443772479898,
+          "scale": 0.26251072249028395
+        }
+      },
+      "p95_threshold": 2.536014507119887,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "META|B30_02": {
+      "asset": "META",
+      "band": "B30_02",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.5856570081798358,
+          "median": 12.719803985702864,
+          "scale": 0.8682950803274245
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.2972660265208251,
+          "median": 7.52508314487387,
+          "scale": 0.4407266109197753
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.42656306401136845,
+          "median": 15.316640030021857,
+          "scale": 0.6324223987032548
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.418181819622629,
+          "median": 15.572599273698742,
+          "scale": 0.6199963657725097
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.17176860911928227,
+          "median": 5.932245187448011,
+          "scale": 0.2546641398802479
+        }
+      },
+      "p95_threshold": 2.7904635091799443,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "META|B30_03": {
+      "asset": "META",
+      "band": "B30_03",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.5508627554130676,
+          "median": 12.324059792556472,
+          "scale": 0.816709121175414
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.28985060197994006,
+          "median": 7.319821947390507,
+          "scale": 0.42973250249545913
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.42844809339408574,
+          "median": 15.047393100123767,
+          "scale": 0.6352171432660715
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.39569243403434307,
+          "median": 15.401158189417238,
+          "scale": 0.586653602699317
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.17486523579296076,
+          "median": 5.842093037202379,
+          "scale": 0.2592551985866436
+        }
+      },
+      "p95_threshold": 2.964807109557695,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "META|B30_04": {
+      "asset": "META",
+      "band": "B30_04",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7262263564781017,
+          "median": 12.562110545618712,
+          "scale": 1.0767031961144335
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.3628135770223482,
+          "median": 7.08756812208895,
+          "scale": 0.5379074092933334
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.40472870734214705,
+          "median": 15.095608897245661,
+          "scale": 0.6000507815054672
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.36899227046296446,
+          "median": 15.364832508262143,
+          "scale": 0.5470679401883911
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.20289980610447866,
+          "median": 5.702113024023443,
+          "scale": 0.30081925253050007
+        }
+      },
+      "p95_threshold": 2.6291155438251677,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "META|B30_05": {
+      "asset": "META",
+      "band": "B30_05",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7522703090207878,
+          "median": 12.568663922858395,
+          "scale": 1.11531596015422
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.3275292677339716,
+          "median": 6.885501305998501,
+          "scale": 0.4855948923423863
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.6427013560075379,
+          "median": 14.925871498915733,
+          "scale": 0.9528690304167756
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.5065040302541233,
+          "median": 15.208303211353392,
+          "scale": 0.7509428752547631
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.24705059041239785,
+          "median": 5.575941929081994,
+          "scale": 0.366277205345421
+        }
+      },
+      "p95_threshold": 1.9425668816067931,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "META|B30_06": {
+      "asset": "META",
+      "band": "B30_06",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6921475730085715,
+          "median": 12.599909247476003,
+          "scale": 1.026177991742508
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.3134679760174355,
+          "median": 6.886020656282664,
+          "scale": 0.4647476212434498
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.5128577175252964,
+          "median": 14.695456940546777,
+          "scale": 0.7603628520030045
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.48700667797480435,
+          "median": 15.081409476743634,
+          "scale": 0.7220361007654449
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.2011724903859604,
+          "median": 5.57024926796943,
+          "scale": 0.2982583342462249
+        }
+      },
+      "p95_threshold": 1.65795053325095,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "META|B30_07": {
+      "asset": "META",
+      "band": "B30_07",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7301685403608111,
+          "median": 12.470360136929614,
+          "scale": 1.0825478779389386
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.27796187167312425,
+          "median": 6.764448623758097,
+          "scale": 0.412106270942574
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.3915570725241846,
+          "median": 14.682240940616715,
+          "scale": 0.5805225157243561
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.31503802648902113,
+          "median": 15.027420509835455,
+          "scale": 0.46707537807262267
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.1930235111255314,
+          "median": 5.531409288119471,
+          "scale": 0.28617665759471284
+        }
+      },
+      "p95_threshold": 2.5756743205903536,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "META|B30_08": {
+      "asset": "META",
+      "band": "B30_08",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7712392774428523,
+          "median": 12.017768229148723,
+          "scale": 1.1434393527367728
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.297834260119902,
+          "median": 6.740508181863344,
+          "scale": 0.44156907405376666
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.5590093598662866,
+          "median": 14.51463231915299,
+          "scale": 0.8287872769377566
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.4687113275761057,
+          "median": 14.832694455853648,
+          "scale": 0.6949114142643342
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.18035360373333553,
+          "median": 5.4680601411351315,
+          "scale": 0.26739225289504326
+        }
+      },
+      "p95_threshold": 2.2517450518966786,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "META|B30_09": {
+      "asset": "META",
+      "band": "B30_09",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6133696569849896,
+          "median": 12.221707758759246,
+          "scale": 0.9093818534459455
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.33450542600332334,
+          "median": 6.784937984407266,
+          "scale": 0.49593774459252715
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.7409818384747098,
+          "median": 14.6022581816482,
+          "scale": 1.0985796737226046
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6787881995390102,
+          "median": 14.967680064348883,
+          "scale": 1.0063713846365363
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.23319388716771083,
+          "median": 5.521460917862246,
+          "scale": 0.34573325711484804
+        }
+      },
+      "p95_threshold": 2.552696980212955,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "META|B30_10": {
+      "asset": "META",
+      "band": "B30_10",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6319194558714889,
+          "median": 12.315252990402826,
+          "scale": 0.9368837852750694
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.3619113327908674,
+          "median": 6.72021724493957,
+          "scale": 0.53656974199574
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.6435876679591042,
+          "median": 14.342577179780474,
+          "scale": 0.9541830765161677
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.4815018661594985,
+          "median": 14.655926583594113,
+          "scale": 0.7138746667680724
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.1771716985338223,
+          "median": 5.424940314113364,
+          "scale": 0.2626747602462449
+        }
+      },
+      "p95_threshold": 2.4216090281044247,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "META|B30_11": {
+      "asset": "META",
+      "band": "B30_11",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6851622402163242,
+          "median": 12.278018301594235,
+          "scale": 1.0158215373447221
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.46264584636656547,
+          "median": 6.777636215831164,
+          "scale": 0.68591873182307
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.6263531556514259,
+          "median": 14.34282261084181,
+          "scale": 0.928631188568804
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.4979486261767443,
+          "median": 14.745210746294468,
+          "scale": 0.738258633169641
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.21719726032673092,
+          "median": 5.440248509722494,
+          "scale": 0.32201665816041125
+        }
+      },
+      "p95_threshold": 2.5180015484451226,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "MSFT|B30_00": {
+      "asset": "MSFT",
+      "band": "B30_00",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.49668543399509346,
+          "median": 12.783356806102717,
+          "scale": 0.7363858244411255
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.29610227080407814,
+          "median": 8.275169500049545,
+          "scale": 0.4390012266941262
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.43275829854337644,
+          "median": 15.945277225727962,
+          "scale": 0.6416074534204099
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.40629411841653607,
+          "median": 16.09696327436432,
+          "scale": 0.6023716599643564
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.18986634707084304,
+          "median": 6.259581464064923,
+          "scale": 0.2814958461672319
+        }
+      },
+      "p95_threshold": 1.527250302593786,
+      "percentile": 0.95,
+      "sample_size": 100
+    },
+    "MSFT|B30_01": {
+      "asset": "MSFT",
+      "band": "B30_01",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6391562750806097,
+          "median": 12.740983832703119,
+          "scale": 0.9476130934345118
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.29454431366456424,
+          "median": 7.78444518013025,
+          "scale": 0.4366913994390829
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.39650224646124776,
+          "median": 15.469934678550974,
+          "scale": 0.5878542306034459
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.3606760814661776,
+          "median": 15.689168884045042,
+          "scale": 0.5347383583817549
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.16434665975841423,
+          "median": 6.037870919922137,
+          "scale": 0.2436603577578249
+        }
+      },
+      "p95_threshold": 1.4329893833094876,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "MSFT|B30_02": {
+      "asset": "MSFT",
+      "band": "B30_02",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7923669880577835,
+          "median": 12.677034392483904,
+          "scale": 1.1747632964944696
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.3129525559856732,
+          "median": 7.474158261151182,
+          "scale": 0.46398345950435904
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.5160059255011733,
+          "median": 15.265332675440149,
+          "scale": 0.7650303851480394
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.4759530848942912,
+          "median": 15.43857091298107,
+          "scale": 0.7056480436642761
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.20364247241257516,
+          "median": 5.925590911692471,
+          "scale": 0.30192032959888393
+        }
+      },
+      "p95_threshold": 1.4499847052562382,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "MSFT|B30_03": {
+      "asset": "MSFT",
+      "band": "B30_03",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6918927480189767,
+          "median": 12.582450834922557,
+          "scale": 1.0258001882129348
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.3319978355033486,
+          "median": 7.387607944326939,
+          "scale": 0.4922199909172646
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.5943412381489743,
+          "median": 15.001225162057338,
+          "scale": 0.8811703196796693
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.5320950811179586,
+          "median": 15.331492668622964,
+          "scale": 0.7888841672654853
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.2561317192678092,
+          "median": 5.88192768744449,
+          "scale": 0.3797408869864539
+        }
+      },
+      "p95_threshold": 1.413126266609857,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "MSFT|B30_04": {
+      "asset": "MSFT",
+      "band": "B30_04",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.5901863476839422,
+          "median": 12.328870525156058,
+          "scale": 0.8750102790762126
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.29558423700475034,
+          "median": 7.005788608274949,
+          "scale": 0.4382331897832428
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.4784853113359695,
+          "median": 14.664848218503714,
+          "scale": 0.7094023225867083
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.44035220777723794,
+          "median": 14.980200796398181,
+          "scale": 0.6528661832505329
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.24743412927063213,
+          "median": 5.692011670364684,
+          "scale": 0.36684584005663917
+        }
+      },
+      "p95_threshold": 1.5100798889740397,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "MSFT|B30_05": {
+      "asset": "MSFT",
+      "band": "B30_05",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7681676198957668,
+          "median": 12.461865283736095,
+          "scale": 1.1388853132574637
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.3702947461457091,
+          "median": 7.006241301832356,
+          "scale": 0.5489989906356283
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.4537640097858331,
+          "median": 14.699831514941826,
+          "scale": 0.6727505209084761
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.4253892371501893,
+          "median": 15.024322441647561,
+          "scale": 0.6306820829988706
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.258181360533305,
+          "median": 5.6698274123883445,
+          "scale": 0.3827796851266779
+        }
+      },
+      "p95_threshold": 1.592447185369965,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "MSFT|B30_06": {
+      "asset": "MSFT",
+      "band": "B30_06",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6949067825929838,
+          "median": 12.246375771660247,
+          "scale": 1.0302687958723578
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.3338450047324226,
+          "median": 6.93585659092458,
+          "scale": 0.49495860401628977
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.47651703453883076,
+          "median": 14.558872279063479,
+          "scale": 0.7064841554072705
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.4405501779092367,
+          "median": 14.836436727141194,
+          "scale": 0.6531596937682342
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.21594918258816032,
+          "median": 5.631211781821365,
+          "scale": 0.3201662581052065
+        }
+      },
+      "p95_threshold": 1.7213108279738003,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "MSFT|B30_07": {
+      "asset": "MSFT",
+      "band": "B30_07",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6084570195110652,
+          "median": 12.14265819922186,
+          "scale": 0.9020983771271053
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.3615497514216486,
+          "median": 6.9697889032638365,
+          "scale": 0.5360336614577361
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.5314754210467543,
+          "median": 14.479283076094312,
+          "scale": 0.7879654592439178
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.4659953989568679,
+          "median": 14.837854069903205,
+          "scale": 0.6908847784934523
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.24601373735456544,
+          "median": 5.607623463633885,
+          "scale": 0.3647399670018787
+        }
+      },
+      "p95_threshold": 1.5315604696805774,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "MSFT|B30_08": {
+      "asset": "MSFT",
+      "band": "B30_08",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6863154955545623,
+          "median": 12.095220945380957,
+          "scale": 1.017531353709194
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.2897204718643107,
+          "median": 6.75343791859778,
+          "scale": 0.429539571586027
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.5235307331010128,
+          "median": 14.258166878729442,
+          "scale": 0.7761866648955615
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.45102442503196283,
+          "median": 14.600005390768345,
+          "scale": 0.6686888125523881
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.1907415717108396,
+          "median": 5.541263545158426,
+          "scale": 0.2827934542184908
+        }
+      },
+      "p95_threshold": 2.0054569394585884,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "MSFT|B30_09": {
+      "asset": "MSFT",
+      "band": "B30_09",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7577795508986931,
+          "median": 12.009742402951535,
+          "scale": 1.1234839621624022
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.33650920656466576,
+          "median": 6.664987870909034,
+          "scale": 0.4989085496527734
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.5818310492156522,
+          "median": 14.193393773455007,
+          "scale": 0.8626227135671259
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.4946678631071464,
+          "median": 14.539109916399608,
+          "scale": 0.7333945738426552
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.22695874574705543,
+          "median": 5.4638318050256105,
+          "scale": 0.3364890364445844
+        }
+      },
+      "p95_threshold": 1.7767241963065479,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "MSFT|B30_10": {
+      "asset": "MSFT",
+      "band": "B30_10",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6806474006149639,
+          "median": 12.00158806030761,
+          "scale": 1.0091278361517453
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.24243919806423442,
+          "median": 6.818894801078944,
+          "scale": 0.3594403550500339
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.39558098967798383,
+          "median": 14.492583299271708,
+          "scale": 0.5864883752965788
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.3189392157232822,
+          "median": 14.754803985339393,
+          "scale": 0.4728592812313382
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.16063036839719835,
+          "median": 5.575941929081994,
+          "scale": 0.23815058418568627
+        }
+      },
+      "p95_threshold": 4.3167008041236175,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "MSFT|B30_11": {
+      "asset": "MSFT",
+      "band": "B30_11",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6914417738900624,
+          "median": 12.324955217009721,
+          "scale": 1.0251315739694065
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.26463128424823923,
+          "median": 6.819987164340166,
+          "scale": 0.3923423420264395
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.5220835546196492,
+          "median": 14.567072624978113,
+          "scale": 0.7740410780790918
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.4559159915514206,
+          "median": 14.844228676616986,
+          "scale": 0.6759410490741361
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.21869224928992725,
+          "median": 5.529429087511423,
+          "scale": 0.32423312879724614
+        }
+      },
+      "p95_threshold": 3.69883840398726,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "NVDA|B30_00": {
+      "asset": "NVDA",
+      "band": "B30_00",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7707591611430411,
+          "median": 13.308001968224724,
+          "scale": 1.1427275323106727
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.2592527464722174,
+          "median": 9.140131003967738,
+          "scale": 0.38436812191970954
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.2867117053828814,
+          "median": 16.536835414327093,
+          "scale": 0.4250787744006599
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.30100612904535673,
+          "median": 16.628173719572914,
+          "scale": 0.44627168692264585
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.1345761594592454,
+          "median": 6.298942488592276,
+          "scale": 0.1995226140142772
+        }
+      },
+      "p95_threshold": 1.8302129791632504,
+      "percentile": 0.95,
+      "sample_size": 100
+    },
+    "NVDA|B30_01": {
+      "asset": "NVDA",
+      "band": "B30_01",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6946670615636199,
+          "median": 13.458863513522655,
+          "scale": 1.0299133854742228
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.263994329971589,
+          "median": 8.882657495635698,
+          "scale": 0.39139799361587785
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.3772990089389783,
+          "median": 16.324811735257683,
+          "scale": 0.5593835106529291
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.35485884585681937,
+          "median": 16.43117238873029,
+          "scale": 0.5261137248673203
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.09063152703461075,
+          "median": 6.195424759449596,
+          "scale": 0.1343703019815139
+        }
+      },
+      "p95_threshold": 1.7680434574371808,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "NVDA|B30_02": {
+      "asset": "NVDA",
+      "band": "B30_02",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6506264504482155,
+          "median": 13.048222476656232,
+          "scale": 0.9646187754345243
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.24543827664628193,
+          "median": 8.562453099024374,
+          "scale": 0.3638867889557776
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.2725760870567324,
+          "median": 16.055999900982442,
+          "scale": 0.4041213066703115
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.23684425042477208,
+          "median": 16.172497524671115,
+          "scale": 0.35114528567976705
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.08834400663694719,
+          "median": 6.09469716623868,
+          "scale": 0.1309788242399379
+        }
+      },
+      "p95_threshold": 1.799975599293092,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "NVDA|B30_03": {
+      "asset": "NVDA",
+      "band": "B30_03",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.5475906862658615,
+          "median": 12.954225758093832,
+          "scale": 0.8118579514577662
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.2215015137136147,
+          "median": 8.37801815574678,
+          "scale": 0.32839814423180513
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.3476044987776934,
+          "median": 15.89629883451003,
+          "scale": 0.5153584298878082
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.3325245157300003,
+          "median": 16.012887011851227,
+          "scale": 0.4930008470212984
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.12239305276619783,
+          "median": 6.0112671744041615,
+          "scale": 0.1814599400311649
+        }
+      },
+      "p95_threshold": 2.1231822974929466,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "NVDA|B30_04": {
+      "asset": "NVDA",
+      "band": "B30_04",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7028150951349339,
+          "median": 12.954272998424905,
+          "scale": 1.041993660047053
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.2717038300518091,
+          "median": 8.159930310105867,
+          "scale": 0.40282809843481215
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.3061308150890474,
+          "median": 15.656948358195908,
+          "scale": 0.4538695464510216
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.2924396357248291,
+          "median": 15.812996162680722,
+          "scale": 0.43357100392563164
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.11644003926496582,
+          "median": 5.920236136958481,
+          "scale": 0.17263400221423833
+        }
+      },
+      "p95_threshold": 2.431109030117092,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "NVDA|B30_05": {
+      "asset": "NVDA",
+      "band": "B30_05",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7889255045747499,
+          "median": 13.108033552802478,
+          "scale": 1.1696609530825242
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.27214579836003283,
+          "median": 8.089471888603772,
+          "scale": 0.40348336064858464
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.4227118766425999,
+          "median": 15.600228718050118,
+          "scale": 0.6267126283103186
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.3914029064487856,
+          "median": 15.814902249311137,
+          "scale": 0.5802939491009695
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.11313672216156867,
+          "median": 5.881919906614897,
+          "scale": 0.1677365042767417
+        }
+      },
+      "p95_threshold": 1.7699027779845578,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "NVDA|B30_06": {
+      "asset": "NVDA",
+      "band": "B30_06",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6812690934461765,
+          "median": 13.088428447702332,
+          "scale": 1.010049557943301
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.2839920188029694,
+          "median": 8.029732859836663,
+          "scale": 0.42104656707728244
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.37741765563126606,
+          "median": 15.43887975430654,
+          "scale": 0.559559416238915
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.3299850482376785,
+          "median": 15.59606833437909,
+          "scale": 0.4892358325171821
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.12817611115543182,
+          "median": 5.857929072834146,
+          "scale": 0.1900339023990432
+        }
+      },
+      "p95_threshold": 2.0965394884793014,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "NVDA|B30_07": {
+      "asset": "NVDA",
+      "band": "B30_07",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6722592630371746,
+          "median": 12.776090366122515,
+          "scale": 0.9966915833789151
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.24939494750693614,
+          "median": 7.9996785794994505,
+          "scale": 0.3697529491737835
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.30283337155984924,
+          "median": 15.54543767704215,
+          "scale": 0.44898075667463244
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.2812626947734316,
+          "median": 15.74575940620742,
+          "scale": 0.4170000712710896
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.11497097097480369,
+          "median": 5.877735781779639,
+          "scale": 0.17045596156724394
+        }
+      },
+      "p95_threshold": 2.141921164204246,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "NVDA|B30_08": {
+      "asset": "NVDA",
+      "band": "B30_08",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6954700996743517,
+          "median": 13.043426039568175,
+          "scale": 1.0311039697771938
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.23318471069332203,
+          "median": 7.874509055911265,
+          "scale": 0.3457196520739192
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.37514692399928506,
+          "median": 15.498544085528092,
+          "scale": 0.55619282952134
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.3338534253883818,
+          "median": 15.636740639475395,
+          "scale": 0.49497108848081484
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.12218497796404737,
+          "median": 5.788428776131981,
+          "scale": 0.18115144832949662
+        }
+      },
+      "p95_threshold": 2.537702445194054,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "NVDA|B30_09": {
+      "asset": "NVDA",
+      "band": "B30_09",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6831016307497348,
+          "median": 12.73743858959472,
+          "scale": 1.0127664777495569
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.256202795166824,
+          "median": 7.915530684322597,
+          "scale": 0.3798462641143332
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.305409045167945,
+          "median": 15.367639383155499,
+          "scale": 0.4527994503659952
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.29418459748348624,
+          "median": 15.57339672474284,
+          "scale": 0.4361580842290167
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.14275483942036438,
+          "median": 5.812635762400884,
+          "scale": 0.2116483249246322
+        }
+      },
+      "p95_threshold": 2.5192557594260134,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "NVDA|B30_10": {
+      "asset": "NVDA",
+      "band": "B30_10",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.5857620925239626,
+          "median": 12.575545623564011,
+          "scale": 0.868450878376027
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.23125197595078806,
+          "median": 7.813985798362033,
+          "scale": 0.34285417954463837
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.31412814017326873,
+          "median": 15.372758015557025,
+          "scale": 0.4657263806208882
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.29330488512294917,
+          "median": 15.558532545352325,
+          "scale": 0.43485382268328443
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.11630045569616065,
+          "median": 5.820082930352362,
+          "scale": 0.17242705561512778
+        }
+      },
+      "p95_threshold": 3.258611590251069,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "NVDA|B30_11": {
+      "asset": "NVDA",
+      "band": "B30_11",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6595019018307271,
+          "median": 13.108210677081143,
+          "scale": 0.977777519654236
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.19868110202182843,
+          "median": 7.903041863388578,
+          "scale": 0.29456460185756284
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.38525148799386777,
+          "median": 15.56300991217544,
+          "scale": 0.5711738560997083
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.3478137732175819,
+          "median": 15.756257875123726,
+          "scale": 0.5156687001723869
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.12516314295400566,
+          "median": 5.84354441703136,
+          "scale": 0.18556687574360878
+        }
+      },
+      "p95_threshold": 2.0177137114882777,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "QQQ|B30_00": {
+      "asset": "QQQ",
+      "band": "B30_00",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6814015345260307,
+          "median": 13.689015552062363,
+          "scale": 1.010245915088293
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.13090454508894833,
+          "median": 10.153208534069229,
+          "scale": 0.1940790785488748
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.24287917550859817,
+          "median": 17.59780834478191,
+          "scale": 0.3600926656090476
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.23922682222220182,
+          "median": 17.64777900847962,
+          "scale": 0.3546776866266364
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.14041522991873556,
+          "median": 7.173955677392829,
+          "scale": 0.20817961987751735
+        }
+      },
+      "p95_threshold": 2.2303503244959395,
+      "percentile": 0.95,
+      "sample_size": 100
+    },
+    "QQQ|B30_01": {
+      "asset": "QQQ",
+      "band": "B30_01",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7642446102351466,
+          "median": 13.982967828921169,
+          "scale": 1.1330690591346282
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.1779715447155663,
+          "median": 9.920147949903967,
+          "scale": 0.2638606121952986
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.30548076075043973,
+          "median": 17.428264061446594,
+          "scale": 0.4529057758886019
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.276045254043078,
+          "median": 17.504060548811214,
+          "scale": 0.40926469364426743
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.11687145837562607,
+          "median": 6.999870146513765,
+          "scale": 0.1732736241877032
+        }
+      },
+      "p95_threshold": 1.7499233295059333,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "QQQ|B30_02": {
+      "asset": "QQQ",
+      "band": "B30_02",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.615988802573253,
+          "median": 13.438426075097684,
+          "scale": 0.9132649986951048
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.20112888179473387,
+          "median": 9.765962436959839,
+          "scale": 0.29819368014887243
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.24162728429375946,
+          "median": 17.14212489654332,
+          "scale": 0.35823661169392773
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.2199359263876719,
+          "median": 17.220196417809362,
+          "scale": 0.3260770044623623
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.11330805185296633,
+          "median": 6.882950028705469,
+          "scale": 0.16799051767720788
+        }
+      },
+      "p95_threshold": 1.7218249175222573,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "QQQ|B30_03": {
+      "asset": "QQQ",
+      "band": "B30_03",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.8720420562239859,
+          "median": 13.514245193699034,
+          "scale": 1.2928895525576813
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.17997413464185108,
+          "median": 9.527593190984376,
+          "scale": 0.2668296520200084
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.26074815062578516,
+          "median": 16.845766449861344,
+          "scale": 0.38658520811778907
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.24294334320487998,
+          "median": 17.00576204169214,
+          "scale": 0.36018780063555506
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.13385593539704344,
+          "median": 6.746394867873983,
+          "scale": 0.19845480981965657
+        }
+      },
+      "p95_threshold": 2.0789493051994272,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "QQQ|B30_04": {
+      "asset": "QQQ",
+      "band": "B30_04",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.584828529562957,
+          "median": 13.300015927852737,
+          "scale": 0.86706677793004
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.23858239406609982,
+          "median": 9.384650017031646,
+          "scale": 0.3537222574423996
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.26343684795240385,
+          "median": 16.774023304602647,
+          "scale": 0.39057147077423393
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.24639248863959295,
+          "median": 16.869406732803633,
+          "scale": 0.3653015036570605
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.13129425242706239,
+          "median": 6.66376922916386,
+          "scale": 0.19465685864836269
+        }
+      },
+      "p95_threshold": 2.1893949326251807,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "QQQ|B30_05": {
+      "asset": "QQQ",
+      "band": "B30_05",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7829950551397786,
+          "median": 13.40962108679166,
+          "scale": 1.1608684687502357
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.2770883223933973,
+          "median": 9.24782851950231,
+          "scale": 0.41081114678045083
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.3368692387002419,
+          "median": 16.603551670765704,
+          "scale": 0.49944233329697857
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.3342476743059244,
+          "median": 16.759257626849866,
+          "scale": 0.4955556019259635
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.14556553439471376,
+          "median": 6.6385600796144715,
+          "scale": 0.2158154612936026
+        }
+      },
+      "p95_threshold": 1.521193413245777,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "QQQ|B30_06": {
+      "asset": "QQQ",
+      "band": "B30_06",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6273764470756289,
+          "median": 13.212217439816154,
+          "scale": 0.9301483204343274
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.20268589267567094,
+          "median": 9.0757226605254,
+          "scale": 0.3005021044809497
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.2964719316187221,
+          "median": 16.497022684202356,
+          "scale": 0.43954928581791736
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.2937825204290405,
+          "median": 16.638061389400264,
+          "scale": 0.43556196478809545
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.10672305014894201,
+          "median": 6.505779591443653,
+          "scale": 0.1582275941508214
+        }
+      },
+      "p95_threshold": 1.8692121945836986,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "QQQ|B30_07": {
+      "asset": "QQQ",
+      "band": "B30_07",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6925609689256822,
+          "median": 13.443629203866845,
+          "scale": 1.0267908925292164
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.23751856996755194,
+          "median": 9.115882104005724,
+          "scale": 0.3521450318338925
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.3263064905461537,
+          "median": 16.45392816811752,
+          "scale": 0.4837820028837274
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.3210491951782455,
+          "median": 16.589649820646557,
+          "scale": 0.4759875367712667
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.15067277797172896,
+          "median": 6.521356962864424,
+          "scale": 0.22338746062088533
+        }
+      },
+      "p95_threshold": 1.7450816465558052,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "QQQ|B30_08": {
+      "asset": "QQQ",
+      "band": "B30_08",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6523172509058712,
+          "median": 13.304990445954337,
+          "scale": 0.9671255561930446
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.2513084206151248,
+          "median": 8.978279904838546,
+          "scale": 0.372589864403984
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.34016712818746697,
+          "median": 16.395873895732926,
+          "scale": 0.5043317842507385
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.3199427872385545,
+          "median": 16.532337623453827,
+          "scale": 0.4743471763598809
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.1358290128017643,
+          "median": 6.476188316529516,
+          "scale": 0.20138009437989574
+        }
+      },
+      "p95_threshold": 2.4582774224795143,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "QQQ|B30_09": {
+      "asset": "QQQ",
+      "band": "B30_09",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7088747629077252,
+          "median": 13.287031335610436,
+          "scale": 1.0509777234869933
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.25954181686542555,
+          "median": 8.970880703822816,
+          "scale": 0.3847966976846799
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.41750759592874154,
+          "median": 16.35791974282855,
+          "scale": 0.6189967617239521
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.45111061663752494,
+          "median": 16.46421579067294,
+          "scale": 0.6688166002267945
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.17271766823169754,
+          "median": 6.443333180009249,
+          "scale": 0.25607121492031476
+        }
+      },
+      "p95_threshold": 1.8766544445670452,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "QQQ|B30_10": {
+      "asset": "QQQ",
+      "band": "B30_10",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6826593323049561,
+          "median": 13.607815171720263,
+          "scale": 1.012110726075328
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.2633612473367508,
+          "median": 8.97644876388201,
+          "scale": 0.39045938530146673
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.28111808347226663,
+          "median": 16.40058674779603,
+          "scale": 0.4167856705559825
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.3013917918045106,
+          "median": 16.571294208547375,
+          "scale": 0.44684347052936735
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.1570568461138282,
+          "median": 6.4929968374360785,
+          "scale": 0.23285248004836168
+        }
+      },
+      "p95_threshold": 2.4482984244959787,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "QQQ|B30_11": {
+      "asset": "QQQ",
+      "band": "B30_11",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.8363544246243793,
+          "median": 13.4519613827596,
+          "scale": 1.2399790699481046
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.2313092629625073,
+          "median": 9.147705842028014,
+          "scale": 0.3429391132682133
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.33796372679249487,
+          "median": 16.528101824451916,
+          "scale": 0.5010650213425528
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.33633144400149817,
+          "median": 16.65543113731345,
+          "scale": 0.49864499887662117
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.16494121347107882,
+          "median": 6.577861357721047,
+          "scale": 0.24454184309222143
+        }
+      },
+      "p95_threshold": 1.934368929690805,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "SPY|B30_00": {
+      "asset": "SPY",
+      "band": "B30_00",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7448379506678053,
+          "median": 13.907448317107674,
+          "scale": 1.104296745660088
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.16490360639885537,
+          "median": 10.381722521261056,
+          "scale": 0.24448608684694295
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.316422148317022,
+          "median": 17.457681594686917,
+          "scale": 0.4691274770948168
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.3052779088486428,
+          "median": 17.53278102176514,
+          "scale": 0.4526050276589978
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.16142004391557752,
+          "median": 7.103309889161164,
+          "scale": 0.23932135710923522
+        }
+      },
+      "p95_threshold": 1.7371054721711927,
+      "percentile": 0.95,
+      "sample_size": 100
+    },
+    "SPY|B30_01": {
+      "asset": "SPY",
+      "band": "B30_01",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6236781861351082,
+          "median": 13.08377127426188,
+          "scale": 0.9246652787639114
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.24162828607550324,
+          "median": 10.218900280791665,
+          "scale": 0.3582380969355411
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.3691557886027894,
+          "median": 17.154705174784468,
+          "scale": 0.5473103721824956
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.3583944703171458,
+          "median": 17.25340222129816,
+          "scale": 0.5313556416922003
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.12199604532669106,
+          "median": 6.921163870661649,
+          "scale": 0.18087133680135214
+        }
+      },
+      "p95_threshold": 1.8326040217594781,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "SPY|B30_02": {
+      "asset": "SPY",
+      "band": "B30_02",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.5678215452177362,
+          "median": 13.092572467919268,
+          "scale": 0.8418522229398157
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.19442992081423505,
+          "median": 10.0425969482964,
+          "scale": 0.2882618005991849
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.22997672733572472,
+          "median": 17.077540130897916,
+          "scale": 0.34096349594794545
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.21881770823074653,
+          "median": 17.133539758594083,
+          "scale": 0.3244191342229048
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.11414960161273635,
+          "median": 6.831953565565855,
+          "scale": 0.1692381993510429
+        }
+      },
+      "p95_threshold": 2.3808140544635155,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "SPY|B30_03": {
+      "asset": "SPY",
+      "band": "B30_03",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.4654206974656958,
+          "median": 12.809043513075911,
+          "scale": 0.6900327260626405
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.23737690251081212,
+          "median": 9.836032544148148,
+          "scale": 0.35193499566253
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.23051533462881046,
+          "median": 16.773463116029102,
+          "scale": 0.3417620351206744
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.24092017231475005,
+          "median": 16.84852186448737,
+          "scale": 0.3571882474738484
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.13048185853284533,
+          "median": 6.70685038052936,
+          "scale": 0.19345240346079648
+        }
+      },
+      "p95_threshold": 2.795076365253678,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "SPY|B30_04": {
+      "asset": "SPY",
+      "band": "B30_04",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.48592890049294635,
+          "median": 12.81041548905371,
+          "scale": 0.7204381878708422
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.23128659926728456,
+          "median": 9.664973766799147,
+          "scale": 0.3429055120736761
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.2526888480526619,
+          "median": 16.647118974716747,
+          "scale": 0.37463648612287653
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.2561805288334593,
+          "median": 16.73153058313372,
+          "scale": 0.37981325204848676
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.11902347840839234,
+          "median": 6.622069217165125,
+          "scale": 0.17646420908828248
+        }
+      },
+      "p95_threshold": 2.286433334218771,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "SPY|B30_05": {
+      "asset": "SPY",
+      "band": "B30_05",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6652576369636547,
+          "median": 12.777656732102614,
+          "scale": 0.9863109725623144
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.26659247215895476,
+          "median": 9.531443420887584,
+          "scale": 0.3952499992228663
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.32306195148887085,
+          "median": 16.446523271195836,
+          "scale": 0.4789716492773999
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.31349342243272815,
+          "median": 16.561530497433935,
+          "scale": 0.4647853480987627
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.13464445548988246,
+          "median": 6.583408265639271,
+          "scale": 0.19962386970929974
+        }
+      },
+      "p95_threshold": 1.6523311461892651,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "SPY|B30_06": {
+      "asset": "SPY",
+      "band": "B30_06",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.517673563425646,
+          "median": 12.821870988027952,
+          "scale": 0.7675028251348627
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.2408793862746661,
+          "median": 9.373986226958273,
+          "scale": 0.3571277780908199
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.326004167980777,
+          "median": 16.35401313941994,
+          "scale": 0.48333377944829997
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.31022775113267187,
+          "median": 16.493857524037338,
+          "scale": 0.4599436638292993
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.10553548503997012,
+          "median": 6.502033104802331,
+          "scale": 0.1564669101202597
+        }
+      },
+      "p95_threshold": 2.225208775775254,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "SPY|B30_07": {
+      "asset": "SPY",
+      "band": "B30_07",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.42725107873581436,
+          "median": 12.656962968520858,
+          "scale": 0.6334424493337183
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.19042742303543125,
+          "median": 9.418687978855942,
+          "scale": 0.2823276973923304
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.2631037995662613,
+          "median": 16.436765109372775,
+          "scale": 0.39007769323693897
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.27982662095190847,
+          "median": 16.51758859156304,
+          "scale": 0.41487094822329945
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.10975629256001751,
+          "median": 6.522092798170152,
+          "scale": 0.16272467934948195
+        }
+      },
+      "p95_threshold": 2.5388430595774807,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "SPY|B30_08": {
+      "asset": "SPY",
+      "band": "B30_08",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6650314183573007,
+          "median": 12.767268103620683,
+          "scale": 0.985975580856534
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.27225012867927845,
+          "median": 9.26804051600395,
+          "scale": 0.4036380407798982
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.2748621825242328,
+          "median": 16.22145435193727,
+          "scale": 0.4075106718104275
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.27214730636420725,
+          "median": 16.3335462249387,
+          "scale": 0.40348559641557363
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.12846227058583626,
+          "median": 6.44174335355056,
+          "scale": 0.19045816237056082
+        }
+      },
+      "p95_threshold": 3.499547151492853,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "SPY|B30_09": {
+      "asset": "SPY",
+      "band": "B30_09",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.5193117486333447,
+          "median": 12.647976311225861,
+          "scale": 0.7699315985237969
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.3115427270125979,
+          "median": 9.32687590698918,
+          "scale": 0.4618932470688776
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.3666718028359419,
+          "median": 16.24845965819796,
+          "scale": 0.5436276148845675
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.3667683811635323,
+          "median": 16.335268831573373,
+          "scale": 0.5437708019130529
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.15063394601157842,
+          "median": 6.461457189904891,
+          "scale": 0.22332988835676615
+        }
+      },
+      "p95_threshold": 1.935366777117597,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "SPY|B30_10": {
+      "asset": "SPY",
+      "band": "B30_10",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.5975818224878804,
+          "median": 12.807438972043224,
+          "scale": 0.8859748100205315
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.2577801635693939,
+          "median": 9.320199437604124,
+          "scale": 0.38218487050798344
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.3797357447249876,
+          "median": 16.346521871567546,
+          "scale": 0.5629962151292666
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.342929466410137,
+          "median": 16.480221246954706,
+          "scale": 0.5084272268996691
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.13160090243140488,
+          "median": 6.44333571158432,
+          "scale": 0.19511149794480087
+        }
+      },
+      "p95_threshold": 2.355581342502716,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "SPY|B30_11": {
+      "asset": "SPY",
+      "band": "B30_11",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.633194296866435,
+          "median": 13.075739650813128,
+          "scale": 0.9387738645341765
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.2343016527469448,
+          "median": 9.478318447083277,
+          "scale": 0.34737563036262037
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.32168393091821734,
+          "median": 16.437816350150257,
+          "scale": 0.476928595979349
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.30431087868618967,
+          "median": 16.526402011195415,
+          "scale": 0.45117130874014477
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.1328547872801713,
+          "median": 6.605297005399343,
+          "scale": 0.19697050762158197
+        }
+      },
+      "p95_threshold": 1.7977045986662656,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "TSLA|B30_00": {
+      "asset": "TSLA",
+      "band": "B30_00",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.48888057287970454,
+          "median": 13.49330142894664,
+          "scale": 0.72481433735145
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.22793737458962582,
+          "median": 9.601500036634484,
+          "scale": 0.33793995156657924
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.20031385864317208,
+          "median": 17.31138366847697,
+          "scale": 0.2969853268243669
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.19977045803883264,
+          "median": 17.38190518074202,
+          "scale": 0.2961796810883733
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.15552771181854474,
+          "median": 6.657358884949329,
+          "scale": 0.23058538554217442
+        }
+      },
+      "p95_threshold": 1.9769671832892215,
+      "percentile": 0.95,
+      "sample_size": 100
+    },
+    "TSLA|B30_01": {
+      "asset": "TSLA",
+      "band": "B30_01",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.5614832375651746,
+          "median": 13.304489228959685,
+          "scale": 0.8324550480141278
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.26489472177186624,
+          "median": 9.38411966040173,
+          "scale": 0.39273291449896885
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.19464178832622636,
+          "median": 17.036572744274274,
+          "scale": 0.2885759153724632
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.19611414418879924,
+          "median": 17.10184994886341,
+          "scale": 0.29075883017431375
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.1102276888262046,
+          "median": 6.499787040655854,
+          "scale": 0.16342357145373093
+        }
+      },
+      "p95_threshold": 1.993523788396674,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "TSLA|B30_02": {
+      "asset": "TSLA",
+      "band": "B30_02",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.60106435614858,
+          "median": 12.952032395754504,
+          "scale": 0.8911380144258847
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.2682082720416199,
+          "median": 9.015537720800847,
+          "scale": 0.39764558412890566
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.2697669017710673,
+          "median": 16.747044309425945,
+          "scale": 0.3999564085657844
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.28840129376484214,
+          "median": 16.843680969240594,
+          "scale": 0.42758375813575494
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.12544308137486748,
+          "median": 6.3784261836515865,
+          "scale": 0.18598191244637852
+        }
+      },
+      "p95_threshold": 2.0528031461810006,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "TSLA|B30_03": {
+      "asset": "TSLA",
+      "band": "B30_03",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6079234980891526,
+          "median": 12.936225575932507,
+          "scale": 0.9013073782669776
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.3048414462240947,
+          "median": 8.767580956584588,
+          "scale": 0.45195792817184277
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.38400228996183294,
+          "median": 16.509873300576167,
+          "scale": 0.5693217950974135
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.34829646482212695,
+          "median": 16.618529997281108,
+          "scale": 0.5163843387452854
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.14958271241263832,
+          "median": 6.229492342918994,
+          "scale": 0.22177132942297756
+        }
+      },
+      "p95_threshold": 1.642612919808789,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "TSLA|B30_04": {
+      "asset": "TSLA",
+      "band": "B30_04",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7151930702812184,
+          "median": 13.211961938544984,
+          "scale": 1.0603452459989342
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.3050402909306662,
+          "median": 8.67210974968023,
+          "scale": 0.45225273533380567
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.2740839600161955,
+          "median": 16.329771560704557,
+          "scale": 0.40635687912001145
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.28269928605007877,
+          "median": 16.452913774864445,
+          "scale": 0.41912996149784676
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.18338615419467086,
+          "median": 6.187147638972313,
+          "scale": 0.271888312209019
+        }
+      },
+      "p95_threshold": 2.0087496845879302,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "TSLA|B30_05": {
+      "asset": "TSLA",
+      "band": "B30_05",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.5879379279682029,
+          "median": 12.9027887277998,
+          "scale": 0.8716767720056575
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.34763123213387903,
+          "median": 8.595071446312181,
+          "scale": 0.515398064761689
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.38806055396962513,
+          "median": 16.15508376987848,
+          "scale": 0.5753385773153662
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.35581348190285667,
+          "median": 16.272635662118958,
+          "scale": 0.5275290682691752
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.15716096115625344,
+          "median": 6.09469716623868,
+          "scale": 0.23300684101026134
+        }
+      },
+      "p95_threshold": 1.6485394214410498,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "TSLA|B30_06": {
+      "asset": "TSLA",
+      "band": "B30_06",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6198305206519352,
+          "median": 12.77543550986562,
+          "scale": 0.9189607299185591
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.38214513963469265,
+          "median": 8.461676704580922,
+          "scale": 0.5665683840223953
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.3456012086668805,
+          "median": 16.00821103682132,
+          "scale": 0.5123883519695169
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.33730290243859073,
+          "median": 16.127984245701427,
+          "scale": 0.5000852831554546
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.13970308157396083,
+          "median": 6.035481432524756,
+          "scale": 0.20712378874155432
+        }
+      },
+      "p95_threshold": 1.7688738578357404,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "TSLA|B30_07": {
+      "asset": "TSLA",
+      "band": "B30_07",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.5743521259817905,
+          "median": 12.79903602382507,
+          "scale": 0.8515344619806026
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.45140543537652444,
+          "median": 8.409238947604669,
+          "scale": 0.6692536984892351
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.32442210039404795,
+          "median": 15.91720426068414,
+          "scale": 0.4809882060442155
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.316061611109963,
+          "median": 16.080404772504465,
+          "scale": 0.46859294463163115
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.18431334837958646,
+          "median": 6.012485172570474,
+          "scale": 0.27326297030757485
+        }
+      },
+      "p95_threshold": 1.8566356082581574,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "TSLA|B30_08": {
+      "asset": "TSLA",
+      "band": "B30_08",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.691692129002198,
+          "median": 12.758346386945384,
+          "scale": 1.0255027504586587
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.33596792577785095,
+          "median": 8.324805753990873,
+          "scale": 0.49810604675824177
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.34605088213989,
+          "median": 15.95385950043649,
+          "scale": 0.5130550378606009
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.3454772546068252,
+          "median": 16.043835170946544,
+          "scale": 0.512204577680079
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.20114301998544493,
+          "median": 5.967420591704454,
+          "scale": 0.29821464143042065
+        }
+      },
+      "p95_threshold": 1.6336406134119363,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "TSLA|B30_09": {
+      "asset": "TSLA",
+      "band": "B30_09",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.5438965327878735,
+          "median": 12.740053138929188,
+          "scale": 0.8063809995113013
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.28110218133936726,
+          "median": 8.278923118516516,
+          "scale": 0.41676209405374587
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.33757186670048434,
+          "median": 15.83490843819382,
+          "scale": 0.500484049570138
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.334954431576568,
+          "median": 16.027211000768368,
+          "scale": 0.4966034402554197
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.16302066772205315,
+          "median": 5.993958317863502,
+          "scale": 0.24169444196471598
+        }
+      },
+      "p95_threshold": 1.6817002450855758,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "TSLA|B30_10": {
+      "asset": "TSLA",
+      "band": "B30_10",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.6138044079170157,
+          "median": 12.638146551537663,
+          "scale": 0.9100264151777675
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.285620443632451,
+          "median": 8.223491526224144,
+          "scale": 0.4234608697294718
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.3024521813772596,
+          "median": 15.745142765622521,
+          "scale": 0.44841560410992504
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.28859075233931897,
+          "median": 15.883655117879325,
+          "scale": 0.4278646494182743
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.13691090101641512,
+          "median": 5.962285716076737,
+          "scale": 0.20298410184693705
+        }
+      },
+      "p95_threshold": 3.288674081490023,
+      "percentile": 0.95,
+      "sample_size": 120
+    },
+    "TSLA|B30_11": {
+      "asset": "TSLA",
+      "band": "B30_11",
+      "calibration_window_end": "2026-07-10",
+      "calibration_window_start": "2026-06-11",
+      "features": {
+        "max_trade_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.7050306630870979,
+          "median": 13.080358976819358,
+          "scale": 1.0452784610929313
+        },
+        "option_trade_count_5m": {
+          "fallback": "mad",
+          "mad": 0.18307222533328193,
+          "median": 8.244070027030743,
+          "scale": 0.2714228812791238
+        },
+        "repeated_contract_premium": {
+          "fallback": "mad",
+          "mad": 0.3810030223790042,
+          "median": 15.818747171864299,
+          "scale": 0.5648750809791115
+        },
+        "total_premium_5m": {
+          "fallback": "mad",
+          "mad": 0.3929845133343868,
+          "median": 15.979100676481064,
+          "scale": 0.5826388394695619
+        },
+        "unique_contract_count_5m": {
+          "fallback": "mad",
+          "mad": 0.13529381954624053,
+          "median": 6.0014148779611505,
+          "scale": 0.20058661685925622
+        }
+      },
+      "p95_threshold": 2.9933439328582265,
+      "percentile": 0.95,
+      "sample_size": 120
+    }
+  },
+  "pilot_sessions": [
+    "2026-07-13",
+    "2026-07-14",
+    "2026-07-15",
+    "2026-07-16",
+    "2026-07-17"
+  ],
+  "primary_cutoff": "created_at <= origin - 60 seconds",
+  "rv30_used_for_calibration": false,
+  "score": "median of the three largest positive robust z-scores",
+  "sensitivity_cutoffs": {
+    "primary_60s": 60,
+    "sensitivity_0s": 0,
+    "sensitivity_15s": 15
+  },
+  "status": "PASS",
+  "threshold": "historical 95th percentile by asset and band"
+}

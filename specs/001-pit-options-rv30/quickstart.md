@@ -115,3 +115,45 @@ next thirty consecutive one-minute closes. It produces exactly thirty returns:
 `r(i,t+j)=ln[C(i,t+j)/C(i,t+j-1)]`, `j=1..30`, and their squared sum. Missing any of the
 31 prices, unresolved FMP bar start/close semantics, an early close or an unidentified halt
 is a hard invalid status; no silent interpolation is allowed.
+
+## Phase 6 coherence and preregistration gate
+
+```powershell
+uv run pytest tests\contract\test_phase6_spec_contract.py -q
+uv run python scripts\freeze_phase6_preregistration.py
+uv run pytest tests\unit\test_phase6_design.py tests\contract\test_phase6_preregistration.py -q
+```
+
+Expected: the schema-valid manifest contains exactly 20 warm-up, 60 initial-training and
+100 OOS sessions across five folds and records zero OOS reads. Do not acquire data if Spec Kit
+analysis has a critical contradiction.
+
+## Phase 6 continuity and storage gate
+
+```powershell
+uv run python scripts\probe_phase6_continuity.py
+uv run pytest tests\unit\test_phase6_continuity.py -q
+```
+
+Expected: all 180 allow-listed dates have bounded FMP/UW/Massive evidence and projected peak
+free space remains at least 80 GiB. This probe is metadata-only for UW and is not a Full Tape
+backfill.
+
+## Phase 6 locked execution gate
+
+After acquisition, PIT feature tests and B1v2a coverage pass:
+
+```powershell
+uv run python scripts\build_phase6_panel.py --stage b0
+uv run python scripts\build_phase6_panel.py --stage b1
+uv run python scripts\build_phase6_panel.py --stage b2
+uv run python scripts\build_phase6_panel.py --stage common
+uv run python scripts\freeze_phase6_method.py
+uv run pytest tests\unit\test_phase6_method_freeze.py tests\e2e\test_phase6_panel.py -q
+uv run python scripts\run_phase6_replication.py
+uv run python scripts\report_phase6_results.py
+```
+
+The method freeze must show `oos_read_count=0`; the locked run may transition it to one only
+once. A second analytical execution must fail. The final report must include all registered
+signs and distinguish global confirmation, targeted replication and `GLOBAL_EDGE_NOT_CONFIRMED`.

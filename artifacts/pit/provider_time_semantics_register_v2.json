@@ -1,0 +1,283 @@
+{
+  "controlled_checks": [
+    {
+      "check": "winter_timezone",
+      "evidence": "artifacts/pit/fmp_bar_semantics_v3.json",
+      "status": "PASS"
+    },
+    {
+      "check": "summer_timezone",
+      "evidence": "artifacts/pit/fmp_bar_semantics_v3.json",
+      "status": "PASS"
+    },
+    {
+      "check": "DST_transition",
+      "evidence": "tests/contract/test_pit_gate_artifacts.py",
+      "status": "PASS"
+    },
+    {
+      "check": "normal_390_session",
+      "evidence": "artifacts/pit/fmp_bar_semantics_v3.json",
+      "status": "PASS"
+    },
+    {
+      "check": "early_close_210_session",
+      "evidence": "artifacts/pit/fmp_bar_semantics_v3.json",
+      "status": "PASS"
+    },
+    {
+      "check": "missing_bars",
+      "evidence": "artifacts/api_audit/common_history_continuity_v5.json",
+      "status": "OBSERVED_AND_EXCLUDED"
+    },
+    {
+      "check": "duplicate_timestamps",
+      "evidence": "artifacts/pit/fmp_bar_semantics_v3.json",
+      "status": "PASS_SAMPLES"
+    },
+    {
+      "check": "out_of_order_records",
+      "evidence": "artifacts/calibration_20d/raw_integrity_report.json",
+      "status": "PASS_RETAINED_PARTITIONS"
+    },
+    {
+      "check": "negative_or_extreme_uw_delays",
+      "evidence": "artifacts/common_sample/common_matrix_profile_v1.json",
+      "status": "REPORTED_IN_PHASE4A_PROFILE"
+    },
+    {
+      "check": "origin_boundary",
+      "evidence": "artifacts/common_sample/common_matrix_profile_v1.json",
+      "status": "PASS"
+    }
+  ],
+  "personal_paths_emitted": false,
+  "records": [
+    {
+      "documentation_url": "https://site.financialmodelingprep.com/how-to/how-to-get-stock-intraday-data-with-fmp-apis",
+      "earliest_safe_availability": "raw+1m primary; raw+2m sensitivity",
+      "endpoint": "stable/historical-chart/1min/{symbol}",
+      "evidence": "artifacts/pit/fmp_bar_semantics_v3.json",
+      "field": "date/timestamp",
+      "observed_semantics": "start-label-consistent in 78/78 intervals",
+      "official_semantics": "intraday timestamp; start/close boundary not contractually confirmed",
+      "provider": "FMP",
+      "raw_timezone": "naive exchange-local observed",
+      "raw_type": "string YYYY-MM-DD HH:mm:ss",
+      "research_interpretation": "bar-start assumption",
+      "test": "tests/contract/test_pit_gate_artifacts.py",
+      "transformation": "America/New_York then UTC",
+      "verification_status": "AUTHENTICATED_EVIDENCE_PLUS_ASSUMPTION"
+    },
+    {
+      "documentation_url": "https://site.financialmodelingprep.com/how-to/how-to-get-stock-intraday-data-with-fmp-apis",
+      "earliest_safe_availability": "configured delay for predictors",
+      "endpoint": "stable/historical-chart/1min/{symbol}",
+      "evidence": "artifacts/pit/fmp_bar_semantics_v3.json",
+      "field": "open/high/low/close/volume",
+      "observed_semantics": "390 regular / 210 early-close samples",
+      "official_semantics": "OHLCV bar values",
+      "provider": "FMP",
+      "raw_timezone": "exchange-local label",
+      "raw_type": "numeric",
+      "research_interpretation": "B0 controls; target bars future only",
+      "test": "tests/contract/test_pit_gate_artifacts.py",
+      "transformation": "timezone normalization; no interpolation",
+      "verification_status": "AUTHENTICATED_EMPIRICAL_EVIDENCE"
+    },
+    {
+      "documentation_url": "https://site.financialmodelingprep.com/developer/docs/dividends-calendar",
+      "earliest_safe_availability": "declaration cutoff",
+      "endpoint": "stable/dividends",
+      "evidence": "scripts/run_b1_calibration_20d.py",
+      "field": "dividends",
+      "observed_semantics": "pre-origin filter for BSM input",
+      "official_semantics": "dividend records",
+      "provider": "FMP",
+      "raw_timezone": "date",
+      "raw_type": "JSON date/numeric",
+      "research_interpretation": "B1 input only",
+      "test": "tests/contract/test_b1_closure_artifacts.py",
+      "transformation": "pre-origin filter",
+      "verification_status": "AUTHENTICATED_EVIDENCE"
+    },
+    {
+      "documentation_url": "https://site.financialmodelingprep.com/developer/docs/treasury-rates",
+      "earliest_safe_availability": "latest <= origin",
+      "endpoint": "stable/treasury-rates",
+      "evidence": "scripts/run_b1_calibration_20d.py",
+      "field": "month3",
+      "observed_semantics": "latest date not after origin",
+      "official_semantics": "Treasury rate",
+      "provider": "FMP",
+      "raw_timezone": "date",
+      "raw_type": "numeric percent",
+      "research_interpretation": "pre-origin BSM input",
+      "test": "tests/contract/test_b1_closure_artifacts.py",
+      "transformation": "percent / 100",
+      "verification_status": "AUTHENTICATED_EVIDENCE"
+    },
+    {
+      "documentation_url": "https://site.financialmodelingprep.com/developer/docs/earnings-calendar",
+      "earliest_safe_availability": "calendar timing only",
+      "endpoint": "historical/earning_calendar/{symbol}",
+      "evidence": "artifacts/pit/earnings_pit_probe_v2.json",
+      "field": "date/time",
+      "observed_semantics": "requested/returned symbols matched; BMO/AMC fields",
+      "official_semantics": "symbol-specific earnings timing",
+      "provider": "FMP",
+      "raw_timezone": "provider timing field",
+      "raw_type": "date/string timing",
+      "research_interpretation": "excluded from primary benchmark",
+      "test": "tests/unit/test_corporate_event_contract.py",
+      "transformation": "ex-ante flags; actual EPS/revenue excluded",
+      "verification_status": "AUTHENTICATED_EVIDENCE"
+    },
+    {
+      "documentation_url": "https://site.financialmodelingprep.com/how-to/how-to-get-stock-intraday-data-with-fmp-apis",
+      "earliest_safe_availability": "not admitted separately",
+      "endpoint": "historical chart",
+      "evidence": "artifacts/pit/fmp_bar_semantics_v3.json",
+      "field": "adjusted/unadjusted",
+      "observed_semantics": "not frozen as adjusted in common matrix",
+      "official_semantics": "adjustment treatment endpoint-specific",
+      "provider": "FMP",
+      "raw_timezone": "exchange-local label",
+      "raw_type": "provider schema",
+      "research_interpretation": "unresolved corporate-action limitation",
+      "test": "Phase 4A alignment audit",
+      "transformation": "preserve status",
+      "verification_status": "UNRESOLVED_LIMITATION"
+    },
+    {
+      "documentation_url": "https://massive.com/docs/rest/options/quotes",
+      "earliest_safe_availability": "sip_timestamp <= origin",
+      "endpoint": "/v3/quotes/{optionsTicker}",
+      "evidence": "artifacts/b1_full_origin/b1_origin_matrix.parquet",
+      "field": "sip_timestamp",
+      "observed_semantics": "latest selected <= origin after ns conversion",
+      "official_semantics": "SIP quote timestamp",
+      "provider": "Massive",
+      "raw_timezone": "UTC epoch",
+      "raw_type": "integer nanoseconds",
+      "research_interpretation": "quote event time",
+      "test": "tests/contract/test_b1_closure_artifacts.py",
+      "transformation": "nanoseconds to UTC",
+      "verification_status": "AUTHENTICATED_EVIDENCE"
+    },
+    {
+      "documentation_url": "https://massive.com/docs/rest/options/quotes",
+      "earliest_safe_availability": "not primary",
+      "endpoint": "/v3/quotes/{optionsTicker}",
+      "evidence": "artifacts/calibration_20d/massive_b1q_cache_v2",
+      "field": "participant_timestamp/sequence_number",
+      "observed_semantics": "diagnostic; not cutoff",
+      "official_semantics": "participant/sequence metadata",
+      "provider": "Massive",
+      "raw_timezone": "UTC epoch / ordering metadata",
+      "raw_type": "integer",
+      "research_interpretation": "ordering evidence only",
+      "test": "Phase 4A alignment audit",
+      "transformation": "preserve raw",
+      "verification_status": "AUTHENTICATED_EVIDENCE"
+    },
+    {
+      "documentation_url": "https://massive.com/docs/rest/options/quotes",
+      "earliest_safe_availability": "sip_timestamp <= origin",
+      "endpoint": "/v3/quotes/{optionsTicker}",
+      "evidence": "docs/b1_data_contract.md",
+      "field": "bid/ask/conditions",
+      "observed_semantics": "bid>0, ask>bid, age<=60s, spread<=25%",
+      "official_semantics": "quote and condition fields",
+      "provider": "Massive",
+      "raw_timezone": "quote UTC",
+      "raw_type": "numeric/code",
+      "research_interpretation": "B1Q quality filters",
+      "test": "tests/contract/test_b1_closure_artifacts.py",
+      "transformation": "midpoint/spread",
+      "verification_status": "AUTHENTICATED_EVIDENCE"
+    },
+    {
+      "documentation_url": "https://massive.com/docs/rest/options/contracts",
+      "earliest_safe_availability": "contract existed as_of session",
+      "endpoint": "/v3/reference/options/contracts/{contract}",
+      "evidence": "artifacts/api_audit/common_history_continuity_v5.json",
+      "field": "as_of/expiration/strike/option_type",
+      "observed_semantics": "resolved by asset/date/DTE",
+      "official_semantics": "historical contract reference",
+      "provider": "Massive",
+      "raw_timezone": "date/UTC metadata",
+      "raw_type": "date/numeric/string",
+      "research_interpretation": "contract identity before quote as-of join",
+      "test": "tests/contract/test_b1_closure_artifacts.py",
+      "transformation": "OCC/root normalization",
+      "verification_status": "AUTHENTICATED_EVIDENCE"
+    },
+    {
+      "documentation_url": "https://api.unusualwhales.com/docs/kafka/types/OptionTrade",
+      "earliest_safe_availability": "paired with operational base",
+      "endpoint": "Full Tape retained Parquet",
+      "evidence": "artifacts/calibration_20d/raw_integrity_report.json",
+      "field": "executed_at",
+      "observed_semantics": "used for five-minute event bin",
+      "official_semantics": "reported trade-event time",
+      "provider": "Unusual Whales",
+      "raw_timezone": "UTC",
+      "raw_type": "UTC datetime",
+      "research_interpretation": "economic event time, not availability",
+      "test": "tests/contract/test_calibration_20d.py",
+      "transformation": "UTC parse/bin",
+      "verification_status": "AUTHENTICATED_EVIDENCE"
+    },
+    {
+      "documentation_url": "https://api.unusualwhales.com/docs/kafka/types/OptionTrade",
+      "earliest_safe_availability": "origin-60s primary; 120/300 sensitivity",
+      "endpoint": "Full Tape retained Parquet",
+      "evidence": "artifacts/pit/uw_created_at_semantics_v1.json",
+      "field": "created_at",
+      "observed_semantics": "compared with executed_at; delay diagnostics",
+      "official_semantics": "record creation; publication not defined",
+      "provider": "Unusual Whales",
+      "raw_timezone": "UTC",
+      "raw_type": "UTC datetime",
+      "research_interpretation": "operational proxy only via max(executed_at,created_at)",
+      "test": "Phase 4A UW cutoff audit",
+      "transformation": "max timestamps",
+      "verification_status": "UNRESOLVED_LIMITATION_PLUS_APPROVED_PROXY"
+    },
+    {
+      "documentation_url": "https://api.unusualwhales.com/docs/kafka/types/OptionTrade",
+      "earliest_safe_availability": "operational base cutoff",
+      "endpoint": "Full Tape retained Parquet",
+      "evidence": "artifacts/calibration_20d/raw_integrity_report.json",
+      "field": "id/option_chain_id/price/premium/size/bid/ask/option_type",
+      "observed_semantics": "dedup by id; continuous aggregates",
+      "official_semantics": "trade/contract fields",
+      "provider": "Unusual Whales",
+      "raw_timezone": "event UTC",
+      "raw_type": "string/numeric",
+      "research_interpretation": "B2 features; no intention claim",
+      "test": "tests/contract/test_calibration_20d.py",
+      "transformation": "5-minute aggregate",
+      "verification_status": "AUTHENTICATED_EVIDENCE"
+    },
+    {
+      "documentation_url": "https://api.unusualwhales.com/docs/kafka/types/OptionTrade",
+      "earliest_safe_availability": "operational base cutoff",
+      "endpoint": "Full Tape retained Parquet",
+      "evidence": "artifacts/calibration_20d/b2_calibration_panel.parquet",
+      "field": "sweep/multileg/floor/implied_volatility/open_interest",
+      "observed_semantics": "shares and missingness; OI treated prior-session",
+      "official_semantics": "descriptive metadata",
+      "provider": "Unusual Whales",
+      "raw_timezone": "event UTC",
+      "raw_type": "string/numeric",
+      "research_interpretation": "descriptive activity only",
+      "test": "tests/contract/test_calibration_20d.py",
+      "transformation": "tag parsing",
+      "verification_status": "AUTHENTICATED_EVIDENCE"
+    }
+  ],
+  "schema_version": "provider-time-semantics-register-v2",
+  "secret_values_emitted": false
+}

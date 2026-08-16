@@ -1,0 +1,21 @@
+{
+  "alignment_providers": 3,
+  "availability_aware_rows": 13240,
+  "bias_rows": 9589,
+  "dirty_entries": 131,
+  "fold_rows": 9,
+  "literature_full_text": 4,
+  "nominal_rows": 14200,
+  "personal_path_file_hits": 0,
+  "personal_paths_emitted": false,
+  "planning_grid_rows": 18,
+  "predictor_count": 31,
+  "provider_records": 14,
+  "recommended_window": "60_SESSIONS",
+  "restart_hashes_identical": true,
+  "secret_value_hits": 0,
+  "secret_values_emitted": false,
+  "status": "PASS_LOCAL_ONLY_NO_BACKFILL",
+  "strict_rows": 9589,
+  "uw_cutoff_rows": 42600
+}

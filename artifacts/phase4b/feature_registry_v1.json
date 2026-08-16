@@ -1,0 +1,273 @@
+{
+  "aliases": {
+    "implied_volatility_change_within_bin": "within_bin_iv_change",
+    "median_implied_volatility": "implied_volatility_median"
+  },
+  "features": [
+    {
+      "benchmark": "B0",
+      "canonical_name": "b0_spot",
+      "formula": "b0_spot",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B0",
+      "canonical_name": "b0_rv_5m_lag",
+      "formula": "b0_rv_5m_lag",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B0",
+      "canonical_name": "b0_rv_30m_lag",
+      "formula": "b0_rv_30m_lag",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B0",
+      "canonical_name": "b0_return_5m_lag",
+      "formula": "b0_return_5m_lag",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B0",
+      "canonical_name": "b0_volume_5m_lag",
+      "formula": "b0_volume_5m_lag",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B0",
+      "canonical_name": "b0_session_minute",
+      "formula": "b0_session_minute",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B1Q",
+      "canonical_name": "b1q_atm_iv",
+      "formula": "b1q_atm_iv",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B1Q",
+      "canonical_name": "b1q_skew",
+      "formula": "b1q_skew",
+      "optional": true,
+      "predictor": true
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_option_trade_count_5m",
+      "formula": "b2_option_trade_count_5m",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_unique_contract_count_5m",
+      "formula": "b2_unique_contract_count_5m",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_total_premium_5m",
+      "formula": "b2_total_premium_5m",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_max_trade_premium_5m",
+      "formula": "b2_max_trade_premium_5m",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_total_contract_size_5m",
+      "formula": "b2_total_contract_size_5m",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_max_contract_size_5m",
+      "formula": "b2_max_contract_size_5m",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_call_premium_5m",
+      "formula": "b2_call_premium_5m",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_put_premium_5m",
+      "formula": "b2_put_premium_5m",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_ask_side_premium_share",
+      "formula": "b2_ask_side_premium_share",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_bid_side_premium_share",
+      "formula": "b2_bid_side_premium_share",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_midpoint_premium_share",
+      "formula": "b2_midpoint_premium_share",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_strike_concentration",
+      "formula": "b2_strike_concentration",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_expiry_concentration",
+      "formula": "b2_expiry_concentration",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_median_days_to_expiry",
+      "formula": "b2_median_days_to_expiry",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_median_absolute_moneyness",
+      "formula": "b2_median_absolute_moneyness",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_repeated_contract_trade_count",
+      "formula": "b2_repeated_contract_trade_count",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_repeated_contract_premium",
+      "formula": "b2_repeated_contract_premium",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_valid_trade_share",
+      "formula": "b2_valid_trade_share",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_missing_iv_share",
+      "formula": "b2_missing_iv_share",
+      "optional": false,
+      "predictor": true
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_implied_volatility_median",
+      "formula": "median(implied_volatility)",
+      "optional": true,
+      "predictor": false
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_within_bin_iv_change",
+      "formula": "max(iv)-min(iv) when n_iv>=2",
+      "optional": true,
+      "predictor": false
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_call_put_premium_imbalance",
+      "formula": "call_premium-put_premium",
+      "optional": true,
+      "predictor": false
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_option_activity_present",
+      "formula": "option_trade_count_5m>0",
+      "optional": true,
+      "predictor": false
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_multileg_trade_share",
+      "formula": "share(tags contains multileg)",
+      "optional": true,
+      "predictor": false
+    },
+    {
+      "benchmark": "B2",
+      "canonical_name": "b2_sweep_or_equivalent_share",
+      "formula": "share(tags contains sweep)",
+      "optional": true,
+      "predictor": false
+    }
+  ],
+  "identity_audit": {
+    "exact_duplicate_predictors": [],
+    "high_correlation_is_diagnostic_only": true
+  },
+  "predictors": [
+    "b0_spot",
+    "b0_rv_5m_lag",
+    "b0_rv_30m_lag",
+    "b0_return_5m_lag",
+    "b0_volume_5m_lag",
+    "b0_session_minute",
+    "b1q_atm_iv",
+    "b1q_skew",
+    "b2_option_trade_count_5m",
+    "b2_unique_contract_count_5m",
+    "b2_total_premium_5m",
+    "b2_max_trade_premium_5m",
+    "b2_total_contract_size_5m",
+    "b2_max_contract_size_5m",
+    "b2_call_premium_5m",
+    "b2_put_premium_5m",
+    "b2_ask_side_premium_share",
+    "b2_bid_side_premium_share",
+    "b2_midpoint_premium_share",
+    "b2_strike_concentration",
+    "b2_expiry_concentration",
+    "b2_median_days_to_expiry",
+    "b2_median_absolute_moneyness",
+    "b2_repeated_contract_trade_count",
+    "b2_repeated_contract_premium",
+    "b2_valid_trade_share",
+    "b2_missing_iv_share"
+  ],
+  "schema_version": "phase4b-feature-registry-v1"
+}

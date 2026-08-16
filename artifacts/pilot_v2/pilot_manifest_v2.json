@@ -1,0 +1,43 @@
+{
+  "manifest_version": "2.0",
+  "status": "PILOT_V2_CORRECTION",
+  "study_window": {"start": "2026-07-13", "end": "2026-07-18", "sessions": 5},
+  "diagnosis": {
+    "PILOT_V1": "INVALID_FOR_ACCEPTANCE",
+    "PILOT_V1_RAW_DATA": "VALID_AND_REUSABLE",
+    "RV30_TARGET": "VALID",
+    "B2_EVENT_DEFINITION": "INVALID",
+    "B1_EXTRACTION_OR_INTEGRATION": "INVALID_OR_INCOMPLETE",
+    "COMMON_HISTORY_PROBE_V1": "INVALID",
+    "BACKFILL": "BLOCKED",
+    "MODELING": "BLOCKED",
+    "PILOT_V2_CORRECTION": "AUTHORIZED"
+  },
+  "source_reuse": {
+    "raw_zip_redownloaded": false,
+    "filtered_parquet_reused": true,
+    "zip_sha256": {
+      "2026-07-13": "b052c0105e8672fa65bcbe2d1f7d178b2419399885d2810dd98f7f17d1082f49",
+      "2026-07-14": "7fd976599a7fa09438c4ab06b1879a42a4fc82f0d801d7e9e130930185ae4122",
+      "2026-07-15": "5c89db5cd9cb46c23cf22fffb90171e5cbe0278c79dd2af49dd278e317de5767",
+      "2026-07-16": "ddf2336e7b94209bc690f2ffb9fb6b7ba06b41925e9558f742bda83568197979",
+      "2026-07-17": "9996dbd5b49950998f13b25ce53104aef1b672e930a6777021568c40a26f1785"
+    }
+  },
+  "rv30": {"origins": 2840, "prices_per_target": 31, "returns_per_target": 30, "status": "VALID"},
+  "b2": {"origins": 2840, "with_option_activity": 2840, "without_option_activity": 0, "unusual_event_status": "NOT_CALIBRATED", "primary_cutoff": "created_at <= forecast_origin - 60 seconds", "operational_availability_proxy": true, "provider_cumulative_fields_used": false},
+  "b1": {"source": "exploratory_v1_iv_and_matrix", "origins": 72, "b1a_origins": 24, "b1b_origins": 18, "b1c_origins": 18, "iv_attempts": 515, "iv_successes": 506, "iv_failures": 9, "usable_for_primary": false, "reason": "controlled extraction and PIT coverage still require acceptance"},
+  "common_history": {"artifact": "artifacts/api_audit/common_history_probe_v2.json", "common_months_observed": 6, "full_history_downloaded": false},
+  "artifacts": [
+    "artifacts/pilot_v2/b2_features_v2.parquet",
+    "artifacts/pilot_v2/b1_origin_coverage_v2.json",
+    "artifacts/pilot_v2/b1_component_coverage_v2.csv",
+    "artifacts/pilot_v2/iv_robustness_v2.json",
+    "artifacts/pilot_v2/massive_controlled_origin_probe.json",
+    "artifacts/pilot_v2/fmp_timestamp_validation_v2.json",
+    "artifacts/pilot_v2/backfill_feasibility_v2.json",
+    "artifacts/api_audit/common_history_probe_v2.json"
+  ],
+  "secret_values_emitted": false,
+  "personal_paths_emitted": false
+}

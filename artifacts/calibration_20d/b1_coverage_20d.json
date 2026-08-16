@@ -1,0 +1,222 @@
+{
+  "status": "PASS_B1Q_20_SESSION_RECOMPUTATION",
+  "origins": 11360,
+  "global": {
+    "atm_iv_component": 0.9113556338028169,
+    "skew_component": 0.5994718309859155,
+    "term_structure_component": 0.8912852112676056,
+    "b1a": 0.9113556338028169,
+    "b1b": 0.5994718309859155,
+    "b1c": 0.1881161971830986,
+    "iv_success_rate": 0.851305751173709
+  },
+  "by_date": {
+    "2026-06-11": {
+      "atm_iv_component": 0.8415492957746479,
+      "skew_component": 0.6373239436619719,
+      "term_structure_component": 0.8415492957746479,
+      "b1a": 0.8415492957746479,
+      "b1b": 0.6373239436619719,
+      "b1c": 0.0,
+      "iv_success_rate": 0.8089788732394366
+    },
+    "2026-06-17": {
+      "atm_iv_component": 0.7746478873239436,
+      "skew_component": 0.36795774647887325,
+      "term_structure_component": 0.7746478873239436,
+      "b1a": 0.7746478873239436,
+      "b1b": 0.36795774647887325,
+      "b1c": 0.0,
+      "iv_success_rate": 0.7611502347417841
+    },
+    "2026-06-29": {
+      "atm_iv_component": 0.954225352112676,
+      "skew_component": 0.4982394366197183,
+      "term_structure_component": 0.8890845070422535,
+      "b1a": 0.954225352112676,
+      "b1b": 0.4982394366197183,
+      "b1c": 0.0,
+      "iv_success_rate": 0.8747065727699531
+    },
+    "2026-07-02": {
+      "atm_iv_component": 0.9066901408450704,
+      "skew_component": 0.3274647887323944,
+      "term_structure_component": 0.8661971830985915,
+      "b1a": 0.9066901408450704,
+      "b1b": 0.3274647887323944,
+      "b1c": 0.28169014084507044,
+      "iv_success_rate": 0.8149207746478874
+    },
+    "2026-07-10": {
+      "atm_iv_component": 0.9947183098591549,
+      "skew_component": 0.6936619718309859,
+      "term_structure_component": 0.9735915492957746,
+      "b1a": 0.9947183098591549,
+      "b1b": 0.6936619718309859,
+      "b1c": 0.6126760563380281,
+      "iv_success_rate": 0.9124119718309859
+    },
+    "2026-07-09": {
+      "atm_iv_component": 1.0,
+      "skew_component": 0.625,
+      "term_structure_component": 0.9788732394366197,
+      "b1a": 1.0,
+      "b1b": 0.625,
+      "b1c": 0.5545774647887324,
+      "iv_success_rate": 0.9295774647887324
+    },
+    "2026-07-07": {
+      "atm_iv_component": 0.9066901408450704,
+      "skew_component": 0.727112676056338,
+      "term_structure_component": 0.9066901408450704,
+      "b1a": 0.9066901408450704,
+      "b1b": 0.727112676056338,
+      "b1c": 0.6830985915492958,
+      "iv_success_rate": 0.8642165492957746
+    },
+    "2026-07-01": {
+      "atm_iv_component": 0.9348591549295775,
+      "skew_component": 0.5563380281690141,
+      "term_structure_component": 0.9683098591549296,
+      "b1a": 0.9348591549295775,
+      "b1b": 0.5563380281690141,
+      "b1c": 0.5017605633802817,
+      "iv_success_rate": 0.8816021126760564
+    },
+    "2026-06-16": {
+      "atm_iv_component": 0.8573943661971831,
+      "skew_component": 0.7306338028169014,
+      "term_structure_component": 0.8485915492957746,
+      "b1a": 0.8573943661971831,
+      "b1b": 0.7306338028169014,
+      "b1c": 0.0,
+      "iv_success_rate": 0.8251173708920189
+    },
+    "2026-06-15": {
+      "atm_iv_component": 0.9242957746478874,
+      "skew_component": 0.8204225352112676,
+      "term_structure_component": 0.9225352112676056,
+      "b1a": 0.9242957746478874,
+      "b1b": 0.8204225352112676,
+      "b1c": 0.0,
+      "iv_success_rate": 0.8905516431924884
+    },
+    "2026-06-26": {
+      "atm_iv_component": 0.9225352112676056,
+      "skew_component": 0.448943661971831,
+      "term_structure_component": 0.8309859154929577,
+      "b1a": 0.9225352112676056,
+      "b1b": 0.448943661971831,
+      "b1c": 0.0,
+      "iv_success_rate": 0.8286384976525821
+    },
+    "2026-06-22": {
+      "atm_iv_component": 0.926056338028169,
+      "skew_component": 0.5052816901408451,
+      "term_structure_component": 0.9172535211267606,
+      "b1a": 0.926056338028169,
+      "b1b": 0.5052816901408451,
+      "b1c": 0.0,
+      "iv_success_rate": 0.8838028169014085
+    },
+    "2026-07-08": {
+      "atm_iv_component": 0.920774647887324,
+      "skew_component": 0.6038732394366197,
+      "term_structure_component": 0.8996478873239436,
+      "b1a": 0.920774647887324,
+      "b1b": 0.6038732394366197,
+      "b1c": 0.5845070422535211,
+      "iv_success_rate": 0.840669014084507
+    },
+    "2026-06-23": {
+      "atm_iv_component": 0.9225352112676056,
+      "skew_component": 0.7447183098591549,
+      "term_structure_component": 0.9172535211267606,
+      "b1a": 0.9225352112676056,
+      "b1b": 0.7447183098591549,
+      "b1c": 0.0,
+      "iv_success_rate": 0.8529929577464789
+    },
+    "2026-06-12": {
+      "atm_iv_component": 0.8873239436619719,
+      "skew_component": 0.6637323943661971,
+      "term_structure_component": 0.8433098591549296,
+      "b1a": 0.8873239436619719,
+      "b1b": 0.6637323943661971,
+      "b1c": 0.0,
+      "iv_success_rate": 0.8215962441314554
+    },
+    "2026-06-30": {
+      "atm_iv_component": 0.9630281690140845,
+      "skew_component": 0.6778169014084507,
+      "term_structure_component": 0.9419014084507042,
+      "b1a": 0.9630281690140845,
+      "b1b": 0.6778169014084507,
+      "b1c": 0.0,
+      "iv_success_rate": 0.8967136150234742
+    },
+    "2026-07-06": {
+      "atm_iv_component": 0.9595070422535211,
+      "skew_component": 0.5862676056338029,
+      "term_structure_component": 0.9436619718309859,
+      "b1a": 0.9595070422535211,
+      "b1b": 0.5862676056338029,
+      "b1c": 0.5440140845070423,
+      "iv_success_rate": 0.8701584507042254
+    },
+    "2026-06-24": {
+      "atm_iv_component": 0.8397887323943662,
+      "skew_component": 0.6971830985915493,
+      "term_structure_component": 0.8274647887323944,
+      "b1a": 0.8397887323943662,
+      "b1b": 0.6971830985915493,
+      "b1c": 0.0,
+      "iv_success_rate": 0.7940140845070421
+    },
+    "2026-06-18": {
+      "atm_iv_component": 0.920774647887324,
+      "skew_component": 0.6619718309859155,
+      "term_structure_component": 0.875,
+      "b1a": 0.920774647887324,
+      "b1b": 0.6619718309859155,
+      "b1c": 0.0,
+      "iv_success_rate": 0.8588615023474178
+    },
+    "2026-06-25": {
+      "atm_iv_component": 0.8697183098591549,
+      "skew_component": 0.4154929577464789,
+      "term_structure_component": 0.8591549295774648,
+      "b1a": 0.8697183098591549,
+      "b1b": 0.4154929577464789,
+      "b1c": 0.0,
+      "iv_success_rate": 0.8154342723004695
+    }
+  },
+  "by_route": {
+    "B1Q": {
+      "atm_iv_component": 0.9113556338028169,
+      "skew_component": 0.5994718309859155,
+      "term_structure_component": 0.8912852112676056,
+      "b1a": 0.9113556338028169,
+      "b1b": 0.5994718309859155,
+      "b1c": 0.1881161971830986,
+      "iv_success_rate": 0.851305751173709
+    },
+    "B1T": {
+      "status": "DIAGNOSTIC_ONLY",
+      "coverage": null
+    }
+  },
+  "nested_invariants": {
+    "b1c_implies_b1b": true,
+    "b1b_implies_b1a": true,
+    "coverage_b1c_le_b1b": true,
+    "coverage_b1b_le_b1a": true
+  },
+  "primary_quote_age_seconds": 60,
+  "primary_relative_spread": 0.25,
+  "b1t_independent": false,
+  "modeling": "BLOCKED",
+  "qlike": "BLOCKED",
+  "secret_values_emitted": false
+}

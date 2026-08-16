@@ -297,11 +297,15 @@ def _build_origins(
 def _event_paths(config: B2BuildConfig = DEFAULT_CONFIG) -> list[tuple[Path, str, str]]:
     """Return downloaded event partitions and their source hashes."""
     manifest = json.loads(config.download_manifest.read_text(encoding="utf-8"))
-    if manifest.get("status") != "PASS" or manifest.get("session_count") != len(
-        config.sessions
-    ):
+    completed = manifest.get("session_count", manifest.get("completed_session_count"))
+    if manifest.get("status") != "PASS" or completed != len(config.sessions):
         raise RuntimeError("CALIBRATION_DOWNLOAD_NOT_COMPLETE")
-    hashes = {row["session_date"]: row["sha256"] for row in manifest["sessions"]}
+    hashes = {
+        row["session_date"]: row.get("sha256") or row.get("raw_sha256")
+        for row in manifest["sessions"]
+    }
+    if any(not isinstance(value, str) or len(value) != 64 for value in hashes.values()):
+        raise RuntimeError("CALIBRATION_SOURCE_HASHES_INVALID")
     paths: list[tuple[Path, str, str]] = []
     for path in sorted(config.event_root.glob("date=*/asset=*/events.parquet")):
         day = path.parts[-3].split("=", 1)[1]

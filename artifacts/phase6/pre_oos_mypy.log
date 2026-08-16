@@ -1,0 +1,190 @@
+scripts\generate_pilot_evidence.py:18: error: Missing type arguments for generic type "dict"  [type-arg]
+scripts\freeze_phase5_preregistration.py:12: error: Library stubs not installed for "jsonschema"  [import-untyped]
+scripts\freeze_phase5_preregistration.py:12: note: Hint: "python3 -m pip install types-jsonschema"
+scripts\freeze_phase5_preregistration.py:12: note: (or run "mypy --install-types" to install all missing stub packages)
+scripts\profile_backfill_feasibility_v2.py:38: error: Incompatible types in assignment (expression has type "list[object]", variable has type "Path")  [assignment]
+scripts\profile_backfill_feasibility_v2.py:42: error: Value of type variable "_NumberT" of "mean" cannot be "object"  [type-var]
+scripts\profile_backfill_feasibility_v2.py:42: error: Unsupported operand types for * ("object" and "int")  [operator]
+scripts\profile_backfill_feasibility_v2.py:43: error: Value of type variable "SupportsRichComparisonT" of "max" cannot be "object"  [type-var]
+scripts\profile_backfill_feasibility_v2.py:43: error: Unsupported operand types for * ("object" and "int")  [operator]
+scripts\profile_backfill_feasibility_v2.py:43: error: Argument 1 to "mean" has incompatible type "Path"; expected "Iterable[float]"  [arg-type]
+scripts\profile_backfill_feasibility_v2.py:44: error: No overload variant of "max" matches argument type "Path"  [call-overload]
+scripts\profile_backfill_feasibility_v2.py:44: note: Possible overload variants:
+scripts\profile_backfill_feasibility_v2.py:44: note:     def [SupportsRichComparisonT: SupportsDunderLT[Any] | SupportsDunderGT[Any]] max(SupportsRichComparisonT, SupportsRichComparisonT, /, *_args: SupportsRichComparisonT, key: None = ...) -> SupportsRichComparisonT
+scripts\profile_backfill_feasibility_v2.py:44: note:     def [_T] max(_T, _T, /, *_args: _T, key: Callable[[_T], SupportsDunderLT[Any] | SupportsDunderGT[Any]]) -> _T
+scripts\profile_backfill_feasibility_v2.py:44: note:     def [SupportsRichComparisonT: SupportsDunderLT[Any] | SupportsDunderGT[Any]] max(Iterable[SupportsRichComparisonT], /, *, key: None = ...) -> SupportsRichComparisonT
+scripts\profile_backfill_feasibility_v2.py:44: note:     def [_T] max(Iterable[_T], /, *, key: Callable[[_T], SupportsDunderLT[Any] | SupportsDunderGT[Any]]) -> _T
+scripts\profile_backfill_feasibility_v2.py:44: note:     def [SupportsRichComparisonT: SupportsDunderLT[Any] | SupportsDunderGT[Any], _T] max(Iterable[SupportsRichComparisonT], /, *, key: None = ..., default: _T) -> SupportsRichComparisonT | _T
+scripts\profile_backfill_feasibility_v2.py:44: note:     def [_T1, _T2] max(Iterable[_T1], /, *, key: Callable[[_T1], SupportsDunderLT[Any] | SupportsDunderGT[Any]], default: _T2) -> _T1 | _T2
+scripts\profile_backfill_feasibility_v2.py:46: error: Value of type variable "_NumberT" of "mean" cannot be "object"  [type-var]
+scripts\profile_backfill_feasibility_v2.py:46: error: Value of type variable "SupportsRichComparisonT" of "max" cannot be "object"  [type-var]
+scripts\profile_backfill_feasibility_v2.py:47: error: Argument 1 to "mean" has incompatible type "Path"; expected "Iterable[float]"  [arg-type]
+scripts\profile_backfill_feasibility_v2.py:47: error: No overload variant of "max" matches argument type "Path"  [call-overload]
+scripts\profile_backfill_feasibility_v2.py:47: note: Possible overload variants:
+scripts\profile_backfill_feasibility_v2.py:47: note:     def [SupportsRichComparisonT: SupportsDunderLT[Any] | SupportsDunderGT[Any]] max(SupportsRichComparisonT, SupportsRichComparisonT, /, *_args: SupportsRichComparisonT, key: None = ...) -> SupportsRichComparisonT
+scripts\profile_backfill_feasibility_v2.py:47: note:     def [_T] max(_T, _T, /, *_args: _T, key: Callable[[_T], SupportsDunderLT[Any] | SupportsDunderGT[Any]]) -> _T
+scripts\profile_backfill_feasibility_v2.py:47: note:     def [SupportsRichComparisonT: SupportsDunderLT[Any] | SupportsDunderGT[Any]] max(Iterable[SupportsRichComparisonT], /, *, key: None = ...) -> SupportsRichComparisonT
+scripts\profile_backfill_feasibility_v2.py:47: note:     def [_T] max(Iterable[_T], /, *, key: Callable[[_T], SupportsDunderLT[Any] | SupportsDunderGT[Any]]) -> _T
+scripts\profile_backfill_feasibility_v2.py:47: note:     def [SupportsRichComparisonT: SupportsDunderLT[Any] | SupportsDunderGT[Any], _T] max(Iterable[SupportsRichComparisonT], /, *, key: None = ..., default: _T) -> SupportsRichComparisonT | _T
+scripts\profile_backfill_feasibility_v2.py:47: note:     def [_T1, _T2] max(Iterable[_T1], /, *, key: Callable[[_T1], SupportsDunderLT[Any] | SupportsDunderGT[Any]], default: _T2) -> _T1 | _T2
+scripts\build_b1_v2.py:30: error: Missing type arguments for generic type "dict"  [type-arg]
+scripts\build_b1_v2.py:33: error: Missing type arguments for generic type "dict"  [type-arg]
+scripts\build_b1_v2.py:67: error: Generator has incompatible item type "int | str | Any | None"; expected "bool"  [misc]
+scripts\build_b1_v2.py:68: error: Generator has incompatible item type "int | str | Any | None"; expected "bool"  [misc]
+scripts\build_b1_v2.py:69: error: Generator has incompatible item type "int | str | Any | None"; expected "bool"  [misc]
+scripts\build_b1_v2.py:82: error: Argument 1 to "len" has incompatible type "object"; expected "Sized"  [arg-type]
+scripts\validate_b1_forensic.py:36: error: Argument 1 to "float" has incompatible type "int | float | Decimal | date | time | timedelta | str | bytes | ndarray[Any, Any] | list[Any] | None"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+scripts\validate_b1_forensic.py:50: error: "object" has no attribute "__iter__"; maybe "__dir__" or "__str__"? (not iterable)  [attr-defined]
+scripts\validate_b1_forensic.py:53: error: Value of type "object" is not indexable  [index]
+scripts\validate_b1_forensic.py:54: error: Value of type "object" is not indexable  [index]
+scripts\validate_b1_forensic.py:55: error: Value of type "object" is not indexable  [index]
+scripts\validate_b1_forensic.py:86: error: Incompatible types in assignment (expression has type "GroupBy", variable has type "list[tuple[str, object]]")  [assignment]
+scripts\validate_b1_forensic.py:87: error: Argument 1 to "_coverage" has incompatible type "object"; expected "DataFrame"  [arg-type]
+scripts\run_phase4a.py:26: error: Skipping analyzing "exchange_calendars": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+scripts\run_phase4a.py:133: error: Value of type "dict[str, Any] | None" is not indexable  [index]
+scripts\run_phase4a.py:329: error: Argument 1 to "float" has incompatible type "int | float | Decimal | date | time | timedelta | str | bytes | ndarray[Any, Any] | list[Any] | None"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+scripts\run_phase4a.py:330: error: Argument 1 to "float" has incompatible type "int | float | Decimal | date | time | timedelta | str | bytes | ndarray[Any, Any] | list[Any] | None"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+scripts\run_phase4a.py:331: error: Argument 1 to "float" has incompatible type "int | float | Decimal | date | time | timedelta | str | bytes | ndarray[Any, Any] | list[Any] | None"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+scripts\run_phase4a.py:473: error: Argument 1 to "float" has incompatible type "int | float | Decimal | date | time | timedelta | str | bytes | ndarray[Any, Any] | list[Any] | None"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+scripts\run_phase4a.py:473: error: Argument 1 to "float" has incompatible type "float | timedelta | int"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+scripts\run_phase4a.py:519: error: Argument 1 to "float" has incompatible type "int | float | Decimal | date | time | timedelta | str | bytes | ndarray[Any, Any] | list[Any] | None"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+scripts\run_phase4a.py:519: error: Argument 1 to "float" has incompatible type "float | None"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+scripts\run_phase4a.py:520: error: Argument 1 to "float" has incompatible type "int | float | Decimal | date | time | timedelta | str | bytes | ndarray[Any, Any] | list[Any] | None"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+scripts\run_phase4a.py:520: error: Argument 1 to "float" has incompatible type "float | None"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+scripts\run_phase4a.py:521: error: Argument 1 to "float" has incompatible type "int | float | Decimal | date | time | timedelta | str | bytes | ndarray[Any, Any] | list[Any] | None"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+scripts\run_phase4a.py:521: error: Argument 1 to "float" has incompatible type "float | None"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+scripts\run_phase4a.py:525: error: Argument 1 to "float" has incompatible type "int | float | Decimal | date | time | timedelta | str | bytes | ndarray[Any, Any] | list[Any] | None"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+scripts\run_phase4a.py:526: error: Argument 1 to "float" has incompatible type "float | None"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+scripts\run_phase4a.py:529: error: Argument 1 to "float" has incompatible type "int | float | Decimal | date | time | timedelta | str | bytes | ndarray[Any, Any] | list[Any] | None"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+scripts\run_phase4a.py:530: error: Argument 1 to "float" has incompatible type "int | float | Decimal | date | time | timedelta | str | bytes | ndarray[Any, Any] | list[Any] | None"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+scripts\run_phase4a.py:531: error: Argument 1 to "float" has incompatible type "int | float | Decimal | date | time | timedelta | str | bytes | ndarray[Any, Any] | list[Any] | None"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+scripts\run_phase4a.py:533: error: Unsupported operand types for * ("int" and "date")  [operator]
+scripts\run_phase4a.py:533: error: Unsupported operand types for * ("int" and "time")  [operator]
+scripts\run_phase4a.py:533: error: Unsupported operand types for * ("int" and "None")  [operator]
+scripts\run_phase4a.py:533: note: Right operand is of type "int | float | Decimal | date | time | timedelta | str | bytes | ndarray[Any, Any] | list[Any] | None"
+scripts\run_phase4a.py:533: error: Argument 1 to "int" has incompatible type "int | float | Decimal | timedelta | str | bytes | ndarray[Any, dtype[Any]] | list[Any]"; expected "str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc"  [arg-type]
+scripts\run_phase4a.py:535: error: Incompatible types in assignment (expression has type "int", variable has type "list[str]")  [assignment]
+scripts\run_phase4a.py:536: error: Unsupported operand types for * ("list[str]" and "float")  [operator]
+scripts\run_phase4a.py:541: error: Unsupported operand types for * ("list[str]" and "float")  [operator]
+scripts\run_phase4a.py:542: error: Unsupported operand types for * ("list[str]" and "float")  [operator]
+scripts\run_phase4a.py:543: error: Unsupported operand types for * ("list[str]" and "float")  [operator]
+scripts\run_phase4a.py:544: error: Unsupported operand types for * ("list[str]" and "float")  [operator]
+scripts\run_phase4a.py:545: error: Unsupported operand types for * ("list[str]" and "float")  [operator]
+scripts\run_phase4a.py:546: error: Unsupported operand types for * ("list[str]" and "float")  [operator]
+scripts\run_phase4a.py:548: error: Unsupported operand types for * ("list[str]" and "float")  [operator]
+scripts\run_phase4a.py:549: error: Unsupported operand types for * ("list[str]" and "float")  [operator]
+scripts\run_phase4a.py:553: error: Unsupported operand types for * ("list[str]" and "float")  [operator]
+scripts\run_phase4a.py:554: error: Unsupported operand types for * ("list[str]" and "float")  [operator]
+scripts\run_phase4a.py:555: error: Unsupported operand types for * ("list[str]" and "float")  [operator]
+scripts\run_phase4a.py:637: error: Unsupported operand types for - ("ndarray[tuple[int, int], dtype[float64]]" and "ndarray[tuple[int, int], dtype[float64]]")  [operator]
+scripts\run_phase4a.py:637: note: Left operand is of type "ndarray[tuple[int, int], dtype[float64]] | float64"
+scripts\run_phase4a.py:637: error: Tuple index out of range  [misc]
+scripts\run_phase4a.py:640: error: Invalid index type "tuple[int, int]" for "float64"; expected type "tuple[()]"  [index]
+scripts\run_phase4a.py:643: error: Invalid index type "tuple[int, int]" for "float64"; expected type "tuple[()]"  [index]
+scripts\run_phase4b.py:20: error: Skipping analyzing "exchange_calendars": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+scripts\run_phase4b.py:20: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+scripts\run_phase4b.py:159: error: Value of type "dict[str, Any] | None" is not indexable  [index]
+scripts\run_phase4b.py:214: error: Name "row" already defined on line 207  [no-redef]
+scripts\run_phase4b.py:628: error: Unsupported operand types for + ("time" and "timedelta")  [operator]
+scripts\run_phase4b.py:628: error: No overload variant of "__add__" of "list" matches argument type "timedelta"  [operator]
+scripts\run_phase4b.py:628: note: Possible overload variants:
+scripts\run_phase4b.py:628: note:     def __add__(self, list[Any], /) -> list[Any]
+scripts\run_phase4b.py:628: note:     def [_S] __add__(self, list[_S], /) -> list[_S | Any]
+scripts\run_phase4b.py:628: error: Unsupported operand types for + ("None" and "timedelta")  [operator]
+scripts\run_phase4b.py:628: note: Left operand is of type "int | float | Decimal | date | time | timedelta | str | bytes | ndarray[Any, Any] | list[Any] | None"
+scripts\run_phase4b.py:628: error: Unsupported operand types for + ("int" and "timedelta")  [operator]
+scripts\run_phase4b.py:628: error: Unsupported operand types for + ("float" and "timedelta")  [operator]
+scripts\run_phase4b.py:628: error: Unsupported operand types for + ("Decimal" and "timedelta")  [operator]
+scripts\run_phase4b.py:628: error: Unsupported operand types for + ("str" and "timedelta")  [operator]
+scripts\run_phase4b.py:628: error: Unsupported operand types for + ("bytes" and "timedelta")  [operator]
+scripts\run_phase4b.py:629: error: Item "date" of "Any | date | timedelta" has no attribute "astimezone"  [union-attr]
+scripts\run_phase4b.py:629: error: Item "timedelta" of "Any | date | timedelta" has no attribute "astimezone"  [union-attr]
+scripts\run_phase4b.py:636: error: Item "timedelta" of "Any | date | timedelta" has no attribute "isoformat"  [union-attr]
+scripts\run_phase4b.py:680: error: Argument 1 to "float" has incompatible type "int | float | Decimal | date | time | timedelta | str | bytes | ndarray[Any, Any] | list[Any] | None"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+scripts\build_pilot_v2.py:76: error: No overload variant of "collect" of "LazyFrame" matches argument type "bool"  [call-overload]
+scripts\build_pilot_v2.py:76: note: Possible overload variants:
+scripts\build_pilot_v2.py:76: note:     def collect(self, *, type_coercion: bool = ..., predicate_pushdown: bool = ..., projection_pushdown: bool = ..., simplify_expression: bool = ..., slice_pushdown: bool = ..., comm_subplan_elim: bool = ..., comm_subexpr_elim: bool = ..., cluster_with_columns: bool = ..., collapse_joins: bool = ..., no_optimization: bool = ..., engine: Literal['auto', 'in-memory', 'streaming', 'gpu'] | GPUEngine = ..., background: Literal[True], optimizations: QueryOptFlags = ...) -> InProcessQuery
+scripts\build_pilot_v2.py:76: note:     def collect(self, *, type_coercion: bool = ..., predicate_pushdown: bool = ..., projection_pushdown: bool = ..., simplify_expression: bool = ..., slice_pushdown: bool = ..., comm_subplan_elim: bool = ..., comm_subexpr_elim: bool = ..., cluster_with_columns: bool = ..., collapse_joins: bool = ..., no_optimization: bool = ..., engine: Literal['auto', 'in-memory', 'streaming', 'gpu'] | GPUEngine = ..., background: Literal[False] = ..., optimizations: QueryOptFlags = ...) -> DataFrame
+scripts\build_pilot_v2.py:99: error: No overload variant of "collect" of "LazyFrame" matches argument type "bool"  [call-overload]
+scripts\build_pilot_v2.py:99: note: Possible overload variants:
+scripts\build_pilot_v2.py:99: note:     def collect(self, *, type_coercion: bool = ..., predicate_pushdown: bool = ..., projection_pushdown: bool = ..., simplify_expression: bool = ..., slice_pushdown: bool = ..., comm_subplan_elim: bool = ..., comm_subexpr_elim: bool = ..., cluster_with_columns: bool = ..., collapse_joins: bool = ..., no_optimization: bool = ..., engine: Literal['auto', 'in-memory', 'streaming', 'gpu'] | GPUEngine = ..., background: Literal[True], optimizations: QueryOptFlags = ...) -> InProcessQuery
+scripts\build_pilot_v2.py:99: note:     def collect(self, *, type_coercion: bool = ..., predicate_pushdown: bool = ..., projection_pushdown: bool = ..., simplify_expression: bool = ..., slice_pushdown: bool = ..., comm_subplan_elim: bool = ..., comm_subexpr_elim: bool = ..., cluster_with_columns: bool = ..., collapse_joins: bool = ..., no_optimization: bool = ..., engine: Literal['auto', 'in-memory', 'streaming', 'gpu'] | GPUEngine = ..., background: Literal[False] = ..., optimizations: QueryOptFlags = ...) -> DataFrame
+scripts\build_pilot_v2.py:100: error: No overload variant of "collect" of "LazyFrame" matches argument type "bool"  [call-overload]
+scripts\build_pilot_v2.py:100: note: Possible overload variants:
+scripts\build_pilot_v2.py:100: note:     def collect(self, *, type_coercion: bool = ..., predicate_pushdown: bool = ..., projection_pushdown: bool = ..., simplify_expression: bool = ..., slice_pushdown: bool = ..., comm_subplan_elim: bool = ..., comm_subexpr_elim: bool = ..., cluster_with_columns: bool = ..., collapse_joins: bool = ..., no_optimization: bool = ..., engine: Literal['auto', 'in-memory', 'streaming', 'gpu'] | GPUEngine = ..., background: Literal[True], optimizations: QueryOptFlags = ...) -> InProcessQuery
+scripts\build_pilot_v2.py:100: note:     def collect(self, *, type_coercion: bool = ..., predicate_pushdown: bool = ..., projection_pushdown: bool = ..., simplify_expression: bool = ..., slice_pushdown: bool = ..., comm_subplan_elim: bool = ..., comm_subexpr_elim: bool = ..., cluster_with_columns: bool = ..., collapse_joins: bool = ..., no_optimization: bool = ..., engine: Literal['auto', 'in-memory', 'streaming', 'gpu'] | GPUEngine = ..., background: Literal[False] = ..., optimizations: QueryOptFlags = ...) -> DataFrame
+scripts\build_pilot_v2.py:101: error: No overload variant of "collect" of "LazyFrame" matches argument type "bool"  [call-overload]
+scripts\build_pilot_v2.py:101: note: Possible overload variants:
+scripts\build_pilot_v2.py:101: note:     def collect(self, *, type_coercion: bool = ..., predicate_pushdown: bool = ..., projection_pushdown: bool = ..., simplify_expression: bool = ..., slice_pushdown: bool = ..., comm_subplan_elim: bool = ..., comm_subexpr_elim: bool = ..., cluster_with_columns: bool = ..., collapse_joins: bool = ..., no_optimization: bool = ..., engine: Literal['auto', 'in-memory', 'streaming', 'gpu'] | GPUEngine = ..., background: Literal[True], optimizations: QueryOptFlags = ...) -> InProcessQuery
+scripts\build_pilot_v2.py:101: note:     def collect(self, *, type_coercion: bool = ..., predicate_pushdown: bool = ..., projection_pushdown: bool = ..., simplify_expression: bool = ..., slice_pushdown: bool = ..., comm_subplan_elim: bool = ..., comm_subexpr_elim: bool = ..., cluster_with_columns: bool = ..., collapse_joins: bool = ..., no_optimization: bool = ..., engine: Literal['auto', 'in-memory', 'streaming', 'gpu'] | GPUEngine = ..., background: Literal[False] = ..., optimizations: QueryOptFlags = ...) -> DataFrame
+scripts\freeze_phase6_preregistration.py:10: error: Library stubs not installed for "jsonschema"  [import-untyped]
+scripts\window_probe_v1.py:32: error: Missing type arguments for generic type "dict"  [type-arg]
+scripts\window_probe_v1.py:43: error: Missing type arguments for generic type "dict"  [type-arg]
+scripts\window_probe_v1.py:89: error: Missing type arguments for generic type "dict"  [type-arg]
+scripts\window_probe_v1.py:126: error: Missing type arguments for generic type "dict"  [type-arg]
+scripts\window_probe_v1.py:151: error: Missing type arguments for generic type "dict"  [type-arg]
+scripts\window_probe_v1.py:155: error: Missing type arguments for generic type "dict"  [type-arg]
+scripts\twenty_session_availability_probe.py:13: error: Skipping analyzing "exchange_calendars": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+scripts\twenty_session_availability_probe.py:62: error: Argument 1 to "float" has incompatible type "object"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+scripts\run_authorized_pilot.py:24: error: Skipping analyzing "pyarrow": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+scripts\run_authorized_pilot.py:25: error: Skipping analyzing "pyarrow.parquet": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+scripts\run_authorized_pilot.py:138: error: Name "counts" already defined on line 134  [no-redef]
+scripts\run_authorized_pilot.py:272: error: No overload variant of "collect" of "LazyFrame" matches argument type "bool"  [call-overload]
+scripts\run_authorized_pilot.py:272: note: Possible overload variants:
+scripts\run_authorized_pilot.py:272: note:     def collect(self, *, type_coercion: bool = ..., predicate_pushdown: bool = ..., projection_pushdown: bool = ..., simplify_expression: bool = ..., slice_pushdown: bool = ..., comm_subplan_elim: bool = ..., comm_subexpr_elim: bool = ..., cluster_with_columns: bool = ..., collapse_joins: bool = ..., no_optimization: bool = ..., engine: Literal['auto', 'in-memory', 'streaming', 'gpu'] | GPUEngine = ..., background: Literal[True], optimizations: QueryOptFlags = ...) -> InProcessQuery
+scripts\run_authorized_pilot.py:272: note:     def collect(self, *, type_coercion: bool = ..., predicate_pushdown: bool = ..., projection_pushdown: bool = ..., simplify_expression: bool = ..., slice_pushdown: bool = ..., comm_subplan_elim: bool = ..., comm_subexpr_elim: bool = ..., cluster_with_columns: bool = ..., collapse_joins: bool = ..., no_optimization: bool = ..., engine: Literal['auto', 'in-memory', 'streaming', 'gpu'] | GPUEngine = ..., background: Literal[False] = ..., optimizations: QueryOptFlags = ...) -> DataFrame
+scripts\provider_audit_v1.py:23: error: Skipping analyzing "exchange_calendars": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+scripts\provider_audit_v1.py:384: error: Item "None" of "SecretStr | None" has no attribute "get_secret_value"  [union-attr]
+scripts\provider_audit_v1.py:385: error: Item "None" of "SecretStr | None" has no attribute "get_secret_value"  [union-attr]
+scripts\provider_audit_v1.py:386: error: Item "None" of "SecretStr | None" has no attribute "get_secret_value"  [union-attr]
+scripts\probe_fmp_earnings_v2.py:30: error: Value of type variable "SupportsRichComparisonT" of "sorted" cannot be "Any | None"  [type-var]
+scripts\probe_daily_common_history_v5.py:23: error: Skipping analyzing "exchange_calendars": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+scripts\probe_daily_common_history_v5.py:23: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+scripts\probe_common_history_v2.py:75: error: Incompatible types in assignment (expression has type "dict[str, object]", variable has type "Response")  [assignment]
+scripts\probe_common_history_v2.py:76: error: Incompatible types in assignment (expression has type "dict[str, object]", variable has type "Response")  [assignment]
+scripts\probe_common_history_v2.py:78: error: Value of type "Response" is not indexable  [index]
+scripts\probe_common_history_v2.py:80: error: Value of type "Response" is not indexable  [index]
+scripts\probe_common_history.py:28: error: Missing type arguments for generic type "dict"  [type-arg]
+scripts\common_history_all_assets_v3.py:88: error: Incompatible types in assignment (expression has type "dict[str, object]", variable has type "Response")  [assignment]
+scripts\common_history_all_assets_v3.py:89: error: Value of type "Response" is not indexable  [index]
+scripts\common_history_all_assets_v3.py:90: error: Value of type "Response" is not indexable  [index]
+scripts\common_history_all_assets_v3.py:91: error: Value of type "Response" is not indexable  [index]
+scripts\close_pit_gates.py:18: error: Skipping analyzing "exchange_calendars": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+scripts\close_pit_gates.py:21: error: Skipping analyzing "pyarrow.parquet": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+scripts\close_pit_gates.py:21: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+scripts\close_pit_gates.py:21: error: Skipping analyzing "pyarrow": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+scripts\run_b1_controlled.py:42: error: Call to untyped function (unknown) in typed context  [no-untyped-call]
+scripts\run_b1_controlled.py:44: error: Argument 1 to "float" has incompatible type "object"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+scripts\run_b1_controlled.py:47: error: Argument 1 to "float" has incompatible type "object"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+scripts\run_b1_controlled.py:83: error: Argument 1 to "float" has incompatible type "object"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+scripts\build_b1t_route.py:153: error: If x = b'abc' then f"{x}" or "{}".format(x) produces "b'abc'", not "abc". If this is desired behavior, use f"{x!r}" or "{!r}".format(x). Otherwise, decode the bytes  [str-bytes-safe]
+scripts\build_b1t_route.py:153: error: Unsupported operand types for <= ("float" and "None")  [operator]
+scripts\build_b1t_route.py:153: note: Left operand is of type "int | float | Decimal | date | time | timedelta | str | bytes | ndarray[Any, Any] | list[Any] | None"
+scripts\build_b1t_route.py:153: error: Unsupported operand types for >= ("date" and "float")  [operator]
+scripts\build_b1t_route.py:153: error: Unsupported operand types for >= ("time" and "float")  [operator]
+scripts\build_b1t_route.py:153: error: Unsupported operand types for >= ("timedelta" and "float")  [operator]
+scripts\build_b1t_route.py:153: error: Unsupported operand types for >= ("str" and "float")  [operator]
+scripts\build_b1t_route.py:153: error: Unsupported operand types for >= ("bytes" and "float")  [operator]
+scripts\build_b1t_route.py:153: error: Unsupported operand types for >= ("list[Any]" and "float")  [operator]
+scripts\build_b1t_route.py:154: error: If x = b'abc' then f"{x}" or "{}".format(x) produces "b'abc'", not "abc". If this is desired behavior, use f"{x!r}" or "{!r}".format(x). Otherwise, decode the bytes  [str-bytes-safe]
+scripts\finalize_calibration_20d.py:23: error: Skipping analyzing "exchange_calendars": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+scripts\run_zero_coverage_diagnostics.py:45: error: Argument 1 to "float" has incompatible type "object"; expected "str | Buffer | SupportsFloat | SupportsIndex"  [arg-type]
+scripts\run_window_pipeline.py:23: error: Skipping analyzing "exchange_calendars": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+scripts\run_window_pipeline.py:231: error: No overload variant of "dict" matches argument type "object"  [call-overload]
+scripts\run_window_pipeline.py:231: note: Possible overload variants:
+scripts\run_window_pipeline.py:231: note:     def [_KT, _VT] dict() -> dict[_KT, _VT]
+scripts\run_window_pipeline.py:231: note:     def [_KT, _VT] dict(**kwargs: _VT) -> dict[str, _VT]
+scripts\run_window_pipeline.py:231: note:     def [_KT, _VT] dict(SupportsKeysAndGetItem[_KT, _VT], /) -> dict[_KT, _VT]
+scripts\run_window_pipeline.py:231: note:     def [_KT, _VT] dict(SupportsKeysAndGetItem[str, _VT], /, **kwargs: _VT) -> dict[str, _VT]
+scripts\run_window_pipeline.py:231: note:     def [_KT, _VT] dict(Iterable[tuple[_KT, _VT]], /) -> dict[_KT, _VT]
+scripts\run_window_pipeline.py:231: note:     def [_KT, _VT] dict(Iterable[tuple[str, _VT]], /, **kwargs: _VT) -> dict[str, _VT]
+scripts\run_window_pipeline.py:231: note:     def [_KT, _VT] dict(Iterable[list[str]], /) -> dict[str, str]
+scripts\run_window_pipeline.py:231: note:     def [_KT, _VT] dict(Iterable[list[bytes]], /) -> dict[bytes, bytes]
+scripts\fix_fmp_missing_window.py:10: error: Skipping analyzing "exchange_calendars": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+scripts\run_phase5_holdout.py:17: error: Library stubs not installed for "jsonschema"  [import-untyped]
+scripts\run_phase5_holdout.py:17: note: Hint: "python3 -m pip install types-jsonschema"
+scripts\run_phase5_holdout.py:17: note: (or run "mypy --install-types" to install all missing stub packages)
+scripts\run_phase5_holdout.py:17: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+scripts\run_phase5_holdout.py:202: error: Module "run_phase5_development_evaluation" does not explicitly export attribute "B2_FEATURE_NAMES"  [attr-defined]
+scripts\run_phase5_holdout.py:235: error: Module "run_phase5_development_evaluation" does not explicitly export attribute "B2_FEATURE_NAMES"  [attr-defined]
+Found 136 errors in 26 files (checked 85 source files)

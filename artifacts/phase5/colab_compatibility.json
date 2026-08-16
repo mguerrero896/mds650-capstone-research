@@ -1,0 +1,29 @@
+{
+  "schema_version": "phase5-colab-compatibility-1.0",
+  "status": "PASS_LINUX_PARITY_HOSTED_COLAB_UNVERIFIED",
+  "python": "3.12.12",
+  "uv": "0.9.24",
+  "container_image": "python@sha256:c0abd0758831ad99b7a29e0c1a875da9c4abb9a2e3f21e2eeb585dbcadfb6cd0",
+  "execution_environment": "Docker Desktop Linux container; read-only repository mount",
+  "hosted_google_colab_execution": "UNVERIFIED",
+  "locked_install": "PASS",
+  "imports": "PASS",
+  "compact_tests": {
+    "passed": 21,
+    "failed": 0,
+    "scope": [
+      "tests/contract/test_phase5_preregistration.py",
+      "tests/contract/test_phase5_holdout_guard.py",
+      "tests/unit/test_phase5_study_design.py"
+    ]
+  },
+  "ruff": "PASS",
+  "mypy": "PASS_29_SOURCE_FILES",
+  "uv_lock_sha256": "97382a973be6cede8621050748b1409e4cb6c70591063217e05896d8b03be241",
+  "pyproject_sha256": "b995b881745f2d26a60cbe50a55dc9eadd177e337fd56472ddcfb7ff1fba41d3",
+  "validation_script_sha256": "cfc235ee1be3359ba513ade8cff7badea880fe28bc7f5c00b3bb4e8e2ba14961",
+  "command": "docker run --rm -v <repository>:/workspace:ro -w /workspace python:3.12.12-bookworm sh scripts/validate_colab_parity.sh",
+  "conclusion": "The frozen project installs and passes the compact Phase 5 gate on Linux/Python 3.12.12. This does not constitute an execution inside hosted Google Colab.",
+  "secret_values_emitted": false,
+  "personal_paths_emitted": false
+}

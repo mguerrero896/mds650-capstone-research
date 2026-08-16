@@ -1,0 +1,24 @@
+{
+  "status": "CURRENT_B1_RESULTS_INVALID_FOR_ACCEPTANCE",
+  "source": "b1_coverage_summary.json",
+  "captured_at": "2026-07-21",
+  "routes": {
+    "B1Q": {
+      "reported_b1a": 0.46549295774647886,
+      "reported_b1b": 0.22852112676056338,
+      "reported_b1c": 0.44014084507042256,
+      "nested_invariant_b1c_le_b1b": false,
+      "nested_invariant_b1b_le_b1a": true,
+      "diagnosis": "B1c was aggregated from term-structure availability without requiring ATM IV and skew."
+    },
+    "B1T": {
+      "reported_b1a": 1.0,
+      "reported_b1b": 1.0,
+      "reported_b1c": 1.0,
+      "status": "DIAGNOSTIC_ONLY"
+    }
+  },
+  "required_correction": "Separate component availability from nested benchmark completeness and assert monotonicity globally, by asset, date, session segment and route.",
+  "preserved": true,
+  "secret_values_emitted": false
+}

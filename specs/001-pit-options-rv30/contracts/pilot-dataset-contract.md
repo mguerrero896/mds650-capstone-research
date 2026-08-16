@@ -44,9 +44,11 @@ or missing required target closes cause an explicit failure. Missing option
 quotes are retained as missing observations with a quality flag; they are not
 imputed silently.
 
-The pilot must contain event and no-event origins for all eight candidates while preserving
-their natural prevalence. If the configured window has too few events, the extraction window
-is widened by a recorded configuration change; assets are not selected by preliminary model
+The pilot must retain every valid forecast origin for all eight candidates while preserving
+the natural prevalence of option activity. It is not required to contain an origin without
+an option operation, and `option_activity_present` is not an unusual-event label. If a later
+calibration window is too short for the secondary unusualness rule, the extraction window is
+widened by a recorded configuration change; assets are not selected by preliminary model
 performance. Any training-only subsampling or weighting must be documented, and validation
 and final testing must preserve the natural distribution.
 

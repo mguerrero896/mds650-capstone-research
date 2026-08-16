@@ -4,8 +4,9 @@
 
 **Created**: 2026-07-20
 
-**Status**: Phase 5 design approved; Spec Kit consistency and preregistration gates remain
-required before acquisition, modeling or QLIKE
+**Status**: Phase 5 completed with one analytical holdout read; Phase 6 design approved and
+blocked from acquisition/modeling/QLIKE until its Spec Kit, continuity, storage, PIT,
+coverage and method-freeze gates pass
 
 **Input**: User description: "Evaluate whether unusual options activity provides incremental out-of-sample information for forecasting the next 30 minutes of realized variance, using authenticated provider audits, a point-in-time pilot, and a Spec-Driven Development workflow."
 
@@ -44,6 +45,15 @@ required before acquisition, modeling or QLIKE
   assumption; `+2 minutes` is a prespecified sensitivity, not provider-confirmed semantics.
 - Q: Has the written design been approved? → A: Yes; negative, null and positive registered
   results must all be retained and reported without optimizing for a favorable sign.
+
+### Session 2026-08-01
+
+- Q: Which route follows the completed Phase 5 holdout? → A: The owner approved the
+  mechanism-aware historical replication recorded in
+  `docs/superpowers/specs/2026-08-01-rv30-mechanism-aware-replication-design.md`.
+- Q: Is a favorable sign guaranteed or required by changing methods? → A: No; the design
+  targets credible detection of an edge, but positive, negative and null registered outcomes
+  remain equally valid and no OOS result may alter the design.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -804,3 +814,104 @@ missing provider data remains missing with an explicit reason.
 - **SC-036**: Final evidence reports both information-set deltas, uncertainty, multiplicity,
   all prespecified stability strata, all registered variants and all positive, negative and
   null results without post-holdout method changes.
+
+## Phase 6 — Mechanism-Aware Historical Replication
+
+This owner-approved replication begins only after the completed Phase 5 one-read holdout.
+Phase 5 evidence MUST remain immutable and must be reported beside, not replaced by, Phase 6.
+Phase 6 is a new preregistered historical replication intended to strengthen the mechanisms
+represented by B0, B1 and B2. It may not reinterpret Phase 5 or optimize a specification for a
+preferred sign.
+
+- **FR-083**: The XNYS allow-list MUST contain exactly 180 unique sessions: twenty causal
+  feature warm-up sessions from 2025-07-07 through 2025-08-01; sixty initial-training sessions
+  from 2025-08-04 through 2025-10-27; and five consecutive twenty-session OOS folds from
+  2025-10-28 through 2026-03-23. Warm-up sessions MUST NOT enter model fitting or evaluation.
+- **FR-084**: The ten warm-up sessions preceding the recorded 2025-07-21 study boundary MUST
+  pass an authenticated all-provider metadata probe and an explicit recorded window amendment.
+  Failure of any allow-listed date returns `REPLICATION_SESSION_ALLOWLIST_INCOMPLETE`; dates
+  MUST NOT be shifted or substituted.
+- **FR-085**: One row MUST remain one selected outcome asset at one valid five-minute XNYS
+  forecast origin. RV30 MUST use the fully observed origin close and the next thirty
+  consecutive one-minute closes, producing exactly thirty log returns. Missing closes, halts
+  that break the sequence and session overflow MUST invalidate the origin without interpolation.
+- **FR-086**: The outcome assets MUST remain AAPL, AMZN, META, MSFT, NVDA and TSLA. SPY and QQQ
+  MUST be market-control sources only. Asset membership MUST NOT change from Phase 5 predictive
+  performance.
+- **FR-087**: B0v2 MUST contain only PIT log spot; underlying five-minute return; lagged
+  five- and thirty-minute realized variance; log five-minute dollar volume; SPY and QQQ
+  five-minute return and lagged thirty-minute realized variance; session-minute sine/cosine;
+  and frozen asset identity. FMP `+1 minute` is primary and `+2 minutes` is sensitivity.
+- **FR-088**: B1v2 benchmarks MUST be nested. B1v2a adds 30–60 DTE ATM IV level and five- and
+  thirty-minute changes; B1v2b adds comparable-expiry skew level/change; B1v2c adds short-medium
+  and medium-long ATM term slopes/change. Every quote MUST satisfy SIP time at or before origin,
+  positive non-crossed bid/ask, primary age at most sixty seconds and relative spread at most
+  25%. No future quote, snapshot replacement or silent imputation is permitted.
+- **FR-089**: B1v2a is eligible as the ordinary-option benchmark only with coverage at least
+  80% globally, 65% for every asset and 60% for every session tercile. B1v2b/B1v2c are
+  robustness benchmarks only when coverage is at least 70% globally, 50% per asset and 40%
+  per tercile. B1v2a failure returns `REVISE_B1V2`; B2-versus-B0 MUST NOT be substituted.
+- **FR-090**: B2v2 MUST add exactly nine target-blind abnormal-activity features to B1v2a:
+  robust prior deviations of log trade count, unique-contract share, log mean premium,
+  log maximum premium, scaled call/put premium imbalance, execution-side premium imbalance,
+  repeated-contract premium share, strike concentration and expiry concentration.
+- **FR-091**: Each B2v2 normalization MUST use only the most recent sixty prior eligible
+  sessions for the same asset and thirty-minute New York band, with a minimum of twenty.
+  Scale fallback order MUST be `1.4826*MAD`, `IQR/1.349`, prior asset-level scale, then zero
+  deviation with an explicit constant-history code. RV30, QLIKE, residuals and OOS outcomes
+  are forbidden inputs. Five minutes is primary; fifteen/thirty minutes are robustness only.
+- **FR-092**: Primary UW eligibility MUST remain `created_at <= origin - 60 seconds`, where
+  `created_at` is an operational-availability proxy and not publication time. Cutoffs of 120
+  and 300 seconds are registered sensitivities. Provider cumulative fields with unverified
+  reset semantics and interpretations of trader intention remain prohibited.
+- **FR-093**: GammaRegressor with log link, `max_iter=2000`, `tol=1e-8` and alpha grid
+  `[0.0, 0.01, 0.1, 1.0]` MUST remain confirmatory. LightGBM with the frozen Phase 5 Gamma grid
+  MUST remain the robustness challenger. Each of five OOS folds MUST fit on expanding history
+  of 60, 80, 100, 120 and 140 sessions with chronological inner selection and at least a
+  thirty-minute purge/embargo.
+- **FR-094**: The global family MUST contain exactly `Delta_B1v2 = QLIKE(B0v2)-QLIKE(B1v2a)`
+  and `Delta_B2v2 = QLIKE(B1v2a)-QLIKE(B2v2)`, with positive values favoring the expanded set.
+  Delta_B2v2 is the primary scientific comparison and Delta_B1v2 is the key secondary
+  confirmatory comparison. QLIKE is primary; MAE/RMSE are descriptive. Uncertainty MUST use
+  10,000 paired whole-day bootstrap draws and Holm correction across exactly these two global
+  hypotheses.
+- **FR-095**: META, MSFT and the last session tercile MUST form a separately Holm-corrected
+  three-hypothesis Gamma B2v2 replication family. It cannot replace a failed global result.
+  Other assets, terciles, training-defined volatility regimes, B1v2b/B1v2c, delays and windows
+  MUST be labelled robustness analyses.
+- **FR-096**: The method freeze MUST record the training-only MDE, exact features, models,
+  interactions, grids, folds, seeds, delays, bootstrap, multiplicity families, success rules,
+  code/data/contract hashes and `oos_read_count=0` before any OOS target or QLIKE access. One
+  locked nonadaptive execution MUST create all five OOS folds and transition the ledger once.
+- **FR-097**: Global confirmation requires a positive Gamma estimate, bootstrap lower bound
+  above zero, Holm-adjusted p-value below 0.05, magnitude at least the training-only MDE,
+  positive LightGBM sign, at least four of six positive asset estimates, at most one asset
+  interval wholly below zero and no registered timing interval wholly below zero. B2v2 also
+  requires no material UW-delay reversal. Otherwise report `GLOBAL_EDGE_NOT_CONFIRMED`.
+- **FR-098**: Acquisition MUST be re-entrant by provider/session/asset/contract-day, reuse only
+  matching hashes, retain raw evidence immutably on the configured `D:` roots and stop before a
+  batch if projected minimum peak free space is below 80 GiB. Sanitized evidence MUST contain
+  no secrets or personal paths.
+- **FR-099**: The run MUST stop on a critical Spec Kit contradiction, provider-continuity
+  failure, B1v2a coverage failure, PIT violation, schema drift, secret leak, hash mismatch or
+  storage-floor breach. It MUST retain positive, negative and null results and MUST NOT trade,
+  email, publish externally, modify Word deliverables or guarantee a favorable result.
+
+- **SC-037**: Spec Kit clarify, plan, checklist, tasks and analyze complete with zero critical
+  contradictions before provider acquisition or analytical implementation.
+- **SC-038**: A schema-valid preregistration contains exactly 180 ordered unique sessions,
+  twenty warm-up/sixty initial-training/one hundred OOS roles and five disjoint twenty-day folds.
+- **SC-039**: The common panel has unique origins, exactly 31 RV30 prices and 30 returns per
+  accepted target, no predictor later than origin and no warm-up row eligible for fitting.
+- **SC-040**: B1v2 nested invariants and all global/asset/date/tercile coverage gates pass, or
+  the pipeline stops with `REVISE_B1V2` before OOS access.
+- **SC-041**: Automated tests reproduce all nine B2v2 features from prior-session history and
+  prove current/future sessions, RV30, QLIKE and OOS results cannot enter normalization.
+- **SC-042**: The method-freeze and OOS-access ledgers prove stable hashes and exactly one
+  nonadaptive five-fold OOS execution.
+- **SC-043**: Final inference reproduces QLIKE, 10,000 day-cluster bootstrap draws, the global
+  Holm-two family, the separate Holm-three replication family and every registered stability
+  result from frozen predictions.
+- **SC-044**: Final evidence preserves Phase 5 hashes and reports every positive, negative and
+  null Phase 6 outcome with exactly one registered scientific decision and no profitability or
+  causal-intention claim.

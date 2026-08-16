@@ -1,0 +1,19 @@
+Phase 4B local-only validation (Python 3.12.12 via uv)
+
+uv run pytest -q
+PASS: 167 tests; 0 failed; 0 skipped
+
+uv run pytest --cov=src --cov-report=term --cov-report=json:artifacts/phase4b/coverage.json -q
+PASS: 167 tests; total coverage 86.56%; configured minimum 80.0%
+
+uv run ruff check .
+PASS: All checks passed
+
+uv run mypy src
+PASS: Success; no issues found in 20 source files
+
+uv run python scripts/run_phase4b.py (twice)
+PASS: provider_requests=0; models_trained=0; artifact_files=66; mismatches=0
+
+Phase 4B contract tests
+PASS: 11 passed (tests/unit/test_phase4b_common.py and tests/contract/test_phase4b_artifacts.py)

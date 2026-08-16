@@ -1,0 +1,47 @@
+MDS650 Phase 5 final validation report
+Run date: 2026-08-01 Australia/Sydney
+Branch: 001-pit-options-rv30-recovery
+Base commit: 117e245602456a3cec1dc95fd220fcab3d94b5b2
+
+HOLDOUT ACQUISITION
+PASS: 10/10 sessions; 10 Full Tape ZIPs reused by verified hash.
+PASS: acquisition status PASS_ACQUIRED_NOT_ANALYSED before model execution.
+PASS: holdout access transitioned exactly once from holdout_reads=0 to holdout_reads=1.
+PASS: 3,877 common forecast origins evaluated across six assets and ten sessions.
+
+PYTEST AND COVERAGE
+Command: uv run pytest --override-ini addopts='' --cov=mds650 --cov-branch --cov-report=term-missing --cov-report=json:artifacts/phase5/coverage.json -q
+Result: PASS; 251 passed; 0 failed; total coverage 82.63%; frozen minimum 80.00%.
+
+RUFF
+Command: uv run ruff check .
+Result: PASS; all checks passed.
+
+MYPY
+Command: uv run mypy src
+Result: PASS; no issues in 29 source files.
+
+JSON SCHEMA
+PASS: artifacts/phase5/preregistration.json validates against phase5-preregistration.schema.json.
+PASS: artifacts/phase5/stability_results.json validates against phase5-stability-results.schema.json.
+
+HASH AND ONE-READ GATES
+PASS: preregistration, method freeze, acquisition manifest, access ledger, holdout results and stability results self-hashes.
+PASS: all frozen source and contract hashes.
+PASS: holdout panel hash matches the access ledger and holdout result.
+PASS: holdout stability-input hash matches the access ledger.
+PASS: stability-output hash matches the holdout result.
+PASS: second analytical reads are rejected by the tested fail-closed guard; the holdout runner was not invoked a second time.
+
+SECRET AND PATH GATES
+PASS: no values of FMP_API_KEY, MASSIVE_API_KEY or UNUSUALWHALES_API_KEY occur in the Phase 5 release artifacts.
+PASS: no personal paths occur in the Phase 5 release artifacts or final handoff.
+RETAINED RAW-LOG WARNING: artifacts/phase5/pre_holdout_refreeze_guard_v8/stderr.log contains one local personal path from a pre-holdout failed process. It is excluded from sanitized release artifacts and was not deleted or rewritten.
+
+LINUX/COLAB-COMPATIBILITY GATE
+Command: docker run --rm -v <repository>:/workspace:ro -w /workspace python:3.12.12-bookworm sh scripts/validate_colab_parity.sh
+Result: PASS Linux locked install, imports, 21 compact tests, Ruff and Mypy.
+Hosted Google Colab execution: UNVERIFIED. Linux parity is evidence of compatibility, not proof of an actual hosted-Colab run.
+
+OVERALL
+PASS_LOCAL_AND_LINUX_PHASE5_VALIDATION; HOSTED_COLAB_UNVERIFIED.

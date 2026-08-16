@@ -1,0 +1,330 @@
+{
+  "exclusions": [
+    {
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 240
+    },
+    {
+      "exclusion_reason": "B1Q_PIT_OR_QUOTE_COVERAGE",
+      "len": 196
+    }
+  ],
+  "exclusions_by_asset_session": [
+    {
+      "asset": "AAPL",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-13"
+    },
+    {
+      "asset": "AAPL",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-14"
+    },
+    {
+      "asset": "AAPL",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-15"
+    },
+    {
+      "asset": "AAPL",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-16"
+    },
+    {
+      "asset": "AAPL",
+      "exclusion_reason": "B1Q_PIT_OR_QUOTE_COVERAGE",
+      "len": 3,
+      "session_date": "2026-07-16"
+    },
+    {
+      "asset": "AAPL",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-17"
+    },
+    {
+      "asset": "AAPL",
+      "exclusion_reason": "B1Q_PIT_OR_QUOTE_COVERAGE",
+      "len": 8,
+      "session_date": "2026-07-17"
+    },
+    {
+      "asset": "AMZN",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-13"
+    },
+    {
+      "asset": "AMZN",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-14"
+    },
+    {
+      "asset": "AMZN",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-15"
+    },
+    {
+      "asset": "AMZN",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-16"
+    },
+    {
+      "asset": "AMZN",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-17"
+    },
+    {
+      "asset": "META",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-13"
+    },
+    {
+      "asset": "META",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-14"
+    },
+    {
+      "asset": "META",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-15"
+    },
+    {
+      "asset": "META",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-16"
+    },
+    {
+      "asset": "META",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-17"
+    },
+    {
+      "asset": "MSFT",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-13"
+    },
+    {
+      "asset": "MSFT",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-14"
+    },
+    {
+      "asset": "MSFT",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-15"
+    },
+    {
+      "asset": "MSFT",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-16"
+    },
+    {
+      "asset": "MSFT",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-17"
+    },
+    {
+      "asset": "NVDA",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-13"
+    },
+    {
+      "asset": "NVDA",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-14"
+    },
+    {
+      "asset": "NVDA",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-15"
+    },
+    {
+      "asset": "NVDA",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-16"
+    },
+    {
+      "asset": "NVDA",
+      "exclusion_reason": "B1Q_PIT_OR_QUOTE_COVERAGE",
+      "len": 9,
+      "session_date": "2026-07-16"
+    },
+    {
+      "asset": "NVDA",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-17"
+    },
+    {
+      "asset": "NVDA",
+      "exclusion_reason": "B1Q_PIT_OR_QUOTE_COVERAGE",
+      "len": 12,
+      "session_date": "2026-07-17"
+    },
+    {
+      "asset": "QQQ",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-13"
+    },
+    {
+      "asset": "QQQ",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-14"
+    },
+    {
+      "asset": "QQQ",
+      "exclusion_reason": "B1Q_PIT_OR_QUOTE_COVERAGE",
+      "len": 1,
+      "session_date": "2026-07-14"
+    },
+    {
+      "asset": "QQQ",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-15"
+    },
+    {
+      "asset": "QQQ",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-16"
+    },
+    {
+      "asset": "QQQ",
+      "exclusion_reason": "B1Q_PIT_OR_QUOTE_COVERAGE",
+      "len": 3,
+      "session_date": "2026-07-16"
+    },
+    {
+      "asset": "QQQ",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-17"
+    },
+    {
+      "asset": "QQQ",
+      "exclusion_reason": "B1Q_PIT_OR_QUOTE_COVERAGE",
+      "len": 23,
+      "session_date": "2026-07-17"
+    },
+    {
+      "asset": "SPY",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-13"
+    },
+    {
+      "asset": "SPY",
+      "exclusion_reason": "B1Q_PIT_OR_QUOTE_COVERAGE",
+      "len": 31,
+      "session_date": "2026-07-13"
+    },
+    {
+      "asset": "SPY",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-14"
+    },
+    {
+      "asset": "SPY",
+      "exclusion_reason": "B1Q_PIT_OR_QUOTE_COVERAGE",
+      "len": 11,
+      "session_date": "2026-07-14"
+    },
+    {
+      "asset": "SPY",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-15"
+    },
+    {
+      "asset": "SPY",
+      "exclusion_reason": "B1Q_PIT_OR_QUOTE_COVERAGE",
+      "len": 29,
+      "session_date": "2026-07-15"
+    },
+    {
+      "asset": "SPY",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-16"
+    },
+    {
+      "asset": "SPY",
+      "exclusion_reason": "B1Q_PIT_OR_QUOTE_COVERAGE",
+      "len": 46,
+      "session_date": "2026-07-16"
+    },
+    {
+      "asset": "SPY",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-17"
+    },
+    {
+      "asset": "SPY",
+      "exclusion_reason": "B1Q_PIT_OR_QUOTE_COVERAGE",
+      "len": 20,
+      "session_date": "2026-07-17"
+    },
+    {
+      "asset": "TSLA",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-13"
+    },
+    {
+      "asset": "TSLA",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-14"
+    },
+    {
+      "asset": "TSLA",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-15"
+    },
+    {
+      "asset": "TSLA",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-16"
+    },
+    {
+      "asset": "TSLA",
+      "exclusion_reason": "B0_MISSING_ASOF_FEATURE_OR_TARGET",
+      "len": 6,
+      "session_date": "2026-07-17"
+    }
+  ],
+  "iv_change_not_used_for_b2_core_completeness": true,
+  "optional_iv_fields_are_non_blocking": true,
+  "pilot_origins": 2840,
+  "pilot_strict_core_origins": 2404
+}

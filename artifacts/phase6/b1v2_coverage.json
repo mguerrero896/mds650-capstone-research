@@ -1,0 +1,65 @@
+{
+  "b1v2_sha256": "0b8cd222cfd8fc567b9d78fa79d9703a14619c98b6b03ce554a1a8c2cb65f657",
+  "by_asset": [
+    {
+      "asset": "AAPL",
+      "coverage": 0.9145716945996276
+    },
+    {
+      "asset": "AMZN",
+      "coverage": 0.914804469273743
+    },
+    {
+      "asset": "META",
+      "coverage": 0.9150372439478585
+    },
+    {
+      "asset": "MSFT",
+      "coverage": 0.91495965238982
+    },
+    {
+      "asset": "NVDA",
+      "coverage": 0.9145716945996276
+    },
+    {
+      "asset": "TSLA",
+      "coverage": 0.9145716945996276
+    }
+  ],
+  "by_session_tercile": [
+    {
+      "coverage": 0.7581111111111111,
+      "session_tercile": "first"
+    },
+    {
+      "coverage": 0.9990190832887462,
+      "session_tercile": "last"
+    },
+    {
+      "coverage": 0.9986021505376345,
+      "session_tercile": "middle"
+    }
+  ],
+  "contract_resolution_schema": "b1q-contract-grid-3.0",
+  "future_quote_rows": 0,
+  "global": {
+    "b1v2a": 0.914752741568384,
+    "b1v2b": 0.8900268984067867,
+    "b1v2c": 0.8899751707014277
+  },
+  "oos_results_inspected": false,
+  "origin_count": 77328,
+  "personal_paths_emitted": false,
+  "quote_cache_audit": {
+    "cache_hits": 24272,
+    "contract_day_jobs": 32238,
+    "network_fetches": 7966,
+    "pages": 59829,
+    "pagination_explicit": 24502,
+    "pagination_inferred_terminal_partial": 7736,
+    "provider_duplicate_rows_removed": 84
+  },
+  "schema_version": "phase6-b1v2-1.0",
+  "secret_values_emitted": false,
+  "status": "PASS_B1V2A_COVERAGE"
+}

@@ -1,0 +1,26 @@
+{
+  "status": "exploratory_iv_probe_not_acceptance_gate",
+  "source_artifact": "artifacts/api_audit/b1_coverage_v1_20260721/iv_probe.json",
+  "filters": {
+    "quote_age_seconds": 60,
+    "relative_spread": 0.25,
+    "bid_gt": 0,
+    "ask_gt_bid": true,
+    "sip_timestamp_le_origin": true
+  },
+  "attempts": 515,
+  "successes": 506,
+  "success_rate": 0.9825242718446602,
+  "failure_reason": {
+    "arbitrage_bounds": 9
+  },
+  "iv_range": {
+    "min": 0.07905110635971369,
+    "median": 0.3206299503405852,
+    "max": 0.987842884991238
+  },
+  "rate_source": "FMP treasury-rates month3; no forward interpolation",
+  "dividend_source": "FMP dividends; declared and paid within trailing 365d only",
+  "interpretation": "This tests numerical inversion only; it does not prove point-in-time publication or complete B1 state.",
+  "secret_values_emitted": false
+}

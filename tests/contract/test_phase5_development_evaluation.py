@@ -133,9 +133,24 @@ def test_method_freeze_hashes_exact_development_evidence() -> None:
         "src/mds650/stability.py",
         "src/mds650/study_design.py",
     } <= set(freeze["source_code_hashes"])
-    assert all(
-        digest == source_sha256(ROOT / relative_path)
+    drift_path = PHASE5 / "historical_source_drift.json"
+    drift = _json(drift_path)
+    observed_drift = [
+        {
+            "path": relative_path,
+            "frozen_sha256": digest,
+            "current_sha256": source_sha256(ROOT / relative_path),
+        }
         for relative_path, digest in freeze["source_code_hashes"].items()
+        if digest != source_sha256(ROOT / relative_path)
+    ]
+    assert drift["status"] == "ACKNOWLEDGED_POST_HOLDOUT_SOURCE_DRIFT"
+    assert drift["phase5_method_freeze_rewritten"] is False
+    assert drift["phase6_requires_independent_source_freeze"] is True
+    assert drift["mismatch_count"] == len(observed_drift)
+    assert drift["records"] == observed_drift
+    assert drift["manifest_sha256"] == canonical_sha256(
+        {key: value for key, value in drift.items() if key != "manifest_sha256"}
     )
     assert freeze["input_hashes"]["common_development_80d.parquet"] == _sha256(PANEL)
     assert freeze["input_hashes"]["development_stability_inputs_80d.parquet"] == _sha256(

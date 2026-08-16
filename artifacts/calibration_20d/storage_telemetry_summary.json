@@ -1,0 +1,33 @@
+{
+  "aggregation_seconds": 90.14121719999821,
+  "assets": [
+    "AAPL",
+    "AMZN",
+    "META",
+    "MSFT",
+    "NVDA",
+    "QQQ",
+    "SPY",
+    "TSLA"
+  ],
+  "download_time_observed_sessions": 17,
+  "duplicate_event_ids_total": 0,
+  "duration_seconds_max_observed": 520.1654291000013,
+  "duration_seconds_mean": 337.11564510500085,
+  "free_bytes_at_finalize": 475959033856,
+  "larger_backfill": "BLOCKED",
+  "measurement_boundary": "DOWNLOAD_AND_STREAM_FILTER_ONLY",
+  "memory_observed_sessions": 20,
+  "parquet_bytes_mean": 253016069.0,
+  "parquet_bytes_total": 5060321380,
+  "peak_working_set_bytes_max_observed": 571527168,
+  "personal_paths_emitted": false,
+  "raw_bytes_max_observed": 1815998476,
+  "raw_bytes_mean": 1550098885.45,
+  "raw_bytes_total": 31001977709,
+  "resumable": true,
+  "retry_attempts_total": 21,
+  "secret_values_emitted": false,
+  "session_count": 20,
+  "status": "PASS"
+}

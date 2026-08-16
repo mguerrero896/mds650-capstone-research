@@ -1,0 +1,3 @@
+route,origins,b1a_coverage,b1b_coverage,b1c_coverage,usable_for_primary
+B1Q,2840,0.9024647887323943,0.5235915492957747,0.8211267605633803,true
+B1T,2840,1.0,1.0,1.0,false

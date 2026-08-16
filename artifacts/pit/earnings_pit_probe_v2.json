@@ -1,0 +1,16 @@
+{
+  "actual_eps_revenue_retained": false,
+  "etf_not_applicable": {
+    "QQQ": "not_applicable",
+    "SPY": "not_applicable"
+  },
+  "evidence_path": "artifacts/pilot_v2/fmp_timestamp_validation_v2.json",
+  "personal_paths_emitted": false,
+  "primary_benchmark_earnings_features": "EXCLUDED_PENDING_PIT_INTEGRATION",
+  "probe_status": "FMP_SYMBOL_SPECIFIC_EARNINGS_TIMING_PROBED",
+  "requested_returned_symbol_match": true,
+  "secret_values_emitted": false,
+  "status": "PASS_EXCLUDED_FROM_PRIMARY_PENDING_INTEGRATION",
+  "symbols_checked": 8,
+  "timing_fields_present": true
+}

@@ -1,0 +1,14 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_______ test_phase6_handoff_distinguishes_significance_from_frozen_mde ________
+
+    def test_phase6_handoff_distinguishes_significance_from_frozen_mde() -> None:
+        """Prevent a positive estimate from being mislabeled as globally confirmed."""
+        report = HANDOFF.read_text(encoding="utf-8")
+    
+>       assert "## Frozen MDE and confirmation status" in report
+E       AssertionError: assert '## Frozen MDE and confirmation status' in '# CODEX PHASE 6 FINAL HANDOFF\n\n**Decision:** `TARGETED_B2V2_REPLICATION_CONFIRMED`  \n**Branch:** `001-pit-options-...n was performed.\n\n## Evidence\n\nSee `artifacts/phase6/evidence_index.csv` and `artifacts/phase6/test_report.txt`.\n'
+
+tests\contract\test_phase6_results.py:136: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/contract/test_phase6_results.py::test_phase6_handoff_distinguishes_significance_from_frozen_mde

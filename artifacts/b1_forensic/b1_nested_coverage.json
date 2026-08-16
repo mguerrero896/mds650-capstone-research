@@ -1,0 +1,320 @@
+{
+  "global": {
+    "B1Q": {
+      "atm_iv_available": 0.9024647887323943,
+      "skew_available": 0.5235915492957747,
+      "term_structure_available": 0.8211267605633803,
+      "b1a_complete": 0.9024647887323943,
+      "b1b_complete": 0.5235915492957747,
+      "b1c_complete": 0.49190140845070424
+    },
+    "B1T": {
+      "atm_iv_available": 1.0,
+      "skew_available": 1.0,
+      "term_structure_available": 1.0,
+      "b1a_complete": 1.0,
+      "b1b_complete": 1.0,
+      "b1c_complete": 1.0
+    }
+  },
+  "by_asset": {
+    "SPY": {
+      "B1Q": {
+        "atm_iv_available": 0.5295774647887324,
+        "skew_available": 0.29295774647887324,
+        "term_structure_available": 0.3492957746478873,
+        "b1a_complete": 0.5295774647887324,
+        "b1b_complete": 0.29295774647887324,
+        "b1c_complete": 0.23943661971830985
+      },
+      "B1T": {
+        "atm_iv_available": 1.0,
+        "skew_available": 1.0,
+        "term_structure_available": 1.0,
+        "b1a_complete": 1.0,
+        "b1b_complete": 1.0,
+        "b1c_complete": 1.0
+      }
+    },
+    "TSLA": {
+      "B1Q": {
+        "atm_iv_available": 0.9887323943661972,
+        "skew_available": 0.6845070422535211,
+        "term_structure_available": 0.9408450704225352,
+        "b1a_complete": 0.9887323943661972,
+        "b1b_complete": 0.6845070422535211,
+        "b1c_complete": 0.6619718309859155
+      },
+      "B1T": {
+        "atm_iv_available": 1.0,
+        "skew_available": 1.0,
+        "term_structure_available": 1.0,
+        "b1a_complete": 1.0,
+        "b1b_complete": 1.0,
+        "b1c_complete": 1.0
+      }
+    },
+    "MSFT": {
+      "B1Q": {
+        "atm_iv_available": 1.0,
+        "skew_available": 0.5887323943661972,
+        "term_structure_available": 0.9971830985915493,
+        "b1a_complete": 1.0,
+        "b1b_complete": 0.5887323943661972,
+        "b1c_complete": 0.5859154929577465
+      },
+      "B1T": {
+        "atm_iv_available": 1.0,
+        "skew_available": 1.0,
+        "term_structure_available": 1.0,
+        "b1a_complete": 1.0,
+        "b1b_complete": 1.0,
+        "b1c_complete": 1.0
+      }
+    },
+    "NVDA": {
+      "B1Q": {
+        "atm_iv_available": 0.9070422535211268,
+        "skew_available": 0.16619718309859155,
+        "term_structure_available": 0.7070422535211267,
+        "b1a_complete": 0.9070422535211268,
+        "b1b_complete": 0.16619718309859155,
+        "b1c_complete": 0.07887323943661972
+      },
+      "B1T": {
+        "atm_iv_available": 1.0,
+        "skew_available": 1.0,
+        "term_structure_available": 1.0,
+        "b1a_complete": 1.0,
+        "b1b_complete": 1.0,
+        "b1c_complete": 1.0
+      }
+    },
+    "AMZN": {
+      "B1Q": {
+        "atm_iv_available": 1.0,
+        "skew_available": 0.6253521126760564,
+        "term_structure_available": 0.9971830985915493,
+        "b1a_complete": 1.0,
+        "b1b_complete": 0.6253521126760564,
+        "b1c_complete": 0.6225352112676056
+      },
+      "B1T": {
+        "atm_iv_available": 1.0,
+        "skew_available": 1.0,
+        "term_structure_available": 1.0,
+        "b1a_complete": 1.0,
+        "b1b_complete": 1.0,
+        "b1c_complete": 1.0
+      }
+    },
+    "AAPL": {
+      "B1Q": {
+        "atm_iv_available": 0.9352112676056338,
+        "skew_available": 0.447887323943662,
+        "term_structure_available": 0.9098591549295775,
+        "b1a_complete": 0.9352112676056338,
+        "b1b_complete": 0.447887323943662,
+        "b1c_complete": 0.447887323943662
+      },
+      "B1T": {
+        "atm_iv_available": 1.0,
+        "skew_available": 1.0,
+        "term_structure_available": 1.0,
+        "b1a_complete": 1.0,
+        "b1b_complete": 1.0,
+        "b1c_complete": 1.0
+      }
+    },
+    "META": {
+      "B1Q": {
+        "atm_iv_available": 1.0,
+        "skew_available": 0.7380281690140845,
+        "term_structure_available": 0.9943661971830986,
+        "b1a_complete": 1.0,
+        "b1b_complete": 0.7380281690140845,
+        "b1c_complete": 0.7323943661971831
+      },
+      "B1T": {
+        "atm_iv_available": 1.0,
+        "skew_available": 1.0,
+        "term_structure_available": 1.0,
+        "b1a_complete": 1.0,
+        "b1b_complete": 1.0,
+        "b1c_complete": 1.0
+      }
+    },
+    "QQQ": {
+      "B1Q": {
+        "atm_iv_available": 0.8591549295774648,
+        "skew_available": 0.6450704225352113,
+        "term_structure_available": 0.6732394366197183,
+        "b1a_complete": 0.8591549295774648,
+        "b1b_complete": 0.6450704225352113,
+        "b1c_complete": 0.5661971830985916
+      },
+      "B1T": {
+        "atm_iv_available": 1.0,
+        "skew_available": 1.0,
+        "term_structure_available": 1.0,
+        "b1a_complete": 1.0,
+        "b1b_complete": 1.0,
+        "b1c_complete": 1.0
+      }
+    }
+  },
+  "by_date": {
+    "2026-07-17": {
+      "B1Q": {
+        "atm_iv_available": 0.8397887323943662,
+        "skew_available": 0.4859154929577465,
+        "term_structure_available": 0.8045774647887324,
+        "b1a_complete": 0.8397887323943662,
+        "b1b_complete": 0.4859154929577465,
+        "b1c_complete": 0.4859154929577465
+      },
+      "B1T": {
+        "atm_iv_available": 1.0,
+        "skew_available": 1.0,
+        "term_structure_available": 1.0,
+        "b1a_complete": 1.0,
+        "b1b_complete": 1.0,
+        "b1c_complete": 1.0
+      }
+    },
+    "2026-07-13": {
+      "B1Q": {
+        "atm_iv_available": 0.9348591549295775,
+        "skew_available": 0.5950704225352113,
+        "term_structure_available": 0.7816901408450704,
+        "b1a_complete": 0.9348591549295775,
+        "b1b_complete": 0.5950704225352113,
+        "b1c_complete": 0.4841549295774648
+      },
+      "B1T": {
+        "atm_iv_available": 1.0,
+        "skew_available": 1.0,
+        "term_structure_available": 1.0,
+        "b1a_complete": 1.0,
+        "b1b_complete": 1.0,
+        "b1c_complete": 1.0
+      }
+    },
+    "2026-07-16": {
+      "B1Q": {
+        "atm_iv_available": 0.8503521126760564,
+        "skew_available": 0.5651408450704225,
+        "term_structure_available": 0.8045774647887324,
+        "b1a_complete": 0.8503521126760564,
+        "b1b_complete": 0.5651408450704225,
+        "b1c_complete": 0.5651408450704225
+      },
+      "B1T": {
+        "atm_iv_available": 1.0,
+        "skew_available": 1.0,
+        "term_structure_available": 1.0,
+        "b1a_complete": 1.0,
+        "b1b_complete": 1.0,
+        "b1c_complete": 1.0
+      }
+    },
+    "2026-07-15": {
+      "B1Q": {
+        "atm_iv_available": 0.9295774647887324,
+        "skew_available": 0.2517605633802817,
+        "term_structure_available": 0.8028169014084507,
+        "b1a_complete": 0.9295774647887324,
+        "b1b_complete": 0.2517605633802817,
+        "b1c_complete": 0.21830985915492956
+      },
+      "B1T": {
+        "atm_iv_available": 1.0,
+        "skew_available": 1.0,
+        "term_structure_available": 1.0,
+        "b1a_complete": 1.0,
+        "b1b_complete": 1.0,
+        "b1c_complete": 1.0
+      }
+    },
+    "2026-07-14": {
+      "B1Q": {
+        "atm_iv_available": 0.9577464788732394,
+        "skew_available": 0.7200704225352113,
+        "term_structure_available": 0.9119718309859155,
+        "b1a_complete": 0.9577464788732394,
+        "b1b_complete": 0.7200704225352113,
+        "b1c_complete": 0.7059859154929577
+      },
+      "B1T": {
+        "atm_iv_available": 1.0,
+        "skew_available": 1.0,
+        "term_structure_available": 1.0,
+        "b1a_complete": 1.0,
+        "b1b_complete": 1.0,
+        "b1c_complete": 1.0
+      }
+    }
+  },
+  "by_session_segment": {
+    "first": {
+      "B1Q": {
+        "atm_iv_available": 0.65,
+        "skew_available": 0.5416666666666666,
+        "term_structure_available": 0.4666666666666667,
+        "b1a_complete": 0.65,
+        "b1b_complete": 0.5416666666666666,
+        "b1c_complete": 0.43333333333333335
+      },
+      "B1T": {
+        "atm_iv_available": 1.0,
+        "skew_available": 1.0,
+        "term_structure_available": 1.0,
+        "b1a_complete": 1.0,
+        "b1b_complete": 1.0,
+        "b1c_complete": 1.0
+      }
+    },
+    "middle": {
+      "B1Q": {
+        "atm_iv_available": 0.905241935483871,
+        "skew_available": 0.5108870967741935,
+        "term_structure_available": 0.8209677419354838,
+        "b1a_complete": 0.905241935483871,
+        "b1b_complete": 0.5108870967741935,
+        "b1c_complete": 0.4798387096774194
+      },
+      "B1T": {
+        "atm_iv_available": 1.0,
+        "skew_available": 1.0,
+        "term_structure_available": 1.0,
+        "b1a_complete": 1.0,
+        "b1b_complete": 1.0,
+        "b1c_complete": 1.0
+      }
+    },
+    "last": {
+      "B1Q": {
+        "atm_iv_available": 1.0,
+        "skew_available": 0.6458333333333334,
+        "term_structure_available": 1.0,
+        "b1a_complete": 1.0,
+        "b1b_complete": 0.6458333333333334,
+        "b1c_complete": 0.6458333333333334
+      },
+      "B1T": {
+        "atm_iv_available": 1.0,
+        "skew_available": 1.0,
+        "term_structure_available": 1.0,
+        "b1a_complete": 1.0,
+        "b1b_complete": 1.0,
+        "b1c_complete": 1.0
+      }
+    }
+  },
+  "invariants": {
+    "b1c_implies_b1b": true,
+    "b1b_implies_b1a": true,
+    "coverage_b1c_le_b1b": true,
+    "coverage_b1b_le_b1a": true
+  }
+}

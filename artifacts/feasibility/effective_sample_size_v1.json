@@ -1,0 +1,262 @@
+{
+  "asset_days": 200,
+  "cross_asset_dependence": "same trading-day clusters; rows are not independent",
+  "effective_independent_days_observed": 25,
+  "limitations": [
+    "synthetic paired loss differentials are not model losses",
+    "no predictive performance calculated",
+    "dependence grid is design sensitivity, not estimated dependence"
+  ],
+  "nominal_rows": 13240,
+  "observed_trading_days": 25,
+  "origins_per_day": [
+    {
+      "len": 520,
+      "session_date": "2026-06-11"
+    },
+    {
+      "len": 520,
+      "session_date": "2026-06-12"
+    },
+    {
+      "len": 520,
+      "session_date": "2026-06-15"
+    },
+    {
+      "len": 520,
+      "session_date": "2026-06-16"
+    },
+    {
+      "len": 520,
+      "session_date": "2026-06-17"
+    },
+    {
+      "len": 520,
+      "session_date": "2026-06-18"
+    },
+    {
+      "len": 520,
+      "session_date": "2026-06-22"
+    },
+    {
+      "len": 520,
+      "session_date": "2026-06-23"
+    },
+    {
+      "len": 520,
+      "session_date": "2026-06-24"
+    },
+    {
+      "len": 520,
+      "session_date": "2026-06-25"
+    },
+    {
+      "len": 520,
+      "session_date": "2026-06-26"
+    },
+    {
+      "len": 520,
+      "session_date": "2026-06-29"
+    },
+    {
+      "len": 520,
+      "session_date": "2026-06-30"
+    },
+    {
+      "len": 520,
+      "session_date": "2026-07-01"
+    },
+    {
+      "len": 520,
+      "session_date": "2026-07-02"
+    },
+    {
+      "len": 520,
+      "session_date": "2026-07-06"
+    },
+    {
+      "len": 520,
+      "session_date": "2026-07-07"
+    },
+    {
+      "len": 520,
+      "session_date": "2026-07-08"
+    },
+    {
+      "len": 520,
+      "session_date": "2026-07-09"
+    },
+    {
+      "len": 520,
+      "session_date": "2026-07-10"
+    },
+    {
+      "len": 568,
+      "session_date": "2026-07-13"
+    },
+    {
+      "len": 568,
+      "session_date": "2026-07-14"
+    },
+    {
+      "len": 568,
+      "session_date": "2026-07-15"
+    },
+    {
+      "len": 568,
+      "session_date": "2026-07-16"
+    },
+    {
+      "len": 568,
+      "session_date": "2026-07-17"
+    }
+  ],
+  "planning_grid": [
+    {
+      "cross_asset_dependence": 0.0,
+      "detectable_standardized_effect": 0.1266782364442557,
+      "planning_only": true,
+      "sessions": 60,
+      "synthetic_replicates": 200,
+      "within_day_dependence": 0.0
+    },
+    {
+      "cross_asset_dependence": 0.5,
+      "detectable_standardized_effect": 0.267650598670077,
+      "planning_only": true,
+      "sessions": 60,
+      "synthetic_replicates": 200,
+      "within_day_dependence": 0.0
+    },
+    {
+      "cross_asset_dependence": 0.0,
+      "detectable_standardized_effect": 0.22224553783772316,
+      "planning_only": true,
+      "sessions": 60,
+      "synthetic_replicates": 200,
+      "within_day_dependence": 0.3
+    },
+    {
+      "cross_asset_dependence": 0.5,
+      "detectable_standardized_effect": 0.29650152286421533,
+      "planning_only": true,
+      "sessions": 60,
+      "synthetic_replicates": 200,
+      "within_day_dependence": 0.3
+    },
+    {
+      "cross_asset_dependence": 0.0,
+      "detectable_standardized_effect": 0.2884347149508309,
+      "planning_only": true,
+      "sessions": 60,
+      "synthetic_replicates": 200,
+      "within_day_dependence": 0.6
+    },
+    {
+      "cross_asset_dependence": 0.5,
+      "detectable_standardized_effect": 0.3219852346311708,
+      "planning_only": true,
+      "sessions": 60,
+      "synthetic_replicates": 200,
+      "within_day_dependence": 0.6
+    },
+    {
+      "cross_asset_dependence": 0.0,
+      "detectable_standardized_effect": 0.08957302942265423,
+      "planning_only": true,
+      "sessions": 120,
+      "synthetic_replicates": 200,
+      "within_day_dependence": 0.0
+    },
+    {
+      "cross_asset_dependence": 0.5,
+      "detectable_standardized_effect": 0.19052261498182643,
+      "planning_only": true,
+      "sessions": 120,
+      "synthetic_replicates": 200,
+      "within_day_dependence": 0.0
+    },
+    {
+      "cross_asset_dependence": 0.0,
+      "detectable_standardized_effect": 0.15912527701393367,
+      "planning_only": true,
+      "sessions": 120,
+      "synthetic_replicates": 200,
+      "within_day_dependence": 0.3
+    },
+    {
+      "cross_asset_dependence": 0.5,
+      "detectable_standardized_effect": 0.2120551584664599,
+      "planning_only": true,
+      "sessions": 120,
+      "synthetic_replicates": 200,
+      "within_day_dependence": 0.3
+    },
+    {
+      "cross_asset_dependence": 0.0,
+      "detectable_standardized_effect": 0.20456383408071063,
+      "planning_only": true,
+      "sessions": 120,
+      "synthetic_replicates": 200,
+      "within_day_dependence": 0.6
+    },
+    {
+      "cross_asset_dependence": 0.5,
+      "detectable_standardized_effect": 0.23266584116986733,
+      "planning_only": true,
+      "sessions": 120,
+      "synthetic_replicates": 200,
+      "within_day_dependence": 0.6
+    },
+    {
+      "cross_asset_dependence": 0.0,
+      "detectable_standardized_effect": 0.07321454078865891,
+      "planning_only": true,
+      "sessions": 180,
+      "synthetic_replicates": 200,
+      "within_day_dependence": 0.0
+    },
+    {
+      "cross_asset_dependence": 0.5,
+      "detectable_standardized_effect": 0.15565291671323916,
+      "planning_only": true,
+      "sessions": 180,
+      "synthetic_replicates": 200,
+      "within_day_dependence": 0.0
+    },
+    {
+      "cross_asset_dependence": 0.0,
+      "detectable_standardized_effect": 0.12958858822871988,
+      "planning_only": true,
+      "sessions": 180,
+      "synthetic_replicates": 200,
+      "within_day_dependence": 0.3
+    },
+    {
+      "cross_asset_dependence": 0.5,
+      "detectable_standardized_effect": 0.17307071935232007,
+      "planning_only": true,
+      "sessions": 180,
+      "synthetic_replicates": 200,
+      "within_day_dependence": 0.3
+    },
+    {
+      "cross_asset_dependence": 0.0,
+      "detectable_standardized_effect": 0.16768959898371502,
+      "planning_only": true,
+      "sessions": 180,
+      "synthetic_replicates": 200,
+      "within_day_dependence": 0.6
+    },
+    {
+      "cross_asset_dependence": 0.5,
+      "detectable_standardized_effect": 0.18916103006835208,
+      "planning_only": true,
+      "sessions": 180,
+      "synthetic_replicates": 200,
+      "within_day_dependence": 0.6
+    }
+  ],
+  "schema_version": "effective-sample-size-v1",
+  "target_overlap_minutes": 30
+}

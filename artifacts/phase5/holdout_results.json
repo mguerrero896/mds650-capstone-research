@@ -1,0 +1,151 @@
+{
+  "contrasts": [
+    {
+      "baseline_mean_qlike": 0.15889694859351008,
+      "ci_high": 0.009484466873983364,
+      "ci_low": -0.02287630448913322,
+      "clusters": 10,
+      "contrast": "delta_b1",
+      "definition": "QLIKE(B0)-QLIKE(B1a)",
+      "estimate": -0.007048655575142009,
+      "expanded_mean_qlike": 0.16594560416865206,
+      "model_role": "gamma_glm_confirmatory",
+      "observations": 3877,
+      "p_value_holm": 0.7631236876312368,
+      "p_value_raw": 0.3815618438156184,
+      "p_value_two_sided": 0.3815618438156184,
+      "positive_direction": "expanded_information_set_better",
+      "repetitions": 10000,
+      "result_sign": "NEGATIVE",
+      "seed": 650
+    },
+    {
+      "baseline_mean_qlike": 0.16594560416865206,
+      "ci_high": 0.013762596808405757,
+      "ci_low": -0.016694156076752873,
+      "clusters": 10,
+      "contrast": "delta_b2",
+      "definition": "QLIKE(B1a)-QLIKE(B2)",
+      "estimate": 0.0006130677357146971,
+      "expanded_mean_qlike": 0.16533253643293738,
+      "model_role": "gamma_glm_confirmatory",
+      "observations": 3877,
+      "p_value_holm": 0.8703129687031297,
+      "p_value_raw": 0.8703129687031297,
+      "p_value_two_sided": 0.8703129687031297,
+      "positive_direction": "expanded_information_set_better",
+      "repetitions": 10000,
+      "result_sign": "POSITIVE",
+      "seed": 650
+    },
+    {
+      "baseline_mean_qlike": 0.11669851239351775,
+      "ci_high": -0.002354660086454675,
+      "ci_low": -0.021342511361844473,
+      "clusters": 10,
+      "contrast": "delta_b1",
+      "definition": "QLIKE(B0)-QLIKE(B1a)",
+      "estimate": -0.01143678024629425,
+      "expanded_mean_qlike": 0.128135292639812,
+      "model_role": "lightgbm_robustness",
+      "observations": 3877,
+      "p_value_holm": null,
+      "p_value_raw": 0.0115988401159884,
+      "p_value_two_sided": 0.0115988401159884,
+      "positive_direction": "expanded_information_set_better",
+      "repetitions": 10000,
+      "result_sign": "NEGATIVE",
+      "seed": 650
+    },
+    {
+      "baseline_mean_qlike": 0.128135292639812,
+      "ci_high": 0.0012359100013548466,
+      "ci_low": -0.0021153048728561703,
+      "clusters": 10,
+      "contrast": "delta_b2",
+      "definition": "QLIKE(B1a)-QLIKE(B2)",
+      "estimate": -0.0005273483218764497,
+      "expanded_mean_qlike": 0.12866264096168842,
+      "model_role": "lightgbm_robustness",
+      "observations": 3877,
+      "p_value_holm": null,
+      "p_value_raw": 0.5173482651734826,
+      "p_value_two_sided": 0.5173482651734826,
+      "positive_direction": "expanded_information_set_better",
+      "repetitions": 10000,
+      "result_sign": "NEGATIVE",
+      "seed": 650
+    }
+  ],
+  "evaluated_origin_count": 3877,
+  "forecast_row_count": 23262,
+  "forecast_sha256": "f86eb54615079324b152ffb4ddafe7c408ba4fc39a1c1121293ef4632c6b80d7",
+  "holdout_access_sha256": "fa704a81862c23315f22d20a49451f9df8a901b0447f64508aa7751bc755b724",
+  "holdout_panel_sha256": "fb9df093291086cc1916c13e0263c620e2b300553f3f984c2c82a897294efe40",
+  "holdout_reads": 1,
+  "manifest_sha256": "f0f57515f71a6ada8c7e301d2012a86f215d799c46dd72c5048084eaaedaf2f6",
+  "method_freeze_sha256": "4fc2b58fd6e62bc63c3bc8473980a8af4b3fa3dd8ccaa49053c68d5dc147d64d",
+  "metrics": [
+    {
+      "information_set": "B0",
+      "mae": 1.0736155959610488e-05,
+      "model_role": "gamma_glm_confirmatory",
+      "observations": 3877,
+      "qlike": 0.15889694859351008,
+      "rmse": 0.00016846194374289057
+    },
+    {
+      "information_set": "B1a",
+      "mae": 1.0018057982065888e-05,
+      "model_role": "gamma_glm_confirmatory",
+      "observations": 3877,
+      "qlike": 0.16594560416865206,
+      "rmse": 0.00011847805972994275
+    },
+    {
+      "information_set": "B2",
+      "mae": 8.715351587282205e-06,
+      "model_role": "gamma_glm_confirmatory",
+      "observations": 3877,
+      "qlike": 0.16533253643293738,
+      "rmse": 4.56433713952475e-05
+    },
+    {
+      "information_set": "B0",
+      "mae": 6.328171946877699e-06,
+      "model_role": "lightgbm_robustness",
+      "observations": 3877,
+      "qlike": 0.11669851239351775,
+      "rmse": 1.0714258487230318e-05
+    },
+    {
+      "information_set": "B1a",
+      "mae": 6.8691155277840985e-06,
+      "model_role": "lightgbm_robustness",
+      "observations": 3877,
+      "qlike": 0.128135292639812,
+      "rmse": 1.1019215229527525e-05
+    },
+    {
+      "information_set": "B2",
+      "mae": 6.922067612789731e-06,
+      "model_role": "lightgbm_robustness",
+      "observations": 3877,
+      "qlike": 0.12866264096168842,
+      "rmse": 1.1009852444150016e-05
+    }
+  ],
+  "outcome_reporting": "RETAIN_ALL_POSITIVE_NEGATIVE_AND_NULL_RESULTS",
+  "schema_version": "phase5-holdout-results-1.0",
+  "selected_assets": [
+    "AAPL",
+    "AMZN",
+    "META",
+    "MSFT",
+    "NVDA",
+    "TSLA"
+  ],
+  "session_count": 10,
+  "stability_results_sha256": "0f61ed4ea5690768cb1c7115dafbd6b708a8d3b49a0f4a84cca97f440f15c732",
+  "status": "PASS_HOLDOUT_READ_ONCE"
+}

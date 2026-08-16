@@ -1,0 +1,99 @@
+{
+  "status": "PRELIMINARY_ONLY_BACKFILL_BLOCKED",
+  "sessions_observed": [
+    {
+      "date": "2026-07-13",
+      "zip_bytes": 1446379218,
+      "csv_rows_total": 10867794,
+      "retained_rows": 4680362,
+      "parquet_bytes": 253212165,
+      "decompress_and_count_seconds": 17.082,
+      "download_seconds": null,
+      "filter_seconds": null,
+      "aggregation_seconds": null,
+      "peak_memory_bytes": null
+    },
+    {
+      "date": "2026-07-14",
+      "zip_bytes": 1308114924,
+      "csv_rows_total": 9783959,
+      "retained_rows": 3879799,
+      "parquet_bytes": 210528621,
+      "decompress_and_count_seconds": 16.262,
+      "download_seconds": null,
+      "filter_seconds": null,
+      "aggregation_seconds": null,
+      "peak_memory_bytes": null
+    },
+    {
+      "date": "2026-07-15",
+      "zip_bytes": 1553487942,
+      "csv_rows_total": 11720014,
+      "retained_rows": 5142043,
+      "parquet_bytes": 277871439,
+      "decompress_and_count_seconds": 20.757,
+      "download_seconds": null,
+      "filter_seconds": null,
+      "aggregation_seconds": null,
+      "peak_memory_bytes": null
+    },
+    {
+      "date": "2026-07-16",
+      "zip_bytes": 1538329354,
+      "csv_rows_total": 11559720,
+      "retained_rows": 4692011,
+      "parquet_bytes": 254131231,
+      "decompress_and_count_seconds": 21.155,
+      "download_seconds": null,
+      "filter_seconds": null,
+      "aggregation_seconds": null,
+      "peak_memory_bytes": null
+    },
+    {
+      "date": "2026-07-17",
+      "zip_bytes": 1740679927,
+      "csv_rows_total": 12993186,
+      "retained_rows": 5201517,
+      "parquet_bytes": 284325138,
+      "decompress_and_count_seconds": 20.399,
+      "download_seconds": null,
+      "filter_seconds": null,
+      "aggregation_seconds": null,
+      "peak_memory_bytes": null
+    }
+  ],
+  "daily_mean_zip_bytes": 1517398273,
+  "daily_p95_zip_bytes": 1740679927,
+  "daily_mean_parquet_bytes": 256013718.8,
+  "daily_p95_parquet_bytes": 284325138,
+  "estimates": {
+    "3_months": {
+      "sessions": 63,
+      "raw_mean_bytes": 95596091199,
+      "raw_p95_bytes": 109662835401,
+      "parquet_mean_bytes": 16128864284,
+      "parquet_p95_bytes": 17912483694,
+      "duration_basis": "not_authorized; no production extrapolation"
+    },
+    "6_months": {
+      "sessions": 126,
+      "raw_mean_bytes": 191192182398,
+      "raw_p95_bytes": 219325670802,
+      "parquet_mean_bytes": 32257728569,
+      "parquet_p95_bytes": 35824967388,
+      "duration_basis": "not_authorized; no production extrapolation"
+    },
+    "12_months": {
+      "sessions": 252,
+      "raw_mean_bytes": 382384364796,
+      "raw_p95_bytes": 438651341604,
+      "parquet_mean_bytes": 64515457138,
+      "parquet_p95_bytes": 71649934776,
+      "duration_basis": "not_authorized; no production extrapolation"
+    }
+  },
+  "memory_note": "V1 Python materialization reached ~40 GB; V2 peak was not instrumented; backfill remains blocked.",
+  "free_space_bytes": null,
+  "uncertainty": "five-session sample; P95 uses sample maximum, not a population quantile.",
+  "secret_values_emitted": false
+}

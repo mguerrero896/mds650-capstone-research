@@ -1,0 +1,583 @@
+{
+  "assets": [
+    "AAPL",
+    "AMZN",
+    "META",
+    "MSFT",
+    "NVDA",
+    "QQQ",
+    "SPY",
+    "TSLA"
+  ],
+  "availability_aware_rows": 13240,
+  "availability_aware_rows_by_role": [
+    {
+      "len": 10400,
+      "sample_role": "CALIBRATION"
+    },
+    {
+      "len": 2840,
+      "sample_role": "PILOT"
+    }
+  ],
+  "b1q_coverage_by_asset": [
+    {
+      "asset": "AAPL",
+      "coverage": 0.9861027190332327,
+      "origins": 1655,
+      "strict_coverage": 0.7854984894259819
+    },
+    {
+      "asset": "AMZN",
+      "coverage": 0.9993957703927493,
+      "origins": 1655,
+      "strict_coverage": 0.7848942598187311
+    },
+    {
+      "asset": "META",
+      "coverage": 1.0,
+      "origins": 1655,
+      "strict_coverage": 0.7854984894259819
+    },
+    {
+      "asset": "MSFT",
+      "coverage": 0.9987915407854985,
+      "origins": 1655,
+      "strict_coverage": 0.7842900302114804
+    },
+    {
+      "asset": "NVDA",
+      "coverage": 0.980060422960725,
+      "origins": 1655,
+      "strict_coverage": 0.7854984894259819
+    },
+    {
+      "asset": "QQQ",
+      "coverage": 0.8138972809667674,
+      "origins": 1655,
+      "strict_coverage": 0.629607250755287
+    },
+    {
+      "asset": "SPY",
+      "coverage": 0.5667673716012085,
+      "origins": 1655,
+      "strict_coverage": 0.45317220543806647
+    },
+    {
+      "asset": "TSLA",
+      "coverage": 0.997583081570997,
+      "origins": 1655,
+      "strict_coverage": 0.7854984894259819
+    }
+  ],
+  "b1q_coverage_by_session_segment": [
+    {
+      "b0_session_segment": "first",
+      "coverage": 0.8195544554455445,
+      "origins": 4040,
+      "strict_coverage": 0.6272277227722772
+    },
+    {
+      "b0_session_segment": "last",
+      "coverage": 0.99125,
+      "origins": 4000,
+      "strict_coverage": 0.7915
+    },
+    {
+      "b0_session_segment": "middle",
+      "coverage": 0.9376923076923077,
+      "origins": 5200,
+      "strict_coverage": 0.7478846153846154
+    }
+  ],
+  "b2_activity_presence_by_cutoff": [
+    {
+      "coverage": 1.0,
+      "uw_cutoff_seconds": 60
+    },
+    {
+      "coverage": 1.0,
+      "uw_cutoff_seconds": 120
+    },
+    {
+      "coverage": 0.0,
+      "uw_cutoff_seconds": 300
+    }
+  ],
+  "continuity": {
+    "calendar_sessions_between_first_last": [
+      "2026-06-11",
+      "2026-06-12",
+      "2026-06-15",
+      "2026-06-16",
+      "2026-06-17",
+      "2026-06-18",
+      "2026-06-22",
+      "2026-06-23",
+      "2026-06-24",
+      "2026-06-25",
+      "2026-06-26",
+      "2026-06-29",
+      "2026-06-30",
+      "2026-07-01",
+      "2026-07-02",
+      "2026-07-06",
+      "2026-07-07",
+      "2026-07-08",
+      "2026-07-09",
+      "2026-07-10",
+      "2026-07-13",
+      "2026-07-14",
+      "2026-07-15",
+      "2026-07-16",
+      "2026-07-17"
+    ],
+    "daily_continuity_proven": false,
+    "effective_independent_days": 25,
+    "longest_contiguous_observed_segment": 25,
+    "missing_sessions_not_sampled": [],
+    "sampled_dates": [
+      "2026-06-11",
+      "2026-06-12",
+      "2026-06-15",
+      "2026-06-16",
+      "2026-06-17",
+      "2026-06-18",
+      "2026-06-22",
+      "2026-06-23",
+      "2026-06-24",
+      "2026-06-25",
+      "2026-06-26",
+      "2026-06-29",
+      "2026-06-30",
+      "2026-07-01",
+      "2026-07-02",
+      "2026-07-06",
+      "2026-07-07",
+      "2026-07-08",
+      "2026-07-09",
+      "2026-07-10",
+      "2026-07-13",
+      "2026-07-14",
+      "2026-07-15",
+      "2026-07-16",
+      "2026-07-17"
+    ]
+  },
+  "dates": [
+    "2026-06-11",
+    "2026-06-12",
+    "2026-06-15",
+    "2026-06-16",
+    "2026-06-17",
+    "2026-06-18",
+    "2026-06-22",
+    "2026-06-23",
+    "2026-06-24",
+    "2026-06-25",
+    "2026-06-26",
+    "2026-06-29",
+    "2026-06-30",
+    "2026-07-01",
+    "2026-07-02",
+    "2026-07-06",
+    "2026-07-07",
+    "2026-07-08",
+    "2026-07-09",
+    "2026-07-10",
+    "2026-07-13",
+    "2026-07-14",
+    "2026-07-15",
+    "2026-07-16",
+    "2026-07-17"
+  ],
+  "exclusions_by_reason": [
+    {
+      "exclusion_reason_code": "B0_INVALID_OR_TARGET_INVALID",
+      "len": 960
+    },
+    {
+      "exclusion_reason_code": "B1Q_PRIMARY_QUOTE_OR_IV_QUALITY_FAILURE",
+      "len": 1088
+    },
+    {
+      "exclusion_reason_code": "B2_PRIMARY_PIT_RECHECK_FAILURE",
+      "len": 2563
+    }
+  ],
+  "input_hashes": {
+    "calibration_b1": {
+      "bytes": 459213,
+      "path": "artifacts/calibration_20d/b1_origin_matrix_20d.parquet",
+      "sha256": "5d8c87c8fc508b80d55957a3b5ba7c40b8f041e5191b4b6f28ba3b616ff91cd0"
+    },
+    "calibration_b2": {
+      "bytes": 3236082,
+      "path": "artifacts/calibration_20d/b2_calibration_panel.parquet",
+      "sha256": "69e492a1c7425409e9f1cd6e352989d5941818a805eb66ef7df7b8ae7b68859d"
+    },
+    "calibration_origins": {
+      "bytes": 71943,
+      "path": "artifacts/calibration_20d/b2_calibration_origins.parquet",
+      "sha256": "3a5a7ded048bf70f11d089a5be3187d93bf132632c37e67622f6be413e863f1a"
+    },
+    "calibration_underlying": {
+      "bytes": 898247,
+      "path": "artifacts/calibration_20d/underlying_1min_20d.parquet",
+      "sha256": "c5b2394d034e598ff22647c9ee1149cebd1a5ab5a622060996f21cf55457ba33"
+    },
+    "pilot_b1": {
+      "bytes": 307892,
+      "path": "artifacts/b1_full_origin/b1_origin_matrix.parquet",
+      "sha256": "e2e97e009bda379c88355674d0cd159c2dd095e70ac92dc8c8e9ae6d3847e5fd"
+    },
+    "pilot_b2": {
+      "bytes": 762717,
+      "path": "artifacts/pilot_v2/b2_features_v2.parquet",
+      "sha256": "aa5e86516144e74a0cdded9dee6fd4a2cfde631f187e54dc714a30f2b19f98bd"
+    },
+    "pilot_origins": {
+      "bytes": 126377,
+      "path": "artifacts/pilot/b0_features.parquet",
+      "sha256": "d516d07cde59348252057700f1d7bbcedbab04fae28f065a6654e80b3e30c7c9"
+    }
+  },
+  "leakage_checks": {
+    "b0_predictor_after_origin_rows": 0,
+    "b2_panel_count_mismatch_rows": 0,
+    "cross_session_contamination": 0,
+    "duplicate_origin_ids": 0,
+    "massive_quote_after_origin_rows": 0,
+    "target_predictor_overlap": [],
+    "uw_primary_recheck_failed_rows": 0,
+    "uw_primary_recheck_pass_rows": 13240
+  },
+  "missingness": {
+    "b0_complete": 0,
+    "b0_fmp_available_at_1m": 0,
+    "b0_fmp_available_at_2m": 0,
+    "b0_predictors_observed": 0,
+    "b0_return_5m_lag": 0,
+    "b0_rv_30m_lag": 0,
+    "b0_rv_5m_lag": 0,
+    "b0_session_minute": 0,
+    "b0_session_segment": 0,
+    "b0_spot": 0,
+    "b0_volume_5m_lag": 0,
+    "b1q_atm_iv": 1088,
+    "b1q_b1a_complete": 0,
+    "b1q_b1b_complete": 0,
+    "b1q_b1c_complete": 0,
+    "b1q_iv_attempts": 0,
+    "b1q_iv_inversion_success_rate": 0,
+    "b1q_iv_successes": 0,
+    "b1q_median_quote_age": 624,
+    "b1q_median_relative_spread": 624,
+    "b1q_missing_reason": 0,
+    "b1q_pit_evidence_valid": 0,
+    "b1q_primary_complete": 0,
+    "b1q_quote_age_band": 0,
+    "b1q_quote_not_after_origin": 0,
+    "b1q_route_complete": 0,
+    "b1q_skew": 5539,
+    "b1q_valid_contract_count": 0,
+    "b1q_valid_expiry_bucket_count": 0,
+    "b1q_valid_quote_count": 0,
+    "b2_anchor_timestamp_raw_utc": 2840,
+    "b2_ask_side_premium_share": 0,
+    "b2_availability_semantics": 0,
+    "b2_availability_spec": 0,
+    "b2_bid_side_premium_share": 0,
+    "b2_call_premium_5m": 0,
+    "b2_call_put_premium_imbalance": 0,
+    "b2_expiry_concentration": 0,
+    "b2_fmp_bar_availability": 2840,
+    "b2_forecast_origin_ny": 2840,
+    "b2_implied_volatility_change_within_bin": 10400,
+    "b2_implied_volatility_median": 0,
+    "b2_max_contract_size_5m": 0,
+    "b2_max_trade_premium_5m": 0,
+    "b2_median_absolute_moneyness": 0,
+    "b2_median_days_to_expiry": 0,
+    "b2_median_implied_volatility": 2840,
+    "b2_midpoint_premium_share": 0,
+    "b2_missing_iv_share": 0,
+    "b2_multileg_trade_share": 0,
+    "b2_operational_cutoff_seconds": 0,
+    "b2_operational_rule": 0,
+    "b2_option_activity_present": 0,
+    "b2_option_trade_count_5m": 0,
+    "b2_pit_recheck_failed": 0,
+    "b2_predictors_observed": 0,
+    "b2_primary_complete": 0,
+    "b2_put_premium_5m": 0,
+    "b2_repeated_contract_premium": 0,
+    "b2_repeated_contract_trade_count": 0,
+    "b2_session_date": 2840,
+    "b2_session_minute": 2840,
+    "b2_session_segment": 2840,
+    "b2_strike_concentration": 0,
+    "b2_sweep_or_equivalent_share": 0,
+    "b2_time_band_30m": 2840,
+    "b2_total_contract_size_5m": 0,
+    "b2_total_premium_5m": 0,
+    "b2_unique_contract_count_5m": 0,
+    "b2_unusual_event_status": 0,
+    "b2_valid_trade_share": 0,
+    "b2_within_bin_iv_change": 2840
+  },
+  "no_artificial_balancing": true,
+  "no_imputation": true,
+  "no_interpolation": true,
+  "nominal_origins": 14200,
+  "nominal_rows_by_role": [
+    {
+      "len": 11360,
+      "sample_role": "CALIBRATION"
+    },
+    {
+      "len": 2840,
+      "sample_role": "PILOT"
+    }
+  ],
+  "pilot_transformations_fitted_on_calibration_only": true,
+  "rows_by_asset": [
+    {
+      "asset": "AAPL",
+      "available_rows": 1655,
+      "strict_rows": 1300
+    },
+    {
+      "asset": "AMZN",
+      "available_rows": 1655,
+      "strict_rows": 1299
+    },
+    {
+      "asset": "META",
+      "available_rows": 1655,
+      "strict_rows": 1300
+    },
+    {
+      "asset": "MSFT",
+      "available_rows": 1655,
+      "strict_rows": 1298
+    },
+    {
+      "asset": "NVDA",
+      "available_rows": 1655,
+      "strict_rows": 1300
+    },
+    {
+      "asset": "QQQ",
+      "available_rows": 1655,
+      "strict_rows": 1042
+    },
+    {
+      "asset": "SPY",
+      "available_rows": 1655,
+      "strict_rows": 750
+    },
+    {
+      "asset": "TSLA",
+      "available_rows": 1655,
+      "strict_rows": 1300
+    }
+  ],
+  "rows_by_date": [
+    {
+      "assets": 8,
+      "available_rows": 520,
+      "session_date": "2026-06-11",
+      "strict_rows": 446
+    },
+    {
+      "assets": 8,
+      "available_rows": 520,
+      "session_date": "2026-06-12",
+      "strict_rows": 471
+    },
+    {
+      "assets": 8,
+      "available_rows": 520,
+      "session_date": "2026-06-15",
+      "strict_rows": 489
+    },
+    {
+      "assets": 8,
+      "available_rows": 520,
+      "session_date": "2026-06-16",
+      "strict_rows": 451
+    },
+    {
+      "assets": 8,
+      "available_rows": 520,
+      "session_date": "2026-06-17",
+      "strict_rows": 404
+    },
+    {
+      "assets": 8,
+      "available_rows": 520,
+      "session_date": "2026-06-18",
+      "strict_rows": 487
+    },
+    {
+      "assets": 8,
+      "available_rows": 520,
+      "session_date": "2026-06-22",
+      "strict_rows": 490
+    },
+    {
+      "assets": 8,
+      "available_rows": 520,
+      "session_date": "2026-06-23",
+      "strict_rows": 488
+    },
+    {
+      "assets": 8,
+      "available_rows": 520,
+      "session_date": "2026-06-24",
+      "strict_rows": 441
+    },
+    {
+      "assets": 8,
+      "available_rows": 520,
+      "session_date": "2026-06-25",
+      "strict_rows": 458
+    },
+    {
+      "assets": 8,
+      "available_rows": 520,
+      "session_date": "2026-06-26",
+      "strict_rows": 482
+    },
+    {
+      "assets": 8,
+      "available_rows": 520,
+      "session_date": "2026-06-29",
+      "strict_rows": 500
+    },
+    {
+      "assets": 8,
+      "available_rows": 520,
+      "session_date": "2026-06-30",
+      "strict_rows": 505
+    },
+    {
+      "assets": 8,
+      "available_rows": 520,
+      "session_date": "2026-07-01",
+      "strict_rows": 489
+    },
+    {
+      "assets": 8,
+      "available_rows": 520,
+      "session_date": "2026-07-02",
+      "strict_rows": 479
+    },
+    {
+      "assets": 8,
+      "available_rows": 520,
+      "session_date": "2026-07-06",
+      "strict_rows": 503
+    },
+    {
+      "assets": 8,
+      "available_rows": 520,
+      "session_date": "2026-07-07",
+      "strict_rows": 479
+    },
+    {
+      "assets": 8,
+      "available_rows": 520,
+      "session_date": "2026-07-08",
+      "strict_rows": 487
+    },
+    {
+      "assets": 8,
+      "available_rows": 520,
+      "session_date": "2026-07-09",
+      "strict_rows": 520
+    },
+    {
+      "assets": 8,
+      "available_rows": 520,
+      "session_date": "2026-07-10",
+      "strict_rows": 520
+    },
+    {
+      "assets": 8,
+      "available_rows": 568,
+      "session_date": "2026-07-13",
+      "strict_rows": 0
+    },
+    {
+      "assets": 8,
+      "available_rows": 568,
+      "session_date": "2026-07-14",
+      "strict_rows": 0
+    },
+    {
+      "assets": 8,
+      "available_rows": 568,
+      "session_date": "2026-07-15",
+      "strict_rows": 0
+    },
+    {
+      "assets": 8,
+      "available_rows": 568,
+      "session_date": "2026-07-16",
+      "strict_rows": 0
+    },
+    {
+      "assets": 8,
+      "available_rows": 568,
+      "session_date": "2026-07-17",
+      "strict_rows": 0
+    }
+  ],
+  "rows_by_time_of_day": [
+    {
+      "available_rows": 4040,
+      "b0_session_segment": "first",
+      "strict_rows": 2534
+    },
+    {
+      "available_rows": 4000,
+      "b0_session_segment": "last",
+      "strict_rows": 3166
+    },
+    {
+      "available_rows": 5200,
+      "b0_session_segment": "middle",
+      "strict_rows": 3889
+    }
+  ],
+  "sample_roles": [
+    {
+      "len": 10400,
+      "sample_role": "CALIBRATION"
+    },
+    {
+      "len": 2840,
+      "sample_role": "PILOT"
+    }
+  ],
+  "schema_version": "phase4a-common-matrix-profile-v1",
+  "sensitivity_rows": 85200,
+  "status": "PASS_RECONCILED_LOCAL_INPUTS",
+  "strict_retention_percentage": 72.42447129909365,
+  "strict_rows": 9589,
+  "strict_rows_by_role": [
+    {
+      "len": 9589,
+      "sample_role": "CALIBRATION"
+    }
+  ],
+  "target": {
+    "formula_version": "rv30-v1",
+    "invalid_rows": 0,
+    "name": "RV30",
+    "prices_per_target": 31,
+    "returns_per_target": 30
+  }
+}

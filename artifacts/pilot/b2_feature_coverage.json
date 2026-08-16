@@ -1,0 +1,17 @@
+{
+  "rows": 8520,
+  "primary_origins": 2840,
+  "primary_event_origins": 2840,
+  "primary_no_event_origins": 0,
+  "natural_event_prevalence": 1.0,
+  "event_no_event_requirement_met": false,
+  "event_no_event_note": "All 2840 primary origins had at least one eligible Full Tape event; no no-event origins were fabricated.",
+  "pilot_acceptance": "FAIL_NO_NATURAL_NO_EVENT_ORIGINS",
+  "availability_specs": {
+    "primary_60s": 60,
+    "sensitivity_15s": 15,
+    "sensitivity_0s": 0
+  },
+  "volume_final_daily_excluded": true,
+  "primary_cutoff": "created_at <= origin - 60 seconds"
+}

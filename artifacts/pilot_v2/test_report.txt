@@ -1,0 +1,35 @@
+MDS650 Pilot V2 validation report
+================================
+
+Scope: bounded Pilot V2 correction only. No full backfill, models, QLIKE,
+asset freeze, final evaluation, or external email.
+
+PASS  uv run pytest -q tests/contract/test_pilot_v2_artifacts.py
+      9 passed
+PASS  uv run pytest -q
+      98 passed
+PASS  uv run coverage run -m pytest -q
+      98 passed; coverage report total 82%
+PASS  uv run mypy src
+      Success: no issues found in 20 source files
+PASS  uv run ruff check [Pilot V2 scripts and contract tests]
+      All checks passed
+PASS  JSON Schema validation
+      provider-audit-manifest schema is valid; Pilot V2 manifest parses as JSON
+PASS  deterministic evidence checks
+      source hashes are 64-character SHA-256 values; no secrets or personal paths
+
+NOTE  uv run ruff check .
+      Existing notebook cells exceed the repository's 100-character line limit.
+      Pilot V2 scripts and tests pass ruff; the notebook findings are not altered
+      in this correction because productive notebook changes are out of scope.
+
+GATES
+  all 2,840 valid origins retained: PASS
+  option trade presence is not unusual_event: PASS
+  natural prevalence/no artificial balancing: PASS
+  Massive controlled nanosecond quote probe: PASS (3/3 HTTP 200)
+  B1 per-origin integration: exploratory only; acceptance BLOCKED
+  FMP exact-session and symbol earnings probe: PASS for sampled calls
+  common-history v2: PASS for six sampled dates; not full-history proof
+  backfill/modeling/QLIKE/final evaluation: BLOCKED

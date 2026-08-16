@@ -1,0 +1,29 @@
+{
+  "status": "PASS_ACTIVE_KEYS_WITH_LEGACY_MISSING_KEYS",
+  "cache_files": 519,
+  "active_cache_keys": 320,
+  "unique_active_cache_keys": 320,
+  "legacy_files_without_cache_key": 199,
+  "duplicate_active_cache_keys": 0,
+  "required_contract_key_fields": [
+    "provider",
+    "asset",
+    "session_date",
+    "expiry",
+    "strike",
+    "option_type",
+    "contract"
+  ],
+  "required_quote_key_fields": [
+    "contract",
+    "session_date"
+  ],
+  "origin_key_fields": [
+    "asset",
+    "session_date",
+    "forecast_origin",
+    "contract",
+    "route"
+  ],
+  "secret_values_emitted": false
+}

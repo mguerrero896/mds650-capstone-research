@@ -1,0 +1,29 @@
+{
+  "status": "B1Q_REPAIRED_NESTED_COVERAGE",
+  "origins": 2840,
+  "global": {
+    "B1Q": {
+      "atm_iv_available": 0.9024647887323943,
+      "skew_available": 0.5235915492957747,
+      "term_structure_available": 0.8211267605633803,
+      "b1a_complete": 0.9024647887323943,
+      "b1b_complete": 0.5235915492957747,
+      "b1c_complete": 0.49190140845070424
+    },
+    "B1T": {
+      "atm_iv_available": 1.0,
+      "skew_available": 1.0,
+      "term_structure_available": 1.0,
+      "b1a_complete": 1.0,
+      "b1b_complete": 1.0,
+      "b1c_complete": 1.0
+    }
+  },
+  "invariants": {
+    "b1c_implies_b1b": true,
+    "b1b_implies_b1a": true,
+    "coverage_b1c_le_b1b": true,
+    "coverage_b1b_le_b1a": true
+  },
+  "secret_values_emitted": false
+}
