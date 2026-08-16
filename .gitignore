@@ -47,3 +47,7 @@ graphify-out/cost.json
 Thumbs.db
 .DS_Store
 .gstack/
+
+# graphify knowledge graph output is hook-regenerated after every commit;
+# tracking it kept the tree permanently dirty. It stays on disk, out of git.
+graphify-out/
