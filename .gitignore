@@ -22,6 +22,15 @@ build/
 # Local/raw evidence and data
 data/raw/
 artifacts/raw/
+artifacts/calibration_20d/raw/
+artifacts/calibration_20d/option_events/
+artifacts/calibration_20d/massive_b1q_cache_v2/
+artifacts/calibration_20d/.dedup/
+artifacts/calibration_20d/test_writer.parquet
+artifacts/pilot/option_events/
+artifacts/pilot/invalidated_raw_timestamp_assumption/
+artifacts/b1_full_origin/massive_contract_day_cache/
+artifacts/api_audit/.common_history_continuity_v5.checkpoint.json
 *.duckdb
 *.duckdb.wal
 

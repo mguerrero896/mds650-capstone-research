@@ -53,7 +53,7 @@ uv run --python .venv-matrix\Scripts\python.exe ruff check src tests
 uv run --python .venv-matrix\Scripts\python.exe mypy src
 ```
 
-The temporary target `C:\Users\mguer\AppData\Local\MDS650\verify-venv-20260721-py312` installed
+The temporary target `<LOCAL_VERIFY_ENV>` installed
 the exported locked project with `uv sync --frozen --link-mode copy --python 3.12.12` and ran
 Python 3.12.12, 68 tests, Ruff and Mypy successfully. No provider request was made.
 

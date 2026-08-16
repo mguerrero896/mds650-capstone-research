@@ -3,7 +3,7 @@
 - Run: 512148a9-1459-476a-9a7f-9d01b09578bf
 - Window: 2026-07-16 through 2026-07-18
 - Secret values emitted: **false**
-- Raw payloads: restricted to C:\Users\mguer\AppData\Local\Temp\mds650-provider-audit-20260720
+- Raw payloads: restricted local temporary directory (path intentionally omitted)
 
 ## FMP
 

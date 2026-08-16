@@ -75,7 +75,7 @@ def main() -> int:
     """Materialize the requested raw run and print a sanitized summary."""
     parser = argparse.ArgumentParser()
     parser.add_argument("run_id")
-    parser.add_argument("--raw-root", type=Path, default=Path(r"C:\Users\Public\MDS650\raw"))
+    parser.add_argument("--raw-root", type=Path, default=Path("data/raw"))
     args = parser.parse_args()
     manifest = materialize(args.run_id, args.raw_root)
     print(
