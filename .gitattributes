@@ -4,6 +4,9 @@
 *.md text eol=lf
 *.py text eol=lf
 
+/artifacts/preflight/date_level_pit_preflight_plan_v1.json text eol=crlf
+/artifacts/preflight/date_level_pit_preflight_request_budget_v1.json text eol=crlf
+
 /artifacts/provider_timing_v21/** text eol=lf
 /artifacts/provider_timing_v22/** text eol=lf
 /artifacts/provider_timing_v21/massive_reselection_sensitivity_v21_recomputed_20260812.json text eol=crlf
