@@ -7,6 +7,46 @@ from collections.abc import Sequence
 from mds650.contracts import CorporateEvent, ForecastOrigin
 from mds650.errors import PITError
 
+ETF_ASSETS = frozenset({"SPY", "QQQ"})
+
+
+def earnings_instrument_contract(asset: str) -> dict[str, object]:
+    """Return the frozen ex-ante earnings contract for an asset.
+
+    Parameters
+    ----------
+    asset:
+        Candidate underlying symbol.
+
+    Returns
+    -------
+    dict[str, object]
+        Instrument type and applicability fields. ETF earnings are never
+        synthesized; dividends/distributions are separate IV inputs.
+
+    Raises
+    ------
+    ValueError
+        If ``asset`` is outside the ratified candidate universe.
+    """
+    if asset not in {"SPY", "QQQ", "AAPL", "MSFT", "NVDA", "TSLA", "AMZN", "META"}:
+        raise ValueError("ASSET_NOT_IN_CANDIDATE_UNIVERSE")
+    if asset in ETF_ASSETS:
+        return {
+            "instrument_type": "ETF",
+            "earnings_applicable": False,
+            "earnings_bmo_today": 0,
+            "earnings_amc_today": 0,
+            "days_to_next_earnings": None,
+        }
+    return {
+        "instrument_type": "equity",
+        "earnings_applicable": True,
+        "earnings_bmo_today": 0,
+        "earnings_amc_today": 0,
+        "days_to_next_earnings": None,
+    }
+
 
 def eligible_earnings_events(
     origin: ForecastOrigin,
@@ -29,6 +69,8 @@ def eligible_earnings_events(
     tuple[CorporateEvent, ...]
         Chronologically ordered events eligible as controls.
     """
+    if origin.asset in ETF_ASSETS:
+        return ()
     eligible = [
         event
         for event in events
