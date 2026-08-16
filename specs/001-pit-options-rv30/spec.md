@@ -4,10 +4,18 @@
 
 **Created**: 2026-07-20
 
-**Status**: B1v3 written specification owner-approved on 2026-08-14 for target-blind
-implementation. Provider preflight, pristine-sample planning, source-bound panel sealing and
-preregistration remain required before any B1v3 outcome evaluation. Existing sealed results and
-the prospective holdout remain closed.
+**Status**: Consolidated on `main` (2026-08-17, decision 50). The B1v3 target-blind program
+completed its provider preflight, source-bound sealing, preregistration and one-read
+confirmation on 2026-08-14 (decision 48): binding result `POSITIVE_BUT_NOT_GLOBALLY_CONFIRMED`
+— the Gamma-specific B2 increment over B1v3a is positive and survives its five registered
+timing sensitivities, while the fixed LightGBM challenger reverses it and B1v3a does not beat
+B0. The prospective Phase 5 holdout remains the only confirmatory test (null, both contrasts).
+Cross-campaign numbers: `docs/results_reconciliation_v2.md`. Sealed cohorts (Validation A/B,
+Phase 8) remain closed pending D006; the 2024 blocks are `EXPLORATORY_RETROSPECTIVE`
+(decision 51); new retrospective campaigns are under moratorium (decision 52). The
+post-Phase-6 campaigns (independent replication, 2024 blocks, mechanism search, B1v3) were
+executed outside this spec's FR/task governance and are retroactively covered by decisions
+48 and 50–53 — they must be labeled per decision 53 in every deliverable.
 
 **Input**: User description: "Evaluate whether unusual options activity provides incremental out-of-sample information for forecasting the next 30 minutes of realized variance, using authenticated provider audits, a point-in-time pilot, and a Spec-Driven Development workflow."
 

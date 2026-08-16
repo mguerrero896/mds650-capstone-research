@@ -302,3 +302,43 @@ Spec Kit consistency and preregistration gates pass.
    derived Parquet outputs after testing the exact consumed-ledger transition, target identity,
    schema, hashes and secret hygiene. The incident and immutable hashes are recorded in
    `docs/recovery/b1v3_one_read_serialization_incident.md`.
+50. **Repository consolidation and single history (2026-08-17)** — The five local branches
+   were verified to form one linear chain; `main` was created at `37146ce` (tip of
+   `codex/b1-diagnosis-replication-20260815`) and is the sole canonical branch. The
+   pre-consolidation dirty state of the primary worktree (206 porcelain entries, 694 files)
+   is preserved verbatim on `archive/meeting-dirty-20260816`; nothing was discarded without a
+   committed copy. Full-history bundles and working-tree snapshots exist under
+   `D:\MDS650\backups\repo_20260817\`. Commercial-derived heavy evidence is mounted at
+   `D:\MDS650\evidence_root` per the `MDS650_EVIDENCE_ROOT` convention in `tests/evidence.py`;
+   the frozen Phase 4B/5 input hashes verify against that root. The `MDS650_DATA_ROOT`
+   environment variable was reconciled to `D:\MDS650` (closing the L008 mismatch): canonical
+   consumers append `data/` themselves. An off-machine remote (private GitHub) remains an
+   owner action and is the highest-priority open custody item.
+51. **Retroactive classification of the 2024 confirmation blocks (2026-08-17)** — The two
+   historical evaluation blocks (2024-08-02..2024-09-13 and 2024-10-01..2024-11-11) recorded in
+   `artifacts/b2_confirmation/` lie outside both the frozen 2025-07-21..2026-07-21 study window
+   and the Phase 6 session allowlist ending 2026-03-23, and no numbered decision authorized
+   their dates before evaluation. They are therefore classified `EXPLORATORY_RETROSPECTIVE`
+   and may not be cited as confirmatory evidence in any deliverable. Presenting them as part
+   of a window amendment requires an explicit owner decision (D005,
+   `OWNER_APPROVAL_PENDING`). Their per-protocol freezes remain valid as internal audit
+   records; the classification governs only the evidentiary weight of the results.
+52. **Sealed-cohort disposition and campaign moratorium (2026-08-17)** — Validation A
+   (14/30 acquired), Validation B (0/30) and Phase 8 (10/30) remain sealed with zero
+   scientific reads. Their disposition — complete under the existing frozen gates, or close
+   formally without reading — is an owner decision (D006) recorded in
+   `docs/sealed_cohorts_disposition_v1.md`. Until D006 is decided, NO new retrospective
+   evaluation campaign, protocol freeze, or historical block selection may be created. This
+   moratorium exists because five post-null evaluation campaigns were designed between
+   2026-08-01 and 2026-08-14, and campaign-level multiplicity is not controlled by
+   per-campaign Holm families (R-019).
+53. **Binding reporting hierarchy for all deliverables (2026-08-17)** — Every report,
+   proposal, slide or summary must present results in this order and with these labels:
+   (1) the prospective preregistered Phase 5 holdout is the only confirmatory test and it
+   returned null for both nested contrasts; (2) all later positive findings are retrospective
+   and model-dependent (`POSITIVE_BUT_NOT_GLOBALLY_CONFIRMED` / `MODEL_FAMILY_DEPENDENT`),
+   with the fixed LightGBM challenger adverse or null in the same samples; (3) wherever an
+   incremental `B1->B2` contrast is shown, the total `B0->B2` contrast for the same
+   model/sample must appear beside it; (4) the bare word "confirmed" may not be used for any
+   global effect while `confirmed_contrasts` is empty in the underlying artifact. The
+   canonical cross-campaign numbers live in `docs/results_reconciliation_v2.md`.
