@@ -1,0 +1,11 @@
+{
+  "byte_level_canonical_hash_check_only": true,
+  "canonical_repository_hash_mismatches": [],
+  "hygiene": {
+    "personal_path_files": [],
+    "secret_assignment_files": []
+  },
+  "protected_tracked_changes_since_base": [],
+  "schema_version": "provider-timing-v2.1",
+  "status": "PASS"
+}

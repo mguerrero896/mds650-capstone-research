@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "C:\Users\mguer\Dev\MDS650-Capstone-defense\scripts\run_canonical_validation.py", line 646, in <module>
+    main()
+  File "C:\Users\mguer\Dev\MDS650-Capstone-defense\scripts\run_canonical_validation.py", line 636, in main
+    result = run_canonical_block(
+             ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\mguer\Dev\MDS650-Capstone-defense\scripts\run_canonical_validation.py", line 551, in run_canonical_block
+    predictions, causal_audit, variant_ledger, origin_audit = _build_predictions(inputs)
+                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\mguer\Dev\MDS650-Capstone-defense\scripts\run_canonical_validation.py", line 416, in _build_predictions
+    extensions, extension_ledger = _extension_fold_predictions(
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\mguer\Dev\MDS650-Capstone-defense\scripts\run_canonical_validation.py", line 359, in _extension_fold_predictions
+    part = forecast_canonical_fold(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\mguer\Dev\MDS650-Capstone-defense\src\mds650\canonical_validation.py", line 395, in forecast_canonical_fold
+    raise ValueError("CANONICAL_MODEL_COLUMNS_INVALID")
+ValueError: CANONICAL_MODEL_COLUMNS_INVALID

@@ -1,0 +1,141 @@
+
+=================================== ERRORS ====================================
+_____ ERROR collecting tests/contract/test_phase5_development_sources.py ______
+tests\contract\test_phase5_development_sources.py:18: in <module>
+    import run_b1_calibration_20d as b1_builder  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\run_b1_calibration_20d.py:24: in <module>
+    SESSIONS = tuple(sorted({str(row) for row in pl.read_parquet(OUT / "b2_calibration_origins.parquet").get_column("session_date").unique().to_list()}))
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\_utils\deprecation.py:128: in wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\_utils\deprecation.py:128: in wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\io\parquet\functions.py:293: in read_parquet
+    return lf.collect()
+           ^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\_utils\deprecation.py:97: in wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\lazyframe\opt_flags.py:344: in wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\lazyframe\frame.py:2630: in collect
+    return wrap_df(ldf.collect(engine, callback))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: El sistema no puede encontrar la ruta especificada. (os error 3): ...uer/Dev/MDS650-Capstone-defense/artifacts/calibration_20d/b2_calibration_origins.parquet (set POLARS_VERBOSE=1 to see full path)
+_____ ERROR collecting tests/contract/test_phase5_holdout_acquisition.py ______
+tests\contract\test_phase5_holdout_acquisition.py:22: in <module>
+    import acquire_phase5_holdout as acquisition  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\acquire_phase5_holdout.py:21: in <module>
+    import run_b1_calibration_20d as b1_builder
+scripts\run_b1_calibration_20d.py:24: in <module>
+    SESSIONS = tuple(sorted({str(row) for row in pl.read_parquet(OUT / "b2_calibration_origins.parquet").get_column("session_date").unique().to_list()}))
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\_utils\deprecation.py:128: in wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\_utils\deprecation.py:128: in wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\io\parquet\functions.py:293: in read_parquet
+    return lf.collect()
+           ^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\_utils\deprecation.py:97: in wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\lazyframe\opt_flags.py:344: in wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\lazyframe\frame.py:2630: in collect
+    return wrap_df(ldf.collect(engine, callback))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: El sistema no puede encontrar la ruta especificada. (os error 3): ...uer/Dev/MDS650-Capstone-defense/artifacts/calibration_20d/b2_calibration_origins.parquet (set POLARS_VERBOSE=1 to see full path)
+___________ ERROR collecting tests/contract/test_phase5_storage.py ____________
+tests\contract\test_phase5_storage.py:21: in <module>
+    import run_b1_calibration_20d as b1_builder  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\run_b1_calibration_20d.py:24: in <module>
+    SESSIONS = tuple(sorted({str(row) for row in pl.read_parquet(OUT / "b2_calibration_origins.parquet").get_column("session_date").unique().to_list()}))
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\_utils\deprecation.py:128: in wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\_utils\deprecation.py:128: in wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\io\parquet\functions.py:293: in read_parquet
+    return lf.collect()
+           ^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\_utils\deprecation.py:97: in wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\lazyframe\opt_flags.py:344: in wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\lazyframe\frame.py:2630: in collect
+    return wrap_df(ldf.collect(engine, callback))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: El sistema no puede encontrar la ruta especificada. (os error 3): ...uer/Dev/MDS650-Capstone-defense/artifacts/calibration_20d/b2_calibration_origins.parquet (set POLARS_VERBOSE=1 to see full path)
+___________ ERROR collecting tests/unit/test_phase6_acquisition.py ____________
+ImportError while importing test module 'C:\Users\mguer\Dev\MDS650-Capstone-defense\tests\unit\test_phase6_acquisition.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+..\..\AppData\Roaming\uv\python\cpython-3.12.12-windows-x86_64-none\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\unit\test_phase6_acquisition.py:18: in <module>
+    acquisition = importlib.import_module("acquire_phase6")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.12.12-windows-x86_64-none\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'acquire_phase6'
+________________ ERROR collecting tests/unit/test_phase6_b1.py ________________
+tests\unit\test_phase6_b1.py:14: in <module>
+    import run_b1_calibration_20d as b1_builder  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\run_b1_calibration_20d.py:24: in <module>
+    SESSIONS = tuple(sorted({str(row) for row in pl.read_parquet(OUT / "b2_calibration_origins.parquet").get_column("session_date").unique().to_list()}))
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\_utils\deprecation.py:128: in wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\_utils\deprecation.py:128: in wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\io\parquet\functions.py:293: in read_parquet
+    return lf.collect()
+           ^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\_utils\deprecation.py:97: in wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\lazyframe\opt_flags.py:344: in wrapper
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\polars\lazyframe\frame.py:2630: in collect
+    return wrap_df(ldf.collect(engine, callback))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: El sistema no puede encontrar la ruta especificada. (os error 3): ...uer/Dev/MDS650-Capstone-defense/artifacts/calibration_20d/b2_calibration_origins.parquet (set POLARS_VERBOSE=1 to see full path)
+__________ ERROR collecting tests/unit/test_phase6_method_freeze.py ___________
+ImportError while importing test module 'C:\Users\mguer\Dev\MDS650-Capstone-defense\tests\unit\test_phase6_method_freeze.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+..\..\AppData\Roaming\uv\python\cpython-3.12.12-windows-x86_64-none\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\unit\test_phase6_method_freeze.py:21: in <module>
+    import freeze_phase6_method as freezer  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'freeze_phase6_method'
+=========================== short test summary info ===========================
+ERROR tests/contract/test_phase5_development_sources.py - FileNotFoundError: ...
+ERROR tests/contract/test_phase5_holdout_acquisition.py - FileNotFoundError: ...
+ERROR tests/contract/test_phase5_storage.py - FileNotFoundError: El sistema n...
+ERROR tests/unit/test_phase6_acquisition.py
+ERROR tests/unit/test_phase6_b1.py - FileNotFoundError: El sistema no puede e...
+ERROR tests/unit/test_phase6_method_freeze.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 6 errors during collection !!!!!!!!!!!!!!!!!!!
