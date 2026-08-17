@@ -51,3 +51,6 @@ Thumbs.db
 # graphify knowledge graph output is hook-regenerated after every commit;
 # tracking it kept the tree permanently dirty. It stays on disk, out of git.
 graphify-out/
+
+# Claude Code session-local state (worktree registry etc.)
+.claude/
