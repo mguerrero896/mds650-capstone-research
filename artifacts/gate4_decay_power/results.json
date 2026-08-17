@@ -1,0 +1,187 @@
+{
+ "inputs": {
+  "C1_development": {
+   "path": "C:\\Users\\mguer\\Dev\\MDS650-Capstone\\artifacts\\phase5\\development_forecasts.parquet",
+   "sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a"
+  },
+  "C2_holdout": {
+   "path": "D:\\MDS650\\evidence_root\\artifacts\\phase5\\holdout_forecasts.parquet",
+   "sha256": "f86eb54615079324b152ffb4ddafe7c408ba4fc39a1c1121293ef4632c6b80d7"
+  },
+  "C4c_replication": {
+   "path": "D:\\MDS650\\independent_replication_30\\derived\\pit_v2_evaluation\\predictions_pit_v2.parquet",
+   "sha256": "825359140c3f29350e1927f76b3c00e91e892d638697460a35ecf72e37c50535"
+  },
+  "C5_blocks_2024": {
+   "path": "C:\\Users\\mguer\\Dev\\MDS650-Capstone\\artifacts\\b2_confirmation\\frozen_evaluation_forecasts.parquet",
+   "sha256": "db20b76248afce02e04009c510b408214d267a30e7cff3f8dc184d370574ce8b"
+  },
+  "C6_b1v3": {
+   "path": "D:\\MDS650\\b1v3_confirmation\\evaluation\\primary_forecasts.parquet",
+   "sha256": "a3fd362db6b34cf53225b76f37132174298a421afa754dff4563422b552a496c"
+  }
+ },
+ "models": {
+  "gamma_glm_confirmatory": {
+   "achieved_mde_at_30_sessions": 0.017857512418933227,
+   "meta_regression": {
+    "campaigns": [
+     {
+      "campaign": "C5_blocks_2024",
+      "days": 60,
+      "estimate": 0.056625522267195555,
+      "midpoint": "2024-10-01",
+      "se": 0.009452771375748811
+     },
+     {
+      "campaign": "C6_b1v3",
+      "days": 30,
+      "estimate": 0.053158423288211125,
+      "midpoint": "2024-11-18",
+      "se": 0.007518221425994221
+     },
+     {
+      "campaign": "C4c_replication",
+      "days": 30,
+      "estimate": 0.03473965585718784,
+      "midpoint": "2025-06-12",
+      "se": 0.004503979633824324
+     },
+     {
+      "campaign": "C1_development",
+      "days": 40,
+      "estimate": 0.01311278506604321,
+      "midpoint": "2026-06-18",
+      "se": 0.005338660385087656
+     },
+     {
+      "campaign": "C2_holdout",
+      "days": 10,
+      "estimate": 0.0006234901619918166,
+      "midpoint": "2026-07-27",
+      "se": 0.008274204768735268
+     }
+    ],
+    "cochran_q": 41.08997055761496,
+    "fixed_effect": 0.02937229408381964,
+    "i_squared": 0.9026526438029121,
+    "q_p_value": 2.5749717236173695e-08,
+    "random_effect": 0.03128539342158275,
+    "random_effect_ci95": [
+     0.012791777323609733,
+     0.049779009519555766
+    ],
+    "random_effect_se": 0.009435518417333172,
+    "tau2": 0.00039396859921872436
+   },
+   "pooled_days": 170,
+   "power_at_equivalence_bound": {
+    "daily_sd": 0.03491224293140161,
+    "sessions_for_80_power": 378.0
+   },
+   "power_at_predicted_effect": {
+    "daily_sd": 0.03491224293140161,
+    "sessions_for_80_power": 343.0
+   },
+   "recent_daily_sd": 0.03491224293140161,
+   "trend": {
+    "days": 170,
+    "intercept": 0.0772545680389376,
+    "phase8_midpoint_prediction": 0.005282923160675135,
+    "phase8_midpoint_prediction_ci95": [
+     -0.009106676837991684,
+     0.019672523159341954
+    ],
+    "phase8_midpoint_prediction_se": 0.00734163265238103,
+    "slope_per_year": -0.027671203465037226,
+    "slope_se": 0.0051785690402868815,
+    "slope_wild_p": 0.0001
+   }
+  },
+  "lightgbm_robustness": {
+   "achieved_mde_at_30_sessions": 0.004836371520570267,
+   "meta_regression": {
+    "campaigns": [
+     {
+      "campaign": "C5_blocks_2024",
+      "days": 60,
+      "estimate": -0.016561230030681964,
+      "midpoint": "2024-10-01",
+      "se": 0.004122325459133199
+     },
+     {
+      "campaign": "C6_b1v3",
+      "days": 30,
+      "estimate": -0.007453941384797672,
+      "midpoint": "2024-11-18",
+      "se": 0.0022279033381200804
+     },
+     {
+      "campaign": "C4c_replication",
+      "days": 30,
+      "estimate": 0.0002891113534403057,
+      "midpoint": "2025-06-12",
+      "se": 0.000256350047299327
+     },
+     {
+      "campaign": "C1_development",
+      "days": 40,
+      "estimate": 0.0021919548996248784,
+      "midpoint": "2026-06-18",
+      "se": 0.0021646616433356985
+     },
+     {
+      "campaign": "C2_holdout",
+      "days": 10,
+      "estimate": -0.0005286167366269338,
+      "midpoint": "2026-07-27",
+      "se": 0.000891093781654777
+     }
+    ],
+    "cochran_q": 29.807359980735793,
+    "fixed_effect": 0.00010178159880112646,
+    "i_squared": 0.8658049554678723,
+    "q_p_value": 5.3568766783475704e-06,
+    "random_effect": -0.002520780933124546,
+    "random_effect_ci95": [
+     -0.005509985703658814,
+     0.0004684238374097209
+    ],
+    "random_effect_se": 0.0015251044747623813,
+    "tau2": 8.089736840488723e-06
+   },
+   "pooled_days": 170,
+   "power_at_equivalence_bound": {
+    "daily_sd": 0.00945532465393341,
+    "sessions_for_80_power": 28.0
+   },
+   "power_at_predicted_effect": {
+    "daily_sd": 0.00945532465393341,
+    "sessions_for_80_power": 28.0
+   },
+   "recent_daily_sd": 0.00945532465393341,
+   "trend": {
+    "days": 170,
+    "intercept": -0.020191125379660026,
+    "phase8_midpoint_prediction": 0.005080529695087679,
+    "phase8_midpoint_prediction_ci95": [
+     -0.0008967159943145935,
+     0.011057775384489951
+    ],
+    "phase8_midpoint_prediction_se": 0.0030496151476542208,
+    "slope_per_year": 0.009716286332685894,
+    "slope_se": 0.002151107708080464,
+    "slope_wild_p": 0.0001
+   }
+  }
+ },
+ "phase8": {
+  "equivalence_bound": 0.005035,
+  "frozen_method_hash": "87c818be",
+  "primary_model_family": "hist_gradient_boosting (tree family)",
+  "sessions": 30,
+  "window_midpoint": "2026-08-08"
+ },
+ "schema_version": "gate4-decay-power-v1.0",
+ "written_before_phase8_read": true
+}

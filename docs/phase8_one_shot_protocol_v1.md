@@ -55,6 +55,27 @@ Run everything from `C:\Users\mguer\Dev\MDS650-Capstone-phase8a-recovery`:
   prospective data and the thesis leads with the null. If it appears under both model
   families above MDE, that — and only that — supports a global claim.
 
+## Pre-read interpretation amendment (recorded 2026-08-17, before any read)
+
+Interpretation-layer addition under Gate 4 (`docs/gate4_prospective_design_v1.md`,
+`artifacts/gate4_decay_power/results.json`). The frozen method hash `87c818be…` and its
+decision rules are untouched; the following is ADDITIONAL reporting, fixed before the
+30/30 read:
+
+1. **Equivalence (TOST) bound:** δ_eq = 0.005035 (the lineage's frozen targeted B2 MDE).
+   If the 90% CI of the primary Δ_QLIKE lies entirely within (−δ_eq, +δ_eq), the result
+   is reported as *affirmative evidence that any B2 effect is smaller than the smallest
+   registered meaningful size* — not as "inconclusive".
+2. **Ex-ante predictions (stated now):** decay-trend extrapolation at the window
+   midpoint gives +0.0053 [−0.0091, +0.0197] for the Gamma-family effect and
+   +0.0051 [−0.0009, +0.0111] for the tree-family effect (Gate 4 artifact). The
+   tree-family proxy for the frozen primary (hist-gradient-boosting) has achieved
+   MDE ≈ 0.0048 at n = 30 — the equivalence test at δ_eq is adequately powered for the
+   primary model. For Gamma-sized effects the achieved MDE is ≈ 0.0179, so:
+3. **Precommitment:** a null/equivalent outcome is interpreted as prospective
+   confirmation of the registered decay pattern (reconciliation §"Honest headline"
+   point 3), not as an invitation to further retrospective campaigns.
+
 ## Decision record (one-shot authorization)
 
 | Date | Authorized by | Method hash confirmed | Read executed | Result artifact |
