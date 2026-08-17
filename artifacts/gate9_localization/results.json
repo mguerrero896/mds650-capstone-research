@@ -1,0 +1,142 @@
+{
+ "ablation": {
+  "all_nine_vs_base": {
+   "clusters": 50,
+   "estimate": -0.0035355985662266793,
+   "p_value": 0.10193991140821294,
+   "standard_error": 0.0021212234815977792,
+   "statistic": -1.6667732546330025,
+   "wild_p": 0.0802
+  },
+  "alone_direction_concentration": {
+   "clusters": 50,
+   "estimate": -0.0007785428656038204,
+   "p_value": 0.056156447222117566,
+   "standard_error": 0.00039799092635157187,
+   "statistic": -1.9561824505418037,
+   "wild_p": 0.054
+  },
+  "alone_premium": {
+   "clusters": 50,
+   "estimate": -0.0005403525011740619,
+   "p_value": 0.03503760252524566,
+   "standard_error": 0.0002492310497304401,
+   "statistic": -2.168078583139978,
+   "wild_p": 0.0229
+  },
+  "alone_volume": {
+   "clusters": 50,
+   "estimate": -0.001022667381593782,
+   "p_value": 0.039728119594797946,
+   "standard_error": 0.000484012845331958,
+   "statistic": -2.112893059464962,
+   "wild_p": 0.0206
+  },
+  "drop_direction_concentration": {
+   "clusters": 50,
+   "estimate": -0.0024352693340545504,
+   "p_value": 0.16994910793324552,
+   "standard_error": 0.0017483916803367116,
+   "statistic": -1.3928625727534676,
+   "wild_p": 0.1998
+  },
+  "drop_premium": {
+   "clusters": 50,
+   "estimate": -0.00014394456697485638,
+   "p_value": 0.021111267633479966,
+   "standard_error": 6.041320042263377e-05,
+   "statistic": -2.3826674628700455,
+   "wild_p": 0.0213
+  },
+  "drop_volume": {
+   "clusters": 50,
+   "estimate": -0.0014282934720304423,
+   "p_value": 0.27082630290682935,
+   "standard_error": 0.0012824353341215067,
+   "statistic": -1.1137352769594822,
+   "wild_p": 0.3434
+  }
+ },
+ "earnings_strata": {
+  "C4c": {
+   "near_earnings": {
+    "clusters": 3,
+    "estimate": -0.0117679780138148,
+    "p_value": 0.7858668159800487,
+    "standard_error": 0.03795862879052004,
+    "statistic": -0.31002115694847726,
+    "wild_p": 0.5047
+   },
+   "other_sessions": {
+    "clusters": 30,
+    "estimate": 0.03575547379351855,
+    "p_value": 7.036938486324672e-08,
+    "standard_error": 0.004994729266676463,
+    "statistic": 7.158641016254833,
+    "wild_p": 0.0001
+   }
+  },
+  "C6": {
+   "near_earnings": {
+    "clusters": 7,
+    "estimate": 0.023375522769145642,
+    "p_value": 0.3138177297302358,
+    "standard_error": 0.021265917618899524,
+    "statistic": 1.0992012283716956,
+    "wild_p": 0.3311
+   },
+   "other_sessions": {
+    "clusters": 30,
+    "estimate": 0.05480509427080419,
+    "p_value": 1.5348107515635357e-08,
+    "standard_error": 0.007076426445689871,
+    "statistic": 7.744741599650912,
+    "wild_p": 0.0001
+   }
+  }
+ },
+ "horizon_term_structure": {
+  "rv15": {
+   "b2_increment": {
+    "clusters": 45,
+    "estimate": -0.0019276209107782685,
+    "p_value": 0.39260188937786084,
+    "standard_error": 0.0022326034094883726,
+    "statistic": -0.8633960257276528,
+    "wild_p": 0.3909
+   },
+   "origins": 28787
+  },
+  "rv30": {
+   "b2_increment": {
+    "clusters": 45,
+    "estimate": -0.0010936521967231752,
+    "p_value": 0.5744902321251156,
+    "standard_error": 0.0019333675316263014,
+    "statistic": -0.5656721646728089,
+    "wild_p": 0.5625
+   },
+   "origins": 28787
+  },
+  "rv60": {
+   "b2_increment": {
+    "clusters": 45,
+    "estimate": 0.0010847115025845553,
+    "p_value": 0.5586001576644947,
+    "standard_error": 0.0018403316808747352,
+    "statistic": 0.589410872973168,
+    "wild_p": 0.5732
+   },
+   "origins": 26088
+  }
+ },
+ "inputs": {
+  "c4c_sha256": "825359140c3f29350e1927f76b3c00e91e892d638697460a35ecf72e37c50535",
+  "c6_sha256": "a3fd362db6b34cf53225b76f37132174298a421afa754dff4563422b552a496c",
+  "dev_bars_sha256": "894d6874e6910f2b54b9467a5dc9ac0e3a7b0fc56cdbc8d8b2a0235048917eb1",
+  "panel_sha256": "e5b9e04296d6dacd6c1321b760e1a253a47fcf67055a4e41b9d2c6a8b00c77da"
+ },
+ "label": "EXPLORATORY_DEVELOPMENT_ONLY (9.2 stratifies already-read frozen deltas)",
+ "schema_version": "gate9-localization-v1.0",
+ "smooth_family_proxy_note": "ablation uses log-OLS as the smooth-family proxy for the Gamma lineage"
+}

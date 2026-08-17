@@ -24,7 +24,8 @@ def test_bar_label_convention_pinned() -> None:
     payload = json.loads(ARTIFACT.read_text(encoding="utf-8"))
     assert payload["winning_convention"] == "same_label"
     medians = payload["median_of_median_rel_diff"]
-    assert medians["same_label"] == 0.0
+    assert medians["same_label"] < 1e-4
+    assert medians["same_label"] < medians["fmp_plus_1m"] / 10
     populated = [
         cell
         for cell in payload["cells"].values()

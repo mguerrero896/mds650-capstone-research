@@ -14,10 +14,12 @@ C5 (2024), C4 (mid-2025), C6 and 2026 development windows, six outcome assets:
 
 | Alignment | Median of per-cell median relative close differences |
 |---|---|
-| **Identical labels (same_label)** | **0.0 (exact equality)** |
-| FMP shifted +1 minute | 3.42e−04 |
+| **Identical labels (same_label)** | **3.1e−06 (near-exact)** |
+| FMP shifted +1 minute | 3.66e−04 |
 
-Both providers label one-minute bars identically and agree on closes exactly.
+Both providers label one-minute bars identically; same-label agreement is two orders
+of magnitude tighter than the shifted convention, with many 2025/2026 cells exactly
+equal.
 Combined with Gate 3 (reconstructed 30-minute RV matches the frozen `b0_rv_30m_lag`
 with log-correlation 1.0000 under shift 0), registered assumption A001 is now an
 empirically pinned fact: the pipeline's convention is correct, with an independent
