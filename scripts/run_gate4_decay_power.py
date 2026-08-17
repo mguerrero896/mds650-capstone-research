@@ -110,10 +110,11 @@ def _daily_series(role: str) -> pl.DataFrame:
 
 def _trend(daily: pl.DataFrame) -> dict[str, Any]:
     days = daily["session_date"].to_numpy()
-    epoch = np.asarray(
-        [(value - np.datetime64("2024-01-01")).astype("timedelta64[D]").astype(int) for value in days],
-        dtype=np.float64,
-    ) / 365.25
+    day_offsets = [
+        (value - np.datetime64("2024-01-01")).astype("timedelta64[D]").astype(int)
+        for value in days
+    ]
+    epoch = np.asarray(day_offsets, dtype=np.float64) / 365.25
     values = daily["mean_difference"].to_numpy().astype(np.float64)
     centered = epoch - epoch.mean()
     denominator = float(centered @ centered)
@@ -170,7 +171,7 @@ def _meta_regression(daily: pl.DataFrame) -> dict[str, Any]:
                 "days": int(values.size),
             }
         )
-    rows.sort(key=lambda row: row["midpoint"])
+    rows.sort(key=lambda row: str(row["midpoint"]))
     estimates = np.asarray([row["estimate"] for row in rows])
     variances = np.asarray([row["se"] for row in rows]) ** 2
     weights = 1.0 / variances
