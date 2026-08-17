@@ -92,7 +92,9 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def _daily(frame: pl.DataFrame, spec: dict[str, Any], base: str, expanded: str, model: str) -> pl.DataFrame:
+def _daily(
+    frame: pl.DataFrame, spec: dict[str, Any], base: str, expanded: str, model: str
+) -> pl.DataFrame:
     return inference.paired_daily_differences(
         frame,
         base_set=base,

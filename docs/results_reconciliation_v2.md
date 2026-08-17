@@ -77,6 +77,16 @@ the prospective C2 holdout; the Gamma family never enters any Model Confidence S
 (C6's sole survivor is LightGBM|B0). Any headline p-value quoted from this file should
 be accompanied by its studentized counterpart.
 
+## Calibration-vs-information addendum (2026-08-17, Gate 2)
+
+Mincer-Zarnowitz recalibration of the frozen forecasts
+(`docs/gate2_calibration_vs_information_v1.md`,
+`artifacts/gate2_calibration/results.json`): the Gamma B2 increment **survives**
+out-of-evaluation recalibration on C6 (+0.053..+0.135, ≫ MDE) but **collapses and
+reverses** on C4c (−0.015) — on that sample the raw gain was calibration repair. On C6
+the daily gain still covaries strongly with baseline bias (R² 0.66). Verdict:
+SAMPLE_DEPENDENT; R-020 alone no longer dismisses C6, and no global claim changes.
+
 Artifacts: `artifacts/phase5/{development,holdout}_results.json`,
 `artifacts/phase6/results.json` (evidence root), `artifacts/independent_replication/independent_results.json`,
 `artifacts/independent_replication_pit_v2/results.json`,
