@@ -407,3 +407,18 @@ Spec Kit consistency and preregistration gates pass.
    inert until the owner activates the collector task; no Phase 9 data exist at freeze
    time. Decisions 52/53 remain in force; this is the registered successor experiment,
    not a retrospective campaign.
+59. **Phase 9 collection ACTIVATED (2026-08-18)** — The owner activated Phase 9
+   collection ("activa phase 9 completa", session message 2026-08-18). Infrastructure,
+   verified live before activation: `scripts/phase9_collect.py` (nightly post-close
+   pulls — FMP 1-minute bars for the six assets, the UW full-tape day archive via the
+   signed-redirect download, and a Massive ATM quote sweep at the five-minute origins
+   with 13-second pacing), `scripts/phase9_verify.py` (same-day completeness check with
+   loud alerts to `logs/PHASE9_ALERT.txt`), and scheduled tasks
+   `MDS650_Phase9_Collector` (daily 08:10 local) and `MDS650_Phase9_PostCheck` (daily
+   13:30 local), both registered `Ready`. End-to-end dry run against 2026-08-14:
+   2,340 bars, 1.47 GB tape, 12/18 quotes OK, manifest with SHA-256 hashes; dry-run
+   data quarantined under `phase9/dryrun/`. Storage guard: 120 GB minimum free,
+   crash-safe per-session directories, access counter `reads=0`, append-only session
+   register. The 60-session clock starts at the first captured session (expected from
+   the 2026-08-18 NY session); completion ≈ mid-November 2026, alert on 60/60. The
+   frozen protocol (decision 58, sha 8cf87b4d…) governs; nothing is read until then.

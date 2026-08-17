@@ -1,0 +1,12 @@
+{
+ "activated_utc": "2026-08-18",
+ "decision": "59",
+ "tasks": [
+  "MDS650_Phase9_Collector 08:10",
+  "MDS650_Phase9_PostCheck 13:30"
+ ],
+ "dry_run": "2026-08-14: bars 2340, tape 1.47GB, quotes 12/18 OK",
+ "first_expected_session": "2026-08-18 (NY)",
+ "completion_estimate": "~2026-11 (60 sessions)",
+ "reads": 0
+}

@@ -114,6 +114,40 @@ class MassiveProvider:
             params["cursor"] = cursor
         return self._client.get_json(f"/v3/trades/{contract_id}", params=params)
 
+    def option_contract_listing(
+        self,
+        underlying: str,
+        *,
+        expiration_gte: str,
+        expiration_lte: str,
+        strike_gte: float,
+        strike_lte: float,
+        contract_type: str = "call",
+        limit: int = 250,
+    ) -> ProviderResponse:
+        """Request a bounded option-contract reference listing for one underlying.
+
+        Phase 9 collection only: one bounded listing per asset per session so the
+        nightly quote sweep can select the ATM contract per origin. Never a full
+        chain download.
+        """
+        if not isinstance(underlying, str) or not underlying:
+            raise ValueError("MASSIVE_TICKER_REQUIRED")
+        if not isinstance(limit, int) or isinstance(limit, bool) or not 1 <= limit <= 1000:
+            raise ValueError("MASSIVE_LISTING_LIMIT_INVALID")
+        return self._client.get_json(
+            "/v3/reference/options/contracts",
+            params={
+                "underlying_ticker": underlying,
+                "expiration_date.gte": expiration_gte,
+                "expiration_date.lte": expiration_lte,
+                "strike_price.gte": f"{strike_gte:.4f}",
+                "strike_price.lte": f"{strike_lte:.4f}",
+                "contract_type": contract_type,
+                "limit": limit,
+            },
+        )
+
     def stock_minute_aggregates(
         self,
         ticker: str,
