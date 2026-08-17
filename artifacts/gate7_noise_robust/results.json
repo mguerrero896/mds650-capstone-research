@@ -1,0 +1,157 @@
+{
+ "contrasts": {
+  "gamma_glm_confirmatory": {
+   "ac1_corrected_target": {
+    "cluster_t": {
+     "clusters": 30,
+     "estimate": 0.05224254744089275,
+     "p_value": 1.0830842255578655e-07,
+     "standard_error": 0.007468102329039857,
+     "statistic": 6.995424692796003
+    },
+    "days": 30,
+    "newey_west": {
+     "clusters": 30,
+     "estimate": 0.05224254744089275,
+     "max_lag": 3,
+     "p_value": 0.00012126312646766279,
+     "standard_error": 0.01177774717407997,
+     "statistic": 4.43569951610663
+    },
+    "wild_rademacher": {
+     "ci_high": 0.06744463446503958,
+     "ci_low": 0.03718539824328153,
+     "clusters": 30,
+     "estimate": 0.05224254744089275,
+     "p_value": 0.0001,
+     "repetitions": 9999,
+     "seed": 650,
+     "statistic": 6.995424692796003,
+     "weights": "rademacher"
+    }
+   },
+   "frozen_target": {
+    "cluster_t": {
+     "clusters": 30,
+     "estimate": 0.05278640217966369,
+     "p_value": 9.783210923340162e-08,
+     "standard_error": 0.007504648495999691,
+     "statistic": 7.033827394820847
+    },
+    "days": 30,
+    "newey_west": {
+     "clusters": 30,
+     "estimate": 0.05278640217966369,
+     "max_lag": 3,
+     "p_value": 0.00010967744983356908,
+     "standard_error": 0.011803554848168437,
+     "statistic": 4.472076663231211
+    },
+    "wild_rademacher": {
+     "ci_high": 0.06818166118330687,
+     "ci_low": 0.03773572574121061,
+     "clusters": 30,
+     "estimate": 0.05278640217966369,
+     "p_value": 0.0001,
+     "repetitions": 9999,
+     "seed": 650,
+     "statistic": 7.033827394820847,
+     "weights": "rademacher"
+    }
+   }
+  },
+  "lightgbm_robustness": {
+   "ac1_corrected_target": {
+    "cluster_t": {
+     "clusters": 30,
+     "estimate": -0.0049812204310645,
+     "p_value": 0.004450533113422534,
+     "standard_error": 0.001614998893990719,
+     "statistic": -3.0843491284106883
+    },
+    "days": 30,
+    "newey_west": {
+     "clusters": 30,
+     "estimate": -0.0049812204310645,
+     "max_lag": 3,
+     "p_value": 0.00611756450295383,
+     "standard_error": 0.0016844516124704756,
+     "statistic": -2.9571763262221986
+    },
+    "wild_rademacher": {
+     "ci_high": -0.0016717460145133523,
+     "ci_low": -0.008300043613520186,
+     "clusters": 30,
+     "estimate": -0.0049812204310645,
+     "p_value": 0.0054,
+     "repetitions": 9999,
+     "seed": 650,
+     "statistic": -3.0843491284106883,
+     "weights": "rademacher"
+    }
+   },
+   "frozen_target": {
+    "cluster_t": {
+     "clusters": 30,
+     "estimate": -0.0070389584862305945,
+     "p_value": 0.004150073037961847,
+     "standard_error": 0.002261855819343201,
+     "statistic": -3.112027931238593
+    },
+    "days": 30,
+    "newey_west": {
+     "clusters": 30,
+     "estimate": -0.0070389584862305945,
+     "max_lag": 3,
+     "p_value": 0.00558364924395435,
+     "standard_error": 0.0023511083254090267,
+     "statistic": -2.9938894818919133
+    },
+    "wild_rademacher": {
+     "ci_high": -0.0027561194872727226,
+     "ci_low": -0.011275221543699318,
+     "clusters": 30,
+     "estimate": -0.0070389584862305945,
+     "p_value": 0.0006,
+     "repetitions": 9999,
+     "seed": 650,
+     "statistic": -3.112027931238593,
+     "weights": "rademacher"
+    }
+   }
+  }
+ },
+ "inputs": {
+  "bars_sha256": "d70001bc02a5dc9bee3e5002d4c32f0b0c770788662ae71eb596f38e92a97bba",
+  "forecasts_sha256": "a3fd362db6b34cf53225b76f37132174298a421afa754dff4563422b552a496c"
+ },
+ "matched_origins": 11399,
+ "per_asset_noise_diagnostics": {
+  "AAPL": {
+   "ac1_1min_returns": 0.0003173311008141679,
+   "implied_noise_bias_share": -0.0008640048084629438
+  },
+  "AMZN": {
+   "ac1_1min_returns": -0.007323022852361867,
+   "implied_noise_bias_share": 0.014408728322832916
+  },
+  "META": {
+   "ac1_1min_returns": -0.032594836939882944,
+   "implied_noise_bias_share": 0.0650338444275663
+  },
+  "MSFT": {
+   "ac1_1min_returns": -0.009974108636434673,
+   "implied_noise_bias_share": 0.019472026292319054
+  },
+  "NVDA": {
+   "ac1_1min_returns": 0.0150719117424865,
+   "implied_noise_bias_share": -0.03015721769329909
+  },
+  "TSLA": {
+   "ac1_1min_returns": 0.004471105837264241,
+   "implied_noise_bias_share": -0.008941842923015045
+  }
+ },
+ "reconstruction_log_corr_vs_frozen_rv30": 0.9956116494788628,
+ "schema_version": "gate7-noise-robust-v1.0"
+}
