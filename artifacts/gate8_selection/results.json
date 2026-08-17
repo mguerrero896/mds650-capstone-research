@@ -1,0 +1,143 @@
+{
+ "contrasts": {
+  "gamma_glm_confirmatory": {
+   "B1v3a_vs_B0": {
+    "ipw_weighted": {
+     "clusters": 30,
+     "estimate": 0.049891307067842325,
+     "p_value": 3.589039399197535e-07,
+     "standard_error": 0.007619870916954418,
+     "statistic": 6.547526541011715
+    },
+    "ipw_wild": {
+     "ci_high": 0.0651944243639525,
+     "ci_low": 0.034557437341080105,
+     "clusters": 30,
+     "estimate": 0.049891307067842325,
+     "p_value": 0.0001,
+     "repetitions": 9999,
+     "seed": 650,
+     "statistic": 6.547526541011715,
+     "weights": "rademacher"
+    },
+    "unweighted": {
+     "clusters": 30,
+     "estimate": 0.04984289686855051,
+     "p_value": 3.6033050066340246e-07,
+     "standard_error": 0.007614187351826913,
+     "statistic": 6.546056009062009
+    }
+   },
+   "B2_vs_B1v3a": {
+    "ipw_weighted": {
+     "clusters": 30,
+     "estimate": 0.052896611410566785,
+     "p_value": 9.898821993907102e-08,
+     "standard_error": 0.007525064884506463,
+     "statistic": 7.029389410246401
+    },
+    "ipw_wild": {
+     "ci_high": 0.06850363001642246,
+     "ci_low": 0.037900733457225104,
+     "clusters": 30,
+     "estimate": 0.052896611410566785,
+     "p_value": 0.0001,
+     "repetitions": 9999,
+     "seed": 650,
+     "statistic": 7.029389410246401,
+     "weights": "rademacher"
+    },
+    "unweighted": {
+     "clusters": 30,
+     "estimate": 0.05279790450214434,
+     "p_value": 1.0157777885896007e-07,
+     "standard_error": 0.007521458010825807,
+     "statistic": 7.019636940889798
+    }
+   }
+  },
+  "lightgbm_robustness": {
+   "B1v3a_vs_B0": {
+    "ipw_weighted": {
+     "clusters": 30,
+     "estimate": 0.01613299267262109,
+     "p_value": 0.054436321475472484,
+     "standard_error": 0.008048496396255808,
+     "statistic": 2.0044728702526626
+    },
+    "ipw_wild": {
+     "ci_high": 0.02830477676542969,
+     "ci_low": 0.004038291141481345,
+     "clusters": 30,
+     "estimate": 0.01613299267262109,
+     "p_value": 0.0009,
+     "repetitions": 9999,
+     "seed": 650,
+     "statistic": 2.0044728702526626,
+     "weights": "rademacher"
+    },
+    "unweighted": {
+     "clusters": 30,
+     "estimate": 0.016181133027653786,
+     "p_value": 0.05417058311263945,
+     "standard_error": 0.008063029512719045,
+     "statistic": 2.006830435400096
+    }
+   },
+   "B2_vs_B1v3a": {
+    "ipw_weighted": {
+     "clusters": 30,
+     "estimate": -0.007391998314225977,
+     "p_value": 0.002315305490952342,
+     "standard_error": 0.0022132451624885833,
+     "statistic": -3.339891323162039
+    },
+    "ipw_wild": {
+     "ci_high": -0.0031662001602585105,
+     "ci_low": -0.011599043670040405,
+     "clusters": 30,
+     "estimate": -0.007391998314225977,
+     "p_value": 0.0005,
+     "repetitions": 9999,
+     "seed": 650,
+     "statistic": -3.339891323162039,
+     "weights": "rademacher"
+    },
+    "unweighted": {
+     "clusters": 30,
+     "estimate": -0.007407698128048671,
+     "p_value": 0.0023162067545228755,
+     "standard_error": 0.0022180456091502945,
+     "statistic": -3.339741120511254
+    }
+   }
+  }
+ },
+ "deferred": {
+  "C4c": "bars for its sessions not on local disk; same design applies"
+ },
+ "grid_origins": 11880,
+ "included_origins": 11577,
+ "inclusion_model": {
+  "auc_proxy_mean_p_excluded": 0.49844186190899215,
+  "auc_proxy_mean_p_included": 0.9869545853332777,
+  "coefficients": {
+   "asset_AMZN": -0.0788024671082836,
+   "asset_META": 0.5260739364705144,
+   "asset_MSFT": 0.5885212912073735,
+   "asset_NVDA": 0.29389957586195503,
+   "asset_TSLA": -1.095659627942445,
+   "log_rv_30m_lag": 0.6118888868714208,
+   "session_minute": -0.001990615661727598
+  },
+  "marginal_inclusion": 0.9744949494949495,
+  "probability_p1": 0.007158599263776563,
+  "probability_p99": 0.9977481673341903,
+  "weight_max": 1.0474668175126236
+ },
+ "inputs": {
+  "bars_sha256": "d70001bc02a5dc9bee3e5002d4c32f0b0c770788662ae71eb596f38e92a97bba",
+  "forecasts_sha256": "a3fd362db6b34cf53225b76f37132174298a421afa754dff4563422b552a496c"
+ },
+ "schema_version": "gate8-selection-v1.0"
+}
