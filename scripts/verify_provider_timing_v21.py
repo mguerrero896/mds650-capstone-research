@@ -18,8 +18,8 @@ PROTECTED_PATHS = (
     "artifacts/canonical_validation_v1",
     "artifacts/phase6",
     "artifacts/independent_replication",
-    "reports/CODEX_PHASE6_FINAL_HANDOFF.md",
-    "reports/CODEX_FINAL_VALIDATION_HANDOFF.md",
+    "reports/handoffs/CODEX_PHASE6_FINAL_HANDOFF.md",
+    "reports/handoffs/CODEX_FINAL_VALIDATION_HANDOFF.md",
 )
 SECRET_PATTERN = re.compile(
     r"(?i)(UNUSUALWHALES_API_KEY|MASSIVE_API_KEY|FMP_API_KEY)\s*[:=]\s*[^\s,;]+"

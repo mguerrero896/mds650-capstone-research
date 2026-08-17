@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-REPORT = Path("reports/CODEX_FINAL_VALIDATION_HANDOFF.md")
+REPORT = Path("reports/handoffs/CODEX_FINAL_VALIDATION_HANDOFF.md")
 
 
 def test_handoff_covers_required_validation_domains() -> None:
