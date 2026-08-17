@@ -87,6 +87,16 @@ reverses** on C4c (−0.015) — on that sample the raw gain was calibration rep
 the daily gain still covaries strongly with baseline bias (R² 0.66). Verdict:
 SAMPLE_DEPENDENT; R-020 alone no longer dismisses C6, and no global claim changes.
 
+## HAR/HARQ baseline addendum (2026-08-17, Gate 3)
+
+Field-standard baselines added development-only (`docs/gate3_har_harq_ladder_v1.md`,
+`artifacts/gate3_har/`): HARQ wins the ladder (pooled OOF QLIKE 0.18338) and **B2 adds
+a null-to-negative increment on both HAR baselines** (HAR→HAR+B2 −0.00102, p 0.52–0.62;
+HARQ→HARQ+B2 −0.00090). The reconstructed 30-minute RV matches `b0_rv_30m_lag` with
+log-correlation 1.0000 (bar-label convention empirically pinned; re-downloaded FMP
+history reproduces the frozen panel). HARQ is the preregistered base model for the
+prospective amendment.
+
 Artifacts: `artifacts/phase5/{development,holdout}_results.json`,
 `artifacts/phase6/results.json` (evidence root), `artifacts/independent_replication/independent_results.json`,
 `artifacts/independent_replication_pit_v2/results.json`,
