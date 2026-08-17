@@ -1,0 +1,9 @@
+{
+ "schema_version": "phase9-protocol-freeze-v1.0",
+ "protocol_path": "docs\\phase9_total_contribution_protocol_v1.md",
+ "protocol_sha256": "8cf87b4d865be2a858747079acbbcd45570ca2b2b77e547b2bba2d4142f25649",
+ "frozen_under": "decision 58",
+ "collection_state": "INERT_UNTIL_OWNER_ACTIVATION",
+ "sessions": "first 60 XNYS sessions strictly after 2026-08-18",
+ "reads": 0
+}

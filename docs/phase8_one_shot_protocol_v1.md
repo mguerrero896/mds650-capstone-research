@@ -76,6 +76,29 @@ decision rules are untouched; the following is ADDITIONAL reporting, fixed befor
    confirmation of the registered decay pattern (reconciliation §"Honest headline"
    point 3), not as an invitation to further retrospective campaigns.
 
+## Contingencies (pre-stated, 2026-08-18 — before the read)
+
+1. **Missed collection evening:** the calendar is frozen but completion slips
+   day-for-day; the read waits for a verified `completed_sessions=30` +
+   `phase8_repro_gate.py` PASS. Slippage is logged, never compressed.
+2. **Repro gate FAIL on read day:** do not read. Record the failure verbatim as an
+   incident, fix the environment (never the frozen method), re-run the gate; the read
+   happens only on PASS. If the failure implicates the store's integrity, the incident
+   report decides between repair-with-evidence and declaring the cohort compromised —
+   a compromised cohort is reported as such, not read.
+3. **Evaluator error mid-read:** stop; the access ledger already counts the attempt.
+   Record the incident with the exact error before any second invocation; a second
+   invocation is only allowed if the first demonstrably produced no scientific output
+   (ledger + absence of the result artifact), and both attempts are reported.
+4. **Read-day session overlap:** the 30th session completes at 2026-08-29 ≈ 18:05
+   local; the read is scheduled AFTER the post-collection verification, never the same
+   process. If the final session is deficient, rule 1 applies.
+5. **Owner unavailable on 2026-08-29:** nothing fires automatically — the read requires
+   the written one-shot authorization below. The seal keeps; a late read is a
+   non-event scientifically (sessions are already sealed at capture time).
+6. **Machine loss before the read:** the holdout store is on a single disk by owner
+   decision (backup declined 2026-08-18); this is a stated accepted risk.
+
 ## Decision record (one-shot authorization)
 
 | Date | Authorized by | Method hash confirmed | Read executed | Result artifact |

@@ -395,3 +395,15 @@ Spec Kit consistency and preregistration gates pass.
    caveats only — no registered verdict is rewritten (decision 53). The campaign's
    completion (≥5 reconciled sessions) is independent of, and may postdate, the Phase 8
    read; a slip creates no pressure on either.
+58. **Phase 9 prospective total-contribution protocol frozen (2026-08-18)** — The owner
+   authorized ("procede con todos los bloques", session goal 2026-08-18) freezing the
+   Phase 9 protocol in `docs/phase9_total_contribution_protocol_v1.md`: a prospective,
+   one-read, two-independent-family test of the TOTAL option-information contribution
+   (B0HAR→B2) on the first 60 XNYS sessions strictly after 2026-08-18, with fixed
+   decision rules (GLOBAL_POSITIVE / EQUIVALENT_NULL at δ = 0.005 / MIXED), honest
+   dual-scenario power statement, and a precommitment for the underpowered-null branch.
+   The protocol file's SHA-256 at freeze is recorded in
+   `artifacts/phase9/protocol_freeze.json`; any later edit invalidates it. Collection is
+   inert until the owner activates the collector task; no Phase 9 data exist at freeze
+   time. Decisions 52/53 remain in force; this is the registered successor experiment,
+   not a retrospective campaign.
