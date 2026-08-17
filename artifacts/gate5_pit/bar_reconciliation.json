@@ -1,0 +1,320 @@
+{
+ "assets": [
+  "AAPL",
+  "AMZN",
+  "META",
+  "MSFT",
+  "NVDA",
+  "TSLA"
+ ],
+ "cells": {
+  "2024-08-06|AAPL": {
+   "error": "AuthenticationError('PROVIDER_AUTHENTICATION_FAILED')"
+  },
+  "2024-08-06|AMZN": {
+   "error": "AuthenticationError('PROVIDER_AUTHENTICATION_FAILED')"
+  },
+  "2024-08-06|META": {
+   "error": "AuthenticationError('PROVIDER_AUTHENTICATION_FAILED')"
+  },
+  "2024-08-06|MSFT": {
+   "error": "AuthenticationError('PROVIDER_AUTHENTICATION_FAILED')"
+  },
+  "2024-08-06|NVDA": {
+   "error": "AuthenticationError('PROVIDER_AUTHENTICATION_FAILED')"
+  },
+  "2024-08-06|TSLA": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2024-09-10|AAPL": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2024-09-10|AMZN": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2024-09-10|META": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2024-09-10|MSFT": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2024-09-10|NVDA": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2024-09-10|TSLA": {
+   "fmp_plus_1m": {
+    "exact_equal_share": 0.007692307692307693,
+    "matched": 390,
+    "max_rel_close_diff": 0.006985178883266924,
+    "median_rel_close_diff": 0.000625420996137809
+   },
+   "same_label": {
+    "exact_equal_share": 0.5564102564102564,
+    "matched": 390,
+    "max_rel_close_diff": 2.283365681011738e-05,
+    "median_rel_close_diff": 0.0
+   }
+  },
+  "2024-10-15|AAPL": {
+   "fmp_plus_1m": {
+    "exact_equal_share": 0.01282051282051282,
+    "matched": 390,
+    "max_rel_close_diff": 0.00263075688490769,
+    "median_rel_close_diff": 0.0003395874110976757
+   },
+   "same_label": {
+    "exact_equal_share": 0.6871794871794872,
+    "matched": 390,
+    "max_rel_close_diff": 2.1456004462829414e-05,
+    "median_rel_close_diff": 0.0
+   }
+  },
+  "2024-10-15|AMZN": {
+   "fmp_plus_1m": {
+    "exact_equal_share": 0.046153846153846156,
+    "matched": 390,
+    "max_rel_close_diff": 0.002107083040682991,
+    "median_rel_close_diff": 0.0003236333293293477
+   },
+   "same_label": {
+    "exact_equal_share": 0.6564102564102564,
+    "matched": 390,
+    "max_rel_close_diff": 2.7071658680502735e-05,
+    "median_rel_close_diff": 0.0
+   }
+  },
+  "2024-10-15|META": {
+   "fmp_plus_1m": {
+    "exact_equal_share": 0.010256410256410256,
+    "matched": 390,
+    "max_rel_close_diff": 0.0035404255319149633,
+    "median_rel_close_diff": 0.00042188307433730916
+   },
+   "same_label": {
+    "exact_equal_share": 0.6282051282051282,
+    "matched": 390,
+    "max_rel_close_diff": 8.592763174846324e-06,
+    "median_rel_close_diff": 0.0
+   }
+  },
+  "2024-10-15|MSFT": {
+   "fmp_plus_1m": {
+    "exact_equal_share": 0.017948717948717947,
+    "matched": 390,
+    "max_rel_close_diff": 0.001661523854735316,
+    "median_rel_close_diff": 0.0002930456462375328
+   },
+   "same_label": {
+    "exact_equal_share": 0.7461538461538462,
+    "matched": 390,
+    "max_rel_close_diff": 1.2027470743303215e-05,
+    "median_rel_close_diff": 0.0
+   }
+  },
+  "2024-10-15|NVDA": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2024-10-15|TSLA": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2024-11-06|AAPL": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2024-11-06|AMZN": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2024-11-06|META": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2024-11-06|MSFT": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2024-11-06|NVDA": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2024-11-06|TSLA": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2024-12-03|AAPL": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2024-12-03|AMZN": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2024-12-03|META": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2024-12-03|MSFT": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2024-12-03|NVDA": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2024-12-03|TSLA": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2025-05-28|AAPL": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2025-05-28|AMZN": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2025-05-28|META": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2025-05-28|MSFT": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2025-05-28|NVDA": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2025-05-28|TSLA": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2025-06-17|AAPL": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2025-06-17|AMZN": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2025-06-17|META": {
+   "fmp_plus_1m": {
+    "exact_equal_share": 0.010256410256410256,
+    "matched": 390,
+    "max_rel_close_diff": 0.0021767148789919744,
+    "median_rel_close_diff": 0.00031407574192881014
+   },
+   "same_label": {
+    "exact_equal_share": 0.09743589743589744,
+    "matched": 390,
+    "max_rel_close_diff": 0.00048697345994631565,
+    "median_rel_close_diff": 6.438045002274569e-05
+   }
+  },
+  "2025-06-17|MSFT": {
+   "fmp_plus_1m": {
+    "exact_equal_share": 0.015384615384615385,
+    "matched": 390,
+    "max_rel_close_diff": 0.0017884947186803492,
+    "median_rel_close_diff": 0.0002100091641344725
+   },
+   "same_label": {
+    "exact_equal_share": 0.4897435897435897,
+    "matched": 390,
+    "max_rel_close_diff": 0.00023166673686873687,
+    "median_rel_close_diff": 2.0961725003403156e-07
+   }
+  },
+  "2025-06-17|NVDA": {
+   "fmp_plus_1m": {
+    "exact_equal_share": 0.020512820512820513,
+    "matched": 390,
+    "max_rel_close_diff": 0.0026916971495616424,
+    "median_rel_close_diff": 0.00034469682559908456
+   },
+   "same_label": {
+    "exact_equal_share": 0.26666666666666666,
+    "matched": 390,
+    "max_rel_close_diff": 0.0001868163042198815,
+    "median_rel_close_diff": 3.457695100442898e-05
+   }
+  },
+  "2025-06-17|TSLA": {
+   "fmp_plus_1m": {
+    "exact_equal_share": 0.010256410256410256,
+    "matched": 390,
+    "max_rel_close_diff": 0.005107296670017795,
+    "median_rel_close_diff": 0.0005978040941248517
+   },
+   "same_label": {
+    "exact_equal_share": 0.5435897435897435,
+    "matched": 390,
+    "max_rel_close_diff": 1.587780441719075e-05,
+    "median_rel_close_diff": 0.0
+   }
+  },
+  "2025-07-01|AAPL": {
+   "fmp_plus_1m": {
+    "exact_equal_share": 0.038461538461538464,
+    "matched": 390,
+    "max_rel_close_diff": 0.006521589628996925,
+    "median_rel_close_diff": 0.0003873141080899215
+   },
+   "same_label": {
+    "exact_equal_share": 0.30512820512820515,
+    "matched": 390,
+    "max_rel_close_diff": 0.0005292023477341173,
+    "median_rel_close_diff": 2.4056966911514344e-05
+   }
+  },
+  "2025-07-01|AMZN": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2025-07-01|META": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2025-07-01|MSFT": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2025-07-01|NVDA": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2025-07-01|TSLA": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2026-04-15|AAPL": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2026-04-15|AMZN": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2026-04-15|META": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2026-04-15|MSFT": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2026-04-15|NVDA": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2026-04-15|TSLA": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2026-07-10|AAPL": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2026-07-10|AMZN": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2026-07-10|META": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2026-07-10|MSFT": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2026-07-10|NVDA": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  },
+  "2026-07-10|TSLA": {
+   "error": "ProviderBlockedError('PROVIDER_HTTP_429')"
+  }
+ },
+ "median_of_median_rel_diff": {
+  "fmp_plus_1m": 0.0003421421183483801,
+  "same_label": 0.0
+ },
+ "schema_version": "gate5-bar-reconciliation-v1.0",
+ "sessions": [
+  "2024-08-06",
+  "2024-09-10",
+  "2024-10-15",
+  "2024-11-06",
+  "2024-12-03",
+  "2025-05-28",
+  "2025-06-17",
+  "2025-07-01",
+  "2026-04-15",
+  "2026-07-10"
+ ],
+ "winning_convention": "same_label"
+}

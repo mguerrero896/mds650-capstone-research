@@ -1,0 +1,286 @@
+{
+ "campaigns": {
+  "C1_development": {
+   "events_inside_window": {},
+   "first_session": "2026-05-20",
+   "last_session": "2026-07-17",
+   "mean_daily_rv30": 1.840320403719504e-05,
+   "sessions": 40,
+   "vix_max": 22.22,
+   "vix_median": 16.715,
+   "vix_p90": 19.445
+  },
+  "C2_holdout": {
+   "events_inside_window": {
+    "2026-07-29": "FOMC meeting inside prospective holdout"
+   },
+   "first_session": "2026-07-20",
+   "last_session": "2026-07-31",
+   "mean_daily_rv30": 1.7432620348124654e-05,
+   "sessions": 10,
+   "vix_max": 20.66,
+   "vix_median": 18.395,
+   "vix_p90": 18.895999999999997
+  },
+  "C4c_replication": {
+   "events_inside_window": {
+    "2025-06-13": "Middle East escalation risk-off"
+   },
+   "first_session": "2025-05-21",
+   "last_session": "2025-07-03",
+   "mean_daily_rv30": 1.4301648363370722e-05,
+   "sessions": 30,
+   "vix_max": 22.29,
+   "vix_median": 18.189999999999998,
+   "vix_p90": 20.825
+  },
+  "C5_block_a": {
+   "events_inside_window": {
+    "2024-08-05": "yen-carry unwind volatility shock (VIX intraday ~65)"
+   },
+   "first_session": "2024-08-02",
+   "last_session": "2024-09-13",
+   "mean_daily_rv30": 2.473759619611253e-05,
+   "sessions": 30,
+   "vix_max": 38.57,
+   "vix_median": 17.62,
+   "vix_p90": 24.182000000000006
+  },
+  "C5_block_b": {
+   "events_inside_window": {
+    "2024-11-05": "US presidential election"
+   },
+   "first_session": "2024-10-01",
+   "last_session": "2024-11-11",
+   "mean_daily_rv30": 1.2489917510667106e-05,
+   "sessions": 30,
+   "vix_max": 23.16,
+   "vix_median": 19.64,
+   "vix_p90": 21.89
+  },
+  "C6_b1v3": {
+   "events_inside_window": {
+    "2024-11-05": "US presidential election"
+   },
+   "first_session": "2024-10-28",
+   "last_session": "2024-12-09",
+   "mean_daily_rv30": 1.5777258539138698e-05,
+   "sessions": 30,
+   "vix_max": 23.16,
+   "vix_median": 15.085,
+   "vix_p90": 20.629
+  }
+ },
+ "leave_event_week_out": {
+  "C5_block_a": {
+   "event_weeks_dropped": [
+    [
+     "2024-08-03",
+     "2024-08-09"
+    ]
+   ],
+   "full_sample": {
+    "cluster_t": {
+     "clusters": 30,
+     "estimate": 0.07843232318710566,
+     "p_value": 6.513809978354414e-05,
+     "standard_error": 0.01682963139138787,
+     "statistic": 4.660370828278591
+    },
+    "days": 30,
+    "newey_west": {
+     "clusters": 30,
+     "estimate": 0.07843232318710566,
+     "max_lag": 3,
+     "p_value": 0.0048411622392480055,
+     "standard_error": 0.025707819961865462,
+     "statistic": 3.050913041380048
+    },
+    "wild_rademacher": {
+     "ci_high": 0.1120743254841674,
+     "ci_low": 0.04463152843411764,
+     "clusters": 30,
+     "estimate": 0.07843232318710566,
+     "p_value": 0.0001,
+     "repetitions": 9999,
+     "seed": 650,
+     "statistic": 4.660370828278591,
+     "weights": "rademacher"
+    }
+   },
+   "sessions_dropped": 5,
+   "without_event_weeks": {
+    "cluster_t": {
+     "clusters": 25,
+     "estimate": 0.05805212226583658,
+     "p_value": 0.00023941373339818702,
+     "standard_error": 0.013465546004339518,
+     "statistic": 4.311159922303055
+    },
+    "days": 25,
+    "newey_west": {
+     "clusters": 25,
+     "estimate": 0.05805212226583658,
+     "max_lag": 2,
+     "p_value": 0.0004091952109820331,
+     "standard_error": 0.014159276272453992,
+     "statistic": 4.099935699310667
+    },
+    "wild_rademacher": {
+     "ci_high": 0.08501306424405868,
+     "ci_low": 0.031271972779772575,
+     "clusters": 25,
+     "estimate": 0.05805212226583658,
+     "p_value": 0.0001,
+     "repetitions": 9999,
+     "seed": 650,
+     "statistic": 4.311159922303055,
+     "weights": "rademacher"
+    }
+   }
+  },
+  "C5_block_b": {
+   "event_weeks_dropped": [
+    [
+     "2024-11-03",
+     "2024-11-09"
+    ]
+   ],
+   "full_sample": {
+    "cluster_t": {
+     "clusters": 30,
+     "estimate": 0.03481872134728547,
+     "p_value": 2.211256438754717e-05,
+     "standard_error": 0.006895638815262124,
+     "statistic": 5.049382991206146
+    },
+    "days": 30,
+    "newey_west": {
+     "clusters": 30,
+     "estimate": 0.03481872134728547,
+     "max_lag": 3,
+     "p_value": 0.0011082669354784147,
+     "standard_error": 0.009616523505614157,
+     "statistic": 3.620718165661238
+    },
+    "wild_rademacher": {
+     "ci_high": 0.048927522057655555,
+     "ci_low": 0.021123562190363012,
+     "clusters": 30,
+     "estimate": 0.03481872134728547,
+     "p_value": 0.0001,
+     "repetitions": 9999,
+     "seed": 650,
+     "statistic": 5.049382991206146,
+     "weights": "rademacher"
+    }
+   },
+   "sessions_dropped": 5,
+   "without_event_weeks": {
+    "cluster_t": {
+     "clusters": 25,
+     "estimate": 0.04036685358631216,
+     "p_value": 1.3793778900424122e-05,
+     "standard_error": 0.0074240389283231735,
+     "statistic": 5.437317069056586
+    },
+    "days": 25,
+    "newey_west": {
+     "clusters": 25,
+     "estimate": 0.04036685358631216,
+     "max_lag": 2,
+     "p_value": 0.0003737153156846424,
+     "standard_error": 0.009760513069747859,
+     "statistic": 4.135730703688812
+    },
+    "wild_rademacher": {
+     "ci_high": 0.0553357740656176,
+     "ci_low": 0.024961757732001634,
+     "clusters": 25,
+     "estimate": 0.04036685358631216,
+     "p_value": 0.0001,
+     "repetitions": 9999,
+     "seed": 650,
+     "statistic": 5.437317069056586,
+     "weights": "rademacher"
+    }
+   }
+  },
+  "C6_b1v3": {
+   "event_weeks_dropped": [
+    [
+     "2024-11-03",
+     "2024-11-09"
+    ]
+   ],
+   "full_sample": {
+    "cluster_t": {
+     "clusters": 30,
+     "estimate": 0.053158423288211125,
+     "p_value": 8.87624956386645e-08,
+     "standard_error": 0.007518221425994221,
+     "statistic": 7.070611555070204
+    },
+    "days": 30,
+    "newey_west": {
+     "clusters": 30,
+     "estimate": 0.053158423288211125,
+     "max_lag": 3,
+     "p_value": 0.00010361586773462118,
+     "standard_error": 0.011832288123647575,
+     "statistic": 4.492657948547641
+    },
+    "wild_rademacher": {
+     "ci_high": 0.0686242976567676,
+     "ci_low": 0.03813417770716349,
+     "clusters": 30,
+     "estimate": 0.053158423288211125,
+     "p_value": 0.0001,
+     "repetitions": 9999,
+     "seed": 650,
+     "statistic": 7.070611555070204,
+     "weights": "rademacher"
+    }
+   },
+   "sessions_dropped": 5,
+   "without_event_weeks": {
+    "cluster_t": {
+     "clusters": 25,
+     "estimate": 0.0599839644365547,
+     "p_value": 1.342508194021689e-07,
+     "standard_error": 0.008152232193582137,
+     "statistic": 7.3579803680981035
+    },
+    "days": 25,
+    "newey_west": {
+     "clusters": 25,
+     "estimate": 0.0599839644365547,
+     "max_lag": 2,
+     "p_value": 1.1741058341881971e-05,
+     "standard_error": 0.010902984681482653,
+     "statistic": 5.501609530684742
+    },
+    "wild_rademacher": {
+     "ci_high": 0.07676734199091707,
+     "ci_low": 0.0428832615676413,
+     "clusters": 25,
+     "estimate": 0.0599839644365547,
+     "p_value": 0.0001,
+     "repetitions": 9999,
+     "seed": 650,
+     "statistic": 7.3579803680981035,
+     "weights": "rademacher"
+    }
+   }
+  }
+ },
+ "named_events": {
+  "2024-08-05": "yen-carry unwind volatility shock (VIX intraday ~65)",
+  "2024-09-18": "FOMC first cut of the easing cycle",
+  "2024-11-05": "US presidential election",
+  "2024-12-18": "FOMC hawkish-cut selloff",
+  "2025-06-13": "Middle East escalation risk-off",
+  "2026-07-29": "FOMC meeting inside prospective holdout"
+ },
+ "schema_version": "gate6-regimes-v1.0"
+}

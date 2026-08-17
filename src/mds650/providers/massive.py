@@ -114,6 +114,26 @@ class MassiveProvider:
             params["cursor"] = cursor
         return self._client.get_json(f"/v3/trades/{contract_id}", params=params)
 
+    def stock_minute_aggregates(
+        self,
+        ticker: str,
+        *,
+        from_date: str,
+        to_date: str,
+    ) -> ProviderResponse:
+        """Request one-minute stock aggregates for one bounded date window.
+
+        Gate 5.1 cross-provider bar reconciliation only: an independent second
+        source for underlying one-minute closes so the FMP bar-label convention
+        (assumption A001) can be pinned empirically.
+        """
+        if not isinstance(ticker, str) or not ticker:
+            raise ValueError("MASSIVE_TICKER_REQUIRED")
+        return self._client.get_json(
+            f"/v2/aggs/ticker/{ticker}/range/1/minute/{from_date}/{to_date}",
+            params={"adjusted": "true", "sort": "asc", "limit": 50_000},
+        )
+
     def directed_quotes(
         self,
         contract_id: str,
