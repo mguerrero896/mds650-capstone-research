@@ -342,3 +342,23 @@ Spec Kit consistency and preregistration gates pass.
    model/sample must appear beside it; (4) the bare word "confirmed" may not be used for any
    global effect while `confirmed_contrasts` is empty in the underlying artifact. The
    canonical cross-campaign numbers live in `docs/results_reconciliation_v2.md`.
+54. **D005 resolved: 2024 confirmation blocks remain exploratory (2026-08-17)** — The owner
+   confirmed in writing (2026-08-17 session message) that the two out-of-window 2024
+   evaluation blocks keep the `EXPLORATORY_RETROSPECTIVE` classification from decision 51 as
+   their final status. No window amendment will be made. In every deliverable they may be
+   described only as exploratory diagnostics; they carry no confirmatory weight. D005 is
+   closed.
+55. **D006 resolved: Phase 8 completion chosen; Validation A/B closed unread (2026-08-17)** —
+   The owner directed end-to-end resolution of the sealed cohorts and authorized storage on
+   `D:`. Actions executed the same day: (a) the Phase 8 blind-collector store was relocated
+   to `D:\MDS650\phase8_holdout` via a directory junction (paths unchanged;
+   `phase8_repro_gate.py` PASS after the move; `holdout_reads` remains 0); (b) catch-up
+   acquisition of the closed-but-uncollected August sessions was launched and the
+   `MDS650_Phase8A_BlindCollector` scheduled task was re-enabled (daily 18:00), which
+   completes 30/30 on 2026-08-29 for the frozen 2026-07-20..2026-08-28 calendar; (c)
+   Validation A (14/30 acquired) and Validation B (0/30) are `CLOSED_UNREAD_20260817`:
+   superseded by the B1v3 exposure-ledger design (decision 47) and the Phase 8 prospective
+   holdout; they may be cited as unopened seals, never as results. Phase 8 remains sealed:
+   no read is authorized until 30/30 completion plus an explicit one-shot authorization
+   recorded against the frozen method hash `87c818be…`. The decision-52 moratorium on new
+   retrospective campaigns remains in force. D006 is closed.

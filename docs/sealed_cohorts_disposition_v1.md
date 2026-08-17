@@ -1,6 +1,6 @@
 # Sealed-cohort disposition record (D006)
 
-Status: `OWNER_DECISION_PENDING`. Created 2026-08-17 under decision 52.
+Status: `RESOLVED_20260817` (decision 55). Created 2026-08-17 under decision 52.
 
 ## Inventory of sealed, unread cohorts
 
@@ -42,7 +42,9 @@ predate the B1v3 redesign and can be closed unread with the supersession documen
 
 | Date | Cohort | Decision (1/2) | Authorized by | Evidence |
 |---|---|---|---|---|
-| — | — | — | — | — |
+| 2026-08-17 | Phase 8 | 1 — complete under frozen gates | Owner (session message 2026-08-17) | Store junction to `D:\MDS650\phase8_holdout`; `phase8_repro_gate.py` PASS; catch-up launched; `MDS650_Phase8A_BlindCollector` re-enabled (daily 18:00); 30/30 lands 2026-08-29; reads remain 0 pending one-shot authorization |
+| 2026-08-17 | Validation A | 2 — `CLOSED_UNREAD_20260817` | Owner (session message 2026-08-17) | Superseded by decision 47 exposure-ledger design; 14 acquired sessions stay sealed as an unopened archive |
+| 2026-08-17 | Validation B | 2 — `CLOSED_UNREAD_20260817` | Owner (session message 2026-08-17) | Never acquired; role registry retained as design evidence only |
 
-Until every row above is filled, decision 52's moratorium on new retrospective campaigns
-remains in force.
+The decision-52 moratorium on **new** retrospective campaigns remains in force; completing
+Phase 8 under its already-frozen gate is not a new campaign.
