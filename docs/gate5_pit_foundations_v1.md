@@ -45,10 +45,11 @@ asset × NY hour, backfill **upper bound** (tape rows never observed live — th
 flow-alerts channel is a filtered subset, so unmatched rows bound backfill from above;
 stated in the artifact), and the revision rate among matched rows.
 
-**Gate-close condition:** evidence of the first real captured session
-(expected from the 2026-08-17 NY session; capture report lands 06:20 local
-2026-08-18). First reconciliation report expected on or after 2026-08-24. Gates 6–9
-proceed in parallel per the backlog.
+**Gate-close condition: MET (2026-08-18).** The first real session (2026-08-17 NY) was
+captured live: 1,634 records across all six assets, 0 poll errors, heartbeat fresh
+through the session (`MDS650_EXTERNAL_ROOT/uw_latency/sessions/2026-08-17/`,
+capture_report.json). First tape reconciliation expected on or after 2026-08-24 via the
+scheduled task.
 
 ## What this retires (and what it does not)
 
