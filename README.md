@@ -1,75 +1,171 @@
 # MDS650 — Point-in-Time Options Activity for RV30 Forecasting
 
-Este repositorio es la fuente modular y auditable del proyecto que estudia si el estado
-ordinario de las opciones y la actividad derivada de sus operaciones mejoran el pronóstico
-fuera de muestra de la varianza realizada durante los siguientes 30 minutos (`RV30`).
+Does what just happened in the options market help predict how much a stock will move
+over the next 30 minutes?
 
-## Estado verificable al 14 de agosto de 2026
+This repository holds the full research pipeline for my MDS650 capstone. It builds a
+point-in-time (PIT) panel from three commercial market-data providers, constructs nested
+information sets, and tests — under preregistered, one-read evaluation gates — whether
+conventional option prices (B1) and recent option-trade activity (B2) add out-of-sample
+predictive value for 30-minute realized variance (RV30) beyond what the stock and the
+broad market already reveal (B0).
 
-| Área | Estado |
-|---|---|
-| Objetivo | `RV30`: 31 cierres consecutivos producen exactamente 30 log-retornos de un minuto. |
-| Datos | FMP, Massive y Unusual Whales fueron auditados y materializados en paneles históricos; los datos pesados y licenciados viven fuera de Git. |
-| B1 frente a B0 | No está confirmado globalmente. La reevaluación forense vigente muestra dependencia del modelo y un resultado Gamma desfavorable. |
-| B2 frente a B1 | Existe una señal dirigida positiva con Gamma, pero LightGBM no la confirma y `confirmed_contrasts` sigue vacío. No es un edge universal. |
-| Timing PIT | La evidencia existente es válida bajo supuestos temporales registrados; no demuestra una latencia universal de publicación de los proveedores. |
-| Uso | Investigación académica solamente. No ejecuta órdenes, no constituye un backtest de P&L y no prueba rentabilidad operativa. |
+## The question, in plain terms
 
-La narración completa, el catálogo archivo por archivo, las uniones, los backfills, los
-modelos, los resultados, las brechas y el roadmap están en
-[`reports/MDS650_MASTER_PROJECT_DOSSIER.md`](reports/MDS650_MASTER_PROJECT_DOSSIER.md).
+At every five-minute mark of the New York trading session, freeze everything a forecaster
+could legitimately have known at that moment, then predict the realized variance of the
+next 30 one-minute returns. Compare three nested views of the world on identical origins:
 
-## Jerarquía de autoridad
+| Set | What it knows |
+|-----|---------------|
+| **B0** | Underlying price/volume history and market-wide state |
+| **B1** | B0 + conventional option state (ATM implied variance level and changes) |
+| **B2** | B1 + point-in-time option-trade activity (what was just traded, target-blind) |
 
-1. Artefactos inmutables, hashes, manifiestos y logs de ejecución.
-2. Contratos y especificación bajo `specs/001-pit-options-rv30/`.
-3. Decisiones y riesgos en `docs/methodology_decisions.md` y `docs/risk_register.md`.
-4. El expediente maestro como índice humano de las fuentes anteriores.
+If B2 beats B1 on data neither model has seen, recent option flow carries real
+information. If it doesn't, that is worth knowing too — a preregistered null is a valid
+result here, and the pipeline is built so that a null cannot be quietly tuned away.
 
-Una conclusión posterior no reescribe un artefacto anterior: lo clasifica como vigente,
-exploratorio, inválido, supersedido o de diagnóstico.
+## Findings at a glance (as of 2026-08-17)
 
-## Entorno y reproducción
+Honest summary, in the order the evidence deserves:
 
-- Runtime congelado: Python 3.12 con `uv` y `uv.lock`.
-- Código y documentación: repositorio Git local.
-- Datos pesados, ZIP licenciados, Parquet y cachés: `D:\MDS650`.
-- Secretos: variables de entorno; nunca código, notebooks, logs o manifiestos.
+1. **The only prospective, preregistered test returned null.** A 10-session holdout
+   (July 2026), sealed before collection and read exactly once, confirmed neither the B1
+   nor the B2 increment.
+2. **Retrospective evaluations show a recurring, model-specific B2 signal.** Under the
+   confirmatory Gamma GLM, the B2-over-B1 QLIKE improvement is positive and statistically
+   supported in several historical blocks (up to +0.053, robust to the five registered
+   timing sensitivities in the latest confirmation), **but the fixed LightGBM challenger
+   reverses or nulls it in every one of those samples.** The binding label is
+   `POSITIVE_BUT_NOT_GLOBALLY_CONFIRMED`.
+3. **Conventional option state (B1) does not reliably beat B0** at this horizon; the
+   contrast flips sign across periods, assets, and model families.
 
-Puerta local mínima:
+The cross-campaign reconciliation — every contrast, every model, every protocol freeze
+date — lives in [`docs/results_reconciliation_v2.md`](docs/results_reconciliation_v2.md).
+The claim rules that every deliverable must follow are decision 53 in
+[`docs/methodology_decisions.md`](docs/methodology_decisions.md).
 
-```powershell
-uv sync --frozen
-uv run pytest -q
+## How the pipeline works
+
+```mermaid
+flowchart LR
+    subgraph Providers
+        FMP["FMP<br/>1-min bars, rates"]
+        MSV["Massive<br/>option quotes (NBBO)"]
+        UW["Unusual Whales<br/>option trade tape"]
+    end
+
+    subgraph PIT["PIT panel construction"]
+        AUD["Authenticated audits<br/>+ timestamp contracts"]
+        ORG["5-minute forecast origins<br/>XNYS calendar"]
+        TGT["RV30 targets<br/>30 one-minute log returns"]
+    end
+
+    subgraph Sets["Nested information sets"]
+        B0["B0: underlying + market"]
+        B1["B1: + ATM implied variance"]
+        B2["B2: + trade activity (target-blind)"]
+    end
+
+    subgraph Eval["Preregistered evaluation"]
+        FRZ["Hash-sealed method freeze"]
+        MDL["Gamma GLM (confirmatory)<br/>LightGBM (fixed challenger)<br/>persistence / HAR / Ridge"]
+        OOS["Chronological folds<br/>30-min purge/embargo"]
+        HLD["One-read sealed holdouts<br/>access ledgers"]
+    end
+
+    FMP --> AUD
+    MSV --> AUD
+    UW --> AUD
+    AUD --> ORG --> TGT
+    ORG --> B0 --> B1 --> B2
+    TGT --> FRZ
+    B2 --> FRZ
+    FRZ --> MDL --> OOS --> HLD
+    HLD --> RES["QLIKE contrasts<br/>day-clustered bootstrap + Holm"]
+```
+
+Every result flows through the same discipline: the protocol is frozen and hashed before
+outcomes are visible, sealed holdouts are opened exactly once under an access ledger, and
+negative results stay in the record with the same weight as positive ones.
+
+## Where things live
+
+```
+src/mds650/          Typed library (mypy --strict): providers, PIT panel, targets,
+                     features, models, evaluation, freeze/ledger machinery
+scripts/             Phase runners, acquisition, freezes, audits (~70 scripts)
+tests/               1,000+ tests: unit, contract (artifact/freeze locks), e2e
+specs/001-.../       Spec Kit: requirements, plan, tasks, JSON-schema contracts
+docs/                Methodology decisions (binding, numbered), risk register,
+                     results reconciliation, PIT timing contracts, execution plans
+artifacts/           Committed governance evidence: preregistrations, manifests,
+                     hashes, results JSONs, access ledgers
+reports/             Handoffs, literature packages, master dossier, proposal draft
+```
+
+Heavy commercial-derived evidence (raw provider payloads, large panels) is **not** in
+git — see the next section.
+
+## Getting started
+
+Requirements: Python 3.12, [uv](https://docs.astral.sh/uv/), Windows or Linux.
+
+```bash
+uv sync --locked          # reproduce the exact environment from uv.lock
+uv run pytest -q          # full suite; evidence tests skip without the mount below
 uv run ruff check src scripts tests
 uv run mypy src scripts
 ```
 
-La reproducción académica sin licencias usa fixtures sanitizados. La reproducción completa
-requiere credenciales y derechos vigentes de los tres proveedores, además de respetar los
-manifiestos, calendarios, cutoffs y puertas de almacenamiento registrados.
+Two environment variables control access to non-versioned research evidence:
 
-## Estado tras la consolidación del 17 de agosto de 2026
+| Variable | Meaning |
+|----------|---------|
+| `MDS650_DATA_ROOT` | Root of bulk licensed data (default `D:\MDS650`) |
+| `MDS650_EVIDENCE_ROOT` | Mount point of the byte-faithful evidence tree; when set, ~70 additional contract tests verify frozen artifact hashes against it |
 
-- `main` es la única rama canónica (decisión 50); el estado sucio pre-consolidación quedó
-  preservado íntegro en `archive/meeting-dirty-20260816` y en
-  `D:\MDS650\backups\repo_20260817\`. Registro completo:
-  [`docs/consolidation_record_20260817.md`](docs/consolidation_record_20260817.md).
-- `B1v3` completó su confirmación one-read el 14 de agosto (decisión 48): resultado
-  vinculante `POSITIVE_BUT_NOT_GLOBALLY_CONFIRMED` — incremento B2 positivo y robusto a las
-  cinco sensibilidades de timing bajo Gamma, invertido bajo LightGBM; B1v3a no supera a B0.
-- La vista canónica de todas las campañas está en
-  [`docs/results_reconciliation_v2.md`](docs/results_reconciliation_v2.md); la jerarquía de
-  reporte vinculante es la decisión 53.
-- Cohortes selladas (Validation A/B, Phase 8): disposición pendiente del propietario (D006,
-  [`docs/sealed_cohorts_disposition_v1.md`](docs/sealed_cohorts_disposition_v1.md));
-  moratoria de nuevas campañas retrospectivas (decisión 52).
-- Evidencia pesada montada en `D:\MDS650\evidence_root` (`MDS650_EVIDENCE_ROOT`);
-  `MDS650_DATA_ROOT=D:\MDS650`.
+Without the mounts the suite still runs — evidence-bound tests skip transparently with
+an explicit reason rather than failing or silently passing.
 
-## Nota sobre el notebook
+## Data availability
 
-`notebooks/MDS650_Research_Pipeline.ipynb` es una plantilla de orquestación para
-Colab/entornos hospedados. Nunca ha sido ejecutado de extremo a extremo y no es la vía de
-reproducción de ningún resultado reportado; la reproducción real usa los scripts y las
-puertas descritas arriba. No lo cites como pipeline ejecutado.
+The study uses licensed commercial data (FMP, Unusual Whales, Massive) that cannot be
+redistributed. Reproducibility is handled at two levels, following the registered
+controlled-auditability contract:
+
+- **With equivalent licenses:** the frozen pipeline re-runs end to end from raw
+  acquisition; every step is manifest- and hash-bound.
+- **Without licenses:** code, JSON-schema contracts, sanitized fixtures, frozen session
+  and asset registries, SHA-256 evidence indices, missingness reports, and aggregate
+  results allow full audit of *process* without access to raw vendor rows.
+
+Raw payloads, credentials, and bulk caches never enter git; the ignore rules and a
+contract test enforce that no API key or bearer token appears in tracked files.
+
+## Research governance
+
+The repository treats process integrity as a first-class deliverable:
+
+- **Numbered binding decisions** (53 so far) in `docs/methodology_decisions.md` — every
+  methodological choice, window, and claim boundary is written down before it matters.
+- **Risk register** (`docs/risk_register.md`, R-001…R-024) — including the uncomfortable
+  ones: campaign-level multiplicity, confirmatory-model calibration pathology, and the
+  two provider-timing assumptions that remain unproven.
+- **Sealed cohorts** (Validation A/B, Phase 8 prospective holdout) — zero scientific
+  reads; their disposition is an explicit owner decision
+  (`docs/sealed_cohorts_disposition_v1.md`), and new retrospective campaigns are under
+  moratorium until it is made.
+- **Consolidation record** (`docs/consolidation_record_20260817.md`) — full audit trail
+  of the 2026-08-17 repository consolidation, with off-machine backups.
+
+## Status
+
+Active capstone research, single-author, private. The proposal draft is at
+[`reports/proposal_draft_v1.md`](reports/proposal_draft_v1.md); the next scientific step
+is an owner decision between completing the sealed prospective holdout (Phase 8) or
+closing it formally — the analysis code is ready either way.
+
+**Author:** Miguel Guerrero · MDS650 Capstone · 2026
