@@ -64,6 +64,19 @@ Any headline p-value must be presented next to this count.
 5. No campaign may be described with the bare word "confirmed" while its
    `confirmed_contrasts` array is empty (C3, C4).
 
+## Studentized inference addendum (2026-08-17, Gate 1)
+
+The sign-bootstrap p-values above saturate at 2/(N+1). Studentized statistics
+(cluster t, Newey-West/DM, wild cluster bootstrap-t), the formal Gamma-minus-LightGBM
+interaction test, per-campaign Model Confidence Sets, serial-dependence diagnostics and
+Gelman-Carlin design analysis now live in `docs/gate1_inference_hardening_v1.md` with
+the machine-readable artifact `artifacts/gate1_inference/results.json`. Headlines:
+every retrospectively significant Gamma B2 contrast survives HAC and wild-bootstrap
+correction; the interaction is significant in every retrospective sample and null in
+the prospective C2 holdout; the Gamma family never enters any Model Confidence Set
+(C6's sole survivor is LightGBM|B0). Any headline p-value quoted from this file should
+be accompanied by its studentized counterpart.
+
 Artifacts: `artifacts/phase5/{development,holdout}_results.json`,
 `artifacts/phase6/results.json` (evidence root), `artifacts/independent_replication/independent_results.json`,
 `artifacts/independent_replication_pit_v2/results.json`,

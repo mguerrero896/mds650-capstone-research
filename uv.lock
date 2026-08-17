@@ -266,6 +266,7 @@ dependencies = [
     { name = "pydantic" },
     { name = "pydantic-settings" },
     { name = "scikit-learn" },
+    { name = "scipy" },
     { name = "tzdata" },
 ]
 
@@ -291,6 +292,7 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.12,<3" },
     { name = "pydantic-settings", specifier = ">=2.11,<3" },
     { name = "scikit-learn", specifier = ">=1.7,<2" },
+    { name = "scipy", specifier = ">=1.14,<2" },
     { name = "tzdata", specifier = ">=2025.2,<2027" },
 ]
 
