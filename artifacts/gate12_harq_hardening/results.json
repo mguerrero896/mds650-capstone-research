@@ -1,0 +1,273 @@
+{
+ "design_a_panel_har": {
+  "era_2024H2_c6panel": {
+   "lightgbm": {
+    "B0HAR->B1": {
+     "clusters": 51,
+     "estimate": -0.000543111618733066,
+     "p_value": 0.8423095912085607,
+     "p_wild": 0.8416,
+     "standard_error": 0.0027158685276359113,
+     "statistic": -0.19997713924901572
+    },
+    "B0HAR->B2_total": {
+     "clusters": 51,
+     "estimate": 0.0027204807466705413,
+     "p_value": 0.4020187388776863,
+     "p_wild": 0.4024,
+     "standard_error": 0.0032186944667704164,
+     "statistic": 0.8452124843648877
+    },
+    "B1->B2": {
+     "clusters": 51,
+     "estimate": 0.0032635923654036033,
+     "p_value": 0.038113333852347366,
+     "p_wild": 0.0377,
+     "standard_error": 0.0015321798624896694,
+     "statistic": 2.130032149163302
+    }
+   },
+   "log_ols": {
+    "B0HAR->B1": {
+     "clusters": 51,
+     "estimate": 0.004719484146026532,
+     "p_value": 0.5328871182249652,
+     "p_wild": 0.5347,
+     "standard_error": 0.007515565438128724,
+     "statistic": 0.6279612871285998
+    },
+    "B0HAR->B2_total": {
+     "clusters": 51,
+     "estimate": 0.029248680743272564,
+     "p_value": 0.004213082241400841,
+     "p_wild": 0.0028,
+     "standard_error": 0.009752728244080683,
+     "statistic": 2.999025504583781
+    },
+    "B1->B2": {
+     "clusters": 51,
+     "estimate": 0.024529196597246027,
+     "p_value": 2.558665903757305e-05,
+     "p_wild": 0.0001,
+     "standard_error": 0.0052884516540377515,
+     "statistic": 4.638256752998375
+    }
+   },
+   "rows": 31582
+  },
+  "era_2025H1_c4cpanel": {
+   "lightgbm": {
+    "B0HAR->B1": {
+     "clusters": 38,
+     "estimate": 0.016136593147651635,
+     "p_value": 0.01657729911084946,
+     "p_wild": 0.0032,
+     "standard_error": 0.006429004643416679,
+     "statistic": 2.5099675677129207
+    },
+    "B0HAR->B2_total": {
+     "clusters": 38,
+     "estimate": 0.017475556685003144,
+     "p_value": 0.00237383871979134,
+     "p_wild": 0.0001,
+     "standard_error": 0.005355408133755986,
+     "statistic": 3.2631605749806334
+    },
+    "B1->B2": {
+     "clusters": 38,
+     "estimate": 0.0013389635373515052,
+     "p_value": 0.5193126091855645,
+     "p_wild": 0.5203,
+     "standard_error": 0.002057984430149505,
+     "statistic": 0.6506188860011124
+    }
+   },
+   "log_ols": {
+    "B0HAR->B1": {
+     "clusters": 38,
+     "estimate": 0.023363011297113892,
+     "p_value": 0.00585973698539338,
+     "p_wild": 0.0058,
+     "standard_error": 0.007988615780653522,
+     "statistic": 2.9245381100557375
+    },
+    "B0HAR->B2_total": {
+     "clusters": 38,
+     "estimate": 0.05740262302737002,
+     "p_value": 0.0009509372367065039,
+     "p_wild": 0.0001,
+     "standard_error": 0.01598328715591671,
+     "statistic": 3.5914153620221145
+    },
+    "B1->B2": {
+     "clusters": 38,
+     "estimate": 0.034039611730256124,
+     "p_value": 0.005736902552398882,
+     "p_wild": 0.0003,
+     "standard_error": 0.011607007763124335,
+     "statistic": 2.932677605196454
+    }
+   },
+   "rows": 24954
+  },
+  "era_2025H2_2026Q1_p6panel": {
+   "lightgbm": {
+    "B0HAR->B1": {
+     "clusters": 93,
+     "estimate": 0.00576453242372259,
+     "p_value": 0.0169904911955555,
+     "p_wild": 0.0145,
+     "standard_error": 0.0023711454786672476,
+     "statistic": 2.4311171438382884
+    },
+    "B0HAR->B2_total": {
+     "clusters": 93,
+     "estimate": 0.008903136349794337,
+     "p_value": 9.24572331846067e-06,
+     "p_wild": 0.0001,
+     "standard_error": 0.001895979709804058,
+     "statistic": 4.695797272384545
+    },
+    "B1->B2": {
+     "clusters": 93,
+     "estimate": 0.0031386039260717447,
+     "p_value": 0.0051735548501221605,
+     "p_wild": 0.0035,
+     "standard_error": 0.0010956753054334276,
+     "statistic": 2.864538344989143
+    }
+   },
+   "log_ols": {
+    "B0HAR->B1": {
+     "clusters": 93,
+     "estimate": 0.012813227468152022,
+     "p_value": 0.04906668998217689,
+     "p_wild": 0.0277,
+     "standard_error": 0.006424555593361838,
+     "statistic": 1.9944145991033635
+    },
+    "B0HAR->B2_total": {
+     "clusters": 93,
+     "estimate": 0.019642639160025767,
+     "p_value": 0.0020427962068590854,
+     "p_wild": 0.0001,
+     "standard_error": 0.006187879802327126,
+     "statistic": 3.174373095068621
+    },
+    "B1->B2": {
+     "clusters": 93,
+     "estimate": 0.006829411691873746,
+     "p_value": 0.0036659889266816483,
+     "p_wild": 0.0031,
+     "standard_error": 0.002290280804152382,
+     "statistic": 2.98191020048359
+    }
+   },
+   "rows": 59358
+  },
+  "era_2026H1_devpanel": {
+   "lightgbm": {
+    "B0HAR->B1": {
+     "clusters": 45,
+     "estimate": -0.0014377698315145438,
+     "p_value": 0.6813747138311588,
+     "p_wild": 0.6925,
+     "standard_error": 0.0034785299131936515,
+     "statistic": -0.41332685571029687
+    },
+    "B0HAR->B2_total": {
+     "clusters": 45,
+     "estimate": 0.009173011706976686,
+     "p_value": 0.012043642216956809,
+     "p_wild": 0.0073,
+     "standard_error": 0.0035021072482414274,
+     "statistic": 2.6192834932690556
+    },
+    "B1->B2": {
+     "clusters": 45,
+     "estimate": 0.010610781538491229,
+     "p_value": 0.004628898099773686,
+     "p_wild": 0.0032,
+     "standard_error": 0.0035558273111736967,
+     "statistic": 2.9840542326530626
+    }
+   },
+   "log_ols": {
+    "B0HAR->B1": {
+     "clusters": 45,
+     "estimate": -0.0018551707006892538,
+     "p_value": 0.44205284723003435,
+     "p_wild": 0.4545,
+     "standard_error": 0.002391488229575296,
+     "statistic": -0.7757390054220393
+    },
+    "B0HAR->B2_total": {
+     "clusters": 45,
+     "estimate": -0.002988818790695649,
+     "p_value": 0.36464409078023985,
+     "p_wild": 0.4115,
+     "standard_error": 0.003262792192569326,
+     "statistic": -0.91603099869565
+    },
+    "B1->B2": {
+     "clusters": 45,
+     "estimate": -0.0011336480900063948,
+     "p_value": 0.5454826126588883,
+     "p_wild": 0.5618,
+     "standard_error": 0.00186068384590046,
+     "statistic": -0.6092642189075258
+    }
+   },
+   "rows": 36273
+  }
+ },
+ "design_b_true_harq_dev": {
+  "log_ols": {
+   "B1->B2": {
+    "clusters": 45,
+    "estimate": -0.00016511195693131114,
+    "p_value": 0.9175144052563734,
+    "p_wild": 0.9175,
+    "standard_error": 0.0015851508099706682,
+    "statistic": -0.10416167085980065
+   },
+   "HARQ->B1": {
+    "clusters": 45,
+    "estimate": -0.0018157628255552484,
+    "p_value": 0.1159544108039375,
+    "p_wild": 0.1051,
+    "standard_error": 0.0011322943976421421,
+    "statistic": -1.6036137150694567
+   },
+   "HARQ->B2_total": {
+    "clusters": 45,
+    "estimate": -0.001980874782486559,
+    "p_value": 0.38257917564881644,
+    "p_wild": 0.384,
+    "standard_error": 0.0022459338146218243,
+    "statistic": -0.8819827056302207
+   }
+  },
+  "rows": 28787
+ },
+ "inputs": {
+  "era_2024H2_c6panel": {
+   "path": "D:\\MDS650\\b1v3_confirmation\\evaluation\\evaluation_panel.parquet",
+   "sha256": "d688000d86d5752ab5d553d4616f7ea94f301f7e148b81c1aa2044e16db6d3dd"
+  },
+  "era_2025H1_c4cpanel": {
+   "path": "D:\\MDS650\\independent_replication_30\\derived\\pit_v2_evaluation\\common_complete_90d_pit_v2.parquet",
+   "sha256": "e0686f0ee3f4cd119d7d6399182498fa405873325f8007d59ed3ac72ddda1fda"
+  },
+  "era_2025H2_2026Q1_p6panel": {
+   "path": "D:\\MDS650\\evidence_root\\artifacts\\phase6\\common_panel.parquet",
+   "sha256": "8ba5f0c8e736d27fe78e1887cc4cfc37e2dfbd7f3b6546d1ddf1fe75a782da32"
+  },
+  "era_2026H1_devpanel": {
+   "path": "C:\\Users\\mguer\\Dev\\MDS650-Capstone\\artifacts\\phase5\\common_development_80d.parquet",
+   "sha256": "e5b9e04296d6dacd6c1321b760e1a253a47fcf67055a4e41b9d2c6a8b00c77da"
+  }
+ },
+ "label": "EXPLORATORY_DESCRIPTIVE (decision 56 follow-up)",
+ "schema_version": "gate12-harq-hardening-v1.0"
+}

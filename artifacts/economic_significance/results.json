@@ -1,0 +1,212 @@
+{
+ "annualization_windows_per_year": 3276.0,
+ "campaigns": {
+  "C4c_replication_2025": {
+   "input_sha256": "825359140c3f29350e1927f76b3c00e91e892d638697460a35ecf72e37c50535",
+   "models": {
+    "gamma_glm_confirmatory": {
+     "cells": {
+      "B0v2": {
+       "median_actual_vol_annual_points": 15.434357492415646,
+       "toy_hedge_cost_usd_per_window": 0.8659051826004266,
+       "vol_mae_annual_points": 5.838946542613844,
+       "vol_rmse_annual_points": 8.475490374761954
+      },
+      "B1v2a": {
+       "median_actual_vol_annual_points": 15.434357492415646,
+       "toy_hedge_cost_usd_per_window": 1.3609136269385742,
+       "vol_mae_annual_points": 8.964484479537608,
+       "vol_rmse_annual_points": 10.921687860481718
+      },
+      "B2v2": {
+       "median_actual_vol_annual_points": 15.434357492415646,
+       "toy_hedge_cost_usd_per_window": 1.2751323682679545,
+       "vol_mae_annual_points": 8.272509712366523,
+       "vol_rmse_annual_points": 10.398601054178174
+      }
+     },
+     "improvement": {
+      "toy_hedge_saving_usd_per_window_B1_to_B2": 0.0857812586706197,
+      "vol_rmse_reduction_B0_to_B2_pct": -22.690258550027952,
+      "vol_rmse_reduction_B1_to_B2_pct": 4.789431935664864
+     }
+    },
+    "lightgbm_robustness": {
+     "cells": {
+      "B0v2": {
+       "median_actual_vol_annual_points": 15.434357492415646,
+       "toy_hedge_cost_usd_per_window": 0.7201631843167468,
+       "vol_mae_annual_points": 4.696647343101663,
+       "vol_rmse_annual_points": 6.8723216904868725
+      },
+      "B1v2a": {
+       "median_actual_vol_annual_points": 15.434357492415646,
+       "toy_hedge_cost_usd_per_window": 0.7030786656820458,
+       "vol_mae_annual_points": 4.5210436724105305,
+       "vol_rmse_annual_points": 6.885239894414682
+      },
+      "B2v2": {
+       "median_actual_vol_annual_points": 15.434357492415646,
+       "toy_hedge_cost_usd_per_window": 0.7036053747180028,
+       "vol_mae_annual_points": 4.52405380010597,
+       "vol_rmse_annual_points": 6.88337914314414
+      }
+     },
+     "improvement": {
+      "toy_hedge_saving_usd_per_window_B1_to_B2": -0.0005267090359569737,
+      "vol_rmse_reduction_B0_to_B2_pct": -0.1608983565564718,
+      "vol_rmse_reduction_B1_to_B2_pct": 0.02702522060345145
+     }
+    }
+   }
+  },
+  "C5_blocks_2024": {
+   "input_sha256": "db20b76248afce02e04009c510b408214d267a30e7cff3f8dc184d370574ce8b",
+   "models": {
+    "gamma_glm": {
+     "cells": {
+      "B0": {
+       "median_actual_vol_annual_points": 17.097742713421795,
+       "toy_hedge_cost_usd_per_window": 10356540662.797068,
+       "vol_mae_annual_points": 13693.174708316576,
+       "vol_rmse_annual_points": 1841954.8578880273
+      },
+      "B1a": {
+       "median_actual_vol_annual_points": 17.097742713421795,
+       "toy_hedge_cost_usd_per_window": 5846146813.624027,
+       "vol_mae_annual_points": 10430.61247268517,
+       "vol_rmse_annual_points": 1383905.3000919733
+      },
+      "B2": {
+       "median_actual_vol_annual_points": 17.097742713421795,
+       "toy_hedge_cost_usd_per_window": 749973.9810498361,
+       "vol_mae_annual_points": 146.62561890508022,
+       "vol_rmse_annual_points": 15672.940770761244
+      }
+     },
+     "improvement": {
+      "toy_hedge_saving_usd_per_window_B1_to_B2": 5845396839.642978,
+      "vol_rmse_reduction_B0_to_B2_pct": 99.14911374165099,
+      "vol_rmse_reduction_B1_to_B2_pct": 98.86748459090953
+     }
+    },
+    "har_rv": {
+     "cells": {
+      "B0": {
+       "median_actual_vol_annual_points": 17.097742713421795,
+       "toy_hedge_cost_usd_per_window": 3584.1802560861424,
+       "vol_mae_annual_points": 26.467393585604864,
+       "vol_rmse_annual_points": 1080.8134122979063
+      },
+      "B1a": {
+       "median_actual_vol_annual_points": 17.097742713421795,
+       "toy_hedge_cost_usd_per_window": 3894.1479808562867,
+       "vol_mae_annual_points": 27.32850071498915,
+       "vol_rmse_annual_points": 1126.6775948794807
+      },
+      "B2": {
+       "median_actual_vol_annual_points": 17.097742713421795,
+       "toy_hedge_cost_usd_per_window": 1575.0722184215776,
+       "vol_mae_annual_points": 15.922111587248741,
+       "vol_rmse_annual_points": 715.8589864807218
+      }
+     },
+     "improvement": {
+      "toy_hedge_saving_usd_per_window_B1_to_B2": 2319.075762434709,
+      "vol_rmse_reduction_B0_to_B2_pct": 33.7666447940592,
+      "vol_rmse_reduction_B1_to_B2_pct": 36.46283641973937
+     }
+    },
+    "lightgbm": {
+     "cells": {
+      "B0": {
+       "median_actual_vol_annual_points": 17.097742713421795,
+       "toy_hedge_cost_usd_per_window": 0.9056567848581524,
+       "vol_mae_annual_points": 5.247822114766305,
+       "vol_rmse_annual_points": 8.295280725178706
+      },
+      "B1a": {
+       "median_actual_vol_annual_points": 17.097742713421795,
+       "toy_hedge_cost_usd_per_window": 0.8325235759892048,
+       "vol_mae_annual_points": 4.691663970254082,
+       "vol_rmse_annual_points": 7.465293297503255
+      },
+      "B2": {
+       "median_actual_vol_annual_points": 17.097742713421795,
+       "toy_hedge_cost_usd_per_window": 0.8614375400268959,
+       "vol_mae_annual_points": 4.907469195299945,
+       "vol_rmse_annual_points": 7.680638201585385
+      }
+     },
+     "improvement": {
+      "toy_hedge_saving_usd_per_window_B1_to_B2": -0.028913964037691087,
+      "vol_rmse_reduction_B0_to_B2_pct": 7.409544582713084,
+      "vol_rmse_reduction_B1_to_B2_pct": -2.884614113609595
+     }
+    }
+   }
+  },
+  "C6_b1v3_2024": {
+   "input_sha256": "a3fd362db6b34cf53225b76f37132174298a421afa754dff4563422b552a496c",
+   "models": {
+    "gamma_glm_confirmatory": {
+     "cells": {
+      "B0": {
+       "median_actual_vol_annual_points": 16.02616210555504,
+       "toy_hedge_cost_usd_per_window": 0.8882291184534523,
+       "vol_mae_annual_points": 5.546114908018325,
+       "vol_rmse_annual_points": 9.452180467248915
+      },
+      "B1v3a": {
+       "median_actual_vol_annual_points": 16.02616210555504,
+       "toy_hedge_cost_usd_per_window": 0.9063666716433467,
+       "vol_mae_annual_points": 5.659000848959284,
+       "vol_rmse_annual_points": 9.750434320531093
+      },
+      "B2": {
+       "median_actual_vol_annual_points": 16.02616210555504,
+       "toy_hedge_cost_usd_per_window": 0.8840051637002079,
+       "vol_mae_annual_points": 5.461048507721555,
+       "vol_rmse_annual_points": 9.451969467249189
+      }
+     },
+     "improvement": {
+      "toy_hedge_saving_usd_per_window_B1_to_B2": 0.022361507943138847,
+      "vol_rmse_reduction_B0_to_B2_pct": 0.002232289157594094,
+      "vol_rmse_reduction_B1_to_B2_pct": 3.061041626150329
+     }
+    },
+    "lightgbm_robustness": {
+     "cells": {
+      "B0": {
+       "median_actual_vol_annual_points": 16.02616210555504,
+       "toy_hedge_cost_usd_per_window": 0.586237201976444,
+       "vol_mae_annual_points": 3.628617595033164,
+       "vol_rmse_annual_points": 5.587004161067162
+      },
+      "B1v3a": {
+       "median_actual_vol_annual_points": 16.02616210555504,
+       "toy_hedge_cost_usd_per_window": 0.5915639679490461,
+       "vol_mae_annual_points": 3.671785351297215,
+       "vol_rmse_annual_points": 5.6480461456010405
+      },
+      "B2": {
+       "median_actual_vol_annual_points": 16.02616210555504,
+       "toy_hedge_cost_usd_per_window": 0.5954981920970517,
+       "vol_mae_annual_points": 3.706055688560894,
+       "vol_rmse_annual_points": 5.719510885570571
+      }
+     },
+     "improvement": {
+      "toy_hedge_saving_usd_per_window_B1_to_B2": -0.003934224148005594,
+      "vol_rmse_reduction_B0_to_B2_pct": -2.3716954683294826,
+      "vol_rmse_reduction_B1_to_B2_pct": -1.2653002140428824
+     }
+    }
+   }
+  }
+ },
+ "label": "TOY / DESCRIPTIVE - no execution, prices, costs, or profitability claim",
+ "schema_version": "economic-significance-v1.0",
+ "toy_notional_usd": 100000.0
+}
