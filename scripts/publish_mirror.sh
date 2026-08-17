@@ -14,6 +14,8 @@ git fast-export --all --reencode=yes | git -C "$MIRROR" fast-import --quiet
 CANON_TREE=$(git rev-parse main^{tree})
 MIRROR_TREE=$(git -C "$MIRROR" rev-parse main^{tree})
 [ "$CANON_TREE" = "$MIRROR_TREE" ] || { echo "TREE MISMATCH: $CANON_TREE vs $MIRROR_TREE" >&2; exit 1; }
-git -C "$MIRROR" push --force "$REMOTE" --all
+# Single-branch policy (owner decision 2026-08-17): publish only main plus tags.
+# Historical tips travel as history/* tags; operational branches stay local.
+git -C "$MIRROR" push --force "$REMOTE" main
 git -C "$MIRROR" push --force "$REMOTE" --tags
 echo "mirror published: canonical $(git rev-parse --short main) -> mirror $(git -C "$MIRROR" rev-parse --short main)"
