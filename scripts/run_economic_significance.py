@@ -61,7 +61,7 @@ def _sha256(path: Path) -> str:
 
 
 def _vol_annual(rv30: np.ndarray) -> np.ndarray:
-    return np.sqrt(np.maximum(rv30, 0.0) * WINDOWS_PER_YEAR)
+    return np.asarray(np.sqrt(np.maximum(rv30, 0.0) * WINDOWS_PER_YEAR), dtype=np.float64)
 
 
 def _metrics(frame: pl.DataFrame) -> dict[str, float]:
