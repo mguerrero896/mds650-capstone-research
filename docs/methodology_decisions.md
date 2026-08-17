@@ -362,3 +362,19 @@ Spec Kit consistency and preregistration gates pass.
    no read is authorized until 30/30 completion plus an explicit one-shot authorization
    recorded against the frozen method hash `87c818be…`. The decision-52 moratorium on new
    retrospective campaigns remains in force. D006 is closed.
+56. **Owner-directed exploratory era-information mapping and positive-findings
+   formalization (2026-08-18)** — The owner directed (session goal, 2026-08-18) an
+   end-to-end search for the strongest defensible positive characterization of the
+   project's results. Scope authorized: (a) formalizing, with the Gate-1 studentized
+   machinery, the cross-family positive contrasts already present in frozen, previously
+   read artifacts — in particular the 2024-block B0→B1a and total B0→B2 contrasts that
+   are positive across all five model families; (b) an era-information map re-analyzing
+   the four existing frozen feature panels (C6 2024-08..12, C4c 2025-03..07, Phase 6
+   2025-08..2026-03, development 2026-03..07) with three fixed-hyperparameter model
+   families and nested B0/B1/B2 ladders under within-era walk-forward, to measure how
+   option-information content varies over time. Both carry the label
+   `EXPLORATORY_DESCRIPTIVE`: they re-analyze already-read data, involve no sealed
+   cohort, no new provider acquisition, and no confirmatory weight. The decision-53
+   reporting hierarchy (prospective null first) and the decision-52 moratorium on new
+   confirmatory retrospective campaigns remain fully in force. Result signs are reported
+   exactly as computed; this decision authorizes the analysis, not any outcome.

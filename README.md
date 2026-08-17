@@ -39,8 +39,16 @@ Honest summary, in the order the evidence deserves:
    timing sensitivities in the latest confirmation), **but the fixed LightGBM challenger
    reverses or nulls it in every one of those samples.** The binding label is
    `POSITIVE_BUT_NOT_GLOBALLY_CONFIRMED`.
-3. **Conventional option state (B1) does not reliably beat B0** at this horizon; the
-   contrast flips sign across periods, assets, and model families.
+3. **Conventional option state (B1) does not reliably beat B0** under the frozen
+   campaign designs; the contrast flips sign across periods, assets, and model families.
+4. **Exploratory, but model-robust: the *total* option-information contribution
+   (B0→B2) is positive across families in most eras.** In the 2024 blocks it is
+   significantly positive in 5/5 families, and a uniform three-family ladder over the
+   frozen panels shows 3/3-family positive totals across 2025-03..2026-03 (229
+   sessions, wild p ≤ 2e−4), concentrated in option state and fading toward null in
+   2026 (`docs/positive_findings_v1.md`, decision 56). The family-dependence headline
+   is partly a property of the frozen confirmatory design, not of option information
+   itself.
 
 The cross-campaign reconciliation — every contrast, every model, every protocol freeze
 date — lives in [`docs/results_reconciliation_v2.md`](docs/results_reconciliation_v2.md).

@@ -1,0 +1,355 @@
+{
+ "design": "3 fixed families x nested B0/B1/B2, within-era walk-forward 40%/10",
+ "eras": {
+  "era_2024H2_c6panel": {
+   "contrasts": {
+    "lightgbm|B0->B1": {
+     "clusters": 54,
+     "estimate": -0.004395157149711746,
+     "p_value": 0.5316073569443567,
+     "p_wild": 0.6007,
+     "standard_error": 0.00697995373784727,
+     "statistic": -0.6296828481655931
+    },
+    "lightgbm|B0->B2_total": {
+     "clusters": 54,
+     "estimate": 0.0003983092909333761,
+     "p_value": 0.9578942408447969,
+     "p_wild": 0.98,
+     "standard_error": 0.007508671060962376,
+     "statistic": 0.053046576111742114
+    },
+    "lightgbm|B1->B2": {
+     "clusters": 54,
+     "estimate": 0.004793466440645127,
+     "p_value": 0.006522409822395483,
+     "p_wild": 0.0036,
+     "standard_error": 0.001692500797264924,
+     "statistic": 2.8321797238685815
+    },
+    "log_ols|B0->B1": {
+     "clusters": 54,
+     "estimate": -0.009753581793793953,
+     "p_value": 0.02037040648075997,
+     "p_wild": 0.0165,
+     "standard_error": 0.004078758389217673,
+     "statistic": -2.3913114882160844
+    },
+    "log_ols|B0->B2_total": {
+     "clusters": 54,
+     "estimate": -0.0020050100779890846,
+     "p_value": 0.5563563282889138,
+     "p_wild": 0.559,
+     "standard_error": 0.0033867435681359482,
+     "statistic": -0.5920170918321505
+    },
+    "log_ols|B1->B2": {
+     "clusters": 54,
+     "estimate": 0.007748571715804869,
+     "p_value": 3.6940916462586167e-09,
+     "p_wild": 0.0001,
+     "standard_error": 0.0010984879267572237,
+     "statistic": 7.0538524157283495
+    },
+    "ridge|B0->B1": {
+     "clusters": 54,
+     "estimate": -0.009737982334931629,
+     "p_value": 0.02029844842226189,
+     "p_wild": 0.0163,
+     "standard_error": 0.004069778814076769,
+     "statistic": -2.3927546876133348
+    },
+    "ridge|B0->B2_total": {
+     "clusters": 54,
+     "estimate": -0.001992718644247971,
+     "p_value": 0.5580946760011012,
+     "p_wild": 0.5607,
+     "standard_error": 0.0033809058309469046,
+     "statistic": -0.5894037704356474
+    },
+    "ridge|B1->B2": {
+     "clusters": 54,
+     "estimate": 0.007745263690683659,
+     "p_value": 3.5413427911490667e-09,
+     "p_wild": 0.0001,
+     "standard_error": 0.0010962482438531302,
+     "statistic": 7.065246155798021
+    }
+   },
+   "excluded_fully_null_features": [],
+   "first_session": "2024-08-02",
+   "last_session": "2024-12-09",
+   "oof_rows": 180792,
+   "sessions": 90,
+   "warmup_sessions": 36
+  },
+  "era_2025H1_c4cpanel": {
+   "contrasts": {
+    "lightgbm|B0->B1": {
+     "clusters": 41,
+     "estimate": 0.011220626363846601,
+     "p_value": 0.031756762578039784,
+     "p_wild": 0.0266,
+     "standard_error": 0.005042064071558251,
+     "statistic": 2.2254033674702716
+    },
+    "lightgbm|B0->B2_total": {
+     "clusters": 41,
+     "estimate": 0.012499962015762252,
+     "p_value": 0.019195545966054346,
+     "p_wild": 0.014,
+     "standard_error": 0.005122115332933844,
+     "statistic": 2.440390581483164
+    },
+    "lightgbm|B1->B2": {
+     "clusters": 41,
+     "estimate": 0.0012793356519156455,
+     "p_value": 0.230318037113412,
+     "p_wild": 0.2265,
+     "standard_error": 0.0010502614340831531,
+     "statistic": 1.2181116152593638
+    },
+    "log_ols|B0->B1": {
+     "clusters": 41,
+     "estimate": 0.016329833647085717,
+     "p_value": 1.3916497726175742e-05,
+     "p_wild": 0.0001,
+     "standard_error": 0.00329945323477708,
+     "statistic": 4.949254462819808
+    },
+    "log_ols|B0->B2_total": {
+     "clusters": 41,
+     "estimate": 0.015396425291072319,
+     "p_value": 0.0006467537972096705,
+     "p_wild": 0.0002,
+     "standard_error": 0.0041601444911711786,
+     "statistic": 3.7009352256267096
+    },
+    "log_ols|B1->B2": {
+     "clusters": 41,
+     "estimate": -0.0009334083560133963,
+     "p_value": 0.5855352391506826,
+     "p_wild": 0.6187,
+     "standard_error": 0.0016978220537957266,
+     "statistic": -0.5497680713515454
+    },
+    "ridge|B0->B1": {
+     "clusters": 41,
+     "estimate": 0.016329620756900656,
+     "p_value": 1.3998891119132609e-05,
+     "p_wild": 0.0001,
+     "standard_error": 0.003300647671582412,
+     "statistic": 4.947398929456725
+    },
+    "ridge|B0->B2_total": {
+     "clusters": 41,
+     "estimate": 0.015398575672444167,
+     "p_value": 0.0006468907688164603,
+     "p_wild": 0.0002,
+     "standard_error": 0.004160806803818261,
+     "statistic": 3.700862933196828
+    },
+    "ridge|B1->B2": {
+     "clusters": 41,
+     "estimate": -0.0009310450844564849,
+     "p_value": 0.5863547945180526,
+     "p_wild": 0.6193,
+     "standard_error": 0.0016972455063700848,
+     "statistic": -0.5485624094817726
+    }
+   },
+   "excluded_fully_null_features": [
+    "b1v2_term_short_to_medium"
+   ],
+   "first_session": "2025-03-25",
+   "last_session": "2025-07-03",
+   "oof_rows": 143163,
+   "sessions": 69,
+   "warmup_sessions": 28
+  },
+  "era_2025H2_2026Q1_p6panel": {
+   "contrasts": {
+    "lightgbm|B0->B1": {
+     "clusters": 96,
+     "estimate": 0.020070909699105743,
+     "p_value": 6.504433164079909e-07,
+     "p_wild": 0.0001,
+     "standard_error": 0.003763076635371445,
+     "statistic": 5.33364362299908
+    },
+    "lightgbm|B0->B2_total": {
+     "clusters": 96,
+     "estimate": 0.021340357386962414,
+     "p_value": 3.8237010789029344e-10,
+     "p_wild": 0.0001,
+     "standard_error": 0.003053981680335146,
+     "statistic": 6.98771624085856
+    },
+    "lightgbm|B1->B2": {
+     "clusters": 96,
+     "estimate": 0.0012694476878566724,
+     "p_value": 0.31560629150951913,
+     "p_wild": 0.3236,
+     "standard_error": 0.0012583038552117138,
+     "statistic": 1.0088562334119875
+    },
+    "log_ols|B0->B1": {
+     "clusters": 96,
+     "estimate": 0.009091716571559513,
+     "p_value": 1.1788105725998572e-05,
+     "p_wild": 0.0001,
+     "standard_error": 0.001965510664054703,
+     "statistic": 4.625625664530344
+    },
+    "log_ols|B0->B2_total": {
+     "clusters": 96,
+     "estimate": 0.010087933089684262,
+     "p_value": 4.1433150324367023e-07,
+     "p_wild": 0.0001,
+     "standard_error": 0.0018545465688478775,
+     "statistic": 5.439568495684264
+    },
+    "log_ols|B1->B2": {
+     "clusters": 96,
+     "estimate": 0.0009962165181247524,
+     "p_value": 0.08314414641088282,
+     "p_wild": 0.0836,
+     "standard_error": 0.0005688859236131,
+     "statistic": 1.7511709760677439
+    },
+    "ridge|B0->B1": {
+     "clusters": 96,
+     "estimate": 0.009091383236787584,
+     "p_value": 1.1812628173931969e-05,
+     "p_wild": 0.0001,
+     "standard_error": 0.0019656630078091525,
+     "statistic": 4.625097588279115
+    },
+    "ridge|B0->B2_total": {
+     "clusters": 96,
+     "estimate": 0.010087638335749606,
+     "p_value": 4.152030855587046e-07,
+     "p_wild": 0.0001,
+     "standard_error": 0.0018546598917653257,
+     "statistic": 5.439077202531114
+    },
+    "ridge|B1->B2": {
+     "clusters": 96,
+     "estimate": 0.0009962550989620206,
+     "p_value": 0.08315831746705962,
+     "p_wild": 0.0836,
+     "standard_error": 0.0005689345371398478,
+     "statistic": 1.7510891568833247
+    }
+   },
+   "excluded_fully_null_features": [],
+   "first_session": "2025-08-04",
+   "last_session": "2026-03-23",
+   "oof_rows": 328878,
+   "sessions": 160,
+   "warmup_sessions": 64
+  },
+  "era_2026H1_devpanel": {
+   "contrasts": {
+    "lightgbm|B0->B1": {
+     "clusters": 48,
+     "estimate": 0.00010847950266367618,
+     "p_value": 0.9873673518504233,
+     "p_wild": 0.9894,
+     "standard_error": 0.006814982016178788,
+     "statistic": 0.015917797347982064
+    },
+    "lightgbm|B0->B2_total": {
+     "clusters": 48,
+     "estimate": 0.010240893541068677,
+     "p_value": 0.05883901321216384,
+     "p_wild": 0.0561,
+     "standard_error": 0.005288503683941598,
+     "statistic": 1.9364444374246879
+    },
+    "lightgbm|B1->B2": {
+     "clusters": 48,
+     "estimate": 0.010132414038405002,
+     "p_value": 0.0012171072640825573,
+     "p_wild": 0.0005,
+     "standard_error": 0.002942452374157994,
+     "statistic": 3.443526946227795
+    },
+    "log_ols|B0->B1": {
+     "clusters": 48,
+     "estimate": 0.007719912311887379,
+     "p_value": 0.12307951376926259,
+     "p_wild": 0.118,
+     "standard_error": 0.004916546101934767,
+     "statistic": 1.570190160293509
+    },
+    "log_ols|B0->B2_total": {
+     "clusters": 48,
+     "estimate": 0.005085226595884941,
+     "p_value": 0.3971433496929801,
+     "p_wild": 0.3994,
+     "standard_error": 0.005950867609902132,
+     "statistic": 0.854535326483019
+    },
+    "log_ols|B1->B2": {
+     "clusters": 48,
+     "estimate": -0.002634685716002438,
+     "p_value": 0.18671134433598657,
+     "p_wild": 0.2006,
+     "standard_error": 0.0019662892432385786,
+     "statistic": -1.3399278488972335
+    },
+    "ridge|B0->B1": {
+     "clusters": 48,
+     "estimate": 0.007720010849312675,
+     "p_value": 0.12312280094395324,
+     "p_wild": 0.118,
+     "standard_error": 0.004917191417322616,
+     "statistic": 1.5700041332774022
+    },
+    "ridge|B0->B2_total": {
+     "clusters": 48,
+     "estimate": 0.005085709248067558,
+     "p_value": 0.3971373355325093,
+     "p_wild": 0.3994,
+     "standard_error": 0.005951356016070427,
+     "statistic": 0.8545462974042611
+    },
+    "ridge|B1->B2": {
+     "clusters": 48,
+     "estimate": -0.0026343016012451196,
+     "p_value": 0.1867544125886552,
+     "p_wild": 0.2009,
+     "standard_error": 0.0019661983606365906,
+     "statistic": -1.339794424603334
+    }
+   },
+   "excluded_fully_null_features": [],
+   "first_session": "2026-03-24",
+   "last_session": "2026-07-17",
+   "oof_rows": 208089,
+   "sessions": 80,
+   "warmup_sessions": 32
+  }
+ },
+ "inputs": {
+  "era_2024H2_c6panel": {
+   "path": "D:\\MDS650\\b1v3_confirmation\\evaluation\\evaluation_panel.parquet",
+   "sha256": "d688000d86d5752ab5d553d4616f7ea94f301f7e148b81c1aa2044e16db6d3dd"
+  },
+  "era_2025H1_c4cpanel": {
+   "path": "D:\\MDS650\\independent_replication_30\\derived\\pit_v2_evaluation\\common_complete_90d_pit_v2.parquet",
+   "sha256": "e0686f0ee3f4cd119d7d6399182498fa405873325f8007d59ed3ac72ddda1fda"
+  },
+  "era_2025H2_2026Q1_p6panel": {
+   "path": "D:\\MDS650\\evidence_root\\artifacts\\phase6\\common_panel.parquet",
+   "sha256": "8ba5f0c8e736d27fe78e1887cc4cfc37e2dfbd7f3b6546d1ddf1fe75a782da32"
+  },
+  "era_2026H1_devpanel": {
+   "path": "C:\\Users\\mguer\\Dev\\MDS650-Capstone\\artifacts\\phase5\\common_development_80d.parquet",
+   "sha256": "e5b9e04296d6dacd6c1321b760e1a253a47fcf67055a4e41b9d2c6a8b00c77da"
+  }
+ },
+ "label": "EXPLORATORY_DESCRIPTIVE (decision 56b)",
+ "schema_version": "gate11-era-map-v1.0"
+}

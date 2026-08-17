@@ -97,6 +97,16 @@ log-correlation 1.0000 (bar-label convention empirically pinned; re-downloaded F
 history reproduces the frozen panel). HARQ is the preregistered base model for the
 prospective amendment.
 
+## Positive-findings addendum (2026-08-18, decision 56, EXPLORATORY_DESCRIPTIVE)
+
+`docs/positive_findings_v1.md`: the TOTAL B0→B2 contrast is significantly positive in
+5/5 families on 2024-A (4/5 on 2024-B), and a uniform three-family ladder over the
+frozen panels shows 3/3-family positive totals across both 2025 eras (+0.010..+0.021,
+wild p ≤ 2e−4, 229 sessions), fading toward null in 2026. The family-dependent verdict
+applies to the B2-over-B1 increment under the frozen campaign designs; the total
+option-information contribution is model-robust in most eras. Exploratory only;
+`confirmed_contrasts` unchanged; prospective-null-first ordering stands.
+
 Artifacts: `artifacts/phase5/{development,holdout}_results.json`,
 `artifacts/phase6/results.json` (evidence root), `artifacts/independent_replication/independent_results.json`,
 `artifacts/independent_replication_pit_v2/results.json`,
