@@ -103,16 +103,23 @@ negative results stay in the record with the same weight as positive ones.
 
 ```
 src/mds650/          Typed library (mypy --strict): providers, PIT panel, targets,
-                     features, models, evaluation, freeze/ledger machinery
-scripts/             Phase runners, acquisition, freezes, audits (~70 scripts)
+                     features, models, inference, calibration, HAR/HARQ, evaluation
+scripts/             Phase runners, gate runners, acquisition, automation
+                     -> classified in scripts/README.md (active / frozen-evidence /
+                        one-shot-done / archive)
 tests/               1,000+ tests: unit, contract (artifact/freeze locks), e2e
 specs/001-.../       Spec Kit: requirements, plan, tasks, JSON-schema contracts
 docs/                Methodology decisions (binding, numbered), risk register,
-                     results reconciliation, PIT timing contracts, execution plans
+                     results reconciliation, gate reports, PIT contracts
+                     -> every doc classified in docs/INDEX.md
 artifacts/           Committed governance evidence: preregistrations, manifests,
-                     hashes, results JSONs, access ledgers
-reports/             Handoffs, literature packages, master dossier, proposal draft
+                     hashes, results JSONs, access ledgers (immutable)
+reports/             Master dossier, proposal drafts, gate-cascade report;
+                     historical handoffs under reports/handoffs/
 ```
+
+Housekeeping trail (what was archived/moved and why):
+[`docs/housekeeping_record_20260818.md`](docs/housekeeping_record_20260818.md).
 
 Heavy commercial-derived evidence (raw provider payloads, large panels) is **not** in
 git — see the next section.
