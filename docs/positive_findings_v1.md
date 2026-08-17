@@ -41,6 +41,14 @@ Two independent panels covering 2025-03..2026-03 — 229 sessions — show a
 uniform design. The channel is mostly option *state* (B0→B1); the trade-activity
 increment (B1→B2) stays small/null here, consistent with every earlier gate.
 
+**Caveat (2026-08-18 adversarial review):** Ridge (α=1) on the standardized log target
+is numerically near-identical to log-OLS in this ladder (estimates agree to five
+decimals), so "3/3 families" is effectively **two independent families** (smooth-linear
++ gradient-boosted tree). The claim stands as *both independent families positive*;
+the pending hardening test is HARQ vs HARQ+B1 vs HARQ+B2 on the same panels
+(registered as follow-up work in `reports/remaining_work_investigation_20260818.md`),
+whose outcome will be reported whatever its sign.
+
 ## What this changes (and what it does not)
 
 - The thesis gains a genuinely positive, cross-family, era-spanning exploratory result:

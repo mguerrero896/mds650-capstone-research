@@ -378,3 +378,20 @@ Spec Kit consistency and preregistration gates pass.
    reporting hierarchy (prospective null first) and the decision-52 moratorium on new
    confirmatory retrospective campaigns remain fully in force. Result signs are reported
    exactly as computed; this decision authorizes the analysis, not any outcome.
+57. **Pre-stated interpretation rule for the UW latency campaign (2026-08-18)** —
+   Recorded before the first +7-day reconciliation artifact exists (first one expected
+   on or after 2026-08-24). Thresholds, fixed now: (a) if the live-era P95 of
+   receipt−`created_at` latency is ≤ 60 seconds, the registered availability cutoff
+   (`created_at` ≤ origin − 60s) is upgraded from assumption to measured-adequate for
+   the live era; if P95 exceeds 60 seconds, every live-era B2 availability claim must
+   carry the measured P95 as its effective cutoff, and threat #8 in
+   `docs/threats_to_validity_matrix_v1.md` is amended with the measured value;
+   (b) if the backfill upper bound (tape rows never observed live) exceeds 5% of tape
+   rows for the outcome assets, A002 is reported as MEASURED_ADVERSE for the live era
+   and, by stated analogy, the historical 2024/2025 tape-based B2 claims gain an
+   explicit unquantified-backfill caveat; at or below 5% the historical caveat remains
+   qualitative; (c) any revision rate among matched rows above 1% is reported alongside
+   every B2 feature claim. An adverse outcome on any threshold changes labels and
+   caveats only — no registered verdict is rewritten (decision 53). The campaign's
+   completion (≥5 reconciled sessions) is independent of, and may postdate, the Phase 8
+   read; a slip creates no pressure on either.
