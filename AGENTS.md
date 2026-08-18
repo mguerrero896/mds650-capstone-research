@@ -35,3 +35,15 @@ Rules:
   - MDS650 knowledge MUST remain isolated from Earnings, GenIA and global transcripts. Use the dedicated GBrain profile `%USERPROFILE%\.mds650`, database `gbrain_mds650`, and the project-only sources `mds650-research` and `mds650-code`; never use the global GBrain corpus to answer an MDS650 question.
   - For natural-language project search, run `scripts/query_project_knowledge.ps1`. It queries the isolated GBrain corpus and the repository-local Graphify graph.
   - The project hooks run Graphify after commits/branch switches and synchronize the isolated GBrain source after the same events. `MDS650_Knowledge_AutoSync` also refreshes both engines every fifteen minutes and at logon. For an immediate refresh, run `scripts/sync_project_knowledge.ps1`.
+
+## Gated data relocation (2026-08-18) — READ BEFORE PUBLISHING OR TOUCHING PARQUETS
+
+The GitHub remote is a PUBLIC filtered mirror. The 14 licensed-derived granular
+parquets (list: `scripts/_gated_exclude_list.txt`) exist ONLY in the local canonical
+repo and in the private Supabase Storage bucket (project `eqpyjikcewqaegnbaemf`,
+bucket `research-data`); `scripts/publish_mirror.sh` strips them from the entire
+published history on every publish and `tests/test_gated_publish_contract.py` fails
+the suite if a new granular parquet is committed without registering it in the
+exclude list. NEVER push to the remote directly; ALWAYS publish via
+`bash scripts/publish_mirror.sh`. Pointers + access policy:
+`data/GATED_DATA_POINTERS.json`, `data/DATA_ACCESS.md`.

@@ -175,9 +175,12 @@ Housekeeping trail (what was archived/moved and why):
 [`docs/housekeeping_record_20260818.md`](docs/housekeeping_record_20260818.md).
 
 > [!NOTE]
-> Licensed commercial data cannot be redistributed. Reproduction without licenses uses
-> the sanitized fixtures and hashed aggregate artifacts committed here; full
-> reproduction requires live entitlements from the three providers.
+> Licensed commercial data cannot be redistributed. The 14 granular derived datasets
+> (~133 MB) live in **gated private storage**: their SHA-256 pointers are committed in
+> [`data/GATED_DATA_POINTERS.json`](data/GATED_DATA_POINTERS.json) and access is
+> granted per request — see [`data/DATA_ACCESS.md`](data/DATA_ACCESS.md). Everything
+> else (all code, docs, aggregate results, sanitized fixtures) is fully public; full
+> reproduction from scratch requires live provider entitlements.
 
 Heavy commercial-derived evidence (raw provider payloads, large panels) is **not** in
 git — see the next section.

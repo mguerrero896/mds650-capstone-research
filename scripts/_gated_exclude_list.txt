@@ -1,0 +1,14 @@
+artifacts/methodology/b2_mechanism_forecasts.parquet
+artifacts/b2_confirmation/b1/b1_iv_attempts_20d.parquet
+artifacts/phase5/development_all_origins_80d.parquet
+artifacts/phase5/common_development_80d.parquet
+artifacts/b1v3_target_blind/b1v3_features.parquet
+artifacts/methodology/development_model_comparison.parquet
+artifacts/b2_confirmation_delay300/frozen_evaluation_forecasts.parquet
+artifacts/b2_confirmation/frozen_evaluation_forecasts.parquet
+artifacts/b2_confirmation_delay120/frozen_evaluation_forecasts.parquet
+artifacts/phase5/reproducibility_failure_v0/development_forecasts.parquet
+artifacts/phase5/development_forecasts.parquet
+artifacts/b2_confirmation/b1/b1_origin_matrix_20d.parquet
+artifacts/b1_diagnostic_replication/diagnostic/chronological_oof_forecasts.parquet
+artifacts/gate3_har/oof_forecasts.parquet

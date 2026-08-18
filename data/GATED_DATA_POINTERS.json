@@ -1,0 +1,91 @@
+{
+ "schema_version": "gated-data-pointers-v1.0",
+ "storage": "supabase project eqpyjikcewqaegnbaemf, private bucket 'research-data'",
+ "access": "see DATA_ACCESS.md - owner-approved, per-request signed URLs",
+ "files": [
+  {
+   "path": "artifacts/methodology/b2_mechanism_forecasts.parquet",
+   "sha256": "a3ca298d5a88cd9779eb7f70df0a7e4f2b46345a3a6bbfc83255728c8991650e",
+   "bytes": 49319518,
+   "bucket_object": "methodology/b2_mechanism_forecasts.parquet"
+  },
+  {
+   "path": "artifacts/b2_confirmation/b1/b1_iv_attempts_20d.parquet",
+   "sha256": "e2f2e2153d59dcd966d0388470378a4f8e2dcacae11f0c7f5a956bcdf3df8b06",
+   "bytes": 24154773,
+   "bucket_object": "b2_confirmation/b1/b1_iv_attempts_20d.parquet"
+  },
+  {
+   "path": "artifacts/phase5/development_all_origins_80d.parquet",
+   "sha256": "4730cd13589fc3e63d8736a358e290311ba27c4e277f378192591342c39d0b87",
+   "bytes": 9783226,
+   "bucket_object": "phase5/development_all_origins_80d.parquet"
+  },
+  {
+   "path": "artifacts/phase5/common_development_80d.parquet",
+   "sha256": "e5b9e04296d6dacd6c1321b760e1a253a47fcf67055a4e41b9d2c6a8b00c77da",
+   "bytes": 8721492,
+   "bucket_object": "phase5/common_development_80d.parquet"
+  },
+  {
+   "path": "artifacts/b1v3_target_blind/b1v3_features.parquet",
+   "sha256": "cd93d7164d088c61070ad601379c38be8555643fec5a137e66ee9ff76cbe25a4",
+   "bytes": 6813984,
+   "bucket_object": "b1v3_target_blind/b1v3_features.parquet"
+  },
+  {
+   "path": "artifacts/methodology/development_model_comparison.parquet",
+   "sha256": "d6bca4c92909fa6b6927862f1e43d15a3000fb98bcc390e611a7e89f63452ea6",
+   "bytes": 6509008,
+   "bucket_object": "methodology/development_model_comparison.parquet"
+  },
+  {
+   "path": "artifacts/b2_confirmation_delay300/frozen_evaluation_forecasts.parquet",
+   "sha256": "f38fd9b41fd26f56c09fe1e333f53f960f5d4c93e5e6efd73e392dfe1b08e7ea",
+   "bytes": 5952005,
+   "bucket_object": "b2_confirmation_delay300/frozen_evaluation_forecasts.parquet"
+  },
+  {
+   "path": "artifacts/b2_confirmation/frozen_evaluation_forecasts.parquet",
+   "sha256": "db20b76248afce02e04009c510b408214d267a30e7cff3f8dc184d370574ce8b",
+   "bytes": 5950716,
+   "bucket_object": "b2_confirmation/frozen_evaluation_forecasts.parquet"
+  },
+  {
+   "path": "artifacts/b2_confirmation_delay120/frozen_evaluation_forecasts.parquet",
+   "sha256": "22bc3248f76224d8a4fa6644b2ee8f67f2d2ce42c3f7117b9a8a2f92322c41b0",
+   "bytes": 5950646,
+   "bucket_object": "b2_confirmation_delay120/frozen_evaluation_forecasts.parquet"
+  },
+  {
+   "path": "artifacts/phase5/reproducibility_failure_v0/development_forecasts.parquet",
+   "sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+   "bytes": 3030886,
+   "bucket_object": "phase5/reproducibility_failure_v0/development_forecasts.parquet"
+  },
+  {
+   "path": "artifacts/phase5/development_forecasts.parquet",
+   "sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a",
+   "bytes": 3030886,
+   "bucket_object": "phase5/development_forecasts.parquet"
+  },
+  {
+   "path": "artifacts/b2_confirmation/b1/b1_origin_matrix_20d.parquet",
+   "sha256": "7f976b8df6038f05e73b6508efa110aed057b2abc84eae40640e99d194b42057",
+   "bytes": 1360662,
+   "bucket_object": "b2_confirmation/b1/b1_origin_matrix_20d.parquet"
+  },
+  {
+   "path": "artifacts/b1_diagnostic_replication/diagnostic/chronological_oof_forecasts.parquet",
+   "sha256": "e2d358ca47d79b663ddc2c382ebe25b4ce6d490b6a7f4f4477b9e0c2654f3a92",
+   "bytes": 1219230,
+   "bucket_object": "b1_diagnostic_replication/diagnostic/chronological_oof_forecasts.parquet"
+  },
+  {
+   "path": "artifacts/gate3_har/oof_forecasts.parquet",
+   "sha256": "3c9c6ea494117ac1e744ce06300a80c800e19d08f16ba1708c9975aa6b4d6260",
+   "bytes": 665674,
+   "bucket_object": "gate3_har/oof_forecasts.parquet"
+  }
+ ]
+}
