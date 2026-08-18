@@ -26,7 +26,34 @@ If B2 beats B1 on data neither model has seen, recent option flow carries real
 information. If it doesn't, that is worth knowing too — a preregistered null is a valid
 result here, and the pipeline is built so that a null cannot be quietly tuned away.
 
-## Findings at a glance (as of 2026-08-17)
+## How to read this repository (no specialist background needed)
+
+1. **The question and the answer in plain words** — this page, top to bottom.
+2. **The whole story in one document** —
+   [`reports/gate_cascade_report_20260817.md`](reports/gate_cascade_report_20260817.md):
+   what was tested, how, and what each test found, in reading order.
+3. **The thesis itself** —
+   [`reports/final_report_draft_v2.md`](reports/final_report_draft_v2.md).
+4. **The defense slides and prepared Q&A** —
+   [`reports/defense_deck_v2.md`](reports/defense_deck_v2.md).
+5. **Deep evidence, when you want proof of any number** — every document in
+   [`docs/INDEX.md`](docs/INDEX.md) and every result file under `artifacts/` carries a
+   SHA-256 hash so it cannot be silently altered.
+
+**Eight terms cover almost everything:**
+
+| Term | Plain meaning |
+|---|---|
+| RV30 | How much a stock actually moved over the next 30 minutes (the thing we predict) |
+| B0 / B1 / B2 | Three levels of knowledge: stock data only / + option prices / + option trades |
+| PIT (point-in-time) | Only using information that truly existed at the moment of each forecast |
+| QLIKE | The score used to judge forecasts (lower is better; differences are what matter) |
+| Prospective vs retrospective | Tested on data sealed *before* anyone saw it, vs tested on the past |
+| Frozen | Locked with a cryptographic hash before results were seen — cannot be tuned after |
+| MDE | The smallest effect size the study promised to care about |
+| Holm | A correction so that testing many things doesn't manufacture false positives |
+
+## Findings at a glance (as of 2026-08-18)
 
 Honest summary, in the order the evidence deserves:
 
