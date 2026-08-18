@@ -1,5 +1,11 @@
 # MDS650 — Point-in-Time Options Activity for RV30 Forecasting
 
+[![ci](../../actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
+![python](https://img.shields.io/badge/python-3.12-3776AB?logo=python&logoColor=white)
+![typing](https://img.shields.io/badge/mypy-strict-blue)
+![tests](https://img.shields.io/badge/tests-1%2C000%2B-brightgreen)
+![status](https://img.shields.io/badge/research-preregistered%20%C2%B7%20hash--sealed-6f42c1)
+
 Does what just happened in the options market help predict how much a stock will move
 over the next 30 minutes?
 
@@ -25,6 +31,26 @@ next 30 one-minute returns. Compare three nested views of the world on identical
 If B2 beats B1 on data neither model has seen, recent option flow carries real
 information. If it doesn't, that is worth knowing too — a preregistered null is a valid
 result here, and the pipeline is built so that a null cannot be quietly tuned away.
+
+> [!IMPORTANT]
+> Every protocol in this repository was **frozen with a cryptographic hash before its
+> results were seen**, sealed holdouts are read **exactly once** under access-ledger
+> control, and every number below traces to a hashed artifact. Honest nulls outrank
+> flattering retrospectives by binding rule (decision 53).
+
+### The story in one picture
+
+```mermaid
+timeline
+    title Option-information content for 30-minute variance, 2024 → 2026
+    2024 H2 : Total B0→B2 positive in 5 of 5 model families (exploratory)
+    2025 H1 : Positive in both independent families (+0.013..+0.015)
+    2025 H2 – 2026 Q1 : Positive in both families (+0.010..+0.021, 160 sessions)
+    2026 H1 : Fading to null · decay measured at −0.028 per year
+    Jul 2026 : Prospective preregistered holdout - NULL (read once)
+    29 Aug 2026 : Phase 8 prospective read (TOST-armed, sealed)
+    Nov 2026 : Phase 9 prospective read of the TOTAL contribution (frozen, collecting)
+```
 
 ## How to read this repository (no specialist background needed)
 
@@ -147,6 +173,11 @@ reports/             Master dossier, proposal drafts, gate-cascade report;
 
 Housekeeping trail (what was archived/moved and why):
 [`docs/housekeeping_record_20260818.md`](docs/housekeeping_record_20260818.md).
+
+> [!NOTE]
+> Licensed commercial data cannot be redistributed. Reproduction without licenses uses
+> the sanitized fixtures and hashed aggregate artifacts committed here; full
+> reproduction requires live entitlements from the three providers.
 
 Heavy commercial-derived evidence (raw provider payloads, large panels) is **not** in
 git — see the next section.

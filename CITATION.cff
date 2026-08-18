@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this repository or its methodology, please cite it as below."
+title: "Point-in-time options information for forecasting next-30-minute realised variance (MDS650 capstone)"
+type: software
+authors:
+  - family-names: "Guerrero"
+    given-names: "Miguel"
+date-released: "2026-08-18"
+version: "2026.08"
+repository-code: "https://github.com/mguerrero896/mds650-capstone-research"
+keywords:
+  - realized-variance
+  - volatility-forecasting
+  - options
+  - point-in-time
+  - preregistration
+  - reproducible-research
+abstract: >-
+  A preregistered, hash-sealed study of whether point-in-time options-market
+  information improves out-of-sample forecasts of 30-minute realized variance
+  for large US equities, with one-read holdout governance, studentized
+  day-clustered inference, and measured provider-availability semantics.
