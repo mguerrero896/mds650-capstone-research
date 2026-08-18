@@ -86,7 +86,7 @@ timeline
 | MDE | The smallest effect size the study promised to care about |
 | Holm | A correction so that testing many things doesn't manufacture false positives |
 
-## Findings at a glance (as of 2026-08-18)
+## Findings at a glance (as of 2026-08-19)
 
 Honest summary, in the order the evidence deserves:
 
@@ -115,6 +115,51 @@ Honest summary, in the order the evidence deserves:
 *The Gamma-family B2 effect, campaign by campaign (95% CI, canonical numbers from the
 Gate-4 artifact). The amber point is the prospective holdout — sealed before collection,
 read once, and sitting on zero.*
+
+### What a much richer option representation changed (2026-08-19)
+
+Points 1–4 above were established with a compressed option representation: B1 was a single
+at-the-money implied variance, B2 was nine counts in five-minute windows. A natural objection
+is that the null simply reflects that compression. That objection has now been tested
+directly, and the answer is on the record.
+
+**B1 and B2 were rebuilt from the raw tape.** Every option trade carries the prevailing NBBO
+and an implied volatility, so a full surface could be reconstructed at each origin without
+buying new data: a median of **724 contracts, 22 expiries and 111 strikes per snapshot**,
+against one number before. It reproduces put skew, smile convexity, a negative 25-delta risk
+reversal and a positive variance risk premium without any of them being imposed. B2 became
+**52 microstructure features** — Greeks-weighted signed flow, Hawkes arrival intensity,
+concentration and entropy, trade-to-quote impact — over 125,136 origins and 1,896
+session-assets with zero failures.
+
+5. **Recent option flow does carry information that price history and the option surface
+   cannot reconstruct.** Under double machine learning, orthogonalising B2 against B0+B1 and
+   clustering by session, the joint null is rejected at **p = 3 × 10⁻¹²** in discovery, and
+   two features replicate in validation with the same sign: the **Hawkes burst-intensity
+   innovation** (t = +4.4 and +2.3) and the **buyer-initiated premium share** (t = +2.0 and
+   +2.0). Vega-, gamma- and delta-weighted flow are null in both. *It is the timing and the
+   direction of the flow that matter, not its exposure-weighted size.*
+6. **That information is smaller than the cost of estimating the parameters needed to use
+   it.** Clark–West — which corrects for exactly that estimation cost — is significant almost
+   everywhere, while the corresponding out-of-sample QLIKE change is frequently negative
+   (t = +6.95 with ΔQLIKE = −0.001 in one case). Across six model families, four contrasts
+   and an interaction term, every estimand is null or family-dependent in discovery and
+   null-to-negative in validation. Hansen's SPA picks a best candidate at p = 0.0070, above
+   the project's own sequential budget of 0.00417; White's Reality Check rejects nothing.
+7. **No economic value, at any level of selectivity.** A variance-risk strategy using the
+   forecast is *worse* with option information than without it in discovery at every trading
+   threshold, and every deflated Sharpe probability is at most 0.19 — 0.000 once the strategy
+   is made selective. The one residue is a 15 % lower volatility-targeting tracking error in
+   discovery, which does not replicate.
+8. **A confirmatory prospective test of this effect is not currently feasible.** Sized on the
+   measured session-level dispersion, detecting the largest effect ever observed here needs
+   **537 sessions**; the design under discussion proposed 60–120. Running it would return a
+   null whether or not the effect is real, so the protocol is frozen and deliberately not
+   launched.
+
+The full cascade — eighteen blocks, each with its advance rule and its verdict — is in
+[`docs/research_program_v2_progress.md`](docs/research_program_v2_progress.md), with one
+document per block under [`docs/rp2/`](docs/rp2/).
 
 The cross-campaign reconciliation — every contrast, every model, every protocol freeze
 date — lives in [`docs/results_reconciliation_v2.md`](docs/results_reconciliation_v2.md).
@@ -257,8 +302,13 @@ The repository treats process integrity as a first-class deliverable:
 ## Status
 
 Active capstone research, single-author. The proposal draft is at
-[`reports/proposal_draft_v2.md`](reports/proposal_draft_v2.md); the next scientific step
-is an owner decision between completing the sealed prospective holdout (Phase 8) or
-closing it formally — the analysis code is ready either way.
+[`reports/proposal_draft_v2.md`](reports/proposal_draft_v2.md).
+
+The eighteen-block research programme that rebuilt both option information sets from the raw
+tape is complete; its finding is that recent option flow carries real but economically
+negligible incremental information, and that no feasible prospective test could confirm it.
+The next scientific step is an owner decision between completing the sealed prospective
+holdout or closing it formally — the analysis code is ready either way — and, separately,
+whether to fund a ≥537-session campaign or to publish the null as it stands.
 
 **Author:** Miguel Guerrero · MDS650 Capstone · 2026
