@@ -106,6 +106,7 @@ analysis in this set carries the label `EXPLORATORY_MECHANISM_DISCOVERY` (decisi
 | `docs/rp2/block13_execution_map_v1.md` | block 13 | The cascade map filled in with real verdicts, and the six items that were gated rather than blocked. |
 | `docs/rp2/block14_supabase_v1.md` | block 14 | Live audit of the research-data project: RLS on with zero policies, weak types, six tables without primary keys, a false note copied across campaigns. Two fixes applied, five withheld. |
 | `docs/rp2/blocks15_18_publication_pass_v1.md` | blocks 15-18 | Writing audit, structure proposal, README rewrite and keep/move classification. |
+| `docs/rp2/extensions_1_4_v1.md` | extensions 1-4 | What was tried after the cascade closed: the moneyness x DTE tensor and level-4 DeepSets both deliver nothing, the mechanism is useless as a regime flag or execution ranker, and the signed forward return at 60-120 minutes is the only target surviving Holm in validation. Includes the power curves for both contrasts (direction 42 sessions vs variance 537). |
 
 ## Superseded (kept for the preregistration audit trail)
 

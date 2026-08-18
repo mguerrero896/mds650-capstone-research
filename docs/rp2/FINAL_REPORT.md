@@ -187,7 +187,7 @@ None of these was approximated into a number that would look like a result.
 
 ## 5. Decisions requiring your signature
 
-Seven, in descending order of consequence.
+Eight, in descending order of consequence.
 
 **① Primary horizon — RV30 or RV60.**
 Block 3 shows predictability peaks at h = 60 in both universes (D 0.823 vs 0.796, V 0.566 vs
@@ -225,10 +225,35 @@ would break `docs/INDEX.md`, `CANONICAL_STATE.json`, `STATUS.md`, the mirror exc
 the table holds five rows and Phase 6 (100 OOS sessions) is absent. Load it or record
 deliberately why not.
 
+**⑧ A new prospective cohort for the DIRECTION contrast.** Extension 4 measured both power
+curves: variance needs 537 sessions, direction needs 42 (an upper bound; ≈170 if the effect
+halves under pre-registration). Roughly 60 sessions, pre-registered for the directional
+estimand before any of it is seen, is the only confirmatory test within this project's reach.
+**Phase 8 cannot be re-aimed at it** — its protocol is hash-frozen for variance, and
+re-aiming would break the seal that gives it value. See `docs/rp2/extensions_1_4_v1.md`.
+
 **⑦ Publication of the null.** Blocks 15–18 leave the repository ready. Nothing has been
 pushed to any public mirror during this run.
 
 ---
+
+## 5b. Extensions 1-4 (2026-08-19)
+
+Four extensions ran after the cascade closed; `docs/rp2/extensions_1_4_v1.md` has the detail.
+Three confirmed the null was not an artefact of the programme's own choices - the moneyness x
+DTE tensor does not help (D -0.00169), level-4 DeepSets on the GPU delivers nothing against a
+competent tabular model (D -0.0122, V +0.0027), and the mechanism is useless as a regime flag
+or an execution-timing ranker.
+
+The fourth found what the programme had never tested: **the signed forward return at 60-120
+minutes** is the only target surviving Holm in validation (p = 1.26e-06), driven by strike
+concentration and total premium with consistent signs across universes. Power for that
+contrast is 94% at 60 sessions against 5.6% for variance - a thirteen-fold difference in
+required sample size. It was found by searching 36 targets after the variance nulls were
+known, so it is an upper bound, not an unbiased estimate.
+
+Discovery also grew from 236 to 384 sessions (153 acquired bar sessions, 906 requests, zero
+empty), taking the panel from 125,136 to 183,744 origins.
 
 ## 6. What this program contributes
 
