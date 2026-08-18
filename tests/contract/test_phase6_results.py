@@ -16,7 +16,7 @@ from mds650.study_design import canonical_sha256
 pytestmark = pytest.mark.evidence
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
-HANDOFF = REPOSITORY_ROOT / "reports" / "CODEX_PHASE6_FINAL_HANDOFF.md"
+HANDOFF = REPOSITORY_ROOT / "reports" / "handoffs" / "CODEX_PHASE6_FINAL_HANDOFF.md"
 DECISIONS = {
     "GLOBAL_B1V2_EDGE_CONFIRMED",
     "GLOBAL_B2V2_EDGE_CONFIRMED",
