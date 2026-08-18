@@ -235,7 +235,9 @@ current era.
 (Label: EXPLORATORY_DESCRIPTIVE, decision 56; citation rule applies.) When the
 estimand is the *total* option-information contribution — B0 to B2, dominated by
 option state — the picture inverts. On the 2024 blocks the total is significantly
-positive in five of five model families (up to +0.086 for B0→B1a under HAR-RV) and
+positive in five of five model families (up to +0.086 for B0→B1a under the family
+registered as `har_rv` — a log-linear fixed extension, not the Gate-3 intraday HAR;
+see docs/model_naming_note_v1.md) and
 four of five on the second block. Under one uniform ladder run identically over the
 four era panels, the total is positive in both genuinely independent families
 (smooth-linear and gradient-boosted tree; a same-day review recorded that the ridge

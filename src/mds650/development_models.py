@@ -189,9 +189,14 @@ def fit_development_candidate(
 ) -> FittedDevelopmentCandidate:
     """Fit one candidate using training rows only.
 
-    ``har_rv`` is a log-linear HAR-RV benchmark with the registered B0/B1/B2
-    additions supplied as exogenous controls; it never sees the target column
-    as a predictor. Ridge and Elastic Net use the same information-set columns.
+    ``har_rv`` is a log-linear fixed extension: plain ``LinearRegression`` on the
+    log target over the registered B0/B1/B2 information-set columns supplied as
+    exogenous controls; it never sees the target column as a predictor. Despite
+    the registered name it is NOT the dedicated intraday HAR/HARQ of
+    ``src/mds650/har.py`` (no RV components, no realized quarticity) — the name
+    is kept verbatim for fidelity with frozen artifacts; see
+    ``docs/model_naming_note_v1.md``. Ridge and Elastic Net use the same
+    information-set columns.
     ``categorical_columns`` defaults to the legacy ``asset`` role when present
     and supports a differently named frozen asset identifier.
     """

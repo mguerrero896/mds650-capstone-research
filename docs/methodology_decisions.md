@@ -422,3 +422,15 @@ Spec Kit consistency and preregistration gates pass.
    register. The 60-session clock starts at the first captured session (expected from
    the 2026-08-18 NY session); completion ≈ mid-November 2026, alert on 60/60. The
    frozen protocol (decision 58, sha 8cf87b4d…) governs; nothing is read until then.
+60. **Model naming correction — `har_rv` is a log-linear fixed extension (2026-08-18)** —
+   Reviewer correction accepted: the model registered as `har_rv` /
+   `har_rv_fixed_extension` in every frozen campaign (C1–C6 and the canonical
+   validation) is a plain `LinearRegression` on the log target over the frozen
+   information-set columns (`development_models.py`, `canonical_validation.py`) — it is
+   not the dedicated intraday HAR/HARQ of `src/mds650/har.py` (Gate 3), which was
+   introduced later with true RV components and realized quarticity. Resolution:
+   frozen artifacts keep the registered name verbatim (immutability); the code
+   docstrings and every citing document now state the actual specification, and
+   `docs/model_naming_note_v1.md` is the binding citation rule. No canonical Model
+   Confidence Set contains the Gate-3 HAR; claims about either model do not transfer
+   to the other. No frozen value, seed, or artifact was rewritten.

@@ -12,10 +12,14 @@ From the frozen C5 forecasts (five families), studentized:
 
 | Block | Contrast | Families significantly positive (p < 0.05) |
 |---|---|---|
-| 2024-A | B0→B1a | **5 / 5** (Gamma +0.084, LightGBM +0.077, HAR-RV +0.086, Ridge +0.086, Elastic Net +0.028) |
+| 2024-A | B0→B1a | **5 / 5** (Gamma +0.084, LightGBM +0.077, har_rv +0.086, Ridge +0.086, Elastic Net +0.028) |
 | 2024-A | **B0→B2 total** | **5 / 5** |
 | 2024-B | B0→B1a | 4 / 5 (Elastic Net ns) |
 | 2024-B | **B0→B2 total** | **4 / 5** |
+
+Naming caution: `har_rv` here is the frozen-artifact registered name of a log-linear
+fixed extension over the information-set columns — not the Gate-3 intraday HAR/HARQ
+(`docs/model_naming_note_v1.md`).
 
 Model-family-independence is this project's own definition of a "global" effect, and on
 these blocks the *total* option-information contribution meets it. The famous

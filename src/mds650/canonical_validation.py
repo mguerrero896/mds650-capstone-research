@@ -21,6 +21,12 @@ from mds650.phase6_evaluation import phase6_information_sets
 from mds650.study_design import canonical_sha256
 from mds650.temporal_validation import FoldDefinition, purge_and_embargo_training
 
+# NAMING NOTE (2026-08-18, reviewer correction): "har_rv_fixed_extension" is a
+# fixed-extension LinearRegression on the log target over the frozen
+# information-set columns - it is NOT the dedicated intraday HAR/HARQ of
+# src/mds650/har.py (Gate 3+: intraday/daily/weekly components + realized
+# quarticity). The registered name is kept verbatim for fidelity with the
+# frozen canonical artifacts; see docs/model_naming_note_v1.md before citing.
 CANONICAL_MODEL_ROLES = (
     "gamma_glm_confirmatory",
     "har_rv_fixed_extension",

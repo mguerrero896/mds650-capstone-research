@@ -71,8 +71,13 @@ prospectively demonstrated".
 | C2 holdout | LightGBM\|B0 |
 | C4c PIT v2 | LightGBM\|B1v2a, LightGBM\|B2v2 |
 | C5-A 2024 | LightGBM\|B1a |
-| C5-B 2024 | HAR-RV\|B2, LightGBM\|B1a, LightGBM\|B2, Ridge\|B2 |
+| C5-B 2024 | har_rv\|B2 (log-linear ext.†), LightGBM\|B1a, LightGBM\|B2, Ridge\|B2 |
 | C6 B1v3 conf. | LightGBM\|B0 |
+
+† Naming caution (see `docs/model_naming_note_v1.md`): the cell registered as `har_rv`
+in the frozen C5 artifacts is a *log-linear fixed extension* (LinearRegression on the
+log target over the frozen information-set columns), **not** the dedicated intraday
+HAR/HARQ of `src/mds650/har.py` (Gate 3). No canonical MCS contains the Gate-3 HAR.
 
 **The Gamma family never enters any Model Confidence Set.** On the binding C6 sample the
 single best cell is LightGBM with *no option information at all*. The Gamma-specific B2

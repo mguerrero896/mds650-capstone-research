@@ -46,7 +46,9 @@ notional; no execution/costs/profitability claim). Honest headline:
 - The spectacular numbers are diagnostic, not economic: C5 Gamma's "+98.9% RMSE
   reduction / $5.8bn per window saving" is the R-020 calibration explosion expressed in
   dollars — B2 was repairing a broken baseline, exactly as Gate 2 concluded.
-- HAR-RV in the 2024 blocks shows the era-value honestly: +36% vol-RMSE reduction
+- The C5 `har_rv` family (log-linear fixed extension, not the Gate-3 intraday HAR —
+  see `docs/model_naming_note_v1.md`) in the 2024 blocks shows the era-value honestly:
+  +36% vol-RMSE reduction
   (≈ $2,319/window at the block-A scale) — large in the era where the information was
   real, gone since.
 
