@@ -411,7 +411,8 @@ def model_confidence_set(
     alpha: float = 0.10,
     repetitions: int = 9_999,
     seed: int = 650,
-) -> dict[str, float | list[str] | dict[str, float]]:
+    block_length: int | None = None,
+) -> dict[str, float | int | list[str] | dict[str, float]]:
     """Hansen-Lunde-Nason Model Confidence Set over daily mean losses.
 
     Parameters
@@ -424,11 +425,17 @@ def model_confidence_set(
         Level of the set; models with MCS p-value above ``alpha`` survive.
     repetitions, seed:
         Bootstrap replications and deterministic seed.
+    block_length:
+        ``None`` resamples days IID (legacy; too liberal when daily loss
+        differentials are autocorrelated). An integer uses a circular
+        moving-block bootstrap over whole days — blocks of consecutive days are
+        drawn jointly across ALL model columns, preserving both the
+        cross-model pairing and the serial dependence within blocks.
 
     Returns
     -------
     dict
-        Surviving models, per-model MCS p-values and the level used.
+        Surviving models, per-model MCS p-values, the level and block length.
     """
     models = [column for column in daily_losses.columns if column != date_column]
     if len(models) < 2:
@@ -438,7 +445,17 @@ def model_confidence_set(
         raise ValueError("INFERENCE_MCS_INPUT_INVALID")
     count = losses.shape[0]
     generator = np.random.default_rng(seed)
-    samples = generator.integers(0, count, size=(repetitions, count))
+    if block_length is None:
+        samples = generator.integers(0, count, size=(repetitions, count))
+    else:
+        if block_length < 1 or block_length > count:
+            raise ValueError("INFERENCE_BLOCK_LENGTH_INVALID")
+        blocks_needed = math.ceil(count / block_length)
+        starts = generator.integers(0, count, size=(repetitions, blocks_needed))
+        offsets = np.arange(block_length)
+        samples = (
+            (starts[:, :, None] + offsets[None, None, :]) % count
+        ).reshape(repetitions, -1)[:, :count]
     remaining = list(range(len(models)))
     p_values: dict[str, float] = {}
     running_max = 0.0
@@ -472,6 +489,7 @@ def model_confidence_set(
         "alpha": alpha,
         "repetitions": repetitions,
         "seed": seed,
+        "block_length": 0 if block_length is None else block_length,
     }
 
 

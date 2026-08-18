@@ -104,3 +104,17 @@ significant estimate there would be inflated stands.
 - Seeds and repetitions are frozen (seed 650, 9,999 reps) and recorded per entry.
 - Nothing here amends any registered verdict; decision 48/53 wording stands. These are
   the statistics the write-up must cite next to any Gamma-only number (R-020).
+
+## Addendum (2026-08-18): block-bootstrap MCS sensitivity
+
+Reviewer correction accepted: the original MCS resampled days IID, which ignores the
+serial dependence measured on these same series. `model_confidence_set` now supports a
+circular moving-block bootstrap (whole days drawn jointly across all model columns),
+and `artifacts/mcs_block_sensitivity/` reruns every campaign at
+L ∈ {IID, ⌈T^⅓⌉, 5, 10, 20}. Result: the survivor sets of **C6, C4c and both C5
+blocks are invariant to block length** — "the Gamma family never enters any MCS"
+holds under serial-dependence-preserving resampling everywhere the headline relies on
+it. The two honest nuances: on development data (C1) the block MCS is more
+conservative and `gamma|B2` enters the set at L ≥ 5; and at T = 10 (C2) L = 10 is
+degenerate and non-informative. The IID variant remains available as the legacy
+baseline (`block_length=None`, reported as L=0).

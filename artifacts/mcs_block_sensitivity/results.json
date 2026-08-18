@@ -1,0 +1,563 @@
+{
+ "campaigns": {
+  "C1_development": {
+   "blocks": {
+    "all": {
+     "by_block_length": {
+      "L=0": {
+       "mcs_p_values": {
+        "gamma_glm_confirmatory|B0": 0.0023,
+        "gamma_glm_confirmatory|B1a": 0.0023,
+        "gamma_glm_confirmatory|B2": 0.0358,
+        "lightgbm_robustness|B0": 0.0669,
+        "lightgbm_robustness|B1a": 0.3047,
+        "lightgbm_robustness|B2": 0.3047
+       },
+       "survivors": [
+        "lightgbm_robustness|B1a",
+        "lightgbm_robustness|B2"
+       ]
+      },
+      "L=10": {
+       "mcs_p_values": {
+        "gamma_glm_confirmatory|B0": 0.0001,
+        "gamma_glm_confirmatory|B1a": 0.0035,
+        "gamma_glm_confirmatory|B2": 0.2317,
+        "lightgbm_robustness|B0": 0.2317,
+        "lightgbm_robustness|B1a": 0.2317,
+        "lightgbm_robustness|B2": 0.2317
+       },
+       "survivors": [
+        "gamma_glm_confirmatory|B2",
+        "lightgbm_robustness|B0",
+        "lightgbm_robustness|B1a",
+        "lightgbm_robustness|B2"
+       ]
+      },
+      "L=20": {
+       "mcs_p_values": {
+        "gamma_glm_confirmatory|B0": 0.0001,
+        "gamma_glm_confirmatory|B1a": 0.0001,
+        "gamma_glm_confirmatory|B2": 0.2148,
+        "lightgbm_robustness|B0": 0.2148,
+        "lightgbm_robustness|B1a": 0.2148,
+        "lightgbm_robustness|B2": 0.2148
+       },
+       "survivors": [
+        "gamma_glm_confirmatory|B2",
+        "lightgbm_robustness|B0",
+        "lightgbm_robustness|B1a",
+        "lightgbm_robustness|B2"
+       ]
+      },
+      "L=4": {
+       "mcs_p_values": {
+        "gamma_glm_confirmatory|B0": 0.0005,
+        "gamma_glm_confirmatory|B1a": 0.006,
+        "gamma_glm_confirmatory|B2": 0.089,
+        "lightgbm_robustness|B0": 0.128,
+        "lightgbm_robustness|B1a": 0.128,
+        "lightgbm_robustness|B2": 0.128
+       },
+       "survivors": [
+        "lightgbm_robustness|B0",
+        "lightgbm_robustness|B1a",
+        "lightgbm_robustness|B2"
+       ]
+      },
+      "L=5": {
+       "mcs_p_values": {
+        "gamma_glm_confirmatory|B0": 0.0002,
+        "gamma_glm_confirmatory|B1a": 0.0061,
+        "gamma_glm_confirmatory|B2": 0.1167,
+        "lightgbm_robustness|B0": 0.1167,
+        "lightgbm_robustness|B1a": 0.1167,
+        "lightgbm_robustness|B2": 0.1167
+       },
+       "survivors": [
+        "gamma_glm_confirmatory|B2",
+        "lightgbm_robustness|B0",
+        "lightgbm_robustness|B1a",
+        "lightgbm_robustness|B2"
+       ]
+      }
+     },
+     "days": 40
+    }
+   },
+   "input_sha256": "a6c60c5843940b1c42a5753f48cb3e40f5b91e20fec6d2e3653758f5c42e780a"
+  },
+  "C2_holdout_prospective": {
+   "blocks": {
+    "all": {
+     "by_block_length": {
+      "L=0": {
+       "mcs_p_values": {
+        "gamma_glm_confirmatory|B0": 0.0262,
+        "gamma_glm_confirmatory|B1a": 0.0044,
+        "gamma_glm_confirmatory|B2": 0.0262,
+        "lightgbm_robustness|B0": 1.0,
+        "lightgbm_robustness|B1a": 0.0262,
+        "lightgbm_robustness|B2": 0.0276
+       },
+       "survivors": [
+        "lightgbm_robustness|B0"
+       ]
+      },
+      "L=10": {
+       "mcs_p_values": {
+        "gamma_glm_confirmatory|B0": 1.0,
+        "gamma_glm_confirmatory|B1a": 0.0001,
+        "gamma_glm_confirmatory|B2": 0.0001,
+        "lightgbm_robustness|B0": 1.0,
+        "lightgbm_robustness|B1a": 1.0,
+        "lightgbm_robustness|B2": 1.0
+       },
+       "survivors": [
+        "gamma_glm_confirmatory|B0",
+        "lightgbm_robustness|B0",
+        "lightgbm_robustness|B1a",
+        "lightgbm_robustness|B2"
+       ]
+      },
+      "L=3": {
+       "mcs_p_values": {
+        "gamma_glm_confirmatory|B0": 0.0284,
+        "gamma_glm_confirmatory|B1a": 0.0009,
+        "gamma_glm_confirmatory|B2": 0.0284,
+        "lightgbm_robustness|B0": 1.0,
+        "lightgbm_robustness|B1a": 0.0284,
+        "lightgbm_robustness|B2": 0.0456
+       },
+       "survivors": [
+        "lightgbm_robustness|B0"
+       ]
+      },
+      "L=5": {
+       "mcs_p_values": {
+        "gamma_glm_confirmatory|B0": 0.0001,
+        "gamma_glm_confirmatory|B1a": 0.0001,
+        "gamma_glm_confirmatory|B2": 0.0001,
+        "lightgbm_robustness|B0": 1.0,
+        "lightgbm_robustness|B1a": 0.0001,
+        "lightgbm_robustness|B2": 0.0001
+       },
+       "survivors": [
+        "lightgbm_robustness|B0"
+       ]
+      }
+     },
+     "days": 10
+    }
+   },
+   "input_sha256": "f86eb54615079324b152ffb4ddafe7c408ba4fc39a1c1121293ef4632c6b80d7"
+  },
+  "C4c_replication_pit_v2": {
+   "blocks": {
+    "all": {
+     "by_block_length": {
+      "L=0": {
+       "mcs_p_values": {
+        "gamma_glm_confirmatory|B0v2": 0.0001,
+        "gamma_glm_confirmatory|B1v2a": 0.0001,
+        "gamma_glm_confirmatory|B2v2": 0.0001,
+        "lightgbm_robustness|B0v2": 0.05,
+        "lightgbm_robustness|B1v2a": 0.2493,
+        "lightgbm_robustness|B2v2": 0.2493
+       },
+       "survivors": [
+        "lightgbm_robustness|B1v2a",
+        "lightgbm_robustness|B2v2"
+       ]
+      },
+      "L=10": {
+       "mcs_p_values": {
+        "gamma_glm_confirmatory|B0v2": 0.0001,
+        "gamma_glm_confirmatory|B1v2a": 0.0001,
+        "gamma_glm_confirmatory|B2v2": 0.0001,
+        "lightgbm_robustness|B0v2": 0.0313,
+        "lightgbm_robustness|B1v2a": 0.3289,
+        "lightgbm_robustness|B2v2": 0.3289
+       },
+       "survivors": [
+        "lightgbm_robustness|B1v2a",
+        "lightgbm_robustness|B2v2"
+       ]
+      },
+      "L=20": {
+       "mcs_p_values": {
+        "gamma_glm_confirmatory|B0v2": 0.0001,
+        "gamma_glm_confirmatory|B1v2a": 0.0001,
+        "gamma_glm_confirmatory|B2v2": 0.0001,
+        "lightgbm_robustness|B0v2": 0.0026,
+        "lightgbm_robustness|B1v2a": 0.2497,
+        "lightgbm_robustness|B2v2": 0.2497
+       },
+       "survivors": [
+        "lightgbm_robustness|B1v2a",
+        "lightgbm_robustness|B2v2"
+       ]
+      },
+      "L=4": {
+       "mcs_p_values": {
+        "gamma_glm_confirmatory|B0v2": 0.0001,
+        "gamma_glm_confirmatory|B1v2a": 0.0001,
+        "gamma_glm_confirmatory|B2v2": 0.0001,
+        "lightgbm_robustness|B0v2": 0.0536,
+        "lightgbm_robustness|B1v2a": 0.3528,
+        "lightgbm_robustness|B2v2": 0.3528
+       },
+       "survivors": [
+        "lightgbm_robustness|B1v2a",
+        "lightgbm_robustness|B2v2"
+       ]
+      },
+      "L=5": {
+       "mcs_p_values": {
+        "gamma_glm_confirmatory|B0v2": 0.0001,
+        "gamma_glm_confirmatory|B1v2a": 0.0001,
+        "gamma_glm_confirmatory|B2v2": 0.0001,
+        "lightgbm_robustness|B0v2": 0.0511,
+        "lightgbm_robustness|B1v2a": 0.3341,
+        "lightgbm_robustness|B2v2": 0.3341
+       },
+       "survivors": [
+        "lightgbm_robustness|B1v2a",
+        "lightgbm_robustness|B2v2"
+       ]
+      }
+     },
+     "days": 30
+    }
+   },
+   "input_sha256": "825359140c3f29350e1927f76b3c00e91e892d638697460a35ecf72e37c50535"
+  },
+  "C5_blocks_2024_exploratory": {
+   "blocks": {
+    "block_a_2024_08_02_2024_09_13": {
+     "by_block_length": {
+      "L=0": {
+       "mcs_p_values": {
+        "elastic_net|B0": 0.0005,
+        "elastic_net|B1a": 0.0005,
+        "elastic_net|B2": 0.0005,
+        "gamma_glm|B0": 0.0001,
+        "gamma_glm|B1a": 0.0005,
+        "gamma_glm|B2": 0.0005,
+        "har_rv|B0": 0.0001,
+        "har_rv|B1a": 0.0005,
+        "har_rv|B2": 0.0005,
+        "lightgbm|B0": 0.0005,
+        "lightgbm|B1a": 1.0,
+        "lightgbm|B2": 0.0027,
+        "ridge|B0": 0.0001,
+        "ridge|B1a": 0.0005,
+        "ridge|B2": 0.0005
+       },
+       "survivors": [
+        "lightgbm|B1a"
+       ]
+      },
+      "L=10": {
+       "mcs_p_values": {
+        "elastic_net|B0": 0.0001,
+        "elastic_net|B1a": 0.0259,
+        "elastic_net|B2": 0.0001,
+        "gamma_glm|B0": 0.0001,
+        "gamma_glm|B1a": 0.0001,
+        "gamma_glm|B2": 0.0259,
+        "har_rv|B0": 0.0001,
+        "har_rv|B1a": 0.0001,
+        "har_rv|B2": 0.0001,
+        "lightgbm|B0": 0.0259,
+        "lightgbm|B1a": 1.0,
+        "lightgbm|B2": 0.0259,
+        "ridge|B0": 0.0001,
+        "ridge|B1a": 0.0001,
+        "ridge|B2": 0.0001
+       },
+       "survivors": [
+        "lightgbm|B1a"
+       ]
+      },
+      "L=20": {
+       "mcs_p_values": {
+        "elastic_net|B0": 0.0001,
+        "elastic_net|B1a": 0.0001,
+        "elastic_net|B2": 0.0001,
+        "gamma_glm|B0": 0.0001,
+        "gamma_glm|B1a": 0.0001,
+        "gamma_glm|B2": 0.0001,
+        "har_rv|B0": 0.0001,
+        "har_rv|B1a": 0.0001,
+        "har_rv|B2": 0.0001,
+        "lightgbm|B0": 0.0001,
+        "lightgbm|B1a": 1.0,
+        "lightgbm|B2": 0.0001,
+        "ridge|B0": 0.0001,
+        "ridge|B1a": 0.0001,
+        "ridge|B2": 0.0001
+       },
+       "survivors": [
+        "lightgbm|B1a"
+       ]
+      },
+      "L=4": {
+       "mcs_p_values": {
+        "elastic_net|B0": 0.0118,
+        "elastic_net|B1a": 0.0121,
+        "elastic_net|B2": 0.0118,
+        "gamma_glm|B0": 0.0001,
+        "gamma_glm|B1a": 0.0118,
+        "gamma_glm|B2": 0.0121,
+        "har_rv|B0": 0.0001,
+        "har_rv|B1a": 0.0118,
+        "har_rv|B2": 0.0118,
+        "lightgbm|B0": 0.0121,
+        "lightgbm|B1a": 1.0,
+        "lightgbm|B2": 0.0162,
+        "ridge|B0": 0.0001,
+        "ridge|B1a": 0.0118,
+        "ridge|B2": 0.0118
+       },
+       "survivors": [
+        "lightgbm|B1a"
+       ]
+      },
+      "L=5": {
+       "mcs_p_values": {
+        "elastic_net|B0": 0.0106,
+        "elastic_net|B1a": 0.0167,
+        "elastic_net|B2": 0.0106,
+        "gamma_glm|B0": 0.0001,
+        "gamma_glm|B1a": 0.0106,
+        "gamma_glm|B2": 0.0167,
+        "har_rv|B0": 0.0002,
+        "har_rv|B1a": 0.0106,
+        "har_rv|B2": 0.0106,
+        "lightgbm|B0": 0.0167,
+        "lightgbm|B1a": 1.0,
+        "lightgbm|B2": 0.0196,
+        "ridge|B0": 0.0002,
+        "ridge|B1a": 0.0106,
+        "ridge|B2": 0.0106
+       },
+       "survivors": [
+        "lightgbm|B1a"
+       ]
+      }
+     },
+     "days": 30
+    },
+    "block_b_2024_10_01_2024_11_11": {
+     "by_block_length": {
+      "L=0": {
+       "mcs_p_values": {
+        "elastic_net|B0": 0.0002,
+        "elastic_net|B1a": 0.0002,
+        "elastic_net|B2": 0.0002,
+        "gamma_glm|B0": 0.0001,
+        "gamma_glm|B1a": 0.0001,
+        "gamma_glm|B2": 0.0005,
+        "har_rv|B0": 0.0001,
+        "har_rv|B1a": 0.0004,
+        "har_rv|B2": 0.5663,
+        "lightgbm|B0": 0.0005,
+        "lightgbm|B1a": 0.5663,
+        "lightgbm|B2": 0.5663,
+        "ridge|B0": 0.0001,
+        "ridge|B1a": 0.0004,
+        "ridge|B2": 0.5663
+       },
+       "survivors": [
+        "har_rv|B2",
+        "lightgbm|B1a",
+        "lightgbm|B2",
+        "ridge|B2"
+       ]
+      },
+      "L=10": {
+       "mcs_p_values": {
+        "elastic_net|B0": 0.0001,
+        "elastic_net|B1a": 0.0001,
+        "elastic_net|B2": 0.0001,
+        "gamma_glm|B0": 0.0001,
+        "gamma_glm|B1a": 0.0001,
+        "gamma_glm|B2": 0.0001,
+        "har_rv|B0": 0.0001,
+        "har_rv|B1a": 0.0001,
+        "har_rv|B2": 0.7195,
+        "lightgbm|B0": 0.0001,
+        "lightgbm|B1a": 0.7195,
+        "lightgbm|B2": 0.7195,
+        "ridge|B0": 0.0001,
+        "ridge|B1a": 0.0001,
+        "ridge|B2": 0.7195
+       },
+       "survivors": [
+        "har_rv|B2",
+        "lightgbm|B1a",
+        "lightgbm|B2",
+        "ridge|B2"
+       ]
+      },
+      "L=20": {
+       "mcs_p_values": {
+        "elastic_net|B0": 0.0001,
+        "elastic_net|B1a": 0.0001,
+        "elastic_net|B2": 0.0001,
+        "gamma_glm|B0": 0.0001,
+        "gamma_glm|B1a": 0.0001,
+        "gamma_glm|B2": 0.0001,
+        "har_rv|B0": 0.0001,
+        "har_rv|B1a": 0.0001,
+        "har_rv|B2": 0.5935,
+        "lightgbm|B0": 0.0001,
+        "lightgbm|B1a": 0.5935,
+        "lightgbm|B2": 0.5935,
+        "ridge|B0": 0.0001,
+        "ridge|B1a": 0.0001,
+        "ridge|B2": 0.5935
+       },
+       "survivors": [
+        "har_rv|B2",
+        "lightgbm|B1a",
+        "lightgbm|B2",
+        "ridge|B2"
+       ]
+      },
+      "L=4": {
+       "mcs_p_values": {
+        "elastic_net|B0": 0.0001,
+        "elastic_net|B1a": 0.0001,
+        "elastic_net|B2": 0.0001,
+        "gamma_glm|B0": 0.0001,
+        "gamma_glm|B1a": 0.0001,
+        "gamma_glm|B2": 0.0003,
+        "har_rv|B0": 0.0001,
+        "har_rv|B1a": 0.0001,
+        "har_rv|B2": 0.6219,
+        "lightgbm|B0": 0.0005,
+        "lightgbm|B1a": 0.6219,
+        "lightgbm|B2": 0.6219,
+        "ridge|B0": 0.0001,
+        "ridge|B1a": 0.0001,
+        "ridge|B2": 0.6219
+       },
+       "survivors": [
+        "har_rv|B2",
+        "lightgbm|B1a",
+        "lightgbm|B2",
+        "ridge|B2"
+       ]
+      },
+      "L=5": {
+       "mcs_p_values": {
+        "elastic_net|B0": 0.0001,
+        "elastic_net|B1a": 0.0001,
+        "elastic_net|B2": 0.0001,
+        "gamma_glm|B0": 0.0001,
+        "gamma_glm|B1a": 0.0001,
+        "gamma_glm|B2": 0.0003,
+        "har_rv|B0": 0.0001,
+        "har_rv|B1a": 0.0001,
+        "har_rv|B2": 0.657,
+        "lightgbm|B0": 0.0005,
+        "lightgbm|B1a": 0.657,
+        "lightgbm|B2": 0.657,
+        "ridge|B0": 0.0001,
+        "ridge|B1a": 0.0001,
+        "ridge|B2": 0.657
+       },
+       "survivors": [
+        "har_rv|B2",
+        "lightgbm|B1a",
+        "lightgbm|B2",
+        "ridge|B2"
+       ]
+      }
+     },
+     "days": 30
+    }
+   },
+   "input_sha256": "db20b76248afce02e04009c510b408214d267a30e7cff3f8dc184d370574ce8b"
+  },
+  "C6_b1v3_confirmation": {
+   "blocks": {
+    "all": {
+     "by_block_length": {
+      "L=0": {
+       "mcs_p_values": {
+        "gamma_glm_confirmatory|B0": 0.0001,
+        "gamma_glm_confirmatory|B1v3a": 0.0001,
+        "gamma_glm_confirmatory|B2": 0.0001,
+        "lightgbm_robustness|B0": 1.0,
+        "lightgbm_robustness|B1v3a": 0.0379,
+        "lightgbm_robustness|B2": 0.016
+       },
+       "survivors": [
+        "lightgbm_robustness|B0"
+       ]
+      },
+      "L=10": {
+       "mcs_p_values": {
+        "gamma_glm_confirmatory|B0": 0.0001,
+        "gamma_glm_confirmatory|B1v3a": 0.0001,
+        "gamma_glm_confirmatory|B2": 0.0001,
+        "lightgbm_robustness|B0": 1.0,
+        "lightgbm_robustness|B1v3a": 0.0001,
+        "lightgbm_robustness|B2": 0.0001
+       },
+       "survivors": [
+        "lightgbm_robustness|B0"
+       ]
+      },
+      "L=20": {
+       "mcs_p_values": {
+        "gamma_glm_confirmatory|B0": 0.0001,
+        "gamma_glm_confirmatory|B1v3a": 0.0001,
+        "gamma_glm_confirmatory|B2": 0.0001,
+        "lightgbm_robustness|B0": 1.0,
+        "lightgbm_robustness|B1v3a": 0.0001,
+        "lightgbm_robustness|B2": 0.0001
+       },
+       "survivors": [
+        "lightgbm_robustness|B0"
+       ]
+      },
+      "L=4": {
+       "mcs_p_values": {
+        "gamma_glm_confirmatory|B0": 0.0001,
+        "gamma_glm_confirmatory|B1v3a": 0.0001,
+        "gamma_glm_confirmatory|B2": 0.0001,
+        "lightgbm_robustness|B0": 1.0,
+        "lightgbm_robustness|B1v3a": 0.0418,
+        "lightgbm_robustness|B2": 0.0136
+       },
+       "survivors": [
+        "lightgbm_robustness|B0"
+       ]
+      },
+      "L=5": {
+       "mcs_p_values": {
+        "gamma_glm_confirmatory|B0": 0.0001,
+        "gamma_glm_confirmatory|B1v3a": 0.0001,
+        "gamma_glm_confirmatory|B2": 0.0001,
+        "lightgbm_robustness|B0": 1.0,
+        "lightgbm_robustness|B1v3a": 0.0367,
+        "lightgbm_robustness|B2": 0.0133
+       },
+       "survivors": [
+        "lightgbm_robustness|B0"
+       ]
+      }
+     },
+     "days": 30
+    }
+   },
+   "input_sha256": "a3fd362db6b34cf53225b76f37132174298a421afa754dff4563422b552a496c"
+  }
+ },
+ "note": "Circular moving-block MCS (whole days drawn jointly across all model columns) vs the legacy IID resampling; L=0 denotes IID.",
+ "schema_version": "mcs-block-sensitivity-v1.0"
+}

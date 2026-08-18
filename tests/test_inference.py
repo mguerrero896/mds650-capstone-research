@@ -157,3 +157,24 @@ def test_input_contracts() -> None:
         inference.type_s_type_m(0.01, 0.0)
     with pytest.raises(ValueError, match="INFERENCE_EFFECT_INVALID"):
         inference.type_s_type_m(0.0, 1.0)
+
+
+def test_model_confidence_set_block_bootstrap() -> None:
+    rng = np.random.default_rng(10)
+    days = 40
+    good = rng.normal(1.0, 0.01, size=days)
+    bad = good + 0.2
+    frame = pl.DataFrame(
+        {
+            "session_date": [f"d{index}" for index in range(days)],
+            "good": good,
+            "bad": bad,
+        }
+    )
+    result = inference.model_confidence_set(frame, repetitions=999, block_length=5)
+    assert result["block_length"] == 5
+    survivors = result["survivors"]
+    assert isinstance(survivors, list)
+    assert "bad" not in survivors and "good" in survivors
+    with pytest.raises(ValueError, match="INFERENCE_BLOCK_LENGTH_INVALID"):
+        inference.model_confidence_set(frame, block_length=0)
