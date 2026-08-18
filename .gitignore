@@ -54,3 +54,4 @@ graphify-out/
 
 # Claude Code session-local state (worktree registry etc.)
 .claude/
+artifacts/public_repro_demo/

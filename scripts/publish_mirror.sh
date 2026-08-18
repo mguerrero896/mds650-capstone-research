@@ -6,6 +6,17 @@
 # their SHA-256 pointers in data/GATED_DATA_POINTERS.json instead.
 # See docs/consolidation_record_20260817.md for the graft rationale.
 set -euo pipefail
+# Tier-2 preflight (decision 63): a publish is REFUSED unless the full local
+# gates pass, including the exact replica of the hosted hermetic job (ci-sim).
+# This is what keeps red runs — and their failure emails — off GitHub.
+# Escape hatch for emergencies only: SKIP_TIER2=1 (leaves a loud trace).
+if [ "${SKIP_TIER2:-0}" != "1" ]; then
+    echo "[publish] running tier-2 gates (set SKIP_TIER2=1 only in an emergency)"
+    uv run python scripts/run_local_evidence_gates.py || {
+        echo "PUBLISH REFUSED: tier-2 gates failed — nothing was pushed" >&2; exit 1; }
+else
+    echo "[publish] WARNING: SKIP_TIER2=1 — publishing without local gates" >&2
+fi
 ROOT_COMMIT=2bcd0ca47a5205ebfb49bea88233353e32d66ef4
 REMOTE=git@github-mds650:mguerrero896/mds650-capstone-research.git
 CANON=$(pwd)

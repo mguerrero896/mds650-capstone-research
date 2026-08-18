@@ -461,3 +461,20 @@ Spec Kit consistency and preregistration gates pass.
    --lock; (6) a GitHub Release snapshot of the frozen state on the public mirror.
    WORM/Object Lock is documented as unavailable on the current stack with
    compensating controls (docs/evidence_immutability_v1.md).
+63. **Canonical state + reproducibility contract (2026-08-18)** — Two reviewer
+   corrections accepted. (a) Stale-"current"-document risk: the project state is
+   now a single generated artifact (data/CANONICAL_STATE.json + STATUS.md,
+   generator scripts/generate_canonical_state.py) recording latest decision,
+   frozen registry, gated pointers, active protocols with hashes, canonical
+   result sources, future campaigns, CI contract and superseded documents; a
+   hermetic CI test regenerates it and fails on any drift, and superseded
+   documents (docs/architecture.md, reports/remaining_work_investigation_20260818.md)
+   must carry a SUPERSEDED banner. (b) Computational vs data reproducibility:
+   scripts/run_public_repro_demo.py runs the full methodological chain (PIT join,
+   features, purge/embargo, three families, QLIKE, bootstraps, MCS, claim
+   ledger) on redistributable synthetic data, tested in CI and packaged in a
+   Dockerfile; docs/reproducibility_contract_v1.md states exactly what a third
+   party can and cannot reproduce, and the Windows-path residual policy.
+   Operationally, scripts/publish_mirror.sh now refuses to publish unless the
+   tier-2 gates (including the ci-sim replica of the hosted hermetic job) pass —
+   red CI runs and their failure emails stop at the local gate.

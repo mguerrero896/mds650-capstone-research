@@ -1,5 +1,9 @@
 # MDS650 pipeline architecture
 
+> **SUPERSEDED (2026-08-18).** This document describes the pre-pilot boundary and is
+> kept as historical record only. The current project state is `STATUS.md` (root,
+> auto-generated) and the document hierarchy is `docs/INDEX.md`.
+
 ## Boundary
 
 The local Python package under `src/mds650` is the source of truth for contracts,
