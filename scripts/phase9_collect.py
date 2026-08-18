@@ -41,6 +41,9 @@ ASSETS = ("AAPL", "AMZN", "META", "MSFT", "NVDA", "TSLA")
 NY = ZoneInfo("America/New_York")
 TAPE_URL = "https://api.unusualwhales.com/api/option-trades/full-tape/{date}"
 MIN_FREE_GB = 120
+# Frozen protocol window (decision 58): the first 60 XNYS sessions STRICTLY after
+# 2026-08-18; earlier sessions are outside the campaign and are never collected.
+WINDOW_START = dt.date(2026, 8, 19)
 MASSIVE_PACING_SECONDS = 13
 TARGET_SESSIONS = 60
 
@@ -265,6 +268,9 @@ def main() -> None:
     )
     if session is None:
         print("[phase9] no closed XNYS session found; exiting")
+        return
+    if not arguments.dry_run and session < WINDOW_START:
+        print(f"[phase9] session {session} predates the frozen window start {WINDOW_START}")
         return
     root = STORE / ("dryrun" if arguments.dry_run else "raw")
     session_dir = root / session.isoformat()

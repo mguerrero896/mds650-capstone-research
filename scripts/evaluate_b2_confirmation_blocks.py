@@ -508,7 +508,12 @@ def main() -> None:
         "personal_paths_emitted": False,
     }
     figure_path = ARTIFACT_ROOT / "frozen_evaluation_qlike_effects.svg"
-    model_card_path = ROOT / "docs" / "b2_confirmation_model_card.md"
+    # Delay reruns write their model card beside their artifacts; the frozen
+    # docs/ model card is registered evidence (fault found and fixed 2026-08-18).
+    if ARTIFACT_ROOT.name == "b2_confirmation":
+        model_card_path = ROOT / "docs" / "b2_confirmation_model_card.md"
+    else:
+        model_card_path = ARTIFACT_ROOT / "model_card.md"
     _write_effect_figure(contrasts, figure_path)
     _write_model_card(result_payload, model_card_path)
     result_payload["figure_path"] = "artifacts/b2_confirmation/frozen_evaluation_qlike_effects.svg"

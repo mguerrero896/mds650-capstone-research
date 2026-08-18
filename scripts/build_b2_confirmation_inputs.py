@@ -62,11 +62,17 @@ PANEL = DATA_ROOT / "derived" / "panel_60d.parquet"
 
 
 def _apply_delay_paths() -> None:
-    global B2_ROOT, B2_COMBINED, PANEL
+    global B2_ROOT, B2_COMBINED, PANEL, ARTIFACT_ROOT
     suffix = _delay_suffix()
     B2_ROOT = DATA_ROOT / "derived" / f"b2_direct{suffix}"
     B2_COMBINED = DATA_ROOT / "derived" / f"b2_direct_60d{suffix}.parquet"
     PANEL = DATA_ROOT / "derived" / f"panel_60d{suffix}.parquet"
+    if suffix:
+        # Sensitivity manifests live in a sibling directory: the frozen
+        # b2_confirmation manifests are registered evidence and must never be
+        # rewritten by a delay rerun (fault found and fixed 2026-08-18).
+        ARTIFACT_ROOT = ROOT / "artifacts" / f"b2_confirmation{suffix}"
+        ARTIFACT_ROOT.mkdir(parents=True, exist_ok=True)
 RAW_FMP = DATA_ROOT / "raw" / "fmp"
 ASSETS = tuple(OUTCOME_ASSETS)
 MARKET_ASSETS = (*ASSETS, "SPY", "QQQ")

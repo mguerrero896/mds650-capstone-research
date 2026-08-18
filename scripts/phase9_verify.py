@@ -21,6 +21,7 @@ DATA_ROOT = Path(os.environ.get("MDS650_EXTERNAL_ROOT", "D:/MDS650"))
 STORE = DATA_ROOT / "phase9"
 ALERT = DATA_ROOT / "logs" / "PHASE9_ALERT.txt"
 NY = ZoneInfo("America/New_York")
+WINDOW_START = dt.date(2026, 8, 19)
 
 
 def _alert(message: str) -> None:
@@ -50,6 +51,9 @@ def main() -> None:
                 break
         probe -= dt.timedelta(days=1)
     if session is None:
+        return
+    if session < WINDOW_START:
+        print(f"[phase9-verify] session {session} predates the window start; nothing to verify")
         return
     manifest_path = STORE / "raw" / session.isoformat() / "session_manifest.json"
     if not manifest_path.exists():
