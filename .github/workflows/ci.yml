@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  # Hard gate: platform-independent static quality. Verified green on ubuntu.
+  # Tier 1a — platform-independent static quality.
   quality:
     runs-on: ubuntu-latest
     steps:
@@ -21,9 +21,27 @@ jobs:
       - name: Mypy (strict)
         run: uv run mypy src scripts
 
-  # NOTE (2026-08-18): no hosted pytest job. The suite's contract tests compare
-  # committed artifacts byte-for-byte (CRLF) and assert local-store layouts, so a
-  # hosted runner cannot pass them; an "informational" failing job only generates
-  # failure-notification noise. The full suite runs green locally before every
-  # publish (see the per-commit evidence in the gate docs); making it a hermetic
-  # hosted gate is tracked in reports/remaining_work_investigation_20260818.md.
+  # Tier 1b — hermetic test suite: unit + property + synthetic e2e + schema/contract
+  # tests that assert only on git-tracked inputs. Evidence-bound tests self-skip
+  # (tests/evidence.py). The four ignored files are tier-2 only: two hard-require
+  # the local D:/ evidence store, two byte-compare artifacts whose committed line
+  # endings are platform-dependent. Tier 2 (full suite + licensed evidence + gated
+  # hash verification) runs locally via scripts/run_local_evidence_gates.py before
+  # every publish — see docs/ci_contract_v1.md.
+  hermetic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.12"
+      - name: Sync locked environment
+        run: uv sync --locked
+      - name: Hermetic pytest with coverage gate
+        run: >
+          uv run pytest tests -q
+          --ignore=tests/unit/test_generate_date_level_pit_preflight_plan_v1.py
+          --ignore=tests/unit/test_independent_replication_panel.py
+          --ignore=tests/unit/test_date_level_pit_preflight_request_budget_v1.py
+          --ignore=tests/contract/test_b2_confirmation_inputs.py
+          --cov=src/mds650 --cov-report=term --cov-fail-under=80

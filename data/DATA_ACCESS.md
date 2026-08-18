@@ -56,3 +56,14 @@ agents). Sync is one-way, repo → database, idempotent:
 `uv run python scripts/sync_supabase_catalog.py` (requires `SUPABASE_SERVICE_KEY`).
 The repo artifacts remain the single source of truth; the database is a queryable
 view of them, never an editing surface.
+
+### Dataset tables (2026-08-18, second wave)
+
+The gated datasets themselves are additionally loaded as **queryable private tables**
+(same RLS-locked posture as the catalog — service-role only, never public):
+`dev_training_all_origins` (45,440), `dev_training_common` (38,573),
+`c1_development_forecasts` (93,288), `c5_frozen_evaluation_forecasts` (356,400),
+`b1v3_features` (77,328), `b2_mechanism_forecasts` (1,554,800). Loader:
+`uv run python scripts/load_supabase_datasets.py` (idempotent by row count; wipes and
+reloads partial tables). The repo parquets stay the source of truth; SHA-256 identity
+lives in `gated_files`.

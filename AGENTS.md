@@ -60,3 +60,10 @@ or `data/GATED_DATA_POINTERS.json`, re-run
 `SUPABASE_SERVICE_KEY` from the User environment). Never write to these tables by
 hand: repo artifacts are the source of truth. When a signed URL is issued from the
 gated bucket, log it in `access_grants`.
+
+Second wave (same date): the six core gated datasets are also loaded as private
+RLS-locked tables (`dev_training_all_origins`, `dev_training_common`,
+`c1_development_forecasts`, `c5_frozen_evaluation_forecasts`, `b1v3_features`,
+`b2_mechanism_forecasts`) via `scripts/load_supabase_datasets.py` (idempotent by row
+count). If a frozen parquet ever changes (it should not — immutability), rerun the
+loader; never edit rows server-side.
