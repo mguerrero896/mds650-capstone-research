@@ -48,3 +48,8 @@ docs/recovery/ponytail_audit.md
 docs/recovery/spec_kit_analysis_report.md
 docs/recovery/target_blind_v23_sourcebound_handoff_20260812.md
 docs/recovery/twenty_session_calibration_spec_analysis.md
+
+# Research Program v2 (2026-08-19): the progress book is an operational working
+# record — per-block commands, local paths, run bookkeeping. The science it tracks
+# is published in docs/rp2/ and the final report; the bookkeeping is not.
+docs/research_program_v2_progress.md

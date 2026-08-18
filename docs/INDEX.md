@@ -82,6 +82,31 @@ handoff), `literature_sources/` (ledger-backed source index). CSV ledgers
 | `target_blind_common_predictor_panel_v23.md` | target-blind-panel | Latest panel doc: v2.3 source-bound predictor-only B0/B1Q/B2 matrix with immutable provenance preflight; reconciliation and OOS remain NO (a v2.4 manifest exists only as a registered artifact). |
 | `threats_to_validity_matrix_v1.md` | threats-to-validity | Examiner-facing matrix (2026-08-18) of 14 named validity threats with evidence, executed mitigation gates and plainly stated residual risk; bounded by decision 53. |
 
+## Research Program v2 (2026-08-19 cascade, `docs/rp2/`)
+
+The eighteen-block programme that rebuilt both option information sets from the raw tape.
+Read `FINAL_REPORT.md` first; the block documents are its evidence. Every retrospective
+analysis in this set carries the label `EXPLORATORY_MECHANISM_DISCOVERY` (decision 66).
+
+| Doc | Topic | Note |
+|---|---|---|
+| `docs/rp2/FINAL_REPORT.md` | programme | **Start here.** Status of all eighteen blocks, the findings including every null, what is READY_TO_RUN and why it is not running, and the decisions requiring the owner's signature. |
+| `DISCOVERY_VALIDATION_CONFIRMATION_PROTOCOL.md` | block 1 | The frozen D/V/C partition: D 2024-08-02..2026-03-23 (389 sessions), V 2026-03-24..07-17 (80), C the sealed Phase 8 cohort, referenced by protocol and never enumerated. |
+| `docs/rp2/block2_pit_ledger_v1.md` | block 2 | Receipt-latency ledger over 1,461,521,313 option trades: the 60 s point-in-time cutoff is invalid, the empirical cutoff is 120 s, plus a 452/469 session admissibility list. |
+| `docs/rp2/block3_target_validation_v1.md` | block 3 | Multi-horizon target comparison. Predictability peaks at h=60 in both universes; ~25.7% of RV30 is the estimator's own sampling error. RV30 stays primary on the owner's standing decision. |
+| `docs/rp2/block4_b0_baseline_v1.md` | block 4 | B0 beats persistence, intraday mean, EWMA, simple HAR and intraday GARCH in both universes. SPY/QQQ market controls make it worse. |
+| `docs/rp2/block5_b1_surface_v1.md` | block 5 | B1 rebuilt as an arbitrage-aware surface from per-trade NBBO+IV: median 724 contracts, 22 expiries, 111 strikes per snapshot, at zero acquisition cost. |
+| `docs/rp2/block6_b2_microstructure_v1.md` | block 6 | B2 rebuilt as 52 microstructure features — Greeks-weighted flow, Hawkes intensity, concentration, trade-to-quote impact — over 125,136 origins. |
+| `docs/rp2/block7_dml_v1.md` | block 7 | **The positive finding.** Double machine learning rejects the null at p = 3e-12; the Hawkes burst-intensity innovation and buyer-initiated premium share replicate across universes, Greeks-weighted flow does not. |
+| `docs/rp2/block8_ladder_v1.md` | block 8 | Six families x four contrasts + interaction. Null or family-dependent in discovery, null-to-negative in validation; recalibration decomposes the discovery null. |
+| `docs/rp2/block9_generalization_v1.md` | block 9 | Leave-one-asset-out, era, month, regime and event slicing. Two discovery contrasts pass the minimum criterion; neither replicates, and both concentrate near the close and in expiration weeks. |
+| `docs/rp2/block10_inference_v1.md` | block 10 | Clark-West, Giacomini-White and Hansen SPA. Population-level content exists and is smaller than the cost of estimating it; nothing clears the decision-64 alpha budget. |
+| `docs/rp2/block11_economics_v1.md` | block 11 | Variance-risk strategy and risk-management utility with a measured cost model. No economic value at any selectivity; deflated Sharpe 0.000 when selective. |
+| `docs/rp2/block12_prospective_protocol_v1.md` | block 12 | The prospective protocol, sized on measured dispersion: 537 sessions needed against the 60-120 proposed. Frozen, `READY_TO_RUN`, deliberately not launched. |
+| `docs/rp2/block13_execution_map_v1.md` | block 13 | The cascade map filled in with real verdicts, and the six items that were gated rather than blocked. |
+| `docs/rp2/block14_supabase_v1.md` | block 14 | Live audit of the research-data project: RLS on with zero policies, weak types, six tables without primary keys, a false note copied across campaigns. Two fixes applied, five withheld. |
+| `docs/rp2/blocks15_18_publication_pass_v1.md` | blocks 15-18 | Writing audit, structure proposal, README rewrite and keep/move classification. |
+
 ## Superseded (kept for the preregistration audit trail)
 
 | Doc | Topic | Note |
