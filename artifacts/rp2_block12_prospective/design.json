@@ -1,0 +1,110 @@
+{
+  "alpha_note": "decision-64 spending at look 4 = 0.05/(4*5)",
+  "alpha_one_sided": 0.0025,
+  "block": 12,
+  "design_sha256": "87b182390f5507e3682b7ff7f2b010dca65d8f452f6ada10306d372b04266cda",
+  "families": [
+    "gamma_glm",
+    "lightgbm"
+  ],
+  "generated_at_utc": "2026-08-18T18:18:30.733580+00:00",
+  "label": "PROSPECTIVE_DESIGN",
+  "measured_dispersion": {
+    "D": {
+      "gamma_glm": {
+        "delta_b1_observed_mean": 0.0011778744032316347,
+        "delta_b1_session_sigma": 0.01828763627185435,
+        "delta_b2_given_b1_observed_mean": -0.0011489537999198702,
+        "delta_b2_given_b1_session_sigma": 0.012506377330658945,
+        "evaluation_sessions": 92.0
+      },
+      "lightgbm": {
+        "delta_b1_observed_mean": -0.001777660636247259,
+        "delta_b1_session_sigma": 0.01916476050457372,
+        "delta_b2_given_b1_observed_mean": 0.003215849912324614,
+        "delta_b2_given_b1_session_sigma": 0.020430876539202555,
+        "evaluation_sessions": 92.0
+      }
+    },
+    "V": {
+      "gamma_glm": {
+        "delta_b1_observed_mean": -0.002250793443855295,
+        "delta_b1_session_sigma": 0.010029225069301703,
+        "delta_b2_given_b1_observed_mean": 0.0002667974059690491,
+        "delta_b2_given_b1_session_sigma": 0.008881577091771132,
+        "evaluation_sessions": 32.0
+      },
+      "lightgbm": {
+        "delta_b1_observed_mean": -0.0017865516744646974,
+        "delta_b1_session_sigma": 0.024573510542988904,
+        "delta_b2_given_b1_observed_mean": -0.0049454821398289845,
+        "delta_b2_given_b1_session_sigma": 0.029346720065225446,
+        "evaluation_sessions": 32.0
+      }
+    }
+  },
+  "minimum_detectable_effects": {
+    "D": {
+      "gamma_glm": {
+        "delta_b1_mde_n120": 0.006091156429677059,
+        "delta_b1_mde_n180": 0.004973408398727254,
+        "delta_b1_mde_n60": 0.008614196033385377,
+        "delta_b1_mde_n90": 0.00703346160870034,
+        "delta_b1_sessions_for_observed_effect": 3209.0965510544656,
+        "delta_b2_given_b1_mde_n120": 0.004165562982398832,
+        "delta_b2_given_b1_mde_n180": 0.0034011679327677472,
+        "delta_b2_given_b1_mde_n60": 0.005890995664627746,
+        "delta_b2_given_b1_mde_n90": 0.004809977818428611,
+        "delta_b2_given_b1_sessions_for_observed_effect": null
+      },
+      "lightgbm": {
+        "delta_b1_mde_n120": 0.006383304678380848,
+        "delta_b1_mde_n180": 0.0052119464449179205,
+        "delta_b1_mde_n60": 0.009027356048925824,
+        "delta_b1_mde_n90": 0.007370805348765161,
+        "delta_b1_sessions_for_observed_effect": null,
+        "delta_b2_given_b1_mde_n120": 0.006805016413588312,
+        "delta_b2_given_b1_mde_n180": 0.0055562726348519125,
+        "delta_b2_given_b1_mde_n60": 0.009623746504268109,
+        "delta_b2_given_b1_mde_n90": 0.007857756116450067,
+        "delta_b2_given_b1_sessions_for_observed_effect": 537.3386219094264
+      }
+    },
+    "V": {
+      "gamma_glm": {
+        "delta_b1_mde_n120": 0.0033404852249590915,
+        "delta_b1_mde_n180": 0.0027274947648186837,
+        "delta_b1_mde_n60": 0.004724159510044086,
+        "delta_b1_mde_n90": 0.003857260087708198,
+        "delta_b1_sessions_for_observed_effect": null,
+        "delta_b2_given_b1_mde_n120": 0.002958232250685977,
+        "delta_b2_given_b1_mde_n180": 0.002415386518275232,
+        "delta_b2_given_b1_mde_n60": 0.0041835721695695945,
+        "delta_b2_given_b1_mde_n90": 0.003415872372517963,
+        "delta_b2_given_b1_sessions_for_observed_effect": 14753.075860187764
+      },
+      "lightgbm": {
+        "delta_b1_mde_n120": 0.008184824682566061,
+        "delta_b1_mde_n180": 0.006682881368808049,
+        "delta_b1_mde_n60": 0.011575090071730985,
+        "delta_b1_mde_n90": 0.009451021467498818,
+        "delta_b1_sessions_for_observed_effect": null,
+        "delta_b2_given_b1_mde_n120": 0.009774661960569773,
+        "delta_b2_given_b1_mde_n180": 0.007980978070529523,
+        "delta_b2_given_b1_mde_n60": 0.01382345951225016,
+        "delta_b2_given_b1_mde_n90": 0.011286807428345107,
+        "delta_b2_given_b1_sessions_for_observed_effect": null
+      }
+    }
+  },
+  "note": "sessions_for_observed_effect is null when the observed effect is zero or adverse: no sample size detects a non-positive effect.",
+  "power": 0.8,
+  "program": "docs/research_program_v2.md",
+  "sealed_cohorts_read": 0,
+  "session_counts": [
+    60,
+    90,
+    120,
+    180
+  ]
+}
