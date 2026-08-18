@@ -1,0 +1,290 @@
+{
+ "drill_2025_10_20": {
+  "median_abs_z_all_assets": "16-23",
+  "rv30_ratio_vs_rest_of_month": 0.6,
+  "verdict": "PROVIDER_DATA_ARTIFACT_SUSPECTED - extreme reported activity with calmer-than-usual market"
+ },
+ "lodo_sensitivity_p6_without_2025_10_20": {
+  "lightgbm_B0_to_B2_total": {
+   "estimate": 0.02194,
+   "vs_full": 0.02134,
+   "wild_p": 0.0001
+  },
+  "log_ols_B0_to_B2_total": {
+   "estimate": 0.01043,
+   "vs_full": 0.01009,
+   "wild_p": 0.0001
+  },
+  "verdict": "era positive UNCHANGED without the flagged session"
+ },
+ "monthly": {
+  "2024H2_c6": [
+   {
+    "iv_med": -2.4419889872114804,
+    "iv_null_share": 0.0,
+    "month": "2024-08",
+    "origins": 8225,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 1.2558875114593538e-05
+   },
+   {
+    "iv_med": -2.392068474019364,
+    "iv_null_share": 0.0,
+    "month": "2024-09",
+    "origins": 7853,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 9.740282573899682e-06
+   },
+   {
+    "iv_med": -1.7012802007833123,
+    "iv_null_share": 0.0,
+    "month": "2024-10",
+    "origins": 8809,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 6.478073080753909e-06
+   },
+   {
+    "iv_med": -2.6047422978699952,
+    "iv_null_share": 0.0,
+    "month": "2024-11",
+    "origins": 7656,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 8.172413145912833e-06
+   },
+   {
+    "iv_med": -2.689049698155989,
+    "iv_null_share": 0.0,
+    "month": "2024-12",
+    "origins": 2354,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 7.322890855975606e-06
+   }
+  ],
+  "2025H1_c4c": [
+   {
+    "b2_complete": 0.0,
+    "iv_med": 0.31418364809043775,
+    "iv_null_share": 0.0,
+    "month": "2025-02",
+    "origins": 1728,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 2.1588460300186527e-05,
+    "z_hardzero": 1.0,
+    "z_sd": 0.0
+   },
+   {
+    "b2_complete": 0.23809523809523808,
+    "iv_med": 0.35532011654005335,
+    "iv_null_share": 0.0,
+    "month": "2025-03",
+    "origins": 9072,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 2.322453547751077e-05,
+    "z_hardzero": 0.7619047619047619,
+    "z_sd": 0.536441654837202
+   },
+   {
+    "b2_complete": 0.9523809523809523,
+    "iv_med": 0.48730438155513145,
+    "iv_null_share": 0.00033068783068783067,
+    "month": "2025-04",
+    "origins": 9072,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 3.405225313249586e-05,
+    "z_hardzero": 0.0,
+    "z_sd": 1.1827135209907575
+   },
+   {
+    "b2_complete": 1.0,
+    "iv_med": 0.33794855833810183,
+    "iv_null_share": 0.0,
+    "month": "2025-05",
+    "origins": 9072,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 1.054686387093916e-05,
+    "z_hardzero": 0.00011022927689594356,
+    "z_sd": 1.1376177386818394
+   },
+   {
+    "b2_complete": 1.0,
+    "iv_med": 0.3004952233388722,
+    "iv_null_share": 0.0,
+    "month": "2025-06",
+    "origins": 8640,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 7.503283906940538e-06,
+    "z_hardzero": 0.00034722222222222224,
+    "z_sd": 1.0173485475135426
+   },
+   {
+    "b2_complete": 1.0,
+    "iv_med": 0.35794864489989087,
+    "iv_null_share": 0.0,
+    "month": "2025-07",
+    "origins": 1080,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 8.402401481806962e-06,
+    "z_hardzero": 0.000925925925925926,
+    "z_sd": 1.047024830406186
+   }
+  ],
+  "2025H2_p6": [
+   {
+    "b2_complete": 0.0,
+    "iv_med": 0.3499848121622182,
+    "iv_null_share": 0.001949317738791423,
+    "month": "2025-07",
+    "origins": 8208,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 5.428055469011245e-06,
+    "z_hardzero": 1.0,
+    "z_sd": 0.0
+   },
+   {
+    "b2_complete": 0.9523809523809523,
+    "iv_med": 0.26409967318834215,
+    "iv_null_share": 0.0013227513227513227,
+    "month": "2025-08",
+    "origins": 9072,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 7.195178232944958e-06,
+    "z_hardzero": 0.04772927689594356,
+    "z_sd": 1.1199221013250926
+   },
+   {
+    "b2_complete": 1.0,
+    "iv_med": 0.2771477688243582,
+    "iv_null_share": 0.0,
+    "month": "2025-09",
+    "origins": 9072,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 7.105652206171374e-06,
+    "z_hardzero": 0.00011022927689594356,
+    "z_sd": 1.2221850360943245
+   },
+   {
+    "b2_complete": 1.0,
+    "iv_med": 0.40528706489809496,
+    "iv_null_share": 0.001610305958132045,
+    "month": "2025-10",
+    "origins": 9936,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 9.612279773675075e-06,
+    "z_hardzero": 0.00010064412238325282,
+    "z_sd": 3.296791943651918
+   },
+   {
+    "b2_complete": 1.0,
+    "iv_med": 0.3319716579948122,
+    "iv_null_share": 0.0,
+    "month": "2025-11",
+    "origins": 7992,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 1.3949726825836687e-05,
+    "z_hardzero": 0.0,
+    "z_sd": 0.9296770349931051
+   },
+   {
+    "b2_complete": 1.0,
+    "iv_med": 0.28110998203430115,
+    "iv_null_share": 0.0,
+    "month": "2025-12",
+    "origins": 9288,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 5.79555180599876e-06,
+    "z_hardzero": 0.0002153316106804479,
+    "z_sd": 0.9199172314580156
+   },
+   {
+    "b2_complete": 1.0,
+    "iv_med": 0.3794739063928104,
+    "iv_null_share": 0.0,
+    "month": "2026-01",
+    "origins": 8640,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 8.212209059380171e-06,
+    "z_hardzero": 0.0,
+    "z_sd": 1.0716569850601838
+   },
+   {
+    "b2_complete": 1.0,
+    "iv_med": 0.3278306576804509,
+    "iv_null_share": 0.0,
+    "month": "2026-02",
+    "origins": 8208,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 1.3441859666823454e-05,
+    "z_hardzero": 0.00012183235867446393,
+    "z_sd": 1.0284335925988473
+   },
+   {
+    "b2_complete": 1.0,
+    "iv_med": 0.33517674630200445,
+    "iv_null_share": 0.0,
+    "month": "2026-03",
+    "origins": 6912,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 1.3048922188512939e-05,
+    "z_hardzero": 0.00014467592592592592,
+    "z_sd": 0.8274054666200455
+   }
+  ],
+  "2026H1_dev": [
+   {
+    "iv_med": 0.3549884609028995,
+    "iv_null_share": 0.0,
+    "month": "2026-03",
+    "origins": 2731,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 9.17982433652754e-06,
+    "trades_med": 2151.0
+   },
+   {
+    "iv_med": 0.36986601009397024,
+    "iv_null_share": 0.0,
+    "month": "2026-04",
+    "origins": 10278,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 6.205012565890119e-06,
+    "trades_med": 2487.0
+   },
+   {
+    "iv_med": 0.29133241733430515,
+    "iv_null_share": 0.0,
+    "month": "2026-05",
+    "origins": 9642,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 7.2241802184368185e-06,
+    "trades_med": 2812.0
+   },
+   {
+    "iv_med": 0.32635555011937767,
+    "iv_null_share": 0.0,
+    "month": "2026-06",
+    "origins": 10041,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 1.1330390428155785e-05,
+    "trades_med": 2908.0
+   },
+   {
+    "iv_med": 0.4202072541259229,
+    "iv_null_share": 0.0,
+    "month": "2026-07",
+    "origins": 5881,
+    "rv30_floor_share": 0.0,
+    "rv30_med": 1.0201191202321905e-05,
+    "trades_med": 3447.0
+   }
+  ]
+ },
+ "overall_verdict": "NO systematic data degradation across eras: targets clean, IV nulls ~0, z-normalization healthy outside registered warmups, provider activity GREW 2.4x 2024->2026. Historical process defects were caught and instrumented (ninefold dividend -> C4c reread; premium fill -> counters). Exactly one corrupted session found in the full z-history (2025-10-20, provider artifact suspected), and no cited result depends on it.",
+ "schema_version": "data-quality-audit-v1.0",
+ "suspect_sessions_no_market_cosignature": [
+  {
+   "era": "2025H2_p6",
+   "median_abs_z": 13.8,
+   "rv_ratio_vs_era": 0.69,
+   "session": "2025-10-20"
+  }
+ ]
+}
