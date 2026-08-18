@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -139,3 +140,75 @@ def query_parquet(path: Path, sql: str) -> list[tuple[Any, ...]]:
     """
     with duckdb.connect(database=":memory:") as connection:
         return [tuple(row) for row in connection.execute(sql, [str(path)]).fetchall()]
+
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+FROZEN_REGISTRY_PATH = _REPO_ROOT / "data" / "FROZEN_ARTIFACTS.json"
+_frozen_paths_cache: frozenset[str] | None = None
+
+
+def frozen_artifact_paths(registry_path: Path | None = None) -> frozenset[str]:
+    """Return the repo-relative POSIX paths registered as frozen evidence.
+
+    The registry (``data/FROZEN_ARTIFACTS.json``) is append-only: a path may be
+    added exactly once and its digest never changes; new evidence means a new
+    path, never an update. An absent registry yields the empty set so callers
+    outside the canonical repo stay functional.
+    """
+    global _frozen_paths_cache
+    use_cache = registry_path is None
+    if use_cache and _frozen_paths_cache is not None:
+        return _frozen_paths_cache
+    target = registry_path if registry_path is not None else FROZEN_REGISTRY_PATH
+    if target.is_file():
+        entries = json.loads(target.read_text(encoding="utf-8"))["entries"]
+        paths = frozenset(str(entry["path"]) for entry in entries)
+    else:
+        paths = frozenset()
+    if use_cache:
+        _frozen_paths_cache = paths
+    return paths
+
+
+def assert_outside_frozen(path: Path, *, registry_path: Path | None = None) -> Path:
+    """Reject any output path that targets a registered frozen artifact.
+
+    Writers must call this before opening an output file. There is deliberately
+    no "update a frozen file" operation anywhere in this codebase: amendments
+    are new files (new version suffix), never in-place edits.
+
+    Raises
+    ------
+    ValueError
+        ``FROZEN_ARTIFACT_WRITE_REJECTED:<path>`` when ``path`` resolves onto a
+        frozen artifact (or onto the registry itself).
+    """
+    resolved = path.resolve()
+    try:
+        relative = resolved.relative_to(_REPO_ROOT).as_posix()
+    except ValueError:
+        return path  # outside the repo: not governed by the registry
+    frozen = frozen_artifact_paths(registry_path)
+    if relative in frozen or relative == "data/FROZEN_ARTIFACTS.json":
+        raise ValueError(f"FROZEN_ARTIFACT_WRITE_REJECTED:{relative}")
+    return path
+
+
+def write_content_addressed(payload: bytes, *, root: Path, protocol_id: str) -> Path:
+    """Persist evidence at ``root/protocol_id/<sha256>.bin`` — physically immutable.
+
+    The filename IS the content hash, so an "update" is impossible by
+    construction: different bytes land at a different path, identical bytes are
+    a verified no-op. This is the required write path for new frozen evidence
+    (decision 62).
+    """
+    _validate_component(protocol_id, "PROTOCOL_PATH_INVALID")
+    digest = hash_payload(payload)
+    destination = root / protocol_id / f"{digest}.bin"
+    if destination.exists():
+        if destination.read_bytes() != payload:  # sha256 collision, in practice corruption
+            raise ValueError("CONTENT_ADDRESS_CORRUPTION")
+        return destination
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_bytes(payload)
+    return destination

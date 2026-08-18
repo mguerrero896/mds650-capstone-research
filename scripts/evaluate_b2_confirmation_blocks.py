@@ -19,6 +19,7 @@ import compare_development_models as development
 import numpy as np
 import polars as pl
 
+from mds650 import storage
 from mds650.development_models import (
     INFORMATION_SETS,
     fit_development_candidate,
@@ -48,6 +49,7 @@ def _json(path: Path) -> dict[str, Any]:
 
 def _write_json(path: Path, payload: Mapping[str, Any]) -> None:
     """Write deterministic self-hashed JSON evidence."""
+    storage.assert_outside_frozen(path)
     unsigned = {key: value for key, value in payload.items() if key != "manifest_sha256"}
     output = {**unsigned, "manifest_sha256": canonical_sha256(unsigned)}
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -469,7 +471,8 @@ def main() -> None:
     stability = _stability(forecast_frame, contrasts)
     ARTIFACT_ROOT.mkdir(parents=True, exist_ok=True)
     forecast_frame.write_parquet(
-        ARTIFACT_ROOT / "frozen_evaluation_forecasts.parquet", compression="zstd"
+        storage.assert_outside_frozen(ARTIFACT_ROOT / "frozen_evaluation_forecasts.parquet"),
+        compression="zstd",
     )
     pl.DataFrame(metrics).write_csv(ARTIFACT_ROOT / "frozen_evaluation_metrics.csv")
     pl.DataFrame(stability).write_csv(ARTIFACT_ROOT / "frozen_evaluation_stability.csv")

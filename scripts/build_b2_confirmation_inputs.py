@@ -23,6 +23,7 @@ import exchange_calendars as xcals  # type: ignore[import-untyped]
 import httpx
 import polars as pl
 
+from mds650 import storage
 from mds650.phase5_features import add_compact_b2_features
 from mds650.phase5_storage import sha256_file
 from mds650.phase6 import (
@@ -90,6 +91,7 @@ def _json(path: Path) -> dict[str, Any]:
 
 def _write_json(path: Path, payload: Mapping[str, Any]) -> None:
     """Write deterministic self-hashed evidence atomically."""
+    storage.assert_outside_frozen(path)
     unsigned = {key: value for key, value in payload.items() if key != "manifest_sha256"}
     output = {**unsigned, "manifest_sha256": canonical_sha256(unsigned)}
     path.parent.mkdir(parents=True, exist_ok=True)

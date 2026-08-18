@@ -447,3 +447,17 @@ Spec Kit consistency and preregistration gates pass.
    scripts/publish_mirror.sh (filtered history). Mirror commits cannot carry
    verified signatures (history is rewritten on every publish); integrity relies on
    the publish script's dual verification, documented in the same contract.
+62. **Physical immutability of frozen evidence (2026-08-18)** — Reviewer correction
+   accepted: logical immutability (write_immutable_raw refusing byte replacement)
+   did not stop out-of-band writes, as the frozen-manifest overwrite incident
+   demonstrated. Now: (1) data/FROZEN_ARTIFACTS.json, an append-only registry
+   pinning 61 frozen artifacts to their SHA-256 (LF-normalized text, raw parquet)
+   managed exclusively by scripts/freeze_registry.py; (2) a hermetic tripwire test
+   re-hashing every registered file on every CI and tier-2 run; (3) a writer guard
+   mds650.storage.assert_outside_frozen raising FROZEN_ARTIFACT_WRITE_REJECTED,
+   wired into the B2-confirmation builder/evaluator; (4) content-addressed writes
+   (root/protocol_id/<sha256>.bin) as the required path for new frozen evidence —
+   no update operation exists, only new versions; (5) OS read-only flags via
+   --lock; (6) a GitHub Release snapshot of the frozen state on the public mirror.
+   WORM/Object Lock is documented as unavailable on the current stack with
+   compensating controls (docs/evidence_immutability_v1.md).
