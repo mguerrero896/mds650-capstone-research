@@ -57,6 +57,15 @@ DIFF=$(comm -3 \
 if [ -n "$DIFF" ]; then
     echo "TREE MISMATCH (excluding gated paths):" >&2; echo "$DIFF" >&2; exit 1
 fi
+# Check 3: the hosted hermetic job must pass ON THE STRIPPED TREE. Running the
+# replica on the canonical tree (tier-2) is not enough: tests that read files
+# excluded from the mirror pass locally and fail on GitHub. This check runs the
+# exact hosted command inside a clean checkout of the filtered mirror.
+PUBCHECK=$(mktemp -d)/pub
+git -C "$MIRROR" worktree add --detach "$PUBCHECK" main >/dev/null 2>&1 || git clone -q "$MIRROR" "$PUBCHECK"
+echo "[publish] check 3: hermetic suite on the stripped public tree"
+(cd "$PUBCHECK" && env -u MDS650_EVIDENCE_ROOT uv run --project . pytest tests -q \n    --ignore=tests/unit/test_generate_date_level_pit_preflight_plan_v1.py \n    --ignore=tests/unit/test_independent_replication_panel.py \n    --ignore=tests/unit/test_date_level_pit_preflight_request_budget_v1.py \n    --ignore=tests/contract/test_b2_confirmation_inputs.py \n    --cov=src/mds650 --cov-report=term --cov-fail-under=80) || {
+    echo "PUBLISH REFUSED: hermetic suite FAILS on the stripped public tree" >&2; exit 1; }
 git -C "$MIRROR" push --force "$REMOTE" main
 git -C "$MIRROR" push --force "$REMOTE" --tags
 echo "mirror published: canonical $(git rev-parse --short HEAD) -> mirror $(git -C "$MIRROR" rev-parse --short main) (gated data stripped)"
