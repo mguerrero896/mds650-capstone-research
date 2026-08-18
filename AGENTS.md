@@ -67,3 +67,11 @@ RLS-locked tables (`dev_training_all_origins`, `dev_training_common`,
 `b2_mechanism_forecasts`) via `scripts/load_supabase_datasets.py` (idempotent by row
 count). If a frozen parquet ever changes (it should not — immutability), rerun the
 loader; never edit rows server-side.
+
+## Internal-only documents (2026-08-18)
+
+`scripts/_mirror_internal_exclude_list.txt` lists working documents that stay in
+the local canonical repo but are stripped from the entire public history by
+`publish_mirror.sh` (same pass as the gated data, no Supabase pointers). Current:
+`ROADMAP_CODEX_20260816.md`. Add internal-only docs there BEFORE committing them;
+never reference them from public docs, tests, or the INDEX.

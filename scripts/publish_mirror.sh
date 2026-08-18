@@ -20,7 +20,12 @@ fi
 ROOT_COMMIT=2bcd0ca47a5205ebfb49bea88233353e32d66ef4
 REMOTE=git@github-mds650:mguerrero896/mds650-capstone-research.git
 CANON=$(pwd)
-EXCLUDES="$CANON/scripts/_gated_exclude_list.txt"
+# Two exclusion classes, one stripping pass:
+#  - gated data (licensed-derived; pointer-tracked in data/GATED_DATA_POINTERS.json)
+#  - internal working docs (local-only by decision; no pointers, just never published)
+EXCLUDES=$(mktemp)
+cat "$CANON/scripts/_gated_exclude_list.txt" \
+    "$CANON/scripts/_mirror_internal_exclude_list.txt" | tr -d '\r' | grep -v '^$' > "$EXCLUDES"
 MIRROR=$(mktemp -d)/mirror
 git replace --graft "$ROOT_COMMIT"
 trap 'git replace -d "$ROOT_COMMIT" 2>/dev/null || true' EXIT
