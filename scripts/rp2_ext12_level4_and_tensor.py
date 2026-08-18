@@ -32,6 +32,7 @@ from torch import nn
 
 from mds650.b1v3_confirmation import canonical_sha256
 from mds650.metrics import paired_day_bootstrap, qlike_losses
+from mds650.rp2.baseline import mincer_zarnowitz
 from mds650.rp2.ladder import LADDER
 from mds650.rp2.panel import (
     B0_FEATURES,
@@ -213,6 +214,7 @@ def run_role(
     train_index = torch.tensor(np.flatnonzero(train), dtype=torch.long)
 
     neural: dict[str, FloatArray] = {}
+    log_rmse: dict[str, float] = {}
     for name, use_sequence in (("mlp_tabular", False), ("deepsets_sequence", True)):
         torch.manual_seed(SEED)
         model = DeepSetsForecaster(
@@ -220,18 +222,28 @@ def run_role(
         ).to(device)
         _train(model, tabular_t, sequence_t, mask_t, response_t, train_index, device)
         fitted = _predict(model, tabular_t, sequence_t, mask_t)
-        smearing = float(np.exp(0.5 * np.var(response[train] - fitted[train])))
-        neural[name] = np.exp(fitted) * smearing
+        log_rmse[name] = float(np.sqrt(np.mean((response[test] - fitted[test]) ** 2)))
+        # Lognormal smearing amplifies a poorly fit network's level error into an
+        # enormous QLIKE, which makes the two arms incomparable. Recalibrate BOTH on
+        # the training period, exactly as Block 8 does, so the contrast is about
+        # information rather than about which arm happened to converge.
+        raw = np.exp(fitted) * float(np.exp(0.5 * np.var(response[train] - fitted[train])))
+        calibration = mincer_zarnowitz(target[train], raw[train])
+        neural[name] = np.exp(
+            calibration.intercept
+            + calibration.slope * np.log(np.maximum(raw, VARIANCE_FLOOR))
+        )
 
     results["extension_1_level4"] = {
         "device": str(device),
         "epochs": EPOCHS,
         "sequence_length": int(sequence_block.shape[1]),
         "mean_trades_per_origin": float(mask_t.sum(dim=1).mean().item()),
-        "qlike": {
+        "qlike_recalibrated": {
             name: float(np.mean(qlike_losses(target[test], values[test])))
             for name, values in neural.items()
         },
+        "log_scale_rmse": log_rmse,
         "delta_sequence_over_tabular": _contrast(
             neural["mlp_tabular"][test], neural["deepsets_sequence"][test],
             target[test], labels[test],
@@ -287,7 +299,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             entry = block.get(key)
             if not isinstance(entry, dict):
                 continue
-            qlike = entry["qlike"]
+            qlike = entry.get("qlike") or entry["qlike_recalibrated"]
             assert isinstance(qlike, dict)
             print(f"  {key}: " + "  ".join(f"{n}={v:.5f}" for n, v in qlike.items()))
             delta_key = (

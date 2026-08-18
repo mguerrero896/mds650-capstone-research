@@ -2,20 +2,24 @@
   "D": {
     "extension_1_level4": {
       "delta_sequence_over_tabular": {
-        "ci_high": 1.7537553285203842,
-        "ci_low": 0.01027604673400787,
+        "ci_high": 1.8751772121961385,
+        "ci_low": 0.007896404723399267,
         "clusters": 92.0,
-        "delta_qlike": 0.5943696606582024,
+        "delta_qlike": 0.6337820766939426,
         "p_value": 0.00399800099950025
       },
       "device": "cuda",
       "epochs": 30,
-      "mean_trades_per_origin": 47.99994659423828,
-      "qlike": {
-        "deepsets_sequence": 0.14351292495316675,
-        "mlp_tabular": 0.7378825856113692
+      "log_scale_rmse": {
+        "deepsets_sequence": 0.4901357772570777,
+        "mlp_tabular": 0.5363535161008599
       },
+      "mean_trades_per_origin": 47.99994659423828,
       "qlike_lightgbm_reference": 0.1374239076824106,
+      "qlike_recalibrated": {
+        "deepsets_sequence": 0.14962011968154945,
+        "mlp_tabular": 0.783402196375492
+      },
       "sequence_length": 48
     },
     "extension_2_tensor": {
@@ -40,20 +44,24 @@
   "V": {
     "extension_1_level4": {
       "delta_sequence_over_tabular": {
-        "ci_high": 0.4215963247018993,
-        "ci_low": 0.1795791662557253,
+        "ci_high": 0.46063460670108874,
+        "ci_low": 0.21416947834683367,
         "clusters": 32.0,
-        "delta_qlike": 0.2895852060805562,
+        "delta_qlike": 0.32376122860027207,
         "p_value": 0.0009995002498750624
       },
       "device": "cuda",
       "epochs": 30,
-      "mean_trades_per_origin": 48.000003814697266,
-      "qlike": {
-        "deepsets_sequence": 0.19258765781316503,
-        "mlp_tabular": 0.48217286389372127
+      "log_scale_rmse": {
+        "deepsets_sequence": 0.5238748464272147,
+        "mlp_tabular": 0.7446322699437602
       },
+      "mean_trades_per_origin": 48.000003814697266,
       "qlike_lightgbm_reference": 0.21331429901766508,
+      "qlike_recalibrated": {
+        "deepsets_sequence": 0.2106626069536404,
+        "mlp_tabular": 0.5344238355539125
+      },
       "sequence_length": 48
     },
     "extension_2_tensor": {
@@ -76,13 +84,13 @@
     "test_rows": 12443
   },
   "device": "cuda",
-  "ext12_sha256": "ce830cad24e7fcded928987538af4bed14e99895347a935971c49787e82988c9",
+  "ext12_sha256": "5c6e4eb025449ae346348a8f2a98c5508a83d131e0839ffde9138effb81971b1",
   "extensions": [
     1,
     2
   ],
   "gate_met_by": "Block 7 signal present + Block 8 tabular ladder fails to convert it",
-  "generated_at_utc": "2026-08-18T20:29:31.964262+00:00",
+  "generated_at_utc": "2026-08-18T20:32:23.820139+00:00",
   "gpu": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "label": "EXPLORATORY_MECHANISM_DISCOVERY",
   "panel_rows": 125136,

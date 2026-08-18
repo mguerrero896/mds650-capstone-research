@@ -27,6 +27,10 @@ BAR_SOURCES: Final[tuple[tuple[str, str, str], ...]] = (
     ("gate8_c4c", "D", "data/fmp/gate8_c4c/underlying_1min_c4c.parquet"),
     ("phase6_180d", "D", "phase6/data/fmp/underlying_1min_180d.parquet"),
     ("gate3_dev80", "V", "data/fmp/gate3/underlying_1min_dev80.parquet"),
+    # Extension 3: the 153 tape sessions (2024-08-02..2025-12-24) that had no bars.
+    # Already-observed eras, so Discovery only - they buy precision on the mechanism
+    # estimate, never confirmation.
+    ("ext3_missing", "D", "data/fmp/rp2_ext3/underlying_1min_ext3.parquet"),
 )
 
 _OPTIONAL_COLUMNS: Final = ("high", "low", "volume")
