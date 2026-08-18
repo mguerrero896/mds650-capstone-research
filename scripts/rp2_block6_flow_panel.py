@@ -5,6 +5,12 @@ before the point-in-time cutoff and produces Greeks-weighted signed flow, activi
 option type, moneyness and tenor, burstiness and Hawkes intensity, concentration and
 entropy, and trade-to-quote impact.
 
+Architecture note: every per-trade quantity is computed **once per session** and turned
+into a prefix sum, so a window feature is one subtraction regardless of how many trades the
+window contains.  The obvious per-origin implementation is O(origins x window) and is far
+too slow at 1.4 billion tape rows; only the concentration statistics, which are not
+prefix-summable, are evaluated on the (short) five-minute slice.
+
 Direction comes from the tape's own per-trade side tag (``ask_side`` = buyer initiated,
 ``bid_side`` = seller initiated).  The provider's ``ask_vol``/``bid_vol``/``multi_vol``
 columns are cumulative per contract, not per trade, and are deliberately unused.
@@ -29,14 +35,12 @@ import polars as pl
 from mds650.b1v3_confirmation import canonical_sha256
 from mds650.rp2.bars import MARKET_TZ, SESSION_OPEN_MINUTE, build_session_grid, load_bar_sources
 from mds650.rp2.flow import (
+    CONTRACT_MULTIPLIER,
     HAWKES_DECAY_SECONDS,
     black_scholes_greeks,
-    burstiness,
     hawkes_intensity,
     herfindahl,
     shannon_entropy,
-    signed_exposure,
-    trade_to_quote_impact,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -45,13 +49,15 @@ INVENTORY = ROOT / "artifacts" / "rp2_block1_partition" / "inventory.jsonl"
 B0_PANEL = ROOT / "artifacts" / "rp2_block4_b0" / "b0_panel.parquet"
 CUTOFF_SECONDS = 120
 WINDOWS: tuple[tuple[str, int], ...] = (("5m", 300), ("30m", 1800))
+#: Concentration statistics are not prefix-summable; they are computed on this window only.
+CONCENTRATION_WINDOW = "5m"
 CALENDAR_YEAR = 365.0
 NY = ZoneInfo(MARKET_TZ)
 OTM_LOG_MONEYNESS = 0.05
 SHORT_DTE_DAYS = 7.0
 LONG_DTE_DAYS = 30.0
 TAPE_COLUMNS = (
-    "underlying_symbol", "created_at", "nbbo_bid", "nbbo_ask", "price", "size", "premium",
+    "underlying_symbol", "created_at", "nbbo_bid", "nbbo_ask", "size", "premium",
     "implied_volatility", "expiry", "strike", "option_type", "tags", "report_flags",
 )
 
@@ -84,104 +90,47 @@ def _read_tape(paths: Sequence[str], asset: str) -> pl.DataFrame | None:
     return tape.sort("created_at") if tape.height else None
 
 
-def _window_features(
-    lo: int, hi: int, label: str, *, spot: float, cutoff_us: int,
-    created: npt.NDArray[np.int64], strike: FloatArray, tenor_days: FloatArray,
-    iv: FloatArray, size: FloatArray, premium: FloatArray, mid: FloatArray,
-    relative_spread: FloatArray, direction: FloatArray, is_call: npt.NDArray[np.bool_],
-    is_sweep: npt.NDArray[np.bool_], keys: npt.NDArray[np.int64],
-) -> dict[str, float]:
-    """Reduce one pre-cutoff window of trades to microstructure features."""
+def _prefix(values: FloatArray) -> FloatArray:
+    out = np.zeros(values.size + 1, dtype=np.float64)
+    np.cumsum(values, out=out[1:])
+    return out
 
-    prefix = f"b2_{label}_"
-    if hi <= lo:
-        return {f"{prefix}trades": 0.0, f"{prefix}premium": 0.0}
-    span = slice(lo, hi)
-    w_strike, w_tenor, w_iv = strike[span], tenor_days[span], iv[span]
-    w_size, w_premium, w_direction = size[span], premium[span], direction[span]
-    w_call, w_sweep, w_keys = is_call[span], is_sweep[span], keys[span]
-    spot_vector = np.full(w_strike.size, spot, dtype=np.float64)
-    greeks = black_scholes_greeks(spot_vector, w_strike, w_tenor / CALENDAR_YEAR, w_iv, w_call)
-    log_moneyness = np.log(np.maximum(w_strike, 1e-9) / spot)
 
-    seconds = (created[span] - created[span][0]) / 1e6
-    intensity = hawkes_intensity(seconds, baseline=0.0, excitation=1.0,
-                                 decay=HAWKES_DECAY_SECONDS)
-    gaps = burstiness(seconds)
-    impact = trade_to_quote_impact(w_keys, w_iv, mid[span], relative_spread[span])
+def _previous_trade_deltas(
+    keys: npt.NDArray[np.int64], iv: FloatArray, mid: FloatArray, spread: FloatArray
+) -> tuple[FloatArray, FloatArray, FloatArray, FloatArray]:
+    """Per-trade change versus the previous trade in the *same* contract.
 
-    def exposure(sensitivity: FloatArray, mask: npt.NDArray[np.bool_] | None = None,
-                 scale: FloatArray | None = None) -> float:
-        if mask is None:
-            return signed_exposure(sensitivity, w_size, w_direction, scale=scale)
-        if not mask.any():
-            return 0.0
-        return signed_exposure(
-            sensitivity[mask], w_size[mask], w_direction[mask],
-            scale=None if scale is None else scale[mask],
-        )
+    Returns ``(d_iv, d_mid_rel, d_spread, has_predecessor)`` in original tape order, so the
+    caller can prefix-sum them and recover window means.
+    """
 
-    short_dte = w_tenor <= SHORT_DTE_DAYS
-    long_dte = w_tenor > LONG_DTE_DAYS
-    total_premium = max(float(np.sum(w_premium)), 1e-9)
-    features: dict[str, float] = {
-        f"{prefix}trades": float(w_size.size),
-        f"{prefix}contracts": float(np.unique(w_keys).size),
-        f"{prefix}size": float(np.sum(w_size)),
-        f"{prefix}premium": float(np.sum(w_premium)),
-        f"{prefix}vega_flow": exposure(greeks.vega),
-        f"{prefix}gamma_flow": exposure(greeks.gamma, scale=spot_vector**2),
-        f"{prefix}delta_flow": exposure(greeks.delta, scale=spot_vector),
-        f"{prefix}vega_flow_abs": float(
-            np.sum(np.abs(greeks.vega * w_size * np.abs(w_direction)))
-        ),
-        f"{prefix}vega_flow_call": exposure(greeks.vega, w_call),
-        f"{prefix}vega_flow_put": exposure(greeks.vega, ~w_call),
-        f"{prefix}vega_flow_short_dte": exposure(greeks.vega, short_dte),
-        f"{prefix}vega_flow_long_dte": exposure(greeks.vega, long_dte),
-        f"{prefix}otm_premium_share": float(
-            np.sum(w_premium[np.abs(log_moneyness) > OTM_LOG_MONEYNESS]) / total_premium
-        ),
-        f"{prefix}buy_premium_share": float(
-            np.sum(w_premium[w_direction > 0]) / total_premium
-        ),
-        f"{prefix}sell_premium_share": float(
-            np.sum(w_premium[w_direction < 0]) / total_premium
-        ),
-        f"{prefix}passive_premium_share": float(
-            np.sum(w_premium[w_direction == 0]) / total_premium
-        ),
-        f"{prefix}sweep_premium_share": float(
-            np.sum(w_premium[w_sweep]) / total_premium
-        ),
-        f"{prefix}strike_hhi": herfindahl(
-            np.bincount(np.unique(w_strike, return_inverse=True)[1],
-                        weights=w_premium).astype(np.float64)
-        ),
-        f"{prefix}expiry_hhi": herfindahl(
-            np.bincount(np.unique(w_tenor, return_inverse=True)[1],
-                        weights=w_premium).astype(np.float64)
-        ),
-        f"{prefix}contract_entropy": shannon_entropy(
-            np.bincount(np.unique(w_keys, return_inverse=True)[1],
-                        weights=w_premium).astype(np.float64)
-        ),
-        f"{prefix}hawkes_last": float(intensity[-1]),
-        f"{prefix}hawkes_innovation": float(intensity[-1] - np.mean(intensity)),
-        f"{prefix}rate_per_second": gaps["rate_per_second"],
-        f"{prefix}interarrival_cv": gaps["interarrival_cv"],
-        f"{prefix}d_iv": impact["d_iv"],
-        f"{prefix}d_mid_rel": impact["d_mid_rel"],
-        f"{prefix}d_spread": impact["d_spread"],
-        f"{prefix}median_age_s": float(np.median((cutoff_us - created[span]) / 1e6)),
-    }
-    return features
+    order = np.lexsort((np.arange(keys.size), keys))
+    sorted_keys = keys[order]
+    same = np.zeros(keys.size, dtype=bool)
+    same[1:] = sorted_keys[1:] == sorted_keys[:-1]
+    d_iv = np.zeros(keys.size, dtype=np.float64)
+    d_mid = np.zeros(keys.size, dtype=np.float64)
+    d_spread = np.zeros(keys.size, dtype=np.float64)
+    iv_s, mid_s, spread_s = iv[order], mid[order], spread[order]
+    d_iv[1:] = np.where(same[1:], iv_s[1:] - iv_s[:-1], 0.0)
+    d_mid[1:] = np.where(
+        same[1:], (mid_s[1:] - mid_s[:-1]) / np.maximum(mid_s[:-1], 1e-9), 0.0
+    )
+    d_spread[1:] = np.where(same[1:], spread_s[1:] - spread_s[:-1], 0.0)
+    inverse = np.empty(keys.size, dtype=np.int64)
+    inverse[order] = np.arange(keys.size)
+    return (
+        d_iv[inverse], d_mid[inverse], d_spread[inverse], same[inverse].astype(np.float64)
+    )
 
 
 def build_session_flow(
     asset: str, session: str, paths: Sequence[str], origins: npt.NDArray[np.int64],
     closes: FloatArray
 ) -> pl.DataFrame | None:
+    """Microstructure features at every origin of one session-asset."""
+
     tape = _read_tape(paths, asset)
     if tape is None or tape.height < 50:
         return None
@@ -204,14 +153,60 @@ def build_session_flow(
         tags.str.contains("ask_side").to_numpy(), 1.0,
         np.where(tags.str.contains("bid_side").to_numpy(), -1.0, 0.0),
     )
-    is_sweep = (
-        tape["report_flags"].cast(pl.Utf8).fill_null("").str.contains("sweep").to_numpy()
-    )
+    is_sweep = tape["report_flags"].cast(pl.Utf8).fill_null("").str.contains("sweep").to_numpy()
     keys = (
         np.round(tenor_days).astype(np.int64) * 20_000_000
         + np.round(strike * 1000.0).astype(np.int64) * 2
         + is_call.astype(np.int64)
     )
+
+    # Spot at the trade's own session minute, so Greeks use the underlying price then
+    # prevailing.  The minute is measured from the real 09:30 New York open, not from the
+    # first tape row, which may be a pre-open print.
+    session_open = datetime.fromisoformat(session).replace(tzinfo=NY) + timedelta(
+        minutes=SESSION_OPEN_MINUTE
+    )
+    open_us = int(
+        np.datetime64(session_open.astimezone(UTC).replace(tzinfo=None), "us").astype(np.int64)
+    )
+    minute_of_trade = np.clip(
+        ((created - open_us) // 60_000_000).astype(np.int64), 0, closes.size - 1
+    )
+    spot = closes[minute_of_trade]
+    greeks = black_scholes_greeks(spot, strike, tenor_days / CALENDAR_YEAR, iv, is_call)
+    weight = size * CONTRACT_MULTIPLIER * direction
+    seconds = (created - created[0]) / 1e6
+    intensity = hawkes_intensity(seconds, baseline=0.0, excitation=1.0,
+                                 decay=HAWKES_DECAY_SECONDS)
+    d_iv, d_mid, d_spread, has_previous = _previous_trade_deltas(
+        keys, iv, mid, relative_spread
+    )
+    log_moneyness = np.log(np.maximum(strike, 1e-9) / np.maximum(spot, 1e-9))
+
+    channels: dict[str, FloatArray] = {
+        "trades": np.ones(created.size, dtype=np.float64),
+        "size": size,
+        "premium": premium,
+        "vega_flow": greeks.vega * weight,
+        "gamma_flow": greeks.gamma * weight * spot**2,
+        "delta_flow": greeks.delta * weight * spot,
+        "vega_flow_abs": np.abs(greeks.vega * size * CONTRACT_MULTIPLIER),
+        "vega_flow_call": greeks.vega * weight * is_call,
+        "vega_flow_put": greeks.vega * weight * (~is_call),
+        "vega_flow_short_dte": greeks.vega * weight * (tenor_days <= SHORT_DTE_DAYS),
+        "vega_flow_long_dte": greeks.vega * weight * (tenor_days > LONG_DTE_DAYS),
+        "otm_premium": premium * (np.abs(log_moneyness) > OTM_LOG_MONEYNESS),
+        "buy_premium": premium * (direction > 0),
+        "sell_premium": premium * (direction < 0),
+        "passive_premium": premium * (direction == 0),
+        "sweep_premium": premium * is_sweep,
+        "d_iv_sum": d_iv,
+        "d_mid_sum": d_mid,
+        "d_spread_sum": d_spread,
+        "has_previous": has_previous,
+        "age_sum": created / 1e6,
+    }
+    prefixes = {name: _prefix(values) for name, values in channels.items()}
 
     base = datetime.fromisoformat(session).replace(tzinfo=NY)
     rows: list[dict[str, float]] = []
@@ -223,14 +218,15 @@ def build_session_flow(
         cutoff_us = int(np.datetime64(cutoff, "us").astype(np.int64))
         hi = int(np.searchsorted(created, cutoff_us, side="right"))
         record: dict[str, float] = {"origin_minute": float(minute)}
-        for label, seconds in WINDOWS:
-            lo = int(np.searchsorted(created, cutoff_us - seconds * 1_000_000, side="left"))
+        for label, window_seconds in WINDOWS:
+            lo = int(
+                np.searchsorted(created, cutoff_us - window_seconds * 1_000_000, side="left")
+            )
             record.update(
-                _window_features(
-                    lo, hi, label, spot=float(closes[minute]), cutoff_us=cutoff_us,
-                    created=created, strike=strike, tenor_days=tenor_days, iv=iv, size=size,
-                    premium=premium, mid=mid, relative_spread=relative_spread,
-                    direction=direction, is_call=is_call, is_sweep=is_sweep, keys=keys,
+                _window_record(
+                    lo, hi, label, cutoff_us=cutoff_us, prefixes=prefixes, keys=keys,
+                    strike=strike, tenor_days=tenor_days, premium=premium,
+                    intensity=intensity, seconds=seconds,
                 )
             )
         rows.append(record)
@@ -239,6 +235,72 @@ def build_session_flow(
         asset=pl.lit(asset), session_date=pl.lit(session),
         origin_minute=pl.col("origin_minute").cast(pl.Int64),
     )
+
+
+def _window_record(
+    lo: int, hi: int, label: str, *, cutoff_us: int, prefixes: dict[str, FloatArray],
+    keys: npt.NDArray[np.int64], strike: FloatArray, tenor_days: FloatArray,
+    premium: FloatArray, intensity: FloatArray, seconds: FloatArray,
+) -> dict[str, float]:
+    prefix = f"b2_{label}_"
+    if hi <= lo:
+        return {f"{prefix}trades": 0.0, f"{prefix}premium": 0.0}
+
+    def total(name: str) -> float:
+        return float(prefixes[name][hi] - prefixes[name][lo])
+
+    trades = total("trades")
+    total_premium = max(total("premium"), 1e-9)
+    predecessors = max(total("has_previous"), 1.0)
+    span = float(seconds[hi - 1] - seconds[lo])
+    record: dict[str, float] = {
+        f"{prefix}trades": trades,
+        f"{prefix}contracts": float(np.unique(keys[lo:hi]).size),
+        f"{prefix}size": total("size"),
+        f"{prefix}premium": total("premium"),
+        f"{prefix}vega_flow": total("vega_flow"),
+        f"{prefix}gamma_flow": total("gamma_flow"),
+        f"{prefix}delta_flow": total("delta_flow"),
+        f"{prefix}vega_flow_abs": total("vega_flow_abs"),
+        f"{prefix}vega_flow_call": total("vega_flow_call"),
+        f"{prefix}vega_flow_put": total("vega_flow_put"),
+        f"{prefix}vega_flow_short_dte": total("vega_flow_short_dte"),
+        f"{prefix}vega_flow_long_dte": total("vega_flow_long_dte"),
+        f"{prefix}otm_premium_share": total("otm_premium") / total_premium,
+        f"{prefix}buy_premium_share": total("buy_premium") / total_premium,
+        f"{prefix}sell_premium_share": total("sell_premium") / total_premium,
+        f"{prefix}passive_premium_share": total("passive_premium") / total_premium,
+        f"{prefix}sweep_premium_share": total("sweep_premium") / total_premium,
+        f"{prefix}d_iv": total("d_iv_sum") / predecessors,
+        f"{prefix}d_mid_rel": total("d_mid_sum") / predecessors,
+        f"{prefix}d_spread": total("d_spread_sum") / predecessors,
+        f"{prefix}hawkes_last": float(intensity[hi - 1]),
+        f"{prefix}hawkes_innovation": float(
+            intensity[hi - 1] - np.mean(intensity[lo:hi])
+        ),
+        f"{prefix}rate_per_second": trades / span if span > 0.0 else float("nan"),
+        f"{prefix}median_age_s": cutoff_us / 1e6 - total("age_sum") / max(trades, 1.0),
+    }
+    if label == CONCENTRATION_WINDOW:
+        window_premium = premium[lo:hi]
+        record[f"{prefix}strike_hhi"] = herfindahl(
+            np.bincount(np.unique(strike[lo:hi], return_inverse=True)[1],
+                        weights=window_premium).astype(np.float64)
+        )
+        record[f"{prefix}expiry_hhi"] = herfindahl(
+            np.bincount(np.unique(tenor_days[lo:hi], return_inverse=True)[1],
+                        weights=window_premium).astype(np.float64)
+        )
+        record[f"{prefix}contract_entropy"] = shannon_entropy(
+            np.bincount(np.unique(keys[lo:hi], return_inverse=True)[1],
+                        weights=window_premium).astype(np.float64)
+        )
+        gaps = np.diff(seconds[lo:hi])
+        mean_gap = float(np.mean(gaps)) if gaps.size else float("nan")
+        record[f"{prefix}interarrival_cv"] = (
+            float(np.std(gaps) / mean_gap) if gaps.size and mean_gap > 0.0 else float("nan")
+        )
+    return record
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -304,7 +366,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         "program": "docs/research_program_v2.md",
         "label": "EXPLORATORY_MECHANISM_DISCOVERY",
         "cutoff_seconds": CUTOFF_SECONDS,
-        "windows_seconds": {label: seconds for label, seconds in WINDOWS},
+        "windows_seconds": dict(WINDOWS),
+        "concentration_window": CONCENTRATION_WINDOW,
         "hawkes_decay_seconds": HAWKES_DECAY_SECONDS,
         "session_assets_requested": len(jobs),
         "session_assets_without_tape": failures,

@@ -18,6 +18,7 @@ from typing import Final
 
 import numpy as np
 import numpy.typing as npt
+from scipy.special import ndtr
 
 type FloatArray = npt.NDArray[np.float64]
 
@@ -44,8 +45,9 @@ def _normal_pdf(values: FloatArray) -> FloatArray:
 
 
 def _normal_cdf(values: FloatArray) -> FloatArray:
-    erf = np.vectorize(math.erf, otypes=[np.float64])
-    return np.asarray(0.5 * (1.0 + erf(values / math.sqrt(2.0))), dtype=np.float64)
+    # ndtr is the vectorised C implementation; a np.vectorize(math.erf) fallback costs a
+    # Python call per element and is far too slow at tape scale.
+    return np.asarray(ndtr(values), dtype=np.float64)
 
 
 def black_scholes_greeks(

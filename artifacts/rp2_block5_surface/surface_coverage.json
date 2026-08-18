@@ -1,0 +1,105 @@
+{
+  "block": 5,
+  "constant_maturities_days": [
+    7,
+    14,
+    30,
+    60,
+    90
+  ],
+  "coverage": {
+    "b1_butterfly_25": {
+      "coverage": 0.9936469121595704,
+      "median": -0.0009229139070968118
+    },
+    "b1_calendar_violations": {
+      "coverage": 0.9967954865106764,
+      "median": 1.0
+    },
+    "b1_contracts": {
+      "coverage": 1.0,
+      "median": 724.0
+    },
+    "b1_expiries": {
+      "coverage": 0.9967954865106764,
+      "median": 22.0
+    },
+    "b1_iv_14d": {
+      "coverage": 0.9967954865106764,
+      "median": 0.3306743545687062
+    },
+    "b1_iv_30d": {
+      "coverage": 0.9967954865106764,
+      "median": 0.33620458064959724
+    },
+    "b1_iv_60d": {
+      "coverage": 0.9967954865106764,
+      "median": 0.3497638178245789
+    },
+    "b1_iv_7d": {
+      "coverage": 0.9967954865106764,
+      "median": 0.3361665967255112
+    },
+    "b1_iv_90d": {
+      "coverage": 0.9967954865106764,
+      "median": 0.3567165642412676
+    },
+    "b1_median_quote_age_s": {
+      "coverage": 0.9967954865106764,
+      "median": 457.771261
+    },
+    "b1_median_relative_spread": {
+      "coverage": 0.9967954865106764,
+      "median": 0.015831134564643835
+    },
+    "b1_mfiv": {
+      "coverage": 0.9967954865106764,
+      "median": 0.12367334672172418
+    },
+    "b1_pcp_residual": {
+      "coverage": 0.9844489195755018,
+      "median": 0.003448478752932846
+    },
+    "b1_risk_reversal_25": {
+      "coverage": 0.9936469121595704,
+      "median": -0.007003656731019714
+    },
+    "b1_smile_curvature": {
+      "coverage": 0.9967954865106764,
+      "median": 1.1643853887229525
+    },
+    "b1_smile_residual": {
+      "coverage": 0.9967954865106764,
+      "median": 0.020986816611598333
+    },
+    "b1_smile_slope": {
+      "coverage": 0.9967954865106764,
+      "median": -0.18986296278520637
+    },
+    "b1_strikes": {
+      "coverage": 0.9967954865106764,
+      "median": 111.0
+    },
+    "b1_term_convexity": {
+      "coverage": 0.9967954865106764,
+      "median": 0.042194085994904706
+    },
+    "b1_term_slope": {
+      "coverage": 0.9967954865106764,
+      "median": 0.009307364721873379
+    },
+    "b1_vrp_30d": {
+      "coverage": 0.9967954865106764,
+      "median": 0.06877773462963054
+    }
+  },
+  "cutoff_seconds": 120,
+  "generated_at_utc": "2026-08-18T14:04:20.355367+00:00",
+  "label": "EXPLORATORY_MECHANISM_DISCOVERY",
+  "lookback_seconds": 1800,
+  "program": "docs/research_program_v2.md",
+  "rows": 125136,
+  "session_assets_requested": 1896,
+  "session_assets_without_tape": 0,
+  "surface_sha256": "7a89f88fd407cb2193ab1e42a0f692bad08a0f7915d2e9ee56928853c67ca2b5"
+}

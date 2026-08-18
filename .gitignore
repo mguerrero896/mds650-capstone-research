@@ -55,3 +55,11 @@ graphify-out/
 # Claude Code session-local state (worktree registry etc.)
 .claude/
 artifacts/public_repro_demo/
+
+# Research Program v2 derived panels: large, and derived from licensed provider data.
+# Only their JSON summaries and content hashes are versioned (see
+# artifacts/rp2_panel_pointers.json); the panels themselves stay local.
+artifacts/rp2_block3_target/target_panel.parquet
+artifacts/rp2_block4_b0/b0_panel.parquet
+artifacts/rp2_block5_surface/b1_surface_panel.parquet
+artifacts/rp2_block6_flow/b2_flow_panel.parquet

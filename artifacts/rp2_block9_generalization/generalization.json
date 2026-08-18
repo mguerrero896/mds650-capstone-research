@@ -1,0 +1,2897 @@
+{
+  "D": {
+    "models": {
+      "gamma_glm": {
+        "delta_b1": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 0.8626741476896245,
+            "overall": 0.001205473094140948,
+            "per_group": {
+              "AAPL": 0.001233494038818944,
+              "AMZN": -0.0026079580905486264,
+              "META": 0.0009237717812204389,
+              "MSFT": -0.0005372363120380791,
+              "NVDA": 0.006179125753175135,
+              "TSLA": 0.001987343652205659
+            },
+            "positive_groups": 4,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": 1.0,
+            "overall": 0.001205473094140948,
+            "per_group": {
+              "phase6_180d": 0.001205473094140948
+            },
+            "positive_groups": 1,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": 1.3038791532569787,
+            "overall": 0.001205473094140948,
+            "per_group": {
+              "expiry_week": 0.004494622814392981,
+              "ordinary_week": -0.0005633105568870932
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 1.2082613782679794,
+            "overall": 0.001205473094140948,
+            "per_group": {
+              "liq_high": 0.004369700861374906,
+              "liq_low": -0.0022055035746422246,
+              "liq_mid": 0.0014525056292066074
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": 1.2855194616171979,
+            "overall": 0.001205473094140948,
+            "per_group": {
+              "market_down": 0.0030835071419469534,
+              "market_up": -0.0006919199718209677
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 5,
+            "max_single_group_contribution": 1.8233314591140208,
+            "overall": 0.001205473094140948,
+            "per_group": {
+              "2025-11": 0.00044737299033828883,
+              "2025-12": 0.000720520987604369,
+              "2026-01": -3.3039833427271945e-05,
+              "2026-02": -0.0059518188209032015,
+              "2026-03": 0.01268610026365299
+            },
+            "positive_groups": 3,
+            "sign_stability": 0.6,
+            "systematic_inversion": false
+          },
+          "non_overlapping_origins": {
+            "overall": 0.0018381881290980176,
+            "rows": 6012
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": 1.5305218466969597,
+            "overall": 0.001205473094140948,
+            "per_group": {
+              "close": 0.005119663117394287,
+              "midday": -0.0012748568147700659,
+              "open": -0.0006355625037395898
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": true
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 0.755493974889302,
+            "overall": 0.001205473094140948,
+            "per_group": {
+              "vol_high": -0.0005362006582304349,
+              "vol_low": 0.001420343365075363,
+              "vol_mid": 0.002732258708434149
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          }
+        },
+        "delta_b2_given_b0": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 10454339125779.625,
+            "overall": -0.0011520037126073676,
+            "per_group": {
+              "AAPL": -0.00023457484787365546,
+              "AMZN": -0.004967815175154187,
+              "META": 0.0013243476099655874,
+              "MSFT": 0.0017546725622322296,
+              "NVDA": 0.0010900704414691386,
+              "TSLA": -0.005769007710247298
+            },
+            "positive_groups": 3,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": -41563141947161.21,
+            "overall": -0.0011520037126073676,
+            "per_group": {
+              "phase6_180d": -0.0011520037126073676
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": 22263776680322.344,
+            "overall": -0.0011520037126073676,
+            "per_group": {
+              "expiry_week": 0.0017645856130872905,
+              "ordinary_week": -0.0027204380968154276
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 6131984450838.131,
+            "overall": -0.0011520037126073676,
+            "per_group": {
+              "liq_high": -0.002420608932769529,
+              "liq_low": 0.0005098515382753912,
+              "liq_mid": -0.0015453919318570587
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": 8757347469122.515,
+            "overall": -0.0011520037126073676,
+            "per_group": {
+              "market_down": 0.0004829774690669818,
+              "market_up": -0.002803838492020043
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 5,
+            "max_single_group_contribution": 15710609090384.14,
+            "overall": -0.0011520037126073676,
+            "per_group": {
+              "2025-11": -0.0029966897875388504,
+              "2025-12": -0.004839225383151503,
+              "2026-01": 0.002000077541742093,
+              "2026-02": 0.00016808327208642628,
+              "2026-03": 2.4773626088116208e-05
+            },
+            "positive_groups": 3,
+            "sign_stability": 0.6,
+            "systematic_inversion": false
+          },
+          "non_overlapping_origins": {
+            "overall": -0.0015421275947925409,
+            "rows": 6012
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": 9602839689285.61,
+            "overall": -0.0011520037126073676,
+            "per_group": {
+              "close": 0.0007385663505065075,
+              "midday": -0.0010517795143432148,
+              "open": -0.003760963133155389
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 5315098658831.98,
+            "overall": -0.0011520037126073676,
+            "per_group": {
+              "vol_high": -0.002705343256683655,
+              "vol_low": 0.00044193054451084895,
+              "vol_mid": -0.001192730966332576
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          }
+        },
+        "delta_b2_given_b1": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 12794790273098.6,
+            "overall": -0.0011245121508768464,
+            "per_group": {
+              "AAPL": 0.0021310443492835772,
+              "AMZN": 0.0006045576811881582,
+              "META": -0.0017123808677658085,
+              "MSFT": -0.001032180742163408,
+              "NVDA": 0.0009539743501650616,
+              "TSLA": -0.007661293111213863
+            },
+            "positive_groups": 3,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": -40571273891485.75,
+            "overall": -0.0011245121508768464,
+            "per_group": {
+              "phase6_180d": -0.0011245121508768464
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": -1322588891318.457,
+            "overall": -0.0011245121508768464,
+            "per_group": {
+              "expiry_week": -0.00010482594050237433,
+              "ordinary_week": -0.0016728618617409979
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 3556371253589.875,
+            "overall": -0.0011245121508768464,
+            "per_group": {
+              "liq_high": -0.003231552553719005,
+              "liq_low": -0.00043776454095376013,
+              "liq_mid": 0.00029572353680275027
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": -5023095971341.768,
+            "overall": -0.0011245121508768464,
+            "per_group": {
+              "market_down": -0.0002770293388121425,
+              "market_up": -0.0019807309255108927
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 5,
+            "max_single_group_contribution": 50757485333261.16,
+            "overall": -0.0011245121508768464,
+            "per_group": {
+              "2025-11": -0.0020118233951163,
+              "2025-12": -0.007807180618595774,
+              "2026-01": 0.0006320763722680115,
+              "2026-02": -0.0026144650820769675,
+              "2026-03": 0.008119898469566655
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.4,
+            "systematic_inversion": false
+          },
+          "non_overlapping_origins": {
+            "overall": -0.0018800883659545681,
+            "rows": 6012
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": 21991156368219.227,
+            "overall": -0.0011245121508768464,
+            "per_group": {
+              "close": 0.0016913672026010788,
+              "midday": -0.0030064848330387628,
+              "open": -0.002319648907549637
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 3554597527667.4756,
+            "overall": -0.0011245121508768464,
+            "per_group": {
+              "vol_high": -0.002607048941205412,
+              "vol_low": -0.0010620687496646663,
+              "vol_mid": 0.00029557604587289834
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          }
+        },
+        "delta_total": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 14.827913044918551,
+            "overall": 8.096094326410064e-05,
+            "per_group": {
+              "AAPL": 0.003364538388102521,
+              "AMZN": -0.002003400409360469,
+              "META": -0.0007886090865453695,
+              "MSFT": -0.0015694170542014875,
+              "NVDA": 0.007133100103340199,
+              "TSLA": -0.005673949459008204
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": true
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": 1.0,
+            "overall": 8.096094326410064e-05,
+            "per_group": {
+              "phase6_180d": 8.096094326410064e-05
+            },
+            "positive_groups": 1,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": 18.961403354497673,
+            "overall": 8.096094326410064e-05,
+            "per_group": {
+              "expiry_week": 0.004389796873890608,
+              "ordinary_week": -0.002236172418628091
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 7.197629869168232,
+            "overall": 8.096094326410064e-05,
+            "per_group": {
+              "liq_high": 0.0011381483076559021,
+              "liq_low": -0.0026432681155959844,
+              "liq_mid": 0.0017482291660093578
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": 17.42116808202216,
+            "overall": 8.096094326410064e-05,
+            "per_group": {
+              "market_down": 0.0028064778031348116,
+              "market_up": -0.002672650897331861
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 5,
+            "max_single_group_contribution": 44.525419046102456,
+            "overall": 8.096094326410064e-05,
+            "per_group": {
+              "2025-11": -0.0015644504047780123,
+              "2025-12": -0.007086659630991403,
+              "2026-01": 0.0005990365388407403,
+              "2026-02": -0.00856628390298017,
+              "2026-03": 0.020805998733219644
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.4,
+            "systematic_inversion": true
+          },
+          "non_overlapping_origins": {
+            "overall": -4.1900236856550766e-05,
+            "rows": 6012
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": 30.317467742252777,
+            "overall": 8.096094326410064e-05,
+            "per_group": {
+              "close": 0.006811030319995368,
+              "midday": -0.004281341647808829,
+              "open": -0.002955211411289227
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": true
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 12.465890794084494,
+            "overall": 8.096094326410064e-05,
+            "per_group": {
+              "vol_high": -0.003143249599435847,
+              "vol_low": 0.00035827461541069696,
+              "vol_mid": 0.0030278347543070483
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          }
+        },
+        "leave_one_asset_out": {
+          "AAPL": {
+            "delta_b1": -0.0027205509030376876,
+            "delta_b2_given_b0": -0.000988710842375098,
+            "delta_b2_given_b1": 0.004011836549431051,
+            "delta_total": 0.001291285646393364
+          },
+          "AMZN": {
+            "delta_b1": -0.006855135156451088,
+            "delta_b2_given_b0": -0.006232123011194734,
+            "delta_b2_given_b1": 0.0018411298815444498,
+            "delta_total": -0.005014005274906638
+          },
+          "META": {
+            "delta_b1": -0.006922319372593179,
+            "delta_b2_given_b0": 0.0021265377955980583,
+            "delta_b2_given_b1": 0.000630655072500389,
+            "delta_total": -0.00629166430009279
+          },
+          "MSFT": {
+            "delta_b1": 0.0006798555046761933,
+            "delta_b2_given_b0": 0.0019308457664328172,
+            "delta_b2_given_b1": 0.00012973269911338968,
+            "delta_total": 0.0008095882037895833
+          },
+          "NVDA": {
+            "delta_b1": 0.006341831890793539,
+            "delta_b2_given_b0": 0.004778184584681657,
+            "delta_b2_given_b1": -0.00043653154611207737,
+            "delta_total": 0.005905300344681463
+          },
+          "TSLA": {
+            "delta_b1": 0.003311348721599964,
+            "delta_b2_given_b0": -0.001327374516466533,
+            "delta_b2_given_b1": -0.0068765706669987655,
+            "delta_total": -0.0035652219453988004
+          }
+        }
+      },
+      "lightgbm": {
+        "delta_b1": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 2874221506297.065,
+            "overall": -0.001761304983867636,
+            "per_group": {
+              "AAPL": -0.0015806271034477899,
+              "AMZN": -0.0035261633025708405,
+              "META": -0.0013186848549100298,
+              "MSFT": -0.002466101993277408,
+              "NVDA": -0.0021570783588471328,
+              "TSLA": 0.00047335663805946396
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.16666666666666666,
+            "systematic_inversion": false
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": -63546122512960.44,
+            "overall": -0.001761304983867636,
+            "per_group": {
+              "phase6_180d": -0.001761304983867636
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": -15658491746979.395,
+            "overall": -0.001761304983867636,
+            "per_group": {
+              "expiry_week": -0.001241062990170357,
+              "ordinary_week": -0.0020410719787733803
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": -9057111901023.191,
+            "overall": -0.001761304983867636,
+            "per_group": {
+              "liq_high": -0.00241619811139257,
+              "liq_low": -0.002114559917213785,
+              "liq_mid": -0.000753127548729685
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": 1872989577703.393,
+            "overall": -0.001761304983867636,
+            "per_group": {
+              "market_down": 0.00010329746181907088,
+              "market_up": -0.0036451279930163165
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 5,
+            "max_single_group_contribution": 41209007539676.3,
+            "overall": -0.001761304983867636,
+            "per_group": {
+              "2025-11": -0.007572370100453428,
+              "2025-12": -0.005229918219388874,
+              "2026-01": 0.0036051835850157607,
+              "2026-02": -0.005681354062659369,
+              "2026-03": 0.006592386424520284
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.4,
+            "systematic_inversion": false
+          },
+          "non_overlapping_origins": {
+            "overall": -0.0029814160890398573,
+            "rows": 6012
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": 32691843543736.242,
+            "overall": -0.001761304983867636,
+            "per_group": {
+              "close": 0.0025143703694613323,
+              "midday": -0.004196217027452189,
+              "open": -0.004135963749944636
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 21700155342798.703,
+            "overall": -0.001761304983867636,
+            "per_group": {
+              "vol_high": -0.005616822348839425,
+              "vol_low": -0.0014715533623194657,
+              "vol_mid": 0.0018044366657906786
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          }
+        },
+        "delta_b2_given_b0": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 14930008526545.2,
+            "overall": -7.945683105286187e-05,
+            "per_group": {
+              "AAPL": 0.0018402183085900984,
+              "AMZN": -0.004951652129456777,
+              "META": 0.0011456869714335978,
+              "MSFT": 0.002505875885623565,
+              "NVDA": -0.001529412491232125,
+              "TSLA": 0.0005929820752792534
+            },
+            "positive_groups": 4,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": -2866723007556.203,
+            "overall": -7.945683105286187e-05,
+            "per_group": {
+              "phase6_180d": -7.945683105286187e-05
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": 10041744609159.281,
+            "overall": -7.945683105286187e-05,
+            "per_group": {
+              "expiry_week": 0.0007958900379772751,
+              "ordinary_week": -0.0005501861570503571
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 25392195094245.52,
+            "overall": -7.945683105286187e-05,
+            "per_group": {
+              "liq_high": -0.0011449581675782292,
+              "liq_low": 0.0021112659095572895,
+              "liq_mid": -0.0012048604006740342
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": 16104498460366.408,
+            "overall": -7.945683105286187e-05,
+            "per_group": {
+              "market_down": 0.0008881810313460406,
+              "market_up": -0.0010570692298391155
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 5,
+            "max_single_group_contribution": 30143676233309.375,
+            "overall": -7.945683105286187e-05,
+            "per_group": {
+              "2025-11": -0.004007990488961417,
+              "2025-12": -0.0009133681937744548,
+              "2026-01": 0.0038375144790973106,
+              "2026-02": -0.0009272504899414559,
+              "2026-03": 0.001073601210640119
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.4,
+            "systematic_inversion": false
+          },
+          "non_overlapping_origins": {
+            "overall": -0.001601623911035942,
+            "rows": 6012
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": 43453581376736.92,
+            "overall": -7.945683105286187e-05,
+            "per_group": {
+              "close": 0.0033420690183615536,
+              "midday": -0.002157895795742612,
+              "open": -0.0018075928951624635
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 21887637482290.68,
+            "overall": -7.945683105286187e-05,
+            "per_group": {
+              "vol_high": -0.0022961540114263645,
+              "vol_low": 0.0018198750712805087,
+              "vol_mid": 0.00023775051152224988
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          }
+        },
+        "delta_b2_given_b1": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 0.46233686747717556,
+            "overall": 0.003233060429135843,
+            "per_group": {
+              "AAPL": 0.002852501561850287,
+              "AMZN": 0.0002387740483200707,
+              "META": 0.001008295844569629,
+              "MSFT": 0.005321830124749166,
+              "NVDA": 0.008881679084588496,
+              "TSLA": 0.0010645405529069848
+            },
+            "positive_groups": 6,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": 1.0,
+            "overall": 0.003233060429135843,
+            "per_group": {
+              "phase6_180d": 0.003233060429135843
+            },
+            "positive_groups": 1,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": 0.6240781898956732,
+            "overall": 0.003233060429135843,
+            "per_group": {
+              "expiry_week": 0.005769673213388123,
+              "ordinary_week": 0.001868963442565601
+            },
+            "positive_groups": 2,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 0.5708193155272795,
+            "overall": 0.003233060429135843,
+            "per_group": {
+              "liq_high": 0.005536633482271058,
+              "liq_low": 0.002251587792428093,
+              "liq_mid": 0.0019110416252675552
+            },
+            "positive_groups": 3,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": 0.5554635400681118,
+            "overall": 0.003233060429135843,
+            "per_group": {
+              "market_down": 0.0035733714323900176,
+              "market_up": 0.0028892414559924355
+            },
+            "positive_groups": 2,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 5,
+            "max_single_group_contribution": 0.8670407644766753,
+            "overall": 0.003233060429135843,
+            "per_group": {
+              "2025-11": -0.00227259112644526,
+              "2025-12": 0.002305417731875437,
+              "2026-01": 0.00012548262286535063,
+              "2026-02": 0.0013360251273628386,
+              "2026-03": 0.01617924797928017
+            },
+            "positive_groups": 4,
+            "sign_stability": 0.8,
+            "systematic_inversion": false
+          },
+          "non_overlapping_origins": {
+            "overall": 0.0023697196794660864,
+            "rows": 6012
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": 0.8451630449493205,
+            "overall": 0.003233060429135843,
+            "per_group": {
+              "close": 0.007582259627527803,
+              "midday": 0.0009881363115434789,
+              "open": 0.0005104316559765093
+            },
+            "positive_groups": 3,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 0.5735393492681586,
+            "overall": 0.003233060429135843,
+            "per_group": {
+              "vol_high": 0.0007790480287399026,
+              "vol_low": 0.003357106629949577,
+              "vol_mid": 0.005563016313883454
+            },
+            "positive_groups": 3,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          }
+        },
+        "delta_total": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 0.7689677443987746,
+            "overall": 0.0014717554452682066,
+            "per_group": {
+              "AAPL": 0.0012718744584024977,
+              "AMZN": -0.0032873892542507705,
+              "META": -0.00031038901034040084,
+              "MSFT": 0.0028557281314717576,
+              "NVDA": 0.006724600725741363,
+              "TSLA": 0.0015378971909664493
+            },
+            "positive_groups": 4,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": 1.0,
+            "overall": 0.0014717554452682066,
+            "per_group": {
+              "phase6_180d": 0.0014717554452682066
+            },
+            "positive_groups": 1,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": 1.076046161643495,
+            "overall": 0.0014717554452682066,
+            "per_group": {
+              "expiry_week": 0.004528610223217765,
+              "ordinary_week": -0.00017210853620777883
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 0.70671815573381,
+            "overall": 0.0014717554452682066,
+            "per_group": {
+              "liq_high": 0.003120435370878491,
+              "liq_low": 0.0001370278752143074,
+              "liq_mid": 0.0011579140765378695
+            },
+            "positive_groups": 3,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": 1.2554808368427077,
+            "overall": 0.0014717554452682066,
+            "per_group": {
+              "market_down": 0.0036766688942090906,
+              "market_up": -0.0007558865370238812
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 5,
+            "max_single_group_contribution": 2.6807329873478123,
+            "overall": 0.0014717554452682066,
+            "per_group": {
+              "2025-11": -0.009844961226898687,
+              "2025-12": -0.0029245004875134363,
+              "2026-01": 0.003730666207881111,
+              "2026-02": -0.00434532893529653,
+              "2026-03": 0.022771634403800457
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.4,
+            "systematic_inversion": true
+          },
+          "non_overlapping_origins": {
+            "overall": -0.0006116964095737708,
+            "rows": 6012
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": 2.472273194056254,
+            "overall": 0.0014717554452682066,
+            "per_group": {
+              "close": 0.010096629996989138,
+              "midday": -0.003208080715908711,
+              "open": -0.0036255320939681266
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": true
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 1.6685853617872008,
+            "overall": 0.0014717554452682066,
+            "per_group": {
+              "vol_high": -0.004837774320099522,
+              "vol_low": 0.0018855532676301117,
+              "vol_mid": 0.007367452979674132
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          }
+        },
+        "leave_one_asset_out": {
+          "AAPL": {
+            "delta_b1": -0.006613830496931714,
+            "delta_b2_given_b0": 0.0032265821685599056,
+            "delta_b2_given_b1": 0.0020761274944645206,
+            "delta_total": -0.004537703002467192
+          },
+          "AMZN": {
+            "delta_b1": -0.006688710532593672,
+            "delta_b2_given_b0": -0.0024962107667593184,
+            "delta_b2_given_b1": 0.007626629665439717,
+            "delta_total": 0.0009379191328460456
+          },
+          "META": {
+            "delta_b1": -0.007697180472669195,
+            "delta_b2_given_b0": 0.004255709453874864,
+            "delta_b2_given_b1": 0.005859609342173781,
+            "delta_total": -0.0018375711304954151
+          },
+          "MSFT": {
+            "delta_b1": -0.007417445136739825,
+            "delta_b2_given_b0": 0.005449831652801691,
+            "delta_b2_given_b1": 0.007654714152252534,
+            "delta_total": 0.00023726901551270868
+          },
+          "NVDA": {
+            "delta_b1": -0.004398588183682963,
+            "delta_b2_given_b0": -0.0031964057122831104,
+            "delta_b2_given_b1": 0.0009601425411719754,
+            "delta_total": -0.003438445642510986
+          },
+          "TSLA": {
+            "delta_b1": 0.0013234000812201792,
+            "delta_b2_given_b0": 0.00037695799102834844,
+            "delta_b2_given_b1": -0.002081800635761764,
+            "delta_total": -0.0007584005545415858
+          }
+        }
+      },
+      "log_ols": {
+        "delta_b1": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 0.3941119421221936,
+            "overall": 0.0030285991268819714,
+            "per_group": {
+              "AAPL": 0.0022201282462808686,
+              "AMZN": 0.0012187655209780581,
+              "META": 0.0021272807061703783,
+              "MSFT": 0.0019009293098251154,
+              "NVDA": 0.007092251313669599,
+              "TSLA": 0.003553040027771688
+            },
+            "positive_groups": 6,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": 1.0,
+            "overall": 0.0030285991268819714,
+            "per_group": {
+              "phase6_180d": 0.0030285991268819714
+            },
+            "positive_groups": 1,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": 0.6387482441430237,
+            "overall": 0.0030285991268819714,
+            "per_group": {
+              "expiry_week": 0.005531843699762903,
+              "ordinary_week": 0.0016824463361548936
+            },
+            "positive_groups": 2,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 0.45746535976434244,
+            "overall": 0.0030285991268819714,
+            "per_group": {
+              "liq_high": 0.004156552774467068,
+              "liq_low": 0.0013470194430238187,
+              "liq_mid": 0.0035823649918332134
+            },
+            "positive_groups": 3,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": 0.7363667524900396,
+            "overall": 0.0030285991268819714,
+            "per_group": {
+              "market_down": 0.0044375651857607385,
+              "market_up": 0.0016051092634178931
+            },
+            "positive_groups": 2,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 5,
+            "max_single_group_contribution": 0.7697922337015912,
+            "overall": 0.0030285991268819714,
+            "per_group": {
+              "2025-11": 0.0006927175217457892,
+              "2025-12": -3.310004473466925e-05,
+              "2026-01": 0.004199894499623862,
+              "2026-02": -0.0016043605637383561,
+              "2026-03": 0.013456134234866819
+            },
+            "positive_groups": 3,
+            "sign_stability": 0.6,
+            "systematic_inversion": false
+          },
+          "non_overlapping_origins": {
+            "overall": 0.003200982129457469,
+            "rows": 6012
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": 0.858218697233108,
+            "overall": 0.0030285991268819714,
+            "per_group": {
+              "close": 0.007212471244998851,
+              "midday": 0.0008962641779057396,
+              "open": 0.00037336585391750643
+            },
+            "positive_groups": 3,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 0.4801263637345354,
+            "overall": 0.0030285991268819714,
+            "per_group": {
+              "vol_high": 0.0005225119250522645,
+              "vol_low": 0.004200736216805745,
+              "vol_mid": 0.004362451771875389
+            },
+            "positive_groups": 3,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          }
+        },
+        "delta_b2_given_b0": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 19869636226148.613,
+            "overall": -0.0009557993537021622,
+            "per_group": {
+              "AAPL": -0.0015053496533800194,
+              "AMZN": -0.006990805240192739,
+              "META": 0.0022710654137918012,
+              "MSFT": 0.00333495069253921,
+              "NVDA": 0.0005014491365688793,
+              "TSLA": -0.003217436335762891
+            },
+            "positive_groups": 3,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": -34484284882220.31,
+            "overall": -0.0009557993537021622,
+            "per_group": {
+              "phase6_180d": -0.0009557993537021622
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": 20077743656094.684,
+            "overall": -0.0009557993537021622,
+            "per_group": {
+              "expiry_week": 0.001591324693357746,
+              "ordinary_week": -0.0023255489105069894
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": -4009383356305.156,
+            "overall": -0.0009557993537021622,
+            "per_group": {
+              "liq_high": -0.0011968133231740148,
+              "liq_low": -0.00033336520797415446,
+              "liq_mid": -0.0013372712873294904
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": 3472013843458.832,
+            "overall": -0.0009557993537021622,
+            "per_group": {
+              "market_down": 0.00019148543147247033,
+              "market_up": -0.0021149104990070286
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 5,
+            "max_single_group_contribution": 20346576867940.734,
+            "overall": -0.0009557993537021622,
+            "per_group": {
+              "2025-11": -0.0034802536393961853,
+              "2025-12": -0.0020409019336447972,
+              "2026-01": 0.002590270766128674,
+              "2026-02": 0.0008852161941254549,
+              "2026-03": -0.003626605334157512
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.4,
+            "systematic_inversion": false
+          },
+          "non_overlapping_origins": {
+            "overall": -0.0011321777988267125,
+            "rows": 6012
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": -2334866497705.2104,
+            "overall": -0.0009557993537021622,
+            "per_group": {
+              "close": -0.000179577487902262,
+              "midday": -0.0007845663053505692,
+              "open": -0.002199291978357521
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 13974828327760.154,
+            "overall": -0.0009557993537021622,
+            "per_group": {
+              "vol_high": -0.0022201173559253185,
+              "vol_low": 0.0011619546293972025,
+              "vol_mid": -0.001809411432531397
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          }
+        },
+        "delta_b2_given_b1": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 15282901638313.262,
+            "overall": -0.0002738803299300757,
+            "per_group": {
+              "AAPL": 0.002545453304182755,
+              "AMZN": -0.0006027782770530252,
+              "META": -0.0013118171267327923,
+              "MSFT": 0.0014602876240700645,
+              "NVDA": 0.002301264120051957,
+              "TSLA": -0.005997987478181306
+            },
+            "positive_groups": 3,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": -9881328423547.203,
+            "overall": -0.0002738803299300757,
+            "per_group": {
+              "phase6_180d": -0.0002738803299300757
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": 12786994956191.623,
+            "overall": -0.0002738803299300757,
+            "per_group": {
+              "expiry_week": 0.001013473484678737,
+              "ordinary_week": -0.0009661718259201612
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 8414484337594.249,
+            "overall": -0.0002738803299300757,
+            "per_group": {
+              "liq_high": -0.001509001730582281,
+              "liq_low": -1.2352037013296653e-05,
+              "liq_mid": 0.0006996910308992391
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": 11149737062951.193,
+            "overall": -0.0002738803299300757,
+            "per_group": {
+              "market_down": 0.0006149204204142506,
+              "market_up": -0.001171842953501888
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 5,
+            "max_single_group_contribution": 54934566650239.7,
+            "overall": -0.0002738803299300757,
+            "per_group": {
+              "2025-11": -0.0013693249917127743,
+              "2025-12": -0.005233068677237766,
+              "2026-01": 0.0013862221971112719,
+              "2026-02": -0.0032343749455274557,
+              "2026-03": 0.008788124564108095
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.4,
+            "systematic_inversion": false
+          },
+          "non_overlapping_origins": {
+            "overall": -0.0010488747284232863,
+            "rows": 6012
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": 47165062922951.305,
+            "overall": -0.0002738803299300757,
+            "per_group": {
+              "close": 0.003627523682737371,
+              "midday": -0.002913801753916053,
+              "open": -0.0018867631996073717
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 12656472003834.918,
+            "overall": -0.0002738803299300757,
+            "per_group": {
+              "vol_high": -0.0027264873722276507,
+              "vol_low": 0.0008523269901910397,
+              "vol_mid": 0.0010524257445397403
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          }
+        },
+        "delta_total": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 0.5738893323075704,
+            "overall": 0.0027547187969518957,
+            "per_group": {
+              "AAPL": 0.004765581550463623,
+              "AMZN": 0.0006159872439250334,
+              "META": 0.0008154635794375868,
+              "MSFT": 0.00336121693389518,
+              "NVDA": 0.009393515433721555,
+              "TSLA": -0.002444947450409618
+            },
+            "positive_groups": 5,
+            "sign_stability": 0.8333333333333334,
+            "systematic_inversion": false
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": 1.0,
+            "overall": 0.0027547187969518957,
+            "per_group": {
+              "phase6_180d": 0.0027547187969518957
+            },
+            "positive_groups": 1,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": 0.8309120095800777,
+            "overall": 0.0027547187969518957,
+            "per_group": {
+              "expiry_week": 0.006545317184441638,
+              "ordinary_week": 0.000716274510234733
+            },
+            "positive_groups": 2,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 0.5181336284873126,
+            "overall": 0.0027547187969518957,
+            "per_group": {
+              "liq_high": 0.0026475510438847875,
+              "liq_low": 0.0013346674060105215,
+              "liq_mid": 0.0042820560227324524
+            },
+            "positive_groups": 3,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": 0.9217624902012884,
+            "overall": 0.0027547187969518957,
+            "per_group": {
+              "market_down": 0.0050524856061749885,
+              "market_up": 0.0004332663099160051
+            },
+            "positive_groups": 2,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 5,
+            "max_single_group_contribution": 1.3990578542229088,
+            "overall": 0.0027547187969518957,
+            "per_group": {
+              "2025-11": -0.0006766074699669853,
+              "2025-12": -0.005266168721972436,
+              "2026-01": 0.005586116696735134,
+              "2026-02": -0.004838735509265811,
+              "2026-03": 0.022244258798974913
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.4,
+            "systematic_inversion": true
+          },
+          "non_overlapping_origins": {
+            "overall": 0.002152107401034182,
+            "rows": 6012
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": 1.4181020228359442,
+            "overall": 0.0027547187969518957,
+            "per_group": {
+              "close": 0.010839994927736223,
+              "midday": -0.0020175375760103126,
+              "open": -0.0015133973456898648
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": true
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 0.6552063122248032,
+            "overall": 0.0027547187969518957,
+            "per_group": {
+              "vol_high": -0.002203975447175387,
+              "vol_low": 0.005053063206996784,
+              "vol_mid": 0.005414877516415128
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          }
+        },
+        "leave_one_asset_out": {
+          "AAPL": {
+            "delta_b1": -0.0009803621965203712,
+            "delta_b2_given_b0": -0.0007011979346711582,
+            "delta_b2_given_b1": 0.004762438096865856,
+            "delta_total": 0.003782075900345485
+          },
+          "AMZN": {
+            "delta_b1": -7.127127751704612e-05,
+            "delta_b2_given_b0": -0.008683031824110043,
+            "delta_b2_given_b1": -0.001342443800887431,
+            "delta_total": -0.001413715078404478
+          },
+          "META": {
+            "delta_b1": -0.00417944106136808,
+            "delta_b2_given_b0": 0.003369697003998339,
+            "delta_b2_given_b1": -0.0011285961732422094,
+            "delta_total": -0.005308037234610289
+          },
+          "MSFT": {
+            "delta_b1": 0.0022036707152068764,
+            "delta_b2_given_b0": 0.003089799205471844,
+            "delta_b2_given_b1": 0.002168597276820408,
+            "delta_total": 0.004372267992027284
+          },
+          "NVDA": {
+            "delta_b1": 0.0087636966289388,
+            "delta_b2_given_b0": 0.004946849372765065,
+            "delta_b2_given_b1": 0.0012250171983401682,
+            "delta_total": 0.00998871382727897
+          },
+          "TSLA": {
+            "delta_b1": 0.004104300244180175,
+            "delta_b2_given_b0": -0.001992561795538529,
+            "delta_b2_given_b1": -0.0067079670572737105,
+            "delta_total": -0.002603666813093537
+          }
+        }
+      }
+    },
+    "rows": 89889,
+    "status": "MEASURED",
+    "test_rows": 36079,
+    "train_rows": 53810
+  },
+  "V": {
+    "models": {
+      "gamma_glm": {
+        "delta_b1": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 9026392621078.973,
+            "overall": -0.002284062851480796,
+            "per_group": {
+              "AAPL": -0.00849778614995766,
+              "AMZN": 0.0024870598784660918,
+              "META": -0.006166487990239079,
+              "MSFT": -0.0035091198662374453,
+              "NVDA": 0.004273860142556332,
+              "TSLA": -0.0024549915430296027
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": -28420594060975.543,
+            "overall": -0.002284062851480796,
+            "per_group": {
+              "gate3_dev80": -0.002284062851480796
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": 1974952326917.3572,
+            "overall": -0.002284062851480796,
+            "per_group": {
+              "expiry_week": 0.0004676657179534353,
+              "ordinary_week": -0.0036977550350234677
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 409137180037.8039,
+            "overall": -0.002284062851480796,
+            "per_group": {
+              "liq_high": 9.86348071450829e-05,
+              "liq_low": -0.006138521405659691,
+              "liq_mid": -0.0008119470581955508
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": -9939018270902.04,
+            "overall": -0.002284062851480796,
+            "per_group": {
+              "market_down": -0.001570145066493213,
+              "market_up": -0.003023323374787093
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 2,
+            "max_single_group_contribution": -6619766156930.828,
+            "overall": -0.002284062851480796,
+            "per_group": {
+              "2026-06": -0.002768007605896993,
+              "2026-07": -0.0014494780286688916
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "non_overlapping_origins": {
+            "overall": -0.002389561996725879,
+            "rows": 2080
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": -2088796682265.3481,
+            "overall": -0.002284062851480796,
+            "per_group": {
+              "close": -0.0027764765352537,
+              "midday": -0.003079319584454105,
+              "open": -0.0006049222943137412
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": -727197218659.5193,
+            "overall": -0.002284062851480796,
+            "per_group": {
+              "vol_high": -0.00017531273352447427,
+              "vol_low": -0.0039829053286505175,
+              "vol_mid": -0.0026940693366466558
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          }
+        },
+        "delta_b2_given_b0": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 4.921079718967818,
+            "overall": 0.00017297204521738186,
+            "per_group": {
+              "AAPL": -0.00040265048758429564,
+              "AMZN": 0.0010467014205991806,
+              "META": -0.009928109884202715,
+              "MSFT": 0.0003687373705410173,
+              "NVDA": 0.0050149604025078,
+              "TSLA": 0.004414162971543152
+            },
+            "positive_groups": 4,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": 1.0,
+            "overall": 0.00017297204521738186,
+            "per_group": {
+              "gate3_dev80": 0.00017297204521738186
+            },
+            "positive_groups": 1,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": 1.5639991679527054,
+            "overall": 0.00017297204521738186,
+            "per_group": {
+              "expiry_week": -0.0002874474124235987,
+              "ordinary_week": 0.00040951114127794896
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 5.465106836672671,
+            "overall": 0.00017297204521738186,
+            "per_group": {
+              "liq_high": 0.002835704225070628,
+              "liq_low": -0.004206460816322492,
+              "liq_mid": 0.0018900866889685587
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": 9.637000627399967,
+            "overall": 0.00017297204521738186,
+            "per_group": {
+              "market_down": 0.0032767189962337995,
+              "market_up": -0.0030409520836774204
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 2,
+            "max_single_group_contribution": 3.624481806305099,
+            "overall": 0.00017297204521738186,
+            "per_group": {
+              "2026-06": 0.0009904698001982702,
+              "2026-07": -0.0012368401549642414
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "non_overlapping_origins": {
+            "overall": 0.00020589684403132845,
+            "rows": 2080
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": 9.08671189399121,
+            "overall": 0.00017297204521738186,
+            "per_group": {
+              "close": -0.004446578201254389,
+              "midday": 0.004319180580950782,
+              "open": 0.0007053789232817337
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 3.885925026900769,
+            "overall": 0.00017297204521738186,
+            "per_group": {
+              "vol_high": 0.002016307154902597,
+              "vol_low": -0.002315357705528705,
+              "vol_mid": 0.00081812221910706
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          }
+        },
+        "delta_b2_given_b1": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 1.7164296329876152,
+            "overall": 0.0002835087295024834,
+            "per_group": {
+              "AAPL": 0.0015531526295955386,
+              "AMZN": 0.0017505624555223809,
+              "META": -0.00543231983270264,
+              "MSFT": 0.00032453710403864447,
+              "NVDA": 0.0003850727440053924,
+              "TSLA": 0.0028669731571453693
+            },
+            "positive_groups": 5,
+            "sign_stability": 0.8333333333333334,
+            "systematic_inversion": false
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": 1.0,
+            "overall": 0.0002835087295024834,
+            "per_group": {
+              "gate3_dev80": 0.0002835087295024834
+            },
+            "positive_groups": 1,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": 1.3541719429456252,
+            "overall": 0.0002835087295024834,
+            "per_group": {
+              "expiry_week": -0.0002958588803890041,
+              "ordinary_week": 0.0005811570770172952
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 1.8167903313221216,
+            "overall": 0.0002835087295024834,
+            "per_group": {
+              "liq_high": 0.0015451035812942663,
+              "liq_low": -0.0013141559950058102,
+              "liq_mid": 0.0006196596414938243
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": 4.53631711964726,
+            "overall": 0.0002835087295024834,
+            "per_group": {
+              "market_down": 0.0025280824512577305,
+              "market_up": -0.0020407431368005937
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 2,
+            "max_single_group_contribution": 2.6434935909323327,
+            "overall": 0.0002835087295024834,
+            "per_group": {
+              "2026-06": 0.001184033775727303,
+              "2026-07": -0.001269487824924203
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "non_overlapping_origins": {
+            "overall": -0.00026489772701583967,
+            "rows": 2080
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": 4.616134239806806,
+            "overall": 0.0002835087295024834,
+            "per_group": {
+              "close": -0.0032274765058082394,
+              "midday": 0.003596363229042609,
+              "open": 0.00047621389777319223
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 1.2081391417763,
+            "overall": 0.0002835087295024834,
+            "per_group": {
+              "vol_high": 0.0009381444876710343,
+              "vol_low": -0.0011151580526496867,
+              "vol_mid": 0.001027719167767266
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          }
+        },
+        "delta_total": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 9839666256418.361,
+            "overall": -0.002000554121978312,
+            "per_group": {
+              "AAPL": -0.006944633520362123,
+              "AMZN": 0.004237622333988471,
+              "META": -0.01159880782294172,
+              "MSFT": -0.003184582762198802,
+              "NVDA": 0.004658932886561724,
+              "TSLA": 0.0004119816141157669
+            },
+            "positive_groups": 3,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": -24892894939776.137,
+            "overall": -0.002000554121978312,
+            "per_group": {
+              "gate3_dev80": -0.002000554121978312
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": 725540275034.5942,
+            "overall": -0.002000554121978312,
+            "per_group": {
+              "expiry_week": 0.0001718068375644315,
+              "ordinary_week": -0.0031165979580061723
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 6818226835246.423,
+            "overall": -0.002000554121978312,
+            "per_group": {
+              "liq_high": 0.0016437383884393498,
+              "liq_low": -0.007452677400665502,
+              "liq_mid": -0.00019228741670172613
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": 6063743645559.3955,
+            "overall": -0.002000554121978312,
+            "per_group": {
+              "market_down": 0.0009579373847645174,
+              "market_up": -0.00506406651158769
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 2,
+            "max_single_group_contribution": -12417517053359.668,
+            "overall": -0.002000554121978312,
+            "per_group": {
+              "2026-06": -0.0015839738301696895,
+              "2026-07": -0.0027189658535930953
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "non_overlapping_origins": {
+            "overall": -0.002654459723741719,
+            "rows": 2080
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": 2341173622696.749,
+            "overall": -0.002000554121978312,
+            "per_group": {
+              "close": -0.00600395304106194,
+              "midday": 0.0005170436445885046,
+              "open": -0.00012870839654054902
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 3164226116199.93,
+            "overall": -0.002000554121978312,
+            "per_group": {
+              "vol_high": 0.0007628317541465597,
+              "vol_low": -0.005098063381300204,
+              "vol_mid": -0.00166635016887939
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          }
+        },
+        "leave_one_asset_out": {
+          "AAPL": {
+            "delta_b1": -0.023012313120865126,
+            "delta_b2_given_b0": -0.0030087638889141066,
+            "delta_b2_given_b1": -0.01871018287418457,
+            "delta_total": -0.041722495995049694
+          },
+          "AMZN": {
+            "delta_b1": 0.005368292348997311,
+            "delta_b2_given_b0": 5.810694052382524e-05,
+            "delta_b2_given_b1": 0.0020241139120367618,
+            "delta_total": 0.0073924062610340735
+          },
+          "META": {
+            "delta_b1": -0.0072541576738903305,
+            "delta_b2_given_b0": -0.021722645245513046,
+            "delta_b2_given_b1": -0.011456244046493624,
+            "delta_total": -0.018710401720383955
+          },
+          "MSFT": {
+            "delta_b1": -0.010461272625587747,
+            "delta_b2_given_b0": -0.004916885665541357,
+            "delta_b2_given_b1": -0.004920305626606941,
+            "delta_total": -0.015381578252194687
+          },
+          "NVDA": {
+            "delta_b1": -5.883388256545562e-05,
+            "delta_b2_given_b0": 0.006321063184893241,
+            "delta_b2_given_b1": 0.003117630633942837,
+            "delta_total": 0.0030587967513773812
+          },
+          "TSLA": {
+            "delta_b1": -0.0014658100451781268,
+            "delta_b2_given_b0": 0.0034397817029776386,
+            "delta_b2_given_b1": 0.0020499933917742224,
+            "delta_total": 0.0005841833465960952
+          }
+        }
+      },
+      "lightgbm": {
+        "delta_b1": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 51982927645562.766,
+            "overall": -0.0017964666548975262,
+            "per_group": {
+              "AAPL": -0.03430521997293329,
+              "AMZN": -0.011014290225225827,
+              "META": 0.016754920995986383,
+              "MSFT": -0.006117651175636945,
+              "NVDA": -0.00038738410626799284,
+              "TSLA": 0.024613128620058124
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": -22353434586889.918,
+            "overall": -0.0017964666548975262,
+            "per_group": {
+              "gate3_dev80": -0.0017964666548975262
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": -137229106857.5393,
+            "overall": -0.0017964666548975262,
+            "per_group": {
+              "expiry_week": -0.005260763788783416,
+              "ordinary_week": -1.66945385471459e-05
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 13975823368521.885,
+            "overall": -0.0017964666548975262,
+            "per_group": {
+              "liq_high": -0.006823551758155239,
+              "liq_low": -0.0019347071510568625,
+              "liq_mid": 0.0033701045016932447
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": 12675101438224.322,
+            "overall": -0.0017964666548975262,
+            "per_group": {
+              "market_down": -0.005533733969212361,
+              "market_up": 0.002073466618391023
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 2,
+            "max_single_group_contribution": -741017580955.4254,
+            "overall": -0.0017964666548975262,
+            "per_group": {
+              "2026-06": -0.002744085450220224,
+              "2026-07": -0.0001622547801522718
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "non_overlapping_origins": {
+            "overall": -0.0013704716191304785,
+            "rows": 2080
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": 6021169166734.198,
+            "overall": -0.0017964666548975262,
+            "per_group": {
+              "close": -0.005848589358731606,
+              "midday": 0.0013297635085543725,
+              "open": -0.0006597735403891397
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 21936508770043.734,
+            "overall": -0.0017964666548975262,
+            "per_group": {
+              "vol_high": 0.005288454380434844,
+              "vol_low": -0.006670420811069002,
+              "vol_mid": -0.004007966682570397
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          }
+        },
+        "delta_b2_given_b0": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 1.0386171207055799,
+            "overall": 0.003486210276409785,
+            "per_group": {
+              "AAPL": -0.016716830773331828,
+              "AMZN": -0.00755447435928703,
+              "META": 0.022549591213967733,
+              "MSFT": 0.0035506672252643805,
+              "NVDA": 0.0010412175714082086,
+              "TSLA": 0.018548644837512843
+            },
+            "positive_groups": 4,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": 1.0,
+            "overall": 0.003486210276409785,
+            "per_group": {
+              "gate3_dev80": 0.003486210276409785
+            },
+            "positive_groups": 1,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": 0.7260897277982304,
+            "overall": 0.003486210276409785,
+            "per_group": {
+              "expiry_week": 0.007458438124377308,
+              "ordinary_week": 0.00144549030050141
+            },
+            "positive_groups": 2,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 1.3041853616941357,
+            "overall": 0.003486210276409785,
+            "per_group": {
+              "liq_high": -0.00029223976221799127,
+              "liq_low": 0.013638897120812517,
+              "liq_mid": -0.0028895636011775096
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": true
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": 1.3894083738420395,
+            "overall": 0.003486210276409785,
+            "per_group": {
+              "market_down": -0.0026685801804974874,
+              "market_up": 0.009859484215919525
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 2,
+            "max_single_group_contribution": 0.6683394035582063,
+            "overall": 0.003486210276409785,
+            "per_group": {
+              "2026-06": 0.0018266984060319683,
+              "2026-07": 0.00634811425957065
+            },
+            "positive_groups": 2,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "non_overlapping_origins": {
+            "overall": 0.0029965297477534646,
+            "rows": 2080
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": 1.2863181289375585,
+            "overall": 0.003486210276409785,
+            "per_group": {
+              "close": 0.012505397600981282,
+              "midday": -0.0015144397112600448,
+              "open": -0.00161100104651782
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": true
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 1.137077320936582,
+            "overall": 0.003486210276409785,
+            "per_group": {
+              "vol_high": -0.0023165951315863285,
+              "vol_low": 0.011891316260840142,
+              "vol_mid": 0.0008832821859710942
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          }
+        },
+        "delta_b2_given_b1": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 39548912986025.45,
+            "overall": -0.005055656920900578,
+            "per_group": {
+              "AAPL": -0.03794972839350396,
+              "AMZN": -0.015539350987620496,
+              "META": 0.019794250743756483,
+              "MSFT": 0.0044931991354453015,
+              "NVDA": 0.0008076161587912879,
+              "TSLA": -0.0011004868329236093
+            },
+            "positive_groups": 3,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": -62907539066765.89,
+            "overall": -0.005055656920900578,
+            "per_group": {
+              "gate3_dev80": -0.005055656920900578
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": 25798450695019.98,
+            "overall": -0.005055656920900578,
+            "per_group": {
+              "expiry_week": 0.00610903402676296,
+              "ordinary_week": -0.010791482939390008
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 37966266330979.57,
+            "overall": -0.005055656920900578,
+            "per_group": {
+              "liq_high": -0.009094620042682343,
+              "liq_low": 0.009152908951537987,
+              "liq_mid": -0.015227711950976395
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": 14586192633854.828,
+            "overall": -0.005055656920900578,
+            "per_group": {
+              "market_down": -0.012242295687301851,
+              "market_up": 0.0023860940019392817
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 2,
+            "max_single_group_contribution": 28435631154620.223,
+            "overall": -0.005055656920900578,
+            "per_group": {
+              "2026-06": -0.011597660007794068,
+              "2026-07": 0.006226326068451986
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "non_overlapping_origins": {
+            "overall": -0.0030215234950650522,
+            "rows": 2080
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": -12641909887198.303,
+            "overall": -0.005055656920900578,
+            "per_group": {
+              "close": -0.007976547584244433,
+              "midday": -0.0027919412295049255,
+              "open": -0.00424971730630435
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 20035119271779.45,
+            "overall": -0.005055656920900578,
+            "per_group": {
+              "vol_high": -0.014937480234284473,
+              "vol_low": 0.004830067326851362,
+              "vol_mid": -0.005059558795932802
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          }
+        },
+        "delta_total": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 73025245136006.25,
+            "overall": -0.006852123575798103,
+            "per_group": {
+              "AAPL": -0.07225494836643724,
+              "AMZN": -0.026553641212846316,
+              "META": 0.03654917173974287,
+              "MSFT": -0.0016244520401916434,
+              "NVDA": 0.00042023205252329483,
+              "TSLA": 0.02351264178713451
+            },
+            "positive_groups": 3,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": -85260973653655.8,
+            "overall": -0.006852123575798103,
+            "per_group": {
+              "gate3_dev80": -0.006852123575798103
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": 3582245214987.6177,
+            "overall": -0.006852123575798103,
+            "per_group": {
+              "expiry_week": 0.0008482702379795447,
+              "ordinary_week": -0.010808177477937156
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 29941101068395.72,
+            "overall": -0.006852123575798103,
+            "per_group": {
+              "liq_high": -0.015918171800837582,
+              "liq_low": 0.007218201800481127,
+              "liq_mid": -0.01185760744928315
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": 27261294072079.16,
+            "overall": -0.006852123575798103,
+            "per_group": {
+              "market_down": -0.017776029656514213,
+              "market_up": 0.004459560620330306
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 2,
+            "max_single_group_contribution": 27694613573664.797,
+            "overall": -0.006852123575798103,
+            "per_group": {
+              "2026-06": -0.014341745458014298,
+              "2026-07": 0.006064071288299715
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "non_overlapping_origins": {
+            "overall": -0.0043919951141955325,
+            "rows": 2080
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": -6620740720464.105,
+            "overall": -0.006852123575798103,
+            "per_group": {
+              "close": -0.013825136942976034,
+              "midday": -0.0014621777209505534,
+              "open": -0.0049094908466934895
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": -7633786252534.766,
+            "overall": -0.006852123575798103,
+            "per_group": {
+              "vol_high": -0.009649025853849627,
+              "vol_low": -0.0018403534842176387,
+              "vol_mid": -0.009067525478503199
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          }
+        },
+        "leave_one_asset_out": {
+          "AAPL": {
+            "delta_b1": -0.014832626687850037,
+            "delta_b2_given_b0": 0.0007504850745585008,
+            "delta_b2_given_b1": 0.012317145357101175,
+            "delta_total": -0.0025154813307488614
+          },
+          "AMZN": {
+            "delta_b1": -0.027745499511460336,
+            "delta_b2_given_b0": -0.039629931978112626,
+            "delta_b2_given_b1": -0.025020191237120362,
+            "delta_total": -0.05276569074858071
+          },
+          "META": {
+            "delta_b1": 0.13948900690443103,
+            "delta_b2_given_b0": 0.09317496202319142,
+            "delta_b2_given_b1": 0.04213185068713436,
+            "delta_total": 0.18162085759156543
+          },
+          "MSFT": {
+            "delta_b1": -0.01181617423386158,
+            "delta_b2_given_b0": 0.007001300820556229,
+            "delta_b2_given_b1": 0.007978233725653735,
+            "delta_total": -0.003837940508207845
+          },
+          "NVDA": {
+            "delta_b1": -0.0013934895286799945,
+            "delta_b2_given_b0": -0.02026143375744657,
+            "delta_b2_given_b1": -0.011090627076711535,
+            "delta_total": -0.012484116605391529
+          },
+          "TSLA": {
+            "delta_b1": 0.012796974725082769,
+            "delta_b2_given_b0": 0.013710948978066052,
+            "delta_b2_given_b1": 0.011360419131499563,
+            "delta_total": 0.02415739385658233
+          }
+        }
+      },
+      "log_ols": {
+        "delta_b1": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 6463226514168.844,
+            "overall": -0.001605609742773459,
+            "per_group": {
+              "AAPL": -0.004330964424372729,
+              "AMZN": 0.0019351082873575608,
+              "META": -0.008835239357391063,
+              "MSFT": 0.00010431921137486664,
+              "NVDA": 0.00306023982678449,
+              "TSLA": -0.0018614074712644106
+            },
+            "positive_groups": 3,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": -19978602029330.152,
+            "overall": -0.001605609742773459,
+            "per_group": {
+              "gate3_dev80": -0.001605609742773459
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": -408302562120.79877,
+            "overall": -0.001605609742773459,
+            "per_group": {
+              "expiry_week": -9.668542792346644e-05,
+              "ordinary_week": -0.0023808150203417705
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 3642833343063.0293,
+            "overall": -0.001605609742773459,
+            "per_group": {
+              "liq_high": 0.0007405253007109173,
+              "liq_low": -0.006435181851432513,
+              "liq_mid": 0.0008784261738758208
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": -5766801594306.202,
+            "overall": -0.001605609742773459,
+            "per_group": {
+              "market_down": -0.0009110271081052452,
+              "market_up": -0.0023248487542980446
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 2,
+            "max_single_group_contribution": 3086176173815.4624,
+            "overall": -0.001605609742773459,
+            "per_group": {
+              "2026-06": -0.0029284888526086355,
+              "2026-07": 0.0006757556763335806
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "non_overlapping_origins": {
+            "overall": -0.0014472801446022126,
+            "rows": 2080
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": -622768920868.3591,
+            "overall": -0.001605609742773459,
+            "per_group": {
+              "close": -0.003757890936479222,
+              "midday": -0.0005715821002410567,
+              "open": -0.00018035589946955086
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 1715325881052.8208,
+            "overall": -0.001605609742773459,
+            "per_group": {
+              "vol_high": 0.0004135308295691467,
+              "vol_low": -0.0032601469655367658,
+              "vol_mid": -0.0019703010121380426
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": false
+          }
+        },
+        "delta_b2_given_b0": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 27.932381507342303,
+            "overall": 2.7038549845302895e-05,
+            "per_group": {
+              "AAPL": -0.003206517417369841,
+              "AMZN": 0.002100297100213405,
+              "META": -0.00977333920677985,
+              "MSFT": 0.001813487848133071,
+              "NVDA": 0.0044496161500670655,
+              "TSLA": 0.004300306251803233
+            },
+            "positive_groups": 4,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": 1.0,
+            "overall": 2.7038549845302895e-05,
+            "per_group": {
+              "gate3_dev80": 2.7038549845302895e-05
+            },
+            "positive_groups": 1,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": 16.10044848810986,
+            "overall": 2.7038549845302895e-05,
+            "per_group": {
+              "expiry_week": 0.001282700868770284,
+              "ordinary_week": -0.0006180541475780781
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 34.522022367615364,
+            "overall": 2.7038549845302895e-05,
+            "per_group": {
+              "liq_high": 0.0028000512374054157,
+              "liq_low": -0.004768838889682372,
+              "liq_mid": 0.0020503910917217057
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": 50.10025333084588,
+            "overall": 2.7038549845302895e-05,
+            "per_group": {
+              "market_down": 0.0026628377700835195,
+              "market_up": -0.0027023265841491216
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 2,
+            "max_single_group_contribution": 15.518535188048768,
+            "overall": 2.7038549845302895e-05,
+            "per_group": {
+              "2026-06": -0.0006201911870500037,
+              "2026-07": 0.001143215779490022
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "non_overlapping_origins": {
+            "overall": -0.0003918568244999883,
+            "rows": 2080
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": 30.604580305877665,
+            "overall": 2.7038549845302895e-05,
+            "per_group": {
+              "close": -0.002702967930021076,
+              "midday": 0.00227398976996305,
+              "open": 0.0006082994211081534
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 24.515466637797747,
+            "overall": 2.7038549845302895e-05,
+            "per_group": {
+              "vol_high": 0.0009783995795069013,
+              "vol_low": -0.0028857186454692477,
+              "vol_mid": 0.0019889076829845472
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          }
+        },
+        "delta_b2_given_b1": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 26.76621376424916,
+            "overall": 1.5787347701865777e-05,
+            "per_group": {
+              "AAPL": -0.0020382749111546245,
+              "AMZN": 0.0017155629415816307,
+              "META": -0.005427122812962992,
+              "MSFT": 0.0010998426900241062,
+              "NVDA": 0.002003389333511971,
+              "TSLA": 0.0024895869759241924
+            },
+            "positive_groups": 4,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": 1.0,
+            "overall": 1.5787347701865777e-05,
+            "per_group": {
+              "gate3_dev80": 1.5787347701865777e-05
+            },
+            "positive_groups": 1,
+            "sign_stability": 1.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": 35.34584538888574,
+            "overall": 1.5787347701865777e-05,
+            "per_group": {
+              "expiry_week": 0.0016441883517709622,
+              "ordinary_week": -0.0008207987155808344
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 26.551155414816716,
+            "overall": 1.5787347701865777e-05,
+            "per_group": {
+              "liq_high": 0.0012574159131803057,
+              "liq_low": -0.001737785365087973,
+              "liq_mid": 0.0005278549442892018
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": 46.717098025334685,
+            "overall": 1.5787347701865777e-05,
+            "per_group": {
+              "market_down": 0.0014497944154585908,
+              "market_up": -0.0014691242732534871
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 2,
+            "max_single_group_contribution": 17.659105164399996,
+            "overall": 1.5787347701865777e-05,
+            "per_group": {
+              "2026-06": -0.0004155088108840893,
+              "2026-07": 0.0007595772634064824
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "non_overlapping_origins": {
+            "overall": -0.0002421343603797911,
+            "rows": 2080
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": 42.04674876443111,
+            "overall": 1.5787347701865777e-05,
+            "per_group": {
+              "close": -0.0020720636990014018,
+              "midday": 0.0018241488631497728,
+              "open": 0.00034238173763579457
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 42.66663261984435,
+            "overall": 1.5787347701865777e-05,
+            "per_group": {
+              "vol_high": -0.0002830872283018116,
+              "vol_low": -0.0016901710381008904,
+              "vol_mid": 0.002021103751264219
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.3333333333333333,
+            "systematic_inversion": true
+          }
+        },
+        "delta_total": {
+          "asset": {
+            "groups": 6,
+            "max_single_group_contribution": 10694384786546.127,
+            "overall": -0.0015898223950715927,
+            "per_group": {
+              "AAPL": -0.006369239335527354,
+              "AMZN": 0.003650671228939192,
+              "META": -0.014262362170354053,
+              "MSFT": 0.0012041619013989726,
+              "NVDA": 0.005063629160296462,
+              "TSLA": 0.0006281795046597817
+            },
+            "positive_groups": 4,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          },
+          "era": {
+            "groups": 1,
+            "max_single_group_contribution": -19782160061875.83,
+            "overall": -0.0015898223950715927,
+            "per_group": {
+              "gate3_dev80": -0.0015898223950715927
+            },
+            "positive_groups": 0,
+            "sign_stability": 0.0,
+            "systematic_inversion": false
+          },
+          "expiration_week": {
+            "groups": 2,
+            "max_single_group_contribution": 6535104847407.973,
+            "overall": -0.0015898223950715927,
+            "per_group": {
+              "expiry_week": 0.0015475029238474953,
+              "ordinary_week": -0.003201613735922605
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "liquidity_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 8287460155220.792,
+            "overall": -0.0015898223950715927,
+            "per_group": {
+              "liq_high": 0.001997941213891223,
+              "liq_low": -0.008172967216520485,
+              "liq_mid": 0.001406281118165023
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          },
+          "market_direction": {
+            "groups": 2,
+            "max_single_group_contribution": 3410397055546.675,
+            "overall": -0.0015898223950715927,
+            "per_group": {
+              "market_down": 0.0005387673073533451,
+              "market_up": -0.0037939730275515305
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "month": {
+            "groups": 2,
+            "max_single_group_contribution": 6555165535792.868,
+            "overall": -0.0015898223950715927,
+            "per_group": {
+              "2026-06": -0.003343997663492724,
+              "2026-07": 0.0014353329397400632
+            },
+            "positive_groups": 1,
+            "sign_stability": 0.5,
+            "systematic_inversion": false
+          },
+          "non_overlapping_origins": {
+            "overall": -0.0016894145049820043,
+            "rows": 2080
+          },
+          "session_period": {
+            "groups": 3,
+            "max_single_group_contribution": 5671622302450.667,
+            "overall": -0.0015898223950715927,
+            "per_group": {
+              "close": -0.005829954635480624,
+              "midday": 0.0012525667629087161,
+              "open": 0.00016202583816624387
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          },
+          "volatility_regime": {
+            "groups": 3,
+            "max_single_group_contribution": 541080058056.90466,
+            "overall": -0.0015898223950715927,
+            "per_group": {
+              "vol_high": 0.00013044360126733477,
+              "vol_low": -0.004950318003637654,
+              "vol_mid": 5.0802739126176326e-05
+            },
+            "positive_groups": 2,
+            "sign_stability": 0.6666666666666666,
+            "systematic_inversion": false
+          }
+        },
+        "leave_one_asset_out": {
+          "AAPL": {
+            "delta_b1": -0.008270755054050892,
+            "delta_b2_given_b0": -0.004642302406469972,
+            "delta_b2_given_b1": -0.01686403149948474,
+            "delta_total": -0.02513478655353563
+          },
+          "AMZN": {
+            "delta_b1": 0.005456349565215336,
+            "delta_b2_given_b0": 0.001253991426065817,
+            "delta_b2_given_b1": 0.0028904342559476818,
+            "delta_total": 0.008346783821163018
+          },
+          "META": {
+            "delta_b1": -0.022567374699725522,
+            "delta_b2_given_b0": -0.027142113332721554,
+            "delta_b2_given_b1": -0.010612995341545505,
+            "delta_total": -0.03318037004127103
+          },
+          "MSFT": {
+            "delta_b1": -0.002158056297292219,
+            "delta_b2_given_b0": -0.00229233851256696,
+            "delta_b2_given_b1": -0.0034310747863986243,
+            "delta_total": -0.005589131083690844
+          },
+          "NVDA": {
+            "delta_b1": 0.004363749589431749,
+            "delta_b2_given_b0": 0.002697495175660859,
+            "delta_b2_given_b1": -0.0004139758556293438,
+            "delta_total": 0.003949773733802407
+          },
+          "TSLA": {
+            "delta_b1": -0.0011828714098585263,
+            "delta_b2_given_b0": 0.005278403146635522,
+            "delta_b2_given_b1": 0.0024377047109065525,
+            "delta_total": 0.0012548333010480256
+          }
+        }
+      }
+    },
+    "rows": 31131,
+    "status": "MEASURED",
+    "test_rows": 12443,
+    "train_rows": 18688
+  },
+  "block": 9,
+  "generalization_sha256": "e4052e78e8041e2ad4f4595093987a4f6fb48c7ede34983af6cf314437ebe808",
+  "generated_at_utc": "2026-08-18T14:22:08.261635+00:00",
+  "label": "EXPLORATORY_MECHANISM_DISCOVERY",
+  "models": [
+    "log_ols",
+    "gamma_glm",
+    "lightgbm"
+  ],
+  "non_overlapping_step_minutes": 30,
+  "program": "docs/research_program_v2.md"
+}
