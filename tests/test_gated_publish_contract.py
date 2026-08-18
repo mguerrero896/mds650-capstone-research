@@ -34,6 +34,39 @@ def test_every_large_parquet_is_gated() -> None:
     )
 
 
+QUOTE_LEVEL_COLUMNS = {
+    "bid",
+    "ask",
+    "midpoint",
+    "sip_timestamp",
+    "quote_time_utc",
+    "provider_timestamp_ns",
+    "premium",
+    "trade_price",
+}
+
+
+def test_no_quote_level_csv_reaches_the_mirror() -> None:
+    """Row-level market data (real contracts, timestamps, prices) must be gated
+    regardless of file size — found live in b1_iv_failures_20d.csv (2026-08-18)."""
+    excluded = set(EXCLUDE_LIST.read_text(encoding="utf-8").split())
+    tracked = subprocess.run(
+        ["git", "ls-files", "*.csv"], capture_output=True, text=True, cwd=REPO
+    ).stdout.split()
+    leaks = []
+    for path in tracked:
+        if path in excluded or path.startswith(FIXTURE_ALLOWED_PREFIXES):
+            continue
+        with (REPO / path).open(encoding="utf-8", errors="replace") as handle:
+            header = {column.strip().lower() for column in handle.readline().split(",")}
+        if header & QUOTE_LEVEL_COLUMNS:
+            leaks.append(path)
+    assert not leaks, (
+        "CSV(s) with quote-level market data not registered in "
+        f"scripts/_gated_exclude_list.txt: {leaks}"
+    )
+
+
 def test_pointers_cover_the_exclude_list() -> None:
     import json
 

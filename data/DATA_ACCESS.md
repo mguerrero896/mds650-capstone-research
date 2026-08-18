@@ -1,6 +1,7 @@
 # Gated research data — access policy
 
-The granular derived datasets of this project (14 parquet files, ~133 MB — per-origin
+The granular derived datasets of this project (15 files: 14 parquets plus one
+quote-level diagnostic CSV, ~135 MB — per-origin
 feature panels, row-level frozen forecasts, and quote-derived IV attempts) are built
 from commercially licensed market-data feeds (FMP, Unusual Whales, Massive) and
 **cannot be redistributed publicly** under the provider agreements. They are therefore

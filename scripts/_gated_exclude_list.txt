@@ -12,3 +12,4 @@ artifacts/phase5/development_forecasts.parquet
 artifacts/b2_confirmation/b1/b1_origin_matrix_20d.parquet
 artifacts/b1_diagnostic_replication/diagnostic/chronological_oof_forecasts.parquet
 artifacts/gate3_har/oof_forecasts.parquet
+artifacts/b2_confirmation/b1/b1_iv_failures_20d.csv

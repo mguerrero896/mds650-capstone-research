@@ -86,6 +86,12 @@
    "sha256": "3c9c6ea494117ac1e744ce06300a80c800e19d08f16ba1708c9975aa6b4d6260",
    "bytes": 665674,
    "bucket_object": "gate3_har/oof_forecasts.parquet"
+  },
+  {
+   "path": "artifacts/b2_confirmation/b1/b1_iv_failures_20d.csv",
+   "sha256": "7efba56a9787cea7f1eb228e8dbb0ab65463ce932beee6200cd18413da354009",
+   "bytes": 2031839,
+   "bucket_object": "b2_confirmation/b1/b1_iv_failures_20d.csv"
   }
  ]
 }
