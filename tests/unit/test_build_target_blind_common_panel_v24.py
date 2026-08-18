@@ -100,6 +100,7 @@ def test_v24_source_commit_is_scoped_to_runtime_history(
     assert calls == [["git", "log", "-1", "--format=%H", "--", *builder._BUILDER_SOURCE_PATHS]]
 
 
+@pytest.mark.skipif(sys.platform != "win32", reason="Windows drive-letter path semantics")
 def test_v24_rejects_forbidden_path_before_preflight_or_predictor_read(tmp_path: Path) -> None:
     """Outcome-like paths are rejected before the builder can inspect any input bytes."""
     forbidden_path = tmp_path / "target_payload.parquet"

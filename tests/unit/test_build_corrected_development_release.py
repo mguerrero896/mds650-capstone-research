@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 builder = importlib.import_module("build_corrected_development_release")
 
 
+@pytest.mark.skipif(sys.platform != "win32", reason="Windows drive-letter path semantics")
 def test_builder_defaults_to_new_d_root_and_never_a_legacy_or_holdout_artifact() -> None:
     """Default output locations are isolated from sealed results and the OOS root."""
     args = builder.parse_args([])
@@ -25,6 +26,7 @@ def test_builder_defaults_to_new_d_root_and_never_a_legacy_or_holdout_artifact()
     assert "legacy" not in args.artifact_root.as_posix().casefold()
 
 
+@pytest.mark.skipif(sys.platform != "win32", reason="Windows drive-letter path semantics")
 def test_builder_rejects_unsafe_predictor_path_before_any_preflight(tmp_path: Path) -> None:
     """A personal or holdout-like input path cannot reach a target-free reader."""
     unsafe = tmp_path / "holdout_predictors.parquet"

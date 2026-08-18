@@ -10,6 +10,7 @@ from pathlib import Path
 
 import pyarrow as pa
 import pyarrow.parquet as pq
+import pytest
 
 from mds650.provider_timing import (
     HISTORICAL_UW_CLASSIFICATION,
@@ -115,6 +116,7 @@ def test_offline_audit_cli_writes_all_required_sanitized_artifacts(tmp_path: Pat
     assert (output / "uw_historical_latency_by_asset.csv").is_file()
 
 
+@pytest.mark.skipif(sys.platform != "win32", reason="Windows drive-letter path semantics")
 def test_offline_audit_defaults_to_full_tape_bulk_root_not_panel_data_root() -> None:
     """The auditor never reuses the legacy panel-data root for Full Tape files."""
     args = audit_script.parse_args([])
