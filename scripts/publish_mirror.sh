@@ -64,7 +64,7 @@ fi
 PUBCHECK=$(mktemp -d)/pub
 git -C "$MIRROR" worktree add --detach "$PUBCHECK" main >/dev/null 2>&1 || git clone -q "$MIRROR" "$PUBCHECK"
 echo "[publish] check 3: hermetic suite on the stripped public tree"
-(cd "$PUBCHECK" && env -u MDS650_EVIDENCE_ROOT uv run --project . pytest tests -q \n    --ignore=tests/unit/test_generate_date_level_pit_preflight_plan_v1.py \n    --ignore=tests/unit/test_independent_replication_panel.py \n    --ignore=tests/unit/test_date_level_pit_preflight_request_budget_v1.py \n    --ignore=tests/contract/test_b2_confirmation_inputs.py \n    --cov=src/mds650 --cov-report=term --cov-fail-under=80) || {
+(cd "$PUBCHECK" && env -u MDS650_EVIDENCE_ROOT uv run --project . pytest tests -q --ignore=tests/unit/test_generate_date_level_pit_preflight_plan_v1.py --ignore=tests/unit/test_independent_replication_panel.py --ignore=tests/unit/test_date_level_pit_preflight_request_budget_v1.py --ignore=tests/contract/test_b2_confirmation_inputs.py --cov=src/mds650 --cov-report=term --cov-fail-under=80) || {
     echo "PUBLISH REFUSED: hermetic suite FAILS on the stripped public tree" >&2; exit 1; }
 git -C "$MIRROR" push --force "$REMOTE" main
 git -C "$MIRROR" push --force "$REMOTE" --tags
