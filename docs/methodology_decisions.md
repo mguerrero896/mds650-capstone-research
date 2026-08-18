@@ -495,3 +495,44 @@ Spec Kit consistency and preregistration gates pass.
    as 429/5xx, preserving the last exception as the cause — previously a single
    transport error bypassed max_retries entirely (src/mds650/providers/base.py;
    regression tests in tests/unit/test_provider_client.py).
+65. **Four-contrast hypothesis structure replaces the B1-first precondition
+   (2026-08-18)** — Research Program v2 §0 corrects a premise that has governed
+   every campaign so far. The registered framing required Delta_B1 > 0 *before*
+   Delta_B2 could be interpreted. In nested information sets that ordering is not
+   how information behaves: interactions, suppressor effects, redundancy,
+   non-linearity and regions where B2 is only interpretable conditional on B1 all
+   make a weak isolated B1 compatible with a real joint contribution. From this
+   decision forward, the estimand set is **four contrasts plus one interaction**,
+   all reported together and never cherry-picked:
+   Delta_B1 = L(B0) - L(B0+B1);
+   Delta_{B2|B1} = L(B0+B1) - L(B0+B1+B2);
+   Delta_{B2|B0} = L(B0) - L(B0+B2);
+   Delta_Total = L(B0) - L(B0+B1+B2);
+   Delta_Interaction = Delta_Total - Delta_B1 - Delta_{B2|B0}.
+   The scientific hypothesis is now "the option information set contains
+   incremental predictive information over B0, and an identifiable part comes from
+   recent transactional activity B2 — as a marginal effect **or** as an interaction
+   with B1", replacing "B1 must win first". This decision is registered **before**
+   any campaign reports the four-contrast set as primary, as required. It does not
+   reinterpret any frozen result: C1-C6 were evaluated under the old two-contrast
+   ladder and their recorded verdicts stand unchanged (decision 62). Delta_Total
+   was already reported exploratorily under decision 56; that reading is consistent
+   with this structure. Multiplicity: the four contrasts plus the interaction form a
+   single Holm family of five per campaign, and the campaign itself still consumes
+   one step of the decision-64 alpha-spending sequence.
+66. **Discovery/Validation/Confirmation freeze (2026-08-18)** — Research Program v2
+   Block 1 executed. Three temporally separated universes are frozen in
+   `docs/DISCOVERY_VALIDATION_CONFIRMATION_PROTOCOL.md` and
+   `artifacts/rp2_block1_partition/partition.json`
+   (partition_sha256 93566e5771cb4eb7f4badf1bfc2c2cc9a491b45a4324fa141bd240f469b2a168):
+   D = 2024-08-02..2026-03-23 (389 sessions), V = 2026-03-24..2026-07-17 (80
+   sessions), C = the sealed Phase 8 one-shot cohort, which is recorded by protocol
+   reference and **never enumerated or read**. Because every retrospective window in
+   this project has already been observed, no retrospective sample can serve as C;
+   this is stated rather than worked around. Selection of models, targets, horizons
+   and features happens only in D and V. Every retrospective analysis produced by
+   Research Program v2 Blocks 2-11 carries the label
+   `EXPLORATORY_MECHANISM_DISCOVERY`, which is what makes them compatible with the
+   decision-52 moratorium. Disclosed limitation: the first ten Phase 8 sessions
+   (2026-07-20..07-31) coincide with the already-read C2 holdout window, so only
+   2026-08-03..08-28 is strictly unobserved.

@@ -1,0 +1,72 @@
+{
+  "block": 1,
+  "data_root": "D:/MDS650",
+  "generated_at_utc": "2026-08-18T13:28:20.350678+00:00",
+  "inventory_rows": 3717,
+  "inventory_sha256": "ded4bc9b5d0e4c748e11e259d7b44660d3000e5b78fee6951376e76dd7a50abd",
+  "label": "EXPLORATORY_MECHANISM_DISCOVERY",
+  "partition_sha256": "93566e5771cb4eb7f4badf1bfc2c2cc9a491b45a4324fa141bd240f469b2a168",
+  "program": "docs/research_program_v2.md",
+  "roles": {
+    "BURNED": {
+      "assets": [],
+      "bytes": 0,
+      "files": 0,
+      "first_session": null,
+      "last_session": null,
+      "sessions": 0
+    },
+    "D": {
+      "assets": [
+        "AAPL",
+        "AMZN",
+        "META",
+        "MSFT",
+        "NVDA",
+        "QQQ",
+        "SPY",
+        "TSLA"
+      ],
+      "bytes": 65841282038,
+      "files": 3112,
+      "first_session": "2024-08-02",
+      "last_session": "2026-03-23",
+      "sessions": 389
+    },
+    "V": {
+      "assets": [
+        "AAPL",
+        "AMZN",
+        "META",
+        "MSFT",
+        "NVDA",
+        "QQQ",
+        "SPY",
+        "TSLA",
+        "__ALL__"
+      ],
+      "bytes": 18801936873,
+      "files": 605,
+      "first_session": "2026-03-24",
+      "last_session": "2026-07-17",
+      "sessions": 80
+    }
+  },
+  "sealed_confirmation": {
+    "first_session": "2026-07-20",
+    "last_session": "2026-08-28",
+    "name": "phase8_one_shot",
+    "note": "Sealed at capture time; its first ten sessions (2026-07-20..07-31) coincide with the already-read Phase 5 prospective holdout C2, so only 2026-08-03..08-28 is genuinely unobserved. Recorded here, never read.",
+    "protocol_document": "docs/phase8_one_shot_protocol_v1.md",
+    "reads_permitted": 1,
+    "sessions": 30
+  },
+  "sources": [
+    "b1v3_confirmation",
+    "b1_diagnostic_replication",
+    "independent_replication_30",
+    "phase6",
+    "development_2026"
+  ],
+  "temporal_ordering_D_lt_V_lt_C": true
+}
