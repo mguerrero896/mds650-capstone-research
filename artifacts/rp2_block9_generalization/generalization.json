@@ -5,7 +5,16 @@
         "delta_b1": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 0.8626741476896245,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "AAPL": 0.0011998791539299188,
+              "AMZN": 0.0019734672270370394,
+              "META": 0.0012608249638449349,
+              "MSFT": 0.001550184844813722,
+              "NVDA": 0.00019904063019401567,
+              "TSLA": 0.0010472594097150159
+            },
+            "max_absolute_contribution_share": 0.4607039371237479,
             "overall": 0.001205473094140948,
             "per_group": {
               "AAPL": 0.001233494038818944,
@@ -21,7 +30,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": 1.0,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "phase6_180d": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": 0.001205473094140948,
             "per_group": {
               "phase6_180d": 0.001205473094140948
@@ -32,7 +45,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": 1.3038791532569787,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "expiry_week": -0.0005633105568870932,
+              "ordinary_week": 0.004494622814392981
+            },
+            "max_absolute_contribution_share": 0.8109920178762015,
             "overall": 0.001205473094140948,
             "per_group": {
               "expiry_week": 0.004494622814392981,
@@ -44,7 +62,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": 1.2082613782679794,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "liq_high": -0.0003765750133198928,
+              "liq_low": 0.0029111032452907573,
+              "liq_mid": 0.001081961961779095
+            },
+            "max_absolute_contribution_share": 0.54431475495262,
             "overall": 0.001205473094140948,
             "per_group": {
               "liq_high": 0.004369700861374906,
@@ -57,7 +81,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": 1.2855194616171979,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "market_down": -0.0006919199718209677,
+              "market_up": 0.0030835071419469534
+            },
+            "max_absolute_contribution_share": 0.8182607334582256,
             "overall": 0.001205473094140948,
             "per_group": {
               "market_down": 0.0030835071419469534,
@@ -69,7 +98,15 @@
           },
           "month": {
             "groups": 5,
-            "max_single_group_contribution": 1.8233314591140208,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "2025-11": 0.0013663802359903325,
+              "2025-12": 0.001348426498163608,
+              "2026-01": 0.0015501626861919807,
+              "2026-02": 0.0030654642395737297,
+              "2026-03": -0.001200501172877282
+            },
+            "max_absolute_contribution_share": 0.5980535045283476,
             "overall": 0.001205473094140948,
             "per_group": {
               "2025-11": 0.00044737299033828883,
@@ -88,7 +125,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": 1.5305218466969597,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "close": -0.0009998524976751425,
+              "midday": 0.0026279659329991544,
+              "open": 0.0019043091441623649
+            },
+            "max_absolute_contribution_share": 0.7425955362337079,
             "overall": 0.001205473094140948,
             "per_group": {
               "close": 0.005119663117394287,
@@ -101,7 +144,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": 0.755493974889302,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "vol_high": 0.0020762737654093227,
+              "vol_low": 0.0010980290251018565,
+              "vol_mid": 0.0004421120249400148
+            },
+            "max_absolute_contribution_share": 0.5827052328146324,
             "overall": 0.001205473094140948,
             "per_group": {
               "vol_high": -0.0005362006582304349,
@@ -116,7 +165,16 @@
         "delta_b2_given_b0": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 10454339125779.625,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "AAPL": -0.001335153933849635,
+              "AMZN": -0.0003835302110428786,
+              "META": -0.0016385853132654812,
+              "MSFT": -0.0017269506680701455,
+              "NVDA": -0.0016056936604046334,
+              "TSLA": -0.00021774009832837716
+            },
+            "max_absolute_contribution_share": 0.3832407632577463,
             "overall": -0.0011520037126073676,
             "per_group": {
               "AAPL": -0.00023457484787365546,
@@ -132,7 +190,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": -41563141947161.21,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "phase6_180d": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": -0.0011520037126073676,
             "per_group": {
               "phase6_180d": -0.0011520037126073676
@@ -143,7 +205,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": 22263776680322.344,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "expiry_week": -0.0027204380968154276,
+              "ordinary_week": 0.0017645856130872905
+            },
+            "max_absolute_contribution_share": 0.7413916033466665,
             "overall": -0.0011520037126073676,
             "per_group": {
               "expiry_week": 0.0017645856130872905,
@@ -155,7 +222,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": 6131984450838.131,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "liq_high": -0.000517727473565662,
+              "liq_low": -0.0019830004323132936,
+              "liq_mid": -0.0009553177805117129
+            },
+            "max_absolute_contribution_share": 0.5408100595857089,
             "overall": -0.0011520037126073676,
             "per_group": {
               "liq_high": -0.002420608932769529,
@@ -168,7 +241,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": 8757347469122.515,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "market_down": -0.002803838492020043,
+              "market_up": 0.0004829774690669818
+            },
+            "max_absolute_contribution_share": 0.851765942512262,
             "overall": -0.0011520037126073676,
             "per_group": {
               "market_down": 0.0004829774690669818,
@@ -180,7 +258,15 @@
           },
           "month": {
             "groups": 5,
-            "max_single_group_contribution": 15710609090384.14,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "2025-11": -0.0007604681324937272,
+              "2025-12": -6.509042346868028e-05,
+              "2026-01": -0.0020292570520672247,
+              "2026-02": -0.0014950594565781477,
+              "2026-03": -0.0013986188106422837
+            },
+            "max_absolute_contribution_share": 0.5244272218001614,
             "overall": -0.0011520037126073676,
             "per_group": {
               "2025-11": -0.0029966897875388504,
@@ -199,7 +285,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": 9602839689285.61,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "close": -0.002217185146962206,
+              "midday": -0.0012094832453900272,
+              "open": -0.00016167256517006962
+            },
+            "max_absolute_contribution_share": 0.6143788904956774,
             "overall": -0.0011520037126073676,
             "per_group": {
               "close": 0.0007385663505065075,
@@ -212,7 +304,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": 5315098658831.98,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "vol_high": -0.00037536623050278865,
+              "vol_low": -0.0019490371115081157,
+              "vol_mid": -0.0011316409323596083
+            },
+            "max_absolute_contribution_share": 0.6233450180261544,
             "overall": -0.0011520037126073676,
             "per_group": {
               "vol_high": -0.002705343256683655,
@@ -227,7 +325,16 @@
         "delta_b2_given_b1": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 12794790273098.6,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "AAPL": -0.0017744327236769524,
+              "AMZN": -0.0014727328010160077,
+              "META": -0.001009001036345869,
+              "MSFT": -0.0011427755064465377,
+              "NVDA": -0.001545099681597227,
+              "TSLA": 0.00019822367713549595
+            },
+            "max_absolute_contribution_share": 0.5469093678936295,
             "overall": -0.0011245121508768464,
             "per_group": {
               "AAPL": 0.0021310443492835772,
@@ -243,7 +350,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": -40571273891485.75,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "phase6_180d": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": -0.0011245121508768464,
             "per_group": {
               "phase6_180d": -0.0011245121508768464
@@ -254,7 +365,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": -1322588891318.457,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "expiry_week": -0.0016728618617409979,
+              "ordinary_week": -0.00010482594050237433
+            },
+            "max_absolute_contribution_share": 0.9674008537455362,
             "overall": -0.0011245121508768464,
             "per_group": {
               "expiry_week": -0.00010482594050237433,
@@ -266,7 +382,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": 3556371253589.875,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "liq_high": -7.10357494059369e-05,
+              "liq_low": -0.0014679145084581274,
+              "liq_mid": -0.0018346004716698803
+            },
+            "max_absolute_contribution_share": 0.8150037254855146,
             "overall": -0.0011245121508768464,
             "per_group": {
               "liq_high": -0.003231552553719005,
@@ -279,7 +401,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": -5023095971341.768,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "market_down": -0.0019807309255108927,
+              "market_up": -0.0002770293388121425
+            },
+            "max_absolute_contribution_share": 0.876190824454346,
             "overall": -0.0011245121508768464,
             "per_group": {
               "market_down": -0.0002770293388121425,
@@ -291,7 +418,15 @@
           },
           "month": {
             "groups": 5,
-            "max_single_group_contribution": 50757485333261.16,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "2025-11": -0.000936179877176805,
+              "2025-12": 0.0008453941399483197,
+              "2026-01": -0.0016133869683833263,
+              "2026-02": -0.0007373127335499167,
+              "2026-03": -0.0030618465611085867
+            },
+            "max_absolute_contribution_share": 0.4218510700388768,
             "overall": -0.0011245121508768464,
             "per_group": {
               "2025-11": -0.0020118233951163,
@@ -310,7 +445,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": 21991156368219.227,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "close": -0.002711029607821856,
+              "midday": -4.518288355471304e-05,
+              "open": -0.0006708519113735276
+            },
+            "max_absolute_contribution_share": 0.4675765645333728,
             "overall": -0.0011245121508768464,
             "per_group": {
               "close": 0.0016913672026010788,
@@ -323,7 +464,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": 3554597527667.4756,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "vol_high": -0.00038327457383900026,
+              "vol_low": -0.001155736447666257,
+              "vol_mid": -0.001834526729270911
+            },
+            "max_absolute_contribution_share": 0.6575516403142851,
             "overall": -0.0011245121508768464,
             "per_group": {
               "vol_high": -0.002607048941205412,
@@ -338,7 +485,16 @@
         "delta_total": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 14.827913044918551,
+            "groups_whose_removal_flips_the_sign": 2,
+            "leave_one_group_out": {
+              "AAPL": -0.0005745535697470335,
+              "AMZN": 0.0005007344260210316,
+              "META": 0.0002518239274990651,
+              "MSFT": 0.0004074093383671835,
+              "NVDA": -0.0013460590514032121,
+              "TSLA": 0.0012454830868505117
+            },
+            "max_absolute_contribution_share": 0.3489969736911585,
             "overall": 8.096094326410064e-05,
             "per_group": {
               "AAPL": 0.003364538388102521,
@@ -354,7 +510,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": 1.0,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "phase6_180d": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": 8.096094326410064e-05,
             "per_group": {
               "phase6_180d": 8.096094326410064e-05
@@ -365,7 +525,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": 18.961403354497673,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "expiry_week": -0.002236172418628091,
+              "ordinary_week": 0.004389796873890608
+            },
+            "max_absolute_contribution_share": 0.5135417657693447,
             "overall": 8.096094326410064e-05,
             "per_group": {
               "expiry_week": 0.004389796873890608,
@@ -377,7 +542,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": 7.197629869168232,
+            "groups_whose_removal_flips_the_sign": 2,
+            "leave_one_group_out": {
+              "liq_high": -0.00044761076272582925,
+              "liq_low": 0.0014431887368326311,
+              "liq_mid": -0.0007526385098907834
+            },
+            "max_absolute_contribution_share": 0.4780383838462487,
             "overall": 8.096094326410064e-05,
             "per_group": {
               "liq_high": 0.0011381483076559021,
@@ -390,7 +561,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": 17.42116808202216,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "market_down": -0.002672650897331861,
+              "market_up": 0.0028064778031348116
+            },
+            "max_absolute_contribution_share": 0.5147743937527347,
             "overall": 8.096094326410064e-05,
             "per_group": {
               "market_down": 0.0028064778031348116,
@@ -402,7 +578,15 @@
           },
           "month": {
             "groups": 5,
-            "max_single_group_contribution": 44.525419046102456,
+            "groups_whose_removal_flips_the_sign": 2,
+            "leave_one_group_out": {
+              "2025-11": 0.000430200358813527,
+              "2025-12": 0.0021938206381119287,
+              "2026-01": -6.322428219134504e-05,
+              "2026-02": 0.0023281515060238132,
+              "2026-03": -0.004262347733985869
+            },
+            "max_absolute_contribution_share": 0.4878287384670872,
             "overall": 8.096094326410064e-05,
             "per_group": {
               "2025-11": -0.0015644504047780123,
@@ -421,7 +605,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": 30.317467742252777,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "close": -0.003710882105496999,
+              "midday": 0.002582783049444442,
+              "open": 0.0012334572327888376
+            },
+            "max_absolute_contribution_share": 0.5083843471270278,
             "overall": 8.096094326410064e-05,
             "per_group": {
               "close": 0.006811030319995368,
@@ -434,7 +624,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": 12.465890794084494,
+            "groups_whose_removal_flips_the_sign": 2,
+            "leave_one_group_out": {
+              "vol_high": 0.0016929991915703231,
+              "vol_low": -5.7707422564399055e-05,
+              "vol_mid": -0.0013924147043308968
+            },
+            "max_absolute_contribution_share": 0.48140028333060847,
             "overall": 8.096094326410064e-05,
             "per_group": {
               "vol_high": -0.003143249599435847,
@@ -489,7 +685,16 @@
         "delta_b1": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 2874221506297.065,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "AAPL": -0.0017973744766038209,
+              "AMZN": -0.0014058768225837298,
+              "META": -0.0018482760080791442,
+              "MSFT": -0.0016218945864019665,
+              "NVDA": -0.0016812191394688122,
+              "TSLA": -0.0022134949851453827
+            },
+            "max_absolute_contribution_share": 0.3077620227820567,
             "overall": -0.001761304983867636,
             "per_group": {
               "AAPL": -0.0015806271034477899,
@@ -505,7 +710,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": -63546122512960.44,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "phase6_180d": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": -0.001761304983867636,
             "per_group": {
               "phase6_180d": -0.001761304983867636
@@ -516,7 +725,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": -15658491746979.395,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "expiry_week": -0.0020410719787733803,
+              "ordinary_week": -0.001241062990170357
+            },
+            "max_absolute_contribution_share": 0.7535885569763002,
             "overall": -0.001761304983867636,
             "per_group": {
               "expiry_week": -0.001241062990170357,
@@ -528,7 +742,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": -9057111901023.191,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "liq_high": -0.0014338720336487506,
+              "liq_low": -0.0015846628300611272,
+              "liq_mid": -0.0022653727440210057
+            },
+            "max_absolute_contribution_share": 0.45726155017059833,
             "overall": -0.001761304983867636,
             "per_group": {
               "liq_high": -0.00241619811139257,
@@ -541,7 +761,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": 1872989577703.393,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "market_down": -0.0036451279930163165,
+              "market_up": 0.00010329746181907088
+            },
+            "max_absolute_contribution_share": 0.9721662790837776,
             "overall": -0.001761304983867636,
             "per_group": {
               "market_down": 0.00010329746181907088,
@@ -553,7 +778,15 @@
           },
           "month": {
             "groups": 5,
-            "max_single_group_contribution": 41209007539676.3,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "2025-11": -0.0005279033864792736,
+              "2025-12": -0.0007388327385214507,
+              "2026-01": -0.0032548483408892867,
+              "2026-02": -0.0007425877563519023,
+              "2026-03": -0.0035119729801742234
+            },
+            "max_absolute_contribution_share": 0.23610212655381918,
             "overall": -0.001761304983867636,
             "per_group": {
               "2025-11": -0.007572370100453428,
@@ -572,7 +805,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": 32691843543736.242,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "close": -0.0041702979614636525,
+              "midday": -0.00036485972357992665,
+              "open": -0.0008599116842788329
+            },
+            "max_absolute_contribution_share": 0.4279867788683293,
             "overall": -0.001761304983867636,
             "per_group": {
               "close": 0.0025143703694613323,
@@ -585,7 +824,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": 21700155342798.703,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "vol_high": 0.00016637355232954266,
+              "vol_low": -0.0019061928415243729,
+              "vol_mid": -0.0035441016860998267
+            },
+            "max_absolute_contribution_share": 0.6316050339120034,
             "overall": -0.001761304983867636,
             "per_group": {
               "vol_high": -0.005616822348839425,
@@ -600,7 +845,16 @@
         "delta_b2_given_b0": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 14930008526545.2,
+            "groups_whose_removal_flips_the_sign": 2,
+            "leave_one_group_out": {
+              "AAPL": -0.00046268973341084444,
+              "AMZN": 0.000901763813106403,
+              "META": -0.0003201869839258563,
+              "MSFT": -0.0005908413244613858,
+              "NVDA": 0.00021394573396891613,
+              "TSLA": -0.00021552671605464847
+            },
+            "max_absolute_contribution_share": 0.39612354343614287,
             "overall": -7.945683105286187e-05,
             "per_group": {
               "AAPL": 0.0018402183085900984,
@@ -616,7 +870,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": -2866723007556.203,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "phase6_180d": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": -7.945683105286187e-05,
             "per_group": {
               "phase6_180d": -7.945683105286187e-05
@@ -627,7 +885,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": 10041744609159.281,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "expiry_week": -0.0005501861570503571,
+              "ordinary_week": 0.0007958900379772751
+            },
+            "max_absolute_contribution_share": 0.5624552614011161,
             "overall": -7.945683105286187e-05,
             "per_group": {
               "expiry_week": 0.0007958900379772751,
@@ -639,7 +902,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": 25392195094245.52,
+            "groups_whose_removal_flips_the_sign": 2,
+            "leave_one_group_out": {
+              "liq_high": 0.00045327168817775723,
+              "liq_low": -0.0011749092841261315,
+              "liq_mid": 0.0004832215595123159
+            },
+            "max_absolute_contribution_share": 0.47328365772131453,
             "overall": -7.945683105286187e-05,
             "per_group": {
               "liq_high": -0.0011449581675782292,
@@ -652,7 +921,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": 16104498460366.408,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "market_down": -0.0010570692298391155,
+              "market_up": 0.0008881810313460406
+            },
+            "max_absolute_contribution_share": 0.5408647778779324,
             "overall": -7.945683105286187e-05,
             "per_group": {
               "market_down": 0.0008881810313460406,
@@ -664,7 +938,15 @@
           },
           "month": {
             "groups": 5,
-            "max_single_group_contribution": 30143676233309.375,
+            "groups_whose_removal_flips_the_sign": 3,
+            "leave_one_group_out": {
+              "2025-11": 0.0007543764838120107,
+              "2025-12": 0.00016636222272051597,
+              "2026-01": -0.001169586140903684,
+              "2026-02": 0.00014086235075559968,
+              "2026-03": -0.000321101118924084
+            },
+            "max_absolute_contribution_share": 0.3936426898936958,
             "overall": -7.945683105286187e-05,
             "per_group": {
               "2025-11": -0.004007990488961417,
@@ -683,7 +965,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": 43453581376736.92,
+            "groups_whose_removal_flips_the_sign": 2,
+            "leave_one_group_out": {
+              "close": -0.0020072064992977044,
+              "midday": 0.0011125477215080965,
+              "open": 0.0005765238476109503
+            },
+            "max_absolute_contribution_share": 0.484033647517569,
             "overall": -7.945683105286187e-05,
             "per_group": {
               "close": 0.0033420690183615536,
@@ -696,7 +984,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": 21887637482290.68,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "vol_high": 0.0010288456797013785,
+              "vol_low": -0.0010292017499520575,
+              "vol_mid": -0.00023805390841569781
+            },
+            "max_absolute_contribution_share": 0.527374929056418,
             "overall": -7.945683105286187e-05,
             "per_group": {
               "vol_high": -0.0022961540114263645,
@@ -711,7 +1005,16 @@
         "delta_b2_given_b1": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 0.46233686747717556,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "AAPL": 0.003309033012317305,
+              "AMZN": 0.0038360854376661532,
+              "META": 0.003670207413401771,
+              "MSFT": 0.0028198971926408985,
+              "NVDA": 0.002090046716471846,
+              "TSLA": 0.003671866464009759
+            },
+            "max_absolute_contribution_share": 0.4623368674771757,
             "overall": 0.003233060429135843,
             "per_group": {
               "AAPL": 0.002852501561850287,
@@ -727,7 +1030,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": 1.0,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "phase6_180d": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": 0.003233060429135843,
             "per_group": {
               "phase6_180d": 0.003233060429135843
@@ -738,7 +1045,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": 0.6240781898956732,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "expiry_week": 0.001868963442565601,
+              "ordinary_week": 0.005769673213388123
+            },
+            "max_absolute_contribution_share": 0.6240781898956732,
             "overall": 0.003233060429135843,
             "per_group": {
               "expiry_week": 0.005769673213388123,
@@ -750,7 +1062,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": 0.5708193155272795,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "liq_high": 0.0020813217879266746,
+              "liq_low": 0.0037238375537693084,
+              "liq_mid": 0.0038940423496995977
+            },
+            "max_absolute_contribution_share": 0.5708193155272796,
             "overall": 0.003233060429135843,
             "per_group": {
               "liq_high": 0.005536633482271058,
@@ -763,7 +1081,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": 0.5554635400681118,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "market_down": 0.0028892414559924355,
+              "market_up": 0.0035733714323900176
+            },
+            "max_absolute_contribution_share": 0.5554635400681119,
             "overall": 0.003233060429135843,
             "per_group": {
               "market_down": 0.0035733714323900176,
@@ -775,7 +1098,15 @@
           },
           "month": {
             "groups": 5,
-            "max_single_group_contribution": 0.8670407644766753,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "2025-11": 0.0044016378391420865,
+              "2025-12": 0.0035065094553442385,
+              "2026-01": 0.004097928047767317,
+              "2026-02": 0.0037260498035743207,
+              "2026-03": 0.0005199513244036377
+            },
+            "max_absolute_contribution_share": 0.6957774911738884,
             "overall": 0.003233060429135843,
             "per_group": {
               "2025-11": -0.00227259112644526,
@@ -794,7 +1125,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": 0.8451630449493205,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "close": 0.0007826427848366576,
+              "midday": 0.004520545803392878,
+              "open": 0.004266539162355202
+            },
+            "max_absolute_contribution_share": 0.8451630449493206,
             "overall": 0.003233060429135843,
             "per_group": {
               "close": 0.007582259627527803,
@@ -807,7 +1144,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": 0.5735393492681586,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "vol_high": 0.0044600156167283085,
+              "vol_low": 0.003171032171311678,
+              "vol_mid": 0.0020681309205516827
+            },
+            "max_absolute_contribution_share": 0.5735393492681589,
             "overall": 0.003233060429135843,
             "per_group": {
               "vol_high": 0.0007790480287399026,
@@ -822,7 +1165,16 @@
         "delta_total": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 0.7689677443987746,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "AAPL": 0.0015116585357134837,
+              "AMZN": 0.0024302086150824248,
+              "META": 0.0018219314053226272,
+              "MSFT": 0.0011980026062389324,
+              "NVDA": 0.0004088275770030353,
+              "TSLA": 0.0014583714788643759
+            },
+            "max_absolute_contribution_share": 0.4229438527685118,
             "overall": 0.0014717554452682066,
             "per_group": {
               "AAPL": 0.0012718744584024977,
@@ -838,7 +1190,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": 1.0,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "phase6_180d": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": 0.0014717554452682066,
             "per_group": {
               "phase6_180d": 0.0014717554452682066
@@ -849,7 +1205,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": 1.076046161643495,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "expiry_week": -0.00017210853620777883,
+              "ordinary_week": 0.004528610223217765
+            },
+            "max_absolute_contribution_share": 0.9339929968229191,
             "overall": 0.0014717554452682066,
             "per_group": {
               "expiry_week": 0.004528610223217765,
@@ -861,7 +1222,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": 0.70671815573381,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "liq_high": 0.0006474497542779243,
+              "liq_low": 0.002139174723708181,
+              "liq_mid": 0.0016286696056785936
+            },
+            "max_absolute_contribution_share": 0.70671815573381,
             "overall": 0.0014717554452682066,
             "per_group": {
               "liq_high": 0.003120435370878491,
@@ -874,7 +1241,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": 1.2554808368427077,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "market_down": -0.0007558865370238812,
+              "market_up": 0.0036766688942090906
+            },
+            "max_absolute_contribution_share": 0.8309150779320833,
             "overall": 0.0014717554452682066,
             "per_group": {
               "market_down": 0.0036766688942090906,
@@ -886,7 +1258,15 @@
           },
           "month": {
             "groups": 5,
-            "max_single_group_contribution": 2.6807329873478123,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "2025-11": 0.003873734452662813,
+              "2025-12": 0.0027676767168227892,
+              "2026-01": 0.0008430797068780291,
+              "2026-02": 0.002983462047222419,
+              "2026-03": -0.0029920216557705855
+            },
+            "max_absolute_contribution_share": 0.49050775982024336,
             "overall": 0.0014717554452682066,
             "per_group": {
               "2025-11": -0.009844961226898687,
@@ -905,7 +1285,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": 2.472273194056254,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "close": -0.003387655176626994,
+              "midday": 0.004155686079812951,
+              "open": 0.003406627478076371
+            },
+            "max_absolute_contribution_share": 0.626757287354213,
             "overall": 0.0014717554452682066,
             "per_group": {
               "close": 0.010096629996989138,
@@ -918,7 +1304,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": 1.6685853617872008,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "vol_high": 0.004626389169057852,
+              "vol_low": 0.0012648393297873058,
+              "vol_mid": -0.0014759707655481432
+            },
+            "max_absolute_contribution_share": 0.5228504529505513,
             "overall": 0.0014717554452682066,
             "per_group": {
               "vol_high": -0.004837774320099522,
@@ -973,7 +1365,16 @@
         "delta_b1": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 0.3941119421221936,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "AAPL": 0.003189997602929487,
+              "AMZN": 0.003393084946485277,
+              "META": 0.003205700395128844,
+              "MSFT": 0.00325165469509102,
+              "NVDA": 0.002206307792254236,
+              "TSLA": 0.0029224770503597478
+            },
+            "max_absolute_contribution_share": 0.3941119421221936,
             "overall": 0.0030285991268819714,
             "per_group": {
               "AAPL": 0.0022201282462808686,
@@ -989,7 +1390,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": 1.0,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "phase6_180d": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": 0.0030285991268819714,
             "per_group": {
               "phase6_180d": 0.0030285991268819714
@@ -1000,7 +1405,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": 0.6387482441430237,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "expiry_week": 0.0016824463361548936,
+              "ordinary_week": 0.005531843699762903
+            },
+            "max_absolute_contribution_share": 0.6387482441430237,
             "overall": 0.0030285991268819714,
             "per_group": {
               "expiry_week": 0.005531843699762903,
@@ -1012,7 +1422,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": 0.45746535976434244,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "liq_high": 0.002464645750344393,
+              "liq_low": 0.0038694588831501404,
+              "liq_mid": 0.002751727705774266
+            },
+            "max_absolute_contribution_share": 0.45746535976434244,
             "overall": 0.0030285991268819714,
             "per_group": {
               "liq_high": 0.004156552774467068,
@@ -1025,7 +1441,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": 0.7363667524900396,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "market_down": 0.0016051092634178931,
+              "market_up": 0.0044375651857607385
+            },
+            "max_absolute_contribution_share": 0.7363667524900396,
             "overall": 0.0030285991268819714,
             "per_group": {
               "market_down": 0.0044375651857607385,
@@ -1037,7 +1458,15 @@
           },
           "month": {
             "groups": 5,
-            "max_single_group_contribution": 0.7697922337015912,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "2025-11": 0.0035243912140953734,
+              "2025-12": 0.0039311218972268155,
+              "2026-01": 0.0027026168014537004,
+              "2026-02": 0.004232582994521615,
+              "2026-03": 0.0008433194581139257
+            },
+            "max_absolute_contribution_share": 0.6291652397788606,
             "overall": 0.0030285991268819714,
             "per_group": {
               "2025-11": 0.0006927175217457892,
@@ -1056,7 +1485,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": 0.858218697233108,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "close": 0.0006713297556571294,
+              "midday": 0.004251513540028531,
+              "open": 0.004036495299286309
+            },
+            "max_absolute_contribution_share": 0.8582186972331082,
             "overall": 0.0030285991268819714,
             "per_group": {
               "close": 0.007212471244998851,
@@ -1069,7 +1504,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": 0.4801263637345354,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "vol_high": 0.004281590632690149,
+              "vol_low": 0.002442481848463826,
+              "vol_mid": 0.0023617005317507684
+            },
+            "max_absolute_contribution_share": 0.4801263637345353,
             "overall": 0.0030285991268819714,
             "per_group": {
               "vol_high": 0.0005225119250522645,
@@ -1084,7 +1525,16 @@
         "delta_b2_given_b0": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 19869636226148.613,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "AAPL": -0.0008460902930449431,
+              "AMZN": 0.00025960191836653374,
+              "META": -0.0015898503501670337,
+              "MSFT": -0.0018045191430685879,
+              "NVDA": -0.0012506776431988051,
+              "TSLA": -0.000498150813192523
+            },
+            "max_absolute_contribution_share": 0.39431363365310423,
             "overall": -0.0009557993537021622,
             "per_group": {
               "AAPL": -0.0015053496533800194,
@@ -1100,7 +1550,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": -34484284882220.31,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "phase6_180d": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": -0.0009557993537021622,
             "per_group": {
               "phase6_180d": -0.0009557993537021622
@@ -1111,7 +1565,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": 20077743656094.684,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "expiry_week": -0.0023255489105069894,
+              "ordinary_week": 0.001591324693357746
+            },
+            "max_absolute_contribution_share": 0.731004757037583,
             "overall": -0.0009557993537021622,
             "per_group": {
               "expiry_week": 0.001591324693357746,
@@ -1123,7 +1582,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": -4009383356305.156,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "liq_high": -0.0008352973790267166,
+              "liq_low": -0.0012670423052517522,
+              "liq_mid": -0.0007650713167087623
+            },
+            "max_absolute_contribution_share": 0.4663580687942917,
             "overall": -0.0009557993537021622,
             "per_group": {
               "liq_high": -0.0011968133231740148,
@@ -1136,7 +1601,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": 3472013843458.832,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "market_down": -0.0021149104990070286,
+              "market_up": 0.00019148543147247033
+            },
+            "max_absolute_contribution_share": 0.9161922456372189,
             "overall": -0.0009557993537021622,
             "per_group": {
               "market_down": 0.00019148543147247033,
@@ -1148,7 +1618,15 @@
           },
           "month": {
             "groups": 5,
-            "max_single_group_contribution": 20346576867940.734,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "2025-11": -0.00041998261683202107,
+              "2025-12": -0.0006359345558680048,
+              "2026-01": -0.001942703435025547,
+              "2026-02": -0.0014342306735657348,
+              "2026-03": -0.00039608337596894547
+            },
+            "max_absolute_contribution_share": 0.2565833741278019,
             "overall": -0.0009557993537021622,
             "per_group": {
               "2025-11": -0.0034802536393961853,
@@ -1167,7 +1645,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": -2334866497705.2104,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "close": -0.0013931368195395893,
+              "midday": -0.0010540031386829048,
+              "open": -0.00048378377994284165
+            },
+            "max_absolute_contribution_share": 0.6331107501206041,
             "overall": -0.0009557993537021622,
             "per_group": {
               "close": -0.000179577487902262,
@@ -1180,7 +1664,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": 13974828327760.154,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "vol_high": -0.0003236666345097253,
+              "vol_low": -0.0020147643942283575,
+              "vol_mid": -0.000529011058686972
+            },
+            "max_absolute_contribution_share": 0.42763808698860634,
             "overall": -0.0009557993537021622,
             "per_group": {
               "vol_high": -0.0022201173559253185,
@@ -1195,7 +1685,16 @@
         "delta_b2_given_b1": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 15282901638313.262,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "AAPL": -0.0008367158790311037,
+              "AMZN": -0.0002076429490836301,
+              "META": -6.993473329095301e-05,
+              "MSFT": -0.0006169025625894439,
+              "NVDA": -0.0007949679794882086,
+              "TSLA": 0.0008844086894381206
+            },
+            "max_absolute_contribution_share": 0.4245003174937028,
             "overall": -0.0002738803299300757,
             "per_group": {
               "AAPL": 0.002545453304182755,
@@ -1211,7 +1710,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": -9881328423547.203,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "phase6_180d": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": -0.0002738803299300757,
             "per_group": {
               "phase6_180d": -0.0002738803299300757
@@ -1222,7 +1725,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": 12786994956191.623,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "expiry_week": -0.0009661718259201612,
+              "ordinary_week": 0.001013473484678737
+            },
+            "max_absolute_contribution_share": 0.6393490298116074,
             "overall": -0.0002738803299300757,
             "per_group": {
               "expiry_week": 0.001013473484678737,
@@ -1234,7 +1742,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": 8414484337594.249,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "liq_high": 0.000343654695399132,
+              "liq_low": -0.0004046553498415209,
+              "liq_mid": -0.0007606457723003961
+            },
+            "max_absolute_contribution_share": 0.6794104440284007,
             "overall": -0.0002738803299300757,
             "per_group": {
               "liq_high": -0.001509001730582281,
@@ -1247,7 +1761,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": 11149737062951.193,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "market_down": -0.001171842953501888,
+              "market_up": 0.0006149204204142506
+            },
+            "max_absolute_contribution_share": 0.653528309437954,
             "overall": -0.0002738803299300757,
             "per_group": {
               "market_down": 0.0006149204204142506,
@@ -1259,7 +1778,15 @@
           },
           "month": {
             "groups": 5,
-            "max_single_group_contribution": 54934566650239.7,
+            "groups_whose_removal_flips_the_sign": 2,
+            "leave_one_group_out": {
+              "2025-11": -4.137162996094305e-05,
+              "2025-12": 0.001187981255743184,
+              "2026-01": -0.0007359022031553366,
+              "2026-02": 0.0004954740343286007,
+              "2026-03": -0.002172988302058029
+            },
+            "max_absolute_contribution_share": 0.38815331115653634,
             "overall": -0.0002738803299300757,
             "per_group": {
               "2025-11": -0.0013693249917127743,
@@ -1278,7 +1805,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": 47165062922951.305,
+            "groups_whose_removal_flips_the_sign": 2,
+            "leave_one_group_out": {
+              "close": -0.0024720020516747617,
+              "midday": 0.001240139763637704,
+              "open": 0.00033835155471685483
+            },
+            "max_absolute_contribution_share": 0.4525900080139082,
             "overall": -0.0002738803299300757,
             "per_group": {
               "close": 0.003627523682737371,
@@ -1291,7 +1824,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": 12656472003834.918,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "vol_high": 0.000952372207826988,
+              "vol_low": -0.0008370308138439557,
+              "vol_mid": -0.0009370057966732677
+            },
+            "max_absolute_contribution_share": 0.5887074704377109,
             "overall": -0.0002738803299300757,
             "per_group": {
               "vol_high": -0.0027264873722276507,
@@ -1306,7 +1845,16 @@
         "delta_total": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 0.5738893323075704,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "AAPL": 0.0023532817238983827,
+              "AMZN": 0.0031854419974016467,
+              "META": 0.0031357656618378905,
+              "MSFT": 0.002634752132501575,
+              "NVDA": 0.001411339812766027,
+              "TSLA": 0.0038068857397978695
+            },
+            "max_absolute_contribution_share": 0.4418801791629818,
             "overall": 0.0027547187969518957,
             "per_group": {
               "AAPL": 0.004765581550463623,
@@ -1322,7 +1870,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": 1.0,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "phase6_180d": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": 0.0027547187969518957,
             "per_group": {
               "phase6_180d": 0.0027547187969518957
@@ -1333,7 +1885,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": 0.8309120095800777,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "expiry_week": 0.000716274510234733,
+              "ordinary_week": 0.006545317184441638
+            },
+            "max_absolute_contribution_share": 0.8309120095800776,
             "overall": 0.0027547187969518957,
             "per_group": {
               "expiry_week": 0.006545317184441638,
@@ -1345,7 +1902,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": 0.5181336284873126,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "liq_high": 0.0028083004457435255,
+              "liq_low": 0.0034648035333086197,
+              "liq_mid": 0.0019910819334738694
+            },
+            "max_absolute_contribution_share": 0.5181336284873125,
             "overall": 0.0027547187969518957,
             "per_group": {
               "liq_high": 0.0026475510438847875,
@@ -1358,7 +1921,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": 0.9217624902012884,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "market_down": 0.0004332663099160051,
+              "market_up": 0.0050524856061749885
+            },
+            "max_absolute_contribution_share": 0.9217624902012885,
             "overall": 0.0027547187969518957,
             "per_group": {
               "market_down": 0.0050524856061749885,
@@ -1370,7 +1938,15 @@
           },
           "month": {
             "groups": 5,
-            "max_single_group_contribution": 1.3990578542229088,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "2025-11": 0.0034830195841344305,
+              "2025-12": 0.005119103152969999,
+              "2026-01": 0.001966714598298362,
+              "2026-02": 0.004728057028850216,
+              "2026-03": -0.0013296688439441038
+            },
+            "max_absolute_contribution_share": 0.5218217591767017,
             "overall": 0.0027547187969518957,
             "per_group": {
               "2025-11": -0.0006766074699669853,
@@ -1389,7 +1965,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": 1.4181020228359442,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "close": -0.0018006722960176324,
+              "midday": 0.0054916533036662345,
+              "open": 0.004374846854003164
+            },
+            "max_absolute_contribution_share": 0.7723008922557103,
             "overall": 0.0027547187969518957,
             "per_group": {
               "close": 0.010839994927736223,
@@ -1402,7 +1984,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": 0.6552063122248032,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "vol_high": 0.005233962840517136,
+              "vol_low": 0.00160545103461987,
+              "vol_mid": 0.0014246947350775015
+            },
+            "max_absolute_contribution_share": 0.4272990684095233,
             "overall": 0.0027547187969518957,
             "per_group": {
               "vol_high": -0.002203975447175387,
@@ -1465,7 +2053,16 @@
         "delta_b1": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 9026392621078.973,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "AAPL": -0.0010303958657247438,
+              "AMZN": -0.0032268073139043725,
+              "META": -0.0015414026861156403,
+              "MSFT": -0.0020383185892578048,
+              "NVDA": -0.0036247204222296507,
+              "TSLA": -0.0022491193419898383
+            },
+            "max_absolute_contribution_share": 0.3131657028126962,
             "overall": -0.002284062851480796,
             "per_group": {
               "AAPL": -0.00849778614995766,
@@ -1481,7 +2078,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": -28420594060975.543,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "gate3_dev80": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": -0.002284062851480796,
             "per_group": {
               "gate3_dev80": -0.002284062851480796
@@ -1492,7 +2093,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": 1974952326917.3572,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "expiry_week": -0.0036977550350234677,
+              "ordinary_week": 0.0004676657179534353
+            },
+            "max_absolute_contribution_share": 0.9389891288263109,
             "overall": -0.002284062851480796,
             "per_group": {
               "expiry_week": 0.0004676657179534353,
@@ -1504,7 +2110,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": 409137180037.8039,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "liq_high": -0.0034755553033168594,
+              "liq_low": -0.0003566012381313013,
+              "liq_mid": -0.003019943299257305
+            },
+            "max_absolute_contribution_share": 0.8708472032503166,
             "overall": -0.002284062851480796,
             "per_group": {
               "liq_high": 9.86348071450829e-05,
@@ -1517,7 +2129,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": -9939018270902.04,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "market_down": -0.003023323374787093,
+              "market_up": -0.001570145066493213
+            },
+            "max_absolute_contribution_share": 0.6502881590167267,
             "overall": -0.002284062851480796,
             "per_group": {
               "market_down": -0.001570145066493213,
@@ -1529,7 +2146,12 @@
           },
           "month": {
             "groups": 2,
-            "max_single_group_contribution": -6619766156930.828,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "2026-06": -0.0014494780286688916,
+              "2026-07": -0.002768007605896993
+            },
+            "max_absolute_contribution_share": 0.7670785437233185,
             "overall": -0.002284062851480796,
             "per_group": {
               "2026-06": -0.002768007605896993,
@@ -1545,7 +2167,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": -2088796682265.3481,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "close": -0.0020087652876423423,
+              "midday": -0.0018291137059466027,
+              "open": -0.002929009719545072
+            },
+            "max_absolute_contribution_share": 0.4906005500269823,
             "overall": -0.002284062851480796,
             "per_group": {
               "close": -0.0027764765352537,
@@ -1558,7 +2186,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": -727197218659.5193,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "vol_high": -0.0033385650201707084,
+              "vol_low": -0.0014345392112999637,
+              "vol_mid": -0.0020791090310874954
+            },
+            "max_absolute_contribution_share": 0.581307036291952,
             "overall": -0.002284062851480796,
             "per_group": {
               "vol_high": -0.00017531273352447427,
@@ -1573,7 +2207,16 @@
         "delta_b2_given_b0": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 4.921079718967818,
+            "groups_whose_removal_flips_the_sign": 2,
+            "leave_one_group_out": {
+              "AAPL": 0.00028910836654466614,
+              "AMZN": 3.2850261306697274e-07,
+              "META": 0.0021051847493802687,
+              "MSFT": 0.00013370186851458042,
+              "NVDA": -0.0008168914152992537,
+              "TSLA": -0.0006940684384144083
+            },
+            "max_absolute_contribution_share": 0.4559319286479563,
             "overall": 0.00017297204521738186,
             "per_group": {
               "AAPL": -0.00040265048758429564,
@@ -1589,7 +2232,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": 1.0,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "gate3_dev80": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": 0.00017297204521738186,
             "per_group": {
               "gate3_dev80": 0.00017297204521738186
@@ -1600,7 +2247,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": 1.5639991679527054,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "expiry_week": 0.00040951114127794896,
+              "ordinary_week": -0.0002874474124235987
+            },
+            "max_absolute_contribution_share": 0.7349625897556271,
             "overall": 0.00017297204521738186,
             "per_group": {
               "expiry_week": -0.0002874474124235987,
@@ -1612,7 +2264,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": 5.465106836672671,
+            "groups_whose_removal_flips_the_sign": 2,
+            "leave_one_group_out": {
+              "liq_high": -0.0011585545469503414,
+              "liq_low": 0.0023629524562683037,
+              "liq_mid": -0.000685378295625932
+            },
+            "max_absolute_contribution_share": 0.47095352202493956,
             "overall": 0.00017297204521738186,
             "per_group": {
               "liq_high": 0.002835704225070628,
@@ -1625,7 +2283,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": 9.637000627399967,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "market_down": -0.0030409520836774204,
+              "market_up": 0.0032767189962337995
+            },
+            "max_absolute_contribution_share": 0.5273612764401374,
             "overall": 0.00017297204521738186,
             "per_group": {
               "market_down": 0.0032767189962337995,
@@ -1637,7 +2300,12 @@
           },
           "month": {
             "groups": 2,
-            "max_single_group_contribution": 3.624481806305099,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "2026-06": -0.0012368401549642414,
+              "2026-07": 0.0009904698001982702
+            },
+            "max_absolute_contribution_share": 0.5800132679587088,
             "overall": 0.00017297204521738186,
             "per_group": {
               "2026-06": 0.0009904698001982702,
@@ -1653,7 +2321,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": 9.08671189399121,
+            "groups_whose_removal_flips_the_sign": 2,
+            "leave_one_group_out": {
+              "close": 0.0027556600792678822,
+              "midday": -0.0021989840191920735,
+              "open": -3.152194254192889e-05
+            },
+            "max_absolute_contribution_share": 0.4742755408036731,
             "overall": 0.00017297204521738186,
             "per_group": {
               "close": -0.004446578201254389,
@@ -1666,7 +2340,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": 3.885925026900769,
+            "groups_whose_removal_flips_the_sign": 2,
+            "leave_one_group_out": {
+              "vol_high": -0.0007488066208434103,
+              "vol_low": 0.001417286910328264,
+              "vol_mid": -0.00014952527531305392
+            },
+            "max_absolute_contribution_share": 0.4496198288600427,
             "overall": 0.00017297204521738186,
             "per_group": {
               "vol_high": 0.002016307154902597,
@@ -1681,7 +2361,16 @@
         "delta_b2_given_b1": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 1.7164296329876152,
+            "groups_whose_removal_flips_the_sign": 2,
+            "leave_one_group_out": {
+              "AAPL": 2.734820146555174e-05,
+              "AMZN": -6.372050046972066e-06,
+              "META": 0.001376876414259385,
+              "MSFT": 0.00027527851041133375,
+              "NVDA": 0.0002627456670080355,
+              "TSLA": -0.00024463732326895904
+            },
+            "max_absolute_contribution_share": 0.4301037390782205,
             "overall": 0.0002835087295024834,
             "per_group": {
               "AAPL": 0.0015531526295955386,
@@ -1697,7 +2386,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": 1.0,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "gate3_dev80": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": 0.0002835087295024834,
             "per_group": {
               "gate3_dev80": 0.0002835087295024834
@@ -1708,7 +2401,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": 1.3541719429456252,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "expiry_week": 0.0005811570770172952,
+              "ordinary_week": -0.0002958588803890041
+            },
+            "max_absolute_contribution_share": 0.7926811189066587,
             "overall": 0.0002835087295024834,
             "per_group": {
               "expiry_week": -0.0002958588803890041,
@@ -1720,7 +2418,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": 1.8167903313221216,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "liq_high": -0.00034736474189381674,
+              "liq_low": 0.001082437394633334,
+              "liq_mid": 0.00011547379314422803
+            },
+            "max_absolute_contribution_share": 0.4441522885102582,
             "overall": 0.0002835087295024834,
             "per_group": {
               "liq_high": 0.0015451035812942663,
@@ -1733,7 +2437,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": 4.53631711964726,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "market_down": -0.0020407431368005937,
+              "market_up": 0.0025280824512577305
+            },
+            "max_absolute_contribution_share": 0.5619376507319247,
             "overall": 0.0002835087295024834,
             "per_group": {
               "market_down": 0.0025280824512577305,
@@ -1745,7 +2454,12 @@
           },
           "month": {
             "groups": 2,
-            "max_single_group_contribution": 2.6434935909323327,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "2026-06": -0.001269487824924203,
+              "2026-07": 0.001184033775727303
+            },
+            "max_absolute_contribution_share": 0.6166320258934203,
             "overall": 0.0002835087295024834,
             "per_group": {
               "2026-06": 0.001184033775727303,
@@ -1761,7 +2475,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": 4.616134239806806,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "close": 0.0022464226650940698,
+              "midday": -0.001611703547682316,
+              "open": 0.00020949193906435716
+            },
+            "max_absolute_contribution_share": 0.5036957649959065,
             "overall": 0.0002835087295024834,
             "per_group": {
               "close": -0.0032274765058082394,
@@ -1774,7 +2494,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": 1.2081391417763,
+            "groups_whose_removal_flips_the_sign": 2,
+            "leave_one_group_out": {
+              "vol_high": -4.384860924171705e-05,
+              "vol_low": 0.0009829264284014834,
+              "vol_mid": -8.850678248932587e-05
+            },
+            "max_absolute_contribution_share": 0.3619733457803509,
             "overall": 0.0002835087295024834,
             "per_group": {
               "vol_high": 0.0009381444876710343,
@@ -1789,7 +2515,16 @@
         "delta_total": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 9839666256418.361,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "AAPL": -0.0010030476642591917,
+              "AMZN": -0.0032331793639513453,
+              "META": -0.00016452627185625505,
+              "MSFT": -0.0017630400788464715,
+              "NVDA": -0.003361974755221614,
+              "TSLA": -0.0024937566652587975
+            },
+            "max_absolute_contribution_share": 0.36373644158647567,
             "overall": -0.002000554121978312,
             "per_group": {
               "AAPL": -0.006944633520362123,
@@ -1805,7 +2540,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": -24892894939776.137,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "gate3_dev80": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": -0.002000554121978312,
             "per_group": {
               "gate3_dev80": -0.002000554121978312
@@ -1816,7 +2555,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": 725540275034.5942,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "expiry_week": -0.0031165979580061723,
+              "ordinary_week": 0.0001718068375644315
+            },
+            "max_absolute_contribution_share": 0.9724589678837857,
             "overall": -0.002000554121978312,
             "per_group": {
               "expiry_week": 0.0001718068375644315,
@@ -1828,7 +2572,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": 6818226835246.423,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "liq_high": -0.003822920045210676,
+              "liq_low": 0.0007258361565020326,
+              "liq_mid": -0.002904469506113076
+            },
+            "max_absolute_contribution_share": 0.8023417725188655,
             "overall": -0.002000554121978312,
             "per_group": {
               "liq_high": 0.0016437383884393498,
@@ -1841,7 +2591,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": 6063743645559.3955,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "market_down": -0.00506406651158769,
+              "market_up": 0.0009579373847645174
+            },
+            "max_absolute_contribution_share": 0.8362052663924425,
             "overall": -0.002000554121978312,
             "per_group": {
               "market_down": 0.0009579373847645174,
@@ -1853,7 +2608,12 @@
           },
           "month": {
             "groups": 2,
-            "max_single_group_contribution": -12417517053359.668,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "2026-06": -0.0027189658535930953,
+              "2026-07": -0.0015839738301696895
+            },
+            "max_absolute_contribution_share": 0.5011621957429377,
             "overall": -0.002000554121978312,
             "per_group": {
               "2026-06": -0.0015839738301696895,
@@ -1869,7 +2629,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": 2341173622696.749,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "close": 0.00023765737745172697,
+              "midday": -0.0034408172536289187,
+              "open": -0.002719517780480715
+            },
+            "max_absolute_contribution_share": 0.9058129871427362,
             "overall": -0.002000554121978312,
             "per_group": {
               "close": -0.00600395304106194,
@@ -1882,7 +2648,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": 3164226116199.93,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "vol_high": -0.0033824136294124253,
+              "vol_low": -0.00045161278289848096,
+              "vol_mid": -0.0021676158135768213
+            },
+            "max_absolute_contribution_share": 0.6773175670164203,
             "overall": -0.002000554121978312,
             "per_group": {
               "vol_high": 0.0007628317541465597,
@@ -1937,7 +2709,16 @@
         "delta_b1": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 51982927645562.766,
+            "groups_whose_removal_flips_the_sign": 2,
+            "leave_one_group_out": {
+              "AAPL": 0.004762427075194873,
+              "AMZN": 2.491850293539122e-05,
+              "META": -0.005345118883376804,
+              "MSFT": -0.0009296447117657958,
+              "NVDA": -0.002084529992687243,
+              "TSLA": -0.007195466289076826
+            },
+            "max_absolute_contribution_share": 0.3707915348000531,
             "overall": -0.0017964666548975262,
             "per_group": {
               "AAPL": -0.03430521997293329,
@@ -1953,7 +2734,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": -22353434586889.918,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "gate3_dev80": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": -0.0017964666548975262,
             "per_group": {
               "gate3_dev80": -0.0017964666548975262
@@ -1964,7 +2749,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": -137229106857.5393,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "expiry_week": -1.66945385471459e-05,
+              "ordinary_week": -0.005260763788783416
+            },
+            "max_absolute_contribution_share": 0.9938609386256007,
             "overall": -0.0017964666548975262,
             "per_group": {
               "expiry_week": -0.005260763788783416,
@@ -1976,7 +2766,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": 13975823368521.885,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "liq_high": 0.0007173789157248963,
+              "liq_low": -0.001727338074057389,
+              "liq_mid": -0.0043791294546060506
+            },
+            "max_absolute_contribution_share": 0.5626487811552682,
             "overall": -0.0017964666548975262,
             "per_group": {
               "liq_high": -0.006823551758155239,
@@ -1989,7 +2785,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": 12675101438224.322,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "market_down": 0.002073466618391023,
+              "market_up": -0.005533733969212361
+            },
+            "max_absolute_contribution_share": 0.7342948648734501,
             "overall": -0.0017964666548975262,
             "per_group": {
               "market_down": -0.005533733969212361,
@@ -2001,7 +2802,12 @@
           },
           "month": {
             "groups": 2,
-            "max_single_group_contribution": -741017580955.4254,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "2026-06": -0.0001622547801522718,
+              "2026-07": -0.002744085450220224
+            },
+            "max_absolute_contribution_share": 0.9668499452254185,
             "overall": -0.0017964666548975262,
             "per_group": {
               "2026-06": -0.002744085450220224,
@@ -2017,7 +2823,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": 6021169166734.198,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "close": 0.0004689852313958776,
+              "midday": -0.003584915193130021,
+              "open": -0.0022330630202365095
+            },
+            "max_absolute_contribution_share": 0.75870967572339,
             "overall": -0.0017964666548975262,
             "per_group": {
               "close": -0.005848589358731606,
@@ -2030,7 +2842,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": 21936508770043.734,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "vol_high": -0.0053393542323006225,
+              "vol_low": 0.000640804211865497,
+              "vol_mid": -0.0006909832153170788
+            },
+            "max_absolute_contribution_share": 0.41779235691599537,
             "overall": -0.0017964666548975262,
             "per_group": {
               "vol_high": 0.005288454380434844,
@@ -2045,7 +2863,16 @@
         "delta_b2_given_b0": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 1.0386171207055799,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "AAPL": 0.007562330882253926,
+              "AMZN": 0.005667781552356424,
+              "META": -0.00016037996899383013,
+              "MSFT": 0.0034732803269048947,
+              "NVDA": 0.003986048103625286,
+              "TSLA": 0.0004069476887561544
+            },
+            "max_absolute_contribution_share": 0.3123538925190405,
             "overall": 0.003486210276409785,
             "per_group": {
               "AAPL": -0.016716830773331828,
@@ -2061,7 +2888,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": 1.0,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "gate3_dev80": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": 0.003486210276409785,
             "per_group": {
               "gate3_dev80": 0.003486210276409785
@@ -2072,7 +2903,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": 0.7260897277982304,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "expiry_week": 0.00144549030050141,
+              "ordinary_week": 0.007458438124377308
+            },
+            "max_absolute_contribution_share": 0.7260897277982303,
             "overall": 0.003486210276409785,
             "per_group": {
               "expiry_week": 0.007458438124377308,
@@ -2084,7 +2920,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": 1.3041853616941357,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "liq_high": 0.005375663050397491,
+              "liq_low": -0.0015907451220932318,
+              "liq_mid": 0.006673328679297263
+            },
+            "max_absolute_contribution_share": 0.8108736019185154,
             "overall": 0.003486210276409785,
             "per_group": {
               "liq_high": -0.00029223976221799127,
@@ -2097,7 +2939,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": 1.3894083738420395,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "market_down": 0.009859484215919525,
+              "market_up": -0.0026685801804974874
+            },
+            "max_absolute_contribution_share": 0.7810857277181432,
             "overall": 0.003486210276409785,
             "per_group": {
               "market_down": -0.0026685801804974874,
@@ -2109,7 +2956,12 @@
           },
           "month": {
             "groups": 2,
-            "max_single_group_contribution": 0.6683394035582063,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "2026-06": 0.00634811425957065,
+              "2026-07": 0.0018266984060319683
+            },
+            "max_absolute_contribution_share": 0.6683394035582065,
             "overall": 0.003486210276409785,
             "per_group": {
               "2026-06": 0.0018266984060319683,
@@ -2125,7 +2977,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": 1.2863181289375585,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "close": -0.0015562172191719722,
+              "midday": 0.006346973781674346,
+              "open": 0.005444015693325139
+            },
+            "max_absolute_contribution_share": 0.8179374744135558,
             "overall": 0.003486210276409785,
             "per_group": {
               "close": 0.012505397600981282,
@@ -2138,7 +2996,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": 1.137077320936582,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "vol_high": 0.006387962757707903,
+              "vol_low": -0.000716849352694148,
+              "vol_mid": 0.004787360564626909
+            },
+            "max_absolute_contribution_share": 0.7879750525904266,
             "overall": 0.003486210276409785,
             "per_group": {
               "vol_high": -0.0023165951315863285,
@@ -2153,7 +3017,16 @@
         "delta_b2_given_b1": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 39548912986025.45,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "AAPL": 0.0015809777426370377,
+              "AMZN": -0.0029841435504505305,
+              "META": -0.009809138540238519,
+              "MSFT": -0.006971140492990802,
+              "NVDA": -0.006254304945710294,
+              "TSLA": -0.005864225232371621
+            },
+            "max_absolute_contribution_share": 0.4831032577790291,
             "overall": -0.005055656920900578,
             "per_group": {
               "AAPL": -0.03794972839350396,
@@ -2169,7 +3042,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": -62907539066765.89,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "gate3_dev80": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": -0.005055656920900578,
             "per_group": {
               "gate3_dev80": -0.005055656920900578
@@ -2180,7 +3057,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": 25798450695019.98,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "expiry_week": -0.010791482939390008,
+              "ordinary_week": 0.00610903402676296
+            },
+            "max_absolute_contribution_share": 0.7746947577569986,
             "overall": -0.005055656920900578,
             "per_group": {
               "expiry_week": 0.00610903402676296,
@@ -2192,7 +3074,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": 37966266330979.57,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "liq_high": -0.0030359319023169993,
+              "liq_low": -0.01216079631075895,
+              "liq_mid": 2.9144454427822724e-05
+            },
+            "max_absolute_contribution_share": 0.45483498153245305,
             "overall": -0.005055656920900578,
             "per_group": {
               "liq_high": -0.009094620042682343,
@@ -2205,7 +3093,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": 14586192633854.828,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "market_down": 0.0023860940019392817,
+              "market_up": -0.012242295687301851
+            },
+            "max_absolute_contribution_share": 0.8415920436590364,
             "overall": -0.005055656920900578,
             "per_group": {
               "market_down": -0.012242295687301851,
@@ -2217,7 +3110,12 @@
           },
           "month": {
             "groups": 2,
-            "max_single_group_contribution": 28435631154620.223,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "2026-06": 0.006226326068451986,
+              "2026-07": -0.011597660007794068
+            },
+            "max_absolute_contribution_share": 0.7625988002221205,
             "overall": -0.005055656920900578,
             "per_group": {
               "2026-06": -0.011597660007794068,
@@ -2233,7 +3131,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": -12641909887198.303,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "close": -0.0034226517661780755,
+              "midday": -0.006350679618391354,
+              "open": -0.005365213037608115
+            },
+            "max_absolute_contribution_share": 0.5657724948217154,
             "overall": -0.005055656920900578,
             "per_group": {
               "close": -0.007976547584244433,
@@ -2246,7 +3150,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": 20035119271779.45,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "vol_high": -0.0001141496148226494,
+              "vol_low": -0.00999911492930022,
+              "vol_mid": -0.005053706453716558
+            },
+            "max_absolute_contribution_share": 0.6016896989783131,
             "overall": -0.005055656920900578,
             "per_group": {
               "vol_high": -0.014937480234284473,
@@ -2261,7 +3171,16 @@
         "delta_total": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 73025245136006.25,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "AAPL": 0.006343404817831912,
+              "AMZN": -0.0029592250475151396,
+              "META": -0.01515425742361532,
+              "MSFT": -0.007900785204756598,
+              "NVDA": -0.008338834938397542,
+              "TSLA": -0.013059691521448445
+            },
+            "max_absolute_contribution_share": 0.4540878632362454,
             "overall": -0.006852123575798103,
             "per_group": {
               "AAPL": -0.07225494836643724,
@@ -2277,7 +3196,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": -85260973653655.8,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "gate3_dev80": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": -0.006852123575798103,
             "per_group": {
               "gate3_dev80": -0.006852123575798103
@@ -2288,7 +3211,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": 3582245214987.6177,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "expiry_week": -0.010808177477937156,
+              "ordinary_week": 0.0008482702379795447
+            },
+            "max_absolute_contribution_share": 0.9612417935846529,
             "overall": -0.006852123575798103,
             "per_group": {
               "expiry_week": 0.0008482702379795447,
@@ -2300,7 +3228,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": 29941101068395.72,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "liq_high": -0.0023185529865921047,
+              "liq_low": -0.013888134384816335,
+              "liq_mid": -0.004349985000178229
+            },
+            "max_absolute_contribution_share": 0.4549202969432342,
             "overall": -0.006852123575798103,
             "per_group": {
               "liq_high": -0.015918171800837582,
@@ -2313,7 +3247,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": 27261294072079.16,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "market_down": 0.004459560620330306,
+              "market_up": -0.017776029656514213
+            },
+            "max_absolute_contribution_share": 0.8049749647135873,
             "overall": -0.006852123575798103,
             "per_group": {
               "market_down": -0.017776029656514213,
@@ -2325,7 +3264,12 @@
           },
           "month": {
             "groups": 2,
-            "max_single_group_contribution": 27694613573664.797,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "2026-06": 0.006064071288299715,
+              "2026-07": -0.014341745458014298
+            },
+            "max_absolute_contribution_share": 0.80309581205041,
             "overall": -0.006852123575798103,
             "per_group": {
               "2026-06": -0.014341745458014298,
@@ -2341,7 +3285,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": -6620740720464.105,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "close": -0.0029536665347822,
+              "midday": -0.009935594811521375,
+              "open": -0.007598276057844625
+            },
+            "max_absolute_contribution_share": 0.7235169667443042,
             "overall": -0.006852123575798103,
             "per_group": {
               "close": -0.013825136942976034,
@@ -2354,7 +3304,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": -7633786252534.766,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "vol_high": -0.005453503847123269,
+              "vol_low": -0.009358310717434724,
+              "vol_mid": -0.005744689669033635
+            },
+            "max_absolute_contribution_share": 0.46943117732097484,
             "overall": -0.006852123575798103,
             "per_group": {
               "vol_high": -0.009649025853849627,
@@ -2409,7 +3365,16 @@
         "delta_b1": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 6463226514168.844,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "AAPL": -0.0010557482467467181,
+              "AMZN": -0.0023052338155221575,
+              "META": -0.00022267054028365772,
+              "MSFT": -0.001948618455208269,
+              "NVDA": -0.0025594645768559666,
+              "TSLA": -0.0015533161794617867
+            },
+            "max_absolute_contribution_share": 0.4275906033688201,
             "overall": -0.001605609742773459,
             "per_group": {
               "AAPL": -0.004330964424372729,
@@ -2425,7 +3390,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": -19978602029330.152,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "gate3_dev80": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": -0.001605609742773459,
             "per_group": {
               "gate3_dev80": -0.001605609742773459
@@ -2436,7 +3405,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": -408302562120.79877,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "expiry_week": -0.0023808150203417705,
+              "ordinary_week": -9.668542792346644e-05
+            },
+            "max_absolute_contribution_share": 0.9795630063844618,
             "overall": -0.001605609742773459,
             "per_group": {
               "expiry_week": -9.668542792346644e-05,
@@ -2448,7 +3422,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": 3642833343063.0293,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "liq_high": -0.002778818683143946,
+              "liq_low": 0.0008094674250044503,
+              "liq_mid": -0.002847328275360798
+            },
+            "max_absolute_contribution_share": 0.799012233665817,
             "overall": -0.001605609742773459,
             "per_group": {
               "liq_high": 0.0007405253007109173,
@@ -2461,7 +3441,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": -5766801594306.202,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "market_down": -0.0023248487542980446,
+              "market_up": -0.0009110271081052452
+            },
+            "max_absolute_contribution_share": 0.7113510952447981,
             "overall": -0.001605609742773459,
             "per_group": {
               "market_down": -0.0009110271081052452,
@@ -2473,7 +3458,12 @@
           },
           "month": {
             "groups": 2,
-            "max_single_group_contribution": 3086176173815.4624,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "2026-06": 0.0006757556763335806,
+              "2026-07": -0.0029284888526086355
+            },
+            "max_absolute_contribution_share": 0.8819860977412596,
             "overall": -0.001605609742773459,
             "per_group": {
               "2026-06": -0.0029284888526086355,
@@ -2489,7 +3479,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": -622768920868.3591,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "close": -0.00040231708692643314,
+              "midday": -0.0021971545520453116,
+              "open": -0.002153040390262713
+            },
+            "max_absolute_contribution_share": 0.8392834160245035,
             "overall": -0.001605609742773459,
             "per_group": {
               "close": -0.003757890936479222,
@@ -2502,7 +3498,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": 1715325881052.8208,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "vol_high": -0.0026153017372372474,
+              "vol_low": -0.0007782414003958581,
+              "vol_mid": -0.0014233080679838096
+            },
+            "max_absolute_contribution_share": 0.5776813619746346,
             "overall": -0.001605609742773459,
             "per_group": {
               "vol_high": 0.0004135308295691467,
@@ -2517,7 +3519,16 @@
         "delta_b2_given_b0": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 27.932381507342303,
+            "groups_whose_removal_flips_the_sign": 4,
+            "leave_one_group_out": {
+              "AAPL": 0.0006794336063946975,
+              "AMZN": -0.00038262456891366875,
+              "META": 0.0019017302451767592,
+              "MSFT": -0.00033132000777147326,
+              "NVDA": -0.0008770834026925309,
+              "TSLA": -0.0008465594935711279
+            },
+            "max_absolute_contribution_share": 0.36991937843312733,
             "overall": 2.7038549845302895e-05,
             "per_group": {
               "AAPL": -0.003206517417369841,
@@ -2533,7 +3544,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": 1.0,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "gate3_dev80": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": 2.7038549845302895e-05,
             "per_group": {
               "gate3_dev80": 2.7038549845302895e-05
@@ -2544,7 +3559,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": 16.10044848810986,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "expiry_week": -0.0006180541475780781,
+              "ordinary_week": 0.001282700868770284
+            },
+            "max_absolute_contribution_share": 0.5160251803139214,
             "overall": 2.7038549845302895e-05,
             "per_group": {
               "expiry_week": 0.001282700868770284,
@@ -2556,7 +3576,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": 34.522022367615364,
+            "groups_whose_removal_flips_the_sign": 2,
+            "leave_one_group_out": {
+              "liq_high": -0.0013596349435843953,
+              "liq_low": 0.002425266352034669,
+              "liq_mid": -0.0009843938261384778
+            },
+            "max_absolute_contribution_share": 0.49578381703241686,
             "overall": 2.7038549845302895e-05,
             "per_group": {
               "liq_high": 0.0028000512374054157,
@@ -2569,7 +3595,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": 50.10025333084588,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "market_down": -0.0027023265841491216,
+              "market_up": 0.0026628377700835195
+            },
+            "max_absolute_contribution_share": 0.5050402968374463,
             "overall": 2.7038549845302895e-05,
             "per_group": {
               "market_down": 0.0026628377700835195,
@@ -2581,7 +3612,12 @@
           },
           "month": {
             "groups": 2,
-            "max_single_group_contribution": 15.518535188048768,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "2026-06": 0.001143215779490022,
+              "2026-07": -0.0006201911870500037
+            },
+            "max_absolute_contribution_share": 0.5166460974302567,
             "overall": 2.7038549845302895e-05,
             "per_group": {
               "2026-06": -0.0006201911870500037,
@@ -2597,7 +3633,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": 30.604580305877665,
+            "groups_whose_removal_flips_the_sign": 2,
+            "leave_one_group_out": {
+              "close": 0.0015533245933440855,
+              "midday": -0.0012583935568752477,
+              "open": -0.00019621993608023955
+            },
+            "max_absolute_contribution_share": 0.4931219961112136,
             "overall": 2.7038549845302895e-05,
             "per_group": {
               "close": -0.002702967930021076,
@@ -2610,7 +3652,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": 24.515466637797747,
+            "groups_whose_removal_flips_the_sign": 2,
+            "leave_one_group_out": {
+              "vol_high": -0.00044869931043634996,
+              "vol_low": 0.001483592720570409,
+              "vol_mid": -0.0009536595329811738
+            },
+            "max_absolute_contribution_share": 0.4930706118984292,
             "overall": 2.7038549845302895e-05,
             "per_group": {
               "vol_high": 0.0009783995795069013,
@@ -2625,7 +3673,16 @@
         "delta_b2_given_b1": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 26.76621376424916,
+            "groups_whose_removal_flips_the_sign": 4,
+            "leave_one_group_out": {
+              "AAPL": 0.0004302103782940238,
+              "AMZN": -0.0003200778394237511,
+              "META": 0.0010569490998328741,
+              "MSFT": -0.0002016722293618101,
+              "NVDA": -0.0003905446040966957,
+              "TSLA": -0.0004899395727129591
+            },
+            "max_absolute_contribution_share": 0.35670062840413713,
             "overall": 1.5787347701865777e-05,
             "per_group": {
               "AAPL": -0.0020382749111546245,
@@ -2641,7 +3698,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": 1.0,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "gate3_dev80": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": 1.5787347701865777e-05,
             "per_group": {
               "gate3_dev80": 1.5787347701865777e-05
@@ -2652,7 +3713,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": 35.34584538888574,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "expiry_week": -0.0008207987155808344,
+              "ordinary_week": 0.0016441883517709622
+            },
+            "max_absolute_contribution_share": 0.5071744564440883,
             "overall": 1.5787347701865777e-05,
             "per_group": {
               "expiry_week": 0.0016441883517709622,
@@ -2664,7 +3730,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": 26.551155414816716,
+            "groups_whose_removal_flips_the_sign": 2,
+            "leave_one_group_out": {
+              "liq_high": -0.000605101777024423,
+              "liq_low": 0.0008926794046822455,
+              "liq_mid": -0.00024018472595383378
+            },
+            "max_absolute_contribution_share": 0.49327857054013474,
             "overall": 1.5787347701865777e-05,
             "per_group": {
               "liq_high": 0.0012574159131803057,
@@ -2677,7 +3749,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": 46.717098025334685,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "market_down": -0.0014691242732534871,
+              "market_up": 0.0014497944154585908
+            },
+            "max_absolute_contribution_share": 0.5054092535161544,
             "overall": 1.5787347701865777e-05,
             "per_group": {
               "market_down": 0.0014497944154585908,
@@ -2689,7 +3766,12 @@
           },
           "month": {
             "groups": 2,
-            "max_single_group_contribution": 17.659105164399996,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "2026-06": 0.0007595772634064824,
+              "2026-07": -0.0004155088108840893
+            },
+            "max_absolute_contribution_share": 0.514569524319874,
             "overall": 1.5787347701865777e-05,
             "per_group": {
               "2026-06": -0.0004155088108840893,
@@ -2705,7 +3787,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": 42.04674876443111,
+            "groups_whose_removal_flips_the_sign": 2,
+            "leave_one_group_out": {
+              "close": 0.0011830585380777562,
+              "midday": -0.0010187370922157748,
+              "open": -0.00010965541408254612
+            },
+            "max_absolute_contribution_share": 0.49474403843172815,
             "overall": 1.5787347701865777e-05,
             "per_group": {
               "close": -0.0020720636990014018,
@@ -2718,7 +3806,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": 42.66663261984435,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "vol_high": 0.00016524265104885221,
+              "vol_low": 0.0008688693711267995,
+              "vol_mid": -0.0009866291332013507
+            },
+            "max_absolute_contribution_share": 0.5059288585421056,
             "overall": 1.5787347701865777e-05,
             "per_group": {
               "vol_high": -0.0002830872283018116,
@@ -2733,7 +3827,16 @@
         "delta_total": {
           "asset": {
             "groups": 6,
-            "max_single_group_contribution": 10694384786546.127,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "AAPL": -0.0006255378684526939,
+              "AMZN": -0.0026253116549459082,
+              "META": 0.0008342785595492166,
+              "MSFT": -0.0021502906845700786,
+              "NVDA": -0.002950009180952663,
+              "TSLA": -0.0020432557521747456
+            },
+            "max_absolute_contribution_share": 0.4465024809835794,
             "overall": -0.0015898223950715927,
             "per_group": {
               "AAPL": -0.006369239335527354,
@@ -2749,7 +3852,11 @@
           },
           "era": {
             "groups": 1,
-            "max_single_group_contribution": -19782160061875.83,
+            "groups_whose_removal_flips_the_sign": 0,
+            "leave_one_group_out": {
+              "gate3_dev80": null
+            },
+            "max_absolute_contribution_share": 1.0,
             "overall": -0.0015898223950715927,
             "per_group": {
               "gate3_dev80": -0.0015898223950715927
@@ -2760,7 +3867,12 @@
           },
           "expiration_week": {
             "groups": 2,
-            "max_single_group_contribution": 6535104847407.973,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "expiry_week": -0.003201613735922605,
+              "ordinary_week": 0.0015475029238474953
+            },
+            "max_absolute_contribution_share": 0.8010766073860829,
             "overall": -0.0015898223950715927,
             "per_group": {
               "expiry_week": 0.0015475029238474953,
@@ -2772,7 +3884,13 @@
           },
           "liquidity_regime": {
             "groups": 3,
-            "max_single_group_contribution": 8287460155220.792,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "liq_high": -0.00338392046016837,
+              "liq_low": 0.001702146829686696,
+              "liq_mid": -0.0030875130013146316
+            },
+            "max_absolute_contribution_share": 0.7059750146033289,
             "overall": -0.0015898223950715927,
             "per_group": {
               "liq_high": 0.001997941213891223,
@@ -2785,7 +3903,12 @@
           },
           "market_direction": {
             "groups": 2,
-            "max_single_group_contribution": 3410397055546.675,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "market_down": -0.0037939730275515305,
+              "market_up": 0.0005387673073533451
+            },
+            "max_absolute_contribution_share": 0.8718038217345079,
             "overall": -0.0015898223950715927,
             "per_group": {
               "market_down": 0.0005387673073533451,
@@ -2797,7 +3920,12 @@
           },
           "month": {
             "groups": 2,
-            "max_single_group_contribution": 6555165535792.868,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "2026-06": 0.0014353329397400632,
+              "2026-07": -0.003343997663492724
+            },
+            "max_absolute_contribution_share": 0.8007093622311783,
             "overall": -0.0015898223950715927,
             "per_group": {
               "2026-06": -0.003343997663492724,
@@ -2813,7 +3941,13 @@
           },
           "session_period": {
             "groups": 3,
-            "max_single_group_contribution": 5671622302450.667,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "close": 0.0007807414511513227,
+              "midday": -0.003215891644261086,
+              "open": -0.0022626958043452587
+            },
+            "max_absolute_contribution_share": 0.8067538488111098,
             "overall": -0.0015898223950715927,
             "per_group": {
               "close": -0.005829954635480624,
@@ -2826,7 +3960,13 @@
           },
           "volatility_regime": {
             "groups": 3,
-            "max_single_group_contribution": 541080058056.90466,
+            "groups_whose_removal_flips_the_sign": 1,
+            "leave_one_group_out": {
+              "vol_high": -0.0024500590861883955,
+              "vol_low": 9.062797073094127e-05,
+              "vol_mid": -0.0024099372011851593
+            },
+            "max_absolute_contribution_share": 0.9646824022325248,
             "overall": -0.0015898223950715927,
             "per_group": {
               "vol_high": 0.00013044360126733477,
@@ -2884,8 +4024,8 @@
     "train_rows": 18688
   },
   "block": 9,
-  "generalization_sha256": "e4052e78e8041e2ad4f4595093987a4f6fb48c7ede34983af6cf314437ebe808",
-  "generated_at_utc": "2026-08-18T14:22:08.261635+00:00",
+  "generalization_sha256": "7cc50e688cbf592671afab6c180d540b7676b91a29a561b44e0fd83ddb38c4b5",
+  "generated_at_utc": "2026-08-18T14:27:57.796422+00:00",
   "label": "EXPLORATORY_MECHANISM_DISCOVERY",
   "models": [
     "log_ols",

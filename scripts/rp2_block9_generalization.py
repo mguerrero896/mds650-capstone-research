@@ -128,15 +128,17 @@ def _summarise(values: FloatArray, labels: np.ndarray) -> dict[str, object]:
     sums = {group: float(np.sum(values[mask])) for group, mask in masks.items()}
     absolute = sum(abs(value) for value in sums.values())
     dominance = (
-        max(abs(value) for value in sums.values()) / absolute if absolute > 0.0 else float("nan")
+        max(abs(value) for value in sums.values()) / absolute if absolute > 0.0 else None
     )
-    jackknife = {
-        group: float(np.mean(values[~mask])) if (~mask).any() else float("nan")
+    # A single-group slice has nothing to leave out; emit null rather than NaN so the
+    # artifact stays JSON-compliant and hashable.
+    jackknife: dict[str, float | None] = {
+        group: float(np.mean(values[~mask])) if (~mask).any() else None
         for group, mask in masks.items()
     }
     flips = sum(
         1 for value in jackknife.values()
-        if np.isfinite(value) and np.sign(value) != np.sign(total) and total != 0.0
+        if value is not None and np.sign(value) != np.sign(total) and total != 0.0
     )
     return {
         "overall": total,
@@ -269,10 +271,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                     continue
                 asset_block = slices.get("asset")
                 assert isinstance(asset_block, dict)
+                dominance = asset_block["max_absolute_contribution_share"] or float("nan")
                 print(
                     f"  {model_name:<12} {label:<20} overall={asset_block['overall']:+.5f} "
                     f"assets+={asset_block['positive_groups']}/{asset_block['groups']} "
-                    f"dominance={asset_block['max_absolute_contribution_share']:.2f} "
+                    f"dominance={dominance:.2f} "
                     f"flips={asset_block['groups_whose_removal_flips_the_sign']}"
                 )
     return 0

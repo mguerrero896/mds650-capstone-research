@@ -1,0 +1,250 @@
+{
+  "D": {
+    "clusters": 92,
+    "nested_tests": {
+      "gamma_glm": {
+        "b1_over_b0": {
+          "clark_west_mean": 0.009883048103533227,
+          "clark_west_p_one_sided": 0.015320419256552453,
+          "clark_west_t": 2.195910743236816,
+          "giacomini_white_p": 1.646339122653479e-172,
+          "giacomini_white_wald": 803.0877720201573,
+          "unconditional_delta_qlike": 0.001205473094140948
+        },
+        "b2_over_b0": {
+          "clark_west_mean": 0.01955689389776318,
+          "clark_west_p_one_sided": 3.8728655336755045e-10,
+          "clark_west_t": 6.870288832735902,
+          "giacomini_white_p": 0.002213861984715653,
+          "giacomini_white_wald": 16.69640133380903,
+          "unconditional_delta_qlike": -0.0011520037126073676
+        },
+        "b2_over_b1": {
+          "clark_west_mean": -0.0011291033941104812,
+          "clark_west_p_one_sided": 0.6747354293866854,
+          "clark_west_t": -0.45453091396219764,
+          "giacomini_white_p": 1.487274938215634e-112,
+          "giacomini_white_wald": 526.1375890498083,
+          "unconditional_delta_qlike": -0.0011245121508768464
+        },
+        "total_over_b0": {
+          "clark_west_mean": 0.009902614076393177,
+          "clark_west_p_one_sided": 0.015365710393439898,
+          "clark_west_t": 2.19468827341377,
+          "giacomini_white_p": 4.285528944441359e-26,
+          "giacomini_white_wald": 125.12803191168192,
+          "unconditional_delta_qlike": 8.096094326410064e-05
+        }
+      },
+      "lightgbm": {
+        "b1_over_b0": {
+          "clark_west_mean": 0.01742617265499549,
+          "clark_west_p_one_sided": 7.724536648311387e-06,
+          "clark_west_t": 4.567419343969966,
+          "giacomini_white_p": 0.023400605179306103,
+          "giacomini_white_wald": 11.299082528048471,
+          "unconditional_delta_qlike": -0.001761304983867636
+        },
+        "b2_over_b0": {
+          "clark_west_mean": 0.011339043546216867,
+          "clark_west_p_one_sided": 5.1744431152142005e-11,
+          "clark_west_t": 7.303006058420239,
+          "giacomini_white_p": 0.04127390238485847,
+          "giacomini_white_wald": 9.950261770676473,
+          "unconditional_delta_qlike": -7.945683105286187e-05
+        },
+        "b2_over_b1": {
+          "clark_west_mean": 0.009668010361451372,
+          "clark_west_p_one_sided": 5.946866054915863e-07,
+          "clark_west_t": 5.205804587108427,
+          "giacomini_white_p": 0.30591382112592647,
+          "giacomini_white_wald": 4.823294036491046,
+          "unconditional_delta_qlike": 0.003233060429135843
+        },
+        "total_over_b0": {
+          "clark_west_mean": 0.022595376011133483,
+          "clark_west_p_one_sided": 2.7261765338786855e-08,
+          "clark_west_t": 5.927052334067802,
+          "giacomini_white_p": 0.19503309070811056,
+          "giacomini_white_wald": 6.055616921241707,
+          "unconditional_delta_qlike": 0.0014717554452682066
+        }
+      },
+      "log_ols": {
+        "b1_over_b0": {
+          "clark_west_mean": 0.010024933089413966,
+          "clark_west_p_one_sided": 0.00010827804327182796,
+          "clark_west_t": 3.8536046044625882,
+          "giacomini_white_p": 4.014317250806719e-27,
+          "giacomini_white_wald": 129.93823386959554,
+          "unconditional_delta_qlike": 0.0030285991268819714
+        },
+        "b2_over_b0": {
+          "clark_west_mean": 0.01598555111949826,
+          "clark_west_p_one_sided": 2.737631618257838e-10,
+          "clark_west_t": 6.9453577605118895,
+          "giacomini_white_p": 3.7832246643756264e-13,
+          "giacomini_white_wald": 64.20528518598164,
+          "unconditional_delta_qlike": -0.0009557993537021622
+        },
+        "b2_over_b1": {
+          "clark_west_mean": -0.0019908265637658953,
+          "clark_west_p_one_sided": 0.8734667849258334,
+          "clark_west_t": -1.150221360119241,
+          "giacomini_white_p": 6.703963350203383e-25,
+          "giacomini_white_wald": 119.53801671315843,
+          "unconditional_delta_qlike": -0.0002738803299300757
+        },
+        "total_over_b0": {
+          "clark_west_mean": 0.00964811106817372,
+          "clark_west_p_one_sided": 0.0014088115570596756,
+          "clark_west_t": 3.070466323478472,
+          "giacomini_white_p": 0.006292542376037124,
+          "giacomini_white_wald": 14.337399713050933,
+          "unconditional_delta_qlike": 0.0027547187969518957
+        }
+      }
+    },
+    "rows": 89889,
+    "status": "MEASURED",
+    "superior_predictive_ability": {
+      "benchmark": "log_ols|B0",
+      "best_mean_delta_qlike": 0.0030645808199922723,
+      "best_model": "lightgbm|B0+B1+B2",
+      "candidates": 9,
+      "reality_check_p_value": 0.13986013986013987,
+      "spa_p_value": 0.006993006993006993
+    },
+    "test_rows": 36079
+  },
+  "V": {
+    "clusters": 32,
+    "nested_tests": {
+      "gamma_glm": {
+        "b1_over_b0": {
+          "clark_west_mean": 0.0006629964182962809,
+          "clark_west_p_one_sided": 0.3914682003709704,
+          "clark_west_t": 0.27789712762360047,
+          "giacomini_white_p": 0.24077769768095594,
+          "giacomini_white_wald": 5.488097545857392,
+          "unconditional_delta_qlike": -0.002284062851480796
+        },
+        "b2_over_b0": {
+          "clark_west_mean": 0.006403200393248758,
+          "clark_west_p_one_sided": 0.0004446358441734342,
+          "clark_west_t": 3.6766669795511597,
+          "giacomini_white_p": 0.025633799515132626,
+          "giacomini_white_wald": 11.084204059764918,
+          "unconditional_delta_qlike": 0.00017297204521738186
+        },
+        "b2_over_b1": {
+          "clark_west_mean": 0.001730945009290471,
+          "clark_west_p_one_sided": 0.15917949164257927,
+          "clark_west_t": 1.0141555734634142,
+          "giacomini_white_p": 0.23443535900710877,
+          "giacomini_white_wald": 5.560814161642772,
+          "unconditional_delta_qlike": 0.0002835087295024834
+        },
+        "total_over_b0": {
+          "clark_west_mean": 0.00331520118990062,
+          "clark_west_p_one_sided": 0.14202734695073163,
+          "clark_west_t": 1.0901362491485707,
+          "giacomini_white_p": 0.24298024763895823,
+          "giacomini_white_wald": 5.463233388439023,
+          "unconditional_delta_qlike": -0.002000554121978312
+        }
+      },
+      "lightgbm": {
+        "b1_over_b0": {
+          "clark_west_mean": 0.034712044589918736,
+          "clark_west_p_one_sided": 3.461002386482185e-06,
+          "clark_west_t": 5.39482522705722,
+          "giacomini_white_p": 0.0795666431248254,
+          "giacomini_white_wald": 8.349999180261683,
+          "unconditional_delta_qlike": -0.0017964666548975262
+        },
+        "b2_over_b0": {
+          "clark_west_mean": 0.03184997031060155,
+          "clark_west_p_one_sided": 3.671200342036548e-08,
+          "clark_west_t": 7.002996837086376,
+          "giacomini_white_p": 0.14914155960640144,
+          "giacomini_white_wald": 6.75976177881934,
+          "unconditional_delta_qlike": 0.003486210276409785
+        },
+        "b2_over_b1": {
+          "clark_west_mean": 0.012702610937157743,
+          "clark_west_p_one_sided": 0.00010065724812485491,
+          "clark_west_t": 4.213171041059213,
+          "giacomini_white_p": 0.24477276007211496,
+          "giacomini_white_wald": 5.443141725733833,
+          "unconditional_delta_qlike": -0.005055656920900578
+        },
+        "total_over_b0": {
+          "clark_west_mean": 0.04110208733863108,
+          "clark_west_p_one_sided": 5.162837852863455e-06,
+          "clark_west_t": 5.2553934824895014,
+          "giacomini_white_p": 0.5110715031649185,
+          "giacomini_white_wald": 3.286516057440537,
+          "unconditional_delta_qlike": -0.006852123575798103
+        }
+      },
+      "log_ols": {
+        "b1_over_b0": {
+          "clark_west_mean": 0.00556166400994054,
+          "clark_west_p_one_sided": 0.0009723672834294209,
+          "clark_west_t": 3.385474120252445,
+          "giacomini_white_p": 0.4203387369000634,
+          "giacomini_white_wald": 3.8954592703851483,
+          "unconditional_delta_qlike": -0.001605609742773459
+        },
+        "b2_over_b0": {
+          "clark_west_mean": 0.005429574422280966,
+          "clark_west_p_one_sided": 0.0003926636165780738,
+          "clark_west_t": 3.72227924541802,
+          "giacomini_white_p": 0.006834693397857113,
+          "giacomini_white_wald": 14.148896399740313,
+          "unconditional_delta_qlike": 2.7038549845302895e-05
+        },
+        "b2_over_b1": {
+          "clark_west_mean": 0.0013262905572984896,
+          "clark_west_p_one_sided": 0.16727788518328682,
+          "clark_west_t": 0.9802409676359087,
+          "giacomini_white_p": 0.11245155938318546,
+          "giacomini_white_wald": 7.4832186663505516,
+          "unconditional_delta_qlike": 1.5787347701865777e-05
+        },
+        "total_over_b0": {
+          "clark_west_mean": 0.007623323942186587,
+          "clark_west_p_one_sided": 0.0009127489648252023,
+          "clark_west_t": 3.4093111629825987,
+          "giacomini_white_p": 0.10896709351845489,
+          "giacomini_white_wald": 7.562908053125907,
+          "unconditional_delta_qlike": -0.0015898223950715927
+        }
+      }
+    },
+    "rows": 31131,
+    "status": "MEASURED",
+    "superior_predictive_ability": {
+      "benchmark": "log_ols|B0",
+      "best_mean_delta_qlike": 0.0031669547298242375,
+      "best_model": "gamma_glm|B0+B2",
+      "candidates": 9,
+      "reality_check_p_value": 0.4935064935064935,
+      "spa_p_value": 0.024975024975024976
+    },
+    "test_rows": 12443
+  },
+  "alpha_budget": 0.004166666666666667,
+  "alpha_spending_step": 3,
+  "block": 10,
+  "generated_at_utc": "2026-08-18T14:25:24.497030+00:00",
+  "inference_sha256": "9a38a99fe63ddff127b3031cd393dcb9d9131fe7f542069cc9d2e3f983961623",
+  "label": "EXPLORATORY_MECHANISM_DISCOVERY",
+  "models": [
+    "log_ols",
+    "gamma_glm",
+    "lightgbm"
+  ],
+  "program": "docs/research_program_v2.md"
+}
