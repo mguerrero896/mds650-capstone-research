@@ -23,6 +23,13 @@ dependencies = [
   "scipy>=1.14,<2",
 ]
 
+[project.optional-dependencies]
+# The level-4 experiment (scripts/rp2_ext12_level4_and_tensor.py) needs a CUDA GPU and
+# cannot run in hermetic CI, so torch is not a required dependency. It is declared here
+# so the requirement is discoverable rather than hidden behind an ImportError:
+#     uv sync --extra gpu
+gpu = ["torch>=2.6,<3"]
+
 [dependency-groups]
 dev = [
   "coverage>=7.10,<8",
@@ -68,9 +75,9 @@ exclude = "(^|/)(tests|notebooks)/"
 module = "scipy.*"
 ignore_missing_imports = true
 
-# torch is a local-only optional dependency: the level-4 experiment needs a GPU and
-# cannot run in hermetic CI, so it is deliberately not a project dependency. These
-# overrides make the script type-check identically whether or not torch is installed.
+# torch lives in the optional "gpu" extra (see [project.optional-dependencies]) because
+# the level-4 experiment needs a CUDA GPU and cannot run in hermetic CI. These overrides
+# let the script type-check identically whether or not the extra is installed.
 [[tool.mypy.overrides]]
 module = "torch.*"
 ignore_missing_imports = true

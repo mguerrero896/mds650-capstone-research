@@ -27,8 +27,16 @@ from pathlib import Path
 import numpy as np
 import numpy.typing as npt
 import polars as pl
-import torch
-from torch import nn
+
+try:
+    import torch
+    from torch import nn
+except ModuleNotFoundError as error:  # pragma: no cover - explicit, actionable failure
+    raise SystemExit(
+        "RP2_EXT12_TORCH_MISSING: this experiment needs a CUDA GPU and PyTorch, which are "
+        "an optional extra rather than a project dependency. Install with: "
+        "uv sync --extra gpu"
+    ) from error
 
 from mds650.b1v3_confirmation import canonical_sha256
 from mds650.metrics import paired_day_bootstrap, qlike_losses
