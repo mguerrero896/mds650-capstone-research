@@ -1,0 +1,165 @@
+{
+  "b0_sha256": "e4a44706c283fb2a31896db8f7859ce6d90f193f307e9c1b644e610f2a258af3",
+  "block": 4,
+  "generated_at_utc": "2026-08-18T13:52:44.740523+00:00",
+  "label": "EXPLORATORY_MECHANISM_DISCOVERY",
+  "market_control_columns": [
+    "SPY_rv_30",
+    "SPY_ret_30",
+    "QQQ_rv_30",
+    "QQQ_ret_30"
+  ],
+  "origin_grid": {
+    "first": 30,
+    "last": 360,
+    "step": 5
+  },
+  "panel_columns": 30,
+  "panel_rows": 125136,
+  "program": "docs/research_program_v2.md",
+  "results": {
+    "D": {
+      "_meta": {
+        "market_control_columns": 4.0,
+        "market_control_rows": 70488.0,
+        "sessions": 236.0,
+        "test_rows": 37620.0,
+        "train_rows": 53856.0
+      },
+      "b0_core": {
+        "calibration_intercept": -0.3314771542454483,
+        "calibration_r2": 0.7481134648906201,
+        "calibration_slope": 0.9818162995101561,
+        "log_r2": 0.7643727636070609,
+        "qlike": 0.13382240592948985,
+        "well_calibrated": 0.0
+      },
+      "b0_core_on_market_rows": {
+        "calibration_intercept": 0.020240551274643206,
+        "calibration_r2": 0.7622027949521224,
+        "calibration_slope": 1.011249623546284,
+        "log_r2": 0.7871539819017006,
+        "qlike": 0.1280089280116873,
+        "well_calibrated": 1.0
+      },
+      "b0_market": {
+        "calibration_intercept": -0.3836371497846581,
+        "calibration_r2": 0.7513224079616162,
+        "calibration_slope": 0.9763983656081647,
+        "log_r2": 0.777207821796196,
+        "qlike": 0.14071973764835688,
+        "well_calibrated": 0.0
+      },
+      "ewma": {
+        "calibration_intercept": 0.06355226212980054,
+        "calibration_r2": 0.5186620994205511,
+        "calibration_slope": 1.026663592176761,
+        "log_r2": 0.4907164771573017,
+        "qlike": 0.2524290999812804,
+        "well_calibrated": 1.0
+      },
+      "garch11_intraday": {
+        "alpha": 0.1097329610840532,
+        "beta": 0.8892670389158452,
+        "calibration_intercept": -0.4776739587335698,
+        "calibration_r2": 0.6625876178328176,
+        "calibration_slope": 0.9932010129623514,
+        "log_r2": 0.5152854117174317,
+        "omega": 4.205065039188006e-09,
+        "persistence": 0.9989999999998984,
+        "qlike": 0.1955805018409491,
+        "well_calibrated": 0.0
+      },
+      "har_simple": {
+        "calibration_intercept": 0.11430292767496107,
+        "calibration_r2": 0.7305342978109858,
+        "calibration_slope": 1.0208435678255212,
+        "log_r2": 0.7476838065894905,
+        "qlike": 0.1412294303499389,
+        "well_calibrated": 1.0
+      },
+      "intraday_mean": {
+        "calibration_intercept": -0.11747846811562368,
+        "calibration_r2": 0.18554996576769178,
+        "calibration_slope": 1.0053254275633756,
+        "log_r2": 0.20581302057285822,
+        "qlike": 0.4069767731688444,
+        "well_calibrated": 1.0
+      },
+      "persistence": {
+        "calibration_intercept": -2.7488923817974578,
+        "calibration_r2": 0.69983442762125,
+        "calibration_slope": 0.7723571365862192,
+        "log_r2": 0.6376574400682573,
+        "qlike": 0.1899298371512211,
+        "well_calibrated": 0.0
+      }
+    },
+    "V": {
+      "_meta": {
+        "market_control_columns": 4.0,
+        "market_control_rows": 0.0,
+        "sessions": 80.0,
+        "test_rows": 12672.0,
+        "train_rows": 19008.0
+      },
+      "b0_core": {
+        "calibration_intercept": 0.30151927000618334,
+        "calibration_r2": 0.6384634894306169,
+        "calibration_slope": 1.0333139862823457,
+        "log_r2": 0.6869124292544353,
+        "qlike": 0.18144936428915448,
+        "well_calibrated": 0.0
+      },
+      "ewma": {
+        "calibration_intercept": -0.0926648786755169,
+        "calibration_r2": 0.3159431295355808,
+        "calibration_slope": 1.0156235671507265,
+        "log_r2": 0.3283296828289808,
+        "qlike": 0.27922518411953506,
+        "well_calibrated": 1.0
+      },
+      "garch11_intraday": {
+        "alpha": 0.11198897910825245,
+        "beta": 0.8814707261331679,
+        "calibration_intercept": -0.8127752258225429,
+        "calibration_r2": 0.5256426506815074,
+        "calibration_slope": 0.9613625887516867,
+        "log_r2": 0.4011585683378167,
+        "omega": 9.519990052980497e-09,
+        "persistence": 0.9934597052414204,
+        "qlike": 0.2265514675055494,
+        "well_calibrated": 0.0
+      },
+      "har_simple": {
+        "calibration_intercept": -0.02446619313779107,
+        "calibration_r2": 0.5855774823398623,
+        "calibration_slope": 1.0062997928199704,
+        "log_r2": 0.64240539913953,
+        "qlike": 0.19322011816199233,
+        "well_calibrated": 1.0
+      },
+      "intraday_mean": {
+        "calibration_intercept": -0.1853593226430514,
+        "calibration_r2": 0.251805888437043,
+        "calibration_slope": 0.9759794578424366,
+        "log_r2": 0.34888062702509126,
+        "qlike": 0.4056734624548123,
+        "well_calibrated": 1.0
+      },
+      "persistence": {
+        "calibration_intercept": -3.6618205304619966,
+        "calibration_r2": 0.5656406664161265,
+        "calibration_slope": 0.6819164607863166,
+        "log_r2": 0.493667940102853,
+        "qlike": 0.2555277962443534,
+        "well_calibrated": 0.0
+      }
+    }
+  },
+  "session_counters": {
+    "dropped_fill": 24,
+    "session_assets_seen": 1920
+  },
+  "target": "rv30"
+}
