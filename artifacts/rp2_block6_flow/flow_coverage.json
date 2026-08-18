@@ -3,223 +3,223 @@
   "concentration_window": "5m",
   "coverage": {
     "b2_30m_buy_premium_share": {
-      "coverage": 0.9967954865106764,
-      "median": 0.43951956413860255
+      "coverage": 0.9978176158133054,
+      "median": 0.4398910577461693
     },
     "b2_30m_contracts": {
-      "coverage": 0.9967954865106764,
-      "median": 743.0
+      "coverage": 0.9978176158133054,
+      "median": 697.0
     },
     "b2_30m_d_iv": {
-      "coverage": 0.9967954865106764,
-      "median": -3.5296150721960766e-05
+      "coverage": 0.9978176158133054,
+      "median": -4.253302361353174e-05
     },
     "b2_30m_d_mid_rel": {
-      "coverage": 0.9967954865106764,
-      "median": 0.00017814509168013567
+      "coverage": 0.9978176158133054,
+      "median": 9.904683346429933e-05
     },
     "b2_30m_d_spread": {
-      "coverage": 0.9967954865106764,
-      "median": -8.749888084424288e-05
+      "coverage": 0.9978176158133054,
+      "median": -7.265330339734906e-05
     },
     "b2_30m_delta_flow": {
-      "coverage": 0.9967954865106764,
-      "median": -431292.7266096771
+      "coverage": 0.9978176158133054,
+      "median": -80471.75882355869
     },
     "b2_30m_gamma_flow": {
-      "coverage": 0.9967954865106764,
-      "median": -65298313.76938772
+      "coverage": 0.9978176158133054,
+      "median": -40823174.77101326
     },
     "b2_30m_hawkes_innovation": {
-      "coverage": 0.9967954865106764,
-      "median": -55.696366845477996
+      "coverage": 0.9978176158133054,
+      "median": -54.72815837513983
     },
     "b2_30m_hawkes_last": {
-      "coverage": 0.9967954865106764,
-      "median": 303.47535765934
+      "coverage": 0.9978176158133054,
+      "median": 288.22051589025773
     },
     "b2_30m_median_age_s": {
-      "coverage": 0.9967954865106764,
-      "median": 922.2569668292999
+      "coverage": 0.9978176158133054,
+      "median": 922.9719669818878
     },
     "b2_30m_otm_premium_share": {
-      "coverage": 0.9967954865106764,
-      "median": 0.4696860413203508
+      "coverage": 0.9978176158133054,
+      "median": 0.47099747074518866
     },
     "b2_30m_passive_premium_share": {
-      "coverage": 0.9967954865106764,
-      "median": 0.09779980290179262
+      "coverage": 0.9978176158133054,
+      "median": 0.09835857995118273
     },
     "b2_30m_premium": {
       "coverage": 1.0,
-      "median": 32548816.5
+      "median": 30104596.0
     },
     "b2_30m_rate_per_second": {
-      "coverage": 0.9967954865106764,
-      "median": 5.600069335886263
+      "coverage": 0.9978176158133054,
+      "median": 5.313433391047027
     },
     "b2_30m_sell_premium_share": {
-      "coverage": 0.9967954865106764,
-      "median": 0.44954310204838627
+      "coverage": 0.9978176158133054,
+      "median": 0.44870641333326017
     },
     "b2_30m_size": {
-      "coverage": 0.9967954865106764,
-      "median": 56669.0
+      "coverage": 0.9978176158133054,
+      "median": 53264.0
     },
     "b2_30m_sweep_premium_share": {
-      "coverage": 0.9967954865106764,
-      "median": 0.015290929430929245
+      "coverage": 0.9978176158133054,
+      "median": 0.017421514769978632
     },
     "b2_30m_trades": {
       "coverage": 1.0,
-      "median": 10023.5
+      "median": 9521.0
     },
     "b2_30m_vega_flow": {
-      "coverage": 0.9967954865106764,
-      "median": -2162702.275460109
+      "coverage": 0.9978176158133054,
+      "median": -1862013.5842016004
     },
     "b2_30m_vega_flow_abs": {
-      "coverage": 0.9967954865106764,
-      "median": 95129549.60524058
+      "coverage": 0.9978176158133054,
+      "median": 87152322.5926925
     },
     "b2_30m_vega_flow_call": {
-      "coverage": 0.9967954865106764,
-      "median": -1441078.7700510323
+      "coverage": 0.9978176158133054,
+      "median": -1205791.125012036
     },
     "b2_30m_vega_flow_long_dte": {
-      "coverage": 0.9967954865106764,
-      "median": -1640860.9163559526
+      "coverage": 0.9978176158133054,
+      "median": -1404266.0886075266
     },
     "b2_30m_vega_flow_put": {
-      "coverage": 0.9967954865106764,
-      "median": -713484.7706330712
+      "coverage": 0.9978176158133054,
+      "median": -636495.6374802412
     },
     "b2_30m_vega_flow_short_dte": {
-      "coverage": 0.9967954865106764,
-      "median": -62007.60165936872
+      "coverage": 0.9978176158133054,
+      "median": -35399.70278445352
     },
     "b2_5m_buy_premium_share": {
-      "coverage": 0.9966676256233218,
-      "median": 0.4391700883186466
+      "coverage": 0.9977250957854407,
+      "median": 0.43928754580371865
     },
     "b2_5m_contract_entropy": {
-      "coverage": 0.9966676256233218,
-      "median": 4.050046236337478
+      "coverage": 0.9977250957854407,
+      "median": 4.009990559487785
     },
     "b2_5m_contracts": {
-      "coverage": 0.9966676256233218,
-      "median": 288.0
+      "coverage": 0.9977250957854407,
+      "median": 271.0
     },
     "b2_5m_d_iv": {
-      "coverage": 0.9966676256233218,
-      "median": -3.6679213336509075e-05
+      "coverage": 0.9977250957854407,
+      "median": -4.401637533552654e-05
     },
     "b2_5m_d_mid_rel": {
-      "coverage": 0.9966676256233218,
-      "median": -1.0799366529670284e-05
+      "coverage": 0.9977250957854407,
+      "median": -7.332520006907882e-05
     },
     "b2_5m_d_spread": {
-      "coverage": 0.9966676256233218,
-      "median": -8.181275931689221e-05
+      "coverage": 0.9977250957854407,
+      "median": -7.069253283437164e-05
     },
     "b2_5m_delta_flow": {
-      "coverage": 0.9966676256233218,
-      "median": -175142.93101930618
+      "coverage": 0.9977250957854407,
+      "median": -105029.02158025652
     },
     "b2_5m_expiry_hhi": {
-      "coverage": 0.9966676256233218,
-      "median": 0.14947144398510806
+      "coverage": 0.9977250957854407,
+      "median": 0.1556947688917013
     },
     "b2_5m_gamma_flow": {
-      "coverage": 0.9966676256233218,
-      "median": -12823772.093387127
+      "coverage": 0.9977250957854407,
+      "median": -9322168.811014175
     },
     "b2_5m_hawkes_innovation": {
-      "coverage": 0.9966676256233218,
-      "median": -15.89771869005719
+      "coverage": 0.9977250957854407,
+      "median": -15.630306600599742
     },
     "b2_5m_hawkes_last": {
-      "coverage": 0.9966676256233218,
-      "median": 303.47535765934
+      "coverage": 0.9977250957854407,
+      "median": 288.22362964475724
     },
     "b2_5m_interarrival_cv": {
-      "coverage": 0.9966676256233218,
-      "median": 1.7143935368415355
+      "coverage": 0.9977196534308603,
+      "median": 1.7493618603905488
     },
     "b2_5m_median_age_s": {
-      "coverage": 0.9966676256233218,
-      "median": 150.87447786331177
+      "coverage": 0.9977250957854407,
+      "median": 150.95819902420044
     },
     "b2_5m_otm_premium_share": {
-      "coverage": 0.9966676256233218,
-      "median": 0.4543481287591891
+      "coverage": 0.9977250957854407,
+      "median": 0.455415351842667
     },
     "b2_5m_passive_premium_share": {
-      "coverage": 0.9966676256233218,
-      "median": 0.09077735726862439
+      "coverage": 0.9977250957854407,
+      "median": 0.0912122587019653
     },
     "b2_5m_premium": {
       "coverage": 1.0,
-      "median": 4749705.0
+      "median": 4414096.0
     },
     "b2_5m_rate_per_second": {
-      "coverage": 0.9966676256233218,
-      "median": 5.162034906748506
+      "coverage": 0.9977196534308603,
+      "median": 4.907881548962781
     },
     "b2_5m_sell_premium_share": {
-      "coverage": 0.9966676256233218,
-      "median": 0.45136764155373904
+      "coverage": 0.9977250957854407,
+      "median": 0.4508608462152224
     },
     "b2_5m_size": {
-      "coverage": 0.9966676256233218,
-      "median": 8524.0
+      "coverage": 0.9977250957854407,
+      "median": 8041.0
     },
     "b2_5m_strike_hhi": {
-      "coverage": 0.9966676256233218,
-      "median": 0.09302240055532895
+      "coverage": 0.9977250957854407,
+      "median": 0.09484009163160982
     },
     "b2_5m_sweep_premium_share": {
-      "coverage": 0.9966676256233218,
-      "median": 0.012367219701709684
+      "coverage": 0.9977250957854407,
+      "median": 0.014404966473042933
     },
     "b2_5m_trades": {
       "coverage": 1.0,
-      "median": 1537.0
+      "median": 1463.0
     },
     "b2_5m_vega_flow": {
-      "coverage": 0.9966676256233218,
-      "median": -324107.74893590435
+      "coverage": 0.9977250957854407,
+      "median": -278665.22371138074
     },
     "b2_5m_vega_flow_abs": {
-      "coverage": 0.9966676256233218,
-      "median": 14223183.350592375
+      "coverage": 0.9977250957854407,
+      "median": 13043331.642276198
     },
     "b2_5m_vega_flow_call": {
-      "coverage": 0.9966676256233218,
-      "median": -218199.66339972243
+      "coverage": 0.9977250957854407,
+      "median": -186215.11758570094
     },
     "b2_5m_vega_flow_long_dte": {
-      "coverage": 0.9966676256233218,
-      "median": -222427.43251658184
+      "coverage": 0.9977250957854407,
+      "median": -191634.80255217478
     },
     "b2_5m_vega_flow_put": {
-      "coverage": 0.9966676256233218,
-      "median": -108537.81057519815
+      "coverage": 0.9977250957854407,
+      "median": -96385.77791771479
     },
     "b2_5m_vega_flow_short_dte": {
-      "coverage": 0.9966676256233218,
-      "median": -13390.710269414587
+      "coverage": 0.9977250957854407,
+      "median": -9151.292868201272
     }
   },
   "cutoff_seconds": 120,
   "feature_count": 52,
-  "flow_sha256": "a64484c0cc32402dfcd8c9cb2837ddad91a4b19263b3548c16f9bf11c6cd98fc",
-  "generated_at_utc": "2026-08-18T14:17:37.135841+00:00",
+  "flow_sha256": "9da4ae81a548671d3f9a0fb8b23ee5ec7b1f4087cd15b8c87a9b371151be42a9",
+  "generated_at_utc": "2026-08-18T21:01:12.453390+00:00",
   "hawkes_decay_seconds": 60.0,
   "label": "EXPLORATORY_MECHANISM_DISCOVERY",
   "program": "docs/research_program_v2.md",
-  "rows": 125136,
-  "session_assets_requested": 1896,
+  "rows": 183744,
+  "session_assets_requested": 2784,
   "session_assets_without_tape": 0,
   "windows_seconds": {
     "30m": 1800,
