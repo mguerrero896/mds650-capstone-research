@@ -478,3 +478,20 @@ Spec Kit consistency and preregistration gates pass.
    Operationally, scripts/publish_mirror.sh now refuses to publish unless the
    tier-2 gates (including the ci-sim replica of the hosted hermetic job) pass —
    red CI runs and their failure emails stop at the local gate.
+64. **Sequential multiplicity policy + transport-retry fix (2026-08-18)** — Two
+   reviewer corrections accepted. (a) Within-campaign Holm cannot undo the bias
+   of launching campaign k+1 after seeing campaign k; existing retrospective
+   results stay capped at EXPLORATORY_DESCRIPTIVE permanently, and every FUTURE
+   confirmatory campaign is governed by docs/sequential_multiplicity_policy_v1.md:
+   alpha spending alpha_k = 0.05/(k(k+1)) over an open-ended sequence (Phase 8
+   one-shot = k=1 at 0.025; Phase 9 evaluation = k=2 at 0.00833; binding
+   threshold is the smaller of the spending budget and any frozen protocol
+   alpha), e-values + test martingale + always-valid p-value reported alongside
+   registered tests (mds650/sequential.py, unit-tested), and a pre-registered
+   maximum of 3 further confirmatory campaigns this thesis cycle. Frozen
+   protocol documents are not edited (decision 62); the policy composes with
+   them. (b) ProviderHTTPClient now retries httpx transport errors (timeouts,
+   resets, disconnects) inside the retry loop with the same exponential backoff
+   as 429/5xx, preserving the last exception as the cause — previously a single
+   transport error bypassed max_retries entirely (src/mds650/providers/base.py;
+   regression tests in tests/unit/test_provider_client.py).

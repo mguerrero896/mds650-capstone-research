@@ -152,6 +152,11 @@ class ProviderHTTPClient:
             try:
                 response = self._client.get(path, params=request_params, headers=headers)
             except httpx.HTTPError as exc:
+                # Transport failures (timeouts, resets, disconnects) retry with the
+                # same backoff as 429/5xx; the LAST exception stays as the cause.
+                if attempt < self._max_retries:
+                    time.sleep(self._backoff_seconds * 2 ** (attempt - 1))
+                    continue
                 raise ProviderBlockedError("PROVIDER_NETWORK_FAILURE") from exc
             if 200 <= response.status_code < 300:
                 try:
