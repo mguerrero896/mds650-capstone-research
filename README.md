@@ -40,6 +40,11 @@ result here, and the pipeline is built so that a null cannot be quietly tuned aw
 
 ### The story in one picture
 
+![Timeline 2024 to 2026: a strong option-information signal fades toward null, with two sealed prospective reads ahead](docs/figures/story_timeline.svg)
+
+<details>
+<summary>Timeline source (mermaid)</summary>
+
 ```mermaid
 timeline
     title Option-information content for 30-minute variance, 2024 → 2026
@@ -51,6 +56,8 @@ timeline
     29 Aug 2026 : Phase 8 prospective read (TOST-armed, sealed)
     Nov 2026 : Phase 9 prospective read of the TOTAL contribution (frozen, collecting)
 ```
+
+</details>
 
 ## How to read this repository (no specialist background needed)
 
@@ -103,12 +110,23 @@ Honest summary, in the order the evidence deserves:
    is partly a property of the frozen confirmatory design, not of option information
    itself.
 
+![Five campaign estimates with 95 percent confidence intervals declining from 2024 to a 2026 null, with the prospective holdout highlighted](docs/figures/signal_decay.png)
+
+*The Gamma-family B2 effect, campaign by campaign (95% CI, canonical numbers from the
+Gate-4 artifact). The amber point is the prospective holdout — sealed before collection,
+read once, and sitting on zero.*
+
 The cross-campaign reconciliation — every contrast, every model, every protocol freeze
 date — lives in [`docs/results_reconciliation_v2.md`](docs/results_reconciliation_v2.md).
 The claim rules that every deliverable must follow are decision 53 in
 [`docs/methodology_decisions.md`](docs/methodology_decisions.md).
 
 ## How the pipeline works
+
+![Pipeline: three providers feed a sealed point-in-time panel, nested information sets B0, B1, B2, preregistered evaluation, and a sealed verdict](docs/figures/pipeline_diagram.svg)
+
+<details>
+<summary>Pipeline source (mermaid)</summary>
 
 ```mermaid
 flowchart LR
@@ -147,6 +165,8 @@ flowchart LR
     FRZ --> MDL --> OOS --> HLD
     HLD --> RES["QLIKE contrasts<br/>day-clustered bootstrap + Holm"]
 ```
+
+</details>
 
 Every result flows through the same discipline: the protocol is frozen and hashed before
 outcomes are visible, sealed holdouts are opened exactly once under an access ledger, and
