@@ -35,3 +35,24 @@ fully checkable from public material alone.
 
 Raw provider payloads (hundreds of GB) are never shared; full reproduction from
 scratch requires live provider entitlements, as documented in the README.
+
+## Research catalog database (Supabase Postgres, 2026-08-18)
+
+Beyond Storage, the project's Pro Supabase instance (project `eqpyjikcewqaegnbaemf`)
+now hosts a queryable research catalog — **aggregates and registry only, never
+licensed provider values**:
+
+| Table | Content | Source of truth in repo |
+|---|---|---|
+| `campaigns` | Frozen campaigns C1–C6 with input SHA-256 | `artifacts/gate1_inference/results.json` |
+| `contrast_results` | Studentized statistics per contrast (estimate, cluster-t, Newey-West, wild bootstrap, ρ₁, Ljung-Box) | same |
+| `mcs_cells` | Model Confidence Set membership per campaign × block length L | `artifacts/mcs_block_sensitivity/results.json` |
+| `gated_files` | Registry of the 15 gated files (path, SHA-256, bytes, bucket object) | `data/GATED_DATA_POINTERS.json` |
+| `access_grants` | Log of signed-URL grants (per-request discipline) | — (operational log) |
+
+All tables have Row Level Security enabled with **no policies**: anonymous and
+authenticated keys read nothing; access is service-role only (owner and owner's
+agents). Sync is one-way, repo → database, idempotent:
+`uv run python scripts/sync_supabase_catalog.py` (requires `SUPABASE_SERVICE_KEY`).
+The repo artifacts remain the single source of truth; the database is a queryable
+view of them, never an editing surface.

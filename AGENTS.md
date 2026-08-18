@@ -38,8 +38,9 @@ Rules:
 
 ## Gated data relocation (2026-08-18) — READ BEFORE PUBLISHING OR TOUCHING PARQUETS
 
-The GitHub remote is a PUBLIC filtered mirror. The 14 licensed-derived granular
-parquets (list: `scripts/_gated_exclude_list.txt`) exist ONLY in the local canonical
+The GitHub remote is a PUBLIC filtered mirror. The 15 licensed-derived granular
+files — 14 parquets plus one quote-level diagnostic CSV —
+(list: `scripts/_gated_exclude_list.txt`) exist ONLY in the local canonical
 repo and in the private Supabase Storage bucket (project `eqpyjikcewqaegnbaemf`,
 bucket `research-data`); `scripts/publish_mirror.sh` strips them from the entire
 published history on every publish and `tests/test_gated_publish_contract.py` fails
@@ -47,3 +48,15 @@ the suite if a new granular parquet is committed without registering it in the
 exclude list. NEVER push to the remote directly; ALWAYS publish via
 `bash scripts/publish_mirror.sh`. Pointers + access policy:
 `data/GATED_DATA_POINTERS.json`, `data/DATA_ACCESS.md`.
+
+## Supabase research catalog (2026-08-18)
+
+The same Supabase project also hosts Postgres catalog tables (`campaigns`,
+`contrast_results`, `mcs_cells`, `gated_files`, `access_grants`) — aggregates and
+registry only, RLS locked (service-role only). After changing
+`artifacts/gate1_inference/results.json`, `artifacts/mcs_block_sensitivity/results.json`
+or `data/GATED_DATA_POINTERS.json`, re-run
+`uv run python scripts/sync_supabase_catalog.py` (idempotent upserts; needs
+`SUPABASE_SERVICE_KEY` from the User environment). Never write to these tables by
+hand: repo artifacts are the source of truth. When a signed URL is issued from the
+gated bucket, log it in `access_grants`.
