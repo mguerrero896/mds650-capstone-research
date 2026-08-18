@@ -1,7 +1,7 @@
 # Gate cascade report — 2026-08-17
 
-One-day execution of the ten-gate backlog (`docs/execution_backlog_20260817.md`) derived
-from the scientific gap audit. Every gate: code merged on `main` with tests, ruff +
+One-day execution of the ten-gate backlog derived from the scientific gap audit (the
+working backlog itself is an internal record, kept local). Every gate: code merged on `main` with tests, ruff +
 mypy-strict + full pytest green, hashed artifacts, per-gate doc, and the publication
 mirror updated (`scripts/publish_mirror.sh`). This report is the reading order for a
 committee member.

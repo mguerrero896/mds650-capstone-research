@@ -187,12 +187,9 @@ docs/                Methodology decisions (binding, numbered), risk register,
                      -> every doc classified in docs/INDEX.md
 artifacts/           Committed governance evidence: preregistrations, manifests,
                      hashes, results JSONs, access ledgers (immutable)
-reports/             Master dossier, proposal drafts, gate-cascade report;
-                     historical handoffs under reports/handoffs/
+reports/             Final report, defense deck, gate-cascade report,
+                     canonical validation package, proposal
 ```
-
-Housekeeping trail (what was archived/moved and why):
-[`docs/housekeeping_record_20260818.md`](docs/housekeeping_record_20260818.md).
 
 > [!NOTE]
 > Licensed commercial data cannot be redistributed. The 14 granular derived datasets
@@ -254,13 +251,13 @@ The repository treats process integrity as a first-class deliverable:
   reads; their disposition is an explicit owner decision
   (`docs/sealed_cohorts_disposition_v1.md`), and new retrospective campaigns are under
   moratorium until it is made.
-- **Consolidation record** (`docs/consolidation_record_20260817.md`) — full audit trail
-  of the 2026-08-17 repository consolidation, with off-machine backups.
+- **Physically immutable evidence** — frozen artifacts are write-protected on disk and
+  hash-verified in CI (decision 62), so a committed result cannot drift silently.
 
 ## Status
 
-Active capstone research, single-author, private. The proposal draft is at
-[`reports/proposal_draft_v1.md`](reports/proposal_draft_v1.md); the next scientific step
+Active capstone research, single-author. The proposal draft is at
+[`reports/proposal_draft_v2.md`](reports/proposal_draft_v2.md); the next scientific step
 is an owner decision between completing the sealed prospective holdout (Phase 8) or
 closing it formally — the analysis code is ready either way.
 

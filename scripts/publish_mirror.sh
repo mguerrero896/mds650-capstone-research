@@ -25,7 +25,20 @@ CANON=$(pwd)
 #  - internal working docs (local-only by decision; no pointers, just never published)
 EXCLUDES=$(mktemp)
 cat "$CANON/scripts/_gated_exclude_list.txt" \
-    "$CANON/scripts/_mirror_internal_exclude_list.txt" | tr -d '\r' | grep -v '^$' > "$EXCLUDES"
+    "$CANON/scripts/_mirror_internal_exclude_list.txt" | tr -d '\r' | grep -vE '^(#|$)' > "$EXCLUDES"
+# Expand glob: lines against the canonical HEAD file list so the two integrity
+# checks below keep comparing exact paths (git-filter-repo reads EXCLUDES
+# directly and understands glob: natively).
+EXCLUDES_EXPANDED=$(mktemp)
+git ls-tree -r --name-only HEAD > "$EXCLUDES_EXPANDED.all"
+grep -v '^glob:' "$EXCLUDES" > "$EXCLUDES_EXPANDED" || true
+grep '^glob:' "$EXCLUDES" | sed 's/^glob://' | while read -r pat; do
+    while IFS= read -r f; do
+        case "$f" in $pat) echo "$f";; esac
+    done < "$EXCLUDES_EXPANDED.all"
+done >> "$EXCLUDES_EXPANDED"
+sort -u "$EXCLUDES_EXPANDED" -o "$EXCLUDES_EXPANDED"
+
 MIRROR=$(mktemp -d)/mirror
 git replace --graft "$ROOT_COMMIT"
 trap 'git replace -d "$ROOT_COMMIT" 2>/dev/null || true' EXIT
@@ -34,12 +47,12 @@ git fast-export --all --reencode=yes | git -C "$MIRROR" fast-import --quiet
 # Strip gated data from every commit of the published lineage.
 (cd "$MIRROR" && uvx git-filter-repo --force --invert-paths --paths-from-file "$EXCLUDES" >/dev/null)
 # Check 1: no gated path may survive anywhere in the published history.
-if (cd "$MIRROR" && git log --all --name-only --pretty=format: | sort -u | grep -Fxf "$EXCLUDES" | head -1) ; then
+if (cd "$MIRROR" && git log --all --name-only --pretty=format: | sort -u | grep -Fxf "$EXCLUDES_EXPANDED" | head -1) ; then
     echo "GATED PATH LEAKED INTO PUBLISHED HISTORY" >&2; exit 1
 fi
 # Check 2: every non-gated file at canonical HEAD must match blob-for-blob.
 DIFF=$(comm -3 \
-    <(git ls-tree -r HEAD | awk '{print $3" "$4}' | grep -vFf <(awk '{print $0}' "$EXCLUDES") | sort) \
+    <(git ls-tree -r HEAD | awk '{print $3" "$4}' | grep -vFf <(awk '{print " "$0}' "$EXCLUDES_EXPANDED") | sort) \
     <(git -C "$MIRROR" ls-tree -r main | awk '{print $3" "$4}' | sort) | head -3)
 if [ -n "$DIFF" ]; then
     echo "TREE MISMATCH (excluding gated paths):" >&2; echo "$DIFF" >&2; exit 1

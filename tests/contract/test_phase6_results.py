@@ -137,6 +137,7 @@ def test_phase6_global_and_targeted_families_are_exact() -> None:
     }
 
 
+@pytest.mark.skipif(not HANDOFF.exists(), reason="INTERNAL_DOC_NOT_ON_PUBLIC_MIRROR")
 def test_phase6_handoff_distinguishes_significance_from_frozen_mde() -> None:
     """Prevent a positive estimate from being mislabeled as globally confirmed."""
     _phase6()  # The handoff narrates the consumed OOS evidence package.
