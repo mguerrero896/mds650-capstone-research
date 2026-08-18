@@ -68,6 +68,18 @@ exclude = "(^|/)(tests|notebooks)/"
 module = "scipy.*"
 ignore_missing_imports = true
 
+# torch is a local-only optional dependency: the level-4 experiment needs a GPU and
+# cannot run in hermetic CI, so it is deliberately not a project dependency. These
+# overrides make the script type-check identically whether or not torch is installed.
+[[tool.mypy.overrides]]
+module = "torch.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "rp2_ext12_level4_and_tensor"
+disallow_subclassing_any = false
+disallow_any_unimported = false
+
 [tool.coverage.run]
 branch = true
 source = ["mds650"]
