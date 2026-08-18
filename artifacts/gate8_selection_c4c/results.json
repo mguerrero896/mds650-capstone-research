@@ -1,0 +1,143 @@
+{
+ "contrasts": {
+  "gamma_glm_confirmatory": {
+   "B1v2a_vs_B0v2": {
+    "ipw_weighted": {
+     "clusters": 30,
+     "estimate": 0.09468571968079566,
+     "p_value": 0.004314411846442951,
+     "standard_error": 0.03057671677575288,
+     "statistic": 3.096660781967303
+    },
+    "ipw_wild": {
+     "ci_high": 0.15821098563314867,
+     "ci_low": 0.030526711799109846,
+     "clusters": 30,
+     "estimate": 0.09468571968079566,
+     "p_value": 0.0048,
+     "repetitions": 9999,
+     "seed": 650,
+     "statistic": 3.096660781967303,
+     "weights": "rademacher"
+    },
+    "unweighted": {
+     "clusters": 30,
+     "estimate": 0.09461389112997541,
+     "p_value": 0.004334032973750087,
+     "standard_error": 0.030571264897902354,
+     "statistic": 3.0948634754222204
+    }
+   },
+   "B2v2_vs_B1v2a": {
+    "ipw_weighted": {
+     "clusters": 30,
+     "estimate": 0.034751520483105106,
+     "p_value": 1.633006647776877e-08,
+     "standard_error": 0.004501169371472566,
+     "statistic": 7.7205538417089326
+    },
+    "ipw_wild": {
+     "ci_high": 0.04383661862876857,
+     "ci_low": 0.025615760046396895,
+     "clusters": 30,
+     "estimate": 0.034751520483105106,
+     "p_value": 0.0001,
+     "repetitions": 9999,
+     "seed": 650,
+     "statistic": 7.7205538417089326,
+     "weights": "rademacher"
+    },
+    "unweighted": {
+     "clusters": 30,
+     "estimate": 0.03473965585718805,
+     "p_value": 1.6645298707218675e-08,
+     "standard_error": 0.00450397963382433,
+     "statistic": 7.713102340938119
+    }
+   }
+  },
+  "lightgbm_robustness": {
+   "B1v2a_vs_B0v2": {
+    "ipw_weighted": {
+     "clusters": 30,
+     "estimate": -0.005371706652765098,
+     "p_value": 0.06446082503532435,
+     "standard_error": 0.0027946366185819865,
+     "statistic": -1.9221485244442014
+    },
+    "ipw_wild": {
+     "ci_high": 0.00040142414743955714,
+     "ci_low": -0.010991774300059109,
+     "clusters": 30,
+     "estimate": -0.005371706652765098,
+     "p_value": 0.0645,
+     "repetitions": 9999,
+     "seed": 650,
+     "statistic": -1.9221485244442014,
+     "weights": "rademacher"
+    },
+    "unweighted": {
+     "clusters": 30,
+     "estimate": -0.005362813132724364,
+     "p_value": 0.06502208130972156,
+     "standard_error": 0.0027962226604491846,
+     "statistic": -1.9178777171710935
+    }
+   },
+   "B2v2_vs_B1v2a": {
+    "ipw_weighted": {
+     "clusters": 30,
+     "estimate": 0.0002885806259084645,
+     "p_value": 0.2695139921319327,
+     "standard_error": 0.00025635183400930664,
+     "statistic": 1.1257209335899967
+    },
+    "ipw_wild": {
+     "ci_high": 0.0008012873308044304,
+     "ci_low": -0.00021636479911058898,
+     "clusters": 30,
+     "estimate": 0.0002885806259084645,
+     "p_value": 0.2655,
+     "repetitions": 9999,
+     "seed": 650,
+     "statistic": 1.1257209335899967,
+     "weights": "rademacher"
+    },
+    "unweighted": {
+     "clusters": 30,
+     "estimate": 0.0002891113534403074,
+     "p_value": 0.2686495216179449,
+     "standard_error": 0.0002563500472993272,
+     "statistic": 1.127799103164301
+    }
+   }
+  }
+ },
+ "deferred": {
+  "C4c": "bars for its sessions not on local disk; same design applies"
+ },
+ "grid_origins": 11880,
+ "included_origins": 11664,
+ "inclusion_model": {
+  "auc_proxy_mean_p_excluded": 0.3030154841663158,
+  "auc_proxy_mean_p_included": 0.9943890443506531,
+  "coefficients": {
+   "asset_AMZN": 0.02362477424511401,
+   "asset_META": -0.06497083331168037,
+   "asset_MSFT": 0.7710062677298428,
+   "asset_NVDA": -0.2812330763387637,
+   "asset_TSLA": -1.197116608468334,
+   "log_rv_30m_lag": 0.9619680397029177,
+   "session_minute": -0.0015079513943235309
+  },
+  "marginal_inclusion": 0.9818181818181818,
+  "probability_p1": 6.299656212218394e-05,
+  "probability_p99": 0.9993217398883851,
+  "weight_max": 1.0185932935301536
+ },
+ "inputs": {
+  "bars_sha256": "46b8138cce84228a19f51de629a6c0992533b912632b2fba23f150728689cbd5",
+  "forecasts_sha256": "825359140c3f29350e1927f76b3c00e91e892d638697460a35ecf72e37c50535"
+ },
+ "schema_version": "gate8-selection-v1.0"
+}

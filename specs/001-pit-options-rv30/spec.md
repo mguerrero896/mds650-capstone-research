@@ -1102,3 +1102,28 @@ preflight. No unavailable date may be substituted.
 - **SC-053**: The final conclusion is one of `REPLICATED_MODEL_INDEPENDENT`,
   `REPLICATED_GAMMA_ONLY`, `NOT_REPLICATED` or `INVALID_REPLICATION`, using only preregistered
   rules. Engineering completion and scientific sign remain separate statuses.
+
+---
+
+## Retroactive governance amendment (2026-08-18)
+
+The following post-consolidation work, executed and recorded outside this spec's
+original task list, is incorporated by reference under decisions 54–59 in
+`docs/methodology_decisions.md`:
+
+- **Gates 1–12** (`docs/gate*_v1.md`, `docs/gate12_holm_econ_v1.md`): studentized
+  inference, calibration-vs-information, HAR/HARQ baselines, decay-aware prospective
+  design (TOST amendment to Phase 8), measured PIT foundations (A001 retired; A002
+  live campaign under decision 57), regime/noise/selection robustness, signal
+  localization, cross-family positive formalization, era map, HARQ hardening, global
+  Holm, and the economic-significance appendix. Labels: confirmatory claims unchanged;
+  all decision-56 findings are `EXPLORATORY_DESCRIPTIVE`.
+- **Phase 9** (decisions 58–59): frozen prospective total-contribution protocol
+  (`docs/phase9_total_contribution_protocol_v1.md`, hash in
+  `artifacts/phase9/protocol_freeze.json`) with nightly collection active and
+  `reads = 0`.
+- **R-023 closure across cited blocks**: registered availability sensitivities exist
+  for C6 (decision 48), C4-corrected (five variants in its frozen artifact), and C5
+  (120/300 s reruns, `artifacts/b2_confirmation_delay{120,300}/`).
+- The binding reporting order remains decision 53; `docs/results_reconciliation_v2.md`
+  is the canonical cross-campaign view.

@@ -58,9 +58,13 @@ Any headline p-value must be presented next to this count.
    the confirmatory model wherever it was measured (C3, C4).
 3. The Gamma-specific effect shrinks toward the present: +0.078 (2024-A) → +0.035 (2024-B)
    → +0.033..0.034 (mid-2025) → +0.0044 (Phase 6, below MDE) → +0.0006 (2026 holdout).
-4. Both PIT timing conventions remain assumptions (R-023). C6 ran its five registered
-   sensitivities and stayed positive; C4/C5 were never re-evaluated under delayed
-   availability.
+4. Both PIT timing conventions remain assumptions for the historical tapes (R-023,
+   live measurement under decision 57). Every cited block has now run its registered
+   availability sensitivities and stayed stable: C6 (five variants, decision 48),
+   C4-corrected (five variants in `independent_replication_pit_v2/results.json`,
+   Gamma B2 +0.031..+0.038 with CIs above zero), and C5 (120/300 s reruns of
+   2026-08-18, `artifacts/b2_confirmation_delay{120,300}/`). Only the invalidated
+   original C4 read lacks them, moot by supersession.
 5. No campaign may be described with the bare word "confirmed" while its
    `confirmed_contrasts` array is empty (C3, C4).
 

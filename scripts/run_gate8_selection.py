@@ -28,12 +28,35 @@ from mds650 import inference
 
 REPO = Path(__file__).resolve().parents[1]
 DATA_ROOT = Path(os.environ.get("MDS650_EXTERNAL_ROOT", "D:/MDS650"))
-FORECASTS = DATA_ROOT / "b1v3_confirmation" / "evaluation" / "primary_forecasts.parquet"
-BARS = DATA_ROOT / "data" / "fmp" / "gate7" / "underlying_1min_c6.parquet"
-OUTPUT = REPO / "artifacts" / "gate8_selection"
 GAMMA = "gamma_glm_confirmatory"
 LGBM = "lightgbm_robustness"
 WEIGHT_CLIP = 20.0
+
+CAMPAIGNS = {
+    "c6": {
+        "forecasts": DATA_ROOT / "b1v3_confirmation" / "evaluation" / "primary_forecasts.parquet",
+        "bars": DATA_ROOT / "data" / "fmp" / "gate7" / "underlying_1min_c6.parquet",
+        "output": REPO / "artifacts" / "gate8_selection",
+        "base": "B1v3a",
+        "middle": "B0",
+        "expanded": "B2",
+    },
+    "c4c": {
+        "forecasts": DATA_ROOT
+        / "independent_replication_30"
+        / "derived"
+        / "pit_v2_evaluation"
+        / "predictions_pit_v2.parquet",
+        "bars": DATA_ROOT / "data" / "fmp" / "gate8_c4c" / "underlying_1min_c4c.parquet",
+        "output": REPO / "artifacts" / "gate8_selection_c4c",
+        "base": "B1v2a",
+        "middle": "B0v2",
+        "expanded": "B2v2",
+    },
+}
+FORECASTS = CAMPAIGNS["c6"]["forecasts"]
+BARS = CAMPAIGNS["c6"]["bars"]
+OUTPUT = CAMPAIGNS["c6"]["output"]
 
 
 def _sha256(path: Path) -> str:
@@ -202,8 +225,24 @@ def _weighted_contrast(
 
 
 def main() -> None:
+    import argparse
+
+    global FORECASTS, BARS, OUTPUT
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--campaign", choices=("c6", "c4c"), default="c6")
+    campaign = CAMPAIGNS[parser.parse_args().campaign]
+    FORECASTS = Path(str(campaign["forecasts"]))
+    BARS = Path(str(campaign["bars"]))
+    OUTPUT = Path(str(campaign["output"]))
+    base, middle, expanded = (
+        str(campaign["base"]),
+        str(campaign["middle"]),
+        str(campaign["expanded"]),
+    )
     OUTPUT.mkdir(parents=True, exist_ok=True)
     forecasts = pl.read_parquet(FORECASTS)
+    if "timing_variant" in forecasts.columns:
+        forecasts = forecasts.filter(pl.col("timing_variant") == "PRIMARY")
     bars = pl.read_parquet(BARS)
     grid = _grid(forecasts)
     covariates = _covariates(grid, bars)
@@ -228,8 +267,12 @@ def main() -> None:
     }
     for model in (GAMMA, LGBM):
         results["contrasts"][model] = {
-            "B1v3a_vs_B0": _weighted_contrast(forecasts_keyed, weights, model, "B1v3a", "B0"),
-            "B2_vs_B1v3a": _weighted_contrast(forecasts_keyed, weights, model, "B1v3a", "B2"),
+            f"{base}_vs_{middle}": _weighted_contrast(
+                forecasts_keyed, weights, model, base, middle
+            ),
+            f"{expanded}_vs_{base}": _weighted_contrast(
+                forecasts_keyed, weights, model, base, expanded
+            ),
         }
     payload = json.dumps(results, indent=1, sort_keys=True, default=str)
     (OUTPUT / "results.json").write_text(payload, encoding="utf-8")

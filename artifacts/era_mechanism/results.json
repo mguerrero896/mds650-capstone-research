@@ -1,0 +1,30 @@
+{
+ "eras": {
+  "era_2024H2_c6": {
+   "mean_log_mean_premium": 7.915247629474887,
+   "mean_log_trade_count": 7.134676553167805,
+   "origins": 34897
+  },
+  "era_2025H1_c4c": {
+   "b2_complete_share": 0.7653631284916201,
+   "origins": 38664,
+   "z_null_share": 0.0111731843575419,
+   "z_zero_share": 0.22611948106298388
+  },
+  "era_2025H2_p6": {
+   "b2_complete_share": 0.888268156424581,
+   "origins": 77328,
+   "z_null_share": 0.0,
+   "z_zero_share": 0.11182236705979723
+  },
+  "era_2026H1_dev": {
+   "activity_present_share": 1.0,
+   "mean_log_mean_premium": 7.859688163693638,
+   "mean_log_trade_count": 8.02434191916171,
+   "origins": 38573
+  }
+ },
+ "label": "EXPLORATORY_DESCRIPTIVE - provider-coverage proxies by era",
+ "note": "raw activity levels comparable only where raw-scale features exist (2024H2 C6 vs 2026H1 dev); z-eras report completeness and hard-zero shares",
+ "schema_version": "era-mechanism-diagnostics-v1.0"
+}
