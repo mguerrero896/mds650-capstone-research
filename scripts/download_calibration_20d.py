@@ -151,7 +151,7 @@ class _ProcessMemoryCounters(ctypes.Structure):
 
 def _working_set_bytes() -> int | None:
     """Return current process working set on Windows without tracking allocations."""
-    if os.name != "nt":
+    if sys.platform != "win32":
         return None
     psapi = ctypes.WinDLL("psapi", use_last_error=True)
     kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
