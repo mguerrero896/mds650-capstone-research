@@ -1,0 +1,183 @@
+{
+  "analysis": "trading-buffer sweep",
+  "block": 11,
+  "buffers": {
+    "0.00": {
+      "D|gamma_glm|B0": {
+        "break_even_cost": 0.08532650227760105,
+        "deflated_sharpe_probability": 0.004223994368953056,
+        "net_sharpe_annual": 67.14386439550096,
+        "traded_share": 0.9978376580172987
+      },
+      "D|gamma_glm|B0+B1+B2": {
+        "break_even_cost": 0.08518781632289749,
+        "deflated_sharpe_probability": 0.0028464972333799533,
+        "net_sharpe_annual": 66.86022798448063,
+        "traded_share": 0.9975049900199601
+      },
+      "D|lightgbm|B0": {
+        "break_even_cost": 0.08545227229516197,
+        "deflated_sharpe_probability": 0.005781486844879489,
+        "net_sharpe_annual": 67.38928477363552,
+        "traded_share": 0.9973386560212908
+      },
+      "D|lightgbm|B0+B1+B2": {
+        "break_even_cost": 0.0851516587869663,
+        "deflated_sharpe_probability": 0.0025299742899998127,
+        "net_sharpe_annual": 66.72680416263721,
+        "traded_share": 0.9973386560212908
+      },
+      "D|log_ols|B0": {
+        "break_even_cost": 0.08559991161672681,
+        "deflated_sharpe_probability": 0.007773483083314814,
+        "net_sharpe_annual": 67.65965912492722,
+        "traded_share": 0.9973386560212908
+      },
+      "D|log_ols|B0+B1+B2": {
+        "break_even_cost": 0.0855984874369239,
+        "deflated_sharpe_probability": 0.0066624182222467946,
+        "net_sharpe_annual": 67.54909773873665,
+        "traded_share": 0.9970059880239521
+      },
+      "V|gamma_glm|B0": {
+        "break_even_cost": 0.09048155722219554,
+        "deflated_sharpe_probability": 0.00555499388619188,
+        "net_sharpe_annual": 58.807353078813016,
+        "traded_share": 0.989423076923077
+      },
+      "V|gamma_glm|B0+B1+B2": {
+        "break_even_cost": 0.0883790067002141,
+        "deflated_sharpe_probability": 0.001190078677773282,
+        "net_sharpe_annual": 56.524522360374675,
+        "traded_share": 0.9947115384615385
+      },
+      "V|lightgbm|B0": {
+        "break_even_cost": 0.08754230883093345,
+        "deflated_sharpe_probability": 0.00043838046817162483,
+        "net_sharpe_annual": 55.355642511623046,
+        "traded_share": 0.9942307692307693
+      },
+      "V|lightgbm|B0+B1+B2": {
+        "break_even_cost": 0.08752857659308928,
+        "deflated_sharpe_probability": 0.00032188165726588884,
+        "net_sharpe_annual": 55.005998178809776,
+        "traded_share": 0.9913461538461539
+      },
+      "V|log_ols|B0": {
+        "break_even_cost": 0.09018517253902457,
+        "deflated_sharpe_probability": 0.009242895150110328,
+        "net_sharpe_annual": 59.457477654370166,
+        "traded_share": 0.9879807692307693
+      },
+      "V|log_ols|B0+B1+B2": {
+        "break_even_cost": 0.08893201045484711,
+        "deflated_sharpe_probability": 0.0013108036363589316,
+        "net_sharpe_annual": 56.62726206856644,
+        "traded_share": 0.9889423076923077
+      }
+    },
+    "0.05": {
+      "D|lightgbm|B0": {
+        "break_even_cost": 0.11063928232436841,
+        "deflated_sharpe_probability": 0.030657499395569027,
+        "net_sharpe_annual": 56.35740947308367,
+        "traded_share": 0.6833000665335994
+      },
+      "D|lightgbm|B0+B1+B2": {
+        "break_even_cost": 0.1099285280012249,
+        "deflated_sharpe_probability": 0.018500302688495084,
+        "net_sharpe_annual": 55.92895034097828,
+        "traded_share": 0.6854624085163007
+      },
+      "D|log_ols|B0": {
+        "break_even_cost": 0.11255529285811197,
+        "deflated_sharpe_probability": 0.0048242007469604204,
+        "net_sharpe_annual": 55.08059102279394,
+        "traded_share": 0.6633399866932801
+      },
+      "D|log_ols|B0+B1+B2": {
+        "break_even_cost": 0.11332340063940684,
+        "deflated_sharpe_probability": 0.0018010332286912737,
+        "net_sharpe_annual": 54.52174605135972,
+        "traded_share": 0.6538589487691284
+      },
+      "V|lightgbm|B0": {
+        "break_even_cost": 0.11031290696080735,
+        "deflated_sharpe_probability": 0.08644312352594757,
+        "net_sharpe_annual": 52.88082008515229,
+        "traded_share": 0.7355769230769231
+      },
+      "V|lightgbm|B0+B1+B2": {
+        "break_even_cost": 0.10911088224739457,
+        "deflated_sharpe_probability": 0.18856407699158506,
+        "net_sharpe_annual": 55.109991818286005,
+        "traded_share": 0.760576923076923
+      },
+      "V|log_ols|B0": {
+        "break_even_cost": 0.11353042301212474,
+        "deflated_sharpe_probability": 0.1343591121257997,
+        "net_sharpe_annual": 54.045304900425755,
+        "traded_share": 0.7211538461538461
+      },
+      "V|log_ols|B0+B1+B2": {
+        "break_even_cost": 0.1133079627379537,
+        "deflated_sharpe_probability": 0.1272268903850245,
+        "net_sharpe_annual": 53.95738877925318,
+        "traded_share": 0.7274038461538461
+      }
+    },
+    "0.15": {
+      "D|lightgbm|B0": {
+        "break_even_cost": 0.18515493059863447,
+        "deflated_sharpe_probability": 0.0,
+        "net_sharpe_annual": 23.178091658175205,
+        "traded_share": 0.16001330671989356
+      },
+      "D|lightgbm|B0+B1+B2": {
+        "break_even_cost": 0.1839243180414172,
+        "deflated_sharpe_probability": 0.0,
+        "net_sharpe_annual": 23.433561245335117,
+        "traded_share": 0.16134397870924816
+      },
+      "D|log_ols|B0": {
+        "break_even_cost": 0.18637786084979657,
+        "deflated_sharpe_probability": 0.0,
+        "net_sharpe_annual": 22.61705548215723,
+        "traded_share": 0.15153027278775782
+      },
+      "D|log_ols|B0+B1+B2": {
+        "break_even_cost": 0.18835960404984664,
+        "deflated_sharpe_probability": 0.0,
+        "net_sharpe_annual": 21.941564172287045,
+        "traded_share": 0.14504324683965403
+      },
+      "V|lightgbm|B0": {
+        "break_even_cost": 0.17308772603861064,
+        "deflated_sharpe_probability": 4.761328486503866e-165,
+        "net_sharpe_annual": 27.118281886431202,
+        "traded_share": 0.2110576923076923
+      },
+      "V|lightgbm|B0+B1+B2": {
+        "break_even_cost": 0.1733667894680916,
+        "deflated_sharpe_probability": 8.630675754843921e-152,
+        "net_sharpe_annual": 28.261431049448777,
+        "traded_share": 0.22355769230769232
+      },
+      "V|log_ols|B0": {
+        "break_even_cost": 0.1771545867440847,
+        "deflated_sharpe_probability": 9.49633990220398e-188,
+        "net_sharpe_annual": 25.485035741106856,
+        "traded_share": 0.18990384615384615
+      },
+      "V|log_ols|B0+B1+B2": {
+        "break_even_cost": 0.1766818893504691,
+        "deflated_sharpe_probability": 7.081649198603357e-188,
+        "net_sharpe_annual": 25.51299279092478,
+        "traded_share": 0.1908653846153846
+      }
+    }
+  },
+  "generated_at_utc": "2026-08-18T18:10:28.121841+00:00",
+  "purpose": "At buffer 0 the strategy trades every period, so it measures the unconditional variance risk premium rather than the forecast. The sweep forces selectivity and asks whether option information adds value once the strategy actually chooses.",
+  "sweep_sha256": "2bc3c6f5433ab2d6b2b5619b555e51e775b113049cd92223c40601b2ff6fb48d"
+}
