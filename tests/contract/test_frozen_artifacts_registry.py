@@ -40,15 +40,24 @@ def test_registry_exists_and_is_nonempty() -> None:
     assert len(paths) == len(set(paths)), "duplicate registry paths"
 
 
+def _gated_paths() -> frozenset[str]:
+    exclude = REPO / "scripts" / "_gated_exclude_list.txt"
+    return frozenset(exclude.read_text(encoding="utf-8").split())
+
+
 def test_every_frozen_artifact_is_physically_intact() -> None:
+    gated = _gated_paths()
     mutated = []
     for entry in _entries():
-        path = REPO / str(entry["path"])
+        relative = str(entry["path"])
+        path = REPO / relative
         if not path.is_file():
-            mutated.append(f"MISSING {entry['path']}")
+            if relative in gated:
+                continue  # stripped from the public mirror; verified locally (tier 2)
+            mutated.append(f"MISSING {relative}")
             continue
         if _sha(path) != entry["sha256"]:
-            mutated.append(f"MUTATED {entry['path']}")
+            mutated.append(f"MUTATED {relative}")
     assert not mutated, mutated
 
 
