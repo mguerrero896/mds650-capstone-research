@@ -31,13 +31,15 @@ dev = [
   "pytest-cov>=7,<8",
   "jsonschema>=4.23,<5",
   "ruff>=0.14,<1",
+  "pytest-timeout>=2.3,<3",
 ]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/mds650"]
 
 [tool.pytest.ini_options]
-addopts = "-q --strict-markers"
+addopts = "-q --strict-markers -m \"not live\""
+timeout = 300
 testpaths = ["tests"]
 pythonpath = ["."]
 markers = [

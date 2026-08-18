@@ -107,6 +107,31 @@ applies to the B2-over-B1 increment under the frozen campaign designs; the total
 option-information contribution is model-robust in most eras. Exploratory only;
 `confirmed_contrasts` unchanged; prospective-null-first ordering stands.
 
+## Timing-sensitivity addendum for C5 (2026-08-18, R-023 execution plan)
+
+The registered 120 s / 300 s availability sensitivities were executed on the two 2024
+blocks (rebuilt B2 features from the local raw tape; frozen evaluators unchanged;
+artifacts under `artifacts/b2_confirmation_delay{120,300}/`). The Gamma Δ(B2) barely
+moves — block A +0.0784 → +0.0763 → +0.0766, block B +0.0348 → +0.0346 → +0.0329 —
+and LightGBM stays adverse throughout. Per the pre-stated rule in
+`docs/timing_sensitivity_execution_plan_v1.md`, C5's results are **not** conditional on
+the exact 60 s cutoff; R-023's exposure narrows to the unproven sub-60-second band
+(under live measurement, decision 57). The C4 replication mirror remains to be run and
+is the explicitly stated residual of the plan.
+
+## Multiplicity accounting update (2026-08-18, decisions 56–58)
+
+In addition to the registered contrasts enumerated above and the single global Holm
+family (`artifacts/global_multiplicity/`: 36 registered contrasts, 21 surviving at 5%),
+the exploratory decision-56 program evaluated: Gate 10 — 6 campaigns/blocks × families
+× 3 contrasts; Gate 11 — 4 eras × 3 families × 3 contrasts (36); Gate 12 — 4 eras × 2
+families × 3 contrasts + 3 true-HARQ dev contrasts (27); corrected as their own
+63-member Holm family (19 survive at 5%). Timing reruns (this addendum) add 2 delays ×
+2 blocks × 5 models × 2 contrasts, descriptive only. LightGBM B2 gain-share
+importances (`artifacts/lgbm_importances/`): the nine-feature activity block receives
+4.0% (C6) and 1.75% (C4c) of total gain — the calibrated challenger's indifference,
+quantified. No confirmatory label changes.
+
 Artifacts: `artifacts/phase5/{development,holdout}_results.json`,
 `artifacts/phase6/results.json` (evidence root), `artifacts/independent_replication/independent_results.json`,
 `artifacts/independent_replication_pit_v2/results.json`,

@@ -46,9 +46,27 @@ BARS = DATA_ROOT / "derived" / "underlying_1min_60d.parquet"
 B0_PREDICTORS = DATA_ROOT / "derived" / "b0_predictors_60d.parquet"
 B1_ORIGINS = DATA_ROOT / "derived" / "b1_origins_60d.parquet"
 B0_TARGET = DATA_ROOT / "derived" / "b0_target_60d.parquet"
+# Timing-sensitivity plumbing (R-023 execution plan): DELAY_SECONDS defaults to the
+# frozen 60 s cutoff; 120/300 suffix every delay-dependent output with _delay{N} so the
+# frozen primary artifacts are never overwritten.
+DELAY_SECONDS = 60
+
+
+def _delay_suffix() -> str:
+    return "" if DELAY_SECONDS == 60 else f"_delay{DELAY_SECONDS}"
+
+
 B2_ROOT = DATA_ROOT / "derived" / "b2_direct"
 B2_COMBINED = DATA_ROOT / "derived" / "b2_direct_60d.parquet"
 PANEL = DATA_ROOT / "derived" / "panel_60d.parquet"
+
+
+def _apply_delay_paths() -> None:
+    global B2_ROOT, B2_COMBINED, PANEL
+    suffix = _delay_suffix()
+    B2_ROOT = DATA_ROOT / "derived" / f"b2_direct{suffix}"
+    B2_COMBINED = DATA_ROOT / "derived" / f"b2_direct_60d{suffix}.parquet"
+    PANEL = DATA_ROOT / "derived" / f"panel_60d{suffix}.parquet"
 RAW_FMP = DATA_ROOT / "raw" / "fmp"
 ASSETS = tuple(OUTCOME_ASSETS)
 MARKET_ASSETS = (*ASSETS, "SPY", "QQQ")
@@ -316,7 +334,9 @@ def build_b2_direct() -> None:
         if not all(path.is_file() for path in paths):
             raise RuntimeError(f"B2_CONFIRMATION_EVENT_PARTITION_MISSING:{day}")
         trades = _load_b2_trade_partitions(paths, day)
-        activity = aggregate_b2_activity(trades, origins_day, window_minutes=5, delay_seconds=60)
+        activity = aggregate_b2_activity(
+            trades, origins_day, window_minutes=5, delay_seconds=DELAY_SECONDS
+        )
         if (
             activity.height != origins_day.height
             or activity["origin_id"].n_unique() != activity.height
@@ -574,7 +594,14 @@ def main() -> None:
     parser.add_argument(
         "--stage", choices=("origins", "fmp", "b0", "b2", "b1", "target", "panel"), required=True
     )
-    stage = parser.parse_args().stage
+    parser.add_argument("--delay-seconds", type=int, choices=(60, 120, 300), default=60)
+    arguments = parser.parse_args()
+    stage = arguments.stage
+    global DELAY_SECONDS
+    DELAY_SECONDS = arguments.delay_seconds
+    _apply_delay_paths()
+    if DELAY_SECONDS != 60 and stage not in ("b2", "panel"):
+        raise SystemExit("DELAY_SENSITIVITY_ONLY_REBUILDS_B2_AND_PANEL")
     if stage == "origins":
         build_origins()
     elif stage == "fmp":

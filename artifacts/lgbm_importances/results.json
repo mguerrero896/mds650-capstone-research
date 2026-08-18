@@ -1,0 +1,200 @@
+{
+ "label": "EXPLORATORY_DESCRIPTIVE (Gate 2 deferred deliverable)",
+ "panels": {
+  "C4c": {
+   "b2_total_gain_share_pct": 1.7459782051671056,
+   "importances": [
+    {
+     "feature": "b0v2_underlying_rv_30m",
+     "gain_share_pct": 80.85612332949928,
+     "splits": 528
+    },
+    {
+     "feature": "b1v2_atm_iv_30_60_dte",
+     "gain_share_pct": 4.484614498800057,
+     "splits": 839
+    },
+    {
+     "feature": "session_minute",
+     "gain_share_pct": 3.707087590121193,
+     "splits": 998
+    },
+    {
+     "feature": "b0v2_qqq_rv_30m",
+     "gain_share_pct": 2.3037430349078036,
+     "splits": 661
+    },
+    {
+     "feature": "b0v2_spy_rv_30m",
+     "gain_share_pct": 2.295246888728687,
+     "splits": 510
+    },
+    {
+     "feature": "b1v2_skew_symmetric_moneyness",
+     "gain_share_pct": 1.9774835175512135,
+     "splits": 597
+    },
+    {
+     "feature": "b0v2_underlying_rv_5m",
+     "gain_share_pct": 1.7726361590842805,
+     "splits": 161
+    },
+    {
+     "feature": "b1v2_atm_iv_change_30m",
+     "gain_share_pct": 0.6113979176160342,
+     "splits": 290
+    },
+    {
+     "feature": "b2v2_z_log_trade_count",
+     "gain_share_pct": 0.4515768307931403,
+     "splits": 280
+    },
+    {
+     "feature": "b2v2_z_strike_concentration",
+     "gain_share_pct": 0.3109148695160894,
+     "splits": 174
+    },
+    {
+     "feature": "b1v2_atm_iv_change_5m",
+     "gain_share_pct": 0.2456888585243376,
+     "splits": 175
+    },
+    {
+     "feature": "b2v2_z_expiry_concentration",
+     "gain_share_pct": 0.2402269872708486,
+     "splits": 173
+    },
+    {
+     "feature": "b2v2_z_log_mean_trade_premium",
+     "gain_share_pct": 0.2390300646452253,
+     "splits": 113
+    },
+    {
+     "feature": "b2v2_z_unique_contract_share",
+     "gain_share_pct": 0.1596249180583723,
+     "splits": 135
+    },
+    {
+     "feature": "b2v2_z_log_max_trade_premium",
+     "gain_share_pct": 0.10657208458443164,
+     "splits": 88
+    },
+    {
+     "feature": "b2v2_deviation_call_put_premium_imbalance",
+     "gain_share_pct": 0.0913932912745366,
+     "splits": 102
+    },
+    {
+     "feature": "b2v2_z_repeated_contract_premium_share",
+     "gain_share_pct": 0.08813698686308555,
+     "splits": 105
+    },
+    {
+     "feature": "b2v2_deviation_execution_side_premium_imbalance",
+     "gain_share_pct": 0.058502172161375786,
+     "splits": 71
+    }
+   ],
+   "input_sha256": "e0686f0ee3f4cd119d7d6399182498fa405873325f8007d59ed3ac72ddda1fda",
+   "train_sessions": 34
+  },
+  "C6": {
+   "b2_total_gain_share_pct": 3.995264130570436,
+   "importances": [
+    {
+     "feature": "b0v2_underlying_rv_30m",
+     "gain_share_pct": 82.56684106700871,
+     "splits": 624
+    },
+    {
+     "feature": "b1v3_log_atm_variance_30d",
+     "gain_share_pct": 4.961781634762829,
+     "splits": 855
+    },
+    {
+     "feature": "session_minute",
+     "gain_share_pct": 2.660389017228293,
+     "splits": 803
+    },
+    {
+     "feature": "b2_log_trade_count",
+     "gain_share_pct": 2.1173394275135795,
+     "splits": 361
+    },
+    {
+     "feature": "b0v2_spy_rv_30m",
+     "gain_share_pct": 1.7464455770206002,
+     "splits": 645
+    },
+    {
+     "feature": "b0v2_qqq_rv_30m",
+     "gain_share_pct": 1.5619429474823598,
+     "splits": 575
+    },
+    {
+     "feature": "b1v3_log_symmetric_skew_30d",
+     "gain_share_pct": 1.2269713489815586,
+     "splits": 421
+    },
+    {
+     "feature": "b1v3_log_atm_variance_change_30m",
+     "gain_share_pct": 0.6172581117766995,
+     "splits": 318
+    },
+    {
+     "feature": "b0v2_underlying_rv_5m",
+     "gain_share_pct": 0.47048608220220595,
+     "splits": 151
+    },
+    {
+     "feature": "b2_expiry_concentration",
+     "gain_share_pct": 0.4364631038859398,
+     "splits": 222
+    },
+    {
+     "feature": "b2_strike_concentration",
+     "gain_share_pct": 0.4317668234933271,
+     "splits": 207
+    },
+    {
+     "feature": "b2_call_put_premium_imbalance_scaled",
+     "gain_share_pct": 0.27814332859851026,
+     "splits": 171
+    },
+    {
+     "feature": "b2_unique_contract_share",
+     "gain_share_pct": 0.22021361374313,
+     "splits": 144
+    },
+    {
+     "feature": "b2_log_mean_trade_premium",
+     "gain_share_pct": 0.1974010240185078,
+     "splits": 131
+    },
+    {
+     "feature": "b1v3_log_atm_variance_change_5m",
+     "gain_share_pct": 0.1926200829663041,
+     "splits": 131
+    },
+    {
+     "feature": "b2_execution_side_premium_imbalance",
+     "gain_share_pct": 0.11574140205725399,
+     "splits": 86
+    },
+    {
+     "feature": "b2_repeated_contract_premium_share",
+     "gain_share_pct": 0.10218090578753432,
+     "splits": 83
+    },
+    {
+     "feature": "b2_log_max_trade_premium",
+     "gain_share_pct": 0.0960145014726532,
+     "splits": 72
+    }
+   ],
+   "input_sha256": "d688000d86d5752ab5d553d4616f7ea94f301f7e148b81c1aa2044e16db6d3dd",
+   "train_sessions": 45
+  }
+ },
+ "schema_version": "lgbm-importances-v1.0"
+}

@@ -334,6 +334,19 @@ def _stability(frame: pl.DataFrame, contrasts: list[dict[str, Any]]) -> list[dic
 
 def main() -> None:
     """Fit on development, predict the two blocks once, and emit evidence."""
+    # R-023 timing sensitivities: --delay-seconds re-points the input panel to the
+    # _delay{N} rebuild and writes all outputs under a sibling artifact directory so
+    # the frozen 60 s evidence is never touched. Models, folds, MDEs unchanged.
+    import argparse
+
+    global NEW_PANEL, ARTIFACT_ROOT
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--delay-seconds", type=int, choices=(60, 120, 300), default=60)
+    delay = parser.parse_args().delay_seconds
+    if delay != 60:
+        NEW_PANEL = Path(f"D:/MDS650/b2_confirmation/derived/panel_60d_delay{delay}.parquet")
+        ARTIFACT_ROOT = ROOT / "artifacts" / f"b2_confirmation_delay{delay}"
+        ARTIFACT_ROOT.mkdir(parents=True, exist_ok=True)
     protocol = _validate_protocol()
     prereg = _json(PREREG)
     mechanism_prereg = _json(

@@ -1,0 +1,64 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='1100' height='680'>
+<rect width='100%' height='100%' fill='white'/>
+<text x='20' y='24' font-size='16'>Frozen confirmation QLIKE contrasts</text>
+<text x='20' y='54' font-size='11'>block_a_2024_08_02_2024_09_13 / elastic_net / delta_b1</text>
+<rect x='620.00' y='41' width='95.64' height='16' fill='#1b7f3a'/>
+<text x='940' y='54' font-size='11'>0.027531</text>
+<text x='20' y='84' font-size='11'>block_a_2024_08_02_2024_09_13 / gamma_glm / delta_b1</text>
+<rect x='620.00' y='71' width='293.28' height='16' fill='#1b7f3a'/>
+<text x='940' y='84' font-size='11'>0.084420</text>
+<text x='20' y='114' font-size='11'>block_a_2024_08_02_2024_09_13 / har_rv / delta_b1</text>
+<rect x='620.00' y='101' width='300.00' height='16' fill='#1b7f3a'/>
+<text x='940' y='114' font-size='11'>0.086356</text>
+<text x='20' y='144' font-size='11'>block_a_2024_08_02_2024_09_13 / lightgbm / delta_b1</text>
+<rect x='620.00' y='131' width='267.12' height='16' fill='#1b7f3a'/>
+<text x='940' y='144' font-size='11'>0.076891</text>
+<text x='20' y='174' font-size='11'>block_a_2024_08_02_2024_09_13 / ridge / delta_b1</text>
+<rect x='620.00' y='161' width='299.07' height='16' fill='#1b7f3a'/>
+<text x='940' y='174' font-size='11'>0.086089</text>
+<text x='20' y='204' font-size='11'>block_a_2024_08_02_2024_09_13 / elastic_net / delta_b2</text>
+<rect x='620.00' y='191' width='50.22' height='16' fill='#1b7f3a'/>
+<text x='940' y='204' font-size='11'>0.014456</text>
+<text x='20' y='234' font-size='11'>block_a_2024_08_02_2024_09_13 / gamma_glm / delta_b2</text>
+<rect x='620.00' y='221' width='265.00' height='16' fill='#1b7f3a'/>
+<text x='940' y='234' font-size='11'>0.076282</text>
+<text x='20' y='264' font-size='11'>block_a_2024_08_02_2024_09_13 / har_rv / delta_b2</text>
+<rect x='620.00' y='251' width='183.99' height='16' fill='#1b7f3a'/>
+<text x='940' y='264' font-size='11'>0.052963</text>
+<text x='20' y='294' font-size='11'>block_a_2024_08_02_2024_09_13 / lightgbm / delta_b2</text>
+<rect x='535.63' y='281' width='84.37' height='16' fill='#b3261e'/>
+<text x='940' y='294' font-size='11'>-0.024286</text>
+<text x='20' y='324' font-size='11'>block_a_2024_08_02_2024_09_13 / ridge / delta_b2</text>
+<rect x='620.00' y='311' width='184.76' height='16' fill='#1b7f3a'/>
+<text x='940' y='324' font-size='11'>0.053185</text>
+<text x='20' y='354' font-size='11'>block_b_2024_10_01_2024_11_11 / elastic_net / delta_b1</text>
+<rect x='620.00' y='341' width='8.79' height='16' fill='#1b7f3a'/>
+<text x='940' y='354' font-size='11'>0.002531</text>
+<text x='20' y='384' font-size='11'>block_b_2024_10_01_2024_11_11 / gamma_glm / delta_b1</text>
+<rect x='620.00' y='371' width='100.80' height='16' fill='#1b7f3a'/>
+<text x='940' y='384' font-size='11'>0.029015</text>
+<text x='20' y='414' font-size='11'>block_b_2024_10_01_2024_11_11 / har_rv / delta_b1</text>
+<rect x='620.00' y='401' width='109.20' height='16' fill='#1b7f3a'/>
+<text x='940' y='414' font-size='11'>0.031435</text>
+<text x='20' y='444' font-size='11'>block_b_2024_10_01_2024_11_11 / lightgbm / delta_b1</text>
+<rect x='620.00' y='431' width='127.26' height='16' fill='#1b7f3a'/>
+<text x='940' y='444' font-size='11'>0.036631</text>
+<text x='20' y='474' font-size='11'>block_b_2024_10_01_2024_11_11 / ridge / delta_b1</text>
+<rect x='620.00' y='461' width='108.65' height='16' fill='#1b7f3a'/>
+<text x='940' y='474' font-size='11'>0.031275</text>
+<text x='20' y='504' font-size='11'>block_b_2024_10_01_2024_11_11 / elastic_net / delta_b2</text>
+<rect x='620.00' y='491' width='8.08' height='16' fill='#1b7f3a'/>
+<text x='940' y='504' font-size='11'>0.002326</text>
+<text x='20' y='534' font-size='11'>block_b_2024_10_01_2024_11_11 / gamma_glm / delta_b2</text>
+<rect x='620.00' y='521' width='120.15' height='16' fill='#1b7f3a'/>
+<text x='940' y='534' font-size='11'>0.034585</text>
+<text x='20' y='564' font-size='11'>block_b_2024_10_01_2024_11_11 / har_rv / delta_b2</text>
+<rect x='620.00' y='551' width='140.64' height='16' fill='#1b7f3a'/>
+<text x='940' y='564' font-size='11'>0.040483</text>
+<text x='20' y='594' font-size='11'>block_b_2024_10_01_2024_11_11 / lightgbm / delta_b2</text>
+<rect x='591.56' y='581' width='28.44' height='16' fill='#b3261e'/>
+<text x='940' y='594' font-size='11'>-0.008185</text>
+<text x='20' y='624' font-size='11'>block_b_2024_10_01_2024_11_11 / ridge / delta_b2</text>
+<rect x='620.00' y='611' width='140.01' height='16' fill='#1b7f3a'/>
+<text x='940' y='624' font-size='11'>0.040303</text>
+<line x1='620' x2='620' y1='38' y2='668' stroke='#333'/></svg>

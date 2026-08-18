@@ -1,0 +1,25 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.12"
+      - name: Sync locked environment
+        run: uv sync --locked
+      - name: Ruff
+        run: uv run ruff check src scripts tests
+      - name: Mypy (strict)
+        run: uv run mypy src scripts
+      - name: Pytest (hermetic, coverage gate)
+        env:
+          MDS650_EXTERNAL_ROOT: ${{ github.workspace }}/.ci-external-root
+        run: uv run pytest -q -m "not live" --cov --cov-fail-under=80

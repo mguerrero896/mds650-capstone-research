@@ -22,9 +22,9 @@ _GBRAIN_SYNC() {
         _REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
         pwsh -NoLogo -NoProfile -NonInteractive -File "$_REPO_ROOT/scripts/gbrain_sync.ps1" -RepoRoot "$_REPO_ROOT" || \
             echo "[gbrain hook] sync failed; run scripts/gbrain_sync.ps1 manually to diagnose" >&2
-    else
-        echo "[gbrain hook] pwsh not found; automatic sync skipped" >&2
     fi
+    # ponytail: no pwsh -> silent skip (housekeeping 2026-08-18); the sync is optional
+    # knowledge plumbing and its absence must not add noise to every commit.
 }
 
 CHANGED=$(git diff --name-only HEAD~1 HEAD 2>/dev/null || git diff --name-only HEAD 2>/dev/null)
