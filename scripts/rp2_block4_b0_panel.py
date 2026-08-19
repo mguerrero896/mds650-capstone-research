@@ -420,6 +420,7 @@ def causal_ewma_forecasts(
     panel: pl.DataFrame,
     *,
     role: str,
+    max_fill_share: float,
     decay: float = EWMA_LAMBDA,
     horizon: int = TARGET_HORIZON,
 ) -> FloatArray:
@@ -428,6 +429,10 @@ def causal_ewma_forecasts(
     One recursion per asset, carried across session breaks in calendar order, fed only by
     observed one-minute returns. The panel is read for its origin keys and for nothing
     else — in particular not for ``rv30``, which the previous challenger consumed.
+
+    ``max_fill_share`` must be the threshold the panel itself was built with. A stricter one
+    here drops sessions the panel kept, and the challenger is then scored on fewer rows than
+    every other model in the same table.
     """
 
     frame = panel.filter(pl.col("role") == role).sort(["session_date", "asset", "origin_minute"])
@@ -440,7 +445,7 @@ def causal_ewma_forecasts(
     ):
         key = (str(asset), str(session_date))
         grid = build_session_grid(group, session=session_date)
-        if grid.minutes == 0 or grid.fill_share > 0.05:
+        if grid.minutes == 0 or grid.fill_share > max_fill_share:
             continue
         usable = first_valid_minute(grid.valid)
         close = grid.close[usable:]
@@ -475,7 +480,12 @@ def causal_ewma_forecasts(
 
 
 def fit_intraday_garch(
-    bars: pl.DataFrame, panel: pl.DataFrame, *, role: str, train_share: float
+    bars: pl.DataFrame,
+    panel: pl.DataFrame,
+    *,
+    role: str,
+    train_share: float,
+    max_fill_share: float,
 ) -> dict[str, float]:
     """Fit GARCH(1,1) on training one-minute returns and score it at the origins."""
 
@@ -497,7 +507,7 @@ def fit_intraday_garch(
         # Same discipline as the panel: a holiday has no grid, and unobserved opening
         # minutes are NaN rather than back-filled, so the series starts where the market
         # first printed. `offsets` records that start so the origin index can be rebased.
-        if grid.minutes == 0 or grid.fill_share > 0.05:
+        if grid.minutes == 0 or grid.fill_share > max_fill_share:
             continue
         usable = first_valid_minute(grid.valid)
         close = grid.close[usable:]
@@ -572,8 +582,16 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     results: dict[str, dict[str, dict[str, float]]] = {}
     for role in ("D", "V"):
-        garch = fit_intraday_garch(bars, panel, role=role, train_share=args.train_share)
-        ewma = causal_ewma_forecasts(bars, panel, role=role)
+        garch = fit_intraday_garch(
+            bars,
+            panel,
+            role=role,
+            train_share=args.train_share,
+            max_fill_share=args.max_fill_share,
+        )
+        ewma = causal_ewma_forecasts(
+            bars, panel, role=role, max_fill_share=args.max_fill_share
+        )
         results[role] = evaluate_role(
             panel, role=role, train_share=args.train_share, garch=garch, ewma=ewma
         )

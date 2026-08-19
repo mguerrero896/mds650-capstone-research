@@ -92,8 +92,8 @@ def test_the_ewma_challenger_ignores_the_target_column_entirely() -> None:
     rng = np.random.default_rng(1)
     scrambled = panel.with_columns(rv30=pl.Series(rng.lognormal(-9.0, 1.0, panel.height)))
 
-    left = block4.causal_ewma_forecasts(bars, panel, role="D")
-    right = block4.causal_ewma_forecasts(bars, scrambled, role="D")
+    left = block4.causal_ewma_forecasts(bars, panel, role="D", max_fill_share=0.05)
+    right = block4.causal_ewma_forecasts(bars, scrambled, role="D", max_fill_share=0.05)
     assert np.array_equal(left, right, equal_nan=True)
     assert np.isfinite(left).any(), "the challenger produced no forecast at all"
 
@@ -104,7 +104,7 @@ def test_the_ewma_challenger_carries_state_across_sessions_per_asset() -> None:
     block4 = _load("rp2_block4_b0_panel")
     bars = _bars()
     panel, _ = block4.build_b0_panel(bars, max_fill_share=0.05)
-    forecasts = block4.causal_ewma_forecasts(bars, panel, role="D")
+    forecasts = block4.causal_ewma_forecasts(bars, panel, role="D", max_fill_share=0.05)
 
     frame = panel.filter(pl.col("role") == "D").sort(
         ["session_date", "asset", "origin_minute"]
@@ -121,3 +121,33 @@ def test_the_ewma_challenger_carries_state_across_sessions_per_asset() -> None:
     quiet = float(np.nanmedian(forecasts[(assets == "AAPL") & finite]))
     loud = float(np.nanmedian(forecasts[(assets == "MSFT") & finite]))
     assert loud > 3.0 * quiet, "the two assets share one state"
+
+
+def _bars_with_gaps(sessions: int = 12, drop_share: float = 0.10) -> pl.DataFrame:
+    """Bars with a tenth of each session's minutes absent, so the grid must fill them."""
+
+    bars = _bars(sessions)
+    rng = np.random.default_rng(4)
+    keep = rng.random(bars.height) > drop_share
+    # The first minute of each session always survives, so the session still starts.
+    keep |= bars["minute"].to_numpy() == 0
+    return bars.filter(pl.Series(keep))
+
+
+def test_the_ewma_challenger_honours_the_configured_fill_threshold() -> None:
+    """A session the panel accepted must not silently lose its challenger forecast."""
+
+    block4 = _load("rp2_block4_b0_panel")
+    bars = _bars_with_gaps()
+    panel, _ = block4.build_b0_panel(bars, max_fill_share=0.2)
+    assert panel.height > 0, "the fixture must produce a panel at the relaxed threshold"
+
+    matched = block4.causal_ewma_forecasts(bars, panel, role="D", max_fill_share=0.2)
+    default = block4.causal_ewma_forecasts(bars, panel, role="D", max_fill_share=0.05)
+    assert np.isfinite(matched).sum() > np.isfinite(default).sum(), (
+        "the challenger ignores the threshold the panel was built with"
+    )
+    rows = panel.filter(pl.col("role") == "D").height
+    assert np.isfinite(matched).sum() == rows, (
+        "every panel row the run accepted must carry a forecast"
+    )
