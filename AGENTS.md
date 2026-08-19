@@ -75,3 +75,44 @@ the local canonical repo but are stripped from the entire public history by
 `publish_mirror.sh` (same pass as the gated data, no Supabase pointers). Current:
 `ROADMAP_CODEX_20260816.md`. Add internal-only docs there BEFORE committing them;
 never reference them from public docs, tests, or the INDEX.
+
+## RP2-v3: plan maestro vinculante
+
+Antes de tocar nada de RP2-v3, lee `docs/rp2_v3/RP2_V3_MASTER_PLAN.md`. Es el plan
+del propietario, íntegro y por gates, y manda sobre cualquier atajo. Su regla
+central: cada gate es un PR separado, con tests que fallan antes de la corrección,
+métricas antes/después y un criterio objetivo de aprobación. El orden de los doce
+PRs de su §24 no se altera.
+
+### La línea base local no es la que el plan supone
+
+El plan fija como punto de partida `8c01b0a0fb329013e5c335f5f9af6b516ffaf6a0` y
+manda `git switch main; git pull --ff-only origin main`. **Eso falla aquí**, y no
+por un error del plan: este repositorio local y el espejo público tienen
+historias injertadas y disjuntas.
+
+Verificado el 2026-08-20:
+
+- `main` local está en `dbd571d`; el `main` del espejo está en `8c01b0a`.
+- `8c01b0a` sí existe en el object store local (viene de `origin`) y sí contiene
+  todo el trabajo de RP2-v2.
+- Ninguno de los dos es ancestro del otro, así que `--ff-only` aborta con
+  "Not possible to fast-forward".
+
+Arranca desde `origin/main` directamente:
+
+```powershell
+git fetch origin --prune
+git rev-parse origin/main          # debe devolver 8c01b0a0...
+git worktree add ".worktrees/<gate>" -b "<rama>" origin/main
+```
+
+No fuerces el `main` local a coincidir ni reescribas su historia sin decisión
+explícita del propietario: el injerto es deliberado y la evidencia congelada
+depende de él.
+
+### Cohortes selladas
+
+`sealed_cohorts_read = 0` en todo el programa. Ninguna cohorte de confirmación —
+C, Phase 8, Phase 9 — se lee durante el desarrollo de RP2-v3, ni siquiera para
+mirar su tamaño. Cualquier lectura exige autorización escrita del propietario.
