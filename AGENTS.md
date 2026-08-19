@@ -103,9 +103,14 @@ Arranca desde `origin/main` directamente:
 
 ```powershell
 git fetch origin --prune
-git rev-parse origin/main          # debe devolver 8c01b0a0...
+git rev-parse origin/main          # el tip remoto actual, sea cual sea
 git worktree add ".worktrees/<gate>" -b "<rama>" origin/main
 ```
+
+`8c01b0a` queda como la procedencia de la línea base RP2-v2, no como una
+precondición. En cuanto se fusionó el primer gate, `origin/main` dejó de valer
+`8c01b0a`, y cada gate posterior arranca del tip remoto del momento — que es
+precisamente el gate anterior ya fusionado, como manda la cascada del §24.
 
 No fuerces el `main` local a coincidir ni reescribas su historia sin decisión
 explícita del propietario: el injerto es deliberado y la evidencia congelada

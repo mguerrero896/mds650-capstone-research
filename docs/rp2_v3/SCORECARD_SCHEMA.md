@@ -72,6 +72,7 @@ as an unmeasured one.
 | `mde` | object | minimum detectable effect at the realised session count |
 | `calibration_slope` | object | Mincer–Zarnowitz slope per model |
 | `calibration_intercept` | object | Mincer–Zarnowitz intercept per model |
+| `common_mask_sha256` | object | hash of the evaluated row mask, **per contrast** |
 
 ## Engineering
 
@@ -84,6 +85,17 @@ as an unmeasured one.
 | `model_config_sha256` | str | hash of the model configuration |
 | `code_commit` | str | commit the run was produced from |
 | `artifact_sha256` | object | content hash per emitted artifact |
+
+A contrast is keyed by role, model family, base information set and expanded information
+set. `common_mask_sha256` is recorded per contrast, not once per run: two contrasts can
+score the same number of rows without scoring the same rows, so an equal
+`common_evaluation_rows` count is not evidence that a nested pair saw identical data.
+Only the hash is.
+
+## Field list
+
+The authoritative list of required fields is [`configs/rp2_v3_scorecard_fields.json`](../../configs/rp2_v3_scorecard_fields.json). This document and the pipeline runner both
+read it, so a field cannot be dropped from one and survive in the other.
 
 ## Reproducibility
 
