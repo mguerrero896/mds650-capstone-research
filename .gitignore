@@ -65,3 +65,5 @@ artifacts/rp2_block5_surface/b1_surface_panel.parquet
 artifacts/rp2_block6_flow/b2_flow_panel.parquet
 artifacts/rp2_block11b_forward/tradeable_legs.parquet
 artifacts/rp2_block5b_independent/paired_surfaces.parquet
+
+.worktrees/
