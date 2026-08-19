@@ -104,6 +104,10 @@ def measure_dispersion(panel: pl.DataFrame, *, role: str, train_share: float
     for name, maps in INFORMATION_SETS.items():
         designs[name], resolved[name] = build_design(frame, maps)
     keep = common_usable_rows(designs, target)
+    information_sets: dict[str, object] = {
+        name: describe_information_set((name,), resolved[name], keep)
+        for name in INFORMATION_SETS
+    }
     frame = frame.filter(pl.Series(keep))
     target = target[keep]
     designs = {name: design[keep] for name, design in designs.items()}
@@ -134,11 +138,7 @@ def measure_dispersion(panel: pl.DataFrame, *, role: str, train_share: float
             block[f"{label}_observed_mean"] = float(np.mean(per_session))
         block["evaluation_sessions"] = float(np.unique(session_labels).size)
         out[family] = block
-    provenance: dict[str, object] = {
-        name: describe_information_set((name,), resolved[name], keep)
-        for name in INFORMATION_SETS
-    }
-    return out, provenance
+    return out, dict(information_sets)
 
 
 def main(argv: Sequence[str] | None = None) -> int:

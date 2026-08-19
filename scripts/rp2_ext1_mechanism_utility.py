@@ -43,6 +43,8 @@ from mds650.rp2.panel import (
     VARIANCE_FLOOR,
     build_design,
     chronological_split,
+    common_usable_rows,
+    describe_information_set,
     load_merged_panel,
     session_rank,
     standardise,
@@ -305,12 +307,23 @@ def run_role(
     )
     rv30 = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
 
-    nuisance, _ = build_design(frame, [B0_FEATURES, B1_FEATURES])
-    treatment_map = {n: B2_FEATURES[n] for n in CORE_TREATMENTS if n in B2_FEATURES}
+    nuisance, nuisance_names = build_design(frame, [B0_FEATURES, B1_FEATURES])
+    unknown = [n for n in CORE_TREATMENTS if n not in B2_FEATURES]
+    if unknown:
+        raise ValueError(f"RP2_EXT1_UNKNOWN_TREATMENT:{','.join(sorted(unknown))}")
+    treatment_map = {n: B2_FEATURES[n] for n in CORE_TREATMENTS}
     treatment, names = build_design(frame, [treatment_map], intercept=False)
     keep = usable_rows(nuisance, rv30) & np.isfinite(treatment).all(axis=1)
+    information_sets = {
+        "B0+B1": describe_information_set(("B0", "B1"), nuisance_names, keep),
+        "B2_mechanism": describe_information_set(("B2",), names, keep),
+    }
     if int(keep.sum()) < 2000:
-        return {"status": "INSUFFICIENT_ROWS", "rows": int(keep.sum())}
+        return {
+            "status": "INSUFFICIENT_ROWS",
+            "rows": int(keep.sum()),
+            "information_sets": information_sets,
+        }
 
     frame = frame.filter(pl.Series(keep))
     rv30, nuisance, treatment = rv30[keep], nuisance[keep], treatment[keep]
@@ -318,20 +331,30 @@ def run_role(
     train, test = chronological_split(sessions, train_share=train_share)
     assets = frame["asset"].to_numpy()
 
-    base_design, _ = build_design(frame, [B0_FEATURES, B1_FEATURES])
-    full_design, _ = build_design(frame, [B0_FEATURES, B1_FEATURES, B2_FEATURES])
+    base_design, base_names = build_design(frame, [B0_FEATURES, B1_FEATURES])
+    full_design, full_names = build_design(frame, [B0_FEATURES, B1_FEATURES, B2_FEATURES])
     replicated_map = {n: B2_FEATURES[n] for n in REPLICATED}
-    replicated_design, _ = build_design(frame, [B0_FEATURES, B1_FEATURES, replicated_map])
+    replicated_design, replicated_names = build_design(
+        frame, [B0_FEATURES, B1_FEATURES, replicated_map]
+    )
     designs = {
         "B0+B1": base_design,
         "B0+B1+mechanism": replicated_design,
         "B0+B1+B2": full_design,
     }
-    finite = np.isfinite(full_design).all(axis=1)
+    finite = common_usable_rows(designs, rv30)
+    information_sets |= {
+        "nested_B0+B1": describe_information_set(("B0", "B1"), base_names, finite),
+        "nested_B0+B1+mechanism": describe_information_set(
+            ("B0", "B1", "B2_mechanism"), replicated_names, finite
+        ),
+        "nested_B0+B1+B2": describe_information_set(("B0", "B1", "B2"), full_names, finite),
+    }
 
     return {
         "status": "MEASURED",
         "rows": int(keep.sum()),
+        "information_sets": information_sets,
         "test_rows": int(test.sum()),
         "sessions": int(np.unique(sessions).size),
         "a_other_targets": target_battery(frame, nuisance, treatment, sessions, names, folds=folds),

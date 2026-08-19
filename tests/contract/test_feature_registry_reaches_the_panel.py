@@ -113,17 +113,20 @@ def test_no_panel_column_is_a_feature_nobody_registered() -> None:
     )
 
 
-#: Every block that assembles an information set from the registry. Each must record what
-#: it actually resolved, and none may intersect the evaluation mask by hand.
-BLOCKS_THAT_BUILD_A_DESIGN: tuple[str, ...] = (
-    "scripts/rp2_block7_dml.py",
-    "scripts/rp2_block8_ladder.py",
-    "scripts/rp2_block9_generalization.py",
-    "scripts/rp2_block10_inference.py",
-    "scripts/rp2_block11_economics.py",
-    "scripts/rp2_block11b_forward_economics.py",
-    "scripts/rp2_block12_prospective_design.py",
-)
+def _design_callers() -> dict[str, str]:
+    """Every script that assembles an information set, discovered rather than listed.
+
+    A hand-kept list is a list that goes stale: two extension scripts built designs and
+    emitted artifacts for the whole programme without appearing on any such list.
+    """
+
+    found = {}
+    for path in sorted((REPO / "scripts").glob("*.py")):
+        text = path.read_text(encoding="utf-8")
+        if "build_design(" in text and "def build_design" not in text:
+            found[str(path.relative_to(REPO)).replace("\\", "/")] = text
+    return found
+
 
 #: Panel helpers whose entire purpose is to stop a run. A helper that is written, tested and
 #: never called protects nothing; this programme has shipped that exact shape four times.
@@ -157,26 +160,40 @@ def test_every_fail_closed_panel_helper_has_a_production_caller() -> None:
     )
 
 
-def test_every_block_records_the_information_set_it_actually_resolved() -> None:
+def test_every_design_caller_records_the_information_set_it_resolved() -> None:
     """A run may not be called B0+B1+B2 without saying what that resolved to."""
 
-    missing = [
-        name
-        for name in BLOCKS_THAT_BUILD_A_DESIGN
-        if "describe_information_set(" not in (REPO / name).read_text(encoding="utf-8")
-    ]
-    assert not missing, f"blocks that build a design without recording it: {missing}"
+    callers = _design_callers()
+    assert len(callers) >= 9, f"discovery found only {sorted(callers)}"
+    missing = sorted(
+        name for name, text in callers.items() if "describe_information_set(" not in text
+    )
+    assert not missing, f"scripts that build a design without recording it: {missing}"
 
 
-def test_no_block_intersects_the_evaluation_mask_by_hand() -> None:
-    """One definition of the nested-comparison mask, so all of them cannot drift apart."""
+def test_no_design_caller_intersects_the_evaluation_mask_by_hand() -> None:
+    """One definition of the nested-comparison mask, so they cannot drift apart."""
 
-    hand_rolled = [
-        name
-        for name in BLOCKS_THAT_BUILD_A_DESIGN
-        if "keep &= usable_rows(" in (REPO / name).read_text(encoding="utf-8")
-    ]
+    hand_rolled = sorted(
+        name for name, text in _design_callers().items() if "keep &= usable_rows(" in text
+    )
     assert not hand_rolled, (
-        f"blocks building the common mask themselves instead of common_usable_rows: "
+        f"scripts building the common mask themselves instead of common_usable_rows: "
         f"{hand_rolled}"
     )
+
+
+def test_provenance_is_recorded_before_a_run_can_bail_out() -> None:
+    """The artifacts most in need of diagnostics are the ones that stopped early.
+
+    An INSUFFICIENT_ROWS return that precedes the provenance leaves exactly the artifact a
+    reader would want to audit with none of the four required fields in it.
+    """
+
+    late = []
+    for name, text in _design_callers().items():
+        bail = text.find('"INSUFFICIENT_ROWS"')
+        record = text.find("describe_information_set(")
+        if bail >= 0 and (record < 0 or record > bail):
+            late.append(name)
+    assert not late, f"scripts that can return INSUFFICIENT_ROWS without provenance: {late}"

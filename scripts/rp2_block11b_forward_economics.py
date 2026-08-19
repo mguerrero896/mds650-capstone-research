@@ -316,8 +316,16 @@ def run_role(
     for name, maps in INFORMATION_SETS.items():
         designs[name], resolved[name] = build_design(frame, maps)
     keep = common_usable_rows(designs, target)
+    information_sets = {
+        name: describe_information_set((name,), resolved[name], keep)
+        for name in INFORMATION_SETS
+    }
     if int(keep.sum()) < 2000:
-        return {"status": "INSUFFICIENT_ROWS", "rows": int(keep.sum())}
+        return {
+            "status": "INSUFFICIENT_ROWS",
+            "rows": int(keep.sum()),
+            "information_sets": information_sets,
+        }
 
     frame = frame.filter(pl.Series(keep))
     target = target[keep]
@@ -361,10 +369,7 @@ def run_role(
         "median_quote_age_s": _scalar(joined["quote_age_s"].median()),
         "median_dte_days": _scalar(joined["dte_days"].median()),
         "median_entry_half_spread": _scalar(joined["entry_half_spread"].median()),
-        "information_sets": {
-            name: describe_information_set((name,), resolved[name], keep)
-            for name in INFORMATION_SETS
-        },
+        "information_sets": information_sets,
     }
     per_model: dict[str, object] = {}
     trials = len(models) * len(INFORMATION_SETS)

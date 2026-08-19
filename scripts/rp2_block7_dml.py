@@ -85,8 +85,16 @@ def run_role(
 
     keep = usable_rows(nuisance, np.exp(outcomes["log_rv30"]))
     keep &= np.isfinite(treatment_design).all(axis=1)
+    information_sets = {
+        "B0+B1": describe_information_set(("B0", "B1"), nuisance_names, keep),
+        "B2_treatment": describe_information_set(("B2",), treatment_names, keep),
+    }
     if int(keep.sum()) < 1000:
-        return {"status": "INSUFFICIENT_ROWS", "rows": int(keep.sum())}
+        return {
+            "status": "INSUFFICIENT_ROWS",
+            "rows": int(keep.sum()),
+            "information_sets": information_sets,
+        }
 
     nuisance, treatment_design = nuisance[keep], treatment_design[keep]
     sessions = sessions[keep]
@@ -105,10 +113,7 @@ def run_role(
         "nuisance_features": len(nuisance_names),
         "folds": len(blocks),
         "treatments": list(treatment_names),
-        "information_sets": {
-            "B0+B1": describe_information_set(("B0", "B1"), nuisance_names, keep),
-            "B2_treatment": describe_information_set(("B2",), treatment_names, keep),
-        },
+        "information_sets": information_sets,
     }
     for outcome_name, values in outcomes.items():
         response = values[keep]

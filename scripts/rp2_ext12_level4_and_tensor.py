@@ -49,10 +49,11 @@ from mds650.rp2.panel import (
     VARIANCE_FLOOR,
     build_design,
     chronological_split,
+    common_usable_rows,
+    describe_information_set,
     load_merged_panel,
     session_rank,
     standardise,
-    usable_rows,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -165,10 +166,17 @@ def run_role(
     )
     index = np.asarray(frame["_row"].to_numpy(), dtype=np.int64)
     target = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
-    base_design, _ = build_design(frame, [B0_FEATURES, B1_FEATURES, B2_FEATURES])
-    keep = usable_rows(base_design, target)
+    base_design, base_names = build_design(frame, [B0_FEATURES, B1_FEATURES, B2_FEATURES])
+    keep = common_usable_rows({"B0+B1+B2": base_design}, target)
+    information_sets = {
+        "B0+B1+B2": describe_information_set(("B0", "B1", "B2"), base_names, keep)
+    }
     if int(keep.sum()) < 2000:
-        return {"status": "INSUFFICIENT_ROWS", "rows": int(keep.sum())}
+        return {
+            "status": "INSUFFICIENT_ROWS",
+            "rows": int(keep.sum()),
+            "information_sets": information_sets,
+        }
 
     frame = frame.filter(pl.Series(keep))
     target, base_design, index = target[keep], base_design[keep], index[keep]
@@ -182,6 +190,7 @@ def run_role(
         "rows": int(keep.sum()),
         "test_rows": int(test.sum()),
         "sessions": int(np.unique(ranks).size),
+        "information_sets": information_sets,
     }
 
     # ---- Extension 2: the moneyness x DTE tensor through the same tree family --------

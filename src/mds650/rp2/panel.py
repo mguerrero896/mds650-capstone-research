@@ -254,12 +254,18 @@ def describe_information_set(
 
     Without it, a document can call a run ``B0+B1+B2`` and nothing in the artifact says how
     many features that actually resolved to, or which rows were scored.
+
+    The intercept is recorded as a flag rather than as a feature. Counting it would make a
+    22-feature registry report 23 resolved, and the exit criterion of this gate is that
+    resolved equals registered — a comparison the record has to be able to support directly.
     """
 
+    features = [name for name in resolved if name != "intercept"]
     return {
         "requested_information_set": list(requested),
-        "resolved_feature_names": list(resolved),
-        "feature_count": len(resolved),
+        "resolved_feature_names": features,
+        "feature_count": len(features),
+        "includes_intercept": "intercept" in resolved,
         "evaluation_mask_sha256": mask_sha256(mask),
     }
 

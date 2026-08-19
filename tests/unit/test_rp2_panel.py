@@ -142,13 +142,29 @@ def test_the_evaluation_mask_hash_distinguishes_masks_of_equal_size() -> None:
 
 
 def test_an_information_set_record_names_what_it_actually_resolved() -> None:
-    record = describe_information_set(
-        ("B0",), ("intercept", "rv_back_30", "ret_30"), np.array([True, False, True, True])
-    )
+    """The intercept is not a feature: counting it makes 22 registered read as 23 resolved."""
+
+    mask = np.array([True, False, True, True])
+    record = describe_information_set(("B0",), ("intercept", "rv_back_30", "ret_30"), mask)
     assert record["requested_information_set"] == ["B0"]
-    assert record["resolved_feature_names"] == ["intercept", "rv_back_30", "ret_30"]
-    assert record["feature_count"] == 3
-    assert record["evaluation_mask_sha256"] == mask_sha256(np.array([True, False, True, True]))
+    assert record["resolved_feature_names"] == ["rv_back_30", "ret_30"]
+    assert record["feature_count"] == 2
+    assert record["includes_intercept"] is True
+    assert record["evaluation_mask_sha256"] == mask_sha256(mask)
+
+    without = describe_information_set(("B2",), ("b2_5m_premium",), mask)
+    assert without["includes_intercept"] is False
+    assert without["feature_count"] == 1
+
+
+def test_a_resolved_record_can_be_compared_against_the_registry_directly() -> None:
+    """The section 3 exit criterion is resolved == registered, so the record must be that."""
+
+    frame = _panel().with_columns(**{name: pl.lit(0.1) for name in B1_FEATURES})
+    _, names = build_design(frame, [B1_FEATURES])
+    record = describe_information_set(("B1",), names, np.ones(frame.height, dtype=bool))
+    assert set(record["resolved_feature_names"]) == set(B1_FEATURES)
+    assert record["feature_count"] == len(B1_FEATURES)
 
 
 def test_session_rank_is_dense_and_ordered_in_time() -> None:

@@ -166,8 +166,16 @@ def run_role(
     for name, maps in INFORMATION_SETS.items():
         designs[name], resolved[name] = build_design(frame, maps)
     keep = common_usable_rows(designs, target)
+    information_sets = {
+        name: describe_information_set((name,), resolved[name], keep)
+        for name in INFORMATION_SETS
+    }
     if int(keep.sum()) < 2000:
-        return {"status": "INSUFFICIENT_ROWS", "rows": int(keep.sum())}
+        return {
+            "status": "INSUFFICIENT_ROWS",
+            "rows": int(keep.sum()),
+            "information_sets": information_sets,
+        }
 
     frame = frame.filter(pl.Series(keep))
     target = target[keep]
@@ -183,10 +191,7 @@ def run_role(
         "rows": int(keep.sum()),
         "train_rows": int(train.sum()),
         "test_rows": int(test.sum()),
-        "information_sets": {
-            name: describe_information_set((name,), resolved[name], keep)
-            for name in INFORMATION_SETS
-        },
+        "information_sets": information_sets,
     }
     per_model: dict[str, object] = {}
     for model_name in models:

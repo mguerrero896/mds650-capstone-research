@@ -76,10 +76,18 @@ def run_role(
     for name, maps in INFORMATION_SETS.items():
         designs[name], resolved[name] = build_design(frame, maps)
     keep = common_usable_rows(designs, target)
+    information_sets = {
+        name: describe_information_set((name,), resolved[name], keep)
+        for name in INFORMATION_SETS
+    }
     keep &= np.isfinite(frame["b1_iv_30d"].to_numpy()) if "b1_iv_30d" in frame.columns else keep
     keep &= np.isfinite(frame["b1_median_relative_spread"].to_numpy())
     if int(keep.sum()) < 2000:
-        return {"status": "INSUFFICIENT_ROWS", "rows": int(keep.sum())}
+        return {
+            "status": "INSUFFICIENT_ROWS",
+            "rows": int(keep.sum()),
+            "information_sets": information_sets,
+        }
 
     frame = frame.filter(pl.Series(keep))
     target = target[keep]
@@ -109,10 +117,7 @@ def run_role(
         "median_cost_variance_units": float(np.median(cost[evaluate])),
         "median_implied_variance": float(np.median(implied_variance[evaluate])),
         "median_realized_variance": float(np.median(realized_annual[evaluate])),
-        "information_sets": {
-            name: describe_information_set((name,), resolved[name], keep)
-            for name in INFORMATION_SETS
-        },
+        "information_sets": information_sets,
     }
     per_model: dict[str, object] = {}
     trials = len(models) * len(INFORMATION_SETS)
