@@ -334,7 +334,7 @@ def run_role(
     keep = usable_rows(nuisance, rv30) & np.isfinite(treatment).all(axis=1)
     information_sets = {
         "B0+B1": describe_information_set(("B0", "B1"), nuisance_names, keep),
-        "B2_mechanism": describe_information_set(("B2",), names, keep),
+        "B2_mechanism": describe_information_set(("B2_mechanism",), names, keep),
     }
     if int(keep.sum()) < 2000:
         return {

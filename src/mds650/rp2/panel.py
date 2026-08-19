@@ -279,6 +279,14 @@ def describe_information_set(
     """
 
     features = [name for name in resolved if name != "intercept"]
+    # A label that names a registry has to mean that whole registry. Calling a ten-feature
+    # treatment subset ``B2`` makes the requested-versus-resolved comparison read as
+    # ninety-six silently missing features, which is the very check this record exists for.
+    for label in requested:
+        for part in label.split("+"):
+            registry = INFORMATION_SETS.get(part)
+            if registry is not None and not set(registry) <= set(features):
+                raise ValueError(f"RP2_PANEL_INFORMATION_SET_MISLABELLED:{part}")
     return {
         "requested_information_set": list(requested),
         "resolved_feature_names": features,

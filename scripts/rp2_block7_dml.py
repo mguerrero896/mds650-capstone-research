@@ -87,7 +87,7 @@ def run_role(
     keep &= np.isfinite(treatment_design).all(axis=1)
     information_sets = {
         "B0+B1": describe_information_set(("B0", "B1"), nuisance_names, keep),
-        "B2_treatment": describe_information_set(("B2",), treatment_names, keep),
+        "B2_treatment": describe_information_set(("B2_treatment",), treatment_names, keep),
     }
     if int(keep.sum()) < 1000:
         return {

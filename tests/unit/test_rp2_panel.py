@@ -145,14 +145,16 @@ def test_an_information_set_record_names_what_it_actually_resolved() -> None:
     """The intercept is not a feature: counting it makes 22 registered read as 23 resolved."""
 
     mask = np.array([True, False, True, True])
-    record = describe_information_set(("B0",), ("intercept", "rv_back_30", "ret_30"), mask)
-    assert record["requested_information_set"] == ["B0"]
+    record = describe_information_set(
+        ("B0_subset",), ("intercept", "rv_back_30", "ret_30"), mask
+    )
+    assert record["requested_information_set"] == ["B0_subset"]
     assert record["resolved_feature_names"] == ["rv_back_30", "ret_30"]
     assert record["feature_count"] == 2
     assert record["includes_intercept"] is True
     assert record["evaluation_mask_sha256"] == mask_sha256(mask)
 
-    without = describe_information_set(("B2",), ("b2_5m_premium",), mask)
+    without = describe_information_set(("B2_treatment",), ("b2_5m_premium",), mask)
     assert without["includes_intercept"] is False
     assert without["feature_count"] == 1
 
@@ -341,3 +343,27 @@ def test_a_missing_required_column_fails_closed() -> None:
     assert_required_columns(frame, ["asset", "origin_minute"])
     with pytest.raises(ValueError, match="RP2_PANEL_REQUIRED_MISSING:rv30"):
         assert_required_columns(frame, ["asset", "rv30"])
+
+
+def test_a_record_may_not_claim_a_registry_it_did_not_resolve() -> None:
+    """Labelling a ten-feature treatment subset `B2` reads as 96 features silently lost.
+
+    The provenance exists so that requested and resolved can be compared. A label that
+    names a registry has to mean that whole registry, or the comparison is meaningless.
+    """
+
+    mask = np.ones(3, dtype=bool)
+    with pytest.raises(ValueError, match="RP2_PANEL_INFORMATION_SET_MISLABELLED:B2"):
+        describe_information_set(("B2",), ("b2_5m_premium", "b2_5m_delta_flow"), mask)
+
+    # A subset is fine when it says it is one.
+    record = describe_information_set(
+        ("B2_mechanism",), ("b2_5m_premium", "b2_5m_delta_flow"), mask
+    )
+    assert record["feature_count"] == 2
+
+    # A composite label is checked part by part.
+    full = tuple(B0_FEATURES) + tuple(B1_FEATURES)
+    assert describe_information_set(("B0+B1",), full, mask)["feature_count"] == len(full)
+    with pytest.raises(ValueError, match="RP2_PANEL_INFORMATION_SET_MISLABELLED:B1"):
+        describe_information_set(("B0+B1",), tuple(B0_FEATURES), mask)
