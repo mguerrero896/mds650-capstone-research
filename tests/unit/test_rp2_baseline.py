@@ -7,61 +7,11 @@ import pytest
 
 from mds650.rp2.baseline import (
     Garch11,
-    ewma_variance,
     fit_garch11,
     mincer_zarnowitz,
     seasonality_index,
     smearing_factor,
 )
-
-
-def test_ewma_is_point_in_time_and_cannot_see_the_future() -> None:
-    """The leak this pins: a full-sample seed makes early values depend on later returns.
-
-    Appending observations must never change a value already emitted. With the old
-    full-sample mean seed, every element moved when the series grew.
-    """
-
-    rng = np.random.default_rng(3)
-    returns = rng.normal(scale=0.01, size=200)
-    short = ewma_variance(returns[:120], decay=0.9, warmup=5)
-    long = ewma_variance(returns, decay=0.9, warmup=5)
-    assert short == pytest.approx(long[:120], nan_ok=True)
-
-
-def test_ewma_expands_its_seed_then_switches_to_the_recursion() -> None:
-    returns = np.array([0.1, 0.2, 0.3, 0.4], dtype=np.float64)
-    values = ewma_variance(returns, decay=0.5, warmup=2)
-    # Warm-up rows have too little history to state a variance.
-    assert np.isnan(values[:2]).all()
-    # At index 2 the state is the expanding mean of the first two squared returns.
-    assert values[2] == pytest.approx((0.1**2 + 0.2**2) / 2)
-    assert values[3] == pytest.approx(0.5 * values[2] + 0.5 * 0.3**2)
-
-
-def test_ewma_is_computed_per_asset_so_one_name_cannot_seed_another() -> None:
-    from mds650.rp2.baseline import ewma_variance_by_asset
-
-    returns = np.array([0.5, 0.5, 0.5, 0.001, 0.001, 0.001], dtype=np.float64)
-    assets = np.array(["LOUD", "LOUD", "LOUD", "QUIET", "QUIET", "QUIET"])
-    pooled = ewma_variance(returns, decay=0.9, warmup=2)
-    split = ewma_variance_by_asset(returns, assets, decay=0.9, warmup=2)
-    # Pooling lets the loud name's state carry into the quiet one at the switch.
-    assert split[5] < pooled[5]
-    assert split[2] == pytest.approx(ewma_variance(returns[:3], decay=0.9, warmup=2)[2])
-
-
-@pytest.mark.parametrize("decay", [0.0, 1.0, -0.5])
-def test_ewma_rejects_an_invalid_decay(decay: float) -> None:
-    with pytest.raises(ValueError, match="RP2_EWMA_DECAY_INVALID"):
-        ewma_variance(np.array([0.1]), decay=decay)
-
-
-def test_ewma_rejects_an_empty_series_or_a_bad_warmup() -> None:
-    with pytest.raises(ValueError, match="RP2_EWMA_SERIES_INVALID"):
-        ewma_variance(np.array([], dtype=np.float64))
-    with pytest.raises(ValueError, match="RP2_EWMA_WARMUP_INVALID"):
-        ewma_variance(np.array([0.1, 0.2]), warmup=0)
 
 
 def test_garch_filter_follows_the_recursion() -> None:
@@ -141,3 +91,94 @@ def test_smearing_factor_is_one_for_a_perfect_fit() -> None:
     assert smearing_factor(np.array([-1.0, 1.0])) == pytest.approx(np.exp(0.5))
     with pytest.raises(ValueError, match="RP2_SMEARING_EMPTY"):
         smearing_factor(np.array([], dtype=np.float64))
+
+
+def test_ewma_forecast_at_t_is_invariant_to_returns_after_t() -> None:
+    """A forecast that moves when the future changes is not a forecast."""
+
+    from mds650.rp2.baseline import causal_ewma_horizon_variance
+
+    rng = np.random.default_rng(11)
+    returns = rng.normal(0.0, 1e-3, 400)
+    origins = np.array([60, 120, 200], dtype=np.int64)
+
+    before, _ = causal_ewma_horizon_variance(
+        returns, origins, decay=0.97, horizon=30, initial_state=None
+    )
+    violent = returns.copy()
+    violent[201:] = rng.normal(0.0, 5e-1, violent.size - 201)
+    after, _ = causal_ewma_horizon_variance(
+        violent, origins, decay=0.97, horizon=30, initial_state=None
+    )
+    assert np.array_equal(before, after, equal_nan=True)
+
+
+def test_ewma_state_is_separate_for_each_asset() -> None:
+    """Two names share a recursion only if one is allowed to seed the other."""
+
+    from mds650.rp2.baseline import causal_ewma_horizon_variance
+
+    quiet = np.full(300, 1e-4)
+    loud = np.full(300, 1e-1)
+    origins = np.array([100, 200], dtype=np.int64)
+
+    alone, alone_state = causal_ewma_horizon_variance(
+        quiet, origins, decay=0.97, horizon=30, initial_state=None
+    )
+    # Pooling would have the loud series set the state the quiet one starts from.
+    pooled, _ = causal_ewma_horizon_variance(
+        np.concatenate([loud, quiet]),
+        origins + loud.size,
+        decay=0.97,
+        horizon=30,
+        initial_state=None,
+    )
+    assert not np.allclose(alone, pooled)
+    assert np.isfinite(alone_state)
+
+
+def test_ewma_30m_forecast_uses_only_observed_one_minute_returns() -> None:
+    """The recursion is h_t = lam h_{t-1} + (1-lam) r_{t-1}^2 and RV30_hat = 30 h_t."""
+
+    from mds650.rp2.baseline import causal_ewma_horizon_variance
+
+    rng = np.random.default_rng(3)
+    returns = rng.normal(0.0, 2e-3, 120)
+    origins = np.array([100], dtype=np.int64)
+    decay, horizon, warmup = 0.94, 30, 20
+
+    state = float(np.mean(returns[:warmup] ** 2))
+    for index in range(warmup, 100):
+        state = decay * state + (1.0 - decay) * float(returns[index] ** 2)
+    expected = horizon * state
+
+    forecast, carried = causal_ewma_horizon_variance(
+        returns, origins, decay=decay, horizon=horizon, initial_state=None
+    )
+    assert forecast[0] == pytest.approx(expected)
+    assert carried == pytest.approx(
+        state * decay ** 20 + sum(
+            (1 - decay) * decay ** (19 - k) * float(returns[100 + k] ** 2) for k in range(20)
+        )
+    )
+
+
+def test_a_carried_state_continues_the_recursion_across_a_break() -> None:
+    """The state is transportable: two sessions must equal one uninterrupted series."""
+
+    from mds650.rp2.baseline import causal_ewma_horizon_variance
+
+    rng = np.random.default_rng(5)
+    returns = rng.normal(0.0, 1e-3, 200)
+    origins = np.array([150], dtype=np.int64)
+
+    whole, _ = causal_ewma_horizon_variance(
+        returns, origins, decay=0.97, horizon=30, initial_state=None
+    )
+    _, carried = causal_ewma_horizon_variance(
+        returns[:100], np.array([], dtype=np.int64), decay=0.97, horizon=30, initial_state=None
+    )
+    split, _ = causal_ewma_horizon_variance(
+        returns[100:], origins - 100, decay=0.97, horizon=30, initial_state=carried
+    )
+    assert split[0] == pytest.approx(whole[0])
