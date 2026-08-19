@@ -16,69 +16,70 @@ import numpy.typing as npt
 from scipy.optimize import minimize
 
 type FloatArray = npt.NDArray[np.float64]
+type IntArray = npt.NDArray[np.int64]
 
 VARIANCE_FLOOR: Final = 1e-12
 #: RiskMetrics-style default for the one-minute EWMA recursion.
 EWMA_LAMBDA: Final = 0.97
+#: Observations required before a cold-started recursion reports a level at all.
+EWMA_WARMUP: Final = 20
 
 
-def ewma_variance(
-    returns: FloatArray, *, decay: float = EWMA_LAMBDA, warmup: int = 20
-) -> FloatArray:
-    """Point-in-time EWMA variance: ``out[i]`` uses only ``returns[:i]``.
+def causal_ewma_horizon_variance(
+    returns: FloatArray,
+    origins: IntArray,
+    *,
+    decay: float = EWMA_LAMBDA,
+    horizon: int,
+    initial_state: float | None,
+    warmup: int = EWMA_WARMUP,
+) -> tuple[FloatArray, float]:
+    """Forecast the variance of the next ``horizon`` minutes from observed returns alone.
 
-    The seed is the expanding mean of squared returns observed so far, not the mean of the
-    whole series. Seeding from the full-sample mean makes every early forecast depend on
-    returns that had not happened yet - a look-ahead leak that is invisible because the
-    resulting series looks perfectly well behaved.
+    The recursion is the RiskMetrics one, ``h_t = lam h_{t-1} + (1 - lam) r_{t-1}^2``, run
+    over one-minute returns, and the forecast at an origin is ``horizon * h_t``. It is
+    causal by construction: ``h`` at an origin has absorbed the returns strictly before it
+    and nothing else, so perturbing the tape after the origin cannot move the number.
 
-    The first ``warmup`` observations have too little history for a meaningful state and are
-    returned as NaN rather than as a confident number built from two data points.
+    ``initial_state`` carries the recursion across a session break. Passing ``None`` starts
+    cold, seeding from the expanding mean of squared returns until ``warmup`` observations
+    exist; earlier origins return NaN rather than a confident level built from two points.
+    The final state is returned so the next session continues from it, which is what makes
+    the series one recursion per asset rather than one per session.
+
+    Nothing here reads the target. The producer previously fed the EWMA the square root of
+    RV30 itself, which made the benchmark a smoothed copy of the answer.
     """
 
     if not 0.0 < decay < 1.0:
         raise ValueError("RP2_EWMA_DECAY_INVALID")
-    if returns.ndim != 1 or returns.size == 0:
+    if returns.ndim != 1:
         raise ValueError("RP2_EWMA_SERIES_INVALID")
+    if horizon < 1:
+        raise ValueError("RP2_EWMA_HORIZON_INVALID")
     if warmup < 1:
         raise ValueError("RP2_EWMA_WARMUP_INVALID")
+    if origins.size and (int(origins.min()) < 0 or int(origins.max()) > returns.size):
+        raise ValueError("RP2_EWMA_ORIGIN_OUT_OF_RANGE")
 
-    out = np.full(returns.size, np.nan, dtype=np.float64)
     squared = returns**2
-    state = float("nan")
+    #: ``states[k]`` is the variance state after absorbing ``returns[:k]``.
+    states = np.full(returns.size + 1, np.nan, dtype=np.float64)
+    state = initial_state
     running_sum = 0.0
-    for index in range(returns.size):
-        if index >= warmup and math.isfinite(state):
-            out[index] = state
-        if index < warmup:
+    for index in range(returns.size + 1):
+        if state is not None and (initial_state is not None or index >= warmup):
+            states[index] = state
+        if index == returns.size:
+            break
+        if initial_state is None and index < warmup:
             running_sum += float(squared[index])
             state = running_sum / (index + 1)
         else:
+            assert state is not None
             state = decay * state + (1.0 - decay) * float(squared[index])
-    return out
-
-
-def ewma_variance_by_asset(
-    returns: FloatArray,
-    assets: npt.NDArray[np.str_],
-    *,
-    decay: float = EWMA_LAMBDA,
-    warmup: int = 20,
-) -> FloatArray:
-    """Per-asset point-in-time EWMA, so one name's volatility never seeds another's.
-
-    Pooling assets into a single recursion lets a high-volatility name set the state for a
-    quiet one at the moment the series switches, which is a cross-sectional leak on top of
-    the temporal one.
-    """
-
-    if returns.shape != assets.shape:
-        raise ValueError("RP2_EWMA_SHAPE_MISMATCH")
-    out = np.full(returns.size, np.nan, dtype=np.float64)
-    for asset in np.unique(assets):
-        mask = assets == asset
-        out[mask] = ewma_variance(returns[mask], decay=decay, warmup=warmup)
-    return out
+    carried = state if state is not None else float("nan")
+    return horizon * states[origins], float(carried)
 
 
 @dataclass(frozen=True, slots=True)

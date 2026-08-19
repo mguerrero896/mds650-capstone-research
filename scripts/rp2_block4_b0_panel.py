@@ -25,8 +25,9 @@ from mds650.b1v3_confirmation import canonical_sha256
 from mds650.metrics import qlike_losses
 from mds650.rp2.bars import FULL_SESSION_MINUTES, build_session_grid, load_bar_sources
 from mds650.rp2.baseline import (
+    EWMA_LAMBDA,
     VARIANCE_FLOOR,
-    ewma_variance,
+    causal_ewma_horizon_variance,
     fit_garch11,
     mincer_zarnowitz,
     seasonality_index,
@@ -279,7 +280,12 @@ def _constant_forecast_metrics(
 
 
 def evaluate_role(
-    panel: pl.DataFrame, *, role: str, train_share: float, garch: dict[str, float]
+    panel: pl.DataFrame,
+    *,
+    role: str,
+    train_share: float,
+    garch: dict[str, float],
+    ewma: FloatArray,
 ) -> dict[str, dict[str, float]]:
     """Fit every challenger and B0 on the first ``train_share`` of one role's sessions."""
 
@@ -317,9 +323,17 @@ def evaluate_role(
     results["intraday_mean"] = _constant_forecast_metrics(
         target, intraday_mean, test, response, train
     )
-    # Challenger 3 - EWMA of the realized-variance series, scaled to the horizon.
-    ewma = ewma_variance(np.sqrt(np.maximum(target, 0.0)))
-    results["ewma"] = _constant_forecast_metrics(target, ewma, test, response, train)
+    # Challenger 3 - causal EWMA of one-minute returns, scaled to the horizon. Built by
+    # `causal_ewma_forecasts` from the bars, never from the target.
+    ewma_scored = np.isfinite(ewma)
+    results["ewma"] = _constant_forecast_metrics(
+        target,
+        np.where(ewma_scored, ewma, VARIANCE_FLOOR),
+        test & ewma_scored,
+        response,
+        train & ewma_scored,
+    )
+    results["ewma"]["scored_rows"] = float(np.sum(test & ewma_scored))
     # Challenger 4 - simple HAR: three own-history lags.
     results["har_simple"] = _fit_evaluate(
         np.column_stack([np.ones(frame.height), log_back30, log_session, log_prev]),
@@ -399,6 +413,65 @@ def evaluate_role(
         "market_control_rows": float(market_finite.sum()),
     }
     return results
+
+
+def causal_ewma_forecasts(
+    bars: pl.DataFrame,
+    panel: pl.DataFrame,
+    *,
+    role: str,
+    decay: float = EWMA_LAMBDA,
+    horizon: int = TARGET_HORIZON,
+) -> FloatArray:
+    """EWMA horizon-variance forecast at every origin of one role, built from bars.
+
+    One recursion per asset, carried across session breaks in calendar order, fed only by
+    observed one-minute returns. The panel is read for its origin keys and for nothing
+    else — in particular not for ``rv30``, which the previous challenger consumed.
+    """
+
+    frame = panel.filter(pl.col("role") == role).sort(["session_date", "asset", "origin_minute"])
+    subset = bars.filter((pl.col("role") == role) & pl.col("asset").is_in(TARGET_ASSETS))
+    series: dict[tuple[str, str], FloatArray] = {}
+    offsets: dict[tuple[str, str], int] = {}
+    carried: dict[str, float | None] = {}
+    for (asset, session_date), group in subset.sort(["asset", "session_date", "minute"]).group_by(
+        ["asset", "session_date"], maintain_order=True
+    ):
+        key = (str(asset), str(session_date))
+        grid = build_session_grid(group, session=session_date)
+        if grid.minutes == 0 or grid.fill_share > 0.05:
+            continue
+        usable = first_valid_minute(grid.valid)
+        close = grid.close[usable:]
+        if close.size < 2 or not np.isfinite(close).all() or close.min() <= 0.0:
+            continue
+        returns = log_returns(close)
+        state = carried.get(str(asset))
+        levels, state = causal_ewma_horizon_variance(
+            returns,
+            np.arange(returns.size + 1, dtype=np.int64),
+            decay=decay,
+            horizon=horizon,
+            initial_state=state,
+        )
+        carried[str(asset)] = state
+        series[key] = levels
+        offsets[key] = usable
+
+    sessions = frame["session_date"].to_numpy()
+    assets = frame["asset"].to_numpy()
+    origins = np.asarray(frame["origin_minute"].to_numpy(), dtype=np.int64)
+    out = np.full(frame.height, np.nan, dtype=np.float64)
+    for index in range(frame.height):
+        key = (str(assets[index]), str(sessions[index]))
+        if key not in series:
+            continue
+        levels = series[key]
+        position = int(origins[index]) - offsets.get(key, 0)
+        if 0 <= position < levels.size:
+            out[index] = levels[position]
+    return out
 
 
 def fit_intraday_garch(
@@ -500,7 +573,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     results: dict[str, dict[str, dict[str, float]]] = {}
     for role in ("D", "V"):
         garch = fit_intraday_garch(bars, panel, role=role, train_share=args.train_share)
-        results[role] = evaluate_role(panel, role=role, train_share=args.train_share, garch=garch)
+        ewma = causal_ewma_forecasts(bars, panel, role=role)
+        results[role] = evaluate_role(
+            panel, role=role, train_share=args.train_share, garch=garch, ewma=ewma
+        )
 
     document: dict[str, object] = {
         "block": 4,

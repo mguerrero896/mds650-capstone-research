@@ -21,11 +21,12 @@ Carried in three places, so that no single omission hides the supersession:
 
 | Superseded artifact | Superseded by | Reason | Recorded |
 | --- | --- | --- | --- |
-| _(none yet)_ | | | |
+| `artifacts/rp2_block4_b0/ladder.json` → `results.{D,V}.ewma` | `fix/rp2-v3-causal-b0` | the EWMA challenger was built from the square root of the RV30 target rather than from observed one-minute returns | 2026-08-20 |
 
-Rows are added by the rebuild gate (`results/rp2-v3-rebuild`) once the RP2-v3 run exists
-and its `run_id` is known. An empty register before that gate is the correct state, not an
-omission.
+Later rows are added by the rebuild gate (`results/rp2-v3-rebuild`) once the RP2-v3 run
+exists and its `run_id` is known. A gate that supersedes a number before that point records
+it here against its own branch, because a reader of the frozen artifact would otherwise
+find the old value with nothing saying it has been replaced.
 
 ## Rule
 

@@ -673,3 +673,17 @@ Spec Kit consistency and preregistration gates pass.
    Sharpe probability at 0.000. Adding B1 and B2 makes it marginally worse. The proxy's
    number was not a smaller version of this one; it was a different sign, because it never
    paid a spread on a contract anybody could buy.
+79. **The EWMA challenger was a smoothed copy of the answer (2026-08-20)** — Block 4 built
+   its EWMA benchmark as `ewma_variance(np.sqrt(rv30))`: an exponentially weighted mean of
+   the square root of the very target it was scored against, not a forecast from observed
+   returns. `causal_ewma_horizon_variance` replaces it with the RiskMetrics recursion
+   `h_t = 0.97 h_{t-1} + 0.03 r_{t-1}^2` over one-minute returns, one recursion per asset,
+   carried across session breaks, with `RV30_hat = 30 h_t`. Rebuilt on the same bars, the
+   B0 panel is byte-identical (`c2d230c3…`), every other challenger is unchanged to five
+   decimals, and the EWMA QLIKE moves from **0.28074 to 0.18923** in discovery and from
+   **0.27923 to 0.23134** in validation. The corrected challenger is *harder* to beat, not
+   easier: the old one was leaky **and** mis-scaled, because it exponentially smoothed a
+   standard deviation and then reported it as a variance. B0 still beats it — 0.14243
+   against 0.18923 in D and 0.17622 against 0.23134 in V — on 61,336 and 12,672 scored
+   rows, which is every test row in both roles. Its calibration slope, 0.839 and 0.759, is
+   reported as measured and is not corrected.
