@@ -12,6 +12,8 @@ import sys
 from pathlib import Path
 from types import ModuleType
 
+import pytest
+
 REPO = Path(__file__).resolve().parents[2]
 
 
@@ -117,3 +119,32 @@ def test_the_measurement_audit_reads_the_same_window_as_the_panel() -> None:
     assert "latest_quote_per_contract(" in source
     assert "LOOKBACK_SECONDS = " not in source, "the audit may not define its own window"
     assert "CUTOFF_SECONDS = 120" not in source, "nor its own cutoff"
+
+
+def test_a_sensitivity_run_cannot_replace_the_primary_panel(tmp_path: object) -> None:
+    """Every downstream block reads one path. A forgotten flag must not repoint it."""
+
+    block5 = _load("rp2_block5_surface_panel")
+    from mds650.rp2.b1_snapshot import SENSITIVITY_MAX_AGE_SECONDS
+
+    with pytest.raises(SystemExit, match="RP2_B1_SENSITIVITY_NEEDS_ITS_OWN_OUTPUT_DIR"):
+        block5.main(["--max-quote-age-seconds", str(SENSITIVITY_MAX_AGE_SECONDS)])
+
+
+def test_the_independent_side_obeys_the_same_staleness_bound() -> None:
+    """A paired comparison of a 30-minute quote against a two-day-old one measures staleness.
+
+    The traded side is bounded by the snapshot window. The listed side asked the provider
+    only for the last quote at or before the cutoff, so an untraded strike could contribute
+    an arbitrarily old one and the reported difference would mix staleness into the
+    trade-sampling bias it is meant to isolate.
+    """
+
+    source = (REPO / "scripts" / "rp2_block5b_independent_surface.py").read_text(
+        encoding="utf-8"
+    )
+    assert "MAX_QUOTE_AGE_SECONDS" in source
+    assert 'counters["quotes_stale"]' in source, (
+        "quotes rejected for age must be counted, not silently dropped"
+    )
+    assert "provider_timestamp_ns" in source, "the bound needs the quote's own timestamp"

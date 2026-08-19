@@ -280,6 +280,18 @@ def listed_surface(
             if quote.bid is None or quote.ask is None or quote.ask <= quote.bid or quote.bid <= 0:
                 counters["quotes_unusable"] += 1
                 continue
+            # The traded side is bounded to 30 minutes of staleness; the listed side asked
+            # only for "at or before the cutoff", so an untraded strike could contribute a
+            # quote hours or days old. Comparing those two is a measurement of staleness
+            # dressed up as a measurement of trade-sampling bias.
+            stamp = quote.provider_timestamp_ns
+            if stamp is None:
+                counters["quotes_stale"] += 1
+                continue
+            age_seconds = (cutoff_ns - stamp) / 1_000_000_000
+            if not 0.0 <= age_seconds <= MAX_QUOTE_AGE_SECONDS:
+                counters["quotes_stale"] += 1
+                continue
             strike = float(row["strike_price"])
             vol = implied_volatility_from_price(
                 0.5 * (quote.bid + quote.ask),
@@ -371,6 +383,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "quotes": 0,
         "quotes_empty": 0,
         "quotes_unusable": 0,
+        "quotes_stale": 0,
         "iv_unsolvable": 0,
     }
     rows: list[dict[str, object]] = []

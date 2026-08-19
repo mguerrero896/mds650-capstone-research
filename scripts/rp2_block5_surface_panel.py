@@ -402,6 +402,20 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
+    # A sensitivity run writes a panel every downstream block would read as the primary one.
+    # The default destination is the canonical path, so a single forgotten flag would replace
+    # the frozen 1 800-second input with a 3 600-second one and nothing downstream would say
+    # so. The non-primary age has to name its own destination.
+    if (
+        int(args.max_quote_age_seconds) != MAX_QUOTE_AGE_SECONDS
+        and Path(args.output_dir).resolve() == DEFAULT_OUTPUT.resolve()
+    ):
+        raise SystemExit(
+            "RP2_B1_SENSITIVITY_NEEDS_ITS_OWN_OUTPUT_DIR: "
+            f"--max-quote-age-seconds={args.max_quote_age_seconds} is not the primary "
+            f"{MAX_QUOTE_AGE_SECONDS}; pass --output-dir so the canonical panel is not replaced"
+        )
+
     panel = pl.read_parquet(B0_PANEL)
     inventory = load_inventory()
     bars = load_bar_sources(args.data_root)
