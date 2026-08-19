@@ -35,6 +35,7 @@ from mds650.rp2.panel import (
     describe_information_set,
     lift_mask,
     load_merged_panel,
+    mask_sha256,
     session_rank,
     standardise,
 )
@@ -221,7 +222,7 @@ def run_role(
             }
             contrast_blocks[label] = slices
         # Leave-one-asset-out needs a genuine refit per held-out asset.
-        loao: dict[str, dict[str, float]] = {}
+        loao: dict[str, dict[str, object]] = {}
         for asset in sorted({str(a) for a in assets}):
             held = assets == asset
             asset_train = train & ~held
@@ -234,10 +235,16 @@ def run_role(
                     standardise(designs[set_name], asset_train), target, asset_train
                 )
                 asset_losses[set_name] = qlike_losses(target[asset_test], forecast[asset_test])
-            loao[asset] = {
+            # Each held-out asset is a different evaluation sample, so it carries its own
+            # mask: one hash for the whole leave-one-out family would say that results
+            # measured on disjoint rows were measured on the same ones.
+            entry: dict[str, object] = {
                 label: float(np.mean(_delta(asset_losses, base, expanded)))
                 for label, (base, expanded) in CONTRASTS.items()
             }
+            entry["evaluation_mask_sha256"] = mask_sha256(lift_mask(keep, asset_test))
+            entry["rows"] = int(asset_test.sum())
+            loao[asset] = entry
         contrast_blocks["leave_one_asset_out"] = loao
         per_model[model_name] = contrast_blocks
     results["models"] = per_model

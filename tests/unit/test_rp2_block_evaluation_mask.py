@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import importlib.util
 import sys
+from datetime import date, timedelta
 from pathlib import Path
 from types import ModuleType
 
@@ -40,6 +41,12 @@ def test_lift_mask_maps_a_selection_back_onto_the_original_rows() -> None:
         lift_mask(base, np.ones(4, dtype=bool))
 
 
+def _session_label(offset: int) -> str:
+    """A real calendar date, so downstream date parsing is exercised, not tripped up."""
+
+    return (date(2026, 1, 5) + timedelta(days=offset)).isoformat()
+
+
 def _synthetic_panel(sessions: int = 40, origins: int = 40) -> pl.DataFrame:
     rng = np.random.default_rng(650)
     assets = ("AAA", "BBB")
@@ -48,7 +55,7 @@ def _synthetic_panel(sessions: int = 40, origins: int = 40) -> pl.DataFrame:
         {
             "asset": [a for _ in range(sessions * origins) for a in assets],
             "session_date": [
-                f"2026-01-{1 + index // origins:02d}"
+                _session_label(index // origins)
                 for index in range(sessions * origins)
                 for _ in assets
             ],
@@ -56,6 +63,7 @@ def _synthetic_panel(sessions: int = 40, origins: int = 40) -> pl.DataFrame:
                 30 + index % origins for index in range(sessions * origins) for _ in assets
             ],
             "role": ["D"] * rows,
+            "source": ["synthetic"] * rows,
             "rv30": rng.lognormal(-11.0, 0.4, rows),
         }
     )
@@ -190,3 +198,20 @@ def test_the_extension_arms_take_part_in_the_fail_closed_mask() -> None:
     assert "extension_finite" in source[mask : mask + 400], (
         "the tensor and sequence inputs never enter the mask the run fails closed on"
     )
+
+
+def test_each_held_out_asset_records_the_rows_it_was_scored_on() -> None:
+    """Leave-one-asset-out results are disjoint samples, not one sample seen twice."""
+
+    generalization = _load("rp2_block9_generalization")
+    result = generalization.run_role(
+        _synthetic_panel(sessions=60, origins=40), role="D", train_share=0.6,
+        models=("log_ols",),
+    )
+    assert result["status"] == "MEASURED"
+    loao = result["models"]["log_ols"]["leave_one_asset_out"]  # type: ignore[index]
+    assert len(loao) >= 2, "the synthetic panel must hold out more than one asset"
+    hashes = {entry["evaluation_mask_sha256"] for entry in loao.values()}
+    assert len(hashes) == len(loao), "held-out assets shared an evaluation mask"
+    run_hash = result["information_sets"]["B0"]["evaluation_mask_sha256"]  # type: ignore[index]
+    assert run_hash not in hashes, "a held-out subset cannot equal the whole test sample"
