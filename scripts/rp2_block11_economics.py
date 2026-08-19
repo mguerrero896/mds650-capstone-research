@@ -38,10 +38,11 @@ from mds650.rp2.panel import (
     B2_FEATURES,
     build_design,
     chronological_split,
+    common_usable_rows,
+    describe_information_set,
     load_merged_panel,
     session_rank,
     standardise,
-    usable_rows,
 )
 from mds650.rp2.surface import annualise_intraday_variance
 
@@ -71,11 +72,10 @@ def run_role(
     )
     target = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
     designs: dict[str, FloatArray] = {}
-    keep = np.ones(frame.height, dtype=bool)
+    resolved: dict[str, tuple[str, ...]] = {}
     for name, maps in INFORMATION_SETS.items():
-        design, _ = build_design(frame, maps)
-        designs[name] = design
-        keep &= usable_rows(design, target)
+        designs[name], resolved[name] = build_design(frame, maps)
+    keep = common_usable_rows(designs, target)
     keep &= np.isfinite(frame["b1_iv_30d"].to_numpy()) if "b1_iv_30d" in frame.columns else keep
     keep &= np.isfinite(frame["b1_median_relative_spread"].to_numpy())
     if int(keep.sum()) < 2000:
@@ -109,6 +109,10 @@ def run_role(
         "median_cost_variance_units": float(np.median(cost[evaluate])),
         "median_implied_variance": float(np.median(implied_variance[evaluate])),
         "median_realized_variance": float(np.median(realized_annual[evaluate])),
+        "information_sets": {
+            name: describe_information_set((name,), resolved[name], keep)
+            for name in INFORMATION_SETS
+        },
     }
     per_model: dict[str, object] = {}
     trials = len(models) * len(INFORMATION_SETS)

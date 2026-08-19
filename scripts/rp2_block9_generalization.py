@@ -31,10 +31,11 @@ from mds650.rp2.panel import (
     B2_FEATURES,
     build_design,
     chronological_split,
+    common_usable_rows,
+    describe_information_set,
     load_merged_panel,
     session_rank,
     standardise,
-    usable_rows,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -161,11 +162,10 @@ def run_role(
     )
     target = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
     designs: dict[str, FloatArray] = {}
-    keep = np.ones(frame.height, dtype=bool)
+    resolved: dict[str, tuple[str, ...]] = {}
     for name, maps in INFORMATION_SETS.items():
-        design, _ = build_design(frame, maps)
-        designs[name] = design
-        keep &= usable_rows(design, target)
+        designs[name], resolved[name] = build_design(frame, maps)
+    keep = common_usable_rows(designs, target)
     if int(keep.sum()) < 2000:
         return {"status": "INSUFFICIENT_ROWS", "rows": int(keep.sum())}
 
@@ -183,6 +183,10 @@ def run_role(
         "rows": int(keep.sum()),
         "train_rows": int(train.sum()),
         "test_rows": int(test.sum()),
+        "information_sets": {
+            name: describe_information_set((name,), resolved[name], keep)
+            for name in INFORMATION_SETS
+        },
     }
     per_model: dict[str, object] = {}
     for model_name in models:

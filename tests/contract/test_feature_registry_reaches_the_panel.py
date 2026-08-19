@@ -19,6 +19,7 @@ derived data) stays green while the local tier-2 run does the real work.
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 import polars as pl
@@ -109,4 +110,73 @@ def test_no_panel_column_is_a_feature_nobody_registered() -> None:
     assert not unregistered, (
         "panel columns that are neither a registered feature nor a declared diagnostic — "
         f"register them, declare them, or stop building them: {unregistered}"
+    )
+
+
+#: Every block that assembles an information set from the registry. Each must record what
+#: it actually resolved, and none may intersect the evaluation mask by hand.
+BLOCKS_THAT_BUILD_A_DESIGN: tuple[str, ...] = (
+    "scripts/rp2_block7_dml.py",
+    "scripts/rp2_block8_ladder.py",
+    "scripts/rp2_block9_generalization.py",
+    "scripts/rp2_block10_inference.py",
+    "scripts/rp2_block11_economics.py",
+    "scripts/rp2_block11b_forward_economics.py",
+    "scripts/rp2_block12_prospective_design.py",
+)
+
+#: Panel helpers whose entire purpose is to stop a run. A helper that is written, tested and
+#: never called protects nothing; this programme has shipped that exact shape four times.
+FAIL_CLOSED_HELPERS: tuple[str, ...] = (
+    "assert_required_columns",
+    "assert_unique_origin_key",
+    "assert_one_to_one_join",
+    "common_usable_rows",
+    "describe_information_set",
+    "mask_sha256",
+)
+
+
+def _production_sources() -> dict[str, str]:
+    files = sorted((REPO / "src").rglob("*.py")) + sorted((REPO / "scripts").glob("*.py"))
+    return {str(path.relative_to(REPO)): path.read_text(encoding="utf-8") for path in files}
+
+
+def test_every_fail_closed_panel_helper_has_a_production_caller() -> None:
+    """The recurring defect: machinery that is correct, tested and unreachable."""
+
+    sources = _production_sources()
+    uncalled = []
+    for helper in FAIL_CLOSED_HELPERS:
+        call = re.compile(rf"(?<!def ){re.escape(helper)}\(")
+        callers = [name for name, text in sources.items() if call.search(text)]
+        if not callers:
+            uncalled.append(helper)
+    assert not uncalled, (
+        f"panel helpers with no production caller — they guard nothing: {uncalled}"
+    )
+
+
+def test_every_block_records_the_information_set_it_actually_resolved() -> None:
+    """A run may not be called B0+B1+B2 without saying what that resolved to."""
+
+    missing = [
+        name
+        for name in BLOCKS_THAT_BUILD_A_DESIGN
+        if "describe_information_set(" not in (REPO / name).read_text(encoding="utf-8")
+    ]
+    assert not missing, f"blocks that build a design without recording it: {missing}"
+
+
+def test_no_block_intersects_the_evaluation_mask_by_hand() -> None:
+    """One definition of the nested-comparison mask, so all of them cannot drift apart."""
+
+    hand_rolled = [
+        name
+        for name in BLOCKS_THAT_BUILD_A_DESIGN
+        if "keep &= usable_rows(" in (REPO / name).read_text(encoding="utf-8")
+    ]
+    assert not hand_rolled, (
+        f"blocks building the common mask themselves instead of common_usable_rows: "
+        f"{hand_rolled}"
     )

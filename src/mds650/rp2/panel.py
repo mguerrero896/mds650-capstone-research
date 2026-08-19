@@ -6,7 +6,8 @@ transformed, so that Blocks 7-11 all see exactly the same B0, B1 and B2 definiti
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+import hashlib
+from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Final
 
@@ -155,13 +156,20 @@ INFORMATION_SETS: Final[dict[str, dict[str, str]]] = {
 
 
 def load_merged_panel(b0_path: Path, b1_path: Path, b2_path: Path) -> pl.DataFrame:
-    """Left-join the surface and flow panels onto the B0 panel on the origin key."""
+    """Left-join the surface and flow panels onto the B0 panel on the origin key.
 
+    Every input is required. Skipping an absent file let a run keep its name while losing a
+    whole information set: a rebuild launched as ``B0+B1+B2`` after a failed B2 build would
+    quietly produce a B0+B1 panel, and every artifact downstream would still be labelled
+    B0+B1+B2. There is no reading of the result that recovers what was missing.
+    """
+
+    for label, path in (("B1", b1_path), ("B2", b2_path)):
+        if not path.is_file():
+            raise FileNotFoundError(f"RP2_PANEL_INPUT_MISSING:{label}:{path}")
     panel = pl.read_parquet(b0_path)
     assert_unique_origin_key(panel)
     for path in (b1_path, b2_path):
-        if not path.is_file():
-            continue
         other = pl.read_parquet(path)
         joined = panel.join(other, on=list(JOIN_KEYS), how="left")
         assert_one_to_one_join(panel, other, joined)
@@ -186,8 +194,10 @@ def build_design(
 ) -> tuple[FloatArray, tuple[str, ...]]:
     """Stack the requested information sets into one design matrix.
 
-    Columns absent from the panel are skipped and reported through the returned names, so a
-    partially built panel degrades to a smaller design rather than crashing.
+    Every registered column must be present. A design silently missing features is a design
+    that no longer is the information set it is named after, and the run that used it still
+    reports the name. `assert_required_columns` has existed for this since the panel was
+    written and had no caller anywhere in production until now.
     """
 
     blocks: list[FloatArray] = []
@@ -196,15 +206,62 @@ def build_design(
         blocks.append(np.ones(panel.height, dtype=np.float64))
         names.append("intercept")
     for mapping in feature_maps:
+        assert_required_columns(panel, list(mapping))
         for column, kind in mapping.items():
-            if column not in panel.columns:
-                continue
             values = np.asarray(panel[column].cast(pl.Float64).to_numpy(), dtype=np.float64)
             blocks.append(transform_column(values, kind))
             names.append(column)
     if not blocks:
         raise ValueError("RP2_PANEL_EMPTY_DESIGN")
     return np.column_stack(blocks), tuple(names)
+
+
+def common_usable_rows(
+    designs: Mapping[str, FloatArray], target: FloatArray
+) -> npt.NDArray[np.bool_]:
+    """Rows every design in a nested comparison can be scored on.
+
+    A base model evaluated on rows the expanded model had to drop is being handed an easier
+    sample, and the increment between them then measures the sample as much as the
+    information. One mask, intersected across every set in the contrast, is the only way the
+    difference of two losses is a difference in information.
+    """
+
+    if not designs:
+        raise ValueError("RP2_PANEL_NO_DESIGNS")
+    mask = np.ones(target.shape[0], dtype=np.bool_)
+    for name, design in designs.items():
+        if design.shape[0] != target.shape[0]:
+            raise ValueError(f"RP2_PANEL_DESIGN_ROWS:{name}")
+        mask &= usable_rows(design, target)
+    return mask
+
+
+def mask_sha256(mask: npt.NDArray[np.bool_]) -> str:
+    """Content hash of an evaluation mask.
+
+    A row count cannot identify a mask: two contrasts can keep the same number of rows and
+    not the same rows. The hash travels with every artifact so that claim is checkable.
+    """
+
+    return hashlib.sha256(np.ascontiguousarray(mask, dtype=np.bool_).tobytes()).hexdigest()
+
+
+def describe_information_set(
+    requested: Sequence[str], resolved: Sequence[str], mask: npt.NDArray[np.bool_]
+) -> dict[str, object]:
+    """The provenance every artifact must carry about the design it was fitted on.
+
+    Without it, a document can call a run ``B0+B1+B2`` and nothing in the artifact says how
+    many features that actually resolved to, or which rows were scored.
+    """
+
+    return {
+        "requested_information_set": list(requested),
+        "resolved_feature_names": list(resolved),
+        "feature_count": len(resolved),
+        "evaluation_mask_sha256": mask_sha256(mask),
+    }
 
 
 def session_rank(sessions: npt.NDArray[np.str_]) -> IntArray:

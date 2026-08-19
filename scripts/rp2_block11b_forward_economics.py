@@ -55,10 +55,11 @@ from mds650.rp2.panel import (
     B2_FEATURES,
     build_design,
     chronological_split,
+    common_usable_rows,
+    describe_information_set,
     load_merged_panel,
     session_rank,
     standardise,
-    usable_rows,
 )
 from mds650.rp2.surface import SECONDS_PER_YEAR, annualise_intraday_variance
 
@@ -311,11 +312,10 @@ def run_role(
     frame = panel.filter(pl.col("role") == role).sort(["session_date", "asset", "origin_minute"])
     target = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
     designs: dict[str, FloatArray] = {}
-    keep = np.ones(frame.height, dtype=bool)
+    resolved: dict[str, tuple[str, ...]] = {}
     for name, maps in INFORMATION_SETS.items():
-        design, _ = build_design(frame, maps)
-        designs[name] = design
-        keep &= usable_rows(design, target)
+        designs[name], resolved[name] = build_design(frame, maps)
+    keep = common_usable_rows(designs, target)
     if int(keep.sum()) < 2000:
         return {"status": "INSUFFICIENT_ROWS", "rows": int(keep.sum())}
 
@@ -361,6 +361,10 @@ def run_role(
         "median_quote_age_s": _scalar(joined["quote_age_s"].median()),
         "median_dte_days": _scalar(joined["dte_days"].median()),
         "median_entry_half_spread": _scalar(joined["entry_half_spread"].median()),
+        "information_sets": {
+            name: describe_information_set((name,), resolved[name], keep)
+            for name in INFORMATION_SETS
+        },
     }
     per_model: dict[str, object] = {}
     trials = len(models) * len(INFORMATION_SETS)
