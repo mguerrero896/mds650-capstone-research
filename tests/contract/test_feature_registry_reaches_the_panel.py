@@ -183,17 +183,28 @@ def test_no_design_caller_intersects_the_evaluation_mask_by_hand() -> None:
     )
 
 
-def test_provenance_is_recorded_before_a_run_can_bail_out() -> None:
+#: A result dict is a small literal, so the provenance key is within a few lines of the
+#: status that opens it.
+_EARLY_RETURN_WINDOW = 8
+
+
+def test_every_early_return_carries_the_provenance() -> None:
     """The artifacts most in need of diagnostics are the ones that stopped early.
 
-    An INSUFFICIENT_ROWS return that precedes the provenance leaves exactly the artifact a
-    reader would want to audit with none of the four required fields in it.
+    Any exit that is not MEASURED leaves exactly the artifact a reader would want to audit,
+    and it must still say which information sets were resolved and on which rows. Pinning
+    only INSUFFICIENT_ROWS missed the two sparse-leg exits of Block 11b.
     """
 
-    late = []
+    status = re.compile(r'"status": "(?!MEASURED")([A-Z_]+)"')
+    bare = []
     for name, text in _design_callers().items():
-        bail = text.find('"INSUFFICIENT_ROWS"')
-        record = text.find("describe_information_set(")
-        if bail >= 0 and (record < 0 or record > bail):
-            late.append(name)
-    assert not late, f"scripts that can return INSUFFICIENT_ROWS without provenance: {late}"
+        lines = text.splitlines()
+        for index, line in enumerate(lines):
+            match = status.search(line)
+            if not match:
+                continue
+            window = "\n".join(lines[index : index + _EARLY_RETURN_WINDOW])
+            if '"information_sets"' not in window:
+                bare.append(f"{name}:{index + 1}:{match.group(1)}")
+    assert not bare, f"early returns that omit the resolved information sets: {bare}"

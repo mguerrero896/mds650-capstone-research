@@ -337,13 +337,21 @@ def run_role(
         legs, on=["asset", "session_date", "origin_minute"], how="inner"
     )
     if joined.height < 200:
-        return {"status": "INSUFFICIENT_LEGS", "legs": joined.height}
+        return {
+            "status": "INSUFFICIENT_LEGS",
+            "legs": joined.height,
+            "information_sets": information_sets,
+        }
     rows = joined["row"].to_numpy().astype(np.int64)
     tradeable = test[rows]
     joined = joined.filter(pl.Series(tradeable))
     rows = rows[tradeable]
     if joined.height < 100:
-        return {"status": "INSUFFICIENT_TEST_LEGS", "legs": int(joined.height)}
+        return {
+            "status": "INSUFFICIENT_TEST_LEGS",
+            "legs": int(joined.height),
+            "information_sets": information_sets,
+        }
 
     entry_iv = joined["entry_iv"].to_numpy().astype(np.float64)
     implied_variance = entry_iv**2
