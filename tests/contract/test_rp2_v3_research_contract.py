@@ -68,6 +68,21 @@ GATE_BRANCHES: tuple[str, ...] = (
 #: Every metric group the scorecard of section 12 must account for.
 SCORECARD_GROUPS: tuple[str, ...] = ("Data", "B1", "B2", "Forecast", "Engineering")
 
+def _fields_by_group(document: str) -> dict[str, set[str]]:
+    """Scorecard fields the schema document declares, keyed by the section declaring them.
+
+    Grouping is part of the contract, not presentation: the master plan assigns each metric
+    to a section, and a field documented under the wrong one is a field the rebuild will
+    look for in the wrong place. A flat set comparison cannot see that.
+    """
+
+    fields: dict[str, set[str]] = {}
+    for section in document.split("\n## ")[1:]:
+        heading, _, body = section.partition("\n")
+        fields[heading.strip().lower()] = set(DECLARED_FIELD.findall(body))
+    return {name: found for name, found in fields.items() if found}
+
+
 @cache
 def _read(name: str) -> str:
     return (CONTRACT_DIR / name).read_text(encoding="utf-8")
@@ -129,17 +144,45 @@ def test_the_required_scorecard_fields_are_machine_readable() -> None:
     assert all(fields for fields in declared["groups"].values()), "no group may be empty"
 
 
-def test_every_required_field_and_only_those_appear_in_the_schema_document() -> None:
-    """Both directions, so neither the document nor the field list can drift alone."""
+def test_every_required_field_appears_under_its_own_group_and_no_other() -> None:
+    """Both directions and per group, so neither the document nor the list can drift."""
 
     declared = json.loads(SCORECARD_FIELDS.read_text(encoding="utf-8"))
-    required = {field for fields in declared["groups"].values() for field in fields}
-    documented = set(DECLARED_FIELD.findall(_read("SCORECARD_SCHEMA.md")))
-    assert not required - documented, (
-        f"required fields the schema document does not declare: {sorted(required - documented)}"
+    documented = _fields_by_group(_read("SCORECARD_SCHEMA.md"))
+    assert set(documented) == set(declared["groups"]), (
+        f"schema sections {sorted(documented)} do not match groups {sorted(declared['groups'])}"
     )
-    assert not documented - required, (
-        f"schema document declares fields nothing requires: {sorted(documented - required)}"
+    for group, required in declared["groups"].items():
+        assert documented[group] == set(required), (
+            f"group {group}: document declares {sorted(documented[group])}, "
+            f"the field list requires {sorted(required)}"
+        )
+
+
+def test_a_field_documented_under_the_wrong_group_is_rejected() -> None:
+    """The check must see the grouping, not just the union of the groups.
+
+    Moving `provider_failures` from Data to Forecast leaves the flattened sets identical.
+    Only a per-section comparison notices, and the rebuild reads fields by group.
+    """
+
+    document = _read("SCORECARD_SCHEMA.md")
+    data_row = "| `provider_failures` | int | windows where the provider failed"
+    original = next(line for line in document.splitlines() if line.startswith(data_row))
+    moved = document.replace(original + "\n", "").replace(
+        "| `mde` | object |", original + "\n| `mde` | object |"
+    )
+    documented = _fields_by_group(moved)
+    flat_before = {field for fields in _fields_by_group(document).values() for field in fields}
+    flat_after = {field for fields in documented.values() for field in fields}
+    assert flat_before == flat_after, "a pure move leaves the flattened sets identical"
+    assert "provider_failures" in documented["forecast"], "the mutation must land in forecast"
+    declared = json.loads(SCORECARD_FIELDS.read_text(encoding="utf-8"))
+    assert documented["data"] != set(declared["groups"]["data"]), (
+        "a field moved out of its group must be detected"
+    )
+    assert documented["forecast"] != set(declared["groups"]["forecast"]), (
+        "a field moved into the wrong group must be detected"
     )
 
 
