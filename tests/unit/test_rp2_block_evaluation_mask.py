@@ -153,3 +153,15 @@ def test_a_stopped_forward_economics_run_keeps_its_usable_mask() -> None:
         "the pre-split provenance is overwritten before the sparse-leg exits can use it"
     )
     assert scored > sparse_exit, "the scored mask is only known after the tradeable filter"
+
+
+def test_the_economics_mask_is_recorded_after_its_own_filters() -> None:
+    """The row count and the hash must describe the same sample."""
+
+    source = (REPO / "scripts" / "rp2_block11_economics.py").read_text(encoding="utf-8")
+    last_filter = source.rindex('keep &= np.isfinite(frame["b1_median_relative_spread"]')
+    record = source.index("describe_information_set(")
+    assert record > last_filter, (
+        "provenance is built before the economics finiteness filters, so it hashes a "
+        "wider sample than the row count it is reported with"
+    )

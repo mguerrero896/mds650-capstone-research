@@ -77,12 +77,15 @@ def run_role(
     for name, maps in INFORMATION_SETS.items():
         designs[name], resolved[name] = build_design(frame, maps)
     keep = common_usable_rows(designs, target)
+    # The economics needs a quote it can trade against, so two surface columns join the
+    # usable-row rule. The provenance is built after them: a record made before the filter
+    # would report the filtered row count and hash the wider sample.
+    keep &= np.isfinite(frame["b1_iv_30d"].to_numpy()) if "b1_iv_30d" in frame.columns else keep
+    keep &= np.isfinite(frame["b1_median_relative_spread"].to_numpy())
     information_sets = {
         name: describe_information_set((name,), resolved[name], keep)
         for name in INFORMATION_SETS
     }
-    keep &= np.isfinite(frame["b1_iv_30d"].to_numpy()) if "b1_iv_30d" in frame.columns else keep
-    keep &= np.isfinite(frame["b1_median_relative_spread"].to_numpy())
     if int(keep.sum()) < 2000:
         return {
             "status": "INSUFFICIENT_ROWS",
