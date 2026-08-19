@@ -62,6 +62,28 @@ DECLARED_DIAGNOSTICS: frozenset[str] = frozenset(
         "b1_calendar_violations",
         "b1_spans_call_wing",
         "b1_spans_put_wing",
+        # B1-rich. Emitted, reported and hashed, deliberately outside the primary set: a
+        # feature that fits on 60% of origins would remove 40% of the evaluation rows from
+        # every contrast carrying it, and an arbitrage or curvature diagnostic is there to
+        # describe the surface, not to be fitted. Formalised as a registry in gate 6.
+        "b1_iv_14d",
+        "b1_iv_90d",
+        "b1_term_convexity",
+        "b1_smile_slope",
+        "b1_smile_curvature",
+        "b1_smile_residual",
+        "b1_butterfly_25",
+        "b1_mfiv",
+        "b1_strikes",
+        "b1_expiries",
+        "b1_pcp_residual",
+        "b1_forward_expiries_fitted",
+        "b1_min_log_moneyness",
+        "b1_max_log_moneyness",
+        "b1_zero_dte_contracts",
+        "b1_butterfly_violations",
+        "b1_implied_rate",
+        "b1_implied_dividend_yield",
         # Quote age is a property of the tape, not of the market being forecast.
         "b2_5m_median_age_s",
         "b2_30m_median_age_s",
