@@ -215,3 +215,22 @@ def test_each_held_out_asset_records_the_rows_it_was_scored_on() -> None:
     assert len(hashes) == len(loao), "held-out assets shared an evaluation mask"
     run_hash = result["information_sets"]["B0"]["evaluation_mask_sha256"]  # type: ignore[index]
     assert run_hash not in hashes, "a held-out subset cannot equal the whole test sample"
+
+
+def test_every_generalization_slice_hashes_the_rows_behind_it() -> None:
+    """Subgroups are disjoint samples of one test set, not one sample reported many times."""
+
+    generalization = _load("rp2_block9_generalization")
+    result = generalization.run_role(
+        _synthetic_panel(sessions=60, origins=40), role="D", train_share=0.6,
+        models=("log_ols",),
+    )
+    slices = result["models"]["log_ols"]["delta_b1"]  # type: ignore[index]
+    run_hash = result["information_sets"]["B0"]["evaluation_mask_sha256"]  # type: ignore[index]
+
+    spaced = slices["non_overlapping_origins"]["evaluation_mask_sha256"]
+    assert spaced != run_hash, "the non-overlapping slice scores fewer rows than the run"
+
+    per_group = slices["asset"]["per_group_evaluation_mask_sha256"]
+    assert len(set(per_group.values())) == len(per_group), "asset groups shared a mask"
+    assert run_hash not in set(per_group.values())

@@ -113,17 +113,27 @@ def _delta(losses: dict[str, FloatArray], base: str, expanded: str) -> FloatArra
     return losses[base] - losses[expanded]
 
 
-def _summarise(values: FloatArray, labels: np.ndarray) -> dict[str, object]:
+def _summarise(
+    values: FloatArray, labels: np.ndarray, *, evaluated: npt.NDArray[np.bool_]
+) -> dict[str, object]:
     """Per-slice mean plus the program's minimum-criterion diagnostics.
 
     Dominance is measured on **absolute** contributions and by a leave-one-group-out
     jackknife.  A share-of-signed-total metric is meaningless here: the totals are close to
     zero, so dividing by them produces arbitrarily large numbers rather than information.
+
+    ``evaluated`` is the panel-space mask of the rows ``values`` was computed on, so every
+    group can record the rows behind its own number. Groups are disjoint subsets of one
+    test sample; one hash for the slice would say they were all measured on the same rows.
     """
 
     groups = sorted({str(label) for label in labels})
     if not groups:
-        return {"overall": float("nan"), "groups": 0}
+        return {
+            "overall": float("nan"),
+            "groups": 0,
+            "evaluation_mask_sha256": mask_sha256(evaluated),
+        }
     masks = {group: labels == group for group in groups}
     per_group = {group: float(np.mean(values[mask])) for group, mask in masks.items()}
     total = float(np.mean(values))
@@ -145,7 +155,11 @@ def _summarise(values: FloatArray, labels: np.ndarray) -> dict[str, object]:
     )
     return {
         "overall": total,
+        "evaluation_mask_sha256": mask_sha256(evaluated),
         "per_group": per_group,
+        "per_group_evaluation_mask_sha256": {
+            group: mask_sha256(lift_mask(evaluated, mask)) for group, mask in masks.items()
+        },
         "groups": len(groups),
         "positive_groups": positives,
         "sign_stability": positives / len(groups),
@@ -211,14 +225,17 @@ def run_role(
         contrast_blocks: dict[str, object] = {}
         for label, (base, expanded) in CONTRASTS.items():
             difference = _delta(losses, base, expanded)
+            evaluated = lift_mask(keep, test)
             slices = {
-                name: _summarise(difference, values) for name, values in labels.items()
+                name: _summarise(difference, values, evaluated=evaluated)
+                for name, values in labels.items()
             }
             # Non-overlapping origins: 30-minute spacing removes target overlap.
             spaced = (minutes[test] % NON_OVERLAPPING_STEP) == 0
             slices["non_overlapping_origins"] = {
                 "overall": float(np.mean(difference[spaced])),
                 "rows": int(spaced.sum()),
+                "evaluation_mask_sha256": mask_sha256(lift_mask(evaluated, spaced)),
             }
             contrast_blocks[label] = slices
         # Leave-one-asset-out needs a genuine refit per held-out asset.
