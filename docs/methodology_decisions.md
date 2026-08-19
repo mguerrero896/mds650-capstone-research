@@ -686,4 +686,10 @@ Spec Kit consistency and preregistration gates pass.
    standard deviation and then reported it as a variance. B0 still beats it — 0.14243
    against 0.18923 in D and 0.17622 against 0.23134 in V — on 61,336 and 12,672 scored
    rows, which is every test row in both roles. Its calibration slope, 0.839 and 0.759, is
-   reported as measured and is not corrected.
+   reported as measured and is not corrected. The recursion runs over Discovery and
+   Validation in one calendar order rather than per partition: Discovery ends 2026-03-23
+   and Validation opens 2026-03-24 with no overlap, so restarting at the boundary threw
+   away state that is strictly past information. Measured on the real bars, that reset
+   moved Validation's first session by up to **50.4 %** and its second by 1.3e-05, and was
+   exactly zero from the fifth session on; the reported Validation QLIKE does not move,
+   because its test window opens 48 sessions after the boundary.

@@ -151,3 +151,63 @@ def test_the_ewma_challenger_honours_the_configured_fill_threshold() -> None:
     assert np.isfinite(matched).sum() == rows, (
         "every panel row the run accepted must carry a forecast"
     )
+
+
+def _two_role_bars(discovery: int = 10, validation: int = 6) -> pl.DataFrame:
+    """One continuous calendar, split into a Discovery prefix and a Validation suffix."""
+
+    from mds650.rp2.bars import session_length_minutes
+
+    rng = np.random.default_rng(99)
+    sessions = _trading_sessions(discovery + validation)
+    rows = []
+    for asset in ("AAPL", "MSFT"):
+        for position, session in enumerate(sessions):
+            minutes = session_length_minutes(session)
+            close = 100.0 * np.exp(np.cumsum(rng.normal(0.0, 1e-3, minutes)))
+            rows.append(
+                pl.DataFrame(
+                    {
+                        "asset": [asset] * minutes,
+                        "session_date": [session] * minutes,
+                        "minute": np.arange(minutes, dtype=np.int64),
+                        "close": close,
+                        "high": close * 1.001,
+                        "low": close * 0.999,
+                        "volume": np.full(minutes, 1000.0),
+                        "role": [("D" if position < discovery else "V")] * minutes,
+                        "source": ["synthetic"] * minutes,
+                    }
+                )
+            )
+    return pl.concat(rows, how="vertical")
+
+
+def test_the_recursion_crosses_the_discovery_validation_boundary() -> None:
+    """Validation's first origins inherit the state Discovery ended on.
+
+    Restarting at the partition boundary throws away roughly 0.97**30 of the variance
+    state that a 30-minute origin should still be carrying, and changes the reported
+    validation numbers. Discovery precedes Validation in the calendar, so this is past
+    information, not a peek forward.
+    """
+
+    block4 = _load("rp2_block4_b0_panel")
+    bars = _two_role_bars()
+    panel, _ = block4.build_b0_panel(bars, max_fill_share=0.05)
+    joint = block4.causal_ewma_forecasts(bars, panel, role="V", max_fill_share=0.05)
+
+    only_validation = bars.filter(pl.col("role") == "V")
+    isolated = block4.causal_ewma_forecasts(
+        only_validation, panel, role="V", max_fill_share=0.05
+    )
+    assert np.isfinite(joint).all(), "validation must forecast from its first origin"
+    assert not np.allclose(joint, isolated, equal_nan=True), (
+        "the recursion restarted at the partition boundary"
+    )
+    # Discovery itself is unaffected: nothing after it can reach back.
+    discovery_joint = block4.causal_ewma_forecasts(bars, panel, role="D", max_fill_share=0.05)
+    discovery_alone = block4.causal_ewma_forecasts(
+        bars.filter(pl.col("role") == "D"), panel, role="D", max_fill_share=0.05
+    )
+    assert np.array_equal(discovery_joint, discovery_alone, equal_nan=True)

@@ -436,7 +436,11 @@ def causal_ewma_forecasts(
     """
 
     frame = panel.filter(pl.col("role") == role).sort(["session_date", "asset", "origin_minute"])
-    subset = bars.filter((pl.col("role") == role) & pl.col("asset").is_in(TARGET_ASSETS))
+    # Every role, in calendar order. Filtering to one role first would restart each asset's
+    # recursion at the partition boundary, and Validation's first origins would lose the
+    # state Discovery ended on — about 0.97**30 of it at a 30-minute origin. Discovery
+    # precedes Validation, so this is past information; nothing later can reach back.
+    subset = bars.filter(pl.col("asset").is_in(TARGET_ASSETS))
     series: dict[tuple[str, str], FloatArray] = {}
     offsets: dict[tuple[str, str], int] = {}
     carried: dict[str, float | None] = {}
