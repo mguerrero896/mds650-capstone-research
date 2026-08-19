@@ -97,3 +97,39 @@ def test_an_early_exit_records_the_pre_split_mask() -> None:
     assert result["status"] == "INSUFFICIENT_ROWS"
     record = result["information_sets"]["B0"]  # type: ignore[index]
     assert record["evaluation_mask_sha256"] == mask_sha256(np.ones(panel.height, dtype=bool))
+
+
+def test_each_alternative_target_records_the_rows_it_was_actually_fitted_on() -> None:
+    """Two targets with different availability are two different evaluation samples."""
+
+    ext1 = _load("rp2_ext1_mechanism_utility")
+    rng = np.random.default_rng(7)
+    rows, sessions_count = 4000, 40
+    base = np.ones(rows, dtype=bool)
+    sessions = np.repeat(np.arange(sessions_count, dtype=np.int64), rows // sessions_count)
+    nuisance = np.column_stack([np.ones(rows), rng.normal(size=(rows, 3))])
+    treatment = rng.normal(size=(rows, 2))
+
+    dense = rng.normal(size=rows)
+    sparse = dense.copy()
+    sparse[:1000] = np.nan
+
+    left = ext1._dml_on_target(
+        nuisance, treatment, dense, sessions, ("a", "b"), folds=3, evaluation_base=base
+    )
+    right = ext1._dml_on_target(
+        nuisance, treatment, sparse, sessions, ("a", "b"), folds=3, evaluation_base=base
+    )
+    assert left is not None and right is not None
+    assert left["evaluation_mask_sha256"] != right["evaluation_mask_sha256"], (
+        "targets fitted on different rows recorded the same evaluation mask"
+    )
+    assert left["evaluation_mask_sha256"] == mask_sha256(base)
+
+
+def test_the_tensor_and_sequence_arms_each_declare_their_own_information_set() -> None:
+    """A published arm whose inputs no record describes is an unauditable result."""
+
+    source = (REPO / "scripts" / "rp2_ext12_level4_and_tensor.py").read_text(encoding="utf-8")
+    for arm in ("B0+B1+B2+tensor", "B0+B1+B2+sequence"):
+        assert arm in source, f"extension arm {arm} publishes results with no information set"

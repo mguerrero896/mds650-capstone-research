@@ -47,6 +47,7 @@ from mds650.rp2.panel import (
     describe_information_set,
     lift_mask,
     load_merged_panel,
+    mask_sha256,
     session_rank,
     standardise,
     usable_rows,
@@ -149,6 +150,7 @@ def _dml_on_target(
     names: tuple[str, ...],
     *,
     folds: int,
+    evaluation_base: npt.NDArray[np.bool_],
 ) -> dict[str, object] | None:
     finite = np.isfinite(response)
     if int(finite.sum()) < 2000 or np.unique(sessions[finite]).size < 20:
@@ -170,6 +172,7 @@ def _dml_on_target(
         "joint_p_value": estimate.joint_p_value,
         "rows": estimate.rows,
         "clusters": estimate.clusters,
+        "evaluation_mask_sha256": mask_sha256(lift_mask(evaluation_base, finite)),
         "coefficients": {
             name: {"t": float(estimate.t_statistic[i]), "p": float(estimate.p_value[i])}
             for i, name in enumerate(estimate.treatment_names)
@@ -185,8 +188,14 @@ def target_battery(
     names: tuple[str, ...],
     *,
     folds: int,
+    evaluation_base: npt.NDArray[np.bool_],
 ) -> dict[str, object]:
-    """DML of the core B2 block against every alternative target."""
+    """DML of the core B2 block against every alternative target.
+
+    Each alternative target has its own availability, so each is fitted on its own rows.
+    One mask hash for the battery would say that outcomes measured on different samples
+    were measured on the same one.
+    """
 
     results: dict[str, object] = {}
     raw_p: dict[str, float] = {}
@@ -200,7 +209,15 @@ def target_battery(
         else:
             response = np.log(np.maximum(values, VARIANCE_FLOOR))
             response = np.where(values > 0.0, response, np.nan)
-        outcome = _dml_on_target(nuisance, treatment, response, sessions, names, folds=folds)
+        outcome = _dml_on_target(
+            nuisance,
+            treatment,
+            response,
+            sessions,
+            names,
+            folds=folds,
+            evaluation_base=evaluation_base,
+        )
         if outcome is None:
             continue
         results[column] = outcome
@@ -360,7 +377,9 @@ def run_role(
         "information_sets": information_sets,
         "test_rows": int(test.sum()),
         "sessions": int(np.unique(sessions).size),
-        "a_other_targets": target_battery(frame, nuisance, treatment, sessions, names, folds=folds),
+        "a_other_targets": target_battery(
+            frame, nuisance, treatment, sessions, names, folds=folds, evaluation_base=keep
+        ),
         "b_tail_classification": tail_classification(
             rv30, designs, train & finite, test & finite, assets
         ),

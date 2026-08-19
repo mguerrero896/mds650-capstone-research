@@ -358,6 +358,16 @@ def run_role(
             "information_sets": information_sets,
         }
 
+    # The P&L is marked on the legs that survived the join and the tradeable filter, which
+    # is a subset of the test rows. Hashing the test mask would let two runs with different
+    # executable-leg coverage report the same evaluated sample.
+    scored = np.zeros(frame.height, dtype=bool)
+    scored[rows] = True
+    information_sets = {
+        name: describe_information_set((name,), resolved[name], lift_mask(keep, scored))
+        for name in INFORMATION_SETS
+    }
+
     entry_iv = joined["entry_iv"].to_numpy().astype(np.float64)
     implied_variance = entry_iv**2
     names = joined["asset"].to_numpy().astype(str)

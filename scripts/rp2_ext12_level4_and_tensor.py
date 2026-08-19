@@ -169,7 +169,7 @@ def run_role(
     target = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
     base_design, base_names = build_design(frame, [B0_FEATURES, B1_FEATURES, B2_FEATURES])
     keep = common_usable_rows({"B0+B1+B2": base_design}, target)
-    information_sets = {
+    information_sets: dict[str, object] = {
         "B0+B1+B2": describe_information_set(("B0", "B1", "B2"), base_names, keep)
     }
     if int(keep.sum()) < 2000:
@@ -183,11 +183,9 @@ def run_role(
     target, base_design, index = target[keep], base_design[keep], index[keep]
     ranks = session_rank(frame["session_date"].to_numpy())
     train, test = chronological_split(ranks, train_share=train_share)
-    information_sets = {
-        "B0+B1+B2": describe_information_set(
-            ("B0", "B1", "B2"), base_names, lift_mask(keep, test)
-        )
-    }
+    information_sets["B0+B1+B2"] = describe_information_set(
+        ("B0", "B1", "B2"), base_names, lift_mask(keep, test)
+    )
     labels = frame["session_date"].to_numpy()
     response = np.log(np.maximum(target, VARIANCE_FLOOR))
 
@@ -204,6 +202,11 @@ def run_role(
     tensor_block = tensor[index].reshape(index.size, -1).astype(np.float64)
     tensor_block = np.sign(tensor_block) * np.log1p(np.abs(tensor_block))
     with_tensor = np.column_stack([base_design, tensor_block])
+    information_sets["B0+B1+B2+tensor"] = describe_information_set(
+        ("B0", "B1", "B2", "tensor"),
+        base_names + tuple(f"tensor_{index}" for index in range(tensor_block.shape[1])),
+        lift_mask(keep, test),
+    )
     forecasts = {
         "tabular": LADDER["lightgbm"](standardise(base_design, train), target, train),
         "tabular+tensor": LADDER["lightgbm"](standardise(with_tensor, train), target, train),
@@ -228,6 +231,12 @@ def run_role(
     centre = flat[flat[:, 2] != 0.0].mean(axis=0)
     spread = np.where(flat[flat[:, 2] != 0.0].std(axis=0) > 0, flat.std(axis=0), 1.0)
     normalised = (sequence_block - centre) / spread
+    information_sets["B0+B1+B2+sequence"] = describe_information_set(
+        ("B0", "B1", "B2", "sequence"),
+        base_names
+        + tuple(f"sequence_channel_{index}" for index in range(sequence_block.shape[-1])),
+        lift_mask(keep, test),
+    )
 
     tabular_t = torch.tensor(standardised, dtype=torch.float32, device=device)
     sequence_t = torch.tensor(normalised, dtype=torch.float32, device=device)
