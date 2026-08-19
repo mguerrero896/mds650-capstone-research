@@ -19,6 +19,7 @@ derived data) stays green while the local tier-2 run does the real work.
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 import polars as pl
@@ -110,3 +111,100 @@ def test_no_panel_column_is_a_feature_nobody_registered() -> None:
         "panel columns that are neither a registered feature nor a declared diagnostic — "
         f"register them, declare them, or stop building them: {unregistered}"
     )
+
+
+def _design_callers() -> dict[str, str]:
+    """Every script that assembles an information set, discovered rather than listed.
+
+    A hand-kept list is a list that goes stale: two extension scripts built designs and
+    emitted artifacts for the whole programme without appearing on any such list.
+    """
+
+    found = {}
+    for path in sorted((REPO / "scripts").glob("*.py")):
+        text = path.read_text(encoding="utf-8")
+        if "build_design(" in text and "def build_design" not in text:
+            found[str(path.relative_to(REPO)).replace("\\", "/")] = text
+    return found
+
+
+#: Panel helpers whose entire purpose is to stop a run. A helper that is written, tested and
+#: never called protects nothing; this programme has shipped that exact shape four times.
+FAIL_CLOSED_HELPERS: tuple[str, ...] = (
+    "assert_required_columns",
+    "assert_unique_origin_key",
+    "assert_one_to_one_join",
+    "common_usable_rows",
+    "describe_information_set",
+    "mask_sha256",
+)
+
+
+def _production_sources() -> dict[str, str]:
+    files = sorted((REPO / "src").rglob("*.py")) + sorted((REPO / "scripts").glob("*.py"))
+    return {str(path.relative_to(REPO)): path.read_text(encoding="utf-8") for path in files}
+
+
+def test_every_fail_closed_panel_helper_has_a_production_caller() -> None:
+    """The recurring defect: machinery that is correct, tested and unreachable."""
+
+    sources = _production_sources()
+    uncalled = []
+    for helper in FAIL_CLOSED_HELPERS:
+        call = re.compile(rf"(?<!def ){re.escape(helper)}\(")
+        callers = [name for name, text in sources.items() if call.search(text)]
+        if not callers:
+            uncalled.append(helper)
+    assert not uncalled, (
+        f"panel helpers with no production caller — they guard nothing: {uncalled}"
+    )
+
+
+def test_every_design_caller_records_the_information_set_it_resolved() -> None:
+    """A run may not be called B0+B1+B2 without saying what that resolved to."""
+
+    callers = _design_callers()
+    assert len(callers) >= 9, f"discovery found only {sorted(callers)}"
+    missing = sorted(
+        name for name, text in callers.items() if "describe_information_set(" not in text
+    )
+    assert not missing, f"scripts that build a design without recording it: {missing}"
+
+
+def test_no_design_caller_intersects_the_evaluation_mask_by_hand() -> None:
+    """One definition of the nested-comparison mask, so they cannot drift apart."""
+
+    hand_rolled = sorted(
+        name for name, text in _design_callers().items() if "keep &= usable_rows(" in text
+    )
+    assert not hand_rolled, (
+        f"scripts building the common mask themselves instead of common_usable_rows: "
+        f"{hand_rolled}"
+    )
+
+
+#: A result dict is a small literal, so the provenance key is within a few lines of the
+#: status that opens it.
+_EARLY_RETURN_WINDOW = 8
+
+
+def test_every_early_return_carries_the_provenance() -> None:
+    """The artifacts most in need of diagnostics are the ones that stopped early.
+
+    Any exit that is not MEASURED leaves exactly the artifact a reader would want to audit,
+    and it must still say which information sets were resolved and on which rows. Pinning
+    only INSUFFICIENT_ROWS missed the two sparse-leg exits of Block 11b.
+    """
+
+    status = re.compile(r'"status": "(?!MEASURED")([A-Z_]+)"')
+    bare = []
+    for name, text in _design_callers().items():
+        lines = text.splitlines()
+        for index, line in enumerate(lines):
+            match = status.search(line)
+            if not match:
+                continue
+            window = "\n".join(lines[index : index + _EARLY_RETURN_WINDOW])
+            if '"information_sets"' not in window:
+                bare.append(f"{name}:{index + 1}:{match.group(1)}")
+    assert not bare, f"early returns that omit the resolved information sets: {bare}"

@@ -30,10 +30,12 @@ from mds650.rp2.panel import (
     B2_FEATURES,
     build_design,
     chronological_split,
+    common_usable_rows,
+    describe_information_set,
+    lift_mask,
     load_merged_panel,
     session_rank,
     standardise,
-    usable_rows,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -91,7 +93,7 @@ def required_sessions(
 
 
 def measure_dispersion(panel: pl.DataFrame, *, role: str, train_share: float
-                       ) -> dict[str, dict[str, float]]:
+                       ) -> tuple[dict[str, dict[str, float]], dict[str, object]]:
     """Session-level standard deviation of each contrast, per family."""
 
     frame = panel.filter(pl.col("role") == role).sort(
@@ -99,16 +101,23 @@ def measure_dispersion(panel: pl.DataFrame, *, role: str, train_share: float
     )
     target = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
     designs: dict[str, FloatArray] = {}
-    keep = np.ones(frame.height, dtype=bool)
+    resolved: dict[str, tuple[str, ...]] = {}
     for name, maps in INFORMATION_SETS.items():
-        design, _ = build_design(frame, maps)
-        designs[name] = design
-        keep &= usable_rows(design, target)
+        designs[name], resolved[name] = build_design(frame, maps)
+    keep = common_usable_rows(designs, target)
+    information_sets: dict[str, object] = {
+        name: describe_information_set((name,), resolved[name], keep)
+        for name in INFORMATION_SETS
+    }
     frame = frame.filter(pl.Series(keep))
     target = target[keep]
     designs = {name: design[keep] for name, design in designs.items()}
     ranks = session_rank(frame["session_date"].to_numpy())
     train, test = chronological_split(ranks, train_share=train_share)
+    information_sets = {
+        name: describe_information_set((name,), resolved[name], lift_mask(keep, test))
+        for name in INFORMATION_SETS
+    }
     session_labels = ranks[test]
 
     out: dict[str, dict[str, float]] = {}
@@ -134,7 +143,7 @@ def measure_dispersion(panel: pl.DataFrame, *, role: str, train_share: float
             block[f"{label}_observed_mean"] = float(np.mean(per_session))
         block["evaluation_sessions"] = float(np.unique(session_labels).size)
         out[family] = block
-    return out
+    return out, dict(information_sets)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -145,8 +154,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     panel = load_merged_panel(B0_PANEL, B1_PANEL, B2_PANEL)
-    dispersion = {role: measure_dispersion(panel, role=role, train_share=args.train_share)
-                  for role in ("D", "V")}
+    measured = {
+        role: measure_dispersion(panel, role=role, train_share=args.train_share)
+        for role in ("D", "V")
+    }
+    dispersion = {role: block for role, (block, _) in measured.items()}
+    information_sets = {role: record for role, (_, record) in measured.items()}
 
     power_table: dict[str, dict[str, dict[str, float]]] = {}
     for role, families in dispersion.items():
@@ -180,6 +193,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "families": list(FAMILIES),
         "session_counts": list(SESSION_COUNTS),
         "measured_dispersion": dispersion,
+        "information_sets": information_sets,
         "minimum_detectable_effects": power_table,
         "note": (
             "sessions_for_observed_effect is null when the observed effect is zero or "

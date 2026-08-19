@@ -16,7 +16,10 @@ from mds650.rp2.panel import (
     b2_features,
     build_design,
     chronological_split,
+    common_usable_rows,
+    describe_information_set,
     load_merged_panel,
+    mask_sha256,
     session_rank,
     standardise,
     transform_column,
@@ -74,13 +77,16 @@ def _panel() -> pl.DataFrame:
     )
 
 
-def test_build_design_skips_absent_columns_and_reports_what_it_used() -> None:
-    design, names = build_design(_panel(), [B0_FEATURES])
-    assert names[0] == "intercept"
-    # Only the two B0 columns that exist in this frame are present.
-    assert set(names[1:]) == {"rv_back_30", "ret_30"}
+def test_build_design_resolves_every_registered_feature_or_refuses_to_build() -> None:
+    """A design named after an information set must contain that whole information set."""
+
+    design, names = build_design(_panel(), [{"rv_back_30": "log", "ret_30": "raw"}])
+    assert names == ("intercept", "rv_back_30", "ret_30")
     assert design.shape == (4, 3)
     assert np.allclose(design[:, 0], 1.0)
+
+    with pytest.raises(ValueError, match="RP2_PANEL_REQUIRED_MISSING"):
+        build_design(_panel(), [B0_FEATURES])
 
 
 def test_build_design_can_omit_the_intercept_and_rejects_an_empty_selection() -> None:
@@ -88,7 +94,79 @@ def test_build_design_can_omit_the_intercept_and_rejects_an_empty_selection() ->
     assert names == ("ret_30",)
     assert design.shape == (4, 1)
     with pytest.raises(ValueError, match="RP2_PANEL_EMPTY_DESIGN"):
-        build_design(_panel(), [{"absent_column": "raw"}], intercept=False)
+        build_design(_panel(), [], intercept=False)
+
+
+def test_registered_b1_feature_missing_from_panel_fails_closed() -> None:
+    """A B1 column the registry promises and the panel lacks must stop the run."""
+
+    frame = _panel().with_columns(
+        **{name: pl.lit(0.1) for name in B1_FEATURES if name != "b1_iv_30d"}
+    )
+    with pytest.raises(ValueError, match="RP2_PANEL_REQUIRED_MISSING:b1_iv_30d"):
+        build_design(frame, [B1_FEATURES])
+
+
+def test_registered_b2_feature_missing_from_panel_fails_closed() -> None:
+    frame = _panel().with_columns(
+        **{name: pl.lit(0.1) for name in B2_FEATURES if name != "b2_5m_premium"}
+    )
+    with pytest.raises(ValueError, match="RP2_PANEL_REQUIRED_MISSING:b2_5m_premium"):
+        build_design(frame, [B2_FEATURES])
+
+
+def test_nested_information_sets_use_the_same_evaluation_rows() -> None:
+    """B0 may not be scored on a row B0+B1 dropped: the increment would be free."""
+
+    target = np.array([1e-5, 2e-5, 3e-5, 4e-5])
+    b0 = np.column_stack([np.ones(4), np.array([1.0, 2.0, 3.0, 4.0])])
+    b0_b1 = np.column_stack([b0, np.array([1.0, np.nan, 3.0, 4.0])])
+    b0_b1_b2 = np.column_stack([b0_b1, np.array([1.0, 2.0, 3.0, np.inf])])
+
+    mask = common_usable_rows({"B0": b0, "B0+B1": b0_b1, "B0+B1+B2": b0_b1_b2}, target)
+    assert mask.tolist() == [True, False, True, False]
+    # Each design on its own would have kept more rows than the contrast may use.
+    assert usable_rows(b0, target).sum() == 4
+    assert int(mask.sum()) == 2
+
+
+def test_the_evaluation_mask_hash_distinguishes_masks_of_equal_size() -> None:
+    """Two masks can keep the same number of rows and not the same rows."""
+
+    left = np.array([True, True, False, False])
+    right = np.array([False, False, True, True])
+    assert left.sum() == right.sum()
+    assert mask_sha256(left) != mask_sha256(right)
+    assert mask_sha256(left) == mask_sha256(left.copy())
+    assert len(mask_sha256(left)) == 64
+
+
+def test_an_information_set_record_names_what_it_actually_resolved() -> None:
+    """The intercept is not a feature: counting it makes 22 registered read as 23 resolved."""
+
+    mask = np.array([True, False, True, True])
+    record = describe_information_set(
+        ("B0_subset",), ("intercept", "rv_back_30", "ret_30"), mask
+    )
+    assert record["requested_information_set"] == ["B0_subset"]
+    assert record["resolved_feature_names"] == ["rv_back_30", "ret_30"]
+    assert record["feature_count"] == 2
+    assert record["includes_intercept"] is True
+    assert record["evaluation_mask_sha256"] == mask_sha256(mask)
+
+    without = describe_information_set(("B2_treatment",), ("b2_5m_premium",), mask)
+    assert without["includes_intercept"] is False
+    assert without["feature_count"] == 1
+
+
+def test_a_resolved_record_can_be_compared_against_the_registry_directly() -> None:
+    """The section 3 exit criterion is resolved == registered, so the record must be that."""
+
+    frame = _panel().with_columns(**{name: pl.lit(0.1) for name in B1_FEATURES})
+    _, names = build_design(frame, [B1_FEATURES])
+    record = describe_information_set(("B1",), names, np.ones(frame.height, dtype=bool))
+    assert set(record["resolved_feature_names"]) == set(B1_FEATURES)
+    assert record["feature_count"] == len(B1_FEATURES)
 
 
 def test_session_rank_is_dense_and_ordered_in_time() -> None:
@@ -136,7 +214,7 @@ def test_standardise_tolerates_a_constant_column_and_validates_inputs() -> None:
         standardise(design, np.zeros(4, dtype=bool))
 
 
-def test_load_merged_panel_joins_on_the_origin_key_and_tolerates_absent_files(
+def test_load_merged_panel_joins_on_the_origin_key(
     tmp_path: object,
 ) -> None:
     from pathlib import Path
@@ -154,12 +232,58 @@ def test_load_merged_panel_joins_on_the_origin_key_and_tolerates_absent_files(
     )
     surface.write_parquet(root / "b1.parquet")
 
-    merged = load_merged_panel(root / "b0.parquet", root / "b1.parquet", root / "absent.parquet")
+    flow = pl.DataFrame(
+        {
+            "asset": ["AAPL", "MSFT"],
+            "session_date": ["2026-01-05", "2026-01-05"],
+            "origin_minute": [30, 30],
+            "b2_5m_premium": [1000.0, 2000.0],
+        }
+    )
+    flow.write_parquet(root / "b2.parquet")
+
+    merged = load_merged_panel(root / "b0.parquet", root / "b1.parquet", root / "b2.parquet")
     assert merged.height == base.height
     assert set(JOIN_KEYS) <= set(merged.columns)
     assert "b1_iv_30d" in merged.columns
     # Rows without a surface match keep a null rather than being dropped.
     assert merged["b1_iv_30d"].null_count() == 2
+
+
+def test_missing_b1_file_fails_closed(tmp_path: object) -> None:
+    """A run cannot be called B0+B1 because the B1 file quietly was not there."""
+
+    from pathlib import Path
+
+    root = Path(str(tmp_path))
+    _panel().write_parquet(root / "b0.parquet")
+    pl.DataFrame(
+        {
+            "asset": ["AAPL"],
+            "session_date": ["2026-01-05"],
+            "origin_minute": [30],
+            "b2_5m_premium": [1.0],
+        }
+    ).write_parquet(root / "b2.parquet")
+    with pytest.raises(FileNotFoundError, match="RP2_PANEL_INPUT_MISSING:B1:"):
+        load_merged_panel(root / "b0.parquet", root / "absent.parquet", root / "b2.parquet")
+
+
+def test_missing_b2_file_fails_closed(tmp_path: object) -> None:
+    from pathlib import Path
+
+    root = Path(str(tmp_path))
+    _panel().write_parquet(root / "b0.parquet")
+    pl.DataFrame(
+        {
+            "asset": ["AAPL"],
+            "session_date": ["2026-01-05"],
+            "origin_minute": [30],
+            "b1_iv_30d": [0.3],
+        }
+    ).write_parquet(root / "b1.parquet")
+    with pytest.raises(FileNotFoundError, match="RP2_PANEL_INPUT_MISSING:B2:"):
+        load_merged_panel(root / "b0.parquet", root / "b1.parquet", root / "absent.parquet")
 
 
 def _origin_frame(minutes: list[int]) -> pl.DataFrame:
@@ -219,3 +343,27 @@ def test_a_missing_required_column_fails_closed() -> None:
     assert_required_columns(frame, ["asset", "origin_minute"])
     with pytest.raises(ValueError, match="RP2_PANEL_REQUIRED_MISSING:rv30"):
         assert_required_columns(frame, ["asset", "rv30"])
+
+
+def test_a_record_may_not_claim_a_registry_it_did_not_resolve() -> None:
+    """Labelling a ten-feature treatment subset `B2` reads as 96 features silently lost.
+
+    The provenance exists so that requested and resolved can be compared. A label that
+    names a registry has to mean that whole registry, or the comparison is meaningless.
+    """
+
+    mask = np.ones(3, dtype=bool)
+    with pytest.raises(ValueError, match="RP2_PANEL_INFORMATION_SET_MISLABELLED:B2"):
+        describe_information_set(("B2",), ("b2_5m_premium", "b2_5m_delta_flow"), mask)
+
+    # A subset is fine when it says it is one.
+    record = describe_information_set(
+        ("B2_mechanism",), ("b2_5m_premium", "b2_5m_delta_flow"), mask
+    )
+    assert record["feature_count"] == 2
+
+    # A composite label is checked part by part.
+    full = tuple(B0_FEATURES) + tuple(B1_FEATURES)
+    assert describe_information_set(("B0+B1",), full, mask)["feature_count"] == len(full)
+    with pytest.raises(ValueError, match="RP2_PANEL_INFORMATION_SET_MISLABELLED:B1"):
+        describe_information_set(("B0+B1",), tuple(B0_FEATURES), mask)

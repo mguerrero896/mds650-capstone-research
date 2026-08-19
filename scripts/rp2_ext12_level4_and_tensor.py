@@ -49,10 +49,12 @@ from mds650.rp2.panel import (
     VARIANCE_FLOOR,
     build_design,
     chronological_split,
+    common_usable_rows,
+    describe_information_set,
+    lift_mask,
     load_merged_panel,
     session_rank,
     standardise,
-    usable_rows,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -165,29 +167,54 @@ def run_role(
     )
     index = np.asarray(frame["_row"].to_numpy(), dtype=np.int64)
     target = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
-    base_design, _ = build_design(frame, [B0_FEATURES, B1_FEATURES, B2_FEATURES])
-    keep = usable_rows(base_design, target)
+    base_design, base_names = build_design(frame, [B0_FEATURES, B1_FEATURES, B2_FEATURES])
+    # The tensor and the trade sequence are inputs to two of the three published arms, so
+    # they belong in the mask the run fails closed on. A tape row with a null premium makes
+    # a non-finite tensor cell; leaving those rows in lets the neural arm produce NaN
+    # predictions on a sample the tabular arm never had to survive, and the arms would then
+    # be compared on different rows.
+    extension_finite = np.isfinite(
+        tensor[index].reshape(index.size, -1).astype(np.float64)
+    ).all(axis=1) & np.isfinite(sequence[index].astype(np.float64)).all(axis=(1, 2))
+    keep = common_usable_rows({"B0+B1+B2": base_design}, target) & extension_finite
+    information_sets: dict[str, object] = {
+        "B0+B1+B2": describe_information_set(("B0", "B1", "B2"), base_names, keep)
+    }
     if int(keep.sum()) < 2000:
-        return {"status": "INSUFFICIENT_ROWS", "rows": int(keep.sum())}
+        return {
+            "status": "INSUFFICIENT_ROWS",
+            "rows": int(keep.sum()),
+            "information_sets": information_sets,
+        }
 
     frame = frame.filter(pl.Series(keep))
     target, base_design, index = target[keep], base_design[keep], index[keep]
     ranks = session_rank(frame["session_date"].to_numpy())
     train, test = chronological_split(ranks, train_share=train_share)
+    information_sets["B0+B1+B2"] = describe_information_set(
+        ("B0", "B1", "B2"), base_names, lift_mask(keep, test)
+    )
     labels = frame["session_date"].to_numpy()
     response = np.log(np.maximum(target, VARIANCE_FLOOR))
 
     results: dict[str, object] = {
         "status": "MEASURED",
         "rows": int(keep.sum()),
+        "train_share": train_share,
         "test_rows": int(test.sum()),
         "sessions": int(np.unique(ranks).size),
+        "information_sets": information_sets,
     }
 
     # ---- Extension 2: the moneyness x DTE tensor through the same tree family --------
     tensor_block = tensor[index].reshape(index.size, -1).astype(np.float64)
     tensor_block = np.sign(tensor_block) * np.log1p(np.abs(tensor_block))
     with_tensor = np.column_stack([base_design, tensor_block])
+    information_sets["B0+B1+B2+tensor"] = describe_information_set(
+        ("B0", "B1", "B2", "tensor"),
+        base_names + tuple(f"tensor_{index}" for index in range(tensor_block.shape[1])),
+        lift_mask(keep, test),
+    )
     forecasts = {
         "tabular": LADDER["lightgbm"](standardise(base_design, train), target, train),
         "tabular+tensor": LADDER["lightgbm"](standardise(with_tensor, train), target, train),
@@ -212,6 +239,12 @@ def run_role(
     centre = flat[flat[:, 2] != 0.0].mean(axis=0)
     spread = np.where(flat[flat[:, 2] != 0.0].std(axis=0) > 0, flat.std(axis=0), 1.0)
     normalised = (sequence_block - centre) / spread
+    information_sets["B0+B1+B2+sequence"] = describe_information_set(
+        ("B0", "B1", "B2", "sequence"),
+        base_names
+        + tuple(f"sequence_channel_{index}" for index in range(sequence_block.shape[-1])),
+        lift_mask(keep, test),
+    )
 
     tabular_t = torch.tensor(standardised, dtype=torch.float32, device=device)
     sequence_t = torch.tensor(normalised, dtype=torch.float32, device=device)

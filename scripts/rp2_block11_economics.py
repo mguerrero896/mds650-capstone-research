@@ -38,10 +38,12 @@ from mds650.rp2.panel import (
     B2_FEATURES,
     build_design,
     chronological_split,
+    common_usable_rows,
+    describe_information_set,
+    lift_mask,
     load_merged_panel,
     session_rank,
     standardise,
-    usable_rows,
 )
 from mds650.rp2.surface import annualise_intraday_variance
 
@@ -71,15 +73,25 @@ def run_role(
     )
     target = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
     designs: dict[str, FloatArray] = {}
-    keep = np.ones(frame.height, dtype=bool)
+    resolved: dict[str, tuple[str, ...]] = {}
     for name, maps in INFORMATION_SETS.items():
-        design, _ = build_design(frame, maps)
-        designs[name] = design
-        keep &= usable_rows(design, target)
+        designs[name], resolved[name] = build_design(frame, maps)
+    keep = common_usable_rows(designs, target)
+    # The economics needs a quote it can trade against, so two surface columns join the
+    # usable-row rule. The provenance is built after them: a record made before the filter
+    # would report the filtered row count and hash the wider sample.
     keep &= np.isfinite(frame["b1_iv_30d"].to_numpy()) if "b1_iv_30d" in frame.columns else keep
     keep &= np.isfinite(frame["b1_median_relative_spread"].to_numpy())
+    information_sets = {
+        name: describe_information_set((name,), resolved[name], keep)
+        for name in INFORMATION_SETS
+    }
     if int(keep.sum()) < 2000:
-        return {"status": "INSUFFICIENT_ROWS", "rows": int(keep.sum())}
+        return {
+            "status": "INSUFFICIENT_ROWS",
+            "rows": int(keep.sum()),
+            "information_sets": information_sets,
+        }
 
     frame = frame.filter(pl.Series(keep))
     target = target[keep]
@@ -90,6 +102,10 @@ def run_role(
     # Evaluate on non-overlapping origins only: overlapping 30-minute payoffs would count
     # the same variance six times and inflate every Sharpe by roughly sqrt(6).
     evaluate = test & ((minutes % NON_OVERLAPPING_STEP) == 0)
+    information_sets = {
+        name: describe_information_set((name,), resolved[name], lift_mask(keep, evaluate))
+        for name in INFORMATION_SETS
+    }
 
     implied_variance = np.asarray(frame["b1_iv_30d"].to_numpy(), dtype=np.float64) ** 2
     realized_annual = np.array(
@@ -105,10 +121,12 @@ def run_role(
     results: dict[str, object] = {
         "status": "MEASURED",
         "rows": int(keep.sum()),
+        "train_share": train_share,
         "evaluated_rows": int(evaluate.sum()),
         "median_cost_variance_units": float(np.median(cost[evaluate])),
         "median_implied_variance": float(np.median(implied_variance[evaluate])),
         "median_realized_variance": float(np.median(realized_annual[evaluate])),
+        "information_sets": information_sets,
     }
     per_model: dict[str, object] = {}
     trials = len(models) * len(INFORMATION_SETS)

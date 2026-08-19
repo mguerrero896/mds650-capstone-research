@@ -37,10 +37,12 @@ from mds650.rp2.panel import (
     B2_FEATURES,
     build_design,
     chronological_split,
+    common_usable_rows,
+    describe_information_set,
+    lift_mask,
     load_merged_panel,
     session_rank,
     standardise,
-    usable_rows,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -81,19 +83,30 @@ def run_role(
     frame = panel.filter(pl.col("role") == role).sort(["session_date", "asset", "origin_minute"])
     target = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
     designs: dict[str, FloatArray] = {}
-    keep = np.ones(frame.height, dtype=bool)
+    resolved: dict[str, tuple[str, ...]] = {}
     for name, maps in INFORMATION_SETS.items():
-        design, _ = build_design(frame, maps)
-        designs[name] = design
-        keep &= usable_rows(design, target)
+        designs[name], resolved[name] = build_design(frame, maps)
+    keep = common_usable_rows(designs, target)
+    information_sets = {
+        name: describe_information_set((name,), resolved[name], keep)
+        for name in INFORMATION_SETS
+    }
     if int(keep.sum()) < 2000:
-        return {"status": "INSUFFICIENT_ROWS", "rows": int(keep.sum())}
+        return {
+            "status": "INSUFFICIENT_ROWS",
+            "rows": int(keep.sum()),
+            "information_sets": information_sets,
+        }
 
     frame = frame.filter(pl.Series(keep))
     target = target[keep]
     designs = {name: design[keep] for name, design in designs.items()}
     sessions_rank = session_rank(frame["session_date"].to_numpy())
     train, test = chronological_split(sessions_rank, train_share=train_share)
+    information_sets = {
+        name: describe_information_set((name,), resolved[name], lift_mask(keep, test))
+        for name in INFORMATION_SETS
+    }
     clusters = sessions_rank[test]
     log_target = np.log(np.maximum(target, 1e-12))
 
@@ -112,8 +125,10 @@ def run_role(
     results: dict[str, object] = {
         "status": "MEASURED",
         "rows": int(keep.sum()),
+        "train_share": train_share,
         "test_rows": int(test.sum()),
         "clusters": int(np.unique(clusters).size),
+        "information_sets": information_sets,
     }
     all_losses: dict[str, FloatArray] = {}
     per_model: dict[str, object] = {}

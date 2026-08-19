@@ -29,6 +29,7 @@ from mds650.rp2.panel import (
     VARIANCE_FLOOR,
     build_design,
     chronological_split,
+    describe_information_set,
     load_merged_panel,
     session_rank,
     usable_rows,
@@ -74,15 +75,26 @@ def run_role(
 
     frame = panel.filter(pl.col("role") == role).sort(["session_date", "asset", "origin_minute"])
     nuisance, nuisance_names = build_design(frame, [B0_FEATURES, B1_FEATURES])
-    treatment_map = {name: B2_FEATURES[name] for name in treatments if name in B2_FEATURES}
+    unknown = [name for name in treatments if name not in B2_FEATURES]
+    if unknown:
+        raise ValueError(f"RP2_DML_UNKNOWN_TREATMENT:{','.join(sorted(unknown))}")
+    treatment_map = {name: B2_FEATURES[name] for name in treatments}
     treatment_design, treatment_names = build_design(frame, [treatment_map], intercept=False)
     outcomes = _outcomes(frame)
     sessions = session_rank(frame["session_date"].to_numpy())
 
     keep = usable_rows(nuisance, np.exp(outcomes["log_rv30"]))
     keep &= np.isfinite(treatment_design).all(axis=1)
+    information_sets = {
+        "B0+B1": describe_information_set(("B0", "B1"), nuisance_names, keep),
+        "B2_treatment": describe_information_set(("B2_treatment",), treatment_names, keep),
+    }
     if int(keep.sum()) < 1000:
-        return {"status": "INSUFFICIENT_ROWS", "rows": int(keep.sum())}
+        return {
+            "status": "INSUFFICIENT_ROWS",
+            "rows": int(keep.sum()),
+            "information_sets": information_sets,
+        }
 
     nuisance, treatment_design = nuisance[keep], treatment_design[keep]
     sessions = sessions[keep]
@@ -98,9 +110,10 @@ def run_role(
         "status": "MEASURED",
         "rows": int(keep.sum()),
         "sessions": int(np.unique(sessions).size),
-        "nuisance_features": len(nuisance_names),
+        "nuisance_design_columns": len(nuisance_names),
         "folds": len(blocks),
         "treatments": list(treatment_names),
+        "information_sets": information_sets,
     }
     for outcome_name, values in outcomes.items():
         response = values[keep]

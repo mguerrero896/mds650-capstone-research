@@ -31,10 +31,13 @@ from mds650.rp2.panel import (
     B2_FEATURES,
     build_design,
     chronological_split,
+    common_usable_rows,
+    describe_information_set,
+    lift_mask,
     load_merged_panel,
+    mask_sha256,
     session_rank,
     standardise,
-    usable_rows,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -110,17 +113,27 @@ def _delta(losses: dict[str, FloatArray], base: str, expanded: str) -> FloatArra
     return losses[base] - losses[expanded]
 
 
-def _summarise(values: FloatArray, labels: np.ndarray) -> dict[str, object]:
+def _summarise(
+    values: FloatArray, labels: np.ndarray, *, evaluated: npt.NDArray[np.bool_]
+) -> dict[str, object]:
     """Per-slice mean plus the program's minimum-criterion diagnostics.
 
     Dominance is measured on **absolute** contributions and by a leave-one-group-out
     jackknife.  A share-of-signed-total metric is meaningless here: the totals are close to
     zero, so dividing by them produces arbitrarily large numbers rather than information.
+
+    ``evaluated`` is the panel-space mask of the rows ``values`` was computed on, so every
+    group can record the rows behind its own number. Groups are disjoint subsets of one
+    test sample; one hash for the slice would say they were all measured on the same rows.
     """
 
     groups = sorted({str(label) for label in labels})
     if not groups:
-        return {"overall": float("nan"), "groups": 0}
+        return {
+            "overall": float("nan"),
+            "groups": 0,
+            "evaluation_mask_sha256": mask_sha256(evaluated),
+        }
     masks = {group: labels == group for group in groups}
     per_group = {group: float(np.mean(values[mask])) for group, mask in masks.items()}
     total = float(np.mean(values))
@@ -142,7 +155,11 @@ def _summarise(values: FloatArray, labels: np.ndarray) -> dict[str, object]:
     )
     return {
         "overall": total,
+        "evaluation_mask_sha256": mask_sha256(evaluated),
         "per_group": per_group,
+        "per_group_evaluation_mask_sha256": {
+            group: mask_sha256(lift_mask(evaluated, mask)) for group, mask in masks.items()
+        },
         "groups": len(groups),
         "positive_groups": positives,
         "sign_stability": positives / len(groups),
@@ -161,19 +178,30 @@ def run_role(
     )
     target = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
     designs: dict[str, FloatArray] = {}
-    keep = np.ones(frame.height, dtype=bool)
+    resolved: dict[str, tuple[str, ...]] = {}
     for name, maps in INFORMATION_SETS.items():
-        design, _ = build_design(frame, maps)
-        designs[name] = design
-        keep &= usable_rows(design, target)
+        designs[name], resolved[name] = build_design(frame, maps)
+    keep = common_usable_rows(designs, target)
+    information_sets = {
+        name: describe_information_set((name,), resolved[name], keep)
+        for name in INFORMATION_SETS
+    }
     if int(keep.sum()) < 2000:
-        return {"status": "INSUFFICIENT_ROWS", "rows": int(keep.sum())}
+        return {
+            "status": "INSUFFICIENT_ROWS",
+            "rows": int(keep.sum()),
+            "information_sets": information_sets,
+        }
 
     frame = frame.filter(pl.Series(keep))
     target = target[keep]
     designs = {name: design[keep] for name, design in designs.items()}
     sessions_rank = session_rank(frame["session_date"].to_numpy())
     train, test = chronological_split(sessions_rank, train_share=train_share)
+    information_sets = {
+        name: describe_information_set((name,), resolved[name], lift_mask(keep, test))
+        for name in INFORMATION_SETS
+    }
     assets = frame["asset"].to_numpy()
     minutes = frame["origin_minute"].to_numpy().astype(np.int64)
     labels = _subgroups(frame, test)
@@ -181,8 +209,10 @@ def run_role(
     results: dict[str, object] = {
         "status": "MEASURED",
         "rows": int(keep.sum()),
+        "train_share": train_share,
         "train_rows": int(train.sum()),
         "test_rows": int(test.sum()),
+        "information_sets": information_sets,
     }
     per_model: dict[str, object] = {}
     for model_name in models:
@@ -195,18 +225,21 @@ def run_role(
         contrast_blocks: dict[str, object] = {}
         for label, (base, expanded) in CONTRASTS.items():
             difference = _delta(losses, base, expanded)
+            evaluated = lift_mask(keep, test)
             slices = {
-                name: _summarise(difference, values) for name, values in labels.items()
+                name: _summarise(difference, values, evaluated=evaluated)
+                for name, values in labels.items()
             }
             # Non-overlapping origins: 30-minute spacing removes target overlap.
             spaced = (minutes[test] % NON_OVERLAPPING_STEP) == 0
             slices["non_overlapping_origins"] = {
                 "overall": float(np.mean(difference[spaced])),
                 "rows": int(spaced.sum()),
+                "evaluation_mask_sha256": mask_sha256(lift_mask(evaluated, spaced)),
             }
             contrast_blocks[label] = slices
         # Leave-one-asset-out needs a genuine refit per held-out asset.
-        loao: dict[str, dict[str, float]] = {}
+        loao: dict[str, dict[str, object]] = {}
         for asset in sorted({str(a) for a in assets}):
             held = assets == asset
             asset_train = train & ~held
@@ -219,10 +252,16 @@ def run_role(
                     standardise(designs[set_name], asset_train), target, asset_train
                 )
                 asset_losses[set_name] = qlike_losses(target[asset_test], forecast[asset_test])
-            loao[asset] = {
+            # Each held-out asset is a different evaluation sample, so it carries its own
+            # mask: one hash for the whole leave-one-out family would say that results
+            # measured on disjoint rows were measured on the same ones.
+            entry: dict[str, object] = {
                 label: float(np.mean(_delta(asset_losses, base, expanded)))
                 for label, (base, expanded) in CONTRASTS.items()
             }
+            entry["evaluation_mask_sha256"] = mask_sha256(lift_mask(keep, asset_test))
+            entry["rows"] = int(asset_test.sum())
+            loao[asset] = entry
         contrast_blocks["leave_one_asset_out"] = loao
         per_model[model_name] = contrast_blocks
     results["models"] = per_model

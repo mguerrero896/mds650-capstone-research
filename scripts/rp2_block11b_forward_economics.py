@@ -55,10 +55,12 @@ from mds650.rp2.panel import (
     B2_FEATURES,
     build_design,
     chronological_split,
+    common_usable_rows,
+    describe_information_set,
+    lift_mask,
     load_merged_panel,
     session_rank,
     standardise,
-    usable_rows,
 )
 from mds650.rp2.surface import SECONDS_PER_YEAR, annualise_intraday_variance
 
@@ -311,13 +313,20 @@ def run_role(
     frame = panel.filter(pl.col("role") == role).sort(["session_date", "asset", "origin_minute"])
     target = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
     designs: dict[str, FloatArray] = {}
-    keep = np.ones(frame.height, dtype=bool)
+    resolved: dict[str, tuple[str, ...]] = {}
     for name, maps in INFORMATION_SETS.items():
-        design, _ = build_design(frame, maps)
-        designs[name] = design
-        keep &= usable_rows(design, target)
+        designs[name], resolved[name] = build_design(frame, maps)
+    keep = common_usable_rows(designs, target)
+    information_sets = {
+        name: describe_information_set((name,), resolved[name], keep)
+        for name in INFORMATION_SETS
+    }
     if int(keep.sum()) < 2000:
-        return {"status": "INSUFFICIENT_ROWS", "rows": int(keep.sum())}
+        return {
+            "status": "INSUFFICIENT_ROWS",
+            "rows": int(keep.sum()),
+            "information_sets": information_sets,
+        }
 
     frame = frame.filter(pl.Series(keep))
     target = target[keep]
@@ -329,13 +338,31 @@ def run_role(
         legs, on=["asset", "session_date", "origin_minute"], how="inner"
     )
     if joined.height < 200:
-        return {"status": "INSUFFICIENT_LEGS", "legs": joined.height}
+        return {
+            "status": "INSUFFICIENT_LEGS",
+            "legs": joined.height,
+            "information_sets": information_sets,
+        }
     rows = joined["row"].to_numpy().astype(np.int64)
     tradeable = test[rows]
     joined = joined.filter(pl.Series(tradeable))
     rows = rows[tradeable]
     if joined.height < 100:
-        return {"status": "INSUFFICIENT_TEST_LEGS", "legs": int(joined.height)}
+        return {
+            "status": "INSUFFICIENT_TEST_LEGS",
+            "legs": int(joined.height),
+            "information_sets": information_sets,
+        }
+
+    # The P&L is marked on the legs that survived the join and the tradeable filter, which
+    # is a subset of the test rows. Hashing the test mask would let two runs with different
+    # executable-leg coverage report the same evaluated sample.
+    scored = np.zeros(frame.height, dtype=bool)
+    scored[rows] = True
+    information_sets = {
+        name: describe_information_set((name,), resolved[name], lift_mask(keep, scored))
+        for name in INFORMATION_SETS
+    }
 
     entry_iv = joined["entry_iv"].to_numpy().astype(np.float64)
     implied_variance = entry_iv**2
@@ -356,11 +383,13 @@ def run_role(
     results: dict[str, object] = {
         "status": "MEASURED",
         "rows": int(frame.height),
+        "train_share": train_share,
         "legs_evaluated": int(joined.height),
         "stale_exit_share": _scalar(joined["exit_is_stale"].mean()),
         "median_quote_age_s": _scalar(joined["quote_age_s"].median()),
         "median_dte_days": _scalar(joined["dte_days"].median()),
         "median_entry_half_spread": _scalar(joined["entry_half_spread"].median()),
+        "information_sets": information_sets,
     }
     per_model: dict[str, object] = {}
     trials = len(models) * len(INFORMATION_SETS)

@@ -38,10 +38,12 @@ from mds650.rp2.panel import (
     B2_FEATURES,
     build_design,
     chronological_split,
+    common_usable_rows,
+    describe_information_set,
+    lift_mask,
     load_merged_panel,
     session_rank,
     standardise,
-    usable_rows,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -105,28 +107,41 @@ def run_role(
     sessions_rank = session_rank(frame["session_date"].to_numpy())
 
     designs: dict[str, FloatArray] = {}
-    keep = np.ones(frame.height, dtype=bool)
+    resolved: dict[str, tuple[str, ...]] = {}
     for name, maps in INFORMATION_SETS.items():
-        design, _ = build_design(frame, maps)
-        designs[name] = design
-        keep &= usable_rows(design, target)
+        designs[name], resolved[name] = build_design(frame, maps)
+    keep = common_usable_rows(designs, target)
+    information_sets = {
+        name: describe_information_set((name,), resolved[name], keep)
+        for name in INFORMATION_SETS
+    }
     if int(keep.sum()) < 2000:
-        return {"status": "INSUFFICIENT_ROWS", "rows": int(keep.sum())}
+        return {
+            "status": "INSUFFICIENT_ROWS",
+            "rows": int(keep.sum()),
+            "information_sets": information_sets,
+        }
 
     target = target[keep]
     sessions_rank = sessions_rank[keep]
     session_labels = frame["session_date"].to_numpy()[keep]
     assets = frame["asset"].to_numpy()[keep]
     train, test = chronological_split(sessions_rank, train_share=train_share)
+    information_sets = {
+        name: describe_information_set((name,), resolved[name], lift_mask(keep, test))
+        for name in INFORMATION_SETS
+    }
 
     results: dict[str, object] = {
         "status": "MEASURED",
         "rows": int(keep.sum()),
+        "train_share": train_share,
         "train_rows": int(train.sum()),
         "test_rows": int(test.sum()),
         "sessions": int(np.unique(sessions_rank).size),
         "assets": sorted({str(a) for a in assets}),
-        "features": {name: designs[name].shape[1] for name in INFORMATION_SETS},
+        "design_columns": {name: designs[name].shape[1] for name in INFORMATION_SETS},
+        "information_sets": information_sets,
     }
     per_model: dict[str, object] = {}
     for model_name in models:
