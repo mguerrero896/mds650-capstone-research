@@ -40,6 +40,7 @@ from mds650.rp2.panel import (
     chronological_split,
     common_usable_rows,
     describe_information_set,
+    lift_mask,
     load_merged_panel,
     session_rank,
     standardise,
@@ -126,10 +127,15 @@ def run_role(
     session_labels = frame["session_date"].to_numpy()[keep]
     assets = frame["asset"].to_numpy()[keep]
     train, test = chronological_split(sessions_rank, train_share=train_share)
+    information_sets = {
+        name: describe_information_set((name,), resolved[name], lift_mask(keep, test))
+        for name in INFORMATION_SETS
+    }
 
     results: dict[str, object] = {
         "status": "MEASURED",
         "rows": int(keep.sum()),
+        "train_share": train_share,
         "train_rows": int(train.sum()),
         "test_rows": int(test.sum()),
         "sessions": int(np.unique(sessions_rank).size),

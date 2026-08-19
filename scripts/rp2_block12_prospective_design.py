@@ -32,6 +32,7 @@ from mds650.rp2.panel import (
     chronological_split,
     common_usable_rows,
     describe_information_set,
+    lift_mask,
     load_merged_panel,
     session_rank,
     standardise,
@@ -113,6 +114,10 @@ def measure_dispersion(panel: pl.DataFrame, *, role: str, train_share: float
     designs = {name: design[keep] for name, design in designs.items()}
     ranks = session_rank(frame["session_date"].to_numpy())
     train, test = chronological_split(ranks, train_share=train_share)
+    information_sets = {
+        name: describe_information_set((name,), resolved[name], lift_mask(keep, test))
+        for name in INFORMATION_SETS
+    }
     session_labels = ranks[test]
 
     out: dict[str, dict[str, float]] = {}

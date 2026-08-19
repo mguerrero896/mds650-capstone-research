@@ -51,6 +51,7 @@ from mds650.rp2.panel import (
     chronological_split,
     common_usable_rows,
     describe_information_set,
+    lift_mask,
     load_merged_panel,
     session_rank,
     standardise,
@@ -182,12 +183,18 @@ def run_role(
     target, base_design, index = target[keep], base_design[keep], index[keep]
     ranks = session_rank(frame["session_date"].to_numpy())
     train, test = chronological_split(ranks, train_share=train_share)
+    information_sets = {
+        "B0+B1+B2": describe_information_set(
+            ("B0", "B1", "B2"), base_names, lift_mask(keep, test)
+        )
+    }
     labels = frame["session_date"].to_numpy()
     response = np.log(np.maximum(target, VARIANCE_FLOOR))
 
     results: dict[str, object] = {
         "status": "MEASURED",
         "rows": int(keep.sum()),
+        "train_share": train_share,
         "test_rows": int(test.sum()),
         "sessions": int(np.unique(ranks).size),
         "information_sets": information_sets,

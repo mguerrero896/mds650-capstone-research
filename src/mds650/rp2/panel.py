@@ -237,6 +237,24 @@ def common_usable_rows(
     return mask
 
 
+def lift_mask(
+    base: npt.NDArray[np.bool_], selected: npt.NDArray[np.bool_]
+) -> npt.NDArray[np.bool_]:
+    """Map a mask defined over the rows ``base`` kept back onto the original row space.
+
+    Every block filters the panel down to its usable rows and then splits that subset into
+    train and test. The rows a run actually scored are therefore a mask over the subset,
+    while the provenance has to describe the panel; without lifting, two runs that scored
+    different sessions would record the same evaluation mask.
+    """
+
+    if int(base.sum()) != selected.shape[0]:
+        raise ValueError("RP2_PANEL_MASK_LIFT_SHAPE")
+    out = np.zeros(base.shape[0], dtype=np.bool_)
+    out[np.flatnonzero(base)[selected]] = True
+    return out
+
+
 def mask_sha256(mask: npt.NDArray[np.bool_]) -> str:
     """Content hash of an evaluation mask.
 

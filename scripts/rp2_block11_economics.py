@@ -40,6 +40,7 @@ from mds650.rp2.panel import (
     chronological_split,
     common_usable_rows,
     describe_information_set,
+    lift_mask,
     load_merged_panel,
     session_rank,
     standardise,
@@ -98,6 +99,10 @@ def run_role(
     # Evaluate on non-overlapping origins only: overlapping 30-minute payoffs would count
     # the same variance six times and inflate every Sharpe by roughly sqrt(6).
     evaluate = test & ((minutes % NON_OVERLAPPING_STEP) == 0)
+    information_sets = {
+        name: describe_information_set((name,), resolved[name], lift_mask(keep, evaluate))
+        for name in INFORMATION_SETS
+    }
 
     implied_variance = np.asarray(frame["b1_iv_30d"].to_numpy(), dtype=np.float64) ** 2
     realized_annual = np.array(
@@ -113,6 +118,7 @@ def run_role(
     results: dict[str, object] = {
         "status": "MEASURED",
         "rows": int(keep.sum()),
+        "train_share": train_share,
         "evaluated_rows": int(evaluate.sum()),
         "median_cost_variance_units": float(np.median(cost[evaluate])),
         "median_implied_variance": float(np.median(implied_variance[evaluate])),

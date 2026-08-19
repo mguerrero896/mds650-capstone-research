@@ -39,6 +39,7 @@ from mds650.rp2.panel import (
     chronological_split,
     common_usable_rows,
     describe_information_set,
+    lift_mask,
     load_merged_panel,
     session_rank,
     standardise,
@@ -102,6 +103,10 @@ def run_role(
     designs = {name: design[keep] for name, design in designs.items()}
     sessions_rank = session_rank(frame["session_date"].to_numpy())
     train, test = chronological_split(sessions_rank, train_share=train_share)
+    information_sets = {
+        name: describe_information_set((name,), resolved[name], lift_mask(keep, test))
+        for name in INFORMATION_SETS
+    }
     clusters = sessions_rank[test]
     log_target = np.log(np.maximum(target, 1e-12))
 
@@ -120,6 +125,7 @@ def run_role(
     results: dict[str, object] = {
         "status": "MEASURED",
         "rows": int(keep.sum()),
+        "train_share": train_share,
         "test_rows": int(test.sum()),
         "clusters": int(np.unique(clusters).size),
         "information_sets": information_sets,

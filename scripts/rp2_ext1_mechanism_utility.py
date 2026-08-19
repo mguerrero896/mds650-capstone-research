@@ -45,6 +45,7 @@ from mds650.rp2.panel import (
     chronological_split,
     common_usable_rows,
     describe_information_set,
+    lift_mask,
     load_merged_panel,
     session_rank,
     standardise,
@@ -343,17 +344,19 @@ def run_role(
         "B0+B1+B2": full_design,
     }
     finite = common_usable_rows(designs, rv30)
+    evaluated = lift_mask(keep, test & finite)
     information_sets |= {
-        "nested_B0+B1": describe_information_set(("B0", "B1"), base_names, finite),
+        "nested_B0+B1": describe_information_set(("B0", "B1"), base_names, evaluated),
         "nested_B0+B1+mechanism": describe_information_set(
-            ("B0", "B1", "B2_mechanism"), replicated_names, finite
+            ("B0", "B1", "B2_mechanism"), replicated_names, evaluated
         ),
-        "nested_B0+B1+B2": describe_information_set(("B0", "B1", "B2"), full_names, finite),
+        "nested_B0+B1+B2": describe_information_set(("B0", "B1", "B2"), full_names, evaluated),
     }
 
     return {
         "status": "MEASURED",
         "rows": int(keep.sum()),
+        "train_share": train_share,
         "information_sets": information_sets,
         "test_rows": int(test.sum()),
         "sessions": int(np.unique(sessions).size),
