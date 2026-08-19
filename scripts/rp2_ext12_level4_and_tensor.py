@@ -168,7 +168,15 @@ def run_role(
     index = np.asarray(frame["_row"].to_numpy(), dtype=np.int64)
     target = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
     base_design, base_names = build_design(frame, [B0_FEATURES, B1_FEATURES, B2_FEATURES])
-    keep = common_usable_rows({"B0+B1+B2": base_design}, target)
+    # The tensor and the trade sequence are inputs to two of the three published arms, so
+    # they belong in the mask the run fails closed on. A tape row with a null premium makes
+    # a non-finite tensor cell; leaving those rows in lets the neural arm produce NaN
+    # predictions on a sample the tabular arm never had to survive, and the arms would then
+    # be compared on different rows.
+    extension_finite = np.isfinite(
+        tensor[index].reshape(index.size, -1).astype(np.float64)
+    ).all(axis=1) & np.isfinite(sequence[index].astype(np.float64)).all(axis=(1, 2))
+    keep = common_usable_rows({"B0+B1+B2": base_design}, target) & extension_finite
     information_sets: dict[str, object] = {
         "B0+B1+B2": describe_information_set(("B0", "B1", "B2"), base_names, keep)
     }

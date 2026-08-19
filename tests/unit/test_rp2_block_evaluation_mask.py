@@ -165,3 +165,28 @@ def test_the_economics_mask_is_recorded_after_its_own_filters() -> None:
         "provenance is built before the economics finiteness filters, so it hashes a "
         "wider sample than the row count it is reported with"
     )
+
+
+def test_the_ladder_reports_one_feature_accounting_not_two() -> None:
+    """A design width and a feature count are different numbers with different names."""
+
+    ladder = _load("rp2_block8_ladder")
+    result = ladder.run_role(_synthetic_panel(), role="D", train_share=0.6, models=("log_ols",))
+    assert result["status"] == "MEASURED"
+    assert "features" not in result, "the ambiguous legacy counter must be gone"
+    columns = result["design_columns"]
+    for name, record in result["information_sets"].items():  # type: ignore[union-attr]
+        assert columns[name] == record["feature_count"] + 1, (
+            f"{name}: design width {columns[name]} does not equal "
+            f"{record['feature_count']} features plus an intercept"
+        )
+
+
+def test_the_extension_arms_take_part_in_the_fail_closed_mask() -> None:
+    """A neural arm that can see a non-finite input is not covered by a tabular mask."""
+
+    source = (REPO / "scripts" / "rp2_ext12_level4_and_tensor.py").read_text(encoding="utf-8")
+    mask = source.index("keep = common_usable_rows(")
+    assert "extension_finite" in source[mask : mask + 400], (
+        "the tensor and sequence inputs never enter the mask the run fails closed on"
+    )

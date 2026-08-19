@@ -140,7 +140,7 @@ def run_role(
         "test_rows": int(test.sum()),
         "sessions": int(np.unique(sessions_rank).size),
         "assets": sorted({str(a) for a in assets}),
-        "features": {name: designs[name].shape[1] for name in INFORMATION_SETS},
+        "design_columns": {name: designs[name].shape[1] for name in INFORMATION_SETS},
         "information_sets": information_sets,
     }
     per_model: dict[str, object] = {}

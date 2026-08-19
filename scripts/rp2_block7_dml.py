@@ -110,7 +110,7 @@ def run_role(
         "status": "MEASURED",
         "rows": int(keep.sum()),
         "sessions": int(np.unique(sessions).size),
-        "nuisance_features": len(nuisance_names),
+        "nuisance_design_columns": len(nuisance_names),
         "folds": len(blocks),
         "treatments": list(treatment_names),
         "information_sets": information_sets,
