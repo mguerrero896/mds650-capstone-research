@@ -54,35 +54,21 @@ B0_FEATURES: Final[dict[str, str]] = {
     "QQQ_ret_30": "raw",
 }
 
+#: B1-core: the primary option-state set, ten high-coverage features. Everything else the
+#: surface emits is B1-rich — reported, hashed and available, but out of the primary set,
+#: because a feature present on 60% of origins removes 40% of the evaluation rows from
+#: every nested contrast that includes it. See docs/rp2_v3/B1_CONTEMPORANEOUS_SPEC.md.
 B1_FEATURES: Final[dict[str, str]] = {
     "b1_iv_7d": "log",
-    "b1_iv_14d": "log",
     "b1_iv_30d": "log",
     "b1_iv_60d": "log",
-    "b1_iv_90d": "log",
     "b1_term_slope": "raw",
-    "b1_term_convexity": "raw",
-    "b1_smile_slope": "raw",
-    "b1_smile_curvature": "raw",
-    "b1_smile_residual": "raw",
+    "b1_smile_level": "log",
     "b1_risk_reversal_25": "raw",
-    "b1_butterfly_25": "raw",
-    "b1_mfiv": "log",
-    "b1_iv_minus_trailing_rv_30d": "signed",
     "b1_median_relative_spread": "log",
     "b1_median_quote_age_s": "log",
-    "b1_strikes": "log",
-    "b1_expiries": "log",
-    "b1_pcp_residual": "log",
-    # Coverage and no-arbitrage diagnostics: a surface statistic is only as good as the
-    # grid it was read off, so the span travels with the estimate.
-    "b1_forward_expiries_fitted": "log",
-    "b1_min_log_moneyness": "signed",
-    "b1_max_log_moneyness": "signed",
-    "b1_zero_dte_contracts": "log",
-    "b1_butterfly_violations": "log",
-    "b1_implied_rate": "signed",
-    "b1_implied_dividend_yield": "signed",
+    "b1_surface_coverage": "raw",
+    "b1_iv_minus_trailing_rv_30d": "signed",
 }
 
 _B2_WINDOWS: Final[tuple[str, ...]] = ("5m", "30m")

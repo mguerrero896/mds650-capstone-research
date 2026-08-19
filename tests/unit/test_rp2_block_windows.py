@@ -1,9 +1,10 @@
-"""The B1 surface and the B2 flow windows must not share a single observation.
+"""The B1 surface and the B2 flow windows, and what each of them is allowed to read.
 
-Both blocks are cut from one option tape. The programme's central question - does trade
-flow add information beyond the surface? - is only answerable if the two feature sets are
-built from different rows. Before this, B1 read [origin-1920s, origin-120s] and B2's 30-minute
-window read exactly the same interval, so "B2 beyond B1" was partly B2 beyond itself.
+Both blocks are cut from one option tape. RP2-v2 forced them apart in time so that no row
+could feed both, which made B1 the state of the option market half an hour before the
+origin. The contrast is conditional — E[Y | B0, B1, B2] against E[Y | B0, B1] — so overlap
+is permitted and B1 is now contemporaneous. What both still owe is the availability rule:
+neither may read a row the provider had not published by ``origin - 120 s``.
 """
 
 from __future__ import annotations
@@ -31,32 +32,31 @@ BLOCK5 = _load("rp2_block5_surface_panel")
 BLOCK6 = _load("rp2_block6_flow_panel")
 
 
-def test_the_surface_window_ends_before_the_longest_flow_window_begins() -> None:
-    longest_flow = max(seconds for _, seconds in BLOCK6.WINDOWS)
-    assert longest_flow <= BLOCK5.FLOW_WINDOW_SECONDS, (
-        "B1 is sizing its gap against a stale idea of how far back B2 reaches"
-    )
-    assert BLOCK6.CUTOFF_SECONDS + longest_flow <= BLOCK5.SNAPSHOT_END_SECONDS
+def test_both_blocks_honour_the_same_availability_cutoff() -> None:
+    """One provider lag, one cutoff. A block reading further forward is reading the future."""
+
+    assert BLOCK5.CUTOFF_SECONDS == BLOCK6.CUTOFF_SECONDS == 120
 
 
-def test_the_two_windows_are_disjoint_on_a_concrete_origin() -> None:
+def test_the_surface_window_ends_at_the_cutoff_not_before_the_flow_window() -> None:
+    """The lagged snapshot end is gone: B1 reads up to the cutoff like B2 does."""
+
     origin = 0
-    flow_window = max(seconds for _, seconds in BLOCK6.WINDOWS)
-    flow = (origin - BLOCK6.CUTOFF_SECONDS - flow_window, origin - BLOCK6.CUTOFF_SECONDS)
-    surface_end = origin - BLOCK5.SNAPSHOT_END_SECONDS
-    surface = (surface_end - BLOCK5.LOOKBACK_SECONDS, surface_end)
-    assert surface[1] <= flow[0], f"overlap: surface {surface} vs flow {flow}"
+    window = BLOCK5.snapshot_window(origin)
+    assert window.cutoff_us == -BLOCK5.CUTOFF_SECONDS * 1_000_000
+    longest_flow = max(seconds for _, seconds in BLOCK6.WINDOWS)
+    flow_start = origin - BLOCK6.CUTOFF_SECONDS * 1_000_000 - longest_flow * 1_000_000
+    # The two windows now overlap, deliberately, and B1 no longer ends where B2 begins.
+    assert window.oldest_us <= flow_start
+    assert window.cutoff_us > flow_start
 
 
-def test_the_guard_refuses_a_window_that_would_overlap() -> None:
-    with pytest.raises(ValueError, match="RP2_B1_WINDOW_OVERLAPS_FLOW"):
-        BLOCK5.assert_disjoint_from_flow_window(
-            snapshot_end_seconds=120, flow_window_seconds=1800, cutoff_seconds=120
-        )
+def test_the_surface_window_never_reaches_past_the_cutoff() -> None:
+    """Contemporaneous is not the same as instantaneous."""
 
-
-def test_the_guard_accepts_the_shipped_constants() -> None:
-    BLOCK5.assert_disjoint_from_flow_window()
+    window = BLOCK5.snapshot_window(0)
+    assert window.cutoff_us < 0, "an origin may not read its own instant"
+    assert window.span_seconds == BLOCK5.MAX_QUOTE_AGE_SECONDS
 
 
 def test_a_spread_leg_contributes_volume_but_no_direction() -> None:

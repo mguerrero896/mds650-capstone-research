@@ -7,20 +7,19 @@ the cutoff is a (sparse) surface - and reduces it to constant-maturity total var
 smile shape, wing quotes, term structure, variance risk premium and quote quality.
 
 Point-in-time rule: only rows with ``created_at <= origin - 120 s`` are visible, the
-empirical cutoff established in Block 2.  Sealed cohorts are never read.
+empirical cutoff established in Block 2, and no row older than 30 minutes.  Sealed cohorts
+are never read.  See ``docs/rp2_v3/B1_CONTEMPORANEOUS_SPEC.md``.
 
-**Independence from B2.**  Both feature blocks are derived from the same tape, so the
-question "does option flow add information beyond the option surface?" is only meaningful if
-no observation feeds both answers.  B1's snapshot therefore ends where B2's longest window
-begins: B1 reads ``[origin - 5520 s, origin - 1920 s)`` and B2 reads ``[origin - 1920 s,
-origin - 120 s]``.  The two sets of rows are disjoint by construction and
-``assert_disjoint_from_flow_window`` fails the run if that ever stops being true.
+**Overlap with B2 is allowed.**  RP2-v2 ended this snapshot 1 920 seconds before the origin
+so that no tape row could feed both B1 and B2.  The contrast is conditional —
+``E[Y | B0, B1, B2]`` against ``E[Y | B0, B1]`` — so row-disjointness was never required,
+and it cost B1 the one thing it exists for: it stopped being the state of the option market
+at ``t`` and became the state half an hour earlier.  An increment measured against a
+deliberately stale B1 credits flow with information the surface already carried.
 
-This buys row-disjointness, not statistical independence.  A contract still appears in the
-surface only because somebody traded it, so the *selection* of quotes remains driven by
-flow.  The incremental test can no longer be confounded by literally reusing the same
-observations; it can still be confounded by that selection, and this document says so rather
-than implying the stronger claim.
+What the window cannot fix: a contract enters the surface only because somebody traded it,
+so the *selection* of quotes is still driven by flow.  Decision 77 measures that bias
+against an independent quote feed; it is a property of trade sampling, not of the window.
 """
 
 from __future__ import annotations
@@ -38,6 +37,14 @@ import numpy.typing as npt
 import polars as pl
 
 from mds650.b1v3_confirmation import canonical_sha256
+from mds650.rp2.b1_snapshot import (
+    CUTOFF_SECONDS,
+    MAX_QUOTE_AGE_SECONDS,
+    SENSITIVITY_MAX_AGE_SECONDS,
+    ContemporaneousSnapshot,
+    latest_quote_per_contract,
+    snapshot_window,
+)
 from mds650.rp2.bars import MARKET_TZ, SESSION_OPEN_MINUTE, build_session_grid, load_bar_sources
 from mds650.rp2.surface import (
     CONSTANT_MATURITY_DAYS,
@@ -62,12 +69,6 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_block5_surface"
 INVENTORY = ROOT / "artifacts" / "rp2_block1_partition" / "inventory.jsonl"
 B0_PANEL = ROOT / "artifacts" / "rp2_block4_b0" / "b0_panel.parquet"
-CUTOFF_SECONDS = 120
-#: The longest B2 flow window (scripts/rp2_block6_flow_panel.py).  B1 must end before it.
-FLOW_WINDOW_SECONDS = 1800
-#: B1's snapshot ends here, immediately before the oldest row any B2 window can see.
-SNAPSHOT_END_SECONDS = CUTOFF_SECONDS + FLOW_WINDOW_SECONDS
-LOOKBACK_SECONDS = 3600
 CALENDAR_YEAR = 365.0
 NY = ZoneInfo(MARKET_TZ)
 TAPE_COLUMNS = (
@@ -82,22 +83,6 @@ TAPE_COLUMNS = (
 )
 
 type FloatArray = npt.NDArray[np.float64]
-
-
-def assert_disjoint_from_flow_window(
-    *,
-    snapshot_end_seconds: int = SNAPSHOT_END_SECONDS,
-    flow_window_seconds: int = FLOW_WINDOW_SECONDS,
-    cutoff_seconds: int = CUTOFF_SECONDS,
-) -> None:
-    """Fail the run if B1's snapshot could contain a row that a B2 window also sees.
-
-    Both blocks are cut from one tape, so this is the only thing standing between
-    "B2 adds information beyond B1" and "B2 and B1 are partly the same rows".
-    """
-
-    if snapshot_end_seconds < cutoff_seconds + flow_window_seconds:
-        raise ValueError("RP2_B1_WINDOW_OVERLAPS_FLOW")
 
 
 def load_inventory() -> dict[tuple[str, str], list[str]]:
@@ -150,10 +135,7 @@ def _co_strike_pairs(
 
 
 def _surface_at(
-    cutoff_index: int,
-    window_start: int,
-    keys: npt.NDArray[np.int64],
-    created: npt.NDArray[np.int64],
+    snapshot: ContemporaneousSnapshot,
     strike: FloatArray,
     expiry_close_us: npt.NDArray[np.int64],
     iv: FloatArray,
@@ -161,29 +143,26 @@ def _surface_at(
     ask: FloatArray,
     is_call: npt.NDArray[np.bool_],
     spot: float,
-    cutoff_us: int,
 ) -> dict[str, float]:
-    """Reduce one point-in-time surface snapshot to features."""
+    """Reduce one contemporaneous surface snapshot to features."""
 
-    empty = {"b1_contracts": 0.0}
-    if cutoff_index <= window_start:
-        return empty
-    span = slice(window_start, cutoff_index)
-    # Latest observation per contract: first occurrence scanning backwards.
-    reversed_keys = keys[span][::-1]
-    _, first = np.unique(reversed_keys, return_index=True)
-    picked = cutoff_index - 1 - first
+    # An origin whose window held nothing still gets a surface-quality reading: zero. A null
+    # there says "not measured", which is the opposite of what happened — it was measured and
+    # the surface was empty.
+    empty = {"b1_contracts": 0.0, "b1_surface_coverage": 0.0}
+    picked = snapshot.positions
     if picked.size < 3:
         return empty
+    origin_us = snapshot.window.origin_us
 
     k_strike, k_iv = strike[picked], iv[picked]
     k_bid, k_ask, k_call = bid[picked], ask[picked], is_call[picked]
     mid = 0.5 * (k_bid + k_ask)
     relative_spread = (k_ask - k_bid) / np.maximum(mid, 1e-9)
-    age_seconds = (cutoff_us - created[picked]) / 1e6
+    age_seconds = snapshot.quote_age_seconds
     # Exact time to the 16:00 ET close on the expiry date, measured from THIS origin.  A
     # contract expiring this afternoon gets the hours it has left, not a floor of one day.
-    k_tenor = (expiry_close_us[picked] - cutoff_us) / 1e6 / SECONDS_PER_YEAR
+    k_tenor = (expiry_close_us[picked] - origin_us) / 1e6 / SECONDS_PER_YEAR
     live = k_tenor > 0.0
     if int(live.sum()) < 3:
         return empty
@@ -246,6 +225,20 @@ def _surface_at(
         "b1_spans_call_wing": float(coverage.spans_call_wing),
         "b1_spans_put_wing": float(coverage.spans_put_wing),
         "b1_zero_dte_contracts": float(coverage.zero_dte_contracts),
+        # How much of the grid the snapshot actually covered, as a share of the four things
+        # every surface feature needs: a fittable smile, both wings, and a term structure.
+        # A scalar, so a model can condition on the quality of the state it is reading.
+        "b1_surface_coverage": float(
+            np.mean(
+                [
+                    coverage.contracts >= 3,
+                    coverage.spans_call_wing,
+                    coverage.spans_put_wing,
+                    coverage.expiries >= 2,
+                ]
+            )
+        ),
+        "b1_smile_level": float("nan"),
         "b1_pcp_residual": float("nan"),
         "b1_calendar_violations": float("nan"),
         "b1_butterfly_violations": float("nan"),
@@ -273,6 +266,7 @@ def _surface_at(
     bucket_forward = forward_by_expiry.get(int(nearest), spot)
     if int(bucket.sum()) >= 3:
         smile = fit_smile(log_moneyness[bucket], k_iv[bucket])
+        features["b1_smile_level"] = smile.level
         features["b1_smile_slope"] = smile.slope
         features["b1_smile_curvature"] = smile.curvature
         features["b1_smile_residual"] = smile.residual_std
@@ -318,6 +312,8 @@ def build_session_surface(
     origins: npt.NDArray[np.int64],
     closes: FloatArray,
     rv_back_30: FloatArray,
+    *,
+    max_quote_age_seconds: int = MAX_QUOTE_AGE_SECONDS,
 ) -> pl.DataFrame | None:
     """Surface features at every origin of one session-asset."""
 
@@ -358,22 +354,13 @@ def build_session_surface(
     base = datetime.fromisoformat(session).replace(tzinfo=NY)
     for position, minute in enumerate(origins):
         origin_time = base + timedelta(minutes=int(SESSION_OPEN_MINUTE + minute))
-        cutoff = origin_time.astimezone(UTC).replace(tzinfo=None) - timedelta(
-            seconds=CUTOFF_SECONDS
-        )
+        naive_origin = origin_time.astimezone(UTC).replace(tzinfo=None)
         # The tape stores microsecond timestamps; every bound below is in microseconds.
-        cutoff_us = int(np.datetime64(cutoff, "us").astype(np.int64))
-        # The snapshot ends before the oldest row any B2 window can reach, so the two
-        # feature blocks never share an observation.
-        snapshot_end_us = cutoff_us - (SNAPSHOT_END_SECONDS - CUTOFF_SECONDS) * 1_000_000
-        start_us = snapshot_end_us - LOOKBACK_SECONDS * 1_000_000
-        hi = int(np.searchsorted(created, snapshot_end_us, side="right"))
-        lo = int(np.searchsorted(created, start_us, side="left"))
+        origin_us = int(np.datetime64(naive_origin, "us").astype(np.int64))
+        window = snapshot_window(origin_us, max_quote_age_seconds=max_quote_age_seconds)
+        snapshot = latest_quote_per_contract(created, keys, window)
         features = _surface_at(
-            hi,
-            lo,
-            keys,
-            created,
+            snapshot,
             strike,
             expiry_close_us,
             iv,
@@ -381,7 +368,6 @@ def build_session_surface(
             ask,
             is_call,
             float(closes[minute]),
-            snapshot_end_us,
         )
         features["origin_minute"] = float(minute)
         implied = features.get("b1_iv_30d", float("nan"))
@@ -404,6 +390,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--workers", type=int, default=6)
     parser.add_argument("--limit-sessions", type=int, default=0)
+    parser.add_argument(
+        "--max-quote-age-seconds",
+        type=int,
+        default=MAX_QUOTE_AGE_SECONDS,
+        help=(
+            "how stale a contract's last quote may be. The frozen primary panel uses "
+            f"{MAX_QUOTE_AGE_SECONDS}; {SENSITIVITY_MAX_AGE_SECONDS} is the "
+            "pre-registered sensitivity, never the primary."
+        ),
+    )
     args = parser.parse_args(argv)
 
     panel = pl.read_parquet(B0_PANEL)
@@ -449,7 +445,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     frames: list[pl.DataFrame] = []
     failures = 0
     with ThreadPoolExecutor(max_workers=args.workers) as pool:
-        for result in pool.map(lambda job: build_session_surface(*job), jobs):
+        for result in pool.map(
+            lambda job: build_session_surface(
+                *job, max_quote_age_seconds=int(args.max_quote_age_seconds)
+            ),
+            jobs,
+        ):
             if result is None:
                 failures += 1
                 continue
@@ -475,7 +476,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         "program": "docs/research_program_v2.md",
         "label": "EXPLORATORY_MECHANISM_DISCOVERY",
         "cutoff_seconds": CUTOFF_SECONDS,
-        "lookback_seconds": LOOKBACK_SECONDS,
+        "max_quote_age_seconds": int(args.max_quote_age_seconds),
+        "sensitivity_max_quote_age_seconds": SENSITIVITY_MAX_AGE_SECONDS,
+        "source_label": "trade_sampled_contemporaneous_nbbo",
+        "spec": "docs/rp2_v3/B1_CONTEMPORANEOUS_SPEC.md",
         "constant_maturities_days": list(CONSTANT_MATURITY_DAYS),
         "session_assets_requested": len(jobs),
         "session_assets_without_tape": failures,

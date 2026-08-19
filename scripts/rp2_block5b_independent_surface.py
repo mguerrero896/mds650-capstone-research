@@ -47,6 +47,12 @@ from mds650.providers.massive import (
     assert_directed_only,
     parse_directed_quotes,
 )
+from mds650.rp2.b1_snapshot import (
+    CUTOFF_SECONDS,
+    MAX_QUOTE_AGE_SECONDS,
+    latest_quote_per_contract,
+    snapshot_window,
+)
 from mds650.rp2.bars import MARKET_TZ, SESSION_OPEN_MINUTE, build_session_grid, load_bar_sources
 from mds650.rp2.surface import fit_smile
 
@@ -55,8 +61,6 @@ DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_block5b_independent"
 INVENTORY = ROOT / "artifacts" / "rp2_block1_partition" / "inventory.jsonl"
 B0_PANEL = ROOT / "artifacts" / "rp2_block4_b0" / "b0_panel.parquet"
 
-CUTOFF_SECONDS = 120
-LOOKBACK_SECONDS = 1800
 CALENDAR_YEAR = 365.0
 NY = ZoneInfo(MARKET_TZ)
 RUN_ID = "rp2_block5b_independent_surface"
@@ -171,16 +175,10 @@ def traded_surface(
     tape = tape.sort("created_at")
     created = tape["created_at"].dt.replace_time_zone(None).cast(pl.Int64).to_numpy()
     base = datetime.fromisoformat(session).replace(tzinfo=NY)
-    cutoff = base + timedelta(minutes=int(SESSION_OPEN_MINUTE + minute))
-    cutoff_us = int(
-        np.datetime64(
-            cutoff.astimezone(UTC).replace(tzinfo=None) - timedelta(seconds=CUTOFF_SECONDS), "us"
-        ).astype(np.int64)
+    origin = base + timedelta(minutes=int(SESSION_OPEN_MINUTE + minute))
+    origin_us = int(
+        np.datetime64(origin.astimezone(UTC).replace(tzinfo=None), "us").astype(np.int64)
     )
-    hi = int(np.searchsorted(created, cutoff_us, side="right"))
-    lo = int(np.searchsorted(created, cutoff_us - LOOKBACK_SECONDS * 1_000_000, side="left"))
-    if hi - lo < 3:
-        return {"contracts": 0.0}
 
     strike = tape["strike"].cast(pl.Float64).to_numpy().astype(np.float64)
     expiry = tape["expiry"].cast(pl.Date).to_numpy()
@@ -188,9 +186,12 @@ def traded_surface(
     is_call = (tape["option_type"] == "call").to_numpy()
     days = (expiry - np.datetime64(session, "D")).astype("timedelta64[D]").astype(np.int64)
     keys = days * 20_000_000 + np.round(strike * 1000.0).astype(np.int64) * 2 + is_call
-    reversed_keys = keys[lo:hi][::-1]
-    _, first = np.unique(reversed_keys, return_index=True)
-    picked = hi - 1 - first
+    # The same window rule the panel uses, so the audit measures the surface the panel
+    # actually reads. In RP2-v2 the two were defined separately and had drifted apart.
+    snapshot = latest_quote_per_contract(created, keys, snapshot_window(origin_us))
+    picked = snapshot.positions
+    if picked.size < 3:
+        return {"contracts": float(picked.size)}
 
     inside = (
         (days[picked] >= DTE_MIN_DAYS)
@@ -429,7 +430,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             "session_assets": len(chosen),
             "origins_per_session": list(SAMPLE_ORIGINS),
             "strike_band": STRIKE_BAND,
-            "dte_window_days": [DTE_MIN_DAYS, DTE_MAX_DAYS],
+            "cutoff_seconds": CUTOFF_SECONDS,
+        "max_quote_age_seconds": MAX_QUOTE_AGE_SECONDS,
+        "dte_window_days": [DTE_MIN_DAYS, DTE_MAX_DAYS],
             "max_contracts_per_side": MAX_CONTRACTS_PER_SIDE,
         },
         "requests": dict(counters),

@@ -693,3 +693,29 @@ Spec Kit consistency and preregistration gates pass.
    moved Validation's first session by up to **50.4 %** and its second by 1.3e-05, and was
    exactly zero from the fifth session on; the reported Validation QLIKE does not move,
    because its test window opens 48 sessions after the boundary.
+80. **B1 was the option market half an hour ago, and 40 % of the rows were lost to a
+   diagnostic (2026-08-20)** — RP2-v2 ended B1's snapshot 1 920 seconds before the forecast
+   origin so that no tape row could feed both B1 and B2. The contrast is conditional —
+   `E[Y | B0, B1, B2]` against `E[Y | B0, B1]` — so row-disjointness was never required, and
+   it cost B1 the one thing it exists for. `src/mds650/rp2/b1_snapshot.py` now reads
+   `[t - 120 s - 30 min, t - 120 s]` and keeps each contract's last quote. Rebuilt over all
+   184,632 origins, the median quote age **against the forecast origin** falls from
+   **2,588 s to 579 s** and the P95 from **2,941 s to 758 s**, with zero post-cutoff
+   observations and zero duplicate contracts per snapshot (verified over 66 origins of a
+   real session carrying 259,274 tape rows, 538 contracts per snapshot at the median).
+   Separately, the primary B1 set is cut to the ten B1-core features. `b1_implied_rate` and
+   `b1_implied_dividend_yield` fit on 59.7 % of origins, and because they were in the
+   primary set every nested contrast dropped the other 40 %: the common evaluation mask held
+   **90,548 of 152,954** discovery rows. The two are retained as B1-rich, reported and
+   hashed, and the mask becomes **149,206 of 152,954 (97.5 %)** in discovery and **31,471 of
+   31,678 (99.3 %)** in validation. The attribution is not flattering to the window and is
+   reported as measured: on the new panel the old 26-feature set keeps 56.6 % of discovery
+   rows, *fewer* than the 59.2 % it kept on the stale panel, because a fresher window sees
+   fewer contracts and fits parity less often. The rows come from the core/rich split; the
+   window buys freshness. Two features are added because B1-core names them and they did not
+   exist: `b1_smile_level`, the at-the-money level every shape feature was already measured
+   against, and `b1_surface_coverage`, the share of four grid requirements the snapshot met.
+   Block 5b, which measures the trade-sampling bias of decision 77 against an independent
+   quote feed, now reads the window through the same rule; in RP2-v2 it defined its own and
+   audited a surface the panel did not carry.
+
