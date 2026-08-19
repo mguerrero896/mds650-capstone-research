@@ -41,9 +41,7 @@ def _smearing(residuals: FloatArray) -> float:
     return float(np.exp(0.5 * float(np.var(residuals))))
 
 
-def fit_log_ols(
-    design: FloatArray, target: FloatArray, train: npt.NDArray[np.bool_]
-) -> FloatArray:
+def fit_log_ols(design: FloatArray, target: FloatArray, train: npt.NDArray[np.bool_]) -> FloatArray:
     """Ordinary least squares on log variance with lognormal retransformation."""
 
     response = _log(target)

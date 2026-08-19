@@ -23,7 +23,7 @@ import polars as pl
 
 from mds650.b1v3_confirmation import canonical_sha256
 from mds650.metrics import qlike_losses
-from mds650.rp2.bars import SESSION_MINUTES, build_session_grid, load_bar_sources
+from mds650.rp2.bars import FULL_SESSION_MINUTES, build_session_grid, load_bar_sources
 from mds650.rp2.baseline import (
     VARIANCE_FLOOR,
     ewma_variance,
@@ -38,12 +38,12 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_block4_b0"
 TARGET_HORIZON = 30
 FIRST_ORIGIN = 30
-LAST_ORIGIN = SESSION_MINUTES - TARGET_HORIZON
+LAST_ORIGIN = FULL_SESSION_MINUTES - TARGET_HORIZON
 ORIGIN_STEP = 5
 MARKET_ASSETS = ("SPY", "QQQ")
 TARGET_ASSETS = ("AAPL", "AMZN", "META", "MSFT", "NVDA", "TSLA")
 WEEK_SESSIONS = 5
-SEASONALITY_BUCKETS = SESSION_MINUTES // ORIGIN_STEP + 1
+SEASONALITY_BUCKETS = FULL_SESSION_MINUTES // ORIGIN_STEP + 1
 
 type FloatArray = npt.NDArray[np.float64]
 
@@ -52,8 +52,9 @@ def _log(values: FloatArray) -> FloatArray:
     return np.log(np.maximum(values, VARIANCE_FLOOR))
 
 
-def _parkinson(high: FloatArray, low: FloatArray, origins: npt.NDArray[np.int64],
-               window: int) -> FloatArray:
+def _parkinson(
+    high: FloatArray, low: FloatArray, origins: npt.NDArray[np.int64], window: int
+) -> FloatArray:
     ratio = np.log(np.maximum(high, VARIANCE_FLOOR) / np.maximum(low, VARIANCE_FLOOR)) ** 2
     prefix = np.concatenate([[0.0], np.cumsum(ratio)])
     window_sum = prefix[origins + 1] - prefix[origins + 1 - window]
@@ -65,27 +66,60 @@ def _window_sum(values: FloatArray, origins: npt.NDArray[np.int64], window: int)
     return np.asarray(prefix[origins + 1] - prefix[origins + 1 - window], dtype=np.float64)
 
 
+def session_origins(minutes: int) -> npt.NDArray[np.int64]:
+    """Five-minute origins that fit inside a session of ``minutes`` minutes.
+
+    Every origin must leave a full forecast horizon before the close, so a 210-minute
+    early close yields origins up to 175 rather than the full-session 355. Sizing them
+    from a module-level constant instead indexes past the end of a short session's grid.
+    """
+
+    last = minutes - TARGET_HORIZON
+    if last <= FIRST_ORIGIN:
+        return np.empty(0, dtype=np.int64)
+    return np.arange(FIRST_ORIGIN, last, ORIGIN_STEP, dtype=np.int64)
+
+
+def first_valid_minute(valid: npt.NDArray[np.bool_]) -> int:
+    """First minute with an observation at or before it, or the grid length if none.
+
+    The grid marks unobserved opening minutes invalid rather than carrying a later price
+    backwards into them, so their close is NaN. NaN fails every comparison, which is why a
+    `close.min() <= 0` guard cannot see them: without this the whole session aborts on a
+    single absent opening bar.
+    """
+
+    present = np.flatnonzero(valid)
+    return int(present[0]) if present.size else int(valid.size)
+
+
 def build_market_controls(bars: pl.DataFrame) -> pl.DataFrame:
     """Session-level SPY/QQQ return and realized variance at every origin minute."""
 
-    origins = np.arange(FIRST_ORIGIN, LAST_ORIGIN, ORIGIN_STEP, dtype=np.int64)
     rows: list[pl.DataFrame] = []
     market = bars.filter(pl.col("asset").is_in(MARKET_ASSETS))
     for (asset, session_date), group in market.sort(["asset", "session_date", "minute"]).group_by(
         ["asset", "session_date"], maintain_order=True
     ):
-        grid = build_session_grid(group)
+        grid = build_session_grid(group, session=session_date)
         if grid.fill_share > 0.05:
             continue
-        returns = log_returns(grid.close)
+        usable = first_valid_minute(grid.valid)
+        origins = session_origins(grid.minutes)
+        origins = origins[origins >= usable + TARGET_HORIZON]
+        close = grid.close[usable:]
+        if origins.size == 0 or not np.isfinite(close).all() or close.min() <= 0.0:
+            continue
+        returns = log_returns(close)
         prefix = np.concatenate([[0.0], np.cumsum(returns)])
+        local = origins - usable
         rows.append(
             pl.DataFrame(
                 {
                     "session_date": [str(session_date)] * origins.size,
                     "origin_minute": origins,
-                    f"{asset!s}_rv_30": backward_rv(returns, origins, TARGET_HORIZON),
-                    f"{asset!s}_ret_30": prefix[origins] - prefix[origins - TARGET_HORIZON],
+                    f"{asset!s}_rv_30": backward_rv(returns, local, TARGET_HORIZON),
+                    f"{asset!s}_ret_30": prefix[local] - prefix[local - TARGET_HORIZON],
                 }
             )
         )
@@ -97,8 +131,12 @@ def build_market_controls(bars: pl.DataFrame) -> pl.DataFrame:
         if not subset:
             continue
         stacked = pl.concat(subset, how="vertical")
-        merged = stacked if merged is None else merged.join(
-            stacked, on=["session_date", "origin_minute"], how="full", coalesce=True
+        merged = (
+            stacked
+            if merged is None
+            else merged.join(
+                stacked, on=["session_date", "origin_minute"], how="full", coalesce=True
+            )
         )
     return merged if merged is not None else pl.DataFrame()
 
@@ -108,8 +146,7 @@ def build_b0_panel(
 ) -> tuple[pl.DataFrame, dict[str, int]]:
     """Target-blind underlying feature panel at every five-minute origin."""
 
-    origins = np.arange(FIRST_ORIGIN, LAST_ORIGIN, ORIGIN_STEP, dtype=np.int64)
-    counters = {"session_assets_seen": 0, "dropped_fill": 0}
+    counters = {"session_assets_seen": 0, "dropped_fill": 0, "dropped_short_session": 0}
     history: dict[str, list[float]] = {}
     rows: list[pl.DataFrame] = []
     ordered = bars.filter(pl.col("asset").is_in(TARGET_ASSETS)).sort(
@@ -119,19 +156,32 @@ def build_b0_panel(
         ["asset", "session_date", "role", "source"], maintain_order=True
     ):
         counters["session_assets_seen"] += 1
-        grid = build_session_grid(group)
-        if grid.fill_share > max_fill_share or grid.close.min() <= 0.0:
+        grid = build_session_grid(group, session=session_date)
+        if grid.fill_share > max_fill_share:
             counters["dropped_fill"] += 1
             continue
-        returns = log_returns(grid.close)
+        usable = first_valid_minute(grid.valid)
+        origins = session_origins(grid.minutes)
+        # Every window reaches a full horizon back from its origin, so an origin closer to
+        # the first observed minute than that horizon would read the fill, not the market.
+        origins = origins[origins >= usable + TARGET_HORIZON]
+        close = grid.close[usable:]
+        if origins.size == 0:
+            counters["dropped_short_session"] += 1
+            continue
+        if not np.isfinite(close).all() or close.min() <= 0.0:
+            counters["dropped_fill"] += 1
+            continue
+        local = origins - usable
+        returns = log_returns(close)
         cumulative_return = np.concatenate([[0.0], np.cumsum(returns)])
         session_squared = np.cumsum(returns**2)
         past = history.setdefault(str(asset), [])
         prev_day = past[-1] if past else float("nan")
         week = float(np.mean(past[-WEEK_SESSIONS:])) if len(past) >= WEEK_SESSIONS else float("nan")
 
-        forward = forward_measures(returns, origins, TARGET_HORIZON)
-        back30 = forward_measures(returns - 0.0, origins - TARGET_HORIZON, TARGET_HORIZON)
+        forward = forward_measures(returns, local, TARGET_HORIZON)
+        back30 = forward_measures(returns - 0.0, local - TARGET_HORIZON, TARGET_HORIZON)
         record: dict[str, object] = {
             "asset": [str(asset)] * origins.size,
             "session_date": [str(session_date)] * origins.size,
@@ -140,23 +190,28 @@ def build_b0_panel(
             "origin_minute": origins,
             "rv30": forward.rv,
             "jump30": forward.jump,
-            "rv_back_5": backward_rv(returns, origins, 5),
-            "rv_back_15": backward_rv(returns, origins, 15),
+            "rv_back_5": backward_rv(returns, local, 5),
+            "rv_back_15": backward_rv(returns, local, 15),
             "rv_back_30": back30.rv,
             "rq_back_30": back30.quarticity,
             "rs_up_back_30": back30.semivariance_up,
             "rs_down_back_30": back30.semivariance_down,
             "jump_back_30": back30.jump,
-            "rv_session_to_date": session_squared[origins - 1],
+            "rv_session_to_date": session_squared[local - 1],
             "rv_prev_day": np.full(origins.size, prev_day),
             "rv_week": np.full(origins.size, week),
-            "ret_5": cumulative_return[origins] - cumulative_return[origins - 5],
-            "ret_30": cumulative_return[origins] - cumulative_return[origins - TARGET_HORIZON],
-            "parkinson_30": _parkinson(grid.high, grid.low, origins, TARGET_HORIZON),
-            "volume_30": _window_sum(grid.volume, origins - 1, TARGET_HORIZON),
-            "dollar_volume_30": _window_sum(grid.volume * grid.close, origins - 1, TARGET_HORIZON),
+            "ret_5": cumulative_return[local] - cumulative_return[local - 5],
+            "ret_30": cumulative_return[local] - cumulative_return[local - TARGET_HORIZON],
+            "parkinson_30": _parkinson(
+                grid.high[usable:], grid.low[usable:], local, TARGET_HORIZON
+            ),
+            "volume_30": _window_sum(grid.volume[usable:], local - 1, TARGET_HORIZON),
+            "dollar_volume_30": _window_sum(
+                grid.volume[usable:] * close, local - 1, TARGET_HORIZON
+            ),
             "minutes_since_open": origins.astype(np.float64),
-            "minutes_to_close": (SESSION_MINUTES - origins).astype(np.float64),
+            # Against the session's own close, not a fixed 390-minute one.
+            "minutes_to_close": (grid.minutes - origins).astype(np.float64),
             "minute_bucket": (origins // ORIGIN_STEP).astype(np.int64),
         }
         rows.append(pl.DataFrame(record))
@@ -203,8 +258,11 @@ def _fit_evaluate(
 
 
 def _constant_forecast_metrics(
-    target: FloatArray, forecast: FloatArray, test: npt.NDArray[np.bool_],
-    response: FloatArray, train: npt.NDArray[np.bool_]
+    target: FloatArray,
+    forecast: FloatArray,
+    test: npt.NDArray[np.bool_],
+    response: FloatArray,
+    train: npt.NDArray[np.bool_],
 ) -> dict[str, float]:
     safe = np.maximum(forecast, VARIANCE_FLOOR)
     calibration = mincer_zarnowitz(target[test], safe[test])
@@ -265,17 +323,29 @@ def evaluate_role(
     # Challenger 4 - simple HAR: three own-history lags.
     results["har_simple"] = _fit_evaluate(
         np.column_stack([np.ones(frame.height), log_back30, log_session, log_prev]),
-        response, target, train, test,
+        response,
+        target,
+        train,
+        test,
     )
     # Challenger 5 - intraday GARCH(1,1) fitted on one-minute returns.
     results["garch11_intraday"] = dict(garch)
 
     # B0 - the full underlying information set.
     b0_columns = (
-        "ret_5", "ret_30", "minutes_since_open", "minutes_to_close", "day_of_week",
+        "ret_5",
+        "ret_30",
+        "minutes_since_open",
+        "minutes_to_close",
+        "day_of_week",
     )
     extras: list[FloatArray] = [
-        log_back5, log_back15, log_back30, log_session, log_prev, log_week,
+        log_back5,
+        log_back15,
+        log_back30,
+        log_session,
+        log_prev,
+        log_week,
         _log(np.asarray(frame["rq_back_30"].to_numpy(), dtype=np.float64)),
         np.sqrt(np.maximum(frame["rq_back_30"].to_numpy(), 0.0)) * log_back30,
         _log(np.asarray(frame["rs_up_back_30"].to_numpy(), dtype=np.float64)),
@@ -290,7 +360,10 @@ def evaluate_role(
     core_finite = np.isfinite(core_design).all(axis=1)
     results["b0_core"] = _fit_evaluate(
         np.where(core_finite[:, None], core_design, 0.0),
-        response, target, train & core_finite, test & core_finite,
+        response,
+        target,
+        train & core_finite,
+        test & core_finite,
     )
 
     # Market controls exist only where index-ETF bars were collected; the model that uses
@@ -305,12 +378,18 @@ def evaluate_role(
     if (train & market_finite).sum() >= 500 and (test & market_finite).sum() >= 500:
         results["b0_market"] = _fit_evaluate(
             np.where(market_finite[:, None], market_design, 0.0),
-            response, target, train & market_finite, test & market_finite,
+            response,
+            target,
+            train & market_finite,
+            test & market_finite,
         )
         # Same rows, no market controls: the like-for-like comparison.
         results["b0_core_on_market_rows"] = _fit_evaluate(
             np.where(core_finite[:, None], core_design, 0.0),
-            response, target, train & market_finite, test & market_finite,
+            response,
+            target,
+            train & market_finite,
+            test & market_finite,
         )
     results["_meta"] = {
         "train_rows": float(train.sum()),
@@ -337,16 +416,25 @@ def fit_intraday_garch(
     subset = bars.filter((pl.col("role") == role) & pl.col("asset").is_in(TARGET_ASSETS))
     training_returns: list[FloatArray] = []
     forecasts: dict[tuple[str, str], FloatArray] = {}
-    for (asset, session_date), group in subset.sort(
-        ["asset", "session_date", "minute"]
-    ).group_by(["asset", "session_date"], maintain_order=True):
-        grid = build_session_grid(group)
-        if grid.fill_share > 0.05 or grid.close.min() <= 0.0:
+    offsets: dict[tuple[str, str], int] = {}
+    for (asset, session_date), group in subset.sort(["asset", "session_date", "minute"]).group_by(
+        ["asset", "session_date"], maintain_order=True
+    ):
+        grid = build_session_grid(group, session=session_date)
+        # Same discipline as the panel: a holiday has no grid, and unobserved opening
+        # minutes are NaN rather than back-filled, so the series starts where the market
+        # first printed. `offsets` records that start so the origin index can be rebased.
+        if grid.minutes == 0 or grid.fill_share > 0.05:
             continue
-        returns = log_returns(grid.close)
+        usable = first_valid_minute(grid.valid)
+        close = grid.close[usable:]
+        if close.size < 2 or not np.isfinite(close).all() or close.min() <= 0.0:
+            continue
+        returns = log_returns(close)
         if str(session_date) < str(split):
             training_returns.append(returns)
         forecasts[(str(asset), str(session_date))] = returns
+        offsets[(str(asset), str(session_date))] = usable
     if not training_returns:
         return {"qlike": float("nan")}
     model = fit_garch11(np.concatenate(training_returns))
@@ -364,21 +452,32 @@ def fit_intraday_garch(
         if filtered is None:
             filtered = model.filter(series)
             cache[key] = filtered
-        # Iterate the recursion forward TARGET_HORIZON steps from the origin.
-        state = float(filtered[origins[index]])
+        # Iterate the recursion forward TARGET_HORIZON steps from the origin, rebased
+        # onto the observed slice.
+        position = int(origins[index]) - offsets.get(key, 0)
+        if not 0 <= position < filtered.size:
+            continue
+        state = float(filtered[position])
         unconditional = model.omega / max(1.0 - model.persistence, 1e-6)
         total = 0.0
         for _step in range(TARGET_HORIZON):
             total += state
             state = unconditional + model.persistence * (state - unconditional)
         predicted[index] = total
-    usable = np.isfinite(predicted) & np.isfinite(response) & (target > 0.0)
-    train = (sessions < split) & usable
-    test = (sessions >= split) & usable
-    metrics = _constant_forecast_metrics(target, np.nan_to_num(predicted, nan=VARIANCE_FLOOR),
-                                         test, response, train)
-    metrics.update({"omega": model.omega, "alpha": model.alpha, "beta": model.beta,
-                    "persistence": model.persistence})
+    scored = np.isfinite(predicted) & np.isfinite(response) & (target > 0.0)
+    train = (sessions < split) & scored
+    test = (sessions >= split) & scored
+    metrics = _constant_forecast_metrics(
+        target, np.nan_to_num(predicted, nan=VARIANCE_FLOOR), test, response, train
+    )
+    metrics.update(
+        {
+            "omega": model.omega,
+            "alpha": model.alpha,
+            "beta": model.beta,
+            "persistence": model.persistence,
+        }
+    )
     return metrics
 
 

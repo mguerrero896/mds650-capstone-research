@@ -15,13 +15,40 @@ from mds650.rp2.baseline import (
 )
 
 
-def test_ewma_uses_only_the_past() -> None:
-    returns = np.array([0.1, 0.2, 0.3], dtype=np.float64)
-    values = ewma_variance(returns, decay=0.5)
-    seed = float(np.mean(returns**2))
-    assert values[0] == pytest.approx(seed)
-    assert values[1] == pytest.approx(0.5 * seed + 0.5 * 0.1**2)
-    assert values[2] == pytest.approx(0.5 * values[1] + 0.5 * 0.2**2)
+def test_ewma_is_point_in_time_and_cannot_see_the_future() -> None:
+    """The leak this pins: a full-sample seed makes early values depend on later returns.
+
+    Appending observations must never change a value already emitted. With the old
+    full-sample mean seed, every element moved when the series grew.
+    """
+
+    rng = np.random.default_rng(3)
+    returns = rng.normal(scale=0.01, size=200)
+    short = ewma_variance(returns[:120], decay=0.9, warmup=5)
+    long = ewma_variance(returns, decay=0.9, warmup=5)
+    assert short == pytest.approx(long[:120], nan_ok=True)
+
+
+def test_ewma_expands_its_seed_then_switches_to_the_recursion() -> None:
+    returns = np.array([0.1, 0.2, 0.3, 0.4], dtype=np.float64)
+    values = ewma_variance(returns, decay=0.5, warmup=2)
+    # Warm-up rows have too little history to state a variance.
+    assert np.isnan(values[:2]).all()
+    # At index 2 the state is the expanding mean of the first two squared returns.
+    assert values[2] == pytest.approx((0.1**2 + 0.2**2) / 2)
+    assert values[3] == pytest.approx(0.5 * values[2] + 0.5 * 0.3**2)
+
+
+def test_ewma_is_computed_per_asset_so_one_name_cannot_seed_another() -> None:
+    from mds650.rp2.baseline import ewma_variance_by_asset
+
+    returns = np.array([0.5, 0.5, 0.5, 0.001, 0.001, 0.001], dtype=np.float64)
+    assets = np.array(["LOUD", "LOUD", "LOUD", "QUIET", "QUIET", "QUIET"])
+    pooled = ewma_variance(returns, decay=0.9, warmup=2)
+    split = ewma_variance_by_asset(returns, assets, decay=0.9, warmup=2)
+    # Pooling lets the loud name's state carry into the quiet one at the switch.
+    assert split[5] < pooled[5]
+    assert split[2] == pytest.approx(ewma_variance(returns[:3], decay=0.9, warmup=2)[2])
 
 
 @pytest.mark.parametrize("decay", [0.0, 1.0, -0.5])
@@ -30,9 +57,11 @@ def test_ewma_rejects_an_invalid_decay(decay: float) -> None:
         ewma_variance(np.array([0.1]), decay=decay)
 
 
-def test_ewma_rejects_an_empty_series() -> None:
+def test_ewma_rejects_an_empty_series_or_a_bad_warmup() -> None:
     with pytest.raises(ValueError, match="RP2_EWMA_SERIES_INVALID"):
         ewma_variance(np.array([], dtype=np.float64))
+    with pytest.raises(ValueError, match="RP2_EWMA_WARMUP_INVALID"):
+        ewma_variance(np.array([0.1, 0.2]), warmup=0)
 
 
 def test_garch_filter_follows_the_recursion() -> None:

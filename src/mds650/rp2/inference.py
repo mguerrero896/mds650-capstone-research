@@ -27,15 +27,28 @@ DEFAULT_BLOCK_MEAN: Final = 5.0
 
 
 def clark_west_terms(
-    actual: FloatArray, restricted: FloatArray, unrestricted: FloatArray
+    actual: FloatArray,
+    restricted: FloatArray,
+    unrestricted: FloatArray,
+    *,
+    nested_linear: bool,
 ) -> FloatArray:
-    """Per-observation Clark-West adjusted loss difference for nested models.
+    """Per-observation Clark-West adjusted loss difference for nested LINEAR models.
 
     ``f_t = e_0t^2 - [e_1t^2 - (yhat_0t - yhat_1t)^2]``.  The final term removes the
     downward bias that plain Diebold-Mariano suffers when the larger model nests the
     smaller one and the extra parameters are estimated noise under the null.
+
+    ``nested_linear`` must be asserted by the caller and is not a formality. The Clark-West
+    adjustment is derived for a linear model whose restricted form is a parameter
+    restriction of the unrestricted one. A boosted tree fitted on a larger feature set does
+    not nest the tree fitted on the smaller one - the two are different function classes,
+    not a parameter restriction - so the adjustment has no justification there and inflates
+    the statistic. Applying it to a tree pair silently manufactures significance.
     """
 
+    if not nested_linear:
+        raise ValueError("RP2_CW_REQUIRES_NESTED_LINEAR")
     if actual.shape != restricted.shape or actual.shape != unrestricted.shape:
         raise ValueError("RP2_CW_SHAPE_MISMATCH")
     error_restricted = actual - restricted
@@ -67,9 +80,7 @@ def clustered_mean_test(values: FloatArray, clusters: IntArray) -> MeanTest:
     if labels.size < 3:
         raise ValueError("RP2_INFERENCE_TOO_FEW_CLUSTERS")
     means = np.array([values[clusters == label].mean() for label in labels], dtype=np.float64)
-    weights = np.array(
-        [np.count_nonzero(clusters == label) for label in labels], dtype=np.float64
-    )
+    weights = np.array([np.count_nonzero(clusters == label) for label in labels], dtype=np.float64)
     overall = float(np.sum(means * weights) / np.sum(weights))
     spread = float(np.std(means, ddof=1) / math.sqrt(labels.size))
     t_statistic = overall / spread if spread > 0.0 else float("nan")
@@ -82,6 +93,62 @@ def clustered_mean_test(values: FloatArray, clusters: IntArray) -> MeanTest:
         p_value_two_sided=float(2.0 * stats.t.sf(abs(t_statistic), df=degrees)),
         clusters=int(labels.size),
     )
+
+
+def aggregate_by_session(values: FloatArray, sessions: IntArray) -> tuple[FloatArray, IntArray]:
+    """Collapse per-origin values to one mean per session, in session order.
+
+    Origins five minutes apart share overlapping thirty-minute targets, so they are not
+    independent draws. Testing them as if they were understates every standard error by
+    roughly the square root of the origins per day. Aggregating first makes the unit of
+    observation the session, which is the level at which the blocks are actually
+    exchangeable.
+    """
+
+    if values.shape != sessions.shape:
+        raise ValueError("RP2_INFERENCE_SHAPE_MISMATCH")
+    finite = np.isfinite(values)
+    values, sessions = values[finite], sessions[finite]
+    labels = np.unique(sessions)
+    means = np.array([values[sessions == label].mean() for label in labels], dtype=np.float64)
+    return means, labels
+
+
+def session_block_bootstrap(
+    session_values: FloatArray,
+    *,
+    block_length: int = 5,
+    repetitions: int = DEFAULT_BOOTSTRAP,
+    seed: int = 650,
+) -> dict[str, float]:
+    """Circular block bootstrap over whole sessions.
+
+    Blocks rather than individual sessions because the loss differential is serially
+    correlated across days; resampling single sessions would destroy that dependence and
+    return an interval that is too narrow.
+    """
+
+    size = session_values.size
+    if size < 3 or block_length < 1:
+        raise ValueError("RP2_INFERENCE_BOOTSTRAP_PARAMS_INVALID")
+    generator = np.random.default_rng(seed)
+    blocks = int(np.ceil(size / block_length))
+    estimates = np.empty(repetitions, dtype=np.float64)
+    for index in range(repetitions):
+        starts = generator.integers(0, size, size=blocks)
+        offsets = (starts[:, None] + np.arange(block_length)[None, :]) % size
+        estimates[index] = float(session_values[offsets.ravel()[:size]].mean())
+    lower, upper = np.quantile(estimates, [0.025, 0.975])
+    nonpositive = (float(np.count_nonzero(estimates <= 0.0)) + 1.0) / (repetitions + 1.0)
+    nonnegative = (float(np.count_nonzero(estimates >= 0.0)) + 1.0) / (repetitions + 1.0)
+    return {
+        "estimate": float(session_values.mean()),
+        "ci_low": float(lower),
+        "ci_high": float(upper),
+        "p_value_two_sided": min(1.0, 2.0 * min(nonpositive, nonnegative)),
+        "sessions": float(size),
+        "block_length": float(block_length),
+    }
 
 
 def newey_west_variance(values: FloatArray, *, lags: int) -> float:
@@ -193,9 +260,7 @@ def hansen_spa(
     if not candidate_losses:
         raise ValueError("RP2_INFERENCE_NO_CANDIDATES")
     names = sorted(candidate_losses)
-    differences = np.column_stack(
-        [benchmark_losses - candidate_losses[name] for name in names]
-    )
+    differences = np.column_stack([benchmark_losses - candidate_losses[name] for name in names])
     finite = np.isfinite(differences).all(axis=1)
     differences = differences[finite]
     size = differences.shape[0]

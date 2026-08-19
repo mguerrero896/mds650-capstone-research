@@ -114,9 +114,7 @@ def test_chronological_split_divides_by_session_never_by_row() -> None:
 
 
 def test_standardise_uses_training_statistics_only_and_leaves_the_intercept() -> None:
-    design = np.column_stack(
-        [np.ones(6), np.array([0.0, 2.0, 4.0, 100.0, 200.0, 300.0])]
-    )
+    design = np.column_stack([np.ones(6), np.array([0.0, 2.0, 4.0, 100.0, 200.0, 300.0])])
     train = np.array([True, True, True, False, False, False])
     out = standardise(design, train)
     assert np.allclose(out[:, 0], 1.0)
@@ -162,3 +160,62 @@ def test_load_merged_panel_joins_on_the_origin_key_and_tolerates_absent_files(
     assert "b1_iv_30d" in merged.columns
     # Rows without a surface match keep a null rather than being dropped.
     assert merged["b1_iv_30d"].null_count() == 2
+
+
+def _origin_frame(minutes: list[int]) -> pl.DataFrame:
+    return pl.DataFrame(
+        {
+            "asset": ["AAPL"] * len(minutes),
+            "session_date": ["2026-06-15"] * len(minutes),
+            "origin_minute": minutes,
+        }
+    )
+
+
+def test_a_duplicated_origin_key_is_refused() -> None:
+    """A duplicate origin double-weights that row in every mean and bootstrap after it."""
+
+    from mds650.rp2.panel import assert_unique_origin_key
+
+    assert_unique_origin_key(_origin_frame([30, 35, 40]))
+    with pytest.raises(ValueError, match="RP2_PANEL_ORIGIN_KEY_DUPLICATED:1"):
+        assert_unique_origin_key(_origin_frame([30, 35, 35]))
+
+
+def test_a_missing_origin_key_column_is_refused() -> None:
+    from mds650.rp2.panel import assert_unique_origin_key
+
+    with pytest.raises(ValueError, match="RP2_PANEL_ORIGIN_KEY_MISSING"):
+        assert_unique_origin_key(pl.DataFrame({"asset": ["AAPL"]}))
+
+
+def test_a_join_that_fans_the_panel_out_is_refused() -> None:
+    """A duplicated key on the right multiplies rows; it looks like more data."""
+
+    from mds650.rp2.panel import assert_one_to_one_join
+
+    left = _origin_frame([30, 35])
+    right = _origin_frame([30, 30, 35]).with_columns(value=pl.Series([1.0, 2.0, 3.0]))
+    joined = left.join(right, on=list(JOIN_KEYS), how="left")
+    assert joined.height > left.height
+    with pytest.raises(ValueError, match="RP2_PANEL_JOIN_CARDINALITY"):
+        assert_one_to_one_join(left, right, joined)
+
+
+def test_a_clean_one_to_one_join_passes() -> None:
+    from mds650.rp2.panel import assert_one_to_one_join
+
+    left = _origin_frame([30, 35])
+    right = _origin_frame([30, 35]).with_columns(value=pl.Series([1.0, 2.0]))
+    joined = left.join(right, on=list(JOIN_KEYS), how="left")
+    assert_one_to_one_join(left, right, joined)
+    assert joined.height == left.height
+
+
+def test_a_missing_required_column_fails_closed() -> None:
+    from mds650.rp2.panel import assert_required_columns
+
+    frame = _origin_frame([30])
+    assert_required_columns(frame, ["asset", "origin_minute"])
+    with pytest.raises(ValueError, match="RP2_PANEL_REQUIRED_MISSING:rv30"):
+        assert_required_columns(frame, ["asset", "rv30"])

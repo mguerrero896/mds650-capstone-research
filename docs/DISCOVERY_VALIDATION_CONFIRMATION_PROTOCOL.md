@@ -18,7 +18,7 @@ The separation is temporal, never a random partition: `D < V < C`.
 | Universe | Window | Sessions | Assets | Tape bytes | Permitted use |
 |---|---|---|---|---|---|
 | **D — Discovery** | 2024-08-02 .. 2026-03-23 | 389 | AAPL, AMZN, META, MSFT, NVDA, SPY, QQQ, TSLA | 65.8 GB | Feature engineering, horizon exploration, mechanism identification, model-family selection, error diagnosis. **Produces no confirmation.** |
-| **V — Validation** | 2026-03-24 .. 2026-07-17 | 80 | same eight | 18.8 GB | Choosing among a limited number of specifications, calibration, MDE estimation, preliminary stability. **Produces no definitive confirmation.** |
+| **V — Validation** | 2026-03-24 .. 2026-07-17 | 80 | same eight | 18.8 GB | Specification choice, calibration, MDE estimation, preliminary stability. **Used for selection, therefore exploratory — see §2b. Produces no confirmation of any kind.** |
 | **C — Confirmation** | 2026-07-20 .. 2026-08-28 | 30 | frozen by its own protocol | *not enumerated* | Sealed, one read, no changes once started. **Not touched by this program.** |
 
 `temporal_ordering_D_lt_V_lt_C = true` is asserted by
@@ -63,6 +63,22 @@ here rather than hidden, and it caps what a Phase 8 read can claim.
 *future* prospective protocol; it does not modify Phase 8 or Phase 9.
 
 ---
+
+## 2b. Reclassification: D **and** V are exploratory (2026-08-19)
+
+The original framing gave V a quasi-confirmatory role — "choosing among a limited number of
+specifications". In practice V has been used to select: the specification comparisons of
+Blocks 3 and 8, the family choice, the recalibration decision and the target battery of
+Extension 1 all read V and all fed back into what was reported.
+
+That is selection, and a sample used for selection cannot also confirm. **Both D and V are
+therefore reclassified as exploratory**, and every result computed on either carries
+`EXPLORATORY_MECHANISM_DISCOVERY` regardless of which universe produced it. A replication
+across D and V is evidence that a finding is not a single-era accident; it is **not**
+confirmation, and this document no longer implies otherwise.
+
+The only confirmatory evidence this project can produce is a cohort collected after a frozen
+protocol and read once. None has been read.
 
 ## 3. Approval rule
 

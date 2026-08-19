@@ -23,10 +23,12 @@ import polars as pl
 from mds650.b1v3_confirmation import canonical_sha256
 from mds650.metrics import qlike_losses
 from mds650.rp2.inference import (
+    aggregate_by_session,
     clark_west_terms,
     clustered_mean_test,
     giacomini_white,
     hansen_spa,
+    session_block_bootstrap,
 )
 from mds650.rp2.ladder import LADDER
 from mds650.rp2.panel import (
@@ -60,6 +62,9 @@ NESTED_PAIRS: dict[str, tuple[str, str]] = {
     "total_over_b0": ("B0", "B0+B1+B2"),
 }
 DEFAULT_MODELS: tuple[str, ...] = ("log_ols", "gamma_glm", "lightgbm")
+#: Families whose restricted form really is a parameter restriction of the unrestricted
+#: one, which is the precondition Clark-West is derived under.
+NESTED_LINEAR_FAMILIES: frozenset[str] = frozenset({"log_ols", "ridge_log"})
 #: Decision 64 alpha spending, alpha_k = 0.05 / (k (k+1)); this program is one further look.
 ALPHA_SPENDING_STEP = 3
 
@@ -73,9 +78,7 @@ def alpha_budget(step: int) -> float:
 def run_role(
     panel: pl.DataFrame, *, role: str, train_share: float, models: Sequence[str]
 ) -> dict[str, object]:
-    frame = panel.filter(pl.col("role") == role).sort(
-        ["session_date", "asset", "origin_minute"]
-    )
+    frame = panel.filter(pl.col("role") == role).sort(["session_date", "asset", "origin_minute"])
     target = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
     designs: dict[str, FloatArray] = {}
     keep = np.ones(frame.height, dtype=bool)
@@ -127,18 +130,35 @@ def run_role(
         for label, (base, expanded) in NESTED_PAIRS.items():
             # Clark-West is defined on squared error, so it runs on the log scale where
             # the nested models are actually linear in their extra parameters.
-            terms = clark_west_terms(
-                log_target[test],
-                np.log(np.maximum(forecasts[base], 1e-12)),
-                np.log(np.maximum(forecasts[expanded], 1e-12)),
-            )
-            cw = clustered_mean_test(terms, clusters)
+            # Clark-West is derived for a linear model whose restricted form is a
+            # parameter restriction of the unrestricted one. A boosted tree on a larger
+            # feature set is a different function class, not a nested restriction, so the
+            # adjustment is not applied there.
+            nested_linear = model_name in NESTED_LINEAR_FAMILIES
+            if nested_linear:
+                terms = clark_west_terms(
+                    log_target[test],
+                    np.log(np.maximum(forecasts[base], 1e-12)),
+                    np.log(np.maximum(forecasts[expanded], 1e-12)),
+                    nested_linear=True,
+                )
+                cw = clustered_mean_test(terms, clusters)
+            else:
+                cw = None
             difference = losses[base] - losses[expanded]
             gw = giacomini_white(difference, conditioners, clusters)
+            session_means, _ = aggregate_by_session(difference, clusters)
+            blocked = session_block_bootstrap(session_means)
             block[label] = {
-                "clark_west_mean": cw.mean,
-                "clark_west_t": cw.t_statistic,
-                "clark_west_p_one_sided": cw.p_value_one_sided,
+                "clark_west_applicable": nested_linear,
+                "clark_west_mean": cw.mean if cw else None,
+                "clark_west_t": cw.t_statistic if cw else None,
+                "clark_west_p_one_sided": cw.p_value_one_sided if cw else None,
+                "session_blocked_delta": blocked["estimate"],
+                "session_blocked_ci_low": blocked["ci_low"],
+                "session_blocked_ci_high": blocked["ci_high"],
+                "session_blocked_p": blocked["p_value_two_sided"],
+                "sessions": blocked["sessions"],
                 "giacomini_white_wald": gw.wald,
                 "giacomini_white_p": gw.p_value,
                 "unconditional_delta_qlike": float(np.mean(difference)),
@@ -148,9 +168,7 @@ def run_role(
 
     # SPA / Reality Check: every model x information set against the plain B0 benchmark.
     benchmark = all_losses[f"{models[0]}|B0"]
-    candidates = {
-        name: values for name, values in all_losses.items() if not name.endswith("|B0")
-    }
+    candidates = {name: values for name, values in all_losses.items() if not name.endswith("|B0")}
     spa = hansen_spa(benchmark, candidates, repetitions=1000, seed=650)
     results["superior_predictive_ability"] = {
         "benchmark": f"{models[0]}|B0",
@@ -181,9 +199,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "alpha_budget": alpha_budget(ALPHA_SPENDING_STEP),
     }
     for role in ("D", "V"):
-        document[role] = run_role(
-            panel, role=role, train_share=args.train_share, models=models
-        )
+        document[role] = run_role(panel, role=role, train_share=args.train_share, models=models)
     document["inference_sha256"] = canonical_sha256(document)
     document["generated_at_utc"] = datetime.now(UTC).isoformat()
 
@@ -202,11 +218,17 @@ def main(argv: Sequence[str] | None = None) -> int:
                 assert isinstance(pairs, dict)
                 for label, stats in pairs.items():
                     assert isinstance(stats, dict)
+                    cw_text = (
+                        f"CW t={stats['clark_west_t']:+6.2f} "
+                        f"p={stats['clark_west_p_one_sided']:.4f}"
+                        if stats.get("clark_west_applicable")
+                        else "CW n/a (not nested linear)"
+                    )
                     print(
-                        f"  {model_name:<11} {label:<14} CW t={stats['clark_west_t']:+6.2f} "
-                        f"p={stats['clark_west_p_one_sided']:.4f}  "
+                        f"  {model_name:<11} {label:<14} {cw_text}  "
                         f"GW p={stats['giacomini_white_p']:.4f}  "
-                        f"dQLIKE={stats['unconditional_delta_qlike']:+.5f}"
+                        f"session dQLIKE={stats['session_blocked_delta']:+.5f} "
+                        f"p={stats['session_blocked_p']:.4f} n={stats['sessions']:.0f}"
                     )
         spa = block.get("superior_predictive_ability")
         if isinstance(spa, dict):

@@ -1,0 +1,66 @@
+{
+  "code_commit": "0a55749e92785c3f3e46360ebfe31f5182644f1c",
+  "generated_at_utc": "2026-08-19T11:00:39.499900+00:00",
+  "indirect_inputs": {
+    "tape_inventory": "the licensed option tape is pinned by this inventory's path and size listing, which is itself byte-hashed; content-hashing the tape means reading tens of gigabytes per run"
+  },
+  "inputs": {
+    "b0_panel": {
+      "bytes": 20425155,
+      "columns": [
+        "asset",
+        "session_date",
+        "role",
+        "source",
+        "origin_minute",
+        "rv30",
+        "jump30",
+        "rv_back_5",
+        "rv_back_15",
+        "rv_back_30",
+        "rq_back_30",
+        "rs_up_back_30",
+        "rs_down_back_30",
+        "jump_back_30",
+        "rv_session_to_date",
+        "rv_prev_day",
+        "rv_week",
+        "ret_5",
+        "ret_30",
+        "parkinson_30",
+        "volume_30",
+        "dollar_volume_30",
+        "minutes_since_open",
+        "minutes_to_close",
+        "minute_bucket",
+        "day_of_week",
+        "SPY_rv_30",
+        "SPY_ret_30",
+        "QQQ_rv_30",
+        "QQQ_ret_30"
+      ],
+      "path": "C:/Users/mguer/Dev/MDS650-Capstone/artifacts/rp2_block4_b0/b0_panel.parquet",
+      "provider": "derived",
+      "rows": 184632,
+      "schema_sha256": "bff3989ad85093bafa51c0cd1e5709460a48b61484d46994039a50046190557f",
+      "sha256": "c2d230c38df2677e9b36b24855eb8bab9b9a9c4747f7fc0e29b0b54fbdd1d9a2",
+      "time_column": "session_date",
+      "time_max": "2026-07-17",
+      "time_min": "2024-08-02"
+    },
+    "tape_inventory": {
+      "bytes": 735669,
+      "columns": null,
+      "path": "C:/Users/mguer/Dev/MDS650-Capstone/artifacts/rp2_block1_partition/inventory.jsonl",
+      "provider": "massive",
+      "rows": null,
+      "schema_sha256": null,
+      "sha256": "da1266747d59d26f1b72af9bbe8013a2383d73712335345e5a01717ecd8d8a3a",
+      "time_column": null,
+      "time_max": null,
+      "time_min": null
+    }
+  },
+  "inputs_sha256": "3247ef828c60ff6161387234f4d68dfaf016ff38cec56c4877e64588289949a3",
+  "run_id": "rp2v2-remediation"
+}

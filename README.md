@@ -3,7 +3,7 @@
 [![ci](../../actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
 ![python](https://img.shields.io/badge/python-3.12-3776AB?logo=python&logoColor=white)
 ![typing](https://img.shields.io/badge/mypy-strict-blue)
-![tests](https://img.shields.io/badge/tests-1%2C000%2B-brightgreen)
+![tests](https://img.shields.io/badge/tests-1%2C346-brightgreen)
 ![status](https://img.shields.io/badge/research-preregistered%20%C2%B7%20hash--sealed-6f42c1)
 
 Does what just happened in the options market help predict how much a stock will move
@@ -127,39 +127,82 @@ directly, and the answer is on the record.
 and an implied volatility, so a full surface could be reconstructed at each origin without
 buying new data: a median of **724 contracts, 22 expiries and 111 strikes per snapshot**,
 against one number before. It reproduces put skew, smile convexity, a negative 25-delta risk
-reversal and a positive variance risk premium without any of them being imposed. B2 became
-**52 microstructure features** — Greeks-weighted signed flow, Hawkes arrival intensity,
-concentration and entropy, trade-to-quote impact — over 125,136 origins and 1,896
-session-assets with zero failures.
+reversal, and an implied variance that sits above trailing realised variance — none of them
+imposed. **How much of that surface is an artefact of what happened to trade has been measured,
+not assumed**: rebuilding it at 36 origins from the *listed* chain, quoted contract by contract
+from an independent feed, shows that trade selection understates put skew by 46 % and leaves the
+at-the-money level essentially unbiased (decision 77). The level is what every later block
+consumes; the skew features carry the correction. That last quantity is **not** a variance risk premium and is no longer named as one: a
+premium is the gap between the risk-neutral and the physical expectation of *future* variance,
+and substituting the trailing realisation makes the number a property of the recent past.
 
-5. **Recent option flow does carry information that price history and the option surface
-   cannot reconstruct.** Under double machine learning, orthogonalising B2 against B0+B1 and
-   clustering by session, the joint null is rejected at **p = 3 × 10⁻¹²** in discovery, and
-   two features replicate in validation with the same sign: the **Hawkes burst-intensity
-   innovation** (t = +4.4 and +2.3) and the **buyer-initiated premium share** (t = +2.0 and
-   +2.0). Vega-, gamma- and delta-weighted flow are null in both. *It is the timing and the
-   direction of the flow that matter, not its exposure-weighted size.*
+B2 became a **microstructure panel** — Greeks-weighted signed flow, an exponential-decay
+arrival intensity, normalised concentration and entropy, trade-to-quote impact, provider
+latency, and the multi-leg share — over the full origin panel with zero failures. The intensity
+measure was previously called a Hawkes intensity; its parameters were fixed inputs, nothing was
+estimated, and there is no branching ratio or stability condition behind it, so the name
+asserted a model that does not exist.
+
+5. **Recent option flow carries information the price history and the option surface cannot
+   reconstruct — in one sample.** Under double machine learning, orthogonalising B2 against
+   B0+B1 and clustering by session, the joint null is rejected in discovery at
+   **p = 3 × 10⁻⁴⁶** (383 sessions). Traded premium, strike concentration, the
+   arrival-intensity innovation and delta flow all carry it; vega- and gamma-weighted flow are
+   null.
+
+   **It survives a control that could have killed it.** Every B2 increment in this project was
+   previously measured against a baseline that could not see the market: the SPY and QQQ
+   columns were built into the panel and never registered as features, so B0 was blind to the
+   index (decision 75). A model blind to the index attributes common movement to whatever it
+   can see. Those bars were acquired for all 469 sessions, the columns registered, and the
+   programme rebuilt — the discovery statistic **rose** from 206.8 to 241.7. The signal is not
+   market beta.
+
+   **In the second sample the same test returns p = 0.059** (80 sessions) and only the trade
+   count keeps its sign at conventional significance. Both samples are exploratory — the second
+   was consulted while choosing specifications, model families and targets, and each choice fed
+   back into what is reported (decision 67) — so this is one exploratory result that does not
+   reproduce in another, not a replication.
 6. **That information is smaller than the cost of estimating the parameters needed to use
-   it.** Clark–West — which corrects for exactly that estimation cost — is significant almost
-   everywhere, while the corresponding out-of-sample QLIKE change is frequently negative
-   (t = +6.95 with ΔQLIKE = −0.001 in one case). Across six model families, four contrasts
-   and an interaction term, every estimand is null or family-dependent in discovery and
-   null-to-negative in validation. Hansen's SPA picks a best candidate at p = 0.0070, above
-   the project's own sequential budget of 0.00417; White's Reality Check rejects nothing.
-7. **No economic value, at any level of selectivity.** A variance-risk strategy using the
-   forecast is *worse* with option information than without it in discovery at every trading
-   threshold, and every deflated Sharpe probability is at most 0.19 — 0.000 once the strategy
-   is made selective. The one residue is a 15 % lower volatility-targeting tracking error in
-   discovery, which does not replicate.
-8. **A confirmatory prospective test of this effect is not currently feasible.** Sized on the
-   measured session-level dispersion, detecting the largest effect ever observed here needs
-   **537 sessions**; the design under discussion proposed 60–120. Running it would return a
-   null whether or not the effect is real, so the protocol is frozen and deliberately not
-   launched.
+   it.** The out-of-sample QLIKE change is frequently negative even where the in-sample
+   evidence is strong. Across six model families, four contrasts and an interaction term,
+   every estimand is null or family-dependent. Hansen's SPA picks a best candidate at
+   p = 0.0070, above the project's own sequential budget of 0.00417; White's Reality Check
+   rejects nothing.
 
-The full cascade — eighteen blocks, each with its advance rule and its verdict — is in
-[`docs/research_program_v2_progress.md`](docs/research_program_v2_progress.md), with one
-document per block under [`docs/rp2/`](docs/rp2/).
+   The Clark–West figures that previously appeared here have been **withdrawn** (decision 68).
+   The adjustment is derived for a linear model whose restricted form is a parameter
+   restriction of the unrestricted one. A boosted tree on a larger feature set is a different
+   function class, not a nested restriction, so the correction had no derivation there. It is
+   now applied only to the two linear families and refuses to run elsewhere.
+7. **No economic value — and now measured on a contract rather than an abstraction.** The
+   earlier answer used a variance-carry proxy that traded in 100 % of periods and reported a
+   Sharpe near +77; it never bought a contract. Replacing it with the instrument — one option
+   per origin chosen point-in-time, entered at the ask, exited at the bid, delta-hedged at the
+   entry delta, with fees and slippage and a capped book — gives a net Sharpe of **−24 in
+   discovery and −39 in validation**, with execution cost at **71 % and 148 % of gross P&L**
+   and every deflated Sharpe probability at 0.000. Adding B1 and B2 makes it marginally worse
+   (decision 78, `docs/rp2/block11b_forward_economics_v1.md`).
+
+   The mechanism is real, survives a market control, and does not survive a bid and an ask.
+8. **A confirmatory prospective test of this effect is not currently feasible.** Sized on the
+   measured session-level dispersion, the largest effect observed here needs a sample far
+   beyond the 60–120 sessions under discussion. Running the smaller design would return a null
+   whether or not the effect is real, so the protocol is frozen and deliberately not launched.
+
+   The specific session counts previously quoted here have been **withdrawn** (decision 69).
+   They were obtained by rescaling the largest |t| out of a family of searched targets — the
+   maximum of many noisy statistics is biased upward by construction, so that number is the
+   winner's curse expressed as an effect size, and it grows *more* optimistic the more targets
+   were searched. Power is now simulated end to end from a design frozen in advance, over
+   resampled blocks of whole sessions, with the effect shrunk for selection and the rejection
+   rate under the null reported alongside it (`src/mds650/rp2/power.py`). Where no simulated
+   sample size reaches the target, the answer is "no size in the range tested", not an
+   extrapolation.
+
+The full cascade — eighteen blocks, each with its advance rule and its verdict — has one
+document per block under [`docs/rp2/`](docs/rp2/), starting from
+[`docs/rp2/FINAL_REPORT.md`](docs/rp2/FINAL_REPORT.md).
 
 The cross-campaign reconciliation — every contrast, every model, every protocol freeze
 date — lives in [`docs/results_reconciliation_v2.md`](docs/results_reconciliation_v2.md).
@@ -225,7 +268,7 @@ src/mds650/          Typed library (mypy --strict): providers, PIT panel, target
 scripts/             Phase runners, gate runners, acquisition, automation
                      -> classified in scripts/README.md (active / frozen-evidence /
                         one-shot-done / archive)
-tests/               1,000+ tests: unit, contract (artifact/freeze locks), e2e
+tests/               1,346 tests: unit, contract (artifact/freeze locks), e2e
 specs/001-.../       Spec Kit: requirements, plan, tasks, JSON-schema contracts
 docs/                Methodology decisions (binding, numbered), risk register,
                      results reconciliation, gate reports, PIT contracts
@@ -237,7 +280,7 @@ reports/             Final report, defense deck, gate-cascade report,
 ```
 
 > [!NOTE]
-> Licensed commercial data cannot be redistributed. The 14 granular derived datasets
+> Licensed commercial data cannot be redistributed. The 15 granular derived datasets
 > (~133 MB) live in **gated private storage**: their SHA-256 pointers are committed in
 > [`data/GATED_DATA_POINTERS.json`](data/GATED_DATA_POINTERS.json) and access is
 > granted per request — see [`data/DATA_ACCESS.md`](data/DATA_ACCESS.md). Everything
@@ -287,7 +330,7 @@ contract test enforce that no API key or bearer token appears in tracked files.
 
 The repository treats process integrity as a first-class deliverable:
 
-- **Numbered binding decisions** (53 so far) in `docs/methodology_decisions.md` — every
+- **Numbered binding decisions** (75 so far) in `docs/methodology_decisions.md` — every
   methodological choice, window, and claim boundary is written down before it matters.
 - **Risk register** (`docs/risk_register.md`, R-001…R-024) — including the uncomfortable
   ones: campaign-level multiplicity, confirmatory-model calibration pathology, and the
@@ -309,6 +352,9 @@ tape is complete; its finding is that recent option flow carries real but econom
 negligible incremental information, and that no feasible prospective test could confirm it.
 The next scientific step is an owner decision between completing the sealed prospective
 holdout or closing it formally — the analysis code is ready either way — and, separately,
-whether to fund a ≥537-session campaign or to publish the null as it stands.
+whether to fund a campaign large enough to test the effect or to publish the null as it
+stands. The session count that figure once carried is withdrawn with the method that
+produced it (decision 69); sizing a campaign now requires running the blocked simulation in
+`src/mds650/rp2/power.py` against a design frozen in advance.
 
 **Author:** Miguel Guerrero · MDS650 Capstone · 2026

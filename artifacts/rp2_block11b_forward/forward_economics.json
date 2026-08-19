@@ -1,0 +1,417 @@
+{
+  "D": {
+    "legs_evaluated": 5758,
+    "median_dte_days": 30.0,
+    "median_entry_half_spread": 0.05000000000000071,
+    "median_quote_age_s": 99.270719,
+    "models": {
+      "gamma_glm": {
+        "B0": {
+          "cost_share_of_gross": 0.7089521204608826,
+          "deflated_sharpe_probability": 0.0,
+          "gross_sharpe": -0.8177903377024042,
+          "mean_gross_contracts": 0.1736714136853074,
+          "net": {
+            "expected_shortfall_5pct": -29.1612553439087,
+            "hit_rate": 0.27978464744703024,
+            "kurtosis": 14.621477939818964,
+            "max_drawdown": -21408.372848422376,
+            "mean": -3.718351239213453,
+            "periods": 5758,
+            "sharpe_annual": -23.791265660364164,
+            "skewness": -1.4425940239224002,
+            "sortino_annual": -26.63714544443357,
+            "volatility": 8.945503940042249
+          },
+          "total_cost": 20735.468593397,
+          "traded_share": 1.0
+        },
+        "B0+B1": {
+          "cost_share_of_gross": 0.7096241728504293,
+          "deflated_sharpe_probability": 0.0,
+          "gross_sharpe": -0.7919166826167536,
+          "mean_gross_contracts": 0.1736714136853074,
+          "net": {
+            "expected_shortfall_5pct": -28.92637908598797,
+            "hit_rate": 0.28065300451545677,
+            "kurtosis": 14.22707499833483,
+            "max_drawdown": -21381.300224163955,
+            "mean": -3.71372638599846,
+            "periods": 5758,
+            "sharpe_annual": -23.941809540456923,
+            "skewness": -1.4753552958774279,
+            "sortino_annual": -26.828116666059522,
+            "volatility": 8.878199060820362
+          },
+          "total_cost": 20735.766017770657,
+          "traded_share": 1.0
+        },
+        "B0+B1+B2": {
+          "cost_share_of_gross": 0.7099541662023013,
+          "deflated_sharpe_probability": 0.0,
+          "gross_sharpe": -0.8903048204880107,
+          "mean_gross_contracts": 0.1736714136853074,
+          "net": {
+            "expected_shortfall_5pct": -29.18553429124515,
+            "hit_rate": 0.28065300451545677,
+            "kurtosis": 15.528554893354451,
+            "max_drawdown": -21467.491254192082,
+            "mean": -3.7287694196938186,
+            "periods": 5758,
+            "sharpe_annual": -23.883230499680106,
+            "skewness": -1.6199028532163207,
+            "sortino_annual": -26.575259469763115,
+            "volatility": 8.93602560810597
+          },
+          "total_cost": 20738.129821772054,
+          "traded_share": 1.0
+        }
+      },
+      "lightgbm": {
+        "B0": {
+          "cost_share_of_gross": 0.7080243150038589,
+          "deflated_sharpe_probability": 0.0,
+          "gross_sharpe": -0.6585961057949763,
+          "mean_gross_contracts": 0.1736714136853074,
+          "net": {
+            "expected_shortfall_5pct": -28.923687180671795,
+            "hit_rate": 0.28238971865230983,
+            "kurtosis": 12.970345600478367,
+            "max_drawdown": -21263.145164008416,
+            "mean": -3.6931227522092382,
+            "periods": 5758,
+            "sharpe_annual": -23.844606899132863,
+            "skewness": -1.3979177441267814,
+            "sortino_annual": -26.76093375779278,
+            "volatility": 8.864934323841636
+          },
+          "total_cost": 20726.739073057804,
+          "traded_share": 1.0
+        },
+        "B0+B1": {
+          "cost_share_of_gross": 0.7060731230531052,
+          "deflated_sharpe_probability": 0.0,
+          "gross_sharpe": -0.7708240633035855,
+          "mean_gross_contracts": 0.17367141368530742,
+          "net": {
+            "expected_shortfall_5pct": -28.781579690674928,
+            "hit_rate": 0.2816950329975686,
+            "kurtosis": 12.200996302959496,
+            "max_drawdown": -21327.587110303426,
+            "mean": -3.704473556599815,
+            "periods": 5758,
+            "sharpe_annual": -24.076772640154395,
+            "skewness": -1.347592870494593,
+            "sortino_annual": -27.104823393790237,
+            "volatility": 8.806435810319696
+          },
+          "total_cost": 20704.228752923547,
+          "traded_share": 1.0
+        },
+        "B0+B1+B2": {
+          "cost_share_of_gross": 0.7073483950278502,
+          "deflated_sharpe_probability": 0.0,
+          "gross_sharpe": -0.8167616567302339,
+          "mean_gross_contracts": 0.1736714136853074,
+          "net": {
+            "expected_shortfall_5pct": -28.801972640798212,
+            "hit_rate": 0.2815213615838833,
+            "kurtosis": 12.13981459808911,
+            "max_drawdown": -21362.52897434663,
+            "mean": -3.710617621008308,
+            "periods": 5758,
+            "sharpe_annual": -24.1086053142926,
+            "skewness": -1.3163061454846956,
+            "sortino_annual": -27.149636799113797,
+            "volatility": 8.809394564313083
+          },
+          "total_cost": 20702.44483760767,
+          "traded_share": 1.0
+        }
+      },
+      "log_ols": {
+        "B0": {
+          "cost_share_of_gross": 0.7086805986644765,
+          "deflated_sharpe_probability": 0.0,
+          "gross_sharpe": -0.8830155730758634,
+          "mean_gross_contracts": 0.1736714136853074,
+          "net": {
+            "expected_shortfall_5pct": -29.112198972482968,
+            "hit_rate": 0.2804793331017714,
+            "kurtosis": 13.868614889643354,
+            "max_drawdown": -21452.098503176643,
+            "mean": -3.7259303930002123,
+            "periods": 5758,
+            "sharpe_annual": -23.917587468151027,
+            "skewness": -1.4263429850616156,
+            "sortino_annual": -26.77481113427735,
+            "volatility": 8.916395271973103
+          },
+          "total_cost": 20727.927483122097,
+          "traded_share": 1.0
+        },
+        "B0+B1": {
+          "cost_share_of_gross": 0.7095484489065376,
+          "deflated_sharpe_probability": 0.0,
+          "gross_sharpe": -0.9172378875427674,
+          "mean_gross_contracts": 0.1736714136853074,
+          "net": {
+            "expected_shortfall_5pct": -29.062045170327256,
+            "hit_rate": 0.28082667592914207,
+            "kurtosis": 14.11493627449922,
+            "max_drawdown": -21479.25827269041,
+            "mean": -3.7307311302321837,
+            "periods": 5758,
+            "sharpe_annual": -24.01507675923548,
+            "skewness": -1.483501435773191,
+            "sortino_annual": -26.852350302994058,
+            "volatility": 8.891640973930393
+          },
+          "total_cost": 20730.448924236964,
+          "traded_share": 1.0
+        },
+        "B0+B1+B2": {
+          "cost_share_of_gross": 0.709240134688593,
+          "deflated_sharpe_probability": 0.0,
+          "gross_sharpe": -1.0390530357626273,
+          "mean_gross_contracts": 0.1736714136853074,
+          "net": {
+            "expected_shortfall_5pct": -29.267118120782218,
+            "hit_rate": 0.28013199027440083,
+            "kurtosis": 16.05822013807462,
+            "max_drawdown": -21583.602741875555,
+            "mean": -3.7488621246897162,
+            "periods": 5758,
+            "sharpe_annual": -23.94228656044383,
+            "skewness": -1.6564647957570449,
+            "sortino_annual": -26.586660580197822,
+            "volatility": 8.962017556060315
+          },
+          "total_cost": 20728.871254721,
+          "traded_share": 1.0
+        }
+      }
+    },
+    "rows": 90548,
+    "stale_exit_share": 0.018930184091698506,
+    "status": "MEASURED"
+  },
+  "V": {
+    "legs_evaluated": 954,
+    "median_dte_days": 30.0,
+    "median_entry_half_spread": 0.15000000000000013,
+    "median_quote_age_s": 131.1082615,
+    "models": {
+      "gamma_glm": {
+        "B0": {
+          "cost_share_of_gross": 1.4708742379271356,
+          "deflated_sharpe_probability": 0.0,
+          "gross_sharpe": -0.17411438666594212,
+          "mean_gross_contracts": 1.0482180293501047,
+          "net": {
+            "expected_shortfall_5pct": -317.64042355398175,
+            "hit_rate": 0.16352201257861634,
+            "kurtosis": 10.774607706162016,
+            "max_drawdown": -56104.28806331862,
+            "mean": -58.91946685809152,
+            "periods": 954,
+            "sharpe_annual": -38.761420195480675,
+            "skewness": -1.7103711695096289,
+            "sortino_annual": -41.4082593223462,
+            "volatility": 87.00236814708852
+          },
+          "total_cost": 56029.853866974416,
+          "traded_share": 1.0
+        },
+        "B0+B1": {
+          "cost_share_of_gross": 1.4686763843229964,
+          "deflated_sharpe_probability": 0.0,
+          "gross_sharpe": -0.24670988856897783,
+          "mean_gross_contracts": 1.0482180293501047,
+          "net": {
+            "expected_shortfall_5pct": -316.24490570586255,
+            "hit_rate": 0.16561844863731656,
+            "kurtosis": 11.682006498520261,
+            "max_drawdown": -56078.783482055784,
+            "mean": -58.876652039528445,
+            "periods": 954,
+            "sharpe_annual": -38.94921940444395,
+            "skewness": -1.8266341026247863,
+            "sortino_annual": -41.45642697765447,
+            "volatility": 86.51995694006075
+          },
+          "total_cost": 55911.969056729686,
+          "traded_share": 1.0
+        },
+        "B0+B1+B2": {
+          "cost_share_of_gross": 1.4675549642513799,
+          "deflated_sharpe_probability": 0.0,
+          "gross_sharpe": -0.18298795991287453,
+          "mean_gross_contracts": 1.0482180293501047,
+          "net": {
+            "expected_shortfall_5pct": -315.19911386128337,
+            "hit_rate": 0.16666666666666666,
+            "kurtosis": 11.121919829316145,
+            "max_drawdown": -55944.626380027315,
+            "mean": -58.739110739967415,
+            "periods": 954,
+            "sharpe_annual": -38.929808544371134,
+            "skewness": -1.7485686647589123,
+            "sortino_annual": -41.5017660877652,
+            "volatility": 86.36087741458151
+          },
+          "total_cost": 55846.086499766956,
+          "traded_share": 1.0
+        }
+      },
+      "lightgbm": {
+        "B0": {
+          "cost_share_of_gross": 1.4683116494638735,
+          "deflated_sharpe_probability": 0.0,
+          "gross_sharpe": -1.5641491802083134,
+          "mean_gross_contracts": 1.0482180293501049,
+          "net": {
+            "expected_shortfall_5pct": -314.45762290887586,
+            "hit_rate": 0.15932914046121593,
+            "kurtosis": 10.376935698010342,
+            "max_drawdown": -56822.684564341485,
+            "mean": -59.662613176085,
+            "periods": 954,
+            "sharpe_annual": -39.83173105223668,
+            "skewness": -1.6448511828984265,
+            "sortino_annual": -42.58521619973664,
+            "volatility": 85.73241091581443
+          },
+          "total_cost": 55353.221725071104,
+          "traded_share": 1.0
+        },
+        "B0+B1": {
+          "cost_share_of_gross": 1.4758540991640134,
+          "deflated_sharpe_probability": 0.0,
+          "gross_sharpe": -2.1436464919990548,
+          "mean_gross_contracts": 1.0482180293501047,
+          "net": {
+            "expected_shortfall_5pct": -316.1451142518353,
+            "hit_rate": 0.16037735849056603,
+            "kurtosis": 10.67688003301857,
+            "max_drawdown": -57648.05497029628,
+            "mean": -60.52539333514997,
+            "periods": 954,
+            "sharpe_annual": -40.6290615084702,
+            "skewness": -1.7824161113726134,
+            "sortino_annual": -43.05686198854142,
+            "volatility": 85.26538872409235
+          },
+          "total_cost": 55606.66039742454,
+          "traded_share": 1.0
+        },
+        "B0+B1+B2": {
+          "cost_share_of_gross": 1.4717272592362174,
+          "deflated_sharpe_probability": 0.0,
+          "gross_sharpe": -2.437809094852347,
+          "mean_gross_contracts": 1.0482180293501047,
+          "net": {
+            "expected_shortfall_5pct": -313.50885266672987,
+            "hit_rate": 0.1540880503144654,
+            "kurtosis": 9.810834756471424,
+            "max_drawdown": -58219.93354256399,
+            "mean": -61.113294614428305,
+            "periods": 954,
+            "sharpe_annual": -41.2751065598976,
+            "skewness": -1.687570629184604,
+            "sortino_annual": -43.806604289403225,
+            "volatility": 84.74604523553903
+          },
+          "total_cost": 55869.58926595364,
+          "traded_share": 1.0
+        }
+      },
+      "log_ols": {
+        "B0": {
+          "cost_share_of_gross": 1.4783633079226646,
+          "deflated_sharpe_probability": 0.0,
+          "gross_sharpe": -0.7172572073623977,
+          "mean_gross_contracts": 1.0482180293501049,
+          "net": {
+            "expected_shortfall_5pct": -315.2792200268998,
+            "hit_rate": 0.16142557651991615,
+            "kurtosis": 10.835652622101852,
+            "max_drawdown": -56515.565634737686,
+            "mean": -59.34784232740891,
+            "periods": 954,
+            "sharpe_annual": -39.510402954689575,
+            "skewness": -1.7408540456227446,
+            "sortino_annual": -42.00186832976355,
+            "volatility": 85.97366123633664
+          },
+          "total_cost": 55890.674861401785,
+          "traded_share": 1.0
+        },
+        "B0+B1": {
+          "cost_share_of_gross": 1.4789256010501841,
+          "deflated_sharpe_probability": 0.0,
+          "gross_sharpe": -0.8048077435198907,
+          "mean_gross_contracts": 1.0482180293501047,
+          "net": {
+            "expected_shortfall_5pct": -313.45669511716386,
+            "hit_rate": 0.16457023060796647,
+            "kurtosis": 11.179484081150587,
+            "max_drawdown": -56461.85838241755,
+            "mean": -59.28078119941873,
+            "periods": 954,
+            "sharpe_annual": -39.727019578627605,
+            "skewness": -1.7770959036516973,
+            "sortino_annual": -42.22161989881939,
+            "volatility": 85.4082611933504
+          },
+          "total_cost": 55739.105936718406,
+          "traded_share": 1.0
+        },
+        "B0+B1+B2": {
+          "cost_share_of_gross": 1.4818421201818175,
+          "deflated_sharpe_probability": 0.0,
+          "gross_sharpe": -0.9412612552119488,
+          "mean_gross_contracts": 1.0482180293501049,
+          "net": {
+            "expected_shortfall_5pct": -312.4942763276591,
+            "hit_rate": 0.16352201257861634,
+            "kurtosis": 10.906294253083196,
+            "max_drawdown": -56582.37859063994,
+            "mean": -59.40780056165355,
+            "periods": 954,
+            "sharpe_annual": -39.920896688767,
+            "skewness": -1.744049952619263,
+            "sortino_annual": -42.43309265814718,
+            "volatility": 85.17558651181388
+          },
+          "total_cost": 55724.966724669444,
+          "traded_share": 1.0
+        }
+      }
+    },
+    "rows": 18230,
+    "stale_exit_share": 0.023060796645702306,
+    "status": "MEASURED"
+  },
+  "block": "11b",
+  "cutoff_seconds": 120,
+  "execution_costs": {
+    "fee_per_contract": 0.65,
+    "half_spread_fraction": 0.5,
+    "slippage_fraction_of_half_spread": 0.25
+  },
+  "forward_sha256": "d0276d65a1217d48e9a5ad898daf53594b4dbee3efcba4d16d374b1a64f8c0dc",
+  "generated_at_utc": "2026-08-19T10:55:25.900992+00:00",
+  "horizon_minutes": 30,
+  "label": "EXPLORATORY_MECHANISM_DISCOVERY",
+  "legs_built": 30365,
+  "max_gross_contracts": 1000.0,
+  "max_position_per_name": 250.0,
+  "models": [
+    "log_ols",
+    "gamma_glm",
+    "lightgbm"
+  ],
+  "program": "docs/research_program_v2.md",
+  "target_dte_days": 30.0
+}

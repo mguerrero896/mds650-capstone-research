@@ -12,11 +12,11 @@ from mds650.rp2.surface import (
     black_scholes_delta,
     calendar_arbitrage_violations,
     fit_smile,
+    implied_minus_trailing_variance,
     interpolate_total_variance,
     model_free_variance,
     put_call_parity_residual,
     total_variance,
-    variance_risk_premium,
     wing_quotes,
 )
 
@@ -107,17 +107,29 @@ def test_calendar_violations_count_decreasing_total_variance() -> None:
 
 
 def test_put_call_parity_residual_is_zero_for_consistent_quotes() -> None:
+    """Zero rates are now a special case (F = S, D = 1), not the built-in assumption."""
+
     strike = np.array([95.0, 100.0, 105.0])
     spot = 100.0
     call = np.array([6.0, 3.0, 1.5])
     put = call - (spot - strike)
-    assert put_call_parity_residual(call, put, strike, spot) == pytest.approx(0.0)
-    assert math.isnan(put_call_parity_residual(call, put, strike, 0.0))
+    measured = put_call_parity_residual(
+        call, put, strike, forward=spot, discount_factor=1.0, scale=spot
+    )
+    assert measured == pytest.approx(0.0)
+    assert math.isnan(
+        put_call_parity_residual(call, put, strike, forward=spot, discount_factor=1.0, scale=0.0)
+    )
+    assert math.isnan(
+        put_call_parity_residual(
+            call, put, strike, forward=float("nan"), discount_factor=1.0, scale=spot
+        )
+    )
 
 
-def test_variance_risk_premium_and_annualisation() -> None:
-    assert variance_risk_premium(0.06, 0.04) == pytest.approx(0.02)
-    assert math.isnan(variance_risk_premium(float("nan"), 0.04))
+def test_implied_minus_trailing_variance_and_annualisation() -> None:
+    assert implied_minus_trailing_variance(0.06, 0.04) == pytest.approx(0.02)
+    assert math.isnan(implied_minus_trailing_variance(float("nan"), 0.04))
     annual = annualise_intraday_variance(1e-5)
     assert annual == pytest.approx(1e-5 * 252.0 * 13.0)
     assert math.isnan(annualise_intraday_variance(-1.0))

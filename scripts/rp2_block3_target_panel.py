@@ -25,6 +25,7 @@ import polars as pl
 
 from mds650.b1v3_confirmation import canonical_sha256
 from mds650.metrics import qlike_losses
+from mds650.rp2.bars import FULL_SESSION_MINUTES, build_session_grid
 from mds650.rp2.realized import (
     HORIZONS,
     backward_rv,
@@ -35,7 +36,15 @@ from mds650.rp2.realized import (
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_block3_target"
-SESSION_MINUTES = 390
+
+
+def first_valid_minute(valid: npt.NDArray[np.bool_]) -> int:
+    """First minute with an observation at or before it, or the length if there is none."""
+
+    present = np.flatnonzero(valid)
+    return int(present[0]) if present.size else int(valid.size)
+
+
 MARKET_TZ = "America/New_York"
 SESSION_OPEN_MINUTE = 9 * 60 + 30
 MAX_HORIZON = max(HORIZONS)
@@ -68,7 +77,7 @@ def _normalise(frame: pl.DataFrame) -> pl.DataFrame:
             + pl.col("bar_ny").dt.minute().cast(pl.Int64)
             - SESSION_OPEN_MINUTE
         ).alias("minute")
-    ).filter(pl.col("minute").is_between(0, SESSION_MINUTES - 1))
+    )
 
 
 def load_bars(data_root: Path) -> pl.DataFrame:
@@ -86,20 +95,18 @@ def load_bars(data_root: Path) -> pl.DataFrame:
     return pl.concat(frames, how="vertical")
 
 
-def _session_closes(minutes: npt.NDArray[np.int64], closes: npt.NDArray[np.float64]) -> tuple[
-    npt.NDArray[np.float64], float
-]:
-    """Reindex one session onto the full minute grid, forward-filling absent minutes."""
+def session_origins(minutes: int) -> npt.NDArray[np.int64]:
+    """Origins that leave a full ``MAX_HORIZON`` on both sides inside a real session.
 
-    grid = np.full(SESSION_MINUTES, np.nan, dtype=np.float64)
-    grid[minutes] = closes
-    filled = np.isnan(grid)
-    if filled[0]:
-        first = int(np.argmin(filled))
-        grid[:first] = grid[first]
-    indices = np.where(~np.isnan(grid), np.arange(SESSION_MINUTES), 0)
-    np.maximum.accumulate(indices, out=indices)
-    return grid[indices], float(filled.mean())
+    Sized from the session's own length, not from a constant. On a 210-minute early close
+    the full-session array would place origins past the close, where the grid holds
+    nothing.
+    """
+
+    last = minutes - MAX_HORIZON
+    if last <= MAX_HORIZON:
+        return np.empty(0, dtype=np.int64)
+    return np.arange(MAX_HORIZON, last, ORIGIN_STEP, dtype=np.int64)
 
 
 def build_panel(
@@ -107,7 +114,6 @@ def build_panel(
 ) -> tuple[pl.DataFrame, dict[str, int]]:
     """Compute forward and backward realized measures on the common origin grid."""
 
-    origins = np.arange(MAX_HORIZON, SESSION_MINUTES - MAX_HORIZON, ORIGIN_STEP, dtype=np.int64)
     rows: list[pl.DataFrame] = []
     counters = {"sessions_seen": 0, "sessions_dropped_fill": 0, "sessions_dropped_short": 0}
     previous_day_rv: dict[str, float] = {}
@@ -116,15 +122,30 @@ def build_panel(
         ["asset", "session_date", "role", "source"], maintain_order=True
     ):
         counters["sessions_seen"] += 1
-        minutes = group["minute"].to_numpy().astype(np.int64)
-        closes = group["close"].to_numpy().astype(np.float64)
-        if minutes.size < 2 or closes.min() <= 0.0:
+        if group.height < 2:
             counters["sessions_dropped_short"] += 1
             continue
-        grid, fill_share = _session_closes(minutes, closes)
-        if fill_share > max_fill_share or not np.isfinite(grid).all():
+        # One grid builder for the whole programme. This block used to carry its own,
+        # which reindexed onto a fixed 390 minutes and set `grid[:first] = grid[first]` —
+        # the first observed price carried *backwards* into every earlier minute. Targets
+        # computed there consumed a price that did not exist yet, and because the targets
+        # are what every later block is scored against, the leak reached everything.
+        session_grid = build_session_grid(group, session=session_date)
+        usable = first_valid_minute(session_grid.valid)
+        origins = session_origins(session_grid.minutes)
+        origins = origins[origins >= usable + MAX_HORIZON]
+        grid = session_grid.close[usable:]
+        if origins.size == 0:
+            counters["sessions_dropped_short"] += 1
+            continue
+        if (
+            session_grid.fill_share > max_fill_share
+            or not np.isfinite(grid).all()
+            or grid.min() <= 0.0
+        ):
             counters["sessions_dropped_fill"] += 1
             continue
+        local = origins - usable
         returns = log_returns(grid)
         session_squared = np.cumsum(returns**2)
         record: dict[str, object] = {
@@ -133,14 +154,14 @@ def build_panel(
             "role": [str(role)] * origins.size,
             "source": [str(source)] * origins.size,
             "origin_minute": origins,
-            "rv_session_to_date": session_squared[origins - 1],
+            "rv_session_to_date": session_squared[local - 1],
             "rv_prev_day": np.full(origins.size, previous_day_rv.get(str(asset), np.nan)),
         }
         for horizon in HORIZONS:
-            measures = forward_measures(returns, origins, horizon)
+            measures = forward_measures(returns, local, horizon)
             for name, values in measures.as_dict().items():
                 record[f"{name}_{horizon}"] = values
-            record[f"rv_back_{horizon}"] = backward_rv(returns, origins, horizon)
+            record[f"rv_back_{horizon}"] = backward_rv(returns, local, horizon)
             record[f"noise_{horizon}"] = relative_measurement_noise(
                 measures.rv, measures.quarticity, horizon
             )
@@ -239,13 +260,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         "program": "docs/research_program_v2.md",
         "label": "EXPLORATORY_MECHANISM_DISCOVERY",
         "horizons": list(HORIZONS),
+        # The grid is per session, so what is reported here is the full-session case and
+        # the count actually built; an early close carries fewer origins by construction.
         "origin_grid": {
             "first_minute": int(MAX_HORIZON),
-            "last_minute": int(SESSION_MINUTES - MAX_HORIZON - 1),
+            "last_minute": int(FULL_SESSION_MINUTES - MAX_HORIZON - 1),
             "step_minutes": ORIGIN_STEP,
-            "origins_per_session_asset": int(
-                len(range(MAX_HORIZON, SESSION_MINUTES - MAX_HORIZON, ORIGIN_STEP))
-            ),
+            "origins_per_full_session_asset": int(session_origins(FULL_SESSION_MINUTES).size),
         },
         "session_counters": dict(counters),
         "panel_rows": panel.height,

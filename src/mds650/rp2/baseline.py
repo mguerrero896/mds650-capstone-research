@@ -22,21 +22,62 @@ VARIANCE_FLOOR: Final = 1e-12
 EWMA_LAMBDA: Final = 0.97
 
 
-def ewma_variance(returns: FloatArray, *, decay: float = EWMA_LAMBDA) -> FloatArray:
-    """Per-observation EWMA variance, using only returns strictly before each point.
+def ewma_variance(
+    returns: FloatArray, *, decay: float = EWMA_LAMBDA, warmup: int = 20
+) -> FloatArray:
+    """Point-in-time EWMA variance: ``out[i]`` uses only ``returns[:i]``.
 
-    ``out[i]`` is the variance forecast for observation ``i`` given ``returns[:i]``.
+    The seed is the expanding mean of squared returns observed so far, not the mean of the
+    whole series. Seeding from the full-sample mean makes every early forecast depend on
+    returns that had not happened yet - a look-ahead leak that is invisible because the
+    resulting series looks perfectly well behaved.
+
+    The first ``warmup`` observations have too little history for a meaningful state and are
+    returned as NaN rather than as a confident number built from two data points.
     """
 
     if not 0.0 < decay < 1.0:
         raise ValueError("RP2_EWMA_DECAY_INVALID")
     if returns.ndim != 1 or returns.size == 0:
         raise ValueError("RP2_EWMA_SERIES_INVALID")
-    out = np.empty(returns.size, dtype=np.float64)
-    state = float(np.mean(returns**2))
+    if warmup < 1:
+        raise ValueError("RP2_EWMA_WARMUP_INVALID")
+
+    out = np.full(returns.size, np.nan, dtype=np.float64)
+    squared = returns**2
+    state = float("nan")
+    running_sum = 0.0
     for index in range(returns.size):
-        out[index] = state
-        state = decay * state + (1.0 - decay) * float(returns[index] ** 2)
+        if index >= warmup and math.isfinite(state):
+            out[index] = state
+        if index < warmup:
+            running_sum += float(squared[index])
+            state = running_sum / (index + 1)
+        else:
+            state = decay * state + (1.0 - decay) * float(squared[index])
+    return out
+
+
+def ewma_variance_by_asset(
+    returns: FloatArray,
+    assets: npt.NDArray[np.str_],
+    *,
+    decay: float = EWMA_LAMBDA,
+    warmup: int = 20,
+) -> FloatArray:
+    """Per-asset point-in-time EWMA, so one name's volatility never seeds another's.
+
+    Pooling assets into a single recursion lets a high-volatility name set the state for a
+    quiet one at the moment the series switches, which is a cross-sectional leak on top of
+    the temporal one.
+    """
+
+    if returns.shape != assets.shape:
+        raise ValueError("RP2_EWMA_SHAPE_MISMATCH")
+    out = np.full(returns.size, np.nan, dtype=np.float64)
+    for asset in np.unique(assets):
+        mask = assets == asset
+        out[mask] = ewma_variance(returns[mask], decay=decay, warmup=warmup)
     return out
 
 
@@ -85,8 +126,12 @@ def fit_garch11(returns: FloatArray, *, scale: float = 1e4) -> Garch11:
         return float(0.5 * np.sum(np.log(sigma2) + scaled**2 / sigma2))
 
     start = np.array([math.log(max(variance, 1e-8) * 0.05), _logit(0.08), _logit(0.90)])
-    result = minimize(negative_log_likelihood, start, method="Nelder-Mead",
-                      options={"maxiter": 2000, "fatol": 1e-6, "xatol": 1e-6})
+    result = minimize(
+        negative_log_likelihood,
+        start,
+        method="Nelder-Mead",
+        options={"maxiter": 2000, "fatol": 1e-6, "xatol": 1e-6},
+    )
     omega, alpha, beta = (
         float(np.exp(result.x[0])),
         float(_logistic(result.x[1])),

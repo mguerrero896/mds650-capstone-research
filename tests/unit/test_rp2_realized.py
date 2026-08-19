@@ -41,9 +41,7 @@ def test_forward_measures_match_a_brute_force_reference() -> None:
     for position, start in enumerate(origins):
         window = returns[start : start + horizon]
         assert measures.rv[position] == pytest.approx(float(np.sum(window**2)))
-        expected_bv = BIPOWER_SCALE * float(
-            np.sum(np.abs(window[1:]) * np.abs(window[:-1]))
-        )
+        expected_bv = BIPOWER_SCALE * float(np.sum(np.abs(window[1:]) * np.abs(window[:-1])))
         assert measures.bipower[position] == pytest.approx(expected_bv)
         assert measures.quarticity[position] == pytest.approx(
             horizon / 3.0 * float(np.sum(window**4))

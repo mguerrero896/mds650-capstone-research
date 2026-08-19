@@ -2,7 +2,7 @@
 
 **Status:** `EXECUTED — 2026-08-19` · label `EXPLORATORY_MECHANISM_DISCOVERY`
 **Artifact:** `artifacts/rp2_block9_generalization/generalization.json`
-(`generalization_sha256 = 7cc50e688cbf592671afab6c180d540b7676b91a29a561b44e0fd83ddb38c4b5`)
+(`generalization_sha256 = 5197b00a114279a6214200114aa123049c2854663c1021475601327f271cf496`)
 **Code:** `scripts/rp2_block9_generalization.py`
 
 ---

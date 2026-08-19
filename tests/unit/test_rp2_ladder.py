@@ -75,7 +75,5 @@ def test_partial_pooling_collapses_to_zero_when_groups_are_indistinguishable() -
 def test_partial_pooling_validates_shapes_and_empty_training() -> None:
     with pytest.raises(ValueError, match="RP2_POOLING_SHAPE_MISMATCH"):
         partial_pooling(np.ones(3), np.zeros(2, dtype=np.int64), np.ones(3, dtype=bool))
-    empty = partial_pooling(
-        np.ones(3), np.zeros(3, dtype=np.int64), np.zeros(3, dtype=bool)
-    )
+    empty = partial_pooling(np.ones(3), np.zeros(3, dtype=np.int64), np.zeros(3, dtype=bool))
     assert empty.offsets == {}

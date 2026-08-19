@@ -9,97 +9,133 @@
   ],
   "coverage": {
     "b1_butterfly_25": {
-      "coverage": 0.9934419627307558,
-      "median": -0.0004522755610179563
+      "coverage": 0.9817745569565406,
+      "median": -0.0023736117446321314
+    },
+    "b1_butterfly_violations": {
+      "coverage": 0.9827115559599636,
+      "median": 5.0
     },
     "b1_calendar_violations": {
-      "coverage": 0.9978176158133054,
+      "coverage": 0.9827115559599636,
       "median": 1.0
     },
     "b1_contracts": {
       "coverage": 1.0,
-      "median": 681.0
+      "median": 896.0
     },
     "b1_expiries": {
-      "coverage": 0.9978176158133054,
+      "coverage": 0.9827115559599636,
       "median": 21.0
     },
+    "b1_forward_expiries_fitted": {
+      "coverage": 0.9827115559599636,
+      "median": 12.0
+    },
+    "b1_implied_dividend_yield": {
+      "coverage": 0.5971716712162572,
+      "median": -0.007561333062767593
+    },
+    "b1_implied_rate": {
+      "coverage": 0.5971716712162572,
+      "median": 0.02972959828430673
+    },
     "b1_iv_14d": {
-      "coverage": 0.9978176158133054,
-      "median": 0.3384301832024159
+      "coverage": 0.9827115559599636,
+      "median": 0.3412062373878082
     },
     "b1_iv_30d": {
-      "coverage": 0.9978176158133054,
-      "median": 0.3454615696731154
+      "coverage": 0.9827115559599636,
+      "median": 0.34739377243790026
     },
     "b1_iv_60d": {
-      "coverage": 0.9978176158133054,
-      "median": 0.35338304864760656
+      "coverage": 0.9827115559599636,
+      "median": 0.35410054927720425
     },
     "b1_iv_7d": {
-      "coverage": 0.9978176158133054,
-      "median": 0.3466293421902862
+      "coverage": 0.9827115559599636,
+      "median": 0.35455470471054124
     },
     "b1_iv_90d": {
-      "coverage": 0.9978176158133054,
-      "median": 0.3588229627222057
+      "coverage": 0.9827115559599636,
+      "median": 0.3583553153060983
+    },
+    "b1_iv_minus_trailing_rv_30d": {
+      "coverage": 0.9827115559599636,
+      "median": 0.07022135252021436
+    },
+    "b1_max_log_moneyness": {
+      "coverage": 0.9827115559599636,
+      "median": 0.6953746595502969
     },
     "b1_median_quote_age_s": {
-      "coverage": 0.9978176158133054,
-      "median": 459.032457
+      "coverage": 0.9827115559599636,
+      "median": 788.1676675
     },
     "b1_median_relative_spread": {
-      "coverage": 0.9978176158133054,
-      "median": 0.015860438205921538
+      "coverage": 0.9827115559599636,
+      "median": 0.01628675218938571
     },
     "b1_mfiv": {
-      "coverage": 0.9978121734587252,
-      "median": 0.12944947482980101
+      "coverage": 0.982706139780753,
+      "median": 0.13125123487372187
+    },
+    "b1_min_log_moneyness": {
+      "coverage": 0.9827115559599636,
+      "median": -2.7527685947904748
     },
     "b1_pcp_residual": {
-      "coverage": 0.9838525339602926,
-      "median": 0.0035769828926904643
+      "coverage": 0.961442220200182,
+      "median": 0.0008790299377128008
     },
     "b1_risk_reversal_25": {
-      "coverage": 0.9934419627307558,
-      "median": -0.009535744063912999
+      "coverage": 0.9817745569565406,
+      "median": -0.008797456340362164
     },
     "b1_smile_curvature": {
-      "coverage": 0.9978176158133054,
-      "median": 1.1180838670318523
+      "coverage": 0.9827115559599636,
+      "median": 1.0769532865098608
     },
     "b1_smile_residual": {
-      "coverage": 0.9978176158133054,
-      "median": 0.021548626697998882
+      "coverage": 0.9827115559599636,
+      "median": 0.02701122982495463
     },
     "b1_smile_slope": {
-      "coverage": 0.9978176158133054,
-      "median": -0.2130300517771762
+      "coverage": 0.9827115559599636,
+      "median": -0.21519512940904406
+    },
+    "b1_spans_call_wing": {
+      "coverage": 0.9827115559599636,
+      "median": 1.0
+    },
+    "b1_spans_put_wing": {
+      "coverage": 0.9827115559599636,
+      "median": 1.0
     },
     "b1_strikes": {
-      "coverage": 0.9978176158133054,
-      "median": 103.0
+      "coverage": 0.9827115559599636,
+      "median": 117.0
     },
     "b1_term_convexity": {
-      "coverage": 0.9978176158133054,
-      "median": 0.0445818836005995
+      "coverage": 0.9827115559599636,
+      "median": 0.046977315551678556
     },
     "b1_term_slope": {
-      "coverage": 0.9978176158133054,
-      "median": 0.0011791950866581469
+      "coverage": 0.9827115559599636,
+      "median": -0.006480339725120826
     },
-    "b1_vrp_30d": {
-      "coverage": 0.9978176158133054,
-      "median": 0.0678851615489639
+    "b1_zero_dte_contracts": {
+      "coverage": 0.9827115559599636,
+      "median": 0.0
     }
   },
   "cutoff_seconds": 120,
-  "generated_at_utc": "2026-08-18T20:56:53.797931+00:00",
+  "generated_at_utc": "2026-08-19T06:58:10.191866+00:00",
   "label": "EXPLORATORY_MECHANISM_DISCOVERY",
-  "lookback_seconds": 1800,
+  "lookback_seconds": 3600,
   "program": "docs/research_program_v2.md",
-  "rows": 183744,
-  "session_assets_requested": 2784,
+  "rows": 184632,
+  "session_assets_requested": 2814,
   "session_assets_without_tape": 0,
-  "surface_sha256": "4698c287092a8232785b13ab9a3d8162178dfb8a32225a613fc7b6b7214cf29f"
+  "surface_sha256": "e70b5aefa9e191fda6c771f3d0badbddc6b3b6f61f55ef03c8affab05789f8ee"
 }
