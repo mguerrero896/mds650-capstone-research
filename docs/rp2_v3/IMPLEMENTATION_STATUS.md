@@ -1,0 +1,30 @@
+# RP2-v3 implementation status
+
+One row per gate of the master plan's section 24, in its binding order. A gate is `merged`
+only when its own PR carried failing-first tests, the minimal fix, measured before/after
+metrics, green `quality` and `hermetic` checks, the local evidence gates, and a review on
+its final commit.
+
+| # | Branch | Gate | Status |
+| ---: | --- | --- | --- |
+| 1 | `docs/rp2-v3-contract` | Freeze the research contract | merged |
+| 2 | `fix/rp2-v3-panel-contracts` | Information sets fail closed | pending |
+| 3 | `fix/rp2-v3-causal-b0` | Causal, asset-local EWMA baseline | pending |
+| 4 | `feat/rp2-v3-contemporaneous-b1` | B1 as contemporaneous option state | pending |
+| 5 | `fix/rp2-v3-exact-clock-b2` | B2 dual clocks, exact expiry, 0DTE | pending |
+| 6 | `feat/rp2-v3-core-feature-registry` | Core versus rich feature sets | pending |
+| 7 | `feat/rp2-v3-fold-local-preprocessing` | Fold-local imputation, common mask | pending |
+| 8 | `feat/rp2-v3-qlike-models` | LightGBM aligned to QLIKE | pending |
+| 9 | `fix/rp2-v3-session-inference` | Session-level, family-matched inference | pending |
+| 10 | `feat/rp2-v3-pipeline-runner` | One reproducible runner | pending |
+| 11 | `db/rp2-v3-versioned-results` | Versioned Supabase results | pending |
+| 12 | `results/rp2-v3-rebuild` | Rebuild, scorecard, publication | pending |
+
+## Standing constraints
+
+- Sealed cohort reads: 0. C, Phase 8 and Phase 9 stay closed for the whole programme.
+- Frozen artifacts are never overwritten. A superseded result is recorded in
+  [`SUPERSEDED_RESULTS.md`](SUPERSEDED_RESULTS.md), not deleted.
+- No test is weakened to pass. A red test means the cause is fixed.
+- Every reported number comes from a real run over the local evidence, never an estimate
+  carried over from an earlier run.
