@@ -133,3 +133,23 @@ def test_the_tensor_and_sequence_arms_each_declare_their_own_information_set() -
     source = (REPO / "scripts" / "rp2_ext12_level4_and_tensor.py").read_text(encoding="utf-8")
     for arm in ("B0+B1+B2+tensor", "B0+B1+B2+sequence"):
         assert arm in source, f"extension arm {arm} publishes results with no information set"
+
+
+def test_a_stopped_forward_economics_run_keeps_its_usable_mask() -> None:
+    """Nothing was traded, so the scored mask does not exist yet and must not be invented.
+
+    The convention is one way round: a run that reached its results hashes the rows it
+    scored, and a run that stopped hashes the rows it could have used.
+    """
+
+    source = (REPO / "scripts" / "rp2_block11b_forward_economics.py").read_text(
+        encoding="utf-8"
+    )
+    split = source.index("chronological_split(sessions_rank")
+    sparse_exit = source.index('"INSUFFICIENT_LEGS"')
+    scored = source.index("scored[rows] = True")
+    between = source[split:sparse_exit]
+    assert "describe_information_set(" not in between, (
+        "the pre-split provenance is overwritten before the sparse-leg exits can use it"
+    )
+    assert scored > sparse_exit, "the scored mask is only known after the tradeable filter"

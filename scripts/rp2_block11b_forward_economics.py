@@ -333,10 +333,6 @@ def run_role(
     designs = {name: design[keep] for name, design in designs.items()}
     sessions_rank = session_rank(frame["session_date"].to_numpy())
     train, test = chronological_split(sessions_rank, train_share=train_share)
-    information_sets = {
-        name: describe_information_set((name,), resolved[name], lift_mask(keep, test))
-        for name in INFORMATION_SETS
-    }
 
     joined = frame.with_row_index("row").join(
         legs, on=["asset", "session_date", "origin_minute"], how="inner"
