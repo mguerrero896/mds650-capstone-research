@@ -12,11 +12,17 @@ because it reads as a frozen contract while having quietly moved.
 
 from __future__ import annotations
 
+import json
+import re
 from functools import cache
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 CONTRACT_DIR = REPO / "docs" / "rp2_v3"
+SCORECARD_FIELDS = REPO / "configs" / "rp2_v3_scorecard_fields.json"
+
+#: A scorecard field as the schema document declares it: a leading table cell in backticks.
+DECLARED_FIELD = re.compile(r"^\| `([a-z0-9_]+)` \|", re.MULTILINE)
 
 REQUIRED_DOCUMENTS: tuple[str, ...] = (
     "RP2_V3_MASTER_PLAN.md",
@@ -62,23 +68,19 @@ GATE_BRANCHES: tuple[str, ...] = (
 #: Every metric group the scorecard of section 12 must account for.
 SCORECARD_GROUPS: tuple[str, ...] = ("Data", "B1", "B2", "Forecast", "Engineering")
 
-#: Metrics whose absence would let a rebuild claim more than it measured.
-SCORECARD_METRICS: tuple[str, ...] = (
-    "common_evaluation_rows",
-    "b1_core_coverage",
-    "b1_median_quote_age_s",
-    "b1_p95_quote_age_s",
-    "b2_pit_violation_count",
-    "b2_zero_dte_count",
-    "qlike_b0",
-    "qlike_b0_b1",
-    "qlike_b0_b1_b2",
-    "delta_b1",
-    "delta_b2_given_b1",
-    "mde",
-    "feature_registry_sha256",
-    "code_commit",
-)
+def _fields_by_group(document: str) -> dict[str, set[str]]:
+    """Scorecard fields the schema document declares, keyed by the section declaring them.
+
+    Grouping is part of the contract, not presentation: the master plan assigns each metric
+    to a section, and a field documented under the wrong one is a field the rebuild will
+    look for in the wrong place. A flat set comparison cannot see that.
+    """
+
+    fields: dict[str, set[str]] = {}
+    for section in document.split("\n## ")[1:]:
+        heading, _, body = section.partition("\n")
+        fields[heading.strip().lower()] = set(DECLARED_FIELD.findall(body))
+    return {name: found for name, found in fields.items() if found}
 
 
 @cache
@@ -121,12 +123,99 @@ def test_implementation_status_tracks_the_twelve_gates_in_order() -> None:
     )
 
 
-def test_scorecard_schema_declares_every_required_metric() -> None:
+def test_scorecard_schema_declares_every_required_group() -> None:
     schema = _read("SCORECARD_SCHEMA.md")
     missing_groups = [group for group in SCORECARD_GROUPS if group not in schema]
     assert not missing_groups, f"SCORECARD_SCHEMA.md is missing metric groups: {missing_groups}"
-    missing = [metric for metric in SCORECARD_METRICS if metric not in schema]
-    assert not missing, f"SCORECARD_SCHEMA.md is missing metrics: {missing}"
+
+
+def test_the_required_scorecard_fields_are_machine_readable() -> None:
+    """The rebuild runner and this test must read one list, not two copies of one.
+
+    A hand-maintained subset in the test is what let the earlier version pass while
+    `provider_failures`, `model_config_sha256` and `artifact_sha256` could be deleted from
+    the schema unnoticed.
+    """
+
+    assert SCORECARD_FIELDS.is_file(), f"missing machine-readable field list: {SCORECARD_FIELDS}"
+    declared = json.loads(SCORECARD_FIELDS.read_text(encoding="utf-8"))
+    assert declared["schema_version"].startswith("rp2-v3-scorecard-fields-")
+    assert set(declared["groups"]) == {group.lower() for group in SCORECARD_GROUPS}
+    assert all(fields for fields in declared["groups"].values()), "no group may be empty"
+
+
+def test_every_required_field_appears_under_its_own_group_and_no_other() -> None:
+    """Both directions and per group, so neither the document nor the list can drift."""
+
+    declared = json.loads(SCORECARD_FIELDS.read_text(encoding="utf-8"))
+    documented = _fields_by_group(_read("SCORECARD_SCHEMA.md"))
+    assert set(documented) == set(declared["groups"]), (
+        f"schema sections {sorted(documented)} do not match groups {sorted(declared['groups'])}"
+    )
+    for group, required in declared["groups"].items():
+        assert documented[group] == set(required), (
+            f"group {group}: document declares {sorted(documented[group])}, "
+            f"the field list requires {sorted(required)}"
+        )
+
+
+def test_a_field_documented_under_the_wrong_group_is_rejected() -> None:
+    """The check must see the grouping, not just the union of the groups.
+
+    Moving `provider_failures` from Data to Forecast leaves the flattened sets identical.
+    Only a per-section comparison notices, and the rebuild reads fields by group.
+    """
+
+    document = _read("SCORECARD_SCHEMA.md")
+    data_row = "| `provider_failures` | int | windows where the provider failed"
+    original = next(line for line in document.splitlines() if line.startswith(data_row))
+    moved = document.replace(original + "\n", "").replace(
+        "| `mde` | object |", original + "\n| `mde` | object |"
+    )
+    documented = _fields_by_group(moved)
+    flat_before = {field for fields in _fields_by_group(document).values() for field in fields}
+    flat_after = {field for fields in documented.values() for field in fields}
+    assert flat_before == flat_after, "a pure move leaves the flattened sets identical"
+    assert "provider_failures" in documented["forecast"], "the mutation must land in forecast"
+    declared = json.loads(SCORECARD_FIELDS.read_text(encoding="utf-8"))
+    assert documented["data"] != set(declared["groups"]["data"]), (
+        "a field moved out of its group must be detected"
+    )
+    assert documented["forecast"] != set(declared["groups"]["forecast"]), (
+        "a field moved into the wrong group must be detected"
+    )
+
+
+def test_every_nested_contrast_carries_its_own_common_mask_hash() -> None:
+    """An equal row count is not an equal mask.
+
+    Two contrasts can score the same number of rows and not the same rows. Only a hash per
+    contrast proves that a nested pair was compared on identical evidence.
+    """
+
+    declared = json.loads(SCORECARD_FIELDS.read_text(encoding="utf-8"))
+    assert "common_mask_sha256" in declared["groups"]["forecast"], (
+        "the forecast group must carry a per-contrast common_mask_sha256"
+    )
+    schema = _read("SCORECARD_SCHEMA.md")
+    assert "per contrast" in schema, (
+        "the schema document must state that the mask hash is recorded per contrast"
+    )
+
+
+def test_the_baseline_instruction_advances_with_each_merged_gate() -> None:
+    """`origin/main` stopped being 8c01b0a the moment the first gate merged.
+
+    The commit stays on the record as the provenance of the RP2-v2 baseline; it must not
+    stay as a precondition every later gate would fail.
+    """
+
+    agents = (REPO / "AGENTS.md").read_text(encoding="utf-8")
+    assert "debe devolver 8c01b0a0" not in agents, (
+        "AGENTS.md still asserts a fixed origin/main tip; later gates branch from the "
+        "current remote tip, not from the RP2-v2 baseline commit"
+    )
+    assert "8c01b0a" in agents, "the RP2-v2 baseline commit stays on the record"
 
 
 def test_superseded_results_supersedes_rather_than_deletes() -> None:

@@ -1,0 +1,58 @@
+{
+  "schema_version": "rp2-v3-scorecard-fields-v1.0",
+  "description": "Fields every RP2-v3 rebuild scorecard must carry. Read by the contract test that guards docs/rp2_v3/SCORECARD_SCHEMA.md and by the pipeline runner that writes the scorecard, so the requirement is stated once.",
+  "groups": {
+    "data": [
+      "b0_rows",
+      "b1_rows",
+      "b2_rows",
+      "common_evaluation_rows",
+      "sessions_by_role",
+      "assets",
+      "duplicate_keys",
+      "provider_failures"
+    ],
+    "b1": [
+      "b1_core_coverage",
+      "b1_median_quote_age_s",
+      "b1_p95_quote_age_s",
+      "b1_surface_contracts_per_origin",
+      "b1_surface_expiry_coverage",
+      "b1_rows_dropped_for_rate_or_dividend",
+      "b1_post_cutoff_observations",
+      "b1_duplicate_contracts_per_snapshot",
+      "b1_missing_rate_share"
+    ],
+    "b2": [
+      "b2_pit_violation_count",
+      "b2_zero_dte_count",
+      "b2_mean_provider_latency_s",
+      "b2_p95_provider_latency_s",
+      "b2_multileg_share",
+      "b2_empty_window_share",
+      "b2_provider_failure_share"
+    ],
+    "forecast": [
+      "qlike_b0",
+      "qlike_b0_b1",
+      "qlike_b0_b1_b2",
+      "delta_b1",
+      "delta_b2_given_b1",
+      "delta_total",
+      "ci_by_session",
+      "mde",
+      "calibration_slope",
+      "calibration_intercept",
+      "common_mask_sha256"
+    ],
+    "engineering": [
+      "runtime_seconds",
+      "peak_memory_bytes",
+      "input_manifest_sha256",
+      "model_config_sha256",
+      "feature_registry_sha256",
+      "code_commit",
+      "artifact_sha256"
+    ]
+  }
+}
