@@ -63,20 +63,50 @@ the correct primary convention.
 **Option flow information lives in timing and direction, not in size.** Double machine
 learning, cross-fitted over time blocks with a purge, clustered by session:
 
-| Treatment | Discovery | Validation |
+| Treatment | First sample (D, 383 clusters) | Second sample (V, 80 clusters) |
 |---|---|---|
-| Hawkes burst-intensity innovation | t = **+4.39**, p = 1.8 × 10⁻⁵ | t = **+2.30**, p = 0.024 |
-| Buyer-initiated premium share | t = +2.03, p = 0.044 | t = **+2.04**, p = 0.045 |
-| Vega / gamma / delta flow | null | null |
+| Premium | t = **+6.10**, p = 2.6 × 10⁻⁹ | t = −0.12, ns |
+| Strike concentration | t = **−4.79**, p = 2.3 × 10⁻⁶ | t = +0.29, ns |
+| Arrival-intensity innovation | t = **+4.43**, p = 1.3 × 10⁻⁵ | t = +0.64, ns |
+| Delta flow | t = **−4.10**, p = 5.1 × 10⁻⁵ | t = −0.67, ns |
+| Trades | t = **+2.87**, p = 0.0043 | t = **+2.58**, p = 0.012 |
+| Vega / gamma flow | null | null |
 
-Joint Wald 76.06, **p = 3.0 × 10⁻¹²** in discovery. The two survivors replicate across
-universes with the same sign; the Greeks-weighted flows — the obvious first guess, and the
-program's own §6.1 proposal — do not.
+Joint Wald 241.71, **p = 3.0 × 10⁻⁴⁶** in the first sample; **Wald 17.59, p = 0.062 in the
+second**. Only the trade count carries the same sign at conventional significance in both.
 
-**Clark–West and QLIKE disagree systematically, and the gap is the answer.** CW is
-significant almost everywhere (t up to +7.30) while the corresponding ΔQLIKE is frequently
-negative. CW asks whether the population coefficients are non-zero; QLIKE asks whether the
-estimated model forecasts better. The measured gap between them *is* the estimation cost.
+**Both figures are measured against a baseline that can now see the market.** Until this
+revision B0 was blind to SPY and QQQ — the columns were in the panel and absent from the feature
+registry, so no block after 4 ever used them (decision 75). Acquiring the missing bars and
+registering the columns *raised* the discovery statistic from 206.8 to 241.7 and left validation
+unchanged, which refutes the natural objection that the flow signal was market beta.
+
+**Both columns are exploratory, and the second is not a replication** (decision 67). V was read
+for the specification comparisons, the family choice, the recalibration decision and the
+36-target battery, and every one of those readings fed back into what is reported. A sample used
+for selection cannot also confirm.
+
+**The previous version of this table claimed two treatments replicated across the samples.
+That claim is withdrawn.** It was measured on panels where early-close sessions had been
+discarded by a quality gate reading a fabricated grid, where two acquisitions overlapped on 24
+session-assets so their origins were double-weighted, and where B1's snapshot window was the
+same interval as the flow windows it was being compared against. On the rebuilt panels the
+discovery evidence is far stronger and the second sample does not agree.
+
+The intensity measure is a decay-weighted count of recent trades with fixed parameters. It was
+previously called a Hawkes intensity, which asserts a fitted self-exciting point process —
+there is no estimated excitation, no branching ratio and no stability condition here.
+
+**In-sample evidence and out-of-sample loss disagree systematically, and the gap is the
+answer.** The evidence that the population coefficients are non-zero is strong while the
+corresponding ΔQLIKE is frequently negative: the information exists, and estimating the
+parameters needed to use it costs more than the information is worth.
+
+The Clark–West statistics that carried this section are **withdrawn for every tree family**
+(decision 68). Clark–West is derived for a linear model whose restricted form is a parameter
+restriction of the unrestricted one; a boosted tree on a larger feature set is a different
+function class, so the adjustment had no derivation there and the figures are not restated. It
+is now applied only where that precondition holds and refuses to run otherwise.
 
 **B0 is genuinely hard to beat.** It beats persistence, intraday mean, EWMA, simple HAR and
 an intraday GARCH(1,1) on QLIKE in **both** universes. Persistence is not merely worse but
@@ -89,8 +119,12 @@ noisy: Barndorff-Nielsen–Shephard relative measurement error is 25.7 % at h = 
 model can explain.
 
 **The reconstructed surface is textbook.** Put skew −0.190, smile convexity +1.164, 25-delta
-risk reversal −0.0070, variance risk premium +0.0688 — every sign as the literature reports,
-none imposed, from traded NBBO snapshots alone.
+risk reversal −0.0070 — every sign as the literature reports, none imposed, from traded NBBO
+snapshots alone. The fourth quantity previously listed here as a variance risk premium of
++0.0688 is the gap between implied variance and *trailing* realised variance. A premium is the
+gap against the physical expectation of *future* variance, which was never estimated, so the
+quantity is now named `implied_minus_trailing_variance` and is not offered as evidence that the
+surface reproduces a premium.
 
 ### 2.3 Null and negative findings
 
@@ -163,10 +197,23 @@ at look 4) and power 0.80:
 | all others | ≤ 0 | — | unreachable at any n |
 
 Every minimum detectable effect at n = 60, 90, 120 and 180 **exceeds the largest effect this
-program ever measured**. The design under discussion proposed 60–120 sessions; that is
-underpowered by a factor of 4.5 to 9. Running it would return a null whether or not the
-effect is real, and reporting that as evidence of absence would be a foregone conclusion
-dressed as a finding.
+program ever measured**. The design under discussion proposed 60–120 sessions. Running it would
+return a null whether or not the effect is real, and reporting that as evidence of absence would
+be a foregone conclusion dressed as a finding. **That conclusion is the durable one and it does
+not depend on the arithmetic below.**
+
+**The session counts in this table are optimistic bounds, not estimates** (decision 69). Each is
+the closed-form `n = ((z_α + z_β) σ / δ)²` evaluated at the *observed* effect — and the effect in
+the first row was picked as the largest across six families and four contrasts. The maximum of
+many noisy estimates is biased upward by construction, so dividing by it understates the sample
+required, and understates it more the more candidates were searched. The figures are kept here
+because the qualitative verdict (60–120 is not enough) survives any correction that can only
+push the requirement up; they are not a design input.
+
+Sizing a campaign now runs `src/mds650/rp2/power.py`: a design frozen before the simulation, the
+effect shrunk by `sqrt(2 ln k)` standard errors for selection, the null generated by circular
+block resampling of whole observed sessions, and the rejection rate under the null reported
+alongside the power so a mis-sized test cannot present a power number.
 
 ---
 
@@ -200,9 +247,11 @@ owner-approved target; RV30 remains frozen until you decide.
 **② Whether to run any prospective test at all.**
 Three options: (a) **do not run** a 60–120 session test — it is underpowered by construction —
 and publish the null with the Block 7 mechanism finding and the Block 10 decomposition as the
-contribution; (b) fund a **≥ 537-session** campaign, roughly two years of forward collection;
-(c) **change the estimand** to closing-period origins in expiration weeks, where the effect is
-~15× larger, pre-registered before any new data is seen — a different scientific claim.
+contribution; (b) fund a campaign sized by simulation from a frozen design, which the table in
+§3 bounds below at roughly two years of forward collection and which a selection-corrected
+effect would lengthen; (c) **change the estimand** to closing-period origins in expiration
+weeks, where the effect is ~15× larger, pre-registered before any new data is seen — a
+different scientific claim.
 
 **③ Phase 8 sealed holdout — complete or close.**
 Untouched by this program (`sealed_cohorts_read = 0`). Note the disclosed limitation from
@@ -225,11 +274,15 @@ would break `docs/INDEX.md`, `CANONICAL_STATE.json`, `STATUS.md`, the mirror exc
 the table holds five rows and Phase 6 (100 OOS sessions) is absent. Load it or record
 deliberately why not.
 
-**⑧ A new prospective cohort for the DIRECTION contrast.** Extension 4 measured both power
-curves: variance needs 537 sessions, direction needs 42 (an upper bound; ≈170 if the effect
-halves under pre-registration). Roughly 60 sessions, pre-registered for the directional
-estimand before any of it is seen, is the only confirmatory test within this project's reach.
-**Phase 8 cannot be re-aimed at it** — its protocol is hash-frozen for variance, and
+**⑧ A new prospective cohort for the DIRECTION contrast.** The direction estimand emerged from
+a battery of 36 targets searched after the fact, and it is the only one that survived Holm in
+both samples. **The 42-session figure once quoted here is withdrawn** (decision 69): it rescaled
+the largest |t| of those 36 by `sqrt(n)`, which is the winner's curse expressed as an effect
+size. Any cohort for this estimand has to be sized by simulation from a design frozen before the
+simulation runs, and the number will be larger — possibly much larger — than 42.
+
+What does not change: a directional cohort is the only confirmatory test within this project's
+reach, and **Phase 8 cannot be re-aimed at it** — its protocol is hash-frozen for variance, and
 re-aiming would break the seal that gives it value. See `docs/rp2/extensions_1_4_v1.md`.
 
 **⑦ Publication of the null.** Blocks 15–18 leave the repository ready. Nothing has been

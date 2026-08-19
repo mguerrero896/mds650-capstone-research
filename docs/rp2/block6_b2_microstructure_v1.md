@@ -2,7 +2,7 @@
 
 **Status:** `EXECUTED — 2026-08-19` · label `EXPLORATORY_MECHANISM_DISCOVERY`
 **Artifacts:** `artifacts/rp2_block6_flow/flow_coverage.json`
-(`flow_sha256 = a64484c0cc32402dfcd8c9cb2837ddad91a4b19263b3548c16f9bf11c6cd98fc`);
+(`flow_sha256 = d7320a546cfe2ffc113baab555b3b663bbcffa678495d7ee80fb4b31820d3306`);
 panel `b2_flow_panel.parquet` is local-only, hashed in `artifacts/rp2_panel_pointers.json`
 (`b4066780…5e9e4`, 43.7 MB).
 **Code:** `src/mds650/rp2/flow.py`, `scripts/rp2_block6_flow_panel.py`
@@ -65,26 +65,55 @@ are still evaluated on a window slice — and only on the short 5-minute one.
 
 ## 3. What the rebuilt B2 looks like
 
+184,632 origins over 2,814 session-assets,
+0 without tape, **60 features**.
+
 Medians over all origins:
 
 | Feature | 5 min | 30 min |
 |---|---|---|
-| trades | 873 | 5,619 |
-| distinct contracts | 156 | 743 |
-| premium | $1.98 M | $32.5 M |
-| buy premium share | 0.468 | 0.440 |
-| sell premium share | 0.406 | 0.450 |
-| passive premium share | 0.105 | 0.098 |
-| sweep premium share | 0.012 | 0.015 |
-| OTM premium share | 0.514 | 0.470 |
-| interarrival CV | **1.82** | — |
-| contract entropy | 3.32 nats | — |
-| strike HHI | 0.151 | — |
+| trades | 1,464 | 9,526 |
+| distinct contracts | 271 | 697 |
+| premium | $4,416,104 | $30,118,926 |
+| buy premium share | 0.351 | 0.352 |
+| sell premium share | 0.349 | 0.348 |
+| passive premium share | 0.266 | 0.285 |
+| sweep premium share | 0.014 | 0.017 |
+| OTM premium share (sided) | 0.182 | 0.189 |
+| multi-leg size share | 0.134 | 0.147 |
+| mean provider latency (s) | 0.1 | 0.1 |
+| late arrival share (>60 s) | 0.000 | 0.000 |
+| interarrival CV | 1.75 | — |
+| contract entropy (normalised) | 0.722 | — |
+| strike HHI (normalised) | 0.079 | — |
 
-The interarrival coefficient of variation of **1.82** is the single most important
-descriptive number here: a Poisson process gives 1.0, so option trade arrivals are strongly
-clustered and a Hawkes term is not decoration — it is measuring something the incumbent
-five-minute count could not represent.
+The interarrival coefficient of variation of **1.75** is the single
+most important descriptive number here: a Poisson process gives 1.0, so option trade arrivals
+are strongly clustered, and a decay-weighted arrival measure is not decoration — it captures
+something a five-minute count cannot represent.
+
+**On the name of that measure.** It was called a Hawkes intensity. Its baseline, excitation and
+decay were fixed inputs at every call site; nothing was estimated, so there is no
+self-excitation parameter, no branching ratio and no stability condition behind it. Calling it
+Hawkes asserted a fitted point-process model that does not exist. It is
+`exponential_decay_intensity`, and the clustering above is evidence that *some* self-exciting
+model would be worth fitting — not evidence that one was.
+
+**Concentration is normalised.** Raw Herfindahl has a floor of `1/n` and raw entropy a ceiling
+of `log n`, so both moved simply because more contracts traded: `strike_hhi` fell on busy
+windows regardless of how concentrated the flow actually was. Both are now mapped to `[0, 1]`,
+and a single positive weight returns NaN rather than 1 — concentration relative to nothing is
+undefined.
+
+**Multi-leg prints carry volume but not direction.** A side tag on a spread leg describes how
+that leg crossed the NBBO, not what the trader was expressing: the short leg of a call vertical
+prints `bid_side` while the order is bullish. Those prints are identified from the rise in the
+contract's running `multi_vol` total and are now unsigned, so they no longer manufacture signed
+flow — they still count as volume, and their share is a feature.
+
+**Both clocks travel.** `executed_at` is the exchange clock and `created_at` is when the
+provider made the trade available. Windows still select on availability, because that is what a
+forecaster could see, but the gap between the two is now measured rather than assumed.
 
 ## 4. Advance rule
 

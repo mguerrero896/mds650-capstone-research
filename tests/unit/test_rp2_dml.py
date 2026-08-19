@@ -96,6 +96,4 @@ def test_partial_out_detects_a_real_effect_and_a_null_one() -> None:
 
 def test_partial_out_rejects_thin_samples() -> None:
     with pytest.raises(ValueError, match="RP2_DML_INSUFFICIENT_ROWS"):
-        dml_partial_out(
-            np.ones(4), np.ones((4, 1)), np.array([0, 0, 1, 1], dtype=np.int64), ("a",)
-        )
+        dml_partial_out(np.ones(4), np.ones((4, 1)), np.array([0, 0, 1, 1], dtype=np.int64), ("a",))

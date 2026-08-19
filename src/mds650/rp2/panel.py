@@ -6,6 +6,7 @@ transformed, so that Blocks 7-11 all see exactly the same B0, B1 and B2 definiti
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from pathlib import Path
 from typing import Final
 
@@ -41,6 +42,15 @@ B0_FEATURES: Final[dict[str, str]] = {
     "minutes_since_open": "raw",
     "minutes_to_close": "raw",
     "day_of_week": "raw",
+    # Market-wide state. These columns were built into the panel from the start and were
+    # never registered, so every block downstream of 4 ran a B0 that could not see the
+    # market at all — the ladder's own `b0_market` variant was the only thing using them.
+    # A B2 increment measured against a baseline blind to SPY and QQQ credits option flow
+    # with whatever the market was doing at the time.
+    "SPY_rv_30": "log",
+    "SPY_ret_30": "raw",
+    "QQQ_rv_30": "log",
+    "QQQ_ret_30": "raw",
 }
 
 B1_FEATURES: Final[dict[str, str]] = {
@@ -57,31 +67,70 @@ B1_FEATURES: Final[dict[str, str]] = {
     "b1_risk_reversal_25": "raw",
     "b1_butterfly_25": "raw",
     "b1_mfiv": "log",
-    "b1_vrp_30d": "signed",
+    "b1_iv_minus_trailing_rv_30d": "signed",
     "b1_median_relative_spread": "log",
     "b1_median_quote_age_s": "log",
     "b1_strikes": "log",
     "b1_expiries": "log",
     "b1_pcp_residual": "log",
+    # Coverage and no-arbitrage diagnostics: a surface statistic is only as good as the
+    # grid it was read off, so the span travels with the estimate.
+    "b1_forward_expiries_fitted": "log",
+    "b1_min_log_moneyness": "signed",
+    "b1_max_log_moneyness": "signed",
+    "b1_zero_dte_contracts": "log",
+    "b1_butterfly_violations": "log",
+    "b1_implied_rate": "signed",
+    "b1_implied_dividend_yield": "signed",
 }
 
 _B2_WINDOWS: Final[tuple[str, ...]] = ("5m", "30m")
 _B2_LEVELS: Final[tuple[str, ...]] = ("trades", "contracts", "size", "premium")
 _B2_SIGNED: Final[tuple[str, ...]] = (
-    "vega_flow", "gamma_flow", "delta_flow", "vega_flow_call", "vega_flow_put",
-    "vega_flow_short_dte", "vega_flow_long_dte", "d_iv", "d_mid_rel", "d_spread",
-    "hawkes_innovation",
+    "vega_flow",
+    "gamma_flow",
+    "delta_flow",
+    "vega_flow_call",
+    "vega_flow_put",
+    "vega_flow_short_dte",
+    "vega_flow_long_dte",
+    "d_iv",
+    "d_mid_rel",
+    "d_spread",
+    "decay_intensity_innovation",
 )
 _B2_RAW: Final[tuple[str, ...]] = (
-    "otm_premium_share", "buy_premium_share", "sell_premium_share",
-    "passive_premium_share", "sweep_premium_share", "strike_hhi", "expiry_hhi",
-    "contract_entropy", "interarrival_cv",
+    "otm_premium_share",
+    "buy_premium_share",
+    "sell_premium_share",
+    "passive_premium_share",
+    "sweep_premium_share",
+    "late_arrival_share",
+    "multileg_size_share",
+    "multileg_premium_share",
 )
-_B2_LOG: Final[tuple[str, ...]] = ("vega_flow_abs", "hawkes_last", "rate_per_second")
+#: Concentration and arrival-shape statistics are not prefix-summable, so the builder
+#: computes them on the concentration window only. Registering them for every window
+#: claimed four features that cannot exist — and `build_design` skips absent columns
+#: silently, so the claim went unnoticed for the whole programme.
+_B2_CONCENTRATION: Final[tuple[str, ...]] = (
+    "strike_hhi",
+    "expiry_hhi",
+    "contract_entropy",
+    "interarrival_cv",
+)
+#: The window those statistics are computed on; must match the builder's own constant.
+_B2_CONCENTRATION_WINDOW: Final = "5m"
+_B2_LOG: Final[tuple[str, ...]] = (
+    "vega_flow_abs",
+    "decay_intensity_last",
+    "rate_per_second",
+    "mean_latency_s",
+)
 
 
 def b2_features() -> dict[str, str]:
-    """B2 column-to-transform map, generated for both aggregation windows."""
+    """B2 column-to-transform map: per-window features, plus the concentration window."""
 
     mapping: dict[str, str] = {}
     for window in _B2_WINDOWS:
@@ -91,6 +140,8 @@ def b2_features() -> dict[str, str]:
             mapping[f"b2_{window}_{name}"] = "signed"
         for name in _B2_RAW:
             mapping[f"b2_{window}_{name}"] = "raw"
+    for name in _B2_CONCENTRATION:
+        mapping[f"b2_{_B2_CONCENTRATION_WINDOW}_{name}"] = "raw"
     return mapping
 
 
@@ -107,11 +158,14 @@ def load_merged_panel(b0_path: Path, b1_path: Path, b2_path: Path) -> pl.DataFra
     """Left-join the surface and flow panels onto the B0 panel on the origin key."""
 
     panel = pl.read_parquet(b0_path)
+    assert_unique_origin_key(panel)
     for path in (b1_path, b2_path):
         if not path.is_file():
             continue
         other = pl.read_parquet(path)
-        panel = panel.join(other, on=list(JOIN_KEYS), how="left")
+        joined = panel.join(other, on=list(JOIN_KEYS), how="left")
+        assert_one_to_one_join(panel, other, joined)
+        panel = joined
     return panel
 
 
@@ -201,3 +255,41 @@ def standardise(
     spread = np.where(spread > 0.0, spread, 1.0)
     out[:, start:] = (design[:, start:] - centre) / spread
     return out
+
+
+def assert_unique_origin_key(panel: pl.DataFrame) -> None:
+    """Fail closed unless ``(asset, session_date, origin_minute)`` identifies one row.
+
+    A duplicated origin key silently double-weights that origin in every mean, every
+    bootstrap and every regression downstream, and nothing later in the pipeline would
+    surface it.
+    """
+
+    missing = [name for name in JOIN_KEYS if name not in panel.columns]
+    if missing:
+        raise ValueError(f"RP2_PANEL_ORIGIN_KEY_MISSING:{','.join(missing)}")
+    duplicates = panel.height - panel.select(JOIN_KEYS).unique().height
+    if duplicates:
+        raise ValueError(f"RP2_PANEL_ORIGIN_KEY_DUPLICATED:{duplicates}")
+
+
+def assert_one_to_one_join(left: pl.DataFrame, right: pl.DataFrame, joined: pl.DataFrame) -> None:
+    """Fail closed unless a left join neither dropped nor multiplied rows.
+
+    A right side with a duplicated key silently fans the panel out, which looks like more
+    data and is really the same origin counted twice.
+    """
+
+    if joined.height != left.height:
+        raise ValueError(f"RP2_PANEL_JOIN_CARDINALITY:{left.height}->{joined.height}")
+    duplicates = right.height - right.select(JOIN_KEYS).unique().height
+    if duplicates:
+        raise ValueError(f"RP2_PANEL_JOIN_RIGHT_DUPLICATED:{duplicates}")
+
+
+def assert_required_columns(panel: pl.DataFrame, required: Sequence[str]) -> None:
+    """Fail closed on a missing required column instead of silently degrading."""
+
+    missing = [name for name in required if name not in panel.columns]
+    if missing:
+        raise ValueError(f"RP2_PANEL_REQUIRED_MISSING:{','.join(sorted(missing))}")

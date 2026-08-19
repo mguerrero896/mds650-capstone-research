@@ -27,8 +27,8 @@ MAX_IV: Final = 5.0
 MIN_TENOR_YEARS: Final = 1.0 / 365.0
 #: Contract multiplier for US equity options.
 CONTRACT_MULTIPLIER: Final = 100.0
-#: Default Hawkes decay, in seconds: clustering at the one-minute scale.
-HAWKES_DECAY_SECONDS: Final = 60.0
+#: Default decay constant, in seconds: clustering at the one-minute scale.
+DECAY_SECONDS: Final = 60.0
 
 
 @dataclass(frozen=True, slots=True)
@@ -51,8 +51,11 @@ def _normal_cdf(values: FloatArray) -> FloatArray:
 
 
 def black_scholes_greeks(
-    spot: FloatArray, strike: FloatArray, tenor_years: FloatArray, iv: FloatArray,
-    is_call: npt.NDArray[np.bool_]
+    spot: FloatArray,
+    strike: FloatArray,
+    tenor_years: FloatArray,
+    iv: FloatArray,
+    is_call: npt.NDArray[np.bool_],
 ) -> Greeks:
     """Delta, gamma and vega for every trade, zero rates and zero dividends.
 
@@ -83,20 +86,25 @@ def signed_exposure(
     return float(np.sum(direction * weight))
 
 
-def hawkes_intensity(
-    times_seconds: FloatArray, *, baseline: float, excitation: float,
-    decay: float = HAWKES_DECAY_SECONDS
+def exponential_decay_intensity(
+    times_seconds: FloatArray, *, baseline: float, excitation: float, decay: float = DECAY_SECONDS
 ) -> FloatArray:
-    """Exponential-kernel Hawkes intensity just before each event.
+    """Exponentially-weighted count of recent events, evaluated just before each event.
 
-    ``lambda_i = mu + alpha * sum_{t_j < t_i} exp(-(t_i - t_j) / beta)`` evaluated by the
-    standard O(n) recursion, so a long window costs no more than a short one.
+    ``x_i = mu + alpha * sum_{t_j < t_i} exp(-(t_i - t_j) / beta)`` by the standard O(n)
+    recursion, so a long window costs no more than a short one.
+
+    **This is not a Hawkes intensity.** It has the same functional form, but ``mu``,
+    ``alpha`` and ``beta`` are supplied rather than estimated from the data, so it carries
+    no self-excitation parameter and supports no branching-ratio or stability claim. It is
+    a decay-weighted activity measure; calling it Hawkes would assert a fitted model that
+    does not exist.
     """
 
     if decay <= 0.0:
-        raise ValueError("RP2_HAWKES_DECAY_INVALID")
+        raise ValueError("RP2_DECAY_INVALID")
     if times_seconds.ndim != 1:
-        raise ValueError("RP2_HAWKES_TIMES_INVALID")
+        raise ValueError("RP2_DECAY_TIMES_INVALID")
     out = np.empty(times_seconds.size, dtype=np.float64)
     state = 0.0
     previous = times_seconds[0] if times_seconds.size else 0.0
@@ -115,8 +123,11 @@ def burstiness(times_seconds: FloatArray) -> dict[str, float]:
     """
 
     if times_seconds.size < 3:
-        return {"rate_per_second": float("nan"), "interarrival_cv": float("nan"),
-                "interarrival_median": float("nan")}
+        return {
+            "rate_per_second": float("nan"),
+            "interarrival_cv": float("nan"),
+            "interarrival_median": float("nan"),
+        }
     gaps = np.diff(np.sort(times_seconds))
     mean = float(np.mean(gaps))
     span = float(times_seconds.max() - times_seconds.min())
@@ -127,29 +138,55 @@ def burstiness(times_seconds: FloatArray) -> dict[str, float]:
     }
 
 
-def herfindahl(weights: FloatArray) -> float:
-    """Concentration of a non-negative weight vector; 1 means a single contract."""
+def herfindahl(weights: FloatArray, *, normalised: bool = True) -> float:
+    """Concentration of a non-negative weight vector.
+
+    The raw Herfindahl index has a floor of ``1/n``, so it falls simply because more
+    contracts traded - it confounds *how concentrated* the flow was with *how much* of it
+    there was. The normalised form ``(H - 1/n) / (1 - 1/n)`` removes that floor and is 0
+    for perfectly even flow and 1 for a single contract, whatever ``n`` is. A single
+    observation has no defined concentration and returns NaN rather than 1.
+    """
 
     positive = weights[np.isfinite(weights) & (weights > 0.0)]
     if positive.size == 0:
         return float("nan")
     share = positive / positive.sum()
-    return float(np.sum(share**2))
+    index = float(np.sum(share**2))
+    if not normalised:
+        return index
+    count = positive.size
+    if count < 2:
+        return float("nan")
+    floor = 1.0 / count
+    return (index - floor) / (1.0 - floor)
 
 
-def shannon_entropy(weights: FloatArray) -> float:
-    """Entropy in nats of a non-negative weight vector; 0 means all weight on one point."""
+def shannon_entropy(weights: FloatArray, *, normalised: bool = True) -> float:
+    """Entropy of a non-negative weight vector.
+
+    Raw entropy has a ceiling of ``log(n)``, so like the raw Herfindahl it grows with the
+    number of contracts. The normalised form divides by that ceiling: 0 means all weight on
+    one point and 1 means perfectly even, independent of ``n``.
+    """
 
     positive = weights[np.isfinite(weights) & (weights > 0.0)]
     if positive.size == 0:
         return float("nan")
     share = positive / positive.sum()
-    return float(-np.sum(share * np.log(share)))
+    entropy = float(-np.sum(share * np.log(share)))
+    if not normalised:
+        return entropy
+    if positive.size < 2:
+        return float("nan")
+    return entropy / math.log(positive.size)
 
 
 def trade_to_quote_impact(
-    contract_key: npt.NDArray[np.int64], iv: FloatArray, mid: FloatArray,
-    relative_spread: FloatArray
+    contract_key: npt.NDArray[np.int64],
+    iv: FloatArray,
+    mid: FloatArray,
+    relative_spread: FloatArray,
 ) -> dict[str, float]:
     """Mean change in implied volatility, mid and spread between consecutive trades.
 
@@ -176,9 +213,7 @@ def trade_to_quote_impact(
     }
 
 
-def residualise(
-    values: FloatArray, design: FloatArray, train: npt.NDArray[np.bool_]
-) -> FloatArray:
+def residualise(values: FloatArray, design: FloatArray, train: npt.NDArray[np.bool_]) -> FloatArray:
     """Abnormal component of a flow variable: residual against a conditioning design.
 
     The expectation model is estimated on ``train`` rows only, which the caller sets to

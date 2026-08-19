@@ -27,6 +27,7 @@ Role = Literal["D", "V", "BURNED"]
 _DATE_DIR = re.compile(r"^date=(\d{4})-(\d{2})-(\d{2})$")
 _ASSET_DIR = re.compile(r"^asset=([A-Z.]+)$")
 
+
 #: Store root holding every per-campaign tape directory.  ``MDS650_DATA_ROOT`` points at
 #: ``<root>/data`` by repo convention, so the store root is its parent when set.
 def _default_data_root() -> Path:

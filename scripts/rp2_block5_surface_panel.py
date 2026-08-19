@@ -8,6 +8,19 @@ smile shape, wing quotes, term structure, variance risk premium and quote qualit
 
 Point-in-time rule: only rows with ``created_at <= origin - 120 s`` are visible, the
 empirical cutoff established in Block 2.  Sealed cohorts are never read.
+
+**Independence from B2.**  Both feature blocks are derived from the same tape, so the
+question "does option flow add information beyond the option surface?" is only meaningful if
+no observation feeds both answers.  B1's snapshot therefore ends where B2's longest window
+begins: B1 reads ``[origin - 5520 s, origin - 1920 s)`` and B2 reads ``[origin - 1920 s,
+origin - 120 s]``.  The two sets of rows are disjoint by construction and
+``assert_disjoint_from_flow_window`` fails the run if that ever stops being true.
+
+This buys row-disjointness, not statistical independence.  A contract still appears in the
+surface only because somebody traded it, so the *selection* of quotes remains driven by
+flow.  The incremental test can no longer be confounded by literally reusing the same
+observations; it can still be confounded by that selection, and this document says so rather
+than implying the stronger claim.
 """
 
 from __future__ import annotations
@@ -16,7 +29,7 @@ import argparse
 import json
 from collections.abc import Sequence
 from concurrent.futures import ThreadPoolExecutor
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -28,15 +41,20 @@ from mds650.b1v3_confirmation import canonical_sha256
 from mds650.rp2.bars import MARKET_TZ, SESSION_OPEN_MINUTE, build_session_grid, load_bar_sources
 from mds650.rp2.surface import (
     CONSTANT_MATURITY_DAYS,
+    EXPIRY_CLOSE,
+    SECONDS_PER_YEAR,
     annualise_intraday_variance,
     black_scholes_delta,
+    butterfly_arbitrage_violations,
     calendar_arbitrage_violations,
     fit_smile,
+    implied_forward,
+    implied_minus_trailing_variance,
     interpolate_total_variance,
     model_free_variance,
     put_call_parity_residual,
+    surface_coverage,
     total_variance,
-    variance_risk_premium,
     wing_quotes,
 )
 
@@ -45,15 +63,41 @@ DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_block5_surface"
 INVENTORY = ROOT / "artifacts" / "rp2_block1_partition" / "inventory.jsonl"
 B0_PANEL = ROOT / "artifacts" / "rp2_block4_b0" / "b0_panel.parquet"
 CUTOFF_SECONDS = 120
-LOOKBACK_SECONDS = 1800
+#: The longest B2 flow window (scripts/rp2_block6_flow_panel.py).  B1 must end before it.
+FLOW_WINDOW_SECONDS = 1800
+#: B1's snapshot ends here, immediately before the oldest row any B2 window can see.
+SNAPSHOT_END_SECONDS = CUTOFF_SECONDS + FLOW_WINDOW_SECONDS
+LOOKBACK_SECONDS = 3600
 CALENDAR_YEAR = 365.0
 NY = ZoneInfo(MARKET_TZ)
 TAPE_COLUMNS = (
-    "underlying_symbol", "created_at", "nbbo_bid", "nbbo_ask",
-    "implied_volatility", "expiry", "strike", "option_type",
+    "underlying_symbol",
+    "created_at",
+    "nbbo_bid",
+    "nbbo_ask",
+    "implied_volatility",
+    "expiry",
+    "strike",
+    "option_type",
 )
 
 type FloatArray = npt.NDArray[np.float64]
+
+
+def assert_disjoint_from_flow_window(
+    *,
+    snapshot_end_seconds: int = SNAPSHOT_END_SECONDS,
+    flow_window_seconds: int = FLOW_WINDOW_SECONDS,
+    cutoff_seconds: int = CUTOFF_SECONDS,
+) -> None:
+    """Fail the run if B1's snapshot could contain a row that a B2 window also sees.
+
+    Both blocks are cut from one tape, so this is the only thing standing between
+    "B2 adds information beyond B1" and "B2 and B1 are partly the same rows".
+    """
+
+    if snapshot_end_seconds < cutoff_seconds + flow_window_seconds:
+        raise ValueError("RP2_B1_WINDOW_OVERLAPS_FLOW")
 
 
 def load_inventory() -> dict[tuple[str, str], list[str]]:
@@ -84,13 +128,34 @@ def _read_tape(paths: Sequence[str], asset: str) -> pl.DataFrame | None:
     return tape.sort("created_at") if tape.height else None
 
 
+def _co_strike_pairs(
+    strike: FloatArray, mid: FloatArray, calls: npt.NDArray[np.bool_], puts: npt.NDArray[np.bool_]
+) -> tuple[FloatArray, FloatArray, FloatArray]:
+    """Strikes quoted on both sides, with the matching call and put mids.
+
+    `intersect1d(..., return_indices=True)` returns positions directly. Rebuilding those
+    positions with a boolean mask per shared strike costs two array scans per strike, and at
+    roughly twenty expiries over 185,000 origins that is tens of millions of scans — enough
+    to take the block from minutes to hours.
+    """
+
+    call_strike, put_strike = strike[calls], strike[puts]
+    shared, call_index, put_index = np.intersect1d(
+        call_strike, put_strike, assume_unique=False, return_indices=True
+    )
+    if shared.size == 0:
+        empty = np.empty(0, dtype=np.float64)
+        return empty, empty, empty
+    return shared, mid[calls][call_index], mid[puts][put_index]
+
+
 def _surface_at(
     cutoff_index: int,
     window_start: int,
     keys: npt.NDArray[np.int64],
     created: npt.NDArray[np.int64],
     strike: FloatArray,
-    tenor: FloatArray,
+    expiry_close_us: npt.NDArray[np.int64],
     iv: FloatArray,
     bid: FloatArray,
     ask: FloatArray,
@@ -111,36 +176,79 @@ def _surface_at(
     if picked.size < 3:
         return empty
 
-    k_strike, k_tenor, k_iv = strike[picked], tenor[picked], iv[picked]
+    k_strike, k_iv = strike[picked], iv[picked]
     k_bid, k_ask, k_call = bid[picked], ask[picked], is_call[picked]
     mid = 0.5 * (k_bid + k_ask)
     relative_spread = (k_ask - k_bid) / np.maximum(mid, 1e-9)
     age_seconds = (cutoff_us - created[picked]) / 1e6
-    log_moneyness = np.log(np.maximum(k_strike, 1e-9) / spot)
+    # Exact time to the 16:00 ET close on the expiry date, measured from THIS origin.  A
+    # contract expiring this afternoon gets the hours it has left, not a floor of one day.
+    k_tenor = (expiry_close_us[picked] - cutoff_us) / 1e6 / SECONDS_PER_YEAR
+    live = k_tenor > 0.0
+    if int(live.sum()) < 3:
+        return empty
+    picked, k_strike, k_iv, k_tenor = picked[live], k_strike[live], k_iv[live], k_tenor[live]
+    k_bid, k_ask, k_call = k_bid[live], k_ask[live], k_call[live]
+    mid, relative_spread, age_seconds = mid[live], relative_spread[live], age_seconds[live]
 
-    tenor_days = np.round(k_tenor * CALENDAR_YEAR).astype(np.int64)
-    unique_tenors = np.unique(tenor_days)
+    expiry_key = expiry_close_us[picked]
+    unique_tenors, inverse = np.unique(expiry_key, return_inverse=True)
+    # One pass for the per-expiry tenor instead of a boolean scan per expiry per loop.
+    tenor_by_expiry = np.zeros(unique_tenors.size, dtype=np.float64)
+    np.maximum.at(tenor_by_expiry, inverse, k_tenor)
+    # The forward is measured per expiry from co-strike parity, then moneyness is read
+    # against it.  Falling back to the spot where parity cannot be fitted is recorded in
+    # b1_forward_expiries_fitted rather than hidden.
+    forward_by_expiry: dict[int, float] = {}
+    for position, key in enumerate(unique_tenors):
+        mask = inverse == position
+        years = float(tenor_by_expiry[position])
+        calls, puts = mask & k_call, mask & ~k_call
+        shared, call_mid, put_mid = _co_strike_pairs(k_strike, mid, calls, puts)
+        if shared.size < 3:
+            continue
+        fit = implied_forward(shared, call_mid, put_mid, tenor_years=years, spot=spot)
+        if fit.plausible:
+            forward_by_expiry[int(key)] = fit.forward
+    forward_per_expiry = np.array(
+        [forward_by_expiry.get(int(key), spot) for key in unique_tenors], dtype=np.float64
+    )
+    forward = forward_per_expiry[inverse]
+    log_moneyness = np.log(np.maximum(k_strike, 1e-9) / forward)
+
     atm_tenor_years: list[float] = []
     atm_total_variance: list[float] = []
-    for days in unique_tenors:
-        mask = tenor_days == days
+    for position in range(unique_tenors.size):
+        mask = inverse == position
         if int(mask.sum()) < 3:
             continue
         smile = fit_smile(log_moneyness[mask], k_iv[mask])
         if not np.isfinite(smile.level) or smile.level <= 0.0:
             continue
-        years = float(days) / CALENDAR_YEAR
+        years = float(tenor_by_expiry[position])
+        if years <= 0.0:
+            continue
         atm_tenor_years.append(years)
-        atm_total_variance.append(float(total_variance(np.array([smile.level]),
-                                                       np.array([years]))[0]))
+        atm_total_variance.append(
+            float(total_variance(np.array([smile.level]), np.array([years]))[0])
+        )
+    snapshot_delta = black_scholes_delta(forward, k_strike, k_tenor, k_iv, k_call)
+    coverage = surface_coverage(log_moneyness, k_tenor, k_strike, snapshot_delta)
     features: dict[str, float] = {
-        "b1_contracts": float(picked.size),
-        "b1_expiries": float(unique_tenors.size),
-        "b1_strikes": float(np.unique(k_strike).size),
+        "b1_contracts": float(coverage.contracts),
+        "b1_expiries": float(coverage.expiries),
+        "b1_strikes": float(coverage.strikes),
         "b1_median_quote_age_s": float(np.median(age_seconds)),
         "b1_median_relative_spread": float(np.median(relative_spread)),
+        "b1_forward_expiries_fitted": float(len(forward_by_expiry)),
+        "b1_min_log_moneyness": coverage.min_log_moneyness,
+        "b1_max_log_moneyness": coverage.max_log_moneyness,
+        "b1_spans_call_wing": float(coverage.spans_call_wing),
+        "b1_spans_put_wing": float(coverage.spans_put_wing),
+        "b1_zero_dte_contracts": float(coverage.zero_dte_contracts),
         "b1_pcp_residual": float("nan"),
         "b1_calendar_violations": float("nan"),
+        "b1_butterfly_violations": float("nan"),
     }
     if len(atm_tenor_years) < 2:
         return features
@@ -158,38 +266,58 @@ def _surface_at(
     features["b1_term_convexity"] = iv7 - 2.0 * iv30 + iv90
 
     # Shape features are read on the expiry bucket closest to 30 calendar days.
-    nearest = unique_tenors[np.argmin(np.abs(unique_tenors - 30))]
-    bucket = tenor_days == nearest
+    nearest_position = int(np.argmin(np.abs(tenor_by_expiry - 30.0 / CALENDAR_YEAR)))
+    nearest = unique_tenors[nearest_position]
+    bucket = inverse == nearest_position
+    bucket_years = float(tenor_by_expiry[nearest_position])
+    bucket_forward = forward_by_expiry.get(int(nearest), spot)
     if int(bucket.sum()) >= 3:
         smile = fit_smile(log_moneyness[bucket], k_iv[bucket])
         features["b1_smile_slope"] = smile.slope
         features["b1_smile_curvature"] = smile.curvature
         features["b1_smile_residual"] = smile.residual_std
-        delta = black_scholes_delta(spot, k_strike[bucket], k_tenor[bucket],
-                                    k_iv[bucket], k_call[bucket])
-        call_iv, put_iv = wing_quotes(delta, k_iv[bucket])
+        call_iv, put_iv = wing_quotes(snapshot_delta[bucket], k_iv[bucket])
         features["b1_risk_reversal_25"] = call_iv - put_iv
         features["b1_butterfly_25"] = 0.5 * (call_iv + put_iv) - smile.level
         # Model-free variance over the observed strike grid, out-of-the-money side only.
-        otm = bucket & np.where(k_call, k_strike >= spot, k_strike <= spot)
+        otm = bucket & np.where(k_call, k_strike >= bucket_forward, k_strike <= bucket_forward)
         features["b1_mfiv"] = model_free_variance(
-            k_strike[otm], mid[otm], spot, float(nearest) / CALENDAR_YEAR
+            k_strike[otm], mid[otm], bucket_forward, bucket_years
         )
         calls = bucket & k_call
         puts = bucket & ~k_call
-        shared = np.intersect1d(k_strike[calls], k_strike[puts])
-        if shared.size:
-            call_mid = np.array([mid[calls][k_strike[calls] == s][0] for s in shared])
-            put_mid = np.array([mid[puts][k_strike[puts] == s][0] for s in shared])
+        features["b1_butterfly_violations"] = float(
+            butterfly_arbitrage_violations(k_strike[calls], mid[calls])
+        )
+        shared, call_mid, put_mid = _co_strike_pairs(k_strike, mid, calls, puts)
+        if shared.size >= 3:
+            fit = implied_forward(shared, call_mid, put_mid, tenor_years=bucket_years, spot=spot)
+            # Only a fit that survives the plausibility band is reported as a rate.  Co-strike
+            # mids come from different instants, so the underlying moves between them; at a
+            # 30-day tenor that noise is large enough to produce financing rates of +/-30%,
+            # which are a measurement of quote staleness rather than of a curve.
+            features["b1_implied_rate"] = fit.rate if fit.plausible else float("nan")
+            features["b1_implied_dividend_yield"] = (
+                fit.dividend_yield if fit.plausible else float("nan")
+            )
             features["b1_pcp_residual"] = put_call_parity_residual(
-                call_mid, put_mid, shared, spot
+                call_mid,
+                put_mid,
+                shared,
+                forward=fit.forward,
+                discount_factor=fit.discount_factor,
+                scale=spot,
             )
     return features
 
 
 def build_session_surface(
-    asset: str, session: str, paths: Sequence[str], origins: npt.NDArray[np.int64],
-    closes: FloatArray, rv_back_30: FloatArray
+    asset: str,
+    session: str,
+    paths: Sequence[str],
+    origins: npt.NDArray[np.int64],
+    closes: FloatArray,
+    rv_back_30: FloatArray,
 ) -> pl.DataFrame | None:
     """Surface features at every origin of one session-asset."""
 
@@ -199,15 +327,29 @@ def build_session_surface(
     created = tape["created_at"].dt.replace_time_zone(None).cast(pl.Int64).to_numpy()
     strike = tape["strike"].cast(pl.Float64).to_numpy().astype(np.float64)
     expiry = tape["expiry"].cast(pl.Date).to_numpy()
-    session_date = np.datetime64(session, "D")
-    tenor = np.maximum((expiry - session_date).astype("timedelta64[D]").astype(np.float64), 1.0)
-    tenor_years = tenor / CALENDAR_YEAR
+    # UTC microsecond stamp of the 16:00 ET close on each contract's expiry date.  Building
+    # it once per session keeps the exact-tenor arithmetic inside the origin loop cheap.
+    expiry_close_us = np.array(
+        [
+            int(
+                np.datetime64(
+                    datetime.combine(day.astype("datetime64[D]").astype(date), EXPIRY_CLOSE)
+                    .replace(tzinfo=NY)
+                    .astimezone(UTC)
+                    .replace(tzinfo=None),
+                    "us",
+                ).astype(np.int64)
+            )
+            for day in expiry
+        ],
+        dtype=np.int64,
+    )
     iv = tape["implied_volatility"].cast(pl.Float64).to_numpy().astype(np.float64)
     bid = tape["nbbo_bid"].cast(pl.Float64).to_numpy().astype(np.float64)
     ask = tape["nbbo_ask"].cast(pl.Float64).to_numpy().astype(np.float64)
     is_call = (tape["option_type"] == "call").to_numpy()
     keys = (
-        np.round(tenor).astype(np.int64) * 20_000_000
+        expiry.astype("datetime64[D]").astype(np.int64) * 20_000_000
         + np.round(strike * 1000.0).astype(np.int64) * 2
         + is_call.astype(np.int64)
     )
@@ -221,23 +363,37 @@ def build_session_surface(
         )
         # The tape stores microsecond timestamps; every bound below is in microseconds.
         cutoff_us = int(np.datetime64(cutoff, "us").astype(np.int64))
-        start_us = cutoff_us - LOOKBACK_SECONDS * 1_000_000
-        hi = int(np.searchsorted(created, cutoff_us, side="right"))
+        # The snapshot ends before the oldest row any B2 window can reach, so the two
+        # feature blocks never share an observation.
+        snapshot_end_us = cutoff_us - (SNAPSHOT_END_SECONDS - CUTOFF_SECONDS) * 1_000_000
+        start_us = snapshot_end_us - LOOKBACK_SECONDS * 1_000_000
+        hi = int(np.searchsorted(created, snapshot_end_us, side="right"))
         lo = int(np.searchsorted(created, start_us, side="left"))
         features = _surface_at(
-            hi, lo, keys, created, strike, tenor_years, iv, bid, ask, is_call,
-            float(closes[minute]), cutoff_us,
+            hi,
+            lo,
+            keys,
+            created,
+            strike,
+            expiry_close_us,
+            iv,
+            bid,
+            ask,
+            is_call,
+            float(closes[minute]),
+            snapshot_end_us,
         )
         features["origin_minute"] = float(minute)
         implied = features.get("b1_iv_30d", float("nan"))
-        features["b1_vrp_30d"] = variance_risk_premium(
+        features["b1_iv_minus_trailing_rv_30d"] = implied_minus_trailing_variance(
             implied**2 if np.isfinite(implied) else float("nan"),
             annualise_intraday_variance(float(rv_back_30[position])),
         )
         rows.append(features)
     frame = pl.DataFrame(rows)
     return frame.with_columns(
-        asset=pl.lit(asset), session_date=pl.lit(session),
+        asset=pl.lit(asset),
+        session_date=pl.lit(session),
         origin_minute=pl.col("origin_minute").cast(pl.Int64),
     )
 
@@ -257,7 +413,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     for (asset, session_date), group in bars.sort(["asset", "session_date", "minute"]).group_by(
         ["asset", "session_date"], maintain_order=True
     ):
-        grid = build_session_grid(group)
+        grid = build_session_grid(group, session=session_date)
         grids[(str(asset), str(session_date))] = grid.close
 
     jobs: list[tuple[str, str, list[str], npt.NDArray[np.int64], FloatArray, FloatArray]] = []
@@ -267,14 +423,24 @@ def main(argv: Sequence[str] | None = None) -> int:
         key = (str(session_date), str(asset))
         paths = inventory.get(key) or inventory.get((str(session_date), "__ALL__"))
         closes = grids.get((str(asset), str(session_date)))
-        if paths is None or closes is None:
+        if paths is None or closes is None or closes.size == 0:
+            continue
+        # Origins come from the B0 panel, which is built on each session's real length.
+        # A holiday now yields an empty grid and an early close a 210-minute one, so an
+        # origin is only usable if the grid actually holds that minute — indexing past it
+        # would read whatever `closes[-1]` happens to be, silently.
+        origin_minutes = group["origin_minute"].to_numpy().astype(np.int64)
+        inside = origin_minutes < closes.size
+        if not inside.any():
             continue
         jobs.append(
             (
-                str(asset), str(session_date), paths,
-                group["origin_minute"].to_numpy().astype(np.int64),
+                str(asset),
+                str(session_date),
+                paths,
+                origin_minutes[inside],
                 closes,
-                group["rv_back_30"].to_numpy().astype(np.float64),
+                group["rv_back_30"].to_numpy().astype(np.float64)[inside],
             )
         )
     if args.limit_sessions:

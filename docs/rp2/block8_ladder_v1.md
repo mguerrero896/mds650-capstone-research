@@ -2,7 +2,7 @@
 
 **Status:** `EXECUTED — 2026-08-19` · label `EXPLORATORY_MECHANISM_DISCOVERY`
 **Artifact:** `artifacts/rp2_block8_ladder/ladder.json`
-(`ladder_sha256 = 24588460c266054eafa19206542292cea8cce427e5b468f9c5814802904304e4`)
+(`ladder_sha256 = 04a465b7fb3614228707443aed31647f6d7236e14414e50b173580f4cda6eafb`)
 **Code:** `src/mds650/rp2/ladder.py`, `scripts/rp2_block8_ladder.py`
 **Tests:** `tests/unit/test_rp2_ladder.py` (16 tests)
 

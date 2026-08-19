@@ -52,9 +52,7 @@ def time_block_folds(
             continue
         low, high = int(chunk[0]), int(chunk[-1])
         test = (session_index >= low) & (session_index <= high)
-        purged = (session_index >= low - purge_sessions) & (
-            session_index <= high + purge_sessions
-        )
+        purged = (session_index >= low - purge_sessions) & (session_index <= high + purge_sessions)
         out.append(TimeFold(train=~purged, test=test))
     return out
 

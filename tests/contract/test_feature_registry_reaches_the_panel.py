@@ -1,0 +1,112 @@
+"""A registered feature must reach the panel, and a panel column must be registered.
+
+This is the fourth instance of one defect shape in this programme, and the most expensive:
+machinery that is correct and unreachable.
+
+`SPY_rv_30`, `SPY_ret_30`, `QQQ_rv_30` and `QQQ_ret_30` were built into the B0 panel from
+the beginning and were never added to `B0_FEATURES`. Every block from 7 onward therefore ran
+a baseline that could not see the market at all — and a B2 increment measured against a
+market-blind baseline credits option flow with whatever the whole market was doing at the
+time. Nothing failed, nothing warned; the columns simply sat there.
+
+The reverse direction matters too. A feature registered but absent from the panel is not a
+silent loss — `assert_required_columns` fails closed on it — but it fails at run time, deep
+in a rebuild, rather than here.
+
+Both checks skip when the panel is absent, so the hermetic runner (which has no licensed
+derived data) stays green while the local tier-2 run does the real work.
+"""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+import polars as pl
+import pytest
+
+from mds650.rp2.panel import B0_FEATURES, B1_FEATURES, B2_FEATURES
+
+REPO = Path(__file__).resolve().parents[2]
+
+PANELS: tuple[tuple[str, Path, dict[str, str]], ...] = (
+    ("B0", REPO / "artifacts" / "rp2_block4_b0" / "b0_panel.parquet", B0_FEATURES),
+    ("B1", REPO / "artifacts" / "rp2_block5_surface" / "b1_surface_panel.parquet", B1_FEATURES),
+    ("B2", REPO / "artifacts" / "rp2_block6_flow" / "b2_flow_panel.parquet", B2_FEATURES),
+)
+
+#: Columns a panel carries for identification, joining or as a target.
+KEY_AND_TARGET_COLUMNS: frozenset[str] = frozenset(
+    {"asset", "session_date", "origin_minute", "role", "source", "rv30", "jump30"}
+)
+
+#: Columns built on purpose and deliberately kept out of every information set. Naming them
+#: here is the point: an unregistered column should be a decision on the record, not a
+#: column nobody noticed. Four market-control columns sat outside the registry for the whole
+#: programme precisely because there was no list to be absent from.
+DECLARED_DIAGNOSTICS: frozenset[str] = frozenset(
+    {
+        # Seasonality bucket index, consumed by the Block 4 ladder rather than modelled.
+        "minute_bucket",
+        # Realized-measure intermediates that feed B0 features but are not features.
+        "rv_back_30",
+        "rq_back_30",
+        "rs_up_back_30",
+        "rs_down_back_30",
+        "jump_back_30",
+        "dollar_volume_30",
+        # Surface quality and no-arbitrage diagnostics. Reported with every estimate so a
+        # reader can tell a measurement from a truncation; never fitted, because a model
+        # that learns "trust this origin" from a coverage flag is learning the sampler.
+        "b1_contracts",
+        "b1_calendar_violations",
+        "b1_spans_call_wing",
+        "b1_spans_put_wing",
+        # Quote age is a property of the tape, not of the market being forecast.
+        "b2_5m_median_age_s",
+        "b2_30m_median_age_s",
+    }
+)
+
+
+@pytest.mark.parametrize(("name", "path", "features"), PANELS, ids=[row[0] for row in PANELS])
+def test_every_registered_feature_exists_in_its_panel(
+    name: str, path: Path, features: dict[str, str]
+) -> None:
+    if not path.is_file():
+        pytest.skip(f"{name} panel not built here; licensed derived data is local only")
+    columns = set(pl.read_parquet_schema(path))
+    missing = sorted(set(features) - columns)
+    assert not missing, f"{name} registers features the panel does not carry: {missing}"
+
+
+def test_the_market_controls_are_registered_and_not_merely_present() -> None:
+    """The specific regression: four columns in the panel, none of them a feature.
+
+    Pinned by name because the failure was invisible — the panel had them, the ladder's own
+    `b0_market` variant used them, and the information set every later block reads did not.
+    """
+
+    for column in ("SPY_rv_30", "SPY_ret_30", "QQQ_rv_30", "QQQ_ret_30"):
+        assert column in B0_FEATURES, f"{column} is built and never used"
+
+
+def test_no_panel_column_is_a_feature_nobody_registered() -> None:
+    """The same defect in the other direction, across every panel that exists locally."""
+
+    unregistered: list[str] = []
+    for name, path, features in PANELS:
+        if not path.is_file():
+            continue
+        columns = set(pl.read_parquet_schema(path))
+        prefix = {"B1": "b1_", "B2": "b2_"}.get(name)
+        candidates = {
+            column
+            for column in columns - KEY_AND_TARGET_COLUMNS - DECLARED_DIAGNOSTICS
+            if prefix is None or column.startswith(prefix)
+        }
+        for column in sorted(candidates - set(features)):
+            unregistered.append(f"{name}:{column}")
+    assert not unregistered, (
+        "panel columns that are neither a registered feature nor a declared diagnostic — "
+        f"register them, declare them, or stop building them: {unregistered}"
+    )

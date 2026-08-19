@@ -124,12 +124,19 @@ class MassiveProvider:
         strike_lte: float,
         contract_type: str = "call",
         limit: int = 250,
+        as_of: str | None = None,
     ) -> ProviderResponse:
         """Request a bounded option-contract reference listing for one underlying.
 
         Phase 9 collection only: one bounded listing per asset per session so the
         nightly quote sweep can select the ATM contract per origin. Never a full
         chain download.
+
+        ``as_of`` pins the listing to the chain as it stood on that date. Without it the
+        endpoint answers with today's chain, which for a historical session includes
+        contracts that had not been listed yet — asking for their quotes returns nothing,
+        and treating that silence as an illiquid strike would be a look-ahead dressed as a
+        data gap.
         """
         if not isinstance(underlying, str) or not underlying:
             raise ValueError("MASSIVE_TICKER_REQUIRED")
@@ -145,6 +152,7 @@ class MassiveProvider:
                 "strike_price.lte": f"{strike_lte:.4f}",
                 "contract_type": contract_type,
                 "limit": limit,
+                **({"as_of": as_of} if as_of else {}),
             },
         )
 
@@ -239,7 +247,16 @@ def _number(record: Mapping[str, Any], key: str) -> float:
 
 
 def _optional_number(record: Mapping[str, Any], key: str) -> float | None:
-    value = record.get(key)
+    """A present-but-null value is an empty window; an absent key is schema drift.
+
+    Collapsing the two loses the only signal that would reveal a renamed field: a vendor
+    that ships ``bidPrice`` instead of ``bid_price`` would otherwise produce a full series
+    of quotes with no bid, which reads as a quiet market rather than as a broken parser.
+    """
+
+    if key not in record:
+        raise SchemaDriftError(f"MASSIVE_FIELD_MISSING:{key}")
+    value = record[key]
     if value is None:
         return None
     if not isinstance(value, int | float):

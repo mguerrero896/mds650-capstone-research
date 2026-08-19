@@ -11,7 +11,7 @@ Every row records what the block actually returned, not what it was hoped to ret
 | 4 | B0 | HARQ + market + liquidity | well-calibrated baseline | **PASS with condition** — beats all five challengers in both universes; calibration is era-dependent |
 | 5 | B1 | constant-maturity surface + VRP | improvement in D/V **or** a clear mechanism | **PASS on the second clause only** — the stated two-family improvement rule FAILS |
 | 6 | B2 | Greeks flow + intensity + sequence | target-blind features frozen | **PASS** — 52 features, 125,136 origins, zero failures |
-| 7 | Orthogonalization | DML of B2 on B0+B1 | preliminary incremental evidence | **PASS** — joint Wald 76.06, p = 3.0 × 10⁻¹² in D; two treatments replicate in V |
+| 7 | Orthogonalization | DML of B2 on B0+B1 | preliminary incremental evidence | **PASS in D only** — joint Wald 501.9 (full) / 206.8 (core), p = 6 × 10⁻³⁹ in D; core test p = 0.059 in V |
 | 8 | Model ladder | smooth + tree + hierarchical | selection only in D/V | **PASS procedurally, NULL substantively** |
 | 9 | Generalization | LOAO / LOEO / event / regime | no concentrated dependence | **PASS in D, FAIL in V** |
 | 10 | Inference | CW / GW / SPA / block-MCS | survives multiplicity | **FAIL** — best SPA p = 0.0070 against a budget of 0.00417 |

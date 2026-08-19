@@ -56,8 +56,17 @@ SEQUENCE_LENGTH = 48
 SEQUENCE_FEATURES = 8
 
 TAPE_COLUMNS = (
-    "underlying_symbol", "created_at", "nbbo_bid", "nbbo_ask", "size", "premium",
-    "implied_volatility", "expiry", "strike", "option_type", "tags",
+    "underlying_symbol",
+    "created_at",
+    "nbbo_bid",
+    "nbbo_ask",
+    "size",
+    "premium",
+    "implied_volatility",
+    "expiry",
+    "strike",
+    "option_type",
+    "tags",
 )
 
 type FloatArray = npt.NDArray[np.float64]
@@ -90,8 +99,11 @@ def _read_tape(paths: Sequence[str], asset: str) -> pl.DataFrame | None:
 
 
 def build_session_arrays(
-    asset: str, session: str, paths: Sequence[str], origins: npt.NDArray[np.int64],
-    closes: FloatArray
+    asset: str,
+    session: str,
+    paths: Sequence[str],
+    origins: npt.NDArray[np.int64],
+    closes: FloatArray,
 ) -> tuple[npt.NDArray[np.float32], npt.NDArray[np.float32], list[tuple[str, str, int]]] | None:
     """Tensor and sequence for every origin of one session-asset."""
 
@@ -110,7 +122,8 @@ def build_session_arrays(
     is_call = (tape["option_type"] == "call").to_numpy()
     tags = tape["tags"].cast(pl.Utf8).fill_null("")
     direction = np.where(
-        tags.str.contains("ask_side").to_numpy(), 1.0,
+        tags.str.contains("ask_side").to_numpy(),
+        1.0,
         np.where(tags.str.contains("bid_side").to_numpy(), -1.0, 0.0),
     )
 
@@ -138,14 +151,11 @@ def build_session_arrays(
     )
 
     tensors = np.zeros((origins.size, TENSOR_CHANNELS, TENSOR_CELLS), dtype=np.float32)
-    sequences = np.zeros(
-        (origins.size, SEQUENCE_LENGTH, SEQUENCE_FEATURES), dtype=np.float32
-    )
+    sequences = np.zeros((origins.size, SEQUENCE_LENGTH, SEQUENCE_FEATURES), dtype=np.float32)
     keys: list[tuple[str, str, int]] = []
     for position, minute in enumerate(origins):
-        origin_time = (
-            datetime.fromisoformat(session).replace(tzinfo=NY)
-            + timedelta(minutes=int(SESSION_OPEN_MINUTE + minute))
+        origin_time = datetime.fromisoformat(session).replace(tzinfo=NY) + timedelta(
+            minutes=int(SESSION_OPEN_MINUTE + minute)
         )
         cutoff = origin_time.astimezone(UTC).replace(tzinfo=None) - timedelta(
             seconds=CUTOFF_SECONDS
@@ -168,7 +178,7 @@ def build_session_arrays(
         taken = slice(start, hi)
         count = hi - start
         block = np.empty((count, SEQUENCE_FEATURES), dtype=np.float32)
-        block[:, 0] = np.log1p((cutoff_us - created[taken]) / 1e6)   # age in seconds
+        block[:, 0] = np.log1p((cutoff_us - created[taken]) / 1e6)  # age in seconds
         block[:, 1] = direction[taken]
         block[:, 2] = np.log1p(premium[taken])
         block[:, 3] = log_moneyness[taken]
@@ -195,7 +205,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     for (asset, session_date), group in bars.sort(["asset", "session_date", "minute"]).group_by(
         ["asset", "session_date"], maintain_order=True
     ):
-        grids[(str(asset), str(session_date))] = build_session_grid(group).close
+        grid = build_session_grid(group, session=session_date)
+        grids[(str(asset), str(session_date))] = grid.close
 
     jobs: list[tuple[str, str, list[str], npt.NDArray[np.int64], FloatArray]] = []
     for (asset, session_date), group in panel.sort(
@@ -208,8 +219,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         if paths is None or closes is None:
             continue
         jobs.append(
-            (str(asset), str(session_date), paths,
-             group["origin_minute"].to_numpy().astype(np.int64), closes)
+            (
+                str(asset),
+                str(session_date),
+                paths,
+                group["origin_minute"].to_numpy().astype(np.int64),
+                closes,
+            )
         )
     if args.limit_sessions:
         jobs = jobs[: args.limit_sessions]
@@ -254,8 +270,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         "tensor_shape": list(tensor_array.shape),
         "sequence_shape": list(sequence_array.shape),
         "sequence_features": [
-            "log_age_s", "direction", "log1p_premium", "log_moneyness",
-            "log_dte_days", "implied_volatility", "is_call", "log1p_size",
+            "log_age_s",
+            "direction",
+            "log1p_premium",
+            "log_moneyness",
+            "log_dte_days",
+            "implied_volatility",
+            "is_call",
+            "log1p_size",
         ],
         "rows": len(keys),
         "session_assets_without_tape": failures,

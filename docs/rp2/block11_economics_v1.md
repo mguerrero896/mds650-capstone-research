@@ -2,7 +2,7 @@
 
 **Status:** `EXECUTED — 2026-08-19` · label `EXPLORATORY_MECHANISM_DISCOVERY`
 **Artifacts:** `artifacts/rp2_block11_economics/economics.json`
-(`economics_sha256 = 6d6a3c61dc48b8ab962fc644b0d5d58d7ff31e8e45724fd43ff38943bafdabd3`),
+(`economics_sha256 = 8f67eab020dc27c1ae4f9b8523c2fee3977724e42dbac0b67d9d18dfa8c5b10a`),
 `buffer_sweep.json` (`sweep_sha256 = 2bc3c6f5433ab2d6b2b5619b555e51e775b113049cd92223c40601b2ff6fb48d`)
 **Code:** `src/mds650/rp2/economics.py`, `scripts/rp2_block11_economics.py`
 **Tests:** `tests/unit/test_rp2_economics.py` (8 tests)
@@ -22,12 +22,16 @@ Evaluation is on **non-overlapping origins only** (30-minute spacing, 6,012 rows
 2,080 in V); overlapping payoffs would count the same variance six times and inflate every
 Sharpe by roughly √6. Transaction cost is measured, not assumed: half the round-trip option
 relative spread at the origin, converted to annualised variance units (median ≈ 0.0009 in
-variance units against a variance risk premium of ≈ 0.069).
+variance units against an implied-minus-trailing variance spread of ≈ 0.069). That spread is
+**not** a variance risk premium: a premium is measured against the physical expectation of
+*future* variance, and substituting the trailing realisation makes the quantity a property of
+the recent past. The signal is named `implied_minus_trailing_variance` throughout.
 
 At the natural threshold (buffer 0) the strategy trades in **100 % of periods**.
 
-> **That means it is not a forecast-driven strategy at all.** The variance risk premium is
-> almost always positive, so "short variance whenever `IV² − Ê[RV]` exceeds costs" degenerates
+> **That means it is not a forecast-driven strategy at all.** The implied-minus-trailing
+> spread is almost always positive, so "short variance whenever `IV² − Ê[RV]` exceeds costs"
+> degenerates
 > into a static short-variance carry position. Its headline Sharpe (+67 annualised) is the
 > product of unconditional carry, iid annualisation of an extremely fat-tailed payoff, and a
 > cost model that is too small for a real variance replication. **It is not read as a

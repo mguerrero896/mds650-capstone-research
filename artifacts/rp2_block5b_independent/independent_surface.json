@@ -1,0 +1,75 @@
+{
+  "block": "5b",
+  "generated_at_utc": "2026-08-19T04:57:30.922078+00:00",
+  "independent_sha256": "5836474468fbf0e7baace517274d0d60874c2d2a72dc66ad555f3bedc2d0dac3",
+  "label": "EXPLORATORY_MECHANISM_DISCOVERY",
+  "paired_origins": 36,
+  "program": "docs/research_program_v2.md",
+  "question": "how much of the traded surface is an artefact of what traded",
+  "requests": {
+    "iv_unsolvable": 0,
+    "listings": 72,
+    "quotes": 1152,
+    "quotes_empty": 0,
+    "quotes_unusable": 0
+  },
+  "sample": {
+    "dte_window_days": [
+      20,
+      45
+    ],
+    "max_contracts_per_side": 16,
+    "origins_per_session": [
+      60,
+      180,
+      300
+    ],
+    "session_assets": 12,
+    "strike_band": 0.15
+  },
+  "selection_effect_contracts": {
+    "listed_median": 32.0,
+    "mean_difference_listed_minus_traded": -2.0833333333333335,
+    "pairs": 36,
+    "span_matched": true,
+    "standard_error": 2.6539503350576066,
+    "t": -0.7849933383505131,
+    "traded_median": 31.0
+  },
+  "selection_effect_curvature": {
+    "listed_median": 1.1491989527474629,
+    "mean_difference_listed_minus_traded": -9.048581310027282,
+    "pairs": 36,
+    "span_matched": true,
+    "standard_error": 9.558676748294902,
+    "t": -0.9466353500908364,
+    "traded_median": 2.4203399732496003
+  },
+  "selection_effect_level": {
+    "listed_median": 0.3069205175483069,
+    "mean_difference_listed_minus_traded": -0.000956061917579734,
+    "pairs": 36,
+    "span_matched": true,
+    "standard_error": 0.00033792516277449607,
+    "t": -2.829211976196435,
+    "traded_median": 0.30829005005745114
+  },
+  "selection_effect_slope": {
+    "listed_median": -0.46108497037016877,
+    "mean_difference_listed_minus_traded": -0.1935501748098484,
+    "pairs": 36,
+    "span_matched": true,
+    "standard_error": 0.05435967564563432,
+    "t": -3.560546903767124,
+    "traded_median": -0.2484757956518874
+  },
+  "selection_effect_strikes": {
+    "listed_median": 6.0,
+    "mean_difference_listed_minus_traded": 0.05555555555555555,
+    "pairs": 36,
+    "span_matched": true,
+    "standard_error": 0.03871844735762053,
+    "t": 1.4348601079588785,
+    "traded_median": 6.0
+  }
+}

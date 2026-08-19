@@ -47,7 +47,7 @@ CORE_TREATMENTS: tuple[str, ...] = (
     "b2_5m_delta_flow",
     "b2_5m_premium",
     "b2_5m_trades",
-    "b2_5m_hawkes_innovation",
+    "b2_5m_decay_intensity_innovation",
     "b2_5m_d_iv",
     "b2_5m_buy_premium_share",
     "b2_5m_strike_hhi",
@@ -72,9 +72,7 @@ def run_role(
 ) -> dict[str, object]:
     """Full DML pass for one partition role."""
 
-    frame = panel.filter(pl.col("role") == role).sort(
-        ["session_date", "asset", "origin_minute"]
-    )
+    frame = panel.filter(pl.col("role") == role).sort(["session_date", "asset", "origin_minute"])
     nuisance, nuisance_names = build_design(frame, [B0_FEATURES, B1_FEATURES])
     treatment_map = {name: B2_FEATURES[name] for name in treatments if name in B2_FEATURES}
     treatment_design, treatment_names = build_design(frame, [treatment_map], intercept=False)

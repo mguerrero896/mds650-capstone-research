@@ -33,7 +33,7 @@ from sklearn.linear_model import LogisticRegression  # type: ignore[import-untyp
 
 from mds650.b1v3_confirmation import canonical_sha256
 from mds650.metrics import holm_adjust
-from mds650.rp2.bars import SESSION_MINUTES, build_session_grid, load_bar_sources
+from mds650.rp2.bars import FULL_SESSION_MINUTES, build_session_grid, load_bar_sources
 from mds650.rp2.dml import cross_fitted_residuals, dml_partial_out, time_block_folds
 from mds650.rp2.ladder import LADDER
 from mds650.rp2.panel import (
@@ -59,11 +59,18 @@ B2_PANEL = ROOT / "artifacts" / "rp2_block6_flow" / "b2_flow_panel.parquet"
 #: The two treatments that replicated across universes in Block 7, plus the eight others
 #: from the core block so the joint test is comparable to Block 7's.
 CORE_TREATMENTS: tuple[str, ...] = (
-    "b2_5m_vega_flow", "b2_5m_gamma_flow", "b2_5m_delta_flow", "b2_5m_premium",
-    "b2_5m_trades", "b2_5m_hawkes_innovation", "b2_5m_d_iv", "b2_5m_buy_premium_share",
-    "b2_5m_strike_hhi", "b2_5m_otm_premium_share",
+    "b2_5m_vega_flow",
+    "b2_5m_gamma_flow",
+    "b2_5m_delta_flow",
+    "b2_5m_premium",
+    "b2_5m_trades",
+    "b2_5m_decay_intensity_innovation",
+    "b2_5m_d_iv",
+    "b2_5m_buy_premium_share",
+    "b2_5m_strike_hhi",
+    "b2_5m_otm_premium_share",
 )
-REPLICATED: tuple[str, ...] = ("b2_5m_hawkes_innovation", "b2_5m_buy_premium_share")
+REPLICATED: tuple[str, ...] = ("b2_5m_decay_intensity_innovation", "b2_5m_buy_premium_share")
 HORIZONS: tuple[int, ...] = (5, 15, 30, 60, 120)
 TAIL_QUANTILE = 0.90
 DECILES = 10
@@ -74,20 +81,21 @@ type FloatArray = npt.NDArray[np.float64]
 # --------------------------------------------------------------------------- targets
 
 
-def build_target_battery(data_root: Path, origins_by_key: dict[tuple[str, str], FloatArray]
-                         ) -> pl.DataFrame:
+def build_target_battery(
+    data_root: Path, origins_by_key: dict[tuple[str, str], FloatArray]
+) -> pl.DataFrame:
     """Forward realized measures at several horizons on the production origin grid."""
 
     bars = load_bar_sources(data_root)
     rows: list[pl.DataFrame] = []
-    for (asset, session_date), group in bars.sort(
-        ["asset", "session_date", "minute"]
-    ).group_by(["asset", "session_date"], maintain_order=True):
+    for (asset, session_date), group in bars.sort(["asset", "session_date", "minute"]).group_by(
+        ["asset", "session_date"], maintain_order=True
+    ):
         key = (str(asset), str(session_date))
         origins = origins_by_key.get(key)
         if origins is None:
             continue
-        grid = build_session_grid(group)
+        grid = build_session_grid(group, session=session_date)
         if grid.fill_share > 0.05 or grid.close.min() <= 0.0:
             continue
         returns = log_returns(grid.close)
@@ -108,9 +116,9 @@ def build_target_battery(data_root: Path, origins_by_key: dict[tuple[str, str], 
             record[f"y_continuous_{horizon}"] = np.where(valid, measures.continuous, blank)
             record[f"y_rs_up_{horizon}"] = np.where(valid, measures.semivariance_up, blank)
             record[f"y_rs_down_{horizon}"] = np.where(valid, measures.semivariance_down, blank)
-            forward_return = cumulative[np.minimum(index + horizon, returns.size)] - cumulative[
-                index
-            ]
+            forward_return = (
+                cumulative[np.minimum(index + horizon, returns.size)] - cumulative[index]
+            )
             record[f"y_signed_return_{horizon}"] = np.where(valid, forward_return, blank)
             record[f"y_abs_return_{horizon}"] = np.where(valid, np.abs(forward_return), blank)
         # Change in realized variance relative to the trailing window of equal length.
@@ -131,8 +139,13 @@ def build_target_battery(data_root: Path, origins_by_key: dict[tuple[str, str], 
 
 
 def _dml_on_target(
-    nuisance: FloatArray, treatment: FloatArray, response: FloatArray,
-    sessions: npt.NDArray[np.int64], names: tuple[str, ...], *, folds: int
+    nuisance: FloatArray,
+    treatment: FloatArray,
+    response: FloatArray,
+    sessions: npt.NDArray[np.int64],
+    names: tuple[str, ...],
+    *,
+    folds: int,
 ) -> dict[str, object] | None:
     finite = np.isfinite(response)
     if int(finite.sum()) < 2000 or np.unique(sessions[finite]).size < 20:
@@ -146,9 +159,7 @@ def _dml_on_target(
         ]
     )
     try:
-        estimate = dml_partial_out(
-            response_residual, treatment_residual, sessions[finite], names
-        )
+        estimate = dml_partial_out(response_residual, treatment_residual, sessions[finite], names)
     except ValueError:
         return None
     return {
@@ -164,8 +175,13 @@ def _dml_on_target(
 
 
 def target_battery(
-    frame: pl.DataFrame, nuisance: FloatArray, treatment: FloatArray,
-    sessions: npt.NDArray[np.int64], names: tuple[str, ...], *, folds: int
+    frame: pl.DataFrame,
+    nuisance: FloatArray,
+    treatment: FloatArray,
+    sessions: npt.NDArray[np.int64],
+    names: tuple[str, ...],
+    *,
+    folds: int,
 ) -> dict[str, object]:
     """DML of the core B2 block against every alternative target."""
 
@@ -200,8 +216,11 @@ def target_battery(
 
 
 def tail_classification(
-    target: FloatArray, designs: dict[str, FloatArray], train: npt.NDArray[np.bool_],
-    test: npt.NDArray[np.bool_], assets: npt.NDArray[np.str_]
+    target: FloatArray,
+    designs: dict[str, FloatArray],
+    train: npt.NDArray[np.bool_],
+    test: npt.NDArray[np.bool_],
+    assets: npt.NDArray[np.str_],
 ) -> dict[str, object]:
     """Can the mechanism flag that the next window lands in the variance tail?
 
@@ -244,8 +263,10 @@ def _auc(label: npt.NDArray[np.bool_], score: FloatArray) -> float:
 
 
 def ranking_utility(
-    target: FloatArray, designs: dict[str, FloatArray], train: npt.NDArray[np.bool_],
-    test: npt.NDArray[np.bool_]
+    target: FloatArray,
+    designs: dict[str, FloatArray],
+    train: npt.NDArray[np.bool_],
+    test: npt.NDArray[np.bool_],
 ) -> dict[str, object]:
     """Does the mechanism improve the ORDERING of origins by realized variance?
 
@@ -277,9 +298,11 @@ def ranking_utility(
 def run_role(
     panel: pl.DataFrame, targets: pl.DataFrame, *, role: str, train_share: float, folds: int
 ) -> dict[str, object]:
-    frame = panel.filter(pl.col("role") == role).join(
-        targets, on=["asset", "session_date", "origin_minute"], how="left"
-    ).sort(["session_date", "asset", "origin_minute"])
+    frame = (
+        panel.filter(pl.col("role") == role)
+        .join(targets, on=["asset", "session_date", "origin_minute"], how="left")
+        .sort(["session_date", "asset", "origin_minute"])
+    )
     rv30 = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
 
     nuisance, _ = build_design(frame, [B0_FEATURES, B1_FEATURES])
@@ -298,9 +321,7 @@ def run_role(
     base_design, _ = build_design(frame, [B0_FEATURES, B1_FEATURES])
     full_design, _ = build_design(frame, [B0_FEATURES, B1_FEATURES, B2_FEATURES])
     replicated_map = {n: B2_FEATURES[n] for n in REPLICATED}
-    replicated_design, _ = build_design(
-        frame, [B0_FEATURES, B1_FEATURES, replicated_map]
-    )
+    replicated_design, _ = build_design(frame, [B0_FEATURES, B1_FEATURES, replicated_map])
     designs = {
         "B0+B1": base_design,
         "B0+B1+mechanism": replicated_design,
@@ -313,9 +334,7 @@ def run_role(
         "rows": int(keep.sum()),
         "test_rows": int(test.sum()),
         "sessions": int(np.unique(sessions).size),
-        "a_other_targets": target_battery(
-            frame, nuisance, treatment, sessions, names, folds=folds
-        ),
+        "a_other_targets": target_battery(frame, nuisance, treatment, sessions, names, folds=folds),
         "b_tail_classification": tail_classification(
             rv30, designs, train & finite, test & finite, assets
         ),
@@ -349,7 +368,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "core_treatments": list(CORE_TREATMENTS),
         "replicated_treatments": list(REPLICATED),
         "horizons": list(HORIZONS),
-        "session_minutes": SESSION_MINUTES,
+        "session_minutes": FULL_SESSION_MINUTES,
     }
     for role in ("D", "V"):
         document[role] = run_role(

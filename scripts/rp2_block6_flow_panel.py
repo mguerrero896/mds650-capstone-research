@@ -36,9 +36,9 @@ from mds650.b1v3_confirmation import canonical_sha256
 from mds650.rp2.bars import MARKET_TZ, SESSION_OPEN_MINUTE, build_session_grid, load_bar_sources
 from mds650.rp2.flow import (
     CONTRACT_MULTIPLIER,
-    HAWKES_DECAY_SECONDS,
+    DECAY_SECONDS,
     black_scholes_greeks,
-    hawkes_intensity,
+    exponential_decay_intensity,
     herfindahl,
     shannon_entropy,
 )
@@ -57,8 +57,23 @@ OTM_LOG_MONEYNESS = 0.05
 SHORT_DTE_DAYS = 7.0
 LONG_DTE_DAYS = 30.0
 TAPE_COLUMNS = (
-    "underlying_symbol", "created_at", "nbbo_bid", "nbbo_ask", "size", "premium",
-    "implied_volatility", "expiry", "strike", "option_type", "tags", "report_flags",
+    "underlying_symbol",
+    # Both clocks. `executed_at` is read for the latency features and must be declared
+    # here: the reader projects exactly this tuple, so a column used but not listed makes
+    # the block fail on its first file rather than silently degrade.
+    "created_at",
+    "executed_at",
+    "nbbo_bid",
+    "nbbo_ask",
+    "size",
+    "premium",
+    "implied_volatility",
+    "expiry",
+    "strike",
+    "option_type",
+    "tags",
+    "report_flags",
+    "multi_vol",
 )
 
 type FloatArray = npt.NDArray[np.float64]
@@ -96,6 +111,29 @@ def _prefix(values: FloatArray) -> FloatArray:
     return out
 
 
+def _multileg_size(
+    keys: npt.NDArray[np.int64], multi_vol: FloatArray, size: FloatArray
+) -> FloatArray:
+    """Size on each print that belonged to a multi-leg order.
+
+    The tape reports ``multi_vol`` as a running per-contract total, so the multi-leg size of
+    a single print is the increase in that total since the contract's previous print.  The
+    first print of a contract inside the window has no predecessor and its running total may
+    already carry earlier trades, so it contributes zero rather than its whole accumulated
+    history.
+    """
+
+    order = np.lexsort((np.arange(keys.size), keys))
+    sorted_keys, sorted_multi = keys[order], multi_vol[order]
+    same = np.zeros(keys.size, dtype=bool)
+    same[1:] = sorted_keys[1:] == sorted_keys[:-1]
+    increase = np.zeros(keys.size, dtype=np.float64)
+    increase[1:] = np.where(same[1:], sorted_multi[1:] - sorted_multi[:-1], 0.0)
+    inverse = np.empty(keys.size, dtype=np.int64)
+    inverse[order] = np.arange(keys.size)
+    return np.clip(increase[inverse], 0.0, size)
+
+
 def _previous_trade_deltas(
     keys: npt.NDArray[np.int64], iv: FloatArray, mid: FloatArray, spread: FloatArray
 ) -> tuple[FloatArray, FloatArray, FloatArray, FloatArray]:
@@ -114,27 +152,33 @@ def _previous_trade_deltas(
     d_spread = np.zeros(keys.size, dtype=np.float64)
     iv_s, mid_s, spread_s = iv[order], mid[order], spread[order]
     d_iv[1:] = np.where(same[1:], iv_s[1:] - iv_s[:-1], 0.0)
-    d_mid[1:] = np.where(
-        same[1:], (mid_s[1:] - mid_s[:-1]) / np.maximum(mid_s[:-1], 1e-9), 0.0
-    )
+    d_mid[1:] = np.where(same[1:], (mid_s[1:] - mid_s[:-1]) / np.maximum(mid_s[:-1], 1e-9), 0.0)
     d_spread[1:] = np.where(same[1:], spread_s[1:] - spread_s[:-1], 0.0)
     inverse = np.empty(keys.size, dtype=np.int64)
     inverse[order] = np.arange(keys.size)
-    return (
-        d_iv[inverse], d_mid[inverse], d_spread[inverse], same[inverse].astype(np.float64)
-    )
+    return (d_iv[inverse], d_mid[inverse], d_spread[inverse], same[inverse].astype(np.float64))
 
 
 def build_session_flow(
-    asset: str, session: str, paths: Sequence[str], origins: npt.NDArray[np.int64],
-    closes: FloatArray
+    asset: str,
+    session: str,
+    paths: Sequence[str],
+    origins: npt.NDArray[np.int64],
+    closes: FloatArray,
 ) -> pl.DataFrame | None:
     """Microstructure features at every origin of one session-asset."""
 
     tape = _read_tape(paths, asset)
     if tape is None or tape.height < 50:
         return None
+    # Two clocks travel together. `executed_at` is when the trade happened at the
+    # exchange; `created_at` is when the provider made it available to us. Windows are
+    # selected on availability, because that is what a forecaster could actually see, but
+    # the exchange clock is retained so the latency between them is a feature rather than
+    # an unmeasured assumption.
     created = tape["created_at"].dt.replace_time_zone(None).cast(pl.Int64).to_numpy()
+    executed = tape["executed_at"].dt.replace_time_zone(None).cast(pl.Int64).to_numpy()
+    latency_seconds = (created - executed) / 1e6
     strike = tape["strike"].cast(pl.Float64).to_numpy().astype(np.float64)
     expiry = tape["expiry"].cast(pl.Date).to_numpy()
     tenor_days = np.maximum(
@@ -150,7 +194,8 @@ def build_session_flow(
     is_call = (tape["option_type"] == "call").to_numpy()
     tags = tape["tags"].cast(pl.Utf8).fill_null("")
     direction = np.where(
-        tags.str.contains("ask_side").to_numpy(), 1.0,
+        tags.str.contains("ask_side").to_numpy(),
+        1.0,
         np.where(tags.str.contains("bid_side").to_numpy(), -1.0, 0.0),
     )
     is_sweep = tape["report_flags"].cast(pl.Utf8).fill_null("").str.contains("sweep").to_numpy()
@@ -159,6 +204,14 @@ def build_session_flow(
         + np.round(strike * 1000.0).astype(np.int64) * 2
         + is_call.astype(np.int64)
     )
+    # A leg of a spread carries a side tag describing how that leg crossed the NBBO, not
+    # what the trader was expressing: the short leg of a call vertical prints `bid_side`
+    # while the order as a whole is bullish.  Reading direction off it manufactures signed
+    # flow out of a neutral structure, so multi-leg prints are unsigned here.  They are not
+    # discarded - they still count as volume, and their share is a feature of its own.
+    multileg_size = _multileg_size(keys, tape["multi_vol"].cast(pl.Float64).to_numpy(), size)
+    is_multileg = multileg_size > 0.0
+    direction = np.where(is_multileg, 0.0, direction)
 
     # Spot at the trade's own session minute, so Greeks use the underlying price then
     # prevailing.  The minute is measured from the real 09:30 New York open, not from the
@@ -176,11 +229,10 @@ def build_session_flow(
     greeks = black_scholes_greeks(spot, strike, tenor_days / CALENDAR_YEAR, iv, is_call)
     weight = size * CONTRACT_MULTIPLIER * direction
     seconds = (created - created[0]) / 1e6
-    intensity = hawkes_intensity(seconds, baseline=0.0, excitation=1.0,
-                                 decay=HAWKES_DECAY_SECONDS)
-    d_iv, d_mid, d_spread, has_previous = _previous_trade_deltas(
-        keys, iv, mid, relative_spread
+    intensity = exponential_decay_intensity(
+        seconds, baseline=0.0, excitation=1.0, decay=DECAY_SECONDS
     )
+    d_iv, d_mid, d_spread, has_previous = _previous_trade_deltas(keys, iv, mid, relative_spread)
     log_moneyness = np.log(np.maximum(strike, 1e-9) / np.maximum(spot, 1e-9))
 
     channels: dict[str, FloatArray] = {
@@ -195,16 +247,27 @@ def build_session_flow(
         "vega_flow_put": greeks.vega * weight * (~is_call),
         "vega_flow_short_dte": greeks.vega * weight * (tenor_days <= SHORT_DTE_DAYS),
         "vega_flow_long_dte": greeks.vega * weight * (tenor_days > LONG_DTE_DAYS),
-        "otm_premium": premium * (np.abs(log_moneyness) > OTM_LOG_MONEYNESS),
+        # OTM is sided. abs(log_moneyness) lumps out-of-the-money calls together with
+        # IN-the-money puts at the same strike distance, which is the opposite exposure.
+        "otm_premium": premium
+        * np.where(
+            is_call,
+            log_moneyness > OTM_LOG_MONEYNESS,
+            log_moneyness < -OTM_LOG_MONEYNESS,
+        ),
         "buy_premium": premium * (direction > 0),
         "sell_premium": premium * (direction < 0),
         "passive_premium": premium * (direction == 0),
         "sweep_premium": premium * is_sweep,
+        "multileg_size": multileg_size,
+        "multileg_premium": premium * is_multileg,
         "d_iv_sum": d_iv,
         "d_mid_sum": d_mid,
         "d_spread_sum": d_spread,
         "has_previous": has_previous,
         "age_sum": created / 1e6,
+        "latency_sum": latency_seconds,
+        "latency_over_60s": (latency_seconds > 60.0).astype(np.float64),
     }
     prefixes = {name: _prefix(values) for name, values in channels.items()}
 
@@ -219,28 +282,44 @@ def build_session_flow(
         hi = int(np.searchsorted(created, cutoff_us, side="right"))
         record: dict[str, float] = {"origin_minute": float(minute)}
         for label, window_seconds in WINDOWS:
-            lo = int(
-                np.searchsorted(created, cutoff_us - window_seconds * 1_000_000, side="left")
-            )
+            lo = int(np.searchsorted(created, cutoff_us - window_seconds * 1_000_000, side="left"))
             record.update(
                 _window_record(
-                    lo, hi, label, cutoff_us=cutoff_us, prefixes=prefixes, keys=keys,
-                    strike=strike, tenor_days=tenor_days, premium=premium,
-                    intensity=intensity, seconds=seconds,
+                    lo,
+                    hi,
+                    label,
+                    cutoff_us=cutoff_us,
+                    prefixes=prefixes,
+                    keys=keys,
+                    strike=strike,
+                    tenor_days=tenor_days,
+                    premium=premium,
+                    intensity=intensity,
+                    seconds=seconds,
                 )
             )
         rows.append(record)
     frame = pl.DataFrame(rows)
     return frame.with_columns(
-        asset=pl.lit(asset), session_date=pl.lit(session),
+        asset=pl.lit(asset),
+        session_date=pl.lit(session),
         origin_minute=pl.col("origin_minute").cast(pl.Int64),
     )
 
 
 def _window_record(
-    lo: int, hi: int, label: str, *, cutoff_us: int, prefixes: dict[str, FloatArray],
-    keys: npt.NDArray[np.int64], strike: FloatArray, tenor_days: FloatArray,
-    premium: FloatArray, intensity: FloatArray, seconds: FloatArray,
+    lo: int,
+    hi: int,
+    label: str,
+    *,
+    cutoff_us: int,
+    prefixes: dict[str, FloatArray],
+    keys: npt.NDArray[np.int64],
+    strike: FloatArray,
+    tenor_days: FloatArray,
+    premium: FloatArray,
+    intensity: FloatArray,
+    seconds: FloatArray,
 ) -> dict[str, float]:
     prefix = f"b2_{label}_"
     if hi <= lo:
@@ -271,29 +350,36 @@ def _window_record(
         f"{prefix}sell_premium_share": total("sell_premium") / total_premium,
         f"{prefix}passive_premium_share": total("passive_premium") / total_premium,
         f"{prefix}sweep_premium_share": total("sweep_premium") / total_premium,
+        # Share of the window that was spread legs, whose side tags carry no direction.
+        f"{prefix}multileg_size_share": total("multileg_size") / max(total("size"), 1e-9),
+        f"{prefix}multileg_premium_share": total("multileg_premium") / total_premium,
         f"{prefix}d_iv": total("d_iv_sum") / predecessors,
         f"{prefix}d_mid_rel": total("d_mid_sum") / predecessors,
         f"{prefix}d_spread": total("d_spread_sum") / predecessors,
-        f"{prefix}hawkes_last": float(intensity[hi - 1]),
-        f"{prefix}hawkes_innovation": float(
-            intensity[hi - 1] - np.mean(intensity[lo:hi])
-        ),
+        f"{prefix}decay_intensity_last": float(intensity[hi - 1]),
+        f"{prefix}decay_intensity_innovation": float(intensity[hi - 1] - np.mean(intensity[lo:hi])),
         f"{prefix}rate_per_second": trades / span if span > 0.0 else float("nan"),
         f"{prefix}median_age_s": cutoff_us / 1e6 - total("age_sum") / max(trades, 1.0),
+        # Provider latency, from the exchange clock to the availability clock.
+        f"{prefix}mean_latency_s": total("latency_sum") / max(trades, 1.0),
+        f"{prefix}late_arrival_share": total("latency_over_60s") / max(trades, 1.0),
     }
     if label == CONCENTRATION_WINDOW:
         window_premium = premium[lo:hi]
         record[f"{prefix}strike_hhi"] = herfindahl(
-            np.bincount(np.unique(strike[lo:hi], return_inverse=True)[1],
-                        weights=window_premium).astype(np.float64)
+            np.bincount(
+                np.unique(strike[lo:hi], return_inverse=True)[1], weights=window_premium
+            ).astype(np.float64)
         )
         record[f"{prefix}expiry_hhi"] = herfindahl(
-            np.bincount(np.unique(tenor_days[lo:hi], return_inverse=True)[1],
-                        weights=window_premium).astype(np.float64)
+            np.bincount(
+                np.unique(tenor_days[lo:hi], return_inverse=True)[1], weights=window_premium
+            ).astype(np.float64)
         )
         record[f"{prefix}contract_entropy"] = shannon_entropy(
-            np.bincount(np.unique(keys[lo:hi], return_inverse=True)[1],
-                        weights=window_premium).astype(np.float64)
+            np.bincount(
+                np.unique(keys[lo:hi], return_inverse=True)[1], weights=window_premium
+            ).astype(np.float64)
         )
         gaps = np.diff(seconds[lo:hi])
         mean_gap = float(np.mean(gaps)) if gaps.size else float("nan")
@@ -318,7 +404,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     for (asset, session_date), group in bars.sort(["asset", "session_date", "minute"]).group_by(
         ["asset", "session_date"], maintain_order=True
     ):
-        grids[(str(asset), str(session_date))] = build_session_grid(group).close
+        grid = build_session_grid(group, session=session_date)
+        grids[(str(asset), str(session_date))] = grid.close
 
     jobs: list[tuple[str, str, list[str], npt.NDArray[np.int64], FloatArray]] = []
     for (asset, session_date), group in panel.sort(
@@ -328,11 +415,24 @@ def main(argv: Sequence[str] | None = None) -> int:
             (str(session_date), "__ALL__")
         )
         closes = grids.get((str(asset), str(session_date)))
-        if paths is None or closes is None:
+        if paths is None or closes is None or closes.size == 0:
+            continue
+        # Origins come from the B0 panel, which is built on each session's real length.
+        # A holiday now yields an empty grid and an early close a 210-minute one, so an
+        # origin is only usable if the grid actually holds that minute — indexing past it
+        # would read whatever `closes[-1]` happens to be, silently.
+        origin_minutes = group["origin_minute"].to_numpy().astype(np.int64)
+        inside = origin_minutes < closes.size
+        if not inside.any():
             continue
         jobs.append(
-            (str(asset), str(session_date), paths,
-             group["origin_minute"].to_numpy().astype(np.int64), closes)
+            (
+                str(asset),
+                str(session_date),
+                paths,
+                origin_minutes[inside],
+                closes,
+            )
         )
     if args.limit_sessions:
         jobs = jobs[: args.limit_sessions]
@@ -368,7 +468,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "cutoff_seconds": CUTOFF_SECONDS,
         "windows_seconds": dict(WINDOWS),
         "concentration_window": CONCENTRATION_WINDOW,
-        "hawkes_decay_seconds": HAWKES_DECAY_SECONDS,
+        "decay_seconds": DECAY_SECONDS,
         "session_assets_requested": len(jobs),
         "session_assets_without_tape": failures,
         "rows": flow.height,

@@ -1,0 +1,17 @@
+{
+  "acquisition": "rp2_validation_market_bars",
+  "assets": [
+    "SPY",
+    "QQQ"
+  ],
+  "combined": "D:/MDS650/data/fmp/rp2_validation_market/market_1min_validation.parquet",
+  "combined_sha256": "e06a7d70fee2f40de18570c334f4e19f15b63fe474558e49111f354aea19ad0b",
+  "generated_at_utc": "2026-08-19T05:47:53.148595+00:00",
+  "reason": "decision 75: B0 carried no market-wide state in the validation universe",
+  "requests_sent": 418,
+  "run_id": "rp2_validation_market_bars",
+  "sessions_missing_controls": 209,
+  "sessions_on_disk": 290,
+  "sessions_with_no_payload": [],
+  "sessions_written_this_run": 209
+}

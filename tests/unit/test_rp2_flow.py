@@ -11,7 +11,7 @@ from mds650.rp2.flow import (
     CONTRACT_MULTIPLIER,
     black_scholes_greeks,
     burstiness,
-    hawkes_intensity,
+    exponential_decay_intensity,
     herfindahl,
     residualise,
     shannon_entropy,
@@ -46,10 +46,12 @@ def test_signed_exposure_applies_direction_size_and_multiplier() -> None:
     assert scaled == pytest.approx(2.0 * CONTRACT_MULTIPLIER)
 
 
-def test_hawkes_intensity_matches_the_direct_sum() -> None:
+def test_decay_intensity_matches_the_direct_sum() -> None:
     times = np.array([0.0, 10.0, 15.0, 100.0], dtype=np.float64)
     baseline, excitation, decay = 0.1, 0.5, 60.0
-    values = hawkes_intensity(times, baseline=baseline, excitation=excitation, decay=decay)
+    values = exponential_decay_intensity(
+        times, baseline=baseline, excitation=excitation, decay=decay
+    )
     for index, moment in enumerate(times):
         direct = baseline + excitation * sum(
             math.exp(-(moment - earlier) / decay) for earlier in times[:index]
@@ -57,9 +59,9 @@ def test_hawkes_intensity_matches_the_direct_sum() -> None:
         assert values[index] == pytest.approx(direct)
 
 
-def test_hawkes_rejects_a_non_positive_decay() -> None:
-    with pytest.raises(ValueError, match="RP2_HAWKES_DECAY_INVALID"):
-        hawkes_intensity(np.array([0.0]), baseline=1.0, excitation=1.0, decay=0.0)
+def test_decay_intensity_rejects_a_non_positive_decay() -> None:
+    with pytest.raises(ValueError, match="RP2_DECAY_INVALID"):
+        exponential_decay_intensity(np.array([0.0]), baseline=1.0, excitation=1.0, decay=0.0)
 
 
 def test_burstiness_separates_regular_from_clustered_arrivals() -> None:
@@ -73,11 +75,35 @@ def test_burstiness_separates_regular_from_clustered_arrivals() -> None:
 def test_concentration_measures_agree_at_the_extremes() -> None:
     single = np.array([5.0, 0.0, 0.0])
     uniform = np.full(4, 2.0)
-    assert herfindahl(single) == pytest.approx(1.0)
-    assert shannon_entropy(single) == pytest.approx(0.0)
-    assert herfindahl(uniform) == pytest.approx(0.25)
-    assert shannon_entropy(uniform) == pytest.approx(math.log(4.0))
+    # Raw indices carry an n-dependent floor and ceiling.
+    assert herfindahl(single, normalised=False) == pytest.approx(1.0)
+    assert shannon_entropy(single, normalised=False) == pytest.approx(0.0)
+    assert herfindahl(uniform, normalised=False) == pytest.approx(0.25)
+    assert shannon_entropy(uniform, normalised=False) == pytest.approx(math.log(4.0))
     assert math.isnan(herfindahl(np.array([0.0])))
+
+
+def test_normalised_concentration_does_not_move_with_the_contract_count() -> None:
+    """The defect this pins: raw HHI falls simply because more contracts traded.
+
+    Perfectly even flow over 4 contracts and over 40 have identical concentration and
+    must score identically; the raw index reports 0.25 against 0.025.
+    """
+
+    for size in (4, 40, 400):
+        even = np.full(size, 1.0)
+        assert herfindahl(even) == pytest.approx(0.0, abs=1e-12)
+        assert shannon_entropy(even) == pytest.approx(1.0)
+    # One dominant contract among many scores near 1 whatever the count.
+    for size in (4, 40):
+        dominant = np.full(size, 1e-9)
+        dominant[0] = 1.0
+        assert herfindahl(dominant) == pytest.approx(1.0, abs=1e-6)
+        assert shannon_entropy(dominant) == pytest.approx(0.0, abs=1e-6)
+    # A vector with a single positive weight has no defined concentration: there is
+    # nothing for it to be concentrated relative to.
+    assert math.isnan(herfindahl(np.array([5.0, 0.0, 0.0])))
+    assert math.isnan(shannon_entropy(np.array([3.0])))
 
 
 def test_trade_to_quote_impact_only_compares_within_a_contract() -> None:
@@ -93,8 +119,10 @@ def test_trade_to_quote_impact_only_compares_within_a_contract() -> None:
 
 def test_trade_to_quote_impact_is_nan_without_repeats() -> None:
     impact = trade_to_quote_impact(
-        np.array([1, 2], dtype=np.int64), np.array([0.2, 0.3]),
-        np.array([1.0, 2.0]), np.array([0.1, 0.1]),
+        np.array([1, 2], dtype=np.int64),
+        np.array([0.2, 0.3]),
+        np.array([1.0, 2.0]),
+        np.array([0.1, 0.1]),
     )
     assert math.isnan(impact["d_iv"])
 

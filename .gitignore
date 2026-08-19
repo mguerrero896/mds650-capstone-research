@@ -63,3 +63,5 @@ artifacts/rp2_block3_target/target_panel.parquet
 artifacts/rp2_block4_b0/b0_panel.parquet
 artifacts/rp2_block5_surface/b1_surface_panel.parquet
 artifacts/rp2_block6_flow/b2_flow_panel.parquet
+artifacts/rp2_block11b_forward/tradeable_legs.parquet
+artifacts/rp2_block5b_independent/paired_surfaces.parquet
