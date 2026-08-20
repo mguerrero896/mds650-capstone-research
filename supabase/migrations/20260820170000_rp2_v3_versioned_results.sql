@@ -278,6 +278,14 @@ begin
               or r.inference_config_sha256 is distinct from (run ->> 'inference_config_sha256')
               or r.common_mask_sha256 is distinct from (run ->> 'common_mask_sha256')
               or r.scientific_sha256 is distinct from (run ->> 'scientific_sha256')
+              -- Every remaining field the insert below can overwrite. Comparing a subset
+              -- means the fields left out are the ones a retry can change while being
+              -- reported as identical - the same reason the contrast comparison lists all
+              -- nine of its columns rather than the interesting five.
+              or r.spec_version is distinct from (run ->> 'spec_version')
+              or r.branch_name is distinct from (run ->> 'branch_name')
+              or r.note is distinct from (run ->> 'note')
+              or r.input_count is distinct from input_rows
           )
     ) then
         raise exception 'RP2_PUBLISH_RUN_ID_IMMUTABLE:%', published_run_id;

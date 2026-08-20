@@ -138,6 +138,24 @@ the base tables carry row-level security with no reader policy, so a field missi
 view cannot be reached at all, and a contrast whose mask a reader cannot see is a contrast
 whose evaluation rows nobody outside can identify.
 
+## What a retry has to match
+
+The function writes four sets: the run row, its inputs, its blocks and its contrasts. A
+retry is idempotent only if all four agree with what is stored, so each is compared on every
+field the publication can overwrite, and the three that have more than one row are compared
+on their whole key set as well. Comparing a subset means the fields left out are the ones a
+retry can change while being reported as identical.
+
+The run row, which is one row and therefore has no key set to compare:
+
+```text
+1 first publish                 PUBLISHED
+2 identical retry               ALREADY_PUBLISHED
+3 retry, spec_version changed   RP2_PUBLISH_RUN_ID_IMMUTABLE:dryrun-runrow
+4 retry, branch changed         RP2_PUBLISH_RUN_ID_IMMUTABLE:dryrun-runrow
+5 retry, note rewritten         RP2_PUBLISH_RUN_ID_IMMUTABLE:dryrun-runrow
+```
+
 The input inventory is guarded the same way, because it is the third set this function
 writes and the one a reader follows to find the files a number was built from:
 
