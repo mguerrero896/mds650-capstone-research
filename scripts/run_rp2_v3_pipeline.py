@@ -52,6 +52,7 @@ from mds650.rp2.run_manifest import (  # noqa: E402
     declared_inputs,
     file_digest,
     inventory_paths,
+    normalised_digest,
     record_step_progress,
     stable_content_digest,
     write_manifest,
@@ -470,7 +471,10 @@ def validate_inputs(
         "gated_manifest_sha256": manifest_digest,
         "gated_files": len(payload.get("files", [])),
         "bar_sources_sha256": bar_digests,
-        "tape_inventory_sha256": file_digest(TAPE_INVENTORY),
+        # Normalised, like the frozen check above. A Windows checkout converts this
+        # untracked-attribute `.jsonl` to CRLF, and a raw digest here would put the
+        # checkout's line endings into `input_manifest_sha256`.
+        "tape_inventory_sha256": normalised_digest(TAPE_INVENTORY),
         "tape_fingerprint_sha256": tape_digest,
         "tape_freshness_sha256": tape_freshness,
         "tape_fingerprint_mode": "content" if hash_tape_contents else "path_size_mtime",
@@ -725,7 +729,7 @@ def assert_inputs_unchanged(run_dir: Path, *, data_root: Path) -> None:
     # The inventory itself, first. A synchronisation that reassigned sessions or assets
     # while keeping the same set of paths would leave the metadata digest below unchanged,
     # and Blocks 5 and 6 would have consumed the new mapping.
-    if file_digest(TAPE_INVENTORY) != recorded.get("tape_inventory_sha256"):
+    if normalised_digest(TAPE_INVENTORY) != recorded.get("tape_inventory_sha256"):
         raise SystemExit("RP2_RUN_INPUTS_CHANGED_DURING_RUN:inventory")
     _, freshness, _, _ = _tape_fingerprint(
         inventory_paths(TAPE_INVENTORY), hash_contents=False

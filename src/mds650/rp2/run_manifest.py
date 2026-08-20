@@ -450,11 +450,14 @@ def assert_no_sealed_paths(paths: Iterable[Path]) -> None:
 
     for path in paths:
         parts = [*path.parts, path.stem]
-        for component in parts:
+        for raw_component in parts:
+            # Separators are removed before matching, so `Phase 8`, `phase-8` and `phase_8`
+            # are one name. A guard that reads only one spelling guards only that spelling.
+            component = re.sub(r"[\s_-]+", "", raw_component)
             if any(pattern.match(component) for pattern in _SEALED_PATTERNS):
                 raise ValueError(f"RP2_RUN_SEALED_COHORT_FORBIDDEN:{path.as_posix()}")
         for pattern in _SEALED_STEMS:
-            if pattern.search(path.stem):
+            if pattern.search(re.sub(r"[\s]+", "", path.stem)):
                 raise ValueError(f"RP2_RUN_SEALED_COHORT_FORBIDDEN:{path.as_posix()}")
 
 
@@ -496,13 +499,24 @@ _IDENTITY_FIELDS: Final[tuple[str, ...]] = (
 #: The full manifest is only written after the modelling steps, which is too late to stop a
 #: resume from reusing panels built at another commit.
 IDENTITY_FILE: Final = "run_identity.json"
+#: Where completed steps' digests live inside the marker. Deliberately not `steps`: the
+#: identity payload already carries a `steps` list, and writing the progress under the same
+#: name let a rewrite of the marker replace the progress with an empty list.
+PROGRESS_KEY: Final = "completed_steps"
 
 
 def write_run_identity(run_dir: Path, manifest: RunManifest) -> Path:
     """Record who this run is, before it produces anything."""
 
     path = run_dir / IDENTITY_FILE
-    payload = json.dumps(manifest.identity_part(), indent=2, sort_keys=True)
+    record = manifest.identity_part()
+    # Whatever this run has already completed stays recorded. Rewriting the marker on a
+    # resume used to discard it, and the reuse check then had nothing to compare against.
+    if path.is_file():
+        previous = json.loads(path.read_text(encoding="utf-8"))
+        if previous.get(PROGRESS_KEY):
+            record[PROGRESS_KEY] = previous[PROGRESS_KEY]
+    payload = json.dumps(record, indent=2, sort_keys=True)
     # Staged and renamed, for the same reason as the manifest and with a worse consequence:
     # a half-written marker is read as an unreadable identity, and on a `--skip-panels`
     # resume that closes the run id against the panels the resume exists to reuse.
@@ -525,13 +539,13 @@ def record_step_progress(run_dir: Path, step: StepRecord) -> None:
     payload: dict[str, object] = {}
     if path.is_file():
         payload = json.loads(path.read_text(encoding="utf-8"))
-    existing = payload.get("steps")
+    existing = payload.get(PROGRESS_KEY)
     progress: dict[str, object] = dict(existing) if isinstance(existing, dict) else {}
     progress[step.name] = {
         "artifacts": dict(sorted(step.artifacts.items())),
         "content": dict(sorted(step.content.items())),
     }
-    payload["steps"] = dict(sorted(progress.items()))
+    payload[PROGRESS_KEY] = dict(sorted(progress.items()))
     staging = path.with_suffix(".json.partial")
     body = json.dumps(payload, indent=2, sort_keys=True)
     staging.write_text(body + "\n", encoding="utf-8")
@@ -548,7 +562,8 @@ def assert_step_artifacts_unchanged(run_dir: Path, name: str) -> None:
     path = run_dir / IDENTITY_FILE
     if not path.is_file():
         raise ValueError(f"RP2_RUN_NO_PROGRESS_RECORD:{name}")
-    recorded = json.loads(path.read_text(encoding="utf-8")).get("steps", {}).get(name)
+    marker = json.loads(path.read_text(encoding="utf-8"))
+    recorded = marker.get(PROGRESS_KEY, {}).get(name)
     if not recorded:
         raise ValueError(f"RP2_RUN_STEP_NOT_RECORDED:{name}")
     for artifact, digest in recorded.get("artifacts", {}).items():

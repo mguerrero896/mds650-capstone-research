@@ -440,3 +440,53 @@ def test_a_reused_panel_must_be_the_one_the_interrupted_attempt_produced(tmp_pat
 
     with pytest.raises(ValueError, match="RP2_RUN_STEP_NOT_RECORDED:build-b2"):
         assert_step_artifacts_unchanged(run_dir, "build-b2")
+
+
+def test_rewriting_the_marker_keeps_what_the_run_has_already_completed(tmp_path: Path) -> None:
+    """A resume rewrites the marker, and used to discard the progress it needs."""
+
+    from mds650.rp2.run_manifest import (
+        PROGRESS_KEY,
+        StepRecord,
+        assert_step_artifacts_unchanged,
+        record_step_progress,
+        stable_content_digest,
+        write_run_identity,
+    )
+
+    run_dir = tmp_path / "rp2-v3-20260820-001"
+    (run_dir / "rp2_block5_surface").mkdir(parents=True)
+    panel = run_dir / "rp2_block5_surface" / "b1_surface_panel.parquet"
+    panel.write_bytes(b"panel")
+    write_run_identity(run_dir, _manifest(run_id="rp2-v3-20260820-001"))
+
+    relative = "rp2_block5_surface/b1_surface_panel.parquet"
+    record_step_progress(
+        run_dir,
+        StepRecord(
+            name="build-b1",
+            command=("python", "x.py"),
+            exit_code=0,
+            runtime_seconds=1.0,
+            peak_memory_bytes=1,
+            artifacts={relative: file_digest(panel)},
+            content={relative: stable_content_digest(panel)},
+        ),
+    )
+    # The resume writes the marker again before it validates anything.
+    write_run_identity(run_dir, _manifest(run_id="rp2-v3-20260820-001"))
+
+    marker = json.loads((run_dir / "run_identity.json").read_text(encoding="utf-8"))
+    assert "build-b1" in marker[PROGRESS_KEY]
+    assert marker["steps"] == [], "the identity payload's own step list is separate"
+    assert_step_artifacts_unchanged(run_dir, "build-b1")
+
+
+def test_a_sealed_name_is_sealed_however_it_is_spaced() -> None:
+    for path in (
+        "D:/MDS650/Phase 8/events.parquet",
+        "D:/MDS650/cohort c/events.parquet",
+        "D:/MDS650/store/phase 9 events.parquet",
+    ):
+        with pytest.raises(ValueError, match="RP2_RUN_SEALED_COHORT_FORBIDDEN"):
+            assert_no_sealed_paths([Path(path)])
