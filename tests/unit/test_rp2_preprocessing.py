@@ -386,8 +386,8 @@ def test_the_cross_fit_blocks_impute_from_their_own_training_rows() -> None:
     source = (
         _Path(__file__).resolve().parents[2] / "scripts" / "rp2_block7_dml.py"
     ).read_text(encoding="utf-8")
-    assert "design_builder=nuisance_for" in source
-    assert "def nuisance_for(" in source
+    assert "design_builder=outcome_nuisance" in source
+    assert "def outcome_nuisance(" in source
     # The alternative-target battery cross-fits too, and it must do the same.
     extension = (
         _Path(__file__).resolve().parents[2] / "scripts" / "rp2_ext1_mechanism_utility.py"

@@ -32,7 +32,9 @@ from mds650.rp2.panel import (
     chronological_split,
     common_evaluation_mask,
     describe_information_set,
+    lift_mask,
     load_merged_panel,
+    mask_sha256,
     session_rank,
 )
 from mds650.rp2.preprocessing import describe_preprocessor, fit_preprocessor, fold_design
@@ -137,17 +139,6 @@ def run_role(
         ),
     }
 
-    treatment_residual = np.column_stack(
-        [
-            cross_fitted_residuals(
-                nuisance,
-                treatment_design[:, index],
-                blocks,
-                design_builder=nuisance_for,
-            )
-            for index in range(treatment_design.shape[1])
-        ]
-    )
     results: dict[str, object] = {
         "status": "MEASURED",
         "rows": int(keep.sum()),
@@ -160,17 +151,50 @@ def run_role(
     }
     for outcome_name, values in outcomes.items():
         response = values[keep]
+        # An outcome can be missing where the design is not: delta_log_rv30 needs a trailing
+        # realized variance the coverage floor permits to be absent. A NaN response makes the
+        # fold coefficients NaN and the whole estimate collapses, so each outcome is
+        # residualised on its own finite rows and the artifact records how many that was.
+        finite = np.isfinite(response)
+        if int(finite.sum()) < 1000:
+            results[outcome_name] = {
+                "status": "INSUFFICIENT_FINITE_OUTCOME",
+                "rows": int(finite.sum()),
+                "evaluation_mask_sha256": mask_sha256(lift_mask(keep, finite)),
+                "information_sets": information_sets,
+            }
+            continue
+        outcome_blocks = time_block_folds(sessions[finite], folds=folds, purge_sessions=1)
+        outcome_frame = kept_frame.filter(pl.Series(finite))
+
+        def outcome_nuisance(
+            train: npt.NDArray[np.bool_], _frame: pl.DataFrame = outcome_frame
+        ) -> npt.NDArray[np.float64]:
+            return fold_design(_frame, nuisance_features, train)[0]
+
         response_residual = cross_fitted_residuals(
-            nuisance, response, blocks, design_builder=nuisance_for
+            nuisance[finite], response[finite], outcome_blocks, design_builder=outcome_nuisance
+        )
+        outcome_treatment = np.column_stack(
+            [
+                cross_fitted_residuals(
+                    nuisance[finite],
+                    treatment_design[finite, index],
+                    outcome_blocks,
+                    design_builder=outcome_nuisance,
+                )
+                for index in range(treatment_design.shape[1])
+            ]
         )
         try:
             estimate = dml_partial_out(
-                response_residual, treatment_residual, sessions, treatment_names
+                response_residual, outcome_treatment, sessions[finite], treatment_names
             )
         except ValueError as error:  # pragma: no cover - defensive
             results[outcome_name] = {"status": str(error)}
             continue
         results[outcome_name] = {
+            "evaluation_mask_sha256": mask_sha256(lift_mask(keep, finite)),
             "joint_wald": estimate.joint_statistic,
             "joint_p_value": estimate.joint_p_value,
             "clusters": estimate.clusters,

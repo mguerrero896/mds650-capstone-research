@@ -131,11 +131,18 @@ def test_each_alternative_target_records_the_rows_it_was_actually_fitted_on() ->
     sparse = dense.copy()
     sparse[:1000] = np.nan
 
+    frame = pl.DataFrame({name: pl.Series(nuisance[:, index + 1]) for index, name in
+                          enumerate(("f0", "f1", "f2"))})
+    features = ["b1_iv_30d", "b1_term_slope", "b1_iv_7d"]
+    frame.columns = features
+
     left = ext1._dml_on_target(
-        nuisance, treatment, dense, sessions, ("a", "b"), folds=3, evaluation_base=base
+        nuisance, treatment, dense, sessions, ("a", "b"), folds=3, evaluation_base=base,
+        frame=frame, nuisance_features=features,
     )
     right = ext1._dml_on_target(
-        nuisance, treatment, sparse, sessions, ("a", "b"), folds=3, evaluation_base=base
+        nuisance, treatment, sparse, sessions, ("a", "b"), folds=3, evaluation_base=base,
+        frame=frame, nuisance_features=features,
     )
     assert left is not None and right is not None
     assert left["evaluation_mask_sha256"] != right["evaluation_mask_sha256"], (
