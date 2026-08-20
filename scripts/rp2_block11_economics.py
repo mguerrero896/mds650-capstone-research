@@ -31,7 +31,7 @@ from mds650.rp2.economics import (
     risk_management_utility,
     variance_risk_strategy,
 )
-from mds650.rp2.feature_registry import describe_coverage
+from mds650.rp2.feature_registry import assert_segment_coverage, describe_coverage
 from mds650.rp2.ladder import LADDER
 from mds650.rp2.panel import (
     B0_FEATURES,
@@ -100,6 +100,10 @@ def run_role(
     designs = {name: design[keep] for name, design in designs.items()}
     sessions_rank = session_rank(frame["session_date"].to_numpy())
     train, test = chronological_split(sessions_rank, train_share=train_share)
+    # The floor holds on the panel and on this role; it also has to hold on the two
+    # segments this run fits and scores, which is where a held-out tail with a gap in
+    # it would otherwise become a result.
+    assert_segment_coverage(frame, {"train": train, "test": test}, *CORE_SETS.values())
     minutes = frame["origin_minute"].to_numpy().astype(np.int64)
     # Evaluate on non-overlapping origins only: overlapping 30-minute payoffs would count
     # the same variance six times and inflate every Sharpe by roughly sqrt(6).

@@ -23,7 +23,7 @@ from scipy import stats
 
 from mds650.b1v3_confirmation import canonical_sha256
 from mds650.metrics import qlike_losses
-from mds650.rp2.feature_registry import describe_coverage
+from mds650.rp2.feature_registry import assert_segment_coverage, describe_coverage
 from mds650.rp2.ladder import LADDER
 from mds650.rp2.panel import (
     B0_FEATURES,
@@ -116,6 +116,10 @@ def measure_dispersion(panel: pl.DataFrame, *, role: str, train_share: float
     designs = {name: design[keep] for name, design in designs.items()}
     ranks = session_rank(frame["session_date"].to_numpy())
     train, test = chronological_split(ranks, train_share=train_share)
+    # The floor holds on the panel and on this role; it also has to hold on the two
+    # segments this run fits and scores, which is where a held-out tail with a gap in
+    # it would otherwise become a result.
+    assert_segment_coverage(frame, {"train": train, "test": test}, *CORE_SETS.values())
     information_sets = {
         name: describe_information_set((name,), resolved[name], lift_mask(keep, test))
         for name in INFORMATION_SETS

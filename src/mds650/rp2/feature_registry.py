@@ -23,6 +23,8 @@ from functools import cache
 from pathlib import Path
 from typing import Final
 
+import numpy as np
+import numpy.typing as npt
 import polars as pl
 
 #: The frozen sets live in the repository's `configs/` directory and are force-included in
@@ -198,3 +200,25 @@ def assert_minimum_coverage(panel: pl.DataFrame, *names: str) -> None:
         )
     if breaches:
         raise ValueError(f"RP2_FEATURE_SET_COVERAGE_BREACH:{','.join(breaches)}")
+
+
+def assert_segment_coverage(
+    panel: pl.DataFrame, segments: Mapping[str, npt.NDArray[np.bool_]], *names: str
+) -> None:
+    """Enforce each set's coverage floor inside every segment a run fits or scores.
+
+    A partition can hold its floor on average while the held-out tail a run actually scores
+    falls through it, and the common mask would then quietly drop those rows instead of the
+    run stopping. The train and test frames are where that becomes a result, so the floor is
+    checked there as well as on the panel.
+    """
+
+    for label, mask in segments.items():
+        if mask.shape[0] != panel.height:
+            raise ValueError(f"RP2_FEATURE_SEGMENT_SHAPE:{label}")
+        if not mask.any():
+            continue
+        try:
+            assert_minimum_coverage(panel.filter(pl.Series(mask)), *names)
+        except ValueError as error:
+            raise ValueError(f"{error.args[0]}:segment={label}") from error

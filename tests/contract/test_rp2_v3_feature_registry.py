@@ -316,3 +316,47 @@ def test_the_floor_is_enforced_within_each_role_not_across_them() -> None:
     assert "assert_coverage_by_role(panel" in source, (
         "the loader must enforce the floor per partition"
     )
+
+
+#: Every block that splits its role chronologically and therefore fits and scores segments.
+SPLIT_BLOCKS: tuple[str, ...] = (
+    "rp2_block8_ladder",
+    "rp2_block9_generalization",
+    "rp2_block10_inference",
+    "rp2_block11_economics",
+    "rp2_block11b_forward_economics",
+    "rp2_block12_prospective_design",
+)
+
+
+def test_the_floor_holds_on_the_segments_a_run_fits_and_scores() -> None:
+    """A role can hold its floor on average and lose it in the tail it is scored on."""
+
+    from mds650.rp2.feature_registry import assert_segment_coverage
+
+    core = list(feature_map("B1_CORE"))
+    rows = 100
+    values: dict[str, list[float | None]] = {name: [1.0] * rows for name in core}
+    values["b1_iv_30d"] = [1.0] * 90 + [None] * 10
+    frame = pl.DataFrame(values)
+    train = np.array([True] * 90 + [False] * 10)
+    test = ~train
+
+    assert_minimum_coverage(frame, "B1_CORE")
+    assert_segment_coverage(frame, {"train": train}, "B1_CORE")
+    with pytest.raises(ValueError, match="segment=test"):
+        assert_segment_coverage(frame, {"train": train, "test": test}, "B1_CORE")
+
+    with pytest.raises(ValueError, match="RP2_FEATURE_SEGMENT_SHAPE"):
+        assert_segment_coverage(frame, {"short": np.ones(3, dtype=bool)}, "B1_CORE")
+
+
+def test_every_splitting_block_checks_its_own_segments() -> None:
+    missing = [
+        name
+        for name in SPLIT_BLOCKS
+        if "assert_segment_coverage(" not in (REPO / "scripts" / f"{name}.py").read_text(
+            encoding="utf-8"
+        )
+    ]
+    assert not missing, f"blocks that split without checking the segments: {missing}"

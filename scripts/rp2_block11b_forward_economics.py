@@ -47,7 +47,7 @@ from mds650.rp2.economics import (
     delta_hedged_pnl,
     performance_metrics,
 )
-from mds650.rp2.feature_registry import describe_coverage
+from mds650.rp2.feature_registry import assert_segment_coverage, describe_coverage
 from mds650.rp2.flow import black_scholes_greeks
 from mds650.rp2.ladder import LADDER
 from mds650.rp2.panel import (
@@ -335,6 +335,10 @@ def run_role(
     designs = {name: design[keep] for name, design in designs.items()}
     sessions_rank = session_rank(frame["session_date"].to_numpy())
     train, test = chronological_split(sessions_rank, train_share=train_share)
+    # The floor holds on the panel and on this role; it also has to hold on the two
+    # segments this run fits and scores, which is where a held-out tail with a gap in
+    # it would otherwise become a result.
+    assert_segment_coverage(frame, {"train": train, "test": test}, *CORE_SETS.values())
 
     joined = frame.with_row_index("row").join(
         legs, on=["asset", "session_date", "origin_minute"], how="inner"

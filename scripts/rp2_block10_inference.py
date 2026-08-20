@@ -22,7 +22,7 @@ import polars as pl
 
 from mds650.b1v3_confirmation import canonical_sha256
 from mds650.metrics import qlike_losses
-from mds650.rp2.feature_registry import describe_coverage
+from mds650.rp2.feature_registry import assert_segment_coverage, describe_coverage
 from mds650.rp2.inference import (
     aggregate_by_session,
     clark_west_terms,
@@ -105,6 +105,10 @@ def run_role(
     designs = {name: design[keep] for name, design in designs.items()}
     sessions_rank = session_rank(frame["session_date"].to_numpy())
     train, test = chronological_split(sessions_rank, train_share=train_share)
+    # The floor holds on the panel and on this role; it also has to hold on the two
+    # segments this run fits and scores, which is where a held-out tail with a gap in
+    # it would otherwise become a result.
+    assert_segment_coverage(frame, {"train": train, "test": test}, *CORE_SETS.values())
     information_sets = {
         name: describe_information_set((name,), resolved[name], lift_mask(keep, test))
         for name in INFORMATION_SETS
