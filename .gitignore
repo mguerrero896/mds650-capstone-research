@@ -66,6 +66,11 @@ artifacts/rp2_block6_flow/b2_flow_panel.parquet
 artifacts/rp2_block11b_forward/tradeable_legs.parquet
 artifacts/rp2_block5b_independent/paired_surfaces.parquet
 
+# Scratch pipeline runs write the same derived panels outside the artifacts tree, so the
+# rules above do not reach them. Same reason, same treatment: licensed derived data stays
+# local and only its digests are versioned.
+artifacts_scratch_run/
+
 .worktrees/
 
 # Working files of an in-flight rebuild: the run id being built and its console log.
