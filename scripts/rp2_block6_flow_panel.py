@@ -517,6 +517,16 @@ def build_session_flow(
         record["b2_zero_dte_trades"] = float(
             window_count(is_zero_dte, counting_lo, counting_hi)
         )
+        # The counting window tiles the session, first bucket included, so summing these
+        # over origins counts every trade of the day exactly once. The five-minute feature
+        # windows begin about seven minutes after the open and would leave the opening
+        # trades out of any total built from them, although the first origin's own
+        # thirty-minute features consume them.
+        counted = max(counting_hi - counting_lo, 0)
+        record["b2_counting_trades"] = float(counted)
+        record["b2_counting_mean_latency_s"] = (
+            float(np.mean(latency_seconds[counting_lo:counting_hi])) if counted else 0.0
+        )
         for label, window_seconds in WINDOWS:
             lo_us = cutoff_us - window_seconds * 1_000_000
             lo = int(np.searchsorted(created, lo_us, side="left"))

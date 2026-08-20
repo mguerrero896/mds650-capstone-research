@@ -701,7 +701,9 @@ def build_scorecard(
 
     from mds650.rp2.scorecard import assemble_scorecard, render_scorecard
 
-    scorecard = assemble_scorecard(run_dir, manifest, elapsed_seconds=0.0)
+    scorecard = assemble_scorecard(
+        run_dir, manifest, elapsed_seconds=0.0, peak_memory_bytes=_own_peak_memory_bytes()
+    )
     # Rendered before the clock is read, so the parquet reads, the completeness checks and
     # the rendering are all inside the measurement. Only the two writes below fall outside
     # it, and the rendered document points at the manifest for the runtime rather than

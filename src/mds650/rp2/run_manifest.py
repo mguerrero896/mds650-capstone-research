@@ -451,13 +451,14 @@ def assert_no_sealed_paths(paths: Iterable[Path]) -> None:
     for path in paths:
         parts = [*path.parts, path.stem]
         for raw_component in parts:
-            # Separators are removed before matching, so `Phase 8`, `phase-8` and `phase_8`
-            # are one name. A guard that reads only one spelling guards only that spelling.
-            component = re.sub(r"[\s_-]+", "", raw_component)
+            # Every non-alphanumeric character is removed before matching, so `Phase 8`,
+            # `phase-8`, `phase_8`, `Phase.8` and `phase(8)` are one name. A guard that
+            # enumerates separators guards the separators it thought of.
+            component = re.sub(r"[^A-Za-z0-9]+", "", raw_component)
             if any(pattern.match(component) for pattern in _SEALED_PATTERNS):
                 raise ValueError(f"RP2_RUN_SEALED_COHORT_FORBIDDEN:{path.as_posix()}")
         for pattern in _SEALED_STEMS:
-            if pattern.search(re.sub(r"[\s]+", "", path.stem)):
+            if pattern.search(re.sub(r"[^A-Za-z0-9_-]+", "", path.stem)):
                 raise ValueError(f"RP2_RUN_SEALED_COHORT_FORBIDDEN:{path.as_posix()}")
 
 

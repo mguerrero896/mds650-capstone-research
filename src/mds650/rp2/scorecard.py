@@ -219,7 +219,11 @@ def calibration_table(
 
 
 def assemble_scorecard(
-    run_dir: Path, manifest: RunManifest, *, elapsed_seconds: float | None = None
+    run_dir: Path,
+    manifest: RunManifest,
+    *,
+    elapsed_seconds: float | None = None,
+    peak_memory_bytes: int = 0,
 ) -> dict[str, Any]:
     """Measure every field the schema names, from the artifacts this run produced."""
 
@@ -322,7 +326,7 @@ def assemble_scorecard(
             # would give every origin equal weight, count an empty window's encoded zero as
             # an observed latency, and count each trade once per overlapping window.
             "b2_mean_provider_latency_s": _weighted_mean(
-                panels["b2"], "b2_5m_mean_provider_latency_s", "b2_5m_trades"
+                panels["b2"], "b2_counting_mean_latency_s", "b2_counting_trades"
             ),
             # Likewise the producer's own per-window tail: averaging first suppresses
             # the slow records the tail is asked about.
@@ -354,8 +358,11 @@ def assemble_scorecard(
             # after it - the scorecard's own, the provenance and the verification - and
             # whatever the run spent between steps.
             "runtime_seconds": elapsed_seconds,
+            # Including this process as it stands. The scorecard step's own record is
+            # appended after the document is written, so a peak reached while assembling it
+            # would otherwise never appear in the figure the document reports.
             "peak_memory_bytes": max(
-                (step.peak_memory_bytes for step in manifest.steps), default=0
+                [peak_memory_bytes, *(step.peak_memory_bytes for step in manifest.steps)]
             ),
             "input_manifest_sha256": manifest.input_manifest_sha256,
             "model_config_sha256": manifest.model_config_sha256,

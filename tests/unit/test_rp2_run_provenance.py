@@ -487,6 +487,9 @@ def test_a_sealed_name_is_sealed_however_it_is_spaced() -> None:
         "D:/MDS650/Phase 8/events.parquet",
         "D:/MDS650/cohort c/events.parquet",
         "D:/MDS650/store/phase 9 events.parquet",
+        "D:/MDS650/Phase.8/events.parquet",
+        "D:/MDS650/phase(9)/events.parquet",
+        "D:/MDS650/cohort.c/events.parquet",
     ):
         with pytest.raises(ValueError, match="RP2_RUN_SEALED_COHORT_FORBIDDEN"):
             assert_no_sealed_paths([Path(path)])
