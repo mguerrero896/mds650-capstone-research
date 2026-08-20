@@ -26,6 +26,9 @@ type FloatArray = npt.NDArray[np.float64]
 type IntArray = npt.NDArray[np.int64]
 
 DEFAULT_BOOTSTRAP: Final = 2000
+#: The frozen resampling seed. Every producer passes it; it is stated once here so the
+#: inference configuration digest can cover it.
+DEFAULT_SEED: Final = 650
 DEFAULT_BLOCK_MEAN: Final = 5.0
 #: Primary block length for the session bootstrap, fixed in advance.
 SESSION_BLOCK_LENGTH: Final = 5
@@ -601,6 +604,10 @@ def inference_config_digest() -> str:
 
     configuration = {
         "session_block_length": SESSION_BLOCK_LENGTH,
+        # The seed decides which resamples the bootstrap draws, so two contrasts computed
+        # under different seeds are not computed the same way even when every other setting
+        # matches.
+        "bootstrap_seed": DEFAULT_SEED,
         "bootstrap_repetitions": DEFAULT_BOOTSTRAP,
         "block_mean": DEFAULT_BLOCK_MEAN,
         "alpha": DEFAULT_ALPHA,

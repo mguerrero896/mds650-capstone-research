@@ -145,6 +145,32 @@ BLOCK_RESULT_ARTIFACT: Final[dict[str, str]] = {
 }
 
 
+def _block_status(run_dir: Path, step: dict[str, Any]) -> str:
+    """What the block's own artifact says happened, falling back to the exit code.
+
+    A producer can complete normally and record `INSUFFICIENT_ROWS` for a role: the process
+    returns zero and nothing was measured. Publishing that as `MEASURED` because the exit
+    code was zero states the opposite of what the artifact says.
+    """
+
+    if step.get("exit_code") != 0:
+        return "FAILED"
+    designated = BLOCK_RESULT_ARTIFACT.get(str(step.get("name")))
+    if designated is None or not (run_dir / designated).is_file():
+        return "MEASURED"
+    try:
+        payload = json.loads((run_dir / designated).read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return "MEASURED"
+    statuses = {
+        str(value.get("status"))
+        for value in payload.values()
+        if isinstance(value, dict) and value.get("status")
+    }
+    unmeasured = sorted(status for status in statuses if status != "MEASURED")
+    return unmeasured[0] if unmeasured else "MEASURED"
+
+
 def _block_result_digest(step: dict[str, Any]) -> str | None:
     """The digest of the artifact that *is* this step's result, or nothing if it has none."""
 
@@ -263,7 +289,7 @@ def build_payload(run_dir: Path, *, branch: str, supersedes: str | None) -> dict
     blocks = [
         {
             "block_id": step["name"],
-            "status": "MEASURED" if step["exit_code"] == 0 else "FAILED",
+            "status": _block_status(run_dir, step),
             "verdict": "SEE_ARTIFACT",
             "document": "docs/rp2_v3/REBUILD_RUNBOOK.md",
             "artifact_sha256": digest,

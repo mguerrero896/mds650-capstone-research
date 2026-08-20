@@ -317,3 +317,35 @@ def test_a_missing_bar_store_is_refused_rather_than_invented(tmp_path: Path) -> 
     resolved = {"bar_sources_sha256": {"gate7_c6|D": "2" * 64}}
     with pytest.raises(SystemExit, match="RP2_PUBLISH_BAR_INPUT_MISSING"):
         module._bar_inputs(resolved, tmp_path / "absent")
+
+
+def test_a_block_that_measured_nothing_is_not_published_as_measured(tmp_path: Path) -> None:
+    """A producer can exit zero and record `INSUFFICIENT_ROWS` for a role."""
+
+    module = _load("publish_rp2_v3_supabase")
+    run = tmp_path / "run"
+    (run / "rp2_block8_ladder").mkdir(parents=True)
+    ladder = run / "rp2_block8_ladder" / "ladder.json"
+    step = {"name": "fit-model-ladder", "exit_code": 0, "artifacts": {}}
+
+    ladder.write_text(json.dumps({"D": {"status": "MEASURED"}, "V": {"status": "MEASURED"}}), "utf-8")
+    assert module._block_status(run, step) == "MEASURED"
+
+    ladder.write_text(
+        json.dumps({"D": {"status": "MEASURED"}, "V": {"status": "INSUFFICIENT_ROWS"}}), "utf-8"
+    )
+    assert module._block_status(run, step) == "INSUFFICIENT_ROWS"
+
+    assert module._block_status(run, {**step, "exit_code": 1}) == "FAILED"
+
+
+def test_the_bootstrap_seed_is_part_of_the_inference_digest(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Two contrasts drawn from different resamples were not tested the same way."""
+
+    from mds650.rp2 import inference
+
+    before = inference.inference_config_digest()
+    monkeypatch.setattr(inference, "DEFAULT_SEED", 651)
+    assert inference.inference_config_digest() != before
