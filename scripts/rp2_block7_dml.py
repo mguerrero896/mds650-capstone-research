@@ -30,11 +30,12 @@ from mds650.rp2.panel import (
     VARIANCE_FLOOR,
     build_design,
     chronological_split,
+    common_evaluation_mask,
     describe_information_set,
     load_merged_panel,
     session_rank,
-    usable_rows,
 )
+from mds650.rp2.preprocessing import describe_preprocessor, fit_preprocessor, fold_design
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_block7_dml"
@@ -80,7 +81,11 @@ def run_role(
     """Full DML pass for one partition role."""
 
     frame = panel.filter(pl.col("role") == role).sort(["session_date", "asset", "origin_minute"])
-    nuisance, nuisance_names = build_design(frame, [B0_FEATURES, B1_FEATURES])
+    # build_design still fails closed on a registered feature the panel does not carry.
+    # Its matrix is discarded: the design a cross-fit block projects on is imputed and
+    # scaled from that block's own training rows.
+    _, nuisance_names = build_design(frame, [B0_FEATURES, B1_FEATURES])
+    nuisance_features = [*B0_FEATURES, *B1_FEATURES]
     # The DML treatment battery is a set of mechanisms to partial out, not a primary
     # information set, so it resolves against the whole registry: two of its ten channels
     # are B2-rich, and rich means out of the primary contrasts, not out of existence.
@@ -89,12 +94,14 @@ def run_role(
     if unknown:
         raise ValueError(f"RP2_DML_UNKNOWN_TREATMENT:{','.join(sorted(unknown))}")
     treatment_map = {name: available[name] for name in treatments}
-    treatment_design, treatment_names = build_design(frame, [treatment_map], intercept=False)
+    _, treatment_names = build_design(frame, [treatment_map], intercept=False)
     outcomes = _outcomes(frame)
     sessions = session_rank(frame["session_date"].to_numpy())
 
-    keep = usable_rows(nuisance, np.exp(outcomes["log_rv30"]))
-    keep &= np.isfinite(treatment_design).all(axis=1)
+    # Target, keys and availability — not "every design column is finite", which made the
+    # decisive experiment a complete-case study and dropped exactly the origins a missing
+    # secondary feature touched.
+    keep = common_evaluation_mask(frame, np.exp(outcomes["log_rv30"]))
     information_sets = {
         "B0+B1": describe_information_set(("B0", "B1"), nuisance_names, keep),
         "B2_treatment": describe_information_set(("B2_treatment",), treatment_names, keep),
@@ -106,13 +113,38 @@ def run_role(
             "information_sets": information_sets,
         }
 
-    nuisance, treatment_design = nuisance[keep], treatment_design[keep]
+    kept_frame = frame.filter(pl.Series(keep))
     sessions = sessions[keep]
     blocks = time_block_folds(sessions, folds=folds, purge_sessions=1)
 
+    # Imputation and scaling are nuisance parameters too, so both designs are rebuilt from
+    # each cross-fit block's own training rows rather than once over the whole sample.
+    def nuisance_for(train: npt.NDArray[np.bool_]) -> npt.NDArray[np.float64]:
+        return fold_design(kept_frame, nuisance_features, train)[0]
+
+    def treatment_for(train: npt.NDArray[np.bool_]) -> npt.NDArray[np.float64]:
+        return fold_design(
+            kept_frame, list(treatment_map), train, intercept=False
+        )[0]
+
+    seed = np.ones(int(keep.sum()), dtype=bool)
+    nuisance = nuisance_for(seed)
+    treatment_design = treatment_for(seed)
+    preprocessing = {
+        "B0+B1": describe_preprocessor(fit_preprocessor(kept_frame, nuisance_features, seed)),
+        "B2_treatment": describe_preprocessor(
+            fit_preprocessor(kept_frame, list(treatment_map), seed)
+        ),
+    }
+
     treatment_residual = np.column_stack(
         [
-            cross_fitted_residuals(nuisance, treatment_design[:, index], blocks)
+            cross_fitted_residuals(
+                nuisance,
+                treatment_design[:, index],
+                blocks,
+                design_builder=nuisance_for,
+            )
             for index in range(treatment_design.shape[1])
         ]
     )
@@ -123,11 +155,14 @@ def run_role(
         "nuisance_design_columns": len(nuisance_names),
         "folds": len(blocks),
         "treatments": list(treatment_names),
+        "preprocessing": preprocessing,
         "information_sets": information_sets,
     }
     for outcome_name, values in outcomes.items():
         response = values[keep]
-        response_residual = cross_fitted_residuals(nuisance, response, blocks)
+        response_residual = cross_fitted_residuals(
+            nuisance, response, blocks, design_builder=nuisance_for
+        )
         try:
             estimate = dml_partial_out(
                 response_residual, treatment_residual, sessions, treatment_names

@@ -351,3 +351,59 @@ def test_a_regime_label_says_missing_rather_than_guessing() -> None:
     assert labels["liquidity_regime"][-1] == "liq_missing"
     assert labels["market_direction"][-1] == "market_missing"
     assert set(labels["volatility_regime"][:-1]) <= {"vol_low", "vol_mid", "vol_high"}
+
+
+def test_the_decisive_experiment_is_not_a_complete_case_study() -> None:
+    """Block 7 gated on every design column being finite, which is the rule this gate ends.
+
+    The DML estimate is the decisive contrast of the programme; running it on the origins
+    that happened to have no missing secondary feature makes it an estimate about those
+    origins.
+    """
+
+    from pathlib import Path as _Path
+
+    repo = _Path(__file__).resolve().parents[2]
+    for name in ("rp2_block7_dml", "rp2_ext1_mechanism_utility"):
+        source = (repo / "scripts" / f"{name}.py").read_text(encoding="utf-8")
+        assert "common_evaluation_mask(frame," in source, name
+        assert "usable_rows(nuisance" not in source, name
+        assert "np.isfinite(treatment).all(axis=1)" not in source, name
+        assert "fold_design(" in source, name
+
+
+def test_the_cross_fit_blocks_impute_from_their_own_training_rows() -> None:
+    """Imputation and scaling are nuisance parameters like any other.
+
+    Statistics fitted once across every fold carry the held-out block into the projection
+    that is meant to be out of sample.
+    """
+
+    from pathlib import Path as _Path
+
+    from mds650.rp2.dml import cross_fitted_residuals
+
+    source = (
+        _Path(__file__).resolve().parents[2] / "scripts" / "rp2_block7_dml.py"
+    ).read_text(encoding="utf-8")
+    assert "design_builder=nuisance_for" in source
+    assert "def nuisance_for(" in source
+
+    # The builder really is consulted per fold, not once.
+    from mds650.rp2.dml import TimeFold
+
+    calls: list[int] = []
+    rows = 40
+    design = np.column_stack([np.ones(rows), np.arange(rows, dtype=float)])
+    response = np.arange(rows, dtype=float)
+    folds = [
+        TimeFold(train=np.arange(rows) < 20, test=np.arange(rows) >= 20),
+        TimeFold(train=np.arange(rows) >= 20, test=np.arange(rows) < 20),
+    ]
+
+    def builder(train: np.ndarray) -> np.ndarray:
+        calls.append(int(train.sum()))
+        return design
+
+    cross_fitted_residuals(design, response, folds, design_builder=builder)
+    assert len(calls) == 2, "the design must be rebuilt once per fold"

@@ -44,6 +44,7 @@ from mds650.rp2.panel import (
     VARIANCE_FLOOR,
     build_design,
     chronological_split,
+    common_evaluation_mask,
     common_usable_rows,
     describe_information_set,
     lift_mask,
@@ -51,7 +52,6 @@ from mds650.rp2.panel import (
     mask_sha256,
     session_rank,
     standardise,
-    usable_rows,
 )
 from mds650.rp2.preprocessing import describe_preprocessor, fold_design
 from mds650.rp2.realized import backward_rv, forward_measures, log_returns
@@ -332,7 +332,8 @@ def run_role(
     )
     rv30 = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
 
-    nuisance, nuisance_names = build_design(frame, [B0_FEATURES, B1_FEATURES])
+    _, nuisance_names = build_design(frame, [B0_FEATURES, B1_FEATURES])
+    nuisance_features = [*B0_FEATURES, *B1_FEATURES]
     # The historical treatment battery predates the core/rich split and names channels
     # that are now B2-rich. The extension resolves against the whole registry: rich means
     # out of the primary contrasts, not out of existence.
@@ -341,8 +342,11 @@ def run_role(
     if unknown:
         raise ValueError(f"RP2_EXT1_UNKNOWN_TREATMENT:{','.join(sorted(unknown))}")
     treatment_map = {n: available[n] for n in CORE_TREATMENTS}
-    treatment, names = build_design(frame, [treatment_map], intercept=False)
-    keep = usable_rows(nuisance, rv30) & np.isfinite(treatment).all(axis=1)
+    _, names = build_design(frame, [treatment_map], intercept=False)
+    # Target, keys and availability, like every primary block: the complete-case gate made
+    # this a feature-selected sample and dropped exactly the origins a missing secondary
+    # feature touched.
+    keep = common_evaluation_mask(frame, rv30)
     information_sets = {
         "B0+B1": describe_information_set(("B0", "B1"), nuisance_names, keep),
         "B2_mechanism": describe_information_set(("B2_mechanism",), names, keep),
@@ -355,9 +359,13 @@ def run_role(
         }
 
     frame = frame.filter(pl.Series(keep))
-    rv30, nuisance, treatment = rv30[keep], nuisance[keep], treatment[keep]
+    rv30 = rv30[keep]
     sessions = session_rank(frame["session_date"].to_numpy())
     train, test = chronological_split(sessions, train_share=train_share)
+    nuisance, _, nuisance_fitted = fold_design(frame, nuisance_features, train)
+    treatment, _, treatment_fitted = fold_design(
+        frame, list(treatment_map), train, intercept=False
+    )
     assets = frame["asset"].to_numpy()
 
     # Registry designs are imputed and scaled from this fold's training rows, like the
@@ -375,6 +383,8 @@ def run_role(
         frame, [*B0_FEATURES, *B1_FEATURES, *replicated_map], train
     )
     preprocessing = {
+        "B0+B1_nuisance": describe_preprocessor(nuisance_fitted),
+        "B2_mechanism": describe_preprocessor(treatment_fitted),
         "B0+B1": describe_preprocessor(base_fitted),
         "B0+B1+mechanism": describe_preprocessor(replicated_fitted),
         "B0+B1+B2": describe_preprocessor(full_fitted),

@@ -12,6 +12,7 @@ folds, and inference is clustered by session because origins inside a day overla
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 
 import numpy as np
@@ -19,6 +20,7 @@ import numpy.typing as npt
 from scipy import stats
 
 type FloatArray = npt.NDArray[np.float64]
+type BoolArray = npt.NDArray[np.bool_]
 type IntArray = npt.NDArray[np.int64]
 
 
@@ -58,13 +60,22 @@ def time_block_folds(
 
 
 def cross_fitted_residuals(
-    design: FloatArray, response: FloatArray, folds: list[TimeFold], *, ridge: float = 1e-6
+    design: FloatArray,
+    response: FloatArray,
+    folds: list[TimeFold],
+    *,
+    ridge: float = 1e-6,
+    design_builder: Callable[[BoolArray], FloatArray] | None = None,
 ) -> FloatArray:
     """Out-of-fold residuals of a ridge-regularised linear projection on ``design``.
 
     A linear learner is deliberate: with a rich, already-engineered design the partialling
     out is what matters, and a linear nuisance keeps the estimator's own regularisation
     bias out of the reported theta.
+
+    ``design_builder`` rebuilds the design from a fold's training mask. Imputation and
+    scaling are nuisance parameters like any other, so statistics fitted across every fold
+    would carry the held-out block into the projection that is meant to be out of sample.
     """
 
     if design.shape[0] != response.size:
@@ -73,6 +84,7 @@ def cross_fitted_residuals(
     for fold in folds:
         if fold.train.sum() <= design.shape[1] or not fold.test.any():
             continue
+        design = design if design_builder is None else design_builder(fold.train)
         train_design = design[fold.train]
         gram = train_design.T @ train_design + ridge * np.eye(design.shape[1])
         coefficients = np.linalg.solve(gram, train_design.T @ response[fold.train])
