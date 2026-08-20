@@ -86,12 +86,16 @@ def _run_dir(tmp_path: Path) -> Path:
         ),
         encoding="utf-8",
     )
+    # A bar store of this fixture's own, so the test says what it means: it is about what
+    # the publisher does with the digests, not about which parquet happens to sit on the
+    # machine running it.
+    store = _bar_store(tmp_path)
     (run / "input_manifest.json").write_text(
         json.dumps(
             {
                 "gated_manifest_sha256": "1" * 64,
                 "gated_files": 15,
-                "bar_sources_sha256": {"gate7_c6|D": "2" * 64},
+                "bar_sources_sha256": _bar_digests(store),
                 "tape_inventory_sha256": "3" * 64,
                 "tape_fingerprint_sha256": "4" * 64,
                 "tape_files": 3717,
@@ -100,22 +104,69 @@ def _run_dir(tmp_path: Path) -> Path:
         ),
         encoding="utf-8",
     )
+    # A real record, not a hand-written stand-in: the publisher recomputes the manifest's
+    # own scientific digest, so a fixture whose digest does not describe its own contents
+    # is not a manifest the publisher would ever have been given.
     (run / "run_manifest.json").write_text(
-        json.dumps(
-            {
-                "run_id": "rp2-v3-test-001",
-                "code_commit": COMMIT,
-                "data_root": "D:/MDS650",
-                "input_manifest_sha256": "c" * 64,
-                "feature_registry_sha256": "d" * 64,
-                "model_config_sha256": "e" * 64,
-                "scientific_sha256": "f" * 64,
-                "steps": [{"name": "fit-model-ladder", "exit_code": 0, "artifacts": {}}],
-            }
-        ),
-        encoding="utf-8",
+        json.dumps(_manifest_record(data_root=str(store))), encoding="utf-8"
     )
     return run
+
+
+def _bar_store(tmp_path: Path) -> Path:
+    from mds650.rp2.bars import BAR_SOURCES
+
+    store = tmp_path / "store"
+    for index, (_name, _role, relative) in enumerate(BAR_SOURCES):
+        path = store / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(f"bars {index}".encode())
+    return store
+
+
+def _bar_digests(store: Path) -> dict[str, str]:
+    from mds650.rp2.bars import BAR_SOURCES
+    from mds650.rp2.run_manifest import file_digest
+
+    return {
+        f"{name}|{role}": file_digest(store / relative)
+        for name, role, relative in BAR_SOURCES
+    }
+
+
+def _manifest_record(
+    data_root: str = "D:/MDS650",
+    *,
+    artifacts: dict[str, str] | None = None,
+    **overrides: Any,
+) -> dict[str, Any]:
+    from mds650.rp2.run_manifest import RunManifest, StepRecord
+
+    record = RunManifest(
+        run_id="rp2-v3-test-001",
+        code_commit=COMMIT,
+        data_root=data_root,
+        roles=("D", "V"),
+        feature_registry_sha256="d" * 64,
+        input_manifest_sha256="c" * 64,
+        model_config_sha256="e" * 64,
+        seeds={"numpy": 650},
+        steps=(
+            StepRecord(
+                name="fit-model-ladder",
+                command=("python", "scripts/rp2_block8_ladder.py"),
+                exit_code=0,
+                runtime_seconds=1.0,
+                peak_memory_bytes=1,
+                artifacts=artifacts or {},
+                content=dict.fromkeys(artifacts or {}, "0" * 64),
+            ),
+        ),
+        started_at_utc="2026-08-20T00:00:00Z",
+        finished_at_utc="2026-08-20T01:00:00Z",
+    ).as_record()
+    record.update(overrides)
+    return record
 
 
 def test_only_the_primary_families_are_published(tmp_path: Path) -> None:
@@ -233,15 +284,15 @@ def test_an_artifact_changed_since_the_run_is_refused(tmp_path: Path) -> None:
     module = _load("publish_rp2_v3_supabase")
     run = _run_dir(tmp_path)
     ladder = run / "rp2_block8_ladder" / "ladder.json"
-    manifest = json.loads((run / "run_manifest.json").read_text(encoding="utf-8"))
-    manifest["steps"] = [
-        {
-            "name": "fit-model-ladder",
-            "exit_code": 0,
-            "artifacts": {"rp2_block8_ladder/ladder.json": file_digest(ladder)},
-        }
-    ]
-    (run / "run_manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+    (run / "run_manifest.json").write_text(
+        json.dumps(
+            _manifest_record(
+                data_root=str(_bar_store(tmp_path)),
+                artifacts={"rp2_block8_ladder/ladder.json": file_digest(ladder)},
+            )
+        ),
+        encoding="utf-8",
+    )
     module.build_payload(run, branch="x", supersedes=None)
 
     ladder.write_text(ladder.read_text(encoding="utf-8") + " ", encoding="utf-8")
@@ -350,3 +401,34 @@ def test_the_bootstrap_seed_is_part_of_the_inference_digest(
     before = inference.inference_config_digest()
     monkeypatch.setattr(inference, "DEFAULT_SEED", 651)
     assert inference.inference_config_digest() != before
+
+
+def test_a_manifest_edited_after_the_run_is_refused(tmp_path: Path) -> None:
+    """The manifest's own digest covers its provenance fields, so it can be checked."""
+
+    module = _load("publish_rp2_v3_supabase")
+    run = _run_dir(tmp_path)
+    (run / "run_manifest.json").write_text(
+        json.dumps(_manifest_record(input_manifest_sha256="9" * 64)), encoding="utf-8"
+    )
+    with pytest.raises(SystemExit, match="RP2_PUBLISH_MANIFEST_ALTERED"):
+        module.build_payload(run, branch="db/rp2-v3-versioned-results", supersedes=None)
+
+
+def test_a_bar_store_changed_since_the_run_is_refused(tmp_path: Path) -> None:
+    """Lineage that pairs a run-time digest with today's bytes describes neither."""
+
+    module = _load("publish_rp2_v3_supabase")
+    from mds650.rp2.bars import BAR_SOURCES
+    from mds650.rp2.run_manifest import file_digest
+
+    name, role, relative = BAR_SOURCES[0]
+    path = tmp_path / relative
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(b"the bars as they were")
+    resolved = {"bar_sources_sha256": {f"{name}|{role}": file_digest(path)}}
+    assert module._bar_inputs(resolved, tmp_path)[0]["sha256"] == file_digest(path)
+
+    path.write_bytes(b"the bars as they are now")
+    with pytest.raises(SystemExit, match="RP2_PUBLISH_BAR_INPUT_CHANGED"):
+        module._bar_inputs(resolved, tmp_path)

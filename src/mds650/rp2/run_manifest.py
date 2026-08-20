@@ -19,7 +19,7 @@ import re
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Final
+from typing import Final, cast
 
 #: Cohorts that must not be read during development. Matched on whole path components so
 #: that `cohort_c` is caught and `concentration` is not.
@@ -281,6 +281,52 @@ def scientific_sha256(manifest: RunManifest) -> str:
     """Digest of everything that decides the result, and of nothing that does not."""
 
     return hashlib.sha256(canonical_json(manifest.scientific_part()).encode("utf-8")).hexdigest()
+
+
+def scientific_part_of_record(record: Mapping[str, object]) -> dict[str, object]:
+    """Rebuild the scientific part from a manifest that was written to disk.
+
+    `as_record` writes the verbatim command over the normalised one and adds the fields
+    that do not decide the result, so the scientific part cannot simply be read back out
+    of the record: it is reconstructed here from the same fields, the same way.
+    """
+
+    steps = cast("Sequence[Mapping[str, object]]", record.get("steps", ()))
+    seeds = cast("Mapping[str, int]", record["seeds"])
+    return {
+        "code_commit": record["code_commit"],
+        "roles": list(cast("Sequence[str]", record["roles"])),
+        "feature_registry_sha256": record["feature_registry_sha256"],
+        "input_manifest_sha256": record["input_manifest_sha256"],
+        "model_config_sha256": record["model_config_sha256"],
+        "seeds": dict(sorted(seeds.items())),
+        "steps": [
+            {
+                "name": step["name"],
+                "command": normalise_command(cast("Sequence[str]", step["command"])),
+                "exit_code": step["exit_code"],
+                "content": dict(sorted(cast("Mapping[str, str]", step["content"]).items())),
+            }
+            for step in steps
+        ],
+    }
+
+
+def assert_manifest_identity_intact(record: Mapping[str, object]) -> None:
+    """The digest a manifest carries is the digest of the manifest it is carried by.
+
+    The recorded `scientific_sha256` covers the commit, the input digest, the seeds and
+    every step's content. A consumer that reads those fields without recomputing the
+    digest will believe an edited manifest, and the digest sitting beside the edit is what
+    makes the edit detectable.
+    """
+
+    recomputed = hashlib.sha256(
+        canonical_json(scientific_part_of_record(record)).encode("utf-8")
+    ).hexdigest()
+    recorded = str(record.get("scientific_sha256", ""))
+    if recomputed != recorded:
+        raise ValueError(f"RP2_MANIFEST_ALTERED:{recomputed[:16]}!={recorded[:16]}")
 
 
 #: Fields that record *when* or *how long*, not *what*. They are stripped before an

@@ -73,6 +73,20 @@ rows_without_run_id:    0
 orphan_lineage:         0
 ```
 
+A second transaction exercised the retry paths against the same live schema, because an
+idempotent retry and a changed result set are the two things a republish can be:
+
+```text
+1 first publish              PUBLISHED
+2 identical retry            ALREADY_PUBLISHED
+3 retry, contrast removed    RP2_PUBLISH_CONTRAST_SET_CHANGED:dryrun-keyset
+4 retry, block removed       RP2_PUBLISH_BLOCK_SET_CHANGED:dryrun-keyset
+```
+
+The third and fourth cases change no value the field comparisons can see: every row present
+on both sides still agrees. Only comparing the whole key set distinguishes a retry of the
+same result set from a submission of a different one.
+
 Afterwards, production was confirmed untouched:
 
 ```text
@@ -80,4 +94,13 @@ contrast_table        null
 block_table           null
 dryrun_runs_left      0
 publish_function_left 0
+new_columns_left      0
 ```
+
+## What the publisher checks before it calls
+
+The manifest carries its own `scientific_sha256`, covering the commit, the input digest, the
+seeds and every step's content. The publisher recomputes it before reading any provenance
+out of the manifest: a file edited after the run finished would otherwise be published as
+its own account of itself. The bar stores are re-digested for the same reason, because the
+run-time digest paired with today's file size describes neither.

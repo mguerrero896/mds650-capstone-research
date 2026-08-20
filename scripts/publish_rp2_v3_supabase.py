@@ -31,6 +31,10 @@ if str(ROOT / "src") not in sys.path:  # pragma: no cover - import bootstrap
     sys.path.insert(0, str(ROOT / "src"))
 
 from mds650.rp2.inference import inference_config_digest  # noqa: E402
+from mds650.rp2.run_manifest import (  # noqa: E402
+    assert_manifest_identity_intact,
+    file_digest,
+)
 
 PROJECT_REF = "eqpyjikcewqaegnbaemf"
 REST = f"https://{PROJECT_REF}.supabase.co/rest/v1"
@@ -96,8 +100,6 @@ def assert_artifacts_match_manifest(run_dir: Path, manifest: dict[str, Any]) -> 
     file changed in between would be read and published as though the run had produced it,
     and the digests in the manifest would say otherwise while nobody compared them.
     """
-
-    from mds650.rp2.run_manifest import file_digest
 
     for step in manifest.get("steps", []):
         for name, digest in step.get("artifacts", {}).items():
@@ -201,6 +203,14 @@ def _bar_inputs(resolved: dict[str, Any], data_root: Path) -> list[dict[str, Any
             # Publishing a one-byte size beside a path and a digest that describe a real
             # parquet makes the row describe a file that does not exist.
             raise SystemExit(f"RP2_PUBLISH_BAR_INPUT_MISSING:{relative}")
+        # And it is still the file the run read. Pairing the run-time digest with today's
+        # size describes neither the file the results were built on nor the file on disk,
+        # which is the one question lineage is asked.
+        current = file_digest(path)
+        if current != digests[key]:
+            raise SystemExit(
+                f"RP2_PUBLISH_BAR_INPUT_CHANGED:{relative}:{current[:12]}!={digests[key][:12]}"
+            )
         rows.append(
             {
                 "input_name": f"bars_{name}",
@@ -248,6 +258,13 @@ def build_payload(run_dir: Path, *, branch: str, supersedes: str | None) -> dict
     """Assemble what the transaction needs, from the run's own manifest and artifacts."""
 
     manifest = _read(run_dir / "run_manifest.json")
+    # Before anything is read out of it. The artifact check below compares files against
+    # the digests this manifest records; if the manifest itself was edited afterwards,
+    # those digests are the edit's own account of itself.
+    try:
+        assert_manifest_identity_intact(manifest)
+    except (ValueError, KeyError) as error:
+        raise SystemExit(f"RP2_PUBLISH_MANIFEST_ALTERED:{error}") from error
     assert_artifacts_match_manifest(run_dir, manifest)
     scorecard = _read(run_dir / "scorecard.json")
     ladder = _read(run_dir / "rp2_block8_ladder" / "ladder.json")

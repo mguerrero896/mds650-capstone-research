@@ -261,6 +261,63 @@ begin
         raise exception 'RP2_PUBLISH_CONTRAST_IMMUTABLE:%', published_run_id;
     end if;
 
+    -- The comparisons above join on the keys, so they only ever examine the rows present
+    -- on both sides. A retry that drops a contrast, adds one, or renames a family changes
+    -- no value the joins can see, and would be reported as already published while the
+    -- stored result set is not the submitted one. The whole key set is compared instead.
+    if exists (
+        select 1 from public.ingestion_runs r
+        where r.run_id = published_run_id and r.status = 'PUBLISHED'
+    ) and exists (
+        (
+            select item ->> 'role' as role,
+                   item ->> 'model_family' as model_family,
+                   item ->> 'base_information_set' as base_information_set,
+                   item ->> 'expanded_information_set' as expanded_information_set
+            from jsonb_array_elements(coalesce(payload -> 'contrasts', '[]'::jsonb)) as item
+            except
+            select c.role, c.model_family, c.base_information_set, c.expanded_information_set
+            from public.rp2_contrast_results c
+            where c.run_id = published_run_id
+        )
+        union all
+        (
+            select c.role, c.model_family, c.base_information_set, c.expanded_information_set
+            from public.rp2_contrast_results c
+            where c.run_id = published_run_id
+            except
+            select item ->> 'role',
+                   item ->> 'model_family',
+                   item ->> 'base_information_set',
+                   item ->> 'expanded_information_set'
+            from jsonb_array_elements(coalesce(payload -> 'contrasts', '[]'::jsonb)) as item
+        )
+    ) then
+        raise exception 'RP2_PUBLISH_CONTRAST_SET_CHANGED:%', published_run_id;
+    end if;
+
+    -- The same question for the blocks, which are the other set this function replaces.
+    if exists (
+        select 1 from public.ingestion_runs r
+        where r.run_id = published_run_id and r.status = 'PUBLISHED'
+    ) and exists (
+        (
+            select item ->> 'block_id' as block_id
+            from jsonb_array_elements(coalesce(payload -> 'blocks', '[]'::jsonb)) as item
+            except
+            select b.block_id from public.rp2_block_results b where b.run_id = published_run_id
+        )
+        union all
+        (
+            select b.block_id from public.rp2_block_results b where b.run_id = published_run_id
+            except
+            select item ->> 'block_id'
+            from jsonb_array_elements(coalesce(payload -> 'blocks', '[]'::jsonb)) as item
+        )
+    ) then
+        raise exception 'RP2_PUBLISH_BLOCK_SET_CHANGED:%', published_run_id;
+    end if;
+
     -- Nothing left to do, and nothing that may be done. A later run may have superseded
     -- this one; standing its rows down and marking these current again would silently
     -- restore an older answer as the current one.
