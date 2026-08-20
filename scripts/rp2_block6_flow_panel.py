@@ -86,6 +86,23 @@ def counting_bounds(
     return low, max(visible, low)
 
 
+def counting_latency(latency: FloatArray, low: int, high: int) -> tuple[float, float]:
+    """The mean and the tail of one counting window, over one slice of trades.
+
+    The thirty-minute windows open after the session does and overlap each other; the
+    counting windows tile the session and the first of them reaches back to the start of the
+    tape. Taking the mean from one and the tail from the other put two populations beside
+    each other under names a reader compares: the published p95 came out below the published
+    mean, because the first bucket carries the overnight-recorded trades and the thirty-minute
+    windows never see them.
+    """
+
+    if high <= low:
+        return 0.0, 0.0
+    inside = latency[low:high]
+    return float(np.mean(inside)), float(np.quantile(inside, 0.95))
+
+
 def window_count(flags: npt.NDArray[np.bool_], low: int, high: int) -> int:
     """How many flagged trades fall inside one origin's counting window."""
 
@@ -524,9 +541,11 @@ def build_session_flow(
         # thirty-minute features consume them.
         counted = max(counting_hi - counting_lo, 0)
         record["b2_counting_trades"] = float(counted)
-        record["b2_counting_mean_latency_s"] = (
-            float(np.mean(latency_seconds[counting_lo:counting_hi])) if counted else 0.0
+        mean_latency, p95_latency = counting_latency(
+            latency_seconds, counting_lo, counting_hi
         )
+        record["b2_counting_mean_latency_s"] = mean_latency
+        record["b2_counting_p95_latency_s"] = p95_latency
         for label, window_seconds in WINDOWS:
             lo_us = cutoff_us - window_seconds * 1_000_000
             lo = int(np.searchsorted(created, lo_us, side="left"))

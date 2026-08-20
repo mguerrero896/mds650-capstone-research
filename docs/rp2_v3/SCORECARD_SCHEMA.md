@@ -66,9 +66,12 @@ medians afterwards would describe typical origins rather than stale quotes.
 | `b2_empty_window_share` | float | reported |
 | `b2_provider_failure_share` | float | reported |
 
-`b2_p95_provider_latency_s` is the median across origins of *each 30-minute window's*
-95th-percentile record lag, for the same reason: averaging inside the window first would
-suppress exactly the slow records the tail is asked about.
+`b2_p95_provider_latency_s` is the median across *counting* windows of each window's own
+95th-percentile record lag, weighted-where-counted like the mean beside it. Both statistics
+are taken over the same trades on purpose. Read from the thirty-minute windows it was a
+different population: those open after the session does and overlap each other, so they never
+see the trades the first counting bucket carries — the tape's opening records, which arrive
+slowest — and the published pair had a p95 *below* its own mean.
 
 ## Forecast
 

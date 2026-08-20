@@ -328,13 +328,14 @@ def assemble_scorecard(
             "b2_mean_provider_latency_s": _weighted_mean(
                 panels["b2"], "b2_counting_mean_latency_s", "b2_counting_trades"
             ),
-            # Likewise the producer's own per-window tail: averaging first suppresses
-            # the slow records the tail is asked about.
-            # Only windows that saw a trade. An empty window encodes its latency as zero,
-            # and including those sentinels drags the reported tail down - to exactly zero
-            # once half the origins are empty - although no latency was observed in them.
+            # The median across counting windows that saw a trade of each window's own
+            # 95th percentile. The counting windows tile the session, so this tail and the
+            # mean above are taken over the same trades. Read from the overlapping
+            # thirty-minute windows it was a different population: they open after the
+            # session does, so they never see the trades the first counting bucket carries,
+            # and the reported p95 came out below the reported mean.
             "b2_p95_provider_latency_s": _quantile_where(
-                panels["b2"], "b2_30m_p95_provider_latency_s", "b2_30m_trades", 0.5
+                panels["b2"], "b2_counting_p95_latency_s", "b2_counting_trades", 0.5
             ),
             "b2_multileg_share": _mean(panels["b2"], "b2_30m_multileg_premium_share"),
             "b2_empty_window_share": flow.get(
