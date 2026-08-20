@@ -22,6 +22,8 @@ Carried in three places, so that no single omission hides the supersession:
 | Superseded artifact | Superseded by | Reason | Recorded |
 | --- | --- | --- | --- |
 | `artifacts/rp2_block4_b0/ladder.json` → `results.{D,V}.ewma` | `fix/rp2-v3-causal-b0` | the EWMA challenger was built from the square root of the RV30 target rather than from observed one-minute returns | 2026-08-20 |
+| `artifacts/rp2_block5_surface/surface_coverage.json` and the B1 panel | `feat/rp2-v3-contemporaneous-b1` | the snapshot ended 1 920 s before the origin, and the primary set carried two 60 %-coverage diagnostics | 2026-08-20 |
+| `artifacts/rp2_block6_flow/flow_coverage.json` (`d7320a54…`, 60 features) and the B2 panel | `artifacts/rp2_v3/gate5-exact-clock-b2/flow_coverage.json` (`773c3d3d…`, 70 features) | economics measured on the availability clock, a one-day floor on time to expiry, and no 0DTE features | 2026-08-20 |
 
 Later rows are added by the rebuild gate (`results/rp2-v3-rebuild`) once the RP2-v3 run
 exists and its `run_id` is known. A gate that supersedes a number before that point records

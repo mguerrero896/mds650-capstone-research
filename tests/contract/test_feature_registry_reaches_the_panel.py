@@ -85,8 +85,8 @@ DECLARED_DIAGNOSTICS: frozenset[str] = frozenset(
         "b1_implied_rate",
         "b1_implied_dividend_yield",
         # Quote age is a property of the tape, not of the market being forecast.
-        "b2_5m_median_age_s",
-        "b2_30m_median_age_s",
+        "b2_5m_mean_age_s",
+        "b2_30m_mean_age_s",
     }
 )
 

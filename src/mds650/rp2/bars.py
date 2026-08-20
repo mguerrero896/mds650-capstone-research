@@ -54,7 +54,7 @@ BAR_SOURCES: Final[tuple[tuple[str, str, str], ...]] = (
     ("validation_market", "V", "data/fmp/rp2_validation_market/market_1min_validation.parquet"),
 )
 
-_OPTIONAL_COLUMNS: Final = ("high", "low", "volume")
+_OPTIONAL_COLUMNS: Final = ("open", "high", "low", "volume")
 
 
 @lru_cache(maxsize=1)
@@ -100,6 +100,21 @@ def session_open_minute(session: date) -> int:
     if row.height == 0:
         return SESSION_OPEN_MINUTE
     return int(row["open_minute"][0])
+
+
+@lru_cache(maxsize=4096)
+def session_close_minute(session: date) -> int:
+    """Minutes past New-York midnight at which this session closed.
+
+    Returns 0 for a date the exchange did not trade, so a caller can tell "closed early"
+    from "did not trade at all" rather than being handed a plausible-looking 16:00.
+    """
+
+    table = _schedule()
+    row = table.filter(pl.col("session_date") == session)
+    if row.height == 0:
+        return 0
+    return int(row["close_minute"][0])
 
 
 def is_early_close(session: date) -> bool:
@@ -214,6 +229,11 @@ class SessionGrid:
     """
 
     close: FloatArray
+    #: The session's first print in each minute, NaN where the store did not supply one. It
+    #: is the one price a trade *inside* that minute can be marked at without reading its own
+    #: future, which matters for the opening minute, where there is no completed bar to fall
+    #: back to. It is never filled from the close: that would be the look-ahead it prevents.
+    open: FloatArray
     high: FloatArray
     low: FloatArray
     volume: FloatArray
@@ -257,6 +277,7 @@ def build_session_grid(group: pl.DataFrame, *, session: date | None = None) -> S
         empty = np.empty(0, dtype=np.float64)
         return SessionGrid(
             close=empty,
+            open=empty,
             high=empty,
             low=empty,
             volume=empty,
@@ -268,7 +289,7 @@ def build_session_grid(group: pl.DataFrame, *, session: date | None = None) -> S
     minutes = minutes[inside]
 
     grids: dict[str, FloatArray] = {}
-    for name in ("close", "high", "low", "volume"):
+    for name in ("close", "open", "high", "low", "volume"):
         grid = np.full(length, np.nan, dtype=np.float64)
         if name in group.columns:
             grid[minutes] = group[name].to_numpy().astype(np.float64)[inside]
@@ -276,11 +297,18 @@ def build_session_grid(group: pl.DataFrame, *, session: date | None = None) -> S
 
     fill_share = float(np.isnan(grids["close"]).mean())
     close, valid = _forward_fill(grids["close"])
+    # The open is NOT filled from the close. A store without the column, or a minute
+    # without a bar, leaves NaN, and the caller loses the marks that depended on it. The
+    # close of minute m is the price at the *end* of minute m, so substituting it here
+    # would hand every opening-minute trade a price from its own future — the exact
+    # look-ahead the open exists to avoid.
+    opening = grids["open"]
     high = np.where(np.isnan(grids["high"]), close, grids["high"])
     low = np.where(np.isnan(grids["low"]), close, grids["low"])
     volume = np.where(np.isnan(grids["volume"]), 0.0, grids["volume"])
     return SessionGrid(
         close=close,
+        open=opening,
         high=high,
         low=low,
         volume=volume,

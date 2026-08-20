@@ -718,4 +718,94 @@ Spec Kit consistency and preregistration gates pass.
    Block 5b, which measures the trade-sampling bias of decision 77 against an independent
    quote feed, now reads the window through the same rule; in RP2-v2 it defined its own and
    audited a surface the panel did not carry.
+81. **B2 measured its economics on the provider's clock, and priced 0DTE as a full day
+   (2026-08-20)** — every tape row carries two timestamps. `created_at` is the operational record-creation
+   stamp, which `docs/provider_timing_pit_contract_v22.md` registers as a *proxy* for
+   availability and explicitly not as proven publication, receipt or provider-confirmed
+   visibility; `executed_at` is when the trade happened and answers economics. Using the
+   proxy as an availability bound is conservative, because a record cannot be created before
+   the event it records; reading it as evidence of provider behaviour is not supported. Block 6 selected windows on availability, correctly, and then also
+   chose the spot minute, the interarrivals and the decay intensity on it, so provider
+   behaviour entered the features as market behaviour. `src/mds650/rp2/option_clock.py`
+   separates them: spot as-of, Greeks, tenor and intensity now run on `executed_at`, and
+   only visibility runs on `created_at`. Time to expiry was
+   `max(expiry_date - session_date, 1 day)`, so a contract with four hours left was priced
+   as if it had twenty-four, and 0DTE and 1DTE at the same strike collided in the contract
+   key. It is now `(expiry_close_utc - executed_at) / (365.25 x 24 x 3600)`. A second floor
+   was hiding inside `black_scholes_greeks`, `MIN_TENOR_YEARS = 1/365`, which silently
+   re-rounded every 0DTE contract back up to a day and would have made the exact clock
+   change nothing where it mattered most; it is now one minute, which is all a square root
+   needs. Rebuilt over all 184,632 origins: `b2_5m_vega_flow_short_dte` moves by 7.4 %,
+   `b2_5m_gamma_flow` by 3.7 %, the vega and delta flows by about 1.3 % at the median, and
+   33 of 56 shared features do not move at all. The contract-key collision affected 0.9 % of
+   windows. The clock swap itself is small in this provider's data — median latency is
+   0.073 s, so the two clocks nearly coincide — and it is now correct by construction rather
+   than by the provider's speed. Five features are added because the mechanism was
+   unmeasurable without them: `zero_dte_premium_share`, `zero_dte_signed_premium` and
+   `zero_dte_trade_share` per window, which show that **11.9 % of trades and 4.3 % of
+   premium** in a five-minute window are same-session expiries. `mean_latency_s` becomes
+   `mean_provider_latency_s` — the name the master plan gives it, kept, with the
+   accompanying disavowal that `created_at - executed_at` is a record-creation lag and
+   not proven provider delivery behaviour (`docs/provider_timing_pit_contract_v22.md`);
+   using it as an availability bound is conservative, reading it as a measurement of the
+   provider's pipe is not supported — and `median_age_s` becomes `mean_age_s` because it was always
+   the mean. A session whose tape cannot be read is now recorded by name as a provider
+   failure rather than arriving downstream as a window in which nobody traded. Verified on a
+   real session of 304,386 tape rows: 1,607,405 events used across all windows, **zero PIT
+   violations**, and zero rows where execution followed publication. Two further corrections
+   followed from the same principle. The tape arrives in publication order and latency does
+   not preserve execution order — **42.1 % of adjacent rows are inverted** over 725,914 rows
+   of three sessions — so feeding those timestamps to an exponential decay made it amplify
+   rather than decay; the recursion now runs on the execution-ordered permutation and is
+   mapped back, and window spans and interarrival gaps are taken from the window's extremes
+   and from sorted gaps rather than from its first and last published rows. The measured
+   effect is small, 0.17 % on the decay innovation, because the inversions are sub-second
+   and the decay constant is much longer; it is now correct by construction rather than by
+   that coincidence. And the expiry close comes from the exchange calendar rather than a
+   fixed 16:00: **five sessions in the study window close at 13:00**, where the fixed time
+   would have handed every same-day contract three hours it never had, straight into the
+   0DTE Greeks. A session whose tape cannot be read, a session too thin to build
+   microstructure from, and a window in which nobody traded are three separate facts and are
+   now counted separately: 0 provider failures, 0 sparse sessions, and 0.226 % empty
+   five-minute windows. Ordering by execution alone would have introduced a point-in-time
+   violation of its own — an earlier-executed print the provider had not published yet would
+   have raised the intensity of a later-executed one it had — so the decay is now evaluated
+   *at* each instant over the rows visible there: `decay_intensity_at` takes the cutoff and
+   the window start, ages every visible row on the exchange clock, and admits none the
+   provider had not published. `decay_intensity_innovation` is therefore redefined as the
+   rise in intensity across the window rather than the last row minus the window mean; it
+   moves by 106 %, and that is a change of definition, not a correction of arithmetic.
+   Evaluating the window start at the exact instant rather than at an earlier origin keeps
+   the feature defined everywhere: taking it from a lagged origin left the first six origins
+   of every session undefined and cost 9.3 % of evaluation rows under the fail-closed rule.
+   Finally, the coverage accounting was
+   itself incomplete: a session-asset the B0 panel carried but the tape inventory or the bar
+   grid did not was skipped before any counter saw it, so every number in the artifact
+   described only the part of the study that happened to be complete. The denominator is now
+   what the study asked for. Measured: **2,814 of 2,814 session-assets**, with zero missing
+   inventory entries, zero missing bar grids, zero provider failures and zero sparse
+   sessions. One enumerable state is encoded rather than imputed: a window in which nobody
+   traded, 0.226 % of five-minute windows, sets `is_empty_window` to 1 and its three
+   per-trade averages to 0. A NaN there would be honest and would also remove the origin
+   from every contrast under the fail-closed rule; the indicator lets a model read the zeros
+   as an absence. Fold-local imputation of the general case is its own gate. **All 70
+   features now cover 100 % of the 184,632 origins**, against a minimum of 59.7 % before the
+   gate. One further mistiming, pre-existing and not a point-in-time violation: bars are
+   labelled by their start, so `closes[m]` is the price at the *end* of minute m and a trade
+   executed inside that minute was marked at a price from its own future. The whole window
+   still sat before the forecast origin, so no forecast ever saw the future; what was wrong
+   was the exposure of each trade. Marking at the last completed bar moves
+   `b2_5m_delta_flow` by 1.06 %, `b2_5m_gamma_flow` by 1.59 % and `b2_5m_vega_flow` by
+   0.49 % at the median across essentially every window, and drops the opening minute's
+   prints. Those are the most active minute of the day and sit inside the thirty-minute
+   window of every early origin, so dropping them would have taken 9.1 million trades and
+   28.7 billion of premium out of 2,799 windows; they are marked at the session's opening
+   print instead, the earliest price that exists. And the Greeks floor is applied only to a
+   non-positive tenor now: a 0DTE contract with one second left keeps that second, where a
+   sixty-second floor would have flattened exactly the gamma and vega that make it
+   interesting. The opening mark is never borrowed from the close: two of the six bar
+   stores carry no `open` column, and filling it would have handed their opening-minute
+   trades the price at the *end* of that minute. Those prints are dropped instead, which
+   costs 0.037 % of thirty-minute trade volume across 347 windows and is a loss the data
+   actually has rather than a number invented to cover it.
 

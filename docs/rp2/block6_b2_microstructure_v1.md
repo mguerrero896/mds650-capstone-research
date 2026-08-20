@@ -1,6 +1,12 @@
 # Block 6 — Gate 5: B2 rebuilt as microstructure
 
-**Status:** `EXECUTED — 2026-08-19` · label `EXPLORATORY_MECHANISM_DISCOVERY`
+**Status:** `SUPERSEDED_BY_RP2_V3` — executed 2026-08-19, superseded 2026-08-20 by
+`fix/rp2-v3-exact-clock-b2` (methodology decision 81). The run below is retained
+unchanged; the replacement is
+`artifacts/rp2_v3/gate5-exact-clock-b2/flow_coverage.json`
+(`flow_sha256 = 773c3d3d7f07ef9214ba6b4bc5383ab34723b6fbdbd4a468544cbbb244516f69`, 70 features, panel
+`972fa80b…a3de2`, 75.5 MB).
+· label `EXPLORATORY_MECHANISM_DISCOVERY`
 **Artifacts:** `artifacts/rp2_block6_flow/flow_coverage.json`
 (`flow_sha256 = d7320a546cfe2ffc113baab555b3b663bbcffa678495d7ee80fb4b31820d3306`);
 panel `b2_flow_panel.parquet` is local-only, hashed in `artifacts/rp2_panel_pointers.json`

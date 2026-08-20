@@ -10,8 +10,8 @@ its final commit.
 | 1 | `docs/rp2-v3-contract` | Freeze the research contract | merged |
 | 2 | `fix/rp2-v3-panel-contracts` | Information sets fail closed | merged |
 | 3 | `fix/rp2-v3-causal-b0` | Causal, asset-local EWMA baseline | merged |
-| 4 | `feat/rp2-v3-contemporaneous-b1` | B1 as contemporaneous option state | in review |
-| 5 | `fix/rp2-v3-exact-clock-b2` | B2 dual clocks, exact expiry, 0DTE | pending |
+| 4 | `feat/rp2-v3-contemporaneous-b1` | B1 as contemporaneous option state | merged |
+| 5 | `fix/rp2-v3-exact-clock-b2` | B2 dual clocks, exact expiry, 0DTE | in review |
 | 6 | `feat/rp2-v3-core-feature-registry` | Core versus rich feature sets | pending |
 | 7 | `feat/rp2-v3-fold-local-preprocessing` | Fold-local imputation, common mask | pending |
 | 8 | `feat/rp2-v3-qlike-models` | LightGBM aligned to QLIKE | pending |
