@@ -566,7 +566,13 @@ def _window_record(
         f"{prefix}mean_age_s": (
             cutoff_us / 1e6 - total("age_sum") / trades if trades else 0.0
         ),
-        # Provider latency, from the exchange clock to the availability clock.
+        # `created_at - executed_at`. The master plan names this feature
+        # `mean_provider_latency_s`, and the name is kept, but it does not assert provider
+        # delivery behaviour: docs/provider_timing_pit_contract_v22.md establishes
+        # `created_at` as an operational record-creation proxy, not a proven publication or
+        # receipt time. What is measured is the lag between the exchange stamp and the
+        # record stamp; using it as an availability bound is conservative, and reading it as
+        # a measurement of the provider's pipe is not supported by this dataset.
         f"{prefix}mean_provider_latency_s": (
             total("latency_sum") / trades if trades else 0.0
         ),

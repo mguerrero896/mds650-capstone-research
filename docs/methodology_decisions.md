@@ -741,7 +741,11 @@ Spec Kit consistency and preregistration gates pass.
    unmeasurable without them: `zero_dte_premium_share`, `zero_dte_signed_premium` and
    `zero_dte_trade_share` per window, which show that **11.9 % of trades and 4.3 % of
    premium** in a five-minute window are same-session expiries. `mean_latency_s` becomes
-   `mean_provider_latency_s`, and `median_age_s` becomes `mean_age_s` because it was always
+   `mean_provider_latency_s` — the name the master plan gives it, kept, with the
+   accompanying disavowal that `created_at - executed_at` is a record-creation lag and
+   not proven provider delivery behaviour (`docs/provider_timing_pit_contract_v22.md`);
+   using it as an availability bound is conservative, reading it as a measurement of the
+   provider's pipe is not supported — and `median_age_s` becomes `mean_age_s` because it was always
    the mean. A session whose tape cannot be read is now recorded by name as a provider
    failure rather than arriving downstream as a window in which nobody traded. Verified on a
    real session of 304,386 tape rows: 1,607,405 events used across all windows, **zero PIT

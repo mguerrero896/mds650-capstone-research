@@ -50,7 +50,14 @@ class OptionClocks:
 
     @property
     def latency_seconds(self) -> FloatArray:
-        """Provider latency: availability minus execution."""
+        """Record-creation lag: the availability stamp minus the exchange stamp.
+
+        Not a measurement of the provider's delivery pipe.
+        ``docs/provider_timing_pit_contract_v22.md`` establishes ``created_at`` as an
+        operational record-creation proxy rather than a proven publication or receipt time,
+        so using it as an availability bound is conservative and reading it as provider
+        behaviour is a claim this dataset cannot support.
+        """
 
         return np.asarray((self.created_us - self.executed_us) / MICROSECONDS, dtype=np.float64)
 

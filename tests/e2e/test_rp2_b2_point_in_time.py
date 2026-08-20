@@ -344,3 +344,22 @@ def test_a_bar_store_without_opens_loses_the_mark_rather_than_inventing_one() ->
     marks = block6.mark_price(np.array([0, 5], dtype=np.int64), grid.close, grid.open)
     assert np.isnan(marks[0]), "the opening minute has no mark here, and says so"
     assert marks[1] == 101.0, "every other minute still marks at the completed bar"
+
+
+def test_the_latency_feature_does_not_claim_provider_delivery_behaviour() -> None:
+    """The name is the plan's; the claim behind it is not this dataset's to make.
+
+    `created_at` is established as an operational record-creation proxy, not a proven
+    publication or receipt time, so a feature reported as provider latency has to say what
+    it actually measures — the same discipline `implied_minus_trailing_variance` follows
+    for the VRP label.
+    """
+
+    from mds650.rp2.option_clock import OptionClocks
+
+    assert "record-creation lag" in (OptionClocks.latency_seconds.__doc__ or "")
+    assert "provider_timing_pit_contract_v22" in (OptionClocks.latency_seconds.__doc__ or "")
+    source = _source()
+    assert "record-creation proxy" in source, (
+        "the feature that carries the name must carry the disavowal beside it"
+    )
