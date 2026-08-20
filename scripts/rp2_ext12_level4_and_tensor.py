@@ -318,6 +318,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         # registry that decided them. Without it an artifact records a design width and
         # nothing a reader can check that width against.
         "feature_registry": describe_coverage(panel, *CORE_SETS.values()),
+        "extension_inputs": "the tensor and sequence arms add inputs outside the registry; "
+        "their resolved names are recorded per arm under information_sets",
         "extensions": [1, 2],
         "program": "docs/research_program_v2.md",
         "label": "EXPLORATORY_MECHANISM_DISCOVERY",

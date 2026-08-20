@@ -22,12 +22,11 @@ import polars as pl
 
 from mds650.b1v3_confirmation import canonical_sha256
 from mds650.rp2.dml import cross_fitted_residuals, dml_partial_out, time_block_folds
-from mds650.rp2.feature_registry import describe_coverage
+from mds650.rp2.feature_registry import describe_coverage, feature_map
 from mds650.rp2.panel import (
     B0_FEATURES,
     B1_FEATURES,
     B2_FEATURES,
-    CORE_SETS,
     VARIANCE_FLOOR,
     build_design,
     chronological_split,
@@ -44,6 +43,11 @@ B1_PANEL = ROOT / "artifacts" / "rp2_block5_surface" / "b1_surface_panel.parquet
 B2_PANEL = ROOT / "artifacts" / "rp2_block6_flow" / "b2_flow_panel.parquet"
 
 #: Economically distinct B2 treatments used for the primary joint test.
+#: The sets this block actually fits: the nuisance is B0+B1 core, and two of the ten
+#: treatments are B2-rich, so the provenance has to cover both or it omits a fitted
+#: variable.
+FITTED_SETS: tuple[str, ...] = ("B0_CORE", "B1_CORE", "B2_CORE", "B2_RICH")
+
 CORE_TREATMENTS: tuple[str, ...] = (
     "b2_5m_vega_flow",
     "b2_5m_gamma_flow",
@@ -77,10 +81,14 @@ def run_role(
 
     frame = panel.filter(pl.col("role") == role).sort(["session_date", "asset", "origin_minute"])
     nuisance, nuisance_names = build_design(frame, [B0_FEATURES, B1_FEATURES])
-    unknown = [name for name in treatments if name not in B2_FEATURES]
+    # The DML treatment battery is a set of mechanisms to partial out, not a primary
+    # information set, so it resolves against the whole registry: two of its ten channels
+    # are B2-rich, and rich means out of the primary contrasts, not out of existence.
+    available = feature_map("B2_CORE", "B2_RICH")
+    unknown = [name for name in treatments if name not in available]
     if unknown:
         raise ValueError(f"RP2_DML_UNKNOWN_TREATMENT:{','.join(sorted(unknown))}")
-    treatment_map = {name: B2_FEATURES[name] for name in treatments}
+    treatment_map = {name: available[name] for name in treatments}
     treatment_design, treatment_names = build_design(frame, [treatment_map], intercept=False)
     outcomes = _outcomes(frame)
     sessions = session_rank(frame["session_date"].to_numpy())
@@ -157,7 +165,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         # Which frozen sets were fitted, how complete they were, and the hash of the
         # registry that decided them. Without it an artifact records a design width and
         # nothing a reader can check that width against.
-        "feature_registry": describe_coverage(panel, *CORE_SETS.values()),
+        "feature_registry": describe_coverage(panel, *FITTED_SETS),
         "block": 7,
         "program": "docs/research_program_v2.md",
         "label": "EXPLORATORY_MECHANISM_DISCOVERY",

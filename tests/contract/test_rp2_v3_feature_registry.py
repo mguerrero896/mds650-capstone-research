@@ -8,6 +8,7 @@ on the day somebody edits one of them.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import numpy as np
@@ -218,19 +219,38 @@ def test_every_artifact_writer_records_the_registry_it_fitted() -> None:
     assert not missing, f"artifact writers with no registry provenance: {missing}"
 
 
-def test_the_historical_treatment_battery_resolves_against_the_whole_registry() -> None:
+#: Scripts whose treatment battery is a set of mechanisms to partial out rather than a
+#: primary information set. Block 7 is the decisive DML experiment; ext1 replicates it.
+TREATMENT_SCRIPTS: tuple[str, ...] = ("rp2_block7_dml", "rp2_ext1_mechanism_utility")
+
+
+def test_a_treatment_battery_resolves_against_the_whole_registry() -> None:
     """Rich means out of the primary contrasts, not out of existence.
 
-    The mechanism extension's battery predates the core/rich split and names channels that
-    are now B2-rich. Resolving it against the primary set alone would make the extension
-    raise RP2_EXT1_UNKNOWN_TREATMENT and stop running altogether.
+    Both batteries predate the core/rich split and name channels that are now B2-rich.
+    Resolving them against the primary set alone makes the run raise on its first role
+    instead of producing results — and one of the two is the decisive DML experiment.
     """
 
-    source = (REPO / "scripts" / "rp2_ext1_mechanism_utility.py").read_text(encoding="utf-8")
-    assert 'feature_map("B2_CORE", "B2_RICH")' in source
     available = feature_map("B2_CORE", "B2_RICH")
     for name in ("b2_5m_gamma_flow", "b2_5m_otm_premium_share"):
         assert name in available, name
+    for script in TREATMENT_SCRIPTS:
+        source = (REPO / "scripts" / f"{script}.py").read_text(encoding="utf-8")
+        assert 'feature_map("B2_CORE", "B2_RICH")' in source, script
+        battery = re.findall(r'"(b2_5m_[a-z0-9_]+)"', source.split("CORE_TREATMENTS")[1])
+        assert battery, script
+        unresolved = sorted(set(battery) - set(available))
+        assert not unresolved, f"{script}: {unresolved}"
+
+
+def test_a_record_covers_every_set_the_script_actually_fits() -> None:
+    """A battery that includes rich channels needs a record that includes them too."""
+
+    for script in TREATMENT_SCRIPTS:
+        source = (REPO / "scripts" / f"{script}.py").read_text(encoding="utf-8")
+        assert "describe_coverage(panel, *FITTED_SETS)" in source, script
+        assert '"B2_RICH"' in source.split("FITTED_SETS")[1][:200], script
 
 
 def test_the_configuration_travels_with_the_installed_package() -> None:

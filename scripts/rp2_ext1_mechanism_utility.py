@@ -41,7 +41,6 @@ from mds650.rp2.panel import (
     B0_FEATURES,
     B1_FEATURES,
     B2_FEATURES,
-    CORE_SETS,
     VARIANCE_FLOOR,
     build_design,
     chronological_split,
@@ -64,6 +63,11 @@ B2_PANEL = ROOT / "artifacts" / "rp2_block6_flow" / "b2_flow_panel.parquet"
 
 #: The two treatments that replicated across universes in Block 7, plus the eight others
 #: from the core block so the joint test is comparable to Block 7's.
+#: The sets this extension actually fits. Its battery predates the core/rich split and
+#: includes rich channels, so a record built from the core sets alone would omit
+#: variables that were fitted.
+FITTED_SETS: tuple[str, ...] = ("B0_CORE", "B1_CORE", "B2_CORE", "B2_RICH")
+
 CORE_TREATMENTS: tuple[str, ...] = (
     "b2_5m_vega_flow",
     "b2_5m_gamma_flow",
@@ -415,7 +419,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         # Which frozen sets were fitted, how complete they were, and the hash of the
         # registry that decided them. Without it an artifact records a design width and
         # nothing a reader can check that width against.
-        "feature_registry": describe_coverage(panel, *CORE_SETS.values()),
+        "feature_registry": describe_coverage(panel, *FITTED_SETS),
         "extension": 1,
         "program": "docs/research_program_v2.md",
         "label": "EXPLORATORY_MECHANISM_DISCOVERY",
