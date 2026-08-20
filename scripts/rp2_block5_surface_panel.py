@@ -108,6 +108,7 @@ def _read_tape(paths: Sequence[str], asset: str) -> pl.DataFrame | None:
         frame = pl.read_parquet(path, columns=list(TAPE_COLUMNS))
         frames.append(frame.filter(pl.col("underlying_symbol") == asset))
     if not frames:
+        # Nothing to read: no path resolved for this session-asset.
         return None
     tape = pl.concat(frames, how="vertical")
     tape = tape.filter(
@@ -116,7 +117,10 @@ def _read_tape(paths: Sequence[str], asset: str) -> pl.DataFrame | None:
         & pl.col("implied_volatility").is_between(0.01, 5.0)
         & pl.col("strike").is_not_null()
     )
-    return tape.sort("created_at") if tape.height else None
+    # A file that opened and lost every quote to the quality filters is a thin session,
+    # not a provider failure. Returning `None` here put an ordinary unquotable day into the
+    # outage count.
+    return tape.sort("created_at")
 
 
 def _co_strike_pairs(

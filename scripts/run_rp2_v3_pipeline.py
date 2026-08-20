@@ -640,13 +640,19 @@ def construct_common_masks(run_dir: Path, roles: Sequence[str]) -> Path:
 
 
 def build_scorecard(
-    run_dir: Path, manifest: RunManifest, *, elapsed_seconds: float
+    run_dir: Path, manifest: RunManifest, *, started_at: float
 ) -> dict[str, object]:
     """Step 11: assemble the scorecard the schema requires, and fail on a missing field."""
 
     from mds650.rp2.scorecard import assemble_scorecard, render_scorecard
 
-    scorecard = assemble_scorecard(run_dir, manifest, elapsed_seconds=elapsed_seconds)
+    scorecard = assemble_scorecard(run_dir, manifest, elapsed_seconds=0.0)
+    # Sampled here rather than at the call site: the parquet reads, the completeness checks
+    # and the rendering all happen inside the assembly, and an argument evaluated before it
+    # would exclude every one of them.
+    engineering = scorecard["engineering"]
+    assert isinstance(engineering, dict)
+    engineering["runtime_seconds"] = round(time.perf_counter() - started_at, 3)
     (run_dir / "scorecard.json").write_text(
         json.dumps(scorecard, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
@@ -963,7 +969,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         started_at_utc=started,
         finished_at_utc=datetime.now(UTC).isoformat(),
     )
-    build_scorecard(run_dir, manifest, elapsed_seconds=round(time.perf_counter() - wall, 3))
+    build_scorecard(run_dir, manifest, started_at=wall)
     steps.append(
         StepRecord(
             name="generate-scorecard",
@@ -1006,6 +1012,50 @@ def main(argv: Sequence[str] | None = None) -> int:
     # marked complete is closed to its producers - so writing it before the verification
     # would make an unverifiable run permanently unrepeatable under its own id.
     verify_artifacts(run_dir, steps)
+    verification_seconds = round(time.perf_counter() - wall, 3)
+    # The manifest describes thirteen steps because the pipeline has thirteen. Recording
+    # eleven and performing two more leaves a consumer counting the difference.
+    steps.append(
+        StepRecord(
+            name="verify-artifact-hashes",
+            command=("internal", "verify_artifacts"),
+            exit_code=0,
+            runtime_seconds=verification_seconds,
+            peak_memory_bytes=_own_peak_memory_bytes(),
+        )
+    )
+    # The manifest cannot hash itself, so this step records what it did and no artifact.
+    # Leaving it out entirely would make a thirteen-step pipeline produce an
+    # eleven-step record and leave a reader counting the difference.
+    steps.append(
+        StepRecord(
+            name="generate-provenance",
+            command=("internal", "write_manifest"),
+            exit_code=0,
+            runtime_seconds=0.0,
+            peak_memory_bytes=_own_peak_memory_bytes(),
+        )
+    )
+    manifest = RunManifest(
+        **{
+            **{
+                field: getattr(manifest, field)
+                for field in (
+                    "run_id",
+                    "code_commit",
+                    "data_root",
+                    "roles",
+                    "feature_registry_sha256",
+                    "input_manifest_sha256",
+                    "model_config_sha256",
+                    "seeds",
+                    "started_at_utc",
+                )
+            },
+            "steps": tuple(steps),
+            "finished_at_utc": datetime.now(UTC).isoformat(),
+        }
+    )
     write_manifest(run_dir, manifest)
     digest = str(manifest.as_record()["scientific_sha256"])
     print(f"run {manifest.run_id}: {len(steps)} steps, scientific hash {digest[:16]}")
