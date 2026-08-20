@@ -299,6 +299,11 @@ VOLATILE_KEYS: Final[frozenset[str]] = frozenset(
         # The run's label. Administration, like the data root: the same experiment under a
         # new name is the same experiment, and the scorecard is itself a hashed artifact.
         "run_id",
+        # Absolute paths and modification times of the option tape. Recorded so a
+        # re-acquisition that left every size unchanged is visible; not identifying,
+        # because tape restored to another mount is the same tape - and the input
+        # manifest that carries it is itself a content-digested artifact.
+        "tape_freshness_sha256",
     }
 )
 

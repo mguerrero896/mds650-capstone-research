@@ -259,6 +259,22 @@ def _digest_outputs(
 _RECORDED_ONLY: Final = frozenset({"tape_freshness_sha256", "study_window_source"})
 
 
+def assert_data_root_matches(data_root: Path) -> None:
+    """The inventory holds absolute paths, so the store has to be where it says it is.
+
+    Blocks 5 and 6 open `row["path"]` verbatim. Pointed at another mount, the run would
+    read the frozen location anyway and record the one it was given, which is a manifest
+    that describes a run that did not happen. Relocation is a real requirement and it needs
+    the inventory rebased; until then the runner says so instead of pretending.
+    """
+
+    frozen = str(json.loads(PARTITION.read_text(encoding="utf-8")).get("data_root", ""))
+    if not frozen:
+        return
+    if Path(frozen).as_posix().rstrip("/").lower() != data_root.as_posix().rstrip("/").lower():
+        raise SystemExit(f"RP2_RUN_DATA_ROOT_MISMATCH:{data_root.as_posix()}!={frozen}")
+
+
 def _tape_fingerprint(
     paths: Sequence[Path], *, hash_contents: bool
 ) -> tuple[str, str, int, int]:
@@ -309,6 +325,7 @@ def validate_inputs(
 
     from mds650.rp2.bars import BAR_SOURCES
 
+    assert_data_root_matches(data_root)
     paths, manifest_digest = declared_inputs(GATED_MANIFEST)
     if not TAPE_INVENTORY.is_file():
         raise SystemExit(f"RP2_RUN_TAPE_INVENTORY_MISSING:{TAPE_INVENTORY.name}")
@@ -933,8 +950,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             "finished_at_utc": datetime.now(UTC).isoformat(),
         }
     )
-    write_manifest(run_dir, manifest)
+    # Verified first. Writing the manifest is what marks the run complete, and a directory
+    # marked complete is closed to its producers - so writing it before the verification
+    # would make an unverifiable run permanently unrepeatable under its own id.
     verify_artifacts(run_dir, steps)
+    write_manifest(run_dir, manifest)
     digest = str(manifest.as_record()["scientific_sha256"])
     print(f"run {manifest.run_id}: {len(steps)} steps, scientific hash {digest[:16]}")
     print(f"registry {REGISTRY_CONFIG.name}, scorecard fields {SCORECARD_FIELDS.name}")
