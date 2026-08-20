@@ -14,8 +14,8 @@ its final commit.
 | 5 | `fix/rp2-v3-exact-clock-b2` | B2 dual clocks, exact expiry, 0DTE | merged |
 | 6 | `feat/rp2-v3-core-feature-registry` | Core versus rich feature sets | merged |
 | 7 | `feat/rp2-v3-fold-local-preprocessing` | Fold-local imputation, common mask | merged |
-| 8 | `feat/rp2-v3-qlike-models` | LightGBM aligned to QLIKE | in review |
-| 9 | `fix/rp2-v3-session-inference` | Session-level, family-matched inference | pending |
+| 8 | `feat/rp2-v3-qlike-models` | LightGBM aligned to QLIKE | merged |
+| 9 | `fix/rp2-v3-session-inference` | Session-level, family-matched inference | in review |
 | 10 | `feat/rp2-v3-pipeline-runner` | One reproducible runner | pending |
 | 11 | `db/rp2-v3-versioned-results` | Versioned Supabase results | pending |
 | 12 | `results/rp2-v3-rebuild` | Rebuild, scorecard, publication | pending |

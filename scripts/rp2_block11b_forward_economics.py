@@ -49,7 +49,7 @@ from mds650.rp2.economics import (
 )
 from mds650.rp2.feature_registry import assert_segment_coverage, describe_coverage
 from mds650.rp2.flow import black_scholes_greeks
-from mds650.rp2.ladder import LADDER
+from mds650.rp2.ladder import LADDER, PRIMARY_MODELS, assert_primary_models
 from mds650.rp2.panel import (
     B0_FEATURES,
     B1_FEATURES,
@@ -80,7 +80,10 @@ NON_OVERLAPPING_STEP = 30
 LOOKBACK_SECONDS = 1800
 CALENDAR_YEAR = 365.0
 NY = ZoneInfo(MARKET_TZ)
-DEFAULT_MODELS: tuple[str, ...] = ("log_ols", "gamma_glm", "lightgbm")
+#: The families the research contract decides on. `log_ols` and `lightgbm` remain
+#: available through --models as robustness, but a default run reports the three
+#: families the conclusions are read off.
+DEFAULT_MODELS: tuple[str, ...] = PRIMARY_MODELS
 PERIODS_PER_YEAR = 252.0 * 13.0
 
 #: A retail-plus execution assumption, stated rather than tuned.
@@ -482,6 +485,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     models = tuple(name.strip() for name in str(args.models).split(",") if name.strip())
+    assert_primary_models(models)
     args.output_dir.mkdir(parents=True, exist_ok=True)
     cached = args.output_dir / "tradeable_legs.parquet"
     # The tape pass is the expensive half. Reuse it when it is already on disk and the

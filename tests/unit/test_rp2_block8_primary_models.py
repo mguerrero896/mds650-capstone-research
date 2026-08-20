@@ -31,7 +31,7 @@ def _load(name: str) -> ModuleType:
 
 def test_the_producer_refuses_a_ladder_without_every_primary_family() -> None:
     block8 = _load("rp2_block8_ladder")
-    with pytest.raises(ValueError, match="RP2_BLOCK8_PRIMARY_MODEL_MISSING:lightgbm_qlike"):
+    with pytest.raises(ValueError, match="RP2_PRIMARY_MODEL_MISSING:lightgbm_qlike"):
         block8.assert_primary_models(("gamma_glm", "ridge_log", "lightgbm"))
     block8.assert_primary_models(PRIMARY_MODELS)
     block8.assert_primary_models((*PRIMARY_MODELS, "spline_additive"))
