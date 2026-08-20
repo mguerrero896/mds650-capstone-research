@@ -388,6 +388,12 @@ def test_the_cross_fit_blocks_impute_from_their_own_training_rows() -> None:
     ).read_text(encoding="utf-8")
     assert "design_builder=nuisance_for" in source
     assert "def nuisance_for(" in source
+    # The alternative-target battery cross-fits too, and it must do the same.
+    extension = (
+        _Path(__file__).resolve().parents[2] / "scripts" / "rp2_ext1_mechanism_utility.py"
+    ).read_text(encoding="utf-8")
+    assert "design_builder=nuisance_for" in extension
+    assert "cross_fitted_residuals(nuisance[finite], response[finite], blocks)" not in extension
 
     # The builder really is consulted per fold, not once.
     from mds650.rp2.dml import TimeFold

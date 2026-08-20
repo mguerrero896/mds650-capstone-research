@@ -158,15 +158,31 @@ def _dml_on_target(
     *,
     folds: int,
     evaluation_base: npt.NDArray[np.bool_],
+    frame: pl.DataFrame,
+    nuisance_features: Sequence[str],
 ) -> dict[str, object] | None:
     finite = np.isfinite(response)
     if int(finite.sum()) < 2000 or np.unique(sessions[finite]).size < 20:
         return None
     blocks = time_block_folds(sessions[finite], folds=folds, purge_sessions=1)
-    response_residual = cross_fitted_residuals(nuisance[finite], response[finite], blocks)
+
+    # Imputation and scaling are nuisance parameters, so the projection each block is
+    # residualised against is rebuilt from that block's own training rows. Fitting once over
+    # this target's finite subset would let a held-out block choose the medians and scales it
+    # is then held out of.
+    available = frame.filter(pl.Series(finite))
+
+    def nuisance_for(train: npt.NDArray[np.bool_]) -> npt.NDArray[np.float64]:
+        return fold_design(available, list(nuisance_features), train)[0]
+
+    response_residual = cross_fitted_residuals(
+        nuisance[finite], response[finite], blocks, design_builder=nuisance_for
+    )
     treatment_residual = np.column_stack(
         [
-            cross_fitted_residuals(nuisance[finite], treatment[finite, index], blocks)
+            cross_fitted_residuals(
+                nuisance[finite], treatment[finite, index], blocks, design_builder=nuisance_for
+            )
             for index in range(treatment.shape[1])
         ]
     )
@@ -196,6 +212,7 @@ def target_battery(
     *,
     folds: int,
     evaluation_base: npt.NDArray[np.bool_],
+    nuisance_features: Sequence[str],
 ) -> dict[str, object]:
     """DML of the core B2 block against every alternative target.
 
@@ -224,6 +241,8 @@ def target_battery(
             names,
             folds=folds,
             evaluation_base=evaluation_base,
+            frame=frame,
+            nuisance_features=nuisance_features,
         )
         if outcome is None:
             continue
@@ -413,7 +432,14 @@ def run_role(
         "test_rows": int(test.sum()),
         "sessions": int(np.unique(sessions).size),
         "a_other_targets": target_battery(
-            frame, nuisance, treatment, sessions, names, folds=folds, evaluation_base=keep
+            frame,
+            nuisance,
+            treatment,
+            sessions,
+            names,
+            folds=folds,
+            evaluation_base=keep,
+            nuisance_features=nuisance_features,
         ),
         "b_tail_classification": tail_classification(
             rv30, designs, train & finite, test & finite, assets
