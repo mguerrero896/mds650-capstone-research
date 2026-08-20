@@ -31,11 +31,62 @@ def _load(name: str) -> ModuleType:
     sys.modules[name] = module
     spec.loader.exec_module(module)
     if name == "publish_rp2_v3_supabase":
+        # A tape of this fixture's own, for the same reason as the bar store: the publisher
+        # re-reads the tape before publishing its lineage, and the test is about what it
+        # does with the digest rather than about which parquet sits on the machine.
+        module.TAPE_INVENTORY = _shared_tape()
         # The shipped configuration records no decision, on purpose, so `build_payload`
         # refuses. These tests are about the rest of the publisher; the guard itself is
         # exercised directly in its own test with the undecided configuration.
         module.STUDY_WINDOW_CONFIG = _decided_window_file()
     return module
+
+
+def _tape_inventory() -> Path:
+    """A two-file option tape and the inventory that points at it."""
+
+    import tempfile
+
+    root = Path(tempfile.mkdtemp())
+    lines = []
+    for index in range(2):
+        events = root / f"date=2024-08-0{index + 2}" / "events.parquet"
+        events.parent.mkdir(parents=True, exist_ok=True)
+        events.write_bytes(f"tape {index}".encode())
+        lines.append(
+            json.dumps(
+                {
+                    "asset": "AAPL",
+                    "path": events.as_posix(),
+                    "role": "D",
+                    "session_date": f"2024-08-0{index + 2}",
+                    "size_bytes": events.stat().st_size,
+                    "source": "fixture",
+                }
+            )
+        )
+    inventory = root / "inventory.jsonl"
+    inventory.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return inventory
+
+
+def _tape_digests(inventory: Path) -> tuple[str, str]:
+    from mds650.rp2.run_manifest import inventory_paths, tape_fingerprint
+
+    identity, freshness, _, _ = tape_fingerprint(
+        inventory_paths(inventory), hash_contents=False
+    )
+    return identity, freshness
+
+
+_SHARED_TAPE: Path | None = None
+
+
+def _shared_tape() -> Path:
+    global _SHARED_TAPE
+    if _SHARED_TAPE is None:
+        _SHARED_TAPE = _tape_inventory()
+    return _SHARED_TAPE
 
 
 def _decided_window_file() -> Path:
@@ -49,7 +100,7 @@ def _decided_window_file() -> Path:
                 "candidates": {
                     "partition": {
                         "first_session": "2024-08-02",
-                        "end_exclusive": "2026-07-18",
+                        "last_session": "2026-07-17",
                     }
                 },
             }
@@ -129,6 +180,7 @@ def _run_dir(tmp_path: Path) -> Path:
     # the publisher does with the digests, not about which parquet happens to sit on the
     # machine running it.
     store = _bar_store(tmp_path)
+    tape_identity, tape_freshness = _tape_digests(_shared_tape())
     (run / "input_manifest.json").write_text(
         json.dumps(
             {
@@ -136,7 +188,8 @@ def _run_dir(tmp_path: Path) -> Path:
                 "gated_files": 15,
                 "bar_sources_sha256": _bar_digests(store),
                 "tape_inventory_sha256": "3" * 64,
-                "tape_fingerprint_sha256": "4" * 64,
+                "tape_fingerprint_sha256": tape_identity,
+                "tape_freshness_sha256": tape_freshness,
                 "study_window_enforced": {
                     "D": {"first_session": "2024-08-02", "last_session": "2026-03-23"},
                     "V": {"first_session": "2026-03-24", "last_session": "2026-07-17"},
@@ -735,7 +788,7 @@ def test_a_run_cannot_be_published_under_an_undecided_study_window(tmp_path: Pat
     decided = {
         "adopted": "partition",
         "candidates": {
-            "partition": {"first_session": "2024-08-02", "end_exclusive": "2026-07-18"}
+            "partition": {"first_session": "2024-08-02", "last_session": "2026-07-17"}
         },
     }
     module.assert_study_window_decided(enforced, decided)
@@ -743,7 +796,7 @@ def test_a_run_cannot_be_published_under_an_undecided_study_window(tmp_path: Pat
     twelve = {
         "adopted": "twelve_month",
         "candidates": {
-            "twelve_month": {"first_session": "2025-07-21", "end_exclusive": "2026-07-21"}
+            "twelve_month": {"first_session": "2025-07-21", "last_session": "2026-07-20"}
         },
     }
     with pytest.raises(SystemExit, match="RP2_PUBLISH_STUDY_WINDOW_MISMATCH"):
@@ -757,3 +810,43 @@ def test_a_run_cannot_be_published_under_an_undecided_study_window(tmp_path: Pat
         "V": {"first_session": "2026-01-05", "last_session": "2026-07-20"},
     }
     module.assert_study_window_decided(inside, twelve)
+
+
+def test_a_window_that_stops_early_is_not_the_window_it_claims() -> None:
+    """`last < end` accepts a run that covers a fortnight of a twelve-month window.
+
+    The binding rule forbids silently shortening as much as silently widening, so the
+    configuration records the exact final in-window session and the comparison is equality
+    on both bounds rather than containment.
+    """
+
+    module = _load("publish_rp2_v3_supabase")
+    twelve = {
+        "adopted": "twelve_month",
+        "candidates": {
+            "twelve_month": {
+                "first_session": "2025-07-21",
+                "last_session": "2026-07-20",
+                "end_exclusive": "2026-07-21",
+            }
+        },
+    }
+    whole = {
+        "D": {"first_session": "2025-07-21", "last_session": "2026-01-02"},
+        "V": {"first_session": "2026-01-05", "last_session": "2026-07-20"},
+    }
+    module.assert_study_window_decided(whole, twelve)
+
+    fortnight = {
+        "D": {"first_session": "2025-07-21", "last_session": "2025-08-01"},
+        "V": {"first_session": "2025-08-04", "last_session": "2025-08-15"},
+    }
+    with pytest.raises(SystemExit, match="RP2_PUBLISH_STUDY_WINDOW_MISMATCH"):
+        module.assert_study_window_decided(fortnight, twelve)
+
+    undecided_end = {
+        "adopted": "twelve_month",
+        "candidates": {"twelve_month": {"first_session": "2025-07-21", "last_session": None}},
+    }
+    with pytest.raises(SystemExit, match="RP2_PUBLISH_STUDY_WINDOW_INCOMPLETE"):
+        module.assert_study_window_decided(whole, undecided_end)

@@ -476,6 +476,51 @@ def inventory_paths(path: Path) -> list[Path]:
     return paths
 
 
+#: The option tape the producers open, listed by Block 1.
+TAPE_INVENTORY: Final = (
+    Path(__file__).resolve().parents[3]
+    / "artifacts"
+    / "rp2_block1_partition"
+    / "inventory.jsonl"
+)
+
+
+def tape_fingerprint(
+    paths: Sequence[Path], *, hash_contents: bool
+) -> tuple[str, str, int, int]:
+    """A digest of the option tape the producers will open, and what it cost to compute.
+
+    Eighty-five gigabytes across three thousand seven hundred files is too much to read on
+    every rebuild for no gain, so the default fingerprint is over each file's path, size
+    and modification time: it changes whenever a session is re-acquired, replaced or
+    truncated. `--hash-tape-contents` reads every byte instead, and the artifact records
+    which of the two was done rather than leaving a reader to assume the stronger one.
+    """
+
+    identity = hashlib.sha256()
+    freshness = hashlib.sha256()
+    total = 0
+    for path in sorted(paths, key=lambda item: item.as_posix()):
+        if not path.is_file():
+            raise SystemExit(f"RP2_RUN_TAPE_INPUT_MISSING:{path.as_posix()}")
+        stat = path.stat()
+        total += stat.st_size
+        # The scientific fingerprint is over what the file *is*: its name inside the store
+        # and either its bytes or its size. Byte-identical tape restored to another mount,
+        # or with new modification times, is the same tape.
+        name = path.name if path.parent.name in {"", "."} else f"{path.parent.name}/{path.name}"
+        identity.update(
+            f"{name}:{file_digest(path) if hash_contents else stat.st_size}".encode()
+        )
+        # The freshness digest keeps the absolute path and the modification time. It is
+        # recorded, and it is not part of the run's identity: it detects a re-acquisition
+        # that left the sizes unchanged, which is worth knowing and is not a different
+        # experiment.
+        freshness.update(f"{path.as_posix()}:{stat.st_size}:{stat.st_mtime_ns}".encode())
+    return identity.hexdigest(), freshness.hexdigest(), len(paths), total
+
+
+
 def file_digest(path: Path) -> str:
     """sha256 of a file's bytes, read in chunks so a multi-gigabyte panel still fits."""
 

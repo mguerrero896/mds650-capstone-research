@@ -33,8 +33,11 @@ if str(ROOT / "src") not in sys.path:  # pragma: no cover - import bootstrap
 from mds650.rp2.inference import inference_config_digest  # noqa: E402
 from mds650.rp2.run_manifest import (  # noqa: E402
     IDENTITY_FILE,
+    TAPE_INVENTORY,
     assert_manifest_identity_intact,
     file_digest,
+    inventory_paths,
+    tape_fingerprint,
 )
 
 PROJECT_REF = "eqpyjikcewqaegnbaemf"
@@ -208,6 +211,28 @@ def _designated_artifact(step: dict[str, Any]) -> str | None:
     return entry[1] if entry else None
 
 
+def _verified_tape_fingerprint(resolved: dict[str, Any]) -> str:
+    """The tape as it is now, checked against the tape the run read.
+
+    The bar stores are re-digested before their lineage is published and the tape was not,
+    although it is the largest input and the one a same-path replacement is least visible
+    in: neither the inventory file nor any step artifact changes when a file is swapped for
+    different bytes at the same path. Re-read in whichever mode the run recorded, so the
+    check is as strong as the record it is checking.
+    """
+
+    recorded = str(resolved["tape_fingerprint_sha256"])
+    identity, freshness, _, _ = tape_fingerprint(
+        inventory_paths(TAPE_INVENTORY),
+        hash_contents=resolved.get("tape_fingerprint_mode") == "content",
+    )
+    if identity != recorded:
+        raise SystemExit(f"RP2_PUBLISH_TAPE_CHANGED:{identity[:12]}!={recorded[:12]}")
+    if freshness != str(resolved.get("tape_freshness_sha256")):
+        raise SystemExit("RP2_PUBLISH_TAPE_CHANGED:freshness")
+    return recorded
+
+
 def _bar_inputs(resolved: dict[str, Any], data_root: Path) -> list[dict[str, Any]]:
     """The bar stores as they are: their real relative paths and their real sizes.
 
@@ -290,11 +315,20 @@ def assert_study_window_decided(
     # a window of `2025-07-21` through `2026-07-21` (end exclusive) has its last trading
     # session before July 21, not on it. Comparing an exclusive bound against an observed
     # session would refuse every correctly built run.
-    start, end = str(window["first_session"]), str(window["end_exclusive"])
-    if first != start or not last < end:
+    start, final = window.get("first_session"), window.get("last_session")
+    if not start or not final:
+        # `last_session` is the final trading session inside the window, which the calendar
+        # decides rather than the rule: a window written end-exclusive does not say which
+        # day precedes its end. Until it is recorded, containment is all that could be
+        # checked, and containment accepts a run that covers a fortnight of twelve months.
+        raise SystemExit(
+            f"RP2_PUBLISH_STUDY_WINDOW_INCOMPLETE:{adopted}:"
+            f"record 'last_session' in {STUDY_WINDOW_CONFIG.name}"
+        )
+    if (first, last) != (str(start), str(final)):
         raise SystemExit(
             f"RP2_PUBLISH_STUDY_WINDOW_MISMATCH:{adopted}:"
-            f"{first}..{last} is not {start}..{end} (end exclusive)"
+            f"{first}..{last}!={start}..{final}"
         )
 
 
@@ -396,7 +430,7 @@ def build_payload(run_dir: Path, *, branch: str) -> dict[str, Any]:
             "input_name": "option_tape",
             "path": "artifacts/rp2_block1_partition/inventory.jsonl",
             "provider": DERIVED,
-            "sha256": resolved["tape_fingerprint_sha256"],
+            "sha256": _verified_tape_fingerprint(resolved),
             "bytes": int(resolved["tape_bytes"]),
             "rows": int(resolved["tape_files"]),
             "schema_sha256": resolved["tape_inventory_sha256"],
