@@ -240,13 +240,33 @@ begin
          and c.model_family = item ->> 'model_family'
          and c.base_information_set = item ->> 'base_information_set'
          and c.expanded_information_set = item ->> 'expanded_information_set'
+        -- Every field the upsert below can overwrite. Comparing a subset means the fields
+        -- left out are the ones a retry can silently change.
         where c.estimate is distinct from (item ->> 'estimate')::double precision
            or c.ci_low is distinct from (item ->> 'ci_low')::double precision
            or c.ci_high is distinct from (item ->> 'ci_high')::double precision
            or c.p_value is distinct from (item ->> 'p_value')::double precision
+           or c.sessions is distinct from (item ->> 'sessions')::integer
+           or c.block_length is distinct from (item ->> 'block_length')::integer
+           or c.mde is distinct from (item ->> 'mde')::double precision
+           or c.equivalence_bound is distinct from (item ->> 'equivalence_bound')::double precision
            or c.common_mask_sha256 is distinct from (item ->> 'common_mask_sha256')
     ) then
         raise exception 'RP2_PUBLISH_CONTRAST_IMMUTABLE:%', published_run_id;
+    end if;
+
+    -- Nothing left to do, and nothing that may be done. A later run may have superseded
+    -- this one; standing its rows down and marking these current again would silently
+    -- restore an older answer as the current one.
+    if exists (
+        select 1 from public.ingestion_runs r
+        where r.run_id = published_run_id and r.status = 'PUBLISHED'
+    ) then
+        return jsonb_build_object(
+            'run_id', published_run_id,
+            'status', 'ALREADY_PUBLISHED',
+            'contrasts', contrast_rows
+        );
     end if;
 
     insert into public.ingestion_runs (

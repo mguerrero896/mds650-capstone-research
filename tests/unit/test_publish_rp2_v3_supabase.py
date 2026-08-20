@@ -105,6 +105,7 @@ def _run_dir(tmp_path: Path) -> Path:
             {
                 "run_id": "rp2-v3-test-001",
                 "code_commit": COMMIT,
+                "data_root": "D:/MDS650",
                 "input_manifest_sha256": "c" * 64,
                 "feature_registry_sha256": "d" * 64,
                 "model_config_sha256": "e" * 64,
@@ -279,6 +280,8 @@ def test_the_published_inputs_are_the_inputs(tmp_path: Path) -> None:
     assert "option_tape" in names
     assert "gated_manifest" in names
     assert any(name.startswith("bars_") for name in names)
+    bars = [row for row in payload["inputs"] if row["input_name"].startswith("bars_")]
+    assert all(row["path"].endswith(".parquet") for row in bars), "the real relative path"
     assert not any("ladder" in name or "panel" in name for name in names)
 
 

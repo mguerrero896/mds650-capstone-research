@@ -127,6 +127,38 @@ def _mask_digest(scorecard: dict[str, Any]) -> str:
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
+def _bar_inputs(resolved: dict[str, Any], data_root: Path) -> list[dict[str, Any]]:
+    """The bar stores as they are: their real relative paths and their real sizes.
+
+    An invented path and a one-byte size make the lineage unusable for the thing lineage is
+    for - finding the file a number was built from.
+    """
+
+    from mds650.rp2.bars import BAR_SOURCES
+
+    digests = resolved.get("bar_sources_sha256", {})
+    rows: list[dict[str, Any]] = []
+    for name, role, relative in BAR_SOURCES:
+        key = f"{name}|{role}"
+        if key not in digests:
+            continue
+        path = data_root / relative
+        rows.append(
+            {
+                "input_name": f"bars_{name}",
+                "path": relative,
+                "provider": "fmp",
+                "sha256": digests[key],
+                "bytes": path.stat().st_size if path.is_file() else 1,
+                "rows": None,
+                "schema_sha256": None,
+                "time_min": None,
+                "time_max": None,
+            }
+        )
+    return rows
+
+
 def assert_published_at_the_run_commit(manifest: dict[str, Any]) -> None:
     """The code publishing the run is the code that produced it.
 
@@ -144,6 +176,14 @@ def assert_published_at_the_run_commit(manifest: dict[str, Any]) -> None:
         raise SystemExit(
             f"RP2_PUBLISH_COMMIT_MISMATCH:{head[:12]}!={str(manifest.get('code_commit'))[:12]}"
         )
+    # And the tree is that commit. An inference constant edited without committing leaves
+    # `rev-parse` agreeing while the digest is taken from something the run never ran.
+    status = subprocess.run(  # noqa: S603
+        ["git", "status", "--porcelain"], cwd=ROOT, capture_output=True, text=True, check=True
+    ).stdout
+    dirty = [line for line in status.splitlines() if line.strip() and not line.startswith("??")]
+    if dirty:
+        raise SystemExit("RP2_PUBLISH_WORKTREE_DIRTY:" + ",".join(line[3:] for line in dirty[:5]))
 
 
 def build_payload(run_dir: Path, *, branch: str, supersedes: str | None) -> dict[str, Any]:
@@ -183,20 +223,7 @@ def build_payload(run_dir: Path, *, branch: str, supersedes: str | None) -> dict
             "time_min": None,
             "time_max": None,
         },
-        *(
-            {
-                "input_name": f"bars_{name}",
-                "path": f"bars/{name}",
-                "provider": "fmp",
-                "sha256": digest,
-                "bytes": 1,
-                "rows": None,
-                "schema_sha256": None,
-                "time_min": None,
-                "time_max": None,
-            }
-            for name, digest in sorted(resolved.get("bar_sources_sha256", {}).items())
-        ),
+        *_bar_inputs(resolved, Path(str(manifest["data_root"]))),
     ]
 
     blocks = [
