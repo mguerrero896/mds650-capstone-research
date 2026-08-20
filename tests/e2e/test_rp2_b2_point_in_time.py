@@ -164,6 +164,13 @@ def test_a_session_asset_with_no_tape_at_all_is_counted() -> None:
     assert "session_assets_in_b0_panel" in source, (
         "the denominator has to be what the study asked for, not what it managed"
     )
+    assert "session_assets_attempted" in source and "limit_sessions" in source, (
+        "a limited run must publish both what it attempted and what the panel holds, or the "
+        "artifact describes neither the sample nor the study"
+    )
+    limit = source.index("jobs = jobs[: args.limit_sessions]")
+    counted = source.index("session_assets_in_panel = len(jobs)")
+    assert counted < limit, "the panel-wide count must be taken before the run is truncated"
 
 
 def test_an_empty_window_still_reports_the_intensity_it_has() -> None:

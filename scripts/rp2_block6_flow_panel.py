@@ -592,6 +592,10 @@ def main(argv: Sequence[str] | None = None) -> int:
                 closes,
             )
         )
+    # The accounting below covers the whole B0 panel. A limited run attempts a prefix of
+    # it, so both numbers are published: a document that reported only one of them would
+    # describe neither the sample nor the study.
+    session_assets_in_panel = len(jobs) + len(missing_tape_inventory) + len(missing_bar_grid)
     if args.limit_sessions:
         jobs = jobs[: args.limit_sessions]
 
@@ -642,9 +646,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         "provider_failures": provider_failures,
         "minimum_session_prints": MINIMUM_SESSION_PRINTS,
         "sparse_sessions": sparse_sessions,
-        "session_assets_in_b0_panel": (
-            len(jobs) + len(missing_tape_inventory) + len(missing_bar_grid)
-        ),
+        "session_assets_in_b0_panel": session_assets_in_panel,
+        "session_assets_attempted": len(jobs),
+        "limit_sessions": int(args.limit_sessions),
         "missing_tape_inventory": missing_tape_inventory,
         "missing_bar_grid": missing_bar_grid,
         "empty_window_share_5m": float(

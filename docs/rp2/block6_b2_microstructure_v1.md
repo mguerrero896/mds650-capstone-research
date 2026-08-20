@@ -4,7 +4,7 @@
 **Superseded:** the 2026-08-19 run of this block is `SUPERSEDED_BY_RP2_V3`; see
 `docs/rp2_v3/SUPERSEDED_RESULTS.md` and methodology decision 81.
 **Artifacts:** `artifacts/rp2_block6_flow/flow_coverage.json`
-(`flow_sha256 = 85efd706f0530479c92831c49b9ad1efb512432024e9fd4d438d6a2392bc8f45`);
+(`flow_sha256 = 2358b25912e289c1c7f30958d4e951d0d65b9b98ee58064867114b67c17624f4`);
 panel `b2_flow_panel.parquet` is local-only, hashed in `artifacts/rp2_panel_pointers.json`
 (`c9299a23…09a85`, 74.8 MB).
 **Code:** `src/mds650/rp2/flow.py`, `scripts/rp2_block6_flow_panel.py`
