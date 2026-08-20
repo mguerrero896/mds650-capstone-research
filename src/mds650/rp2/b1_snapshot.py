@@ -48,6 +48,14 @@ class ContemporaneousSnapshot:
     positions: IntArray
     quote_age_seconds: FloatArray
     window: SnapshotWindow
+    #: Observations inside the window that a later quote for the same contract replaced.
+    #: Reported because a snapshot that silently collapsed most of its input is a different
+    #: object from one that had a clean quote per contract.
+    duplicates_dropped: int = 0
+    #: Selected observations published after the availability cutoff. Zero by construction,
+    #: counted anyway: a field that is zero because nobody looked cannot detect a
+    #: regression, and this is the invariant the whole point-in-time claim rests on.
+    post_cutoff_selected: int = 0
 
     @property
     def contracts(self) -> int:
@@ -105,4 +113,10 @@ def latest_quote_per_contract(
     _, first = np.unique(reversed_keys, return_index=True)
     positions = np.sort(high - 1 - first).astype(np.int64)
     age = (window.origin_us - created[positions]) / MICROSECONDS
-    return ContemporaneousSnapshot(positions, age.astype(np.float64), window)
+    return ContemporaneousSnapshot(
+        positions,
+        age.astype(np.float64),
+        window,
+        duplicates_dropped=int((high - low) - positions.size),
+        post_cutoff_selected=int(np.count_nonzero(created[positions] > window.cutoff_us)),
+    )

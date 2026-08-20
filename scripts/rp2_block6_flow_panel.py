@@ -50,11 +50,11 @@ from mds650.rp2.option_clock import (
     expiry_close_timestamps,
     time_to_expiry_years,
 )
+from mds650.rp2.panel import panel_paths
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_block6_flow"
 INVENTORY = ROOT / "artifacts" / "rp2_block1_partition" / "inventory.jsonl"
-B0_PANEL = ROOT / "artifacts" / "rp2_block4_b0" / "b0_panel.parquet"
 CUTOFF_SECONDS = 120
 WINDOWS: tuple[tuple[str, int], ...] = (("5m", 300), ("30m", 1800))
 #: Concentration statistics are not prefix-summable; they are computed on this window only.
@@ -468,6 +468,10 @@ def build_session_flow(
         cutoff_us = int(cutoffs_us[position])
         hi = int(visible[position])
         record: dict[str, float] = {"origin_minute": float(minute)}
+        # Trades selected as visible whose provider record was created after the
+        # availability cutoff. Zero by construction; counted so the claim is a measurement.
+        record["b2_pit_violations"] = float(np.count_nonzero(created[:hi] > cutoff_us))
+        record["b2_zero_dte_trades"] = float(np.count_nonzero(is_zero_dte[:hi]))
         for label, window_seconds in WINDOWS:
             lo_us = cutoff_us - window_seconds * 1_000_000
             lo = int(np.searchsorted(created, lo_us, side="left"))
@@ -658,11 +662,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-root", type=Path, default=Path("D:/MDS650"))
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
+    # A rebuild reads its own B0 panel, not the previous run's.
+    parser.add_argument("--panel-root", type=Path, default=None)
     parser.add_argument("--workers", type=int, default=6)
     parser.add_argument("--limit-sessions", type=int, default=0)
     args = parser.parse_args(argv)
 
-    panel = pl.read_parquet(B0_PANEL)
+    panel = pl.read_parquet(panel_paths(args.panel_root)["b0"])
     inventory = load_inventory()
     bars = load_bar_sources(args.data_root)
     grids: dict[tuple[str, str], tuple[FloatArray, FloatArray]] = {}

@@ -46,6 +46,7 @@ from mds650.rp2.b1_snapshot import (
     snapshot_window,
 )
 from mds650.rp2.bars import MARKET_TZ, SESSION_OPEN_MINUTE, build_session_grid, load_bar_sources
+from mds650.rp2.panel import panel_paths
 from mds650.rp2.surface import (
     CONSTANT_MATURITY_DAYS,
     EXPIRY_CLOSE,
@@ -68,7 +69,6 @@ from mds650.rp2.surface import (
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_block5_surface"
 INVENTORY = ROOT / "artifacts" / "rp2_block1_partition" / "inventory.jsonl"
-B0_PANEL = ROOT / "artifacts" / "rp2_block4_b0" / "b0_panel.parquet"
 CALENDAR_YEAR = 365.0
 NY = ZoneInfo(MARKET_TZ)
 TAPE_COLUMNS = (
@@ -370,6 +370,11 @@ def build_session_surface(
             float(closes[minute]),
         )
         features["origin_minute"] = float(minute)
+        # Measured, not assumed. `post_cutoff_selected` is zero by construction - the
+        # selection is a searchsorted at the cutoff - which is exactly why it is counted:
+        # a zero nobody measured cannot notice a regression.
+        features["b1_quote_duplicates_dropped"] = float(snapshot.duplicates_dropped)
+        features["b1_post_cutoff_selected"] = float(snapshot.post_cutoff_selected)
         implied = features.get("b1_iv_30d", float("nan"))
         features["b1_iv_minus_trailing_rv_30d"] = implied_minus_trailing_variance(
             implied**2 if np.isfinite(implied) else float("nan"),
@@ -388,6 +393,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-root", type=Path, default=Path("D:/MDS650"))
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
+    # A rebuild reads its own B0 panel, not the previous run's.
+    parser.add_argument("--panel-root", type=Path, default=None)
     parser.add_argument("--workers", type=int, default=6)
     parser.add_argument("--limit-sessions", type=int, default=0)
     parser.add_argument(
@@ -416,7 +423,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             f"{MAX_QUOTE_AGE_SECONDS}; pass --output-dir so the canonical panel is not replaced"
         )
 
-    panel = pl.read_parquet(B0_PANEL)
+    panel = pl.read_parquet(panel_paths(args.panel_root)["b0"])
     inventory = load_inventory()
     bars = load_bar_sources(args.data_root)
     grids: dict[tuple[str, str], FloatArray] = {}
