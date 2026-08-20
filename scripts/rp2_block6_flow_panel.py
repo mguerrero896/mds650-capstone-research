@@ -16,6 +16,9 @@ Direction comes from the tape's own per-trade side tag (``ask_side`` = buyer ini
 columns are cumulative per contract, not per trade, and are deliberately unused.
 
 Point-in-time rule: only rows with ``created_at <= origin - 120 s`` are visible.
+``created_at`` is the operational record-creation stamp, registered as a *proxy* for
+availability rather than as proven publication (docs/provider_timing_pit_contract_v22.md).
+Bounding visibility with it is conservative; reading it as provider behaviour is not.
 """
 
 from __future__ import annotations
@@ -294,7 +297,8 @@ def build_session_flow(
     if tape.height < MINIMUM_SESSION_PRINTS:
         return None, "sparse_tape"
     # Two clocks travel together. `executed_at` is when the trade happened at the
-    # exchange; `created_at` is when the provider made it available to us. Windows are
+    # exchange; `created_at` is the record-creation stamp, a registered proxy for
+    # availability rather than a proven publication time. Windows are
     # selected on availability, because that is what a forecaster could actually see, but
     # the exchange clock is retained so the latency between them is a feature rather than
     # an unmeasured assumption.

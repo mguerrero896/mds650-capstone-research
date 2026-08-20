@@ -719,9 +719,12 @@ Spec Kit consistency and preregistration gates pass.
    quote feed, now reads the window through the same rule; in RP2-v2 it defined its own and
    audited a surface the panel did not carry.
 81. **B2 measured its economics on the provider's clock, and priced 0DTE as a full day
-   (2026-08-20)** — every tape row carries two timestamps. `created_at` is when the provider
-   published it and answers availability; `executed_at` is when the trade happened and
-   answers economics. Block 6 selected windows on availability, correctly, and then also
+   (2026-08-20)** — every tape row carries two timestamps. `created_at` is the operational record-creation
+   stamp, which `docs/provider_timing_pit_contract_v22.md` registers as a *proxy* for
+   availability and explicitly not as proven publication, receipt or provider-confirmed
+   visibility; `executed_at` is when the trade happened and answers economics. Using the
+   proxy as an availability bound is conservative, because a record cannot be created before
+   the event it records; reading it as evidence of provider behaviour is not supported. Block 6 selected windows on availability, correctly, and then also
    chose the spot minute, the interarrivals and the decay intensity on it, so provider
    behaviour entered the features as market behaviour. `src/mds650/rp2/option_clock.py`
    separates them: spot as-of, Greeks, tenor and intensity now run on `executed_at`, and

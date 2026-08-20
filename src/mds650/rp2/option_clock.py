@@ -1,10 +1,14 @@
 """The two clocks an option trade carries, and what each of them is for.
 
-``executed_at`` is when the trade happened at the exchange. ``created_at`` is when the
-provider made it visible. They answer different questions and are not interchangeable:
+``executed_at`` is when the trade happened at the exchange. ``created_at`` is the
+operational record-creation stamp, registered by
+``docs/provider_timing_pit_contract_v22.md`` as a *proxy* for availability and explicitly
+not as proven publication or receipt. They answer different questions and are not
+interchangeable:
 
-* **availability** — which rows a forecast origin may read — is ``created_at``, because that
-  is what a forecaster could actually have seen;
+* **availability** — which rows a forecast origin may read — is ``created_at``, because a
+  record cannot exist before the event it records, so the proxy is a conservative bound on
+  what a forecaster could have seen;
 * **economics** — spot as-of, Greeks, time to expiry, interarrivals, intensity — is
   ``executed_at``, because that is when the market moved.
 
