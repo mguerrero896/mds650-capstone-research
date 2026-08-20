@@ -132,17 +132,14 @@ def run_role(
     clusters = sessions_rank[test]
     log_target = np.log(np.maximum(target, 1e-12))
 
-    # Conditioning variables for Giacomini-White: ex-ante observable state.
-    conditioners = np.column_stack(
-        [
-            np.log(np.maximum(frame["rv_back_30"].to_numpy(), 1e-12)),
-            frame["origin_minute"].to_numpy().astype(np.float64),
-            np.log(np.maximum(frame["dollar_volume_30"].to_numpy(), 1e-12)),
-        ]
-    )[test]
-    conditioners = (conditioners - conditioners.mean(axis=0)) / np.maximum(
-        conditioners.std(axis=0), 1e-9
-    )
+    # Conditioning variables for Giacomini-White: ex-ante observable state, taken from the
+    # fold-local design rather than raw. Two of the three are registered B0 features, and a
+    # raw NaN would be dropped inside the test by its own finite filter — so the conditional
+    # statistic would be computed on a feature-selected subsample while the unconditional
+    # tests beside it used the recorded common mask. The origin minute is exact and needs no
+    # imputation, but is standardised with the same fold statistics for comparability.
+    conditioner_features = ["rv_back_30", "dollar_volume_30", "minutes_since_open"]
+    conditioners = fold_design(frame, conditioner_features, train, intercept=False)[0][test]
 
     results: dict[str, object] = {
         "status": "MEASURED",

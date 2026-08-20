@@ -285,3 +285,21 @@ def test_each_held_out_asset_records_the_statistics_it_refitted() -> None:
     loop = source[source.index("for asset in sorted(") :]
     assert "asset_preprocessing[set_name] = describe_preprocessor(asset_fitted)" in loop
     assert 'entry["preprocessing"] = asset_preprocessing' in loop
+
+
+def test_the_conditional_test_uses_the_same_sample_as_the_unconditional_ones() -> None:
+    """A conditioner with a raw NaN is dropped inside the test, silently.
+
+    Giacomini-White filters its own inputs to finite rows, so raw conditioners would have
+    computed the conditional statistic on a feature-selected subsample while the
+    unconditional tests beside it used the recorded common mask.
+    """
+
+    from pathlib import Path as _Path
+
+    source = (
+        _Path(__file__).resolve().parents[2] / "scripts" / "rp2_block10_inference.py"
+    ).read_text(encoding="utf-8")
+    assert "fold_design(frame, conditioner_features, train, intercept=False)" in source
+    assert 'np.log(np.maximum(frame["rv_back_30"]' not in source
+    assert 'np.log(np.maximum(frame["dollar_volume_30"]' not in source
