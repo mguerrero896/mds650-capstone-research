@@ -16,6 +16,7 @@ from mds650.rp2.inference import (
     newey_west_variance,
     session_block_bootstrap,
     session_block_draws,
+    session_giacomini_white,
     stationary_bootstrap_indices,
     wild_cluster_bootstrap,
 )
@@ -271,3 +272,46 @@ def test_the_minimum_detectable_effect_shrinks_with_sessions_and_grows_with_nois
     assert minimum_detectable_effect(quiet) < minimum_detectable_effect(loud)
     assert minimum_detectable_effect(loud[:50]) > minimum_detectable_effect(loud)
     assert minimum_detectable_effect(loud) > 0.0
+
+
+def test_the_conditional_test_is_run_on_one_row_per_session() -> None:
+    """Cluster-robust errors fix the uncertainty, not the weighting.
+
+    Giacomini-White regresses the loss difference on ex-ante state. Fitted on per-origin
+    rows, a session with more origins contributes more to the coefficients and so to the
+    Wald statistic, whatever the covariance does afterwards. Splitting a session in two
+    must not change the answer.
+    """
+
+    rng = np.random.default_rng(19)
+    sessions = np.repeat(np.arange(60, dtype=np.int64), 6)
+    state = rng.normal(size=(sessions.size, 2))
+    difference = 0.3 * state[:, 0] + rng.normal(scale=0.2, size=sessions.size)
+
+    plain = session_giacomini_white(difference, state, sessions)
+    busy = sessions == 0
+    doubled = session_giacomini_white(
+        np.concatenate([difference, difference[busy]]),
+        np.vstack([state, state[busy]]),
+        np.concatenate([sessions, sessions[busy]]),
+    )
+    assert doubled.wald == pytest.approx(plain.wald, rel=1e-12)
+    assert doubled.clusters == plain.clusters == 60
+
+
+def test_the_minimum_detectable_effect_widens_under_serial_dependence() -> None:
+    """The power calculation must use the same variance the interval does.
+
+    An IID standard error on a series that the block bootstrap treats as dependent makes
+    a null look more informative than the sample supports.
+    """
+
+    rng = np.random.default_rng(23)
+    innovations = rng.normal(size=400)
+    dependent = np.empty(400)
+    dependent[0] = innovations[0]
+    for index in range(1, 400):
+        dependent[index] = 0.6 * dependent[index - 1] + innovations[index]
+    independent = rng.permutation(dependent)  # identical values, dependence destroyed
+
+    assert minimum_detectable_effect(dependent) > 1.2 * minimum_detectable_effect(independent)

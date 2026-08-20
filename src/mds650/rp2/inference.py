@@ -223,6 +223,7 @@ def minimum_detectable_effect(
     *,
     alpha: float = DEFAULT_ALPHA,
     power: float = DEFAULT_POWER,
+    lags: int = SESSION_BLOCK_LENGTH,
 ) -> float:
     """The smallest mean this many sessions of this much noise could have detected.
 
@@ -234,7 +235,13 @@ def minimum_detectable_effect(
     size = values.size
     if size < 3 or not 0.0 < alpha < 1.0 or not 0.0 < power < 1.0:
         raise ValueError("RP2_INFERENCE_POWER_PARAMS_INVALID")
-    standard_error = float(np.std(values, ddof=1)) / math.sqrt(size)
+    # The same long-run variance the interval is built from. An IID standard error on a
+    # series the block bootstrap treats as dependent would understate the effect this
+    # design could detect, and so overstate how informative its nulls are.
+    long_run = newey_west_variance(values, lags=lags)
+    standard_error = math.sqrt(max(long_run, 0.0) / size)
+    if standard_error <= 0.0:
+        standard_error = float(np.std(values, ddof=1)) / math.sqrt(size)
     degrees = size - 1
     return float(
         (stats.t.ppf(1.0 - alpha / 2.0, df=degrees) + stats.t.ppf(power, df=degrees))
@@ -300,6 +307,28 @@ def giacomini_white(
         degrees_of_freedom=int(design.shape[1]),
         clusters=int(labels.size),
     )
+
+
+def session_giacomini_white(
+    loss_difference: FloatArray, conditioners: FloatArray, sessions: IntArray
+) -> ConditionalTest:
+    """Giacomini-White on one row per session.
+
+    Cluster-robust standard errors correct the uncertainty of a per-origin regression;
+    they do not correct its weighting. A session with more five-minute origins would still
+    pull the coefficients, and so the Wald statistic, further than a quiet one. The
+    difference and every conditioner are averaged within the session first, which leaves
+    one observation per cluster and a heteroskedasticity-robust covariance over sessions.
+    """
+
+    if loss_difference.shape[0] != conditioners.shape[0]:
+        raise ValueError("RP2_INFERENCE_SHAPE_MISMATCH")
+    aggregated_difference, labels = aggregate_by_session(loss_difference, sessions)
+    columns = [
+        aggregate_by_session(conditioners[:, column], sessions)[0]
+        for column in range(conditioners.shape[1])
+    ]
+    return giacomini_white(aggregated_difference, np.column_stack(columns), labels)
 
 
 def stationary_bootstrap_indices(

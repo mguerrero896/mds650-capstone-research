@@ -26,9 +26,9 @@ from mds650.rp2.feature_registry import assert_segment_coverage, describe_covera
 from mds650.rp2.inference import (
     clark_west_terms,
     clustered_mean_test,
-    giacomini_white,
     hansen_spa,
     session_contrast,
+    session_giacomini_white,
 )
 from mds650.rp2.ladder import LADDER, PRIMARY_MODELS, assert_primary_models
 from mds650.rp2.panel import (
@@ -190,7 +190,7 @@ def run_role(
             else:
                 cw = None
             difference = losses[base] - losses[expanded]
-            gw = giacomini_white(difference, conditioners, clusters)
+            gw = session_giacomini_white(difference, conditioners, clusters)
             contrast = session_contrast(
                 losses[base],
                 losses[expanded],
@@ -219,31 +219,42 @@ def run_role(
     # own expansions are the candidates. Racing `log_ols|B0` against `lightgbm|B0+B1+B2`
     # would confound the estimator with the information set, which is the one thing these
     # contrasts exist to separate.
+    # Two benchmarks per family, because the programme asks two questions. Against B0 the
+    # candidates answer "does anything beyond the baseline help"; against B0+B1 the single
+    # candidate answers the frozen dB2|B1 question, which a B0 benchmark cannot: there,
+    # B0+B1+B2 is credited with B1's increment as well.
     spa_by_family: dict[str, object] = {}
     for model_name in models:
-        benchmark = all_losses[f"{model_name}|B0"]
-        candidates = {
-            name: values
-            for name, values in all_losses.items()
-            if name.startswith(f"{model_name}|") and not name.endswith("|B0")
-        }
-        spa = hansen_spa(
-            benchmark,
-            candidates,
-            sessions=clusters,
-            benchmark_name=f"{model_name}|B0",
-            repetitions=1000,
-            seed=650,
-        )
-        spa_by_family[model_name] = {
-            "benchmark": f"{model_name}|B0",
-            "best_model": spa.best_model,
-            "best_mean_delta_qlike": spa.best_mean_difference,
-            "spa_p_value": spa.spa_p_value,
-            "reality_check_p_value": spa.reality_check_p_value,
-            "candidates": spa.candidates,
-            "sessions": spa.observations,
-        }
+        family: dict[str, object] = {}
+        for benchmark_set, candidate_sets in (
+            ("B0", ("B0+B1", "B0+B2", "B0+B1+B2")),
+            ("B0+B1", ("B0+B1+B2",)),
+        ):
+            candidates = {
+                f"{model_name}|{name}": all_losses[f"{model_name}|{name}"]
+                for name in candidate_sets
+                if f"{model_name}|{name}" in all_losses
+            }
+            if not candidates:
+                continue
+            spa = hansen_spa(
+                all_losses[f"{model_name}|{benchmark_set}"],
+                candidates,
+                sessions=clusters,
+                benchmark_name=f"{model_name}|{benchmark_set}",
+                repetitions=1000,
+                seed=650,
+            )
+            family[benchmark_set] = {
+                "benchmark": f"{model_name}|{benchmark_set}",
+                "best_model": spa.best_model,
+                "best_mean_delta_qlike": spa.best_mean_difference,
+                "spa_p_value": spa.spa_p_value,
+                "reality_check_p_value": spa.reality_check_p_value,
+                "candidates": spa.candidates,
+                "sessions": spa.observations,
+            }
+        spa_by_family[model_name] = family
     results["superior_predictive_ability"] = spa_by_family
     return results
 
@@ -305,14 +316,17 @@ def main(argv: Sequence[str] | None = None) -> int:
                     )
         spa_by_family = block.get("superior_predictive_ability")
         if isinstance(spa_by_family, dict):
-            for family, spa in spa_by_family.items():
-                assert isinstance(spa, dict)
-                print(
-                    f"  SPA {family:<15} best={spa['best_model']:<26} "
-                    f"delta={spa['best_mean_delta_qlike']:+.5f} "
-                    f"SPA p={spa['spa_p_value']:.4f} RC p={spa['reality_check_p_value']:.4f} "
-                    f"n={spa['sessions']:d}"
-                )
+            for family, by_benchmark in spa_by_family.items():
+                assert isinstance(by_benchmark, dict)
+                for benchmark_set, spa in by_benchmark.items():
+                    assert isinstance(spa, dict)
+                    print(
+                        f"  SPA {family:<15} vs {benchmark_set:<6} "
+                        f"best={spa['best_model']:<26} "
+                        f"delta={spa['best_mean_delta_qlike']:+.5f} "
+                        f"SPA p={spa['spa_p_value']:.4f} "
+                        f"RC p={spa['reality_check_p_value']:.4f} n={spa['sessions']:d}"
+                    )
     return 0
 
 
