@@ -154,7 +154,11 @@ class StepRecord:
 
         return {
             "name": self.name,
-            "command": list(self.command),
+            # Normalised, not verbatim. The recorded command carries this machine's
+            # interpreter path and this checkout's output root; hashing those would make
+            # the same experiment on another machine disagree about its own identity. The
+            # full command is kept in `as_record` for provenance.
+            "command": normalise_command(self.command),
             "exit_code": self.exit_code,
             # Deliberately the stable digests. Using the byte digests here would let the
             # clock into the run's scientific identity through the artifacts, which is
@@ -165,6 +169,7 @@ class StepRecord:
     def as_record(self) -> dict[str, object]:
         return {
             **self.scientific_part(),
+            "command": list(self.command),
             "artifacts": dict(sorted(self.artifacts.items())),
             "runtime_seconds": self.runtime_seconds,
             "peak_memory_bytes": self.peak_memory_bytes,
@@ -208,6 +213,37 @@ class RunManifest:
             "finished_at_utc": self.finished_at_utc,
             "scientific_sha256": scientific_sha256(self),
         }
+
+
+#: Arguments whose value is a path on this machine rather than a decision about the run.
+_LOCAL_PATH_FLAGS: Final = frozenset({"--output-dir", "--panel-root", "--output-root"})
+
+
+def normalise_command(command: Sequence[str]) -> list[str]:
+    """The part of a command that says *what ran*, with machine-local paths removed.
+
+    An interpreter at `C:/Users/.../python.exe` and one at `/home/.../bin/python3.12` are
+    the same decision; so are two output roots differing only by where the repository was
+    checked out. The script and its scientific flags are what identify the step.
+    """
+
+    normalised: list[str] = []
+    skip_next = False
+    for index, argument in enumerate(command):
+        if skip_next:
+            normalised.append("<path>")
+            skip_next = False
+            continue
+        if argument in _LOCAL_PATH_FLAGS:
+            normalised.append(argument)
+            skip_next = True
+            continue
+        if index == 0 and ("python" in Path(argument).name.lower() or argument == "internal"):
+            normalised.append("python")
+            continue
+        looks_like_a_path = "/" in argument or "\\" in argument
+        normalised.append(Path(argument).as_posix() if looks_like_a_path else argument)
+    return normalised
 
 
 def canonical_json(payload: object) -> str:

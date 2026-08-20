@@ -154,12 +154,31 @@ def assert_tape_covers_panel(
     asset on those days as a gap.
     """
 
-    gaps = sorted(
-        key for key in panel_keys - tape_keys if key[1] not in wildcard_sessions
-    )
+    gaps = sorted(key for key in panel_keys - tape_keys if key[1] not in wildcard_sessions)
     if gaps:
         listed = ",".join(f"{asset}@{session}" for asset, session in gaps[:5])
         raise SystemExit(f"RP2_RUN_TAPE_COVERAGE_GAP:{len(gaps)}:{listed}")
+
+    # And the other direction, restricted to what can actually go wrong. Counting sessions
+    # and checking their endpoints does not notice that one asset lost its bars on a date
+    # another asset still covers: the session is still there, its window is unchanged, and
+    # the sample is quietly smaller.
+    #
+    # The comparison is over assets and sessions the panel already carries. The inventory
+    # also holds tape for the market-control assets, which are inputs to B0 and never
+    # forecast targets - 928 session-assets of SPY and QQQ that the panel is not supposed
+    # to contain. Subtracting the raw sets would have called every one of them a gap.
+    panel_assets = {asset for asset, _ in panel_keys}
+    panel_sessions = {session for _, session in panel_keys}
+    expected = {
+        key
+        for key in tape_keys
+        if key[0] in panel_assets and key[1] in panel_sessions and key[1] not in wildcard_sessions
+    }
+    missing = sorted(expected - panel_keys)
+    if missing:
+        listed = ",".join(f"{asset}@{session}" for asset, session in missing[:5])
+        raise SystemExit(f"RP2_RUN_PANEL_COVERAGE_GAP:{len(missing)}:{listed}")
 
 
 def run_step(name: str, command: Sequence[str], run_dir: Path) -> StepRecord:

@@ -63,6 +63,22 @@ WINDOWS: tuple[tuple[str, int], ...] = (("5m", 300), ("30m", 1800))
 COUNTING_WINDOW_SECONDS: Final = 300
 
 
+def counting_bounds(
+    created: npt.NDArray[np.int64], *, cutoff_us: int, visible: int
+) -> tuple[int, int]:
+    """The half-open slice of one origin's counting window.
+
+    Both edges use `side="right"`, so a trade whose record was created exactly on a
+    five-minute boundary belongs to the earlier window only. Closed at both ends, adjacent
+    windows share their edge and a trade sitting on it is counted twice.
+    """
+
+    low = int(
+        np.searchsorted(created, cutoff_us - COUNTING_WINDOW_SECONDS * 1_000_000, side="right")
+    )
+    return low, max(visible, low)
+
+
 def window_count(flags: npt.NDArray[np.bool_], low: int, high: int) -> int:
     """How many flagged trades fall inside one origin's counting window."""
 
@@ -485,13 +501,13 @@ def build_session_flow(
         # the five-minute windows tile the session: summing these over origins counts each
         # trade at most once. A running total from the open, summed the same way, would
         # count the first trade of the day once for every origin that followed it.
-        counting_lo = int(
-            np.searchsorted(created, cutoff_us - COUNTING_WINDOW_SECONDS * 1_000_000, side="left")
-        )
+        counting_lo, counting_hi = counting_bounds(created, cutoff_us=cutoff_us, visible=hi)
         record["b2_pit_violations"] = float(
-            np.count_nonzero(created[counting_lo:hi] > cutoff_us)
+            np.count_nonzero(created[counting_lo:counting_hi] > cutoff_us)
         )
-        record["b2_zero_dte_trades"] = float(window_count(is_zero_dte, counting_lo, hi))
+        record["b2_zero_dte_trades"] = float(
+            window_count(is_zero_dte, counting_lo, counting_hi)
+        )
         for label, window_seconds in WINDOWS:
             lo_us = cutoff_us - window_seconds * 1_000_000
             lo = int(np.searchsorted(created, lo_us, side="left"))

@@ -228,3 +228,113 @@ def test_the_two_producers_are_held_to_the_same_evaluation_mask(tmp_path: Path) 
     write("a" * 64, "b" * 64)
     with pytest.raises(SystemExit, match="RP2_RUN_MASK_DISAGREEMENT:D"):
         runner.assert_producers_share_the_mask(run, ("D",))
+
+
+def test_the_scientific_hash_survives_a_different_virtualenv(tmp_path: Path) -> None:
+    """Two machines running the same experiment must agree about what they ran.
+
+    The recorded command carries `sys.executable` and the run's output root, both of which
+    are machine-local. Hashing them verbatim makes an identical rebuild on another machine
+    disagree with this one about its scientific identity, which is the one thing that hash
+    exists to settle.
+    """
+
+    from mds650.rp2.run_manifest import RunManifest, StepRecord, scientific_sha256
+
+    def manifest(python: str, out: str) -> RunManifest:
+        return RunManifest(
+            run_id="r",
+            code_commit="0" * 40,
+            data_root="D:/MDS650",
+            roles=("D", "V"),
+            feature_registry_sha256="a" * 64,
+            input_manifest_sha256="b" * 64,
+            model_config_sha256="c" * 64,
+            seeds={"bootstrap": 650},
+            steps=(
+                StepRecord(
+                    name="fit-model-ladder",
+                    command=(python, "scripts/rp2_block8_ladder.py", "--output-dir", out),
+                    exit_code=0,
+                    runtime_seconds=1.0,
+                    peak_memory_bytes=1,
+                    artifacts={"ladder.json": "d" * 64},
+                    content={"ladder.json": "e" * 64},
+                ),
+            ),
+            started_at_utc="t",
+            finished_at_utc="t",
+        )
+
+    here = manifest("C:/Users/a/.venv/Scripts/python.exe", "C:/repo/artifacts/rp2_v3/r")
+    there = manifest("/home/b/.venv/bin/python3.12", "/srv/repo/artifacts/rp2_v3/r")
+    assert scientific_sha256(here) == scientific_sha256(there)
+
+    # A different script, however, is a different run.
+    other = manifest("C:/Users/a/.venv/Scripts/python.exe", "C:/repo/artifacts/rp2_v3/r")
+    changed = RunManifest(
+        **{
+            **{f: getattr(other, f) for f in other.__slots__ if f != "steps"},
+            "steps": (
+                StepRecord(
+                    name="fit-model-ladder",
+                    command=("python", "scripts/rp2_block9_generalization.py"),
+                    exit_code=0,
+                    runtime_seconds=1.0,
+                    peak_memory_bytes=1,
+                    artifacts={"ladder.json": "d" * 64},
+                    content={"ladder.json": "e" * 64},
+                ),
+            ),
+        }
+    )
+    assert scientific_sha256(changed) != scientific_sha256(here)
+
+
+def test_a_trade_on_a_window_boundary_is_counted_once() -> None:
+    """Closed at both ends, adjacent windows share their edge and count it twice."""
+
+    block6 = _load("rp2_block6_flow_panel")
+    created = np.array([0, 300, 600], dtype=np.int64) * 1_000_000
+    # Two adjacent five-minute windows ending at 300s and 600s.
+    first = block6.counting_bounds(created, cutoff_us=300 * 1_000_000, visible=2)
+    second = block6.counting_bounds(created, cutoff_us=600 * 1_000_000, visible=3)
+    assert not set(range(*first)) & set(range(*second)), "adjacent windows must not overlap"
+    # The trade at t=300 belongs to the window ending at 300, not to the one starting there.
+    assert set(range(*first)) == {1}
+    assert set(range(*second)) == {2}
+
+
+def test_a_session_asset_the_inventory_holds_and_the_panel_lost_is_caught() -> None:
+    """Counting sessions does not notice that one asset lost its bars on a kept date.
+
+    The session is still there and its window is unchanged, so the partition check passes
+    while the sample is quietly smaller.
+    """
+
+    runner = _load("run_rp2_v3_pipeline")
+    # MSFT is a panel asset on another date, so losing it here is a loss and not a
+    # deliberate absence.
+    tape = {
+        ("AAPL", "2024-08-02"),
+        ("MSFT", "2024-08-02"),
+        ("MSFT", "2024-08-05"),
+        ("QQQ", "2024-08-02"),
+    }
+    panel = {("AAPL", "2024-08-02"), ("MSFT", "2024-08-05")}
+    with pytest.raises(SystemExit, match="RP2_RUN_PANEL_COVERAGE_GAP:1:MSFT@2024-08-02"):
+        runner.assert_tape_covers_panel(tape, panel, wildcard_sessions=frozenset())
+
+
+def test_market_control_tape_is_not_mistaken_for_a_missing_panel_asset() -> None:
+    """The inventory holds SPY and QQQ tape; they are inputs to B0, never forecast targets.
+
+    Subtracting the raw key sets calls all 928 of those session-assets a gap and aborts a
+    rebuild with nothing wrong with it.
+    """
+
+    runner = _load("run_rp2_v3_pipeline")
+    tape = {("AAPL", "2024-08-02"), ("QQQ", "2024-08-02"), ("SPY", "2024-08-02")}
+    runner.assert_tape_covers_panel(
+        tape, {("AAPL", "2024-08-02")}, wildcard_sessions=frozenset()
+    )

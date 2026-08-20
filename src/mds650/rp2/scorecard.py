@@ -230,7 +230,9 @@ def assemble_scorecard(run_dir: Path, manifest: RunManifest) -> dict[str, Any]:
             "sessions_by_role": {
                 role: ladder.get(role, {}).get("sessions") for role in manifest.roles
             },
-            "assets": ladder.get("D", {}).get("assets"),
+            # The schema declares a count. The ladder stores the sorted list, and copying
+            # it here would emit an array under a field documented as an integer.
+            "assets": len(ladder.get("D", {}).get("assets") or []) or None,
             "duplicate_keys": _duplicate_keys(panels["target"]),
             "provider_failures": (
                 surface.get("session_assets_without_tape"),
@@ -239,7 +241,10 @@ def assemble_scorecard(run_dir: Path, manifest: RunManifest) -> dict[str, Any]:
         },
         "b1": {
             "b1_core_coverage": core_coverage,
-            "b1_median_quote_age_s": _mean(b1_panel, "b1_median_quote_age_s"),
+            # The metric is a median. Averaging per-origin medians is a different number,
+            # and on a skewed age distribution it can decide whether the reported
+            # freshness clears its target.
+            "b1_median_quote_age_s": _quantile(b1_panel, "b1_median_quote_age_s", 0.5),
             "b1_p95_quote_age_s": _quantile(b1_panel, "b1_median_quote_age_s", 0.95),
             "b1_surface_contracts_per_origin": _mean(b1_panel, "b1_contracts"),
             "b1_surface_expiry_coverage": _coverage(b1_coverage, "b1_expiries"),
