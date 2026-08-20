@@ -118,7 +118,12 @@ def _rp2_producers() -> list[Path]:
     """
 
     scripts = sorted((REPO / "scripts").glob("rp2_*.py"))
+    # The runner is a producer too, and it is not named `rp2_*`: it declares the seeds that
+    # become the run's identity, so a literal there publishes provenance claiming a seed
+    # nothing used. A glob is a guess about names; this list says what the scan is for.
+    scripts.append(REPO / "scripts" / "run_rp2_v3_pipeline.py")
     assert len(scripts) > 5, f"the producer glob found {len(scripts)} scripts"
+    assert all(script.is_file() for script in scripts)
     return scripts
 
 

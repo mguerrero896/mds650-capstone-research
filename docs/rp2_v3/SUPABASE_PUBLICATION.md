@@ -182,6 +182,24 @@ recorded. After the seed and a rebuild that publishes the seven blocks it rebuil
 Nine current blocks, one per block, and the two RP2-v3 did not touch still pointing at what
 produced them.
 
+The extension and power registers are seeded from the same place, and differently from each
+other:
+
+```text
+extensions   7 legacy rows -> 7 seeded, 7 current
+power        6 legacy rows -> 6 seeded, 0 current
+```
+
+The extensions are current because nothing has superseded them. The power results are not,
+and the view over them is empty on purpose: every one of the six carries
+`method = ex_post_max_t_INVALIDATED`, the ex-post max-|t| method withdrawn by methodology
+decision 69. Publishing them through a view named `current_rp2_power_results` would present a
+withdrawn number as one that still stands. The history is kept, the claim is not.
+
+`rp2_power_results` is keyed by `detail` as well as by contrast and role, because the
+register it is seeded from is: two rows describe `direction|V` and two `variance|D`, and a
+narrower key dropped two of the six without saying so.
+
 ## A retry does not restore the run it superseded
 
 The early return exists for this: a run that already published has nothing left to do, and

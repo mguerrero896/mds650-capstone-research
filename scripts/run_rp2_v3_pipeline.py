@@ -36,6 +36,7 @@ if str(ROOT / "src") not in sys.path:  # pragma: no cover - import bootstrap
 
 from mds650.rp2.feature_registry import CONFIG as REGISTRY_CONFIG  # noqa: E402
 from mds650.rp2.feature_registry import registry_sha256  # noqa: E402
+from mds650.rp2.inference import DEFAULT_SEED  # noqa: E402
 from mds650.rp2.panel import TARGET_ASSETS  # noqa: E402
 from mds650.rp2.run_manifest import (  # noqa: E402
     PIPELINE_STEPS,
@@ -71,7 +72,7 @@ SCORECARD_FIELDS = ROOT / "configs" / "rp2_v3_scorecard_fields.json"
 MODEL_CONFIG = ROOT / "configs" / "rp2_v3_feature_sets.json"
 #: Seeds are part of the run's identity, so they are declared here rather than left to
 #: each script's default and discovered afterwards.
-SEEDS = {"bootstrap": 650, "lightgbm": 20260818, "dml_folds": 5}
+SEEDS = {"bootstrap": DEFAULT_SEED, "lightgbm": 20260818, "dml_folds": 5}
 #: The chronological split every producer uses. Part of the model configuration, so it is
 #: stated here rather than left to each script's default and discovered afterwards.
 DEFAULT_TRAIN_SHARE: Final = 0.6

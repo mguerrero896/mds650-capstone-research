@@ -62,8 +62,11 @@ create table if not exists public.rp2_extension_results (
     result text not null,
     evidence text not null,
     document text not null,
-    artifact_sha256 text not null
-        check (artifact_sha256 ~ '^[0-9a-f]{64}$'),
+    -- Nullable, unlike every other digest here, and checked when present. The extensions
+    -- predate per-extension artifact digests: the legacy register never recorded one, and a
+    -- null says that rather than a fabricated hash saying otherwise.
+    artifact_sha256 text
+        check (artifact_sha256 is null or artifact_sha256 ~ '^[0-9a-f]{64}$'),
     supersedes_run_id text
         references public.ingestion_runs(run_id)
         on delete restrict,
@@ -91,11 +94,14 @@ create table if not exists public.rp2_power_results (
     note text,
     is_current boolean not null default false,
     created_at timestamptz not null default now(),
-    primary key (contrast, role, run_id)
+    primary key (contrast, role, detail, run_id)
 );
 
+-- Keyed by `detail` as well, because the register it is seeded from is: it holds two rows
+-- for `direction|V` and two for `variance|D`, differing only there. A narrower key drops
+-- them, and dropping two of six power results silently is not versioning them.
 create unique index if not exists rp2_power_results_one_current_per_contrast
-    on public.rp2_power_results (contrast, role)
+    on public.rp2_power_results (contrast, role, detail)
     where is_current;
 
 -- The contrast table is the one the verdict is read off, so every column the research
@@ -219,6 +225,8 @@ where exists (
     select 1 from public.rp2_blocks b
     where b.artifact_sha256 ~ '^[0-9a-f]{64}$' and b.run_id is null
 )
+   or exists (select 1 from public.rp2_extensions e where e.run_id is null)
+   or exists (select 1 from public.rp2_power p where p.run_id is null)
 on conflict (run_id) do nothing;
 
 insert into public.rp2_block_results (
@@ -236,6 +244,35 @@ from public.rp2_blocks b
 where b.artifact_sha256 ~ '^[0-9a-f]{64}$'
   and coalesce(b.run_id, 'rp2-legacy-unrecorded') in (select run_id from public.ingestion_runs)
 on conflict (block_id, run_id) do nothing;
+
+-- The extension and power registers, seeded the same way and for the same reason: their
+-- views are granted to `anon` and would otherwise advertise an API nothing writes, while the
+-- findings they describe sat in the pre-RP2-v3 tables where no versioned reader looks.
+-- RP2-v3 rebuilds neither, so these rows stay current until something supersedes them.
+insert into public.rp2_extension_results (
+    extension_id, run_id, question, result, evidence, document, artifact_sha256,
+    supersedes_run_id, is_current
+)
+select e.extension_id, coalesce(e.run_id, 'rp2-legacy-unrecorded'), e.question, e.result,
+       e.evidence, e.document, null, null, true
+from public.rp2_extensions e
+where coalesce(e.run_id, 'rp2-legacy-unrecorded') in (select run_id from public.ingestion_runs)
+on conflict (extension_id, run_id) do nothing;
+
+insert into public.rp2_power_results (
+    contrast, role, run_id, method, detail, sessions_for_80pct, power_n30, power_n60,
+    power_n120, note, is_current
+)
+-- Seeded, and deliberately not current. Every one of these rows carries
+-- `method = ex_post_max_t_INVALIDATED`: the ex-post max-|t| method was withdrawn by
+-- methodology decision 69, and presenting a withdrawn number through a view named
+-- `current_rp2_power_results` would publish it as though it still stood. The view is empty
+-- because there is no current power result, which is a finding rather than a gap.
+select p.contrast, p.role, coalesce(p.run_id, 'rp2-legacy-unrecorded'), p.method, p.detail,
+       p.sessions_for_80pct, p.power_n30, p.power_n60, p.power_n120, p.note, false
+from public.rp2_power p
+where coalesce(p.run_id, 'rp2-legacy-unrecorded') in (select run_id from public.ingestion_runs)
+on conflict (contrast, role, detail, run_id) do nothing;
 
 create or replace function public.publish_rp2_v3(payload jsonb)
 returns jsonb
