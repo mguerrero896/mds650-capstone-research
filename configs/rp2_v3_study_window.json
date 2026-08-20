@@ -1,6 +1,6 @@
 {
-  "description": "Which window RP2-v3 results may be published under. The repository states two, and the choice between them is a research decision, not a code change.",
-  "adopted": null,
+  "description": "Which window RP2-v3 results may be published under. `adopted` records the window the repository has already frozen, not a preference chosen here; changing it is a recorded configuration change and requires a reason in docs/rp2_v3/STUDY_WINDOW.md.",
+  "adopted": "twelve_month",
   "decision_document": "docs/rp2_v3/STUDY_WINDOW.md",
   "candidates": {
     "twelve_month": {
@@ -17,5 +17,7 @@
       "end_exclusive": "2026-07-18",
       "last_session": "2026-07-17"
     }
-  }
+  },
+  "adopted_because": "AGENTS.md, 'Study window rule (binding)', states that a recorded configuration change already froze 2025-07-21 through 2026-07-21 (end exclusive). Recording anything else here would be a new decision; recording nothing claimed no decision existed, which the rule contradicts.",
+  "consequence": "Every existing RP2 and RP2-v3 artifact was built on the partition, 2024-08-02 through 2026-07-17, so none of them may be published under this window. Publishing requires re-running Block 1 against the frozen window and rebuilding downstream, which reduces the development sample from 389 sessions to roughly 80 and the power of every contrast with it. Adopting 'partition' instead amends a rule AGENTS.md calls binding and needs its own recorded configuration change."
 }

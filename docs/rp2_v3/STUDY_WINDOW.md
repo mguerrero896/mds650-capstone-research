@@ -68,6 +68,27 @@ One of these, recorded with its reason:
    development sample falls to roughly 80 sessions, and the power of every contrast falls
    with it.
 
+## What is recorded now
+
+`configs/rp2_v3_study_window.json` records `adopted: "twelve_month"`. That is not a choice
+made here: `AGENTS.md` states that a recorded configuration change already froze
+`2025-07-21` through `2026-07-21` (end exclusive), and recording anything else would be a
+new decision while recording nothing claimed no decision existed, which the rule
+contradicts.
+
+The consequence is stated with it, because it is severe. No existing RP2 or RP2-v3 artifact
+may be published under that window — every one of them was built on the partition. Publishing
+requires re-running Block 1 against the frozen window and rebuilding downstream, which
+reduces the development sample from 389 sessions to roughly 80 and the power of every
+contrast with it. Adopting `partition` instead amends a rule the repository calls binding and
+needs its own recorded configuration change, with a reason written here.
+
+Until the rebuilt calendar endpoint is known, `last_session` is null and publication refuses:
+
+```text
+RP2_PUBLISH_STUDY_WINDOW_INCOMPLETE:twelve_month:record 'last_session' in rp2_v3_study_window.json
+```
+
 ## What happens until it is chosen
 
 Nothing is published. `configs/rp2_v3_study_window.json` records both candidates with
