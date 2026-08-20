@@ -166,3 +166,50 @@ def test_calibration_is_reported_for_every_primary_family_and_role() -> None:
     # A family the run did not fit is absent, not silently reported as zero.
     partial = {"D": {"models": {"gamma_glm": ladder["D"]["models"]["gamma_glm"]}}}
     assert set(calibration_table(partial, ("D",))["D"]) == {"gamma_glm"}
+
+
+def test_the_snapshot_separates_collapsed_observations_from_remaining_duplicates() -> None:
+    """Two different questions that were answered with one number.
+
+    `duplicates_dropped` counts the superseded quotes the collapse removed, which is
+    ordinary and large. `duplicate_contracts_remaining` counts contracts appearing twice in
+    the selected snapshot, which is zero by construction. Reporting the first under the
+    second's name makes an ordinary snapshot look like a broken one.
+    """
+
+    origin = 4_000_000_000_000
+    window = snapshot_window(origin, cutoff_seconds=0, max_quote_age_seconds=600)
+    created = np.array([origin - 400_000_000, origin - 300_000_000, origin - 200_000_000], np.int64)
+    keys = np.array([7, 7, 9], dtype=np.int64)
+    snapshot = latest_quote_per_contract(created, keys, window)
+
+    assert snapshot.contracts == 2
+    assert snapshot.duplicates_dropped == 1
+    assert snapshot.duplicate_contracts_remaining == 0
+
+
+def test_block_three_and_block_four_read_one_list_of_bar_stores() -> None:
+    """The target artifact described 316 sessions while the study ran on 469.
+
+    Block 3 kept its own four-source copy while Block 4 used the shared six, so the
+    published target panel was silently narrower than the panel every result was fitted on
+    — including the 153-session backfill.
+    """
+
+    import importlib.util
+    import sys
+    from pathlib import Path
+
+    from mds650.rp2.bars import BAR_SOURCES
+
+    repo = Path(__file__).resolve().parents[2]
+    spec = importlib.util.spec_from_file_location(
+        "rp2_block3_target_panel", repo / "scripts" / "rp2_block3_target_panel.py"
+    )
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules["rp2_block3_target_panel"] = module
+    spec.loader.exec_module(module)
+
+    assert module.BAR_SOURCES is BAR_SOURCES
+    assert len(BAR_SOURCES) == 6

@@ -258,12 +258,19 @@ def assemble_scorecard(run_dir: Path, manifest: RunManifest) -> dict[str, Any]:
             "b1_p95_quote_age_s": _quantile(b1_panel, "b1_p95_quote_age_s", 0.5),
             "b1_surface_contracts_per_origin": _mean(b1_panel, "b1_contracts"),
             "b1_surface_expiry_coverage": _coverage(b1_coverage, "b1_expiries"),
-            # An origin whose implied rate did not survive the plausibility gate carries a
-            # null there, and the run has to say how many did.
-            "b1_rows_dropped_for_rate_or_dividend": _null_count(b1_panel, "b1_implied_rate"),
+            # Rows *dropped* for a failed rate or dividend fit. Block 5 drops none: an
+            # implausible fit is recorded as NaN and the origin is kept. The share of those
+            # nulls is `b1_missing_rate_share` below; counting them here would report
+            # retained rows as lost ones.
+            "b1_rows_dropped_for_rate_or_dividend": _sum(
+                b1_panel, "b1_rows_dropped_for_rate_or_dividend"
+            ),
             "b1_post_cutoff_observations": _sum(b1_panel, "b1_post_cutoff_selected"),
-            "b1_duplicate_contracts_per_snapshot": _mean(
-                b1_panel, "b1_quote_duplicates_dropped"
+            # Contracts appearing twice in a selected snapshot, which is the question the
+            # field asks. `b1_quote_duplicates_dropped` counts the superseded observations
+            # the collapse removed, which is ordinary and nonzero.
+            "b1_duplicate_contracts_per_snapshot": _sum(
+                b1_panel, "b1_duplicate_contracts_remaining"
             ),
             "b1_missing_rate_share": (
                 None

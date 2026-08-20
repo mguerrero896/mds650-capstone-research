@@ -632,6 +632,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         finished_at_utc=started,
     )
     assert_run_identity_unchanged(run_dir, identity)
+    # A completed run id is closed to its producers. Re-running them into the directory
+    # would overwrite each artifact before its new digest was compared to the old one, and
+    # an interruption anywhere in the sequence would leave the directory half one run and
+    # half another with the manifest describing neither.
+    if (run_dir / "run_manifest.json").is_file() and not args.skip_panels:
+        raise SystemExit(f"RP2_RUN_ALREADY_COMPLETE:{args.run_id}")
 
     steps: list[StepRecord] = []
     input_record, manifest_digest = validate_inputs(

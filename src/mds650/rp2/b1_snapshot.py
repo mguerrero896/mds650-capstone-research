@@ -56,6 +56,11 @@ class ContemporaneousSnapshot:
     #: counted anyway: a field that is zero because nobody looked cannot detect a
     #: regression, and this is the invariant the whole point-in-time claim rests on.
     post_cutoff_selected: int = 0
+    #: Contracts appearing more than once *in the selected snapshot*. Zero by construction,
+    #: and a different question from `duplicates_dropped`, which counts the superseded
+    #: observations the collapse removed. Reporting the second under the first's name makes
+    #: an ordinary snapshot look like a broken one.
+    duplicate_contracts_remaining: int = 0
 
     @property
     def contracts(self) -> int:
@@ -119,4 +124,5 @@ def latest_quote_per_contract(
         window,
         duplicates_dropped=int((high - low) - positions.size),
         post_cutoff_selected=int(np.count_nonzero(created[positions] > window.cutoff_us)),
+        duplicate_contracts_remaining=int(positions.size - np.unique(keys[positions]).size),
     )

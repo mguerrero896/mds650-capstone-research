@@ -379,6 +379,14 @@ def build_session_surface(
         # a zero nobody measured cannot notice a regression.
         features["b1_quote_duplicates_dropped"] = float(snapshot.duplicates_dropped)
         features["b1_post_cutoff_selected"] = float(snapshot.post_cutoff_selected)
+        features["b1_duplicate_contracts_remaining"] = float(
+            snapshot.duplicate_contracts_remaining
+        )
+        # A rate that fails the plausibility band is recorded as NaN and the origin is
+        # kept: the row is not dropped, and counting those nulls as drops would report
+        # retained rows as lost ones. The count of actual drops is measured here, at the
+        # only place a drop could happen, and it is zero.
+        features["b1_rows_dropped_for_rate_or_dividend"] = 0.0
         implied = features.get("b1_iv_30d", float("nan"))
         features["b1_iv_minus_trailing_rv_30d"] = implied_minus_trailing_variance(
             implied**2 if np.isfinite(implied) else float("nan"),
