@@ -83,11 +83,22 @@ reduces the development sample from 389 sessions to roughly 80 and the power of 
 contrast with it. Adopting `partition` instead amends a rule the repository calls binding and
 needs its own recorded configuration change, with a reason written here.
 
-Until the rebuilt calendar endpoint is known, `last_session` is null and publication refuses:
+The endpoint is recorded: `last_session` is `2026-07-17`, the final session eligible for D or
+V inside the frozen window. It is not the calendar day before the exclusive end — 2026-07-20
+is a market session, and Block 1 assigns it to the sealed Phase 8 cohort, so a rebuild
+reaching it would either be impossible or would read a sealed cohort.
+
+What publication refuses today is therefore the mismatch, not the absence. The completed
+rebuild `rp2-v3-20260820-1710` runs 2024-08-02 through 2026-07-17, and the frozen window
+begins 2025-07-21:
 
 ```text
-RP2_PUBLISH_STUDY_WINDOW_INCOMPLETE:twelve_month:record 'last_session' in rp2_v3_study_window.json
+RP2_PUBLISH_STUDY_WINDOW_MISMATCH:twelve_month:2024-08-02..2026-07-17!=2025-07-21..2026-07-17
 ```
+
+Publishing under the frozen window means re-running Block 1 against it and rebuilding
+downstream. Measured against `artifacts/rp2_block1_partition/inventory.jsonl`: 170 of the 389
+development sessions fall inside it, and all 80 validation sessions do.
 
 The reconciliation is this page: the artifacts say what they were built on, the
 configuration says what may be published, and neither is inferred from the other.

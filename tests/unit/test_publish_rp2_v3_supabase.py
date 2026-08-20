@@ -242,10 +242,15 @@ def _bar_digests(store: Path) -> dict[str, str]:
 def _manifest_record(
     data_root: str = "D:/MDS650",
     *,
-    artifacts: dict[str, str] | None = None,
+    artifact_paths: dict[str, Path] | None = None,
     **overrides: Any,
 ) -> dict[str, Any]:
-    from mds650.rp2.run_manifest import RunManifest, StepRecord
+    from mds650.rp2.run_manifest import (
+        RunManifest,
+        StepRecord,
+        file_digest,
+        stable_content_digest,
+    )
 
     record = RunManifest(
         run_id="rp2-v3-test-001",
@@ -263,8 +268,13 @@ def _manifest_record(
                 exit_code=0,
                 runtime_seconds=1.0,
                 peak_memory_bytes=1,
-                artifacts=artifacts or {},
-                content=dict.fromkeys(artifacts or {}, "0" * 64),
+                artifacts={
+                    name: file_digest(path) for name, path in (artifact_paths or {}).items()
+                },
+                content={
+                    name: stable_content_digest(path)
+                    for name, path in (artifact_paths or {}).items()
+                },
             ),
         ),
         started_at_utc="2026-08-20T00:00:00Z",
@@ -387,7 +397,6 @@ def test_the_publication_is_one_call_and_a_failure_is_recorded_separately(
 def test_an_artifact_changed_since_the_run_is_refused(tmp_path: Path) -> None:
     """The manifest is written when the run finishes; publication happens afterwards."""
 
-    from mds650.rp2.run_manifest import file_digest
 
     module = _load("publish_rp2_v3_supabase")
     run = _run_dir(tmp_path)
@@ -396,7 +405,7 @@ def test_an_artifact_changed_since_the_run_is_refused(tmp_path: Path) -> None:
         json.dumps(
             _manifest_record(
                 data_root=str(_bar_store(tmp_path)),
-                artifacts={"rp2_block8_ladder/ladder.json": file_digest(ladder)},
+                artifact_paths={"rp2_block8_ladder/ladder.json": ladder},
             )
         ),
         encoding="utf-8",
@@ -554,7 +563,6 @@ def test_blocks_are_published_under_the_register_s_own_ids(tmp_path: Path) -> No
     for step in ("generate-scorecard", "validate-input-manifests", "validate-feature-registry"):
         assert step not in module.RESULT_BLOCKS
 
-    from mds650.rp2.run_manifest import file_digest
 
     run = _run_dir(tmp_path)
     ladder = run / "rp2_block8_ladder" / "ladder.json"
@@ -562,7 +570,7 @@ def test_blocks_are_published_under_the_register_s_own_ids(tmp_path: Path) -> No
         json.dumps(
             _manifest_record(
                 data_root=str(_bar_store(tmp_path)),
-                artifacts={"rp2_block8_ladder/ladder.json": file_digest(ladder)},
+                artifact_paths={"rp2_block8_ladder/ladder.json": ladder},
             )
         ),
         encoding="utf-8",
@@ -855,3 +863,45 @@ def test_a_window_that_stops_early_is_not_the_window_it_claims() -> None:
     }
     with pytest.raises(SystemExit, match="RP2_PUBLISH_STUDY_WINDOW_INCOMPLETE"):
         module.assert_study_window_decided(whole, undecided_end)
+
+
+def test_an_artifact_and_its_byte_digest_cannot_be_changed_together(tmp_path: Path) -> None:
+    """The byte digests are not covered by the run's scientific identity; the content ones are.
+
+    `scientific_part` hashes `steps[].content`, the digests taken with volatile fields
+    stripped, and deliberately not `steps[].artifacts`. So editing a result and the byte
+    digest beside it left the manifest's own digest intact and the file check satisfied by
+    the edit's own account of itself.
+    """
+
+    from mds650.rp2.run_manifest import file_digest
+
+    module = _load("publish_rp2_v3_supabase")
+    run = _run_dir(tmp_path)
+    ladder = run / "rp2_block8_ladder" / "ladder.json"
+    name = "rp2_block8_ladder/ladder.json"
+    record = _manifest_record(
+        data_root=str(_bar_store(tmp_path)), artifact_paths={name: ladder}
+    )
+    (run / "run_manifest.json").write_text(json.dumps(record), encoding="utf-8")
+    module.assert_artifacts_match_manifest(run, record)
+
+    # The edit rewrites the file and the byte digest that describes it, together.
+    payload = json.loads(ladder.read_text(encoding="utf-8"))
+    payload["D"]["status"] = "TAMPERED"
+    ladder.write_text(json.dumps(payload), encoding="utf-8")
+    record["steps"][0]["artifacts"] = {name: file_digest(ladder)}
+    with pytest.raises(SystemExit, match="RP2_PUBLISH_ARTIFACT_CHANGED"):
+        module.assert_artifacts_match_manifest(run, record)
+
+
+def test_a_step_cannot_hide_an_artifact_from_the_content_digests(tmp_path: Path) -> None:
+    """An artifact with no content digest contributes nothing to the run's identity."""
+
+    module = _load("publish_rp2_v3_supabase")
+    run = _run_dir(tmp_path)
+    record = json.loads((run / "run_manifest.json").read_text(encoding="utf-8"))
+    record["steps"][0]["artifacts"] = {"rp2_block8_ladder/ladder.json": "0" * 64}
+    record["steps"][0]["content"] = {}
+    with pytest.raises(SystemExit, match="RP2_PUBLISH_ARTIFACT_UNSIGNED"):
+        module.assert_artifacts_match_manifest(run, record)

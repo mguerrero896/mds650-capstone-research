@@ -37,6 +37,7 @@ from mds650.rp2.run_manifest import (  # noqa: E402
     assert_manifest_identity_intact,
     file_digest,
     inventory_paths,
+    stable_content_digest,
     tape_fingerprint,
 )
 
@@ -106,10 +107,26 @@ def assert_artifacts_match_manifest(run_dir: Path, manifest: dict[str, Any]) -> 
     """
 
     for step in manifest.get("steps", []):
-        for name, digest in step.get("artifacts", {}).items():
+        artifacts = step.get("artifacts", {})
+        content = step.get("content", {})
+        # The two maps describe the same files, and only one of them is signed. An artifact
+        # present in `artifacts` and absent from `content` contributes nothing to the run's
+        # scientific identity while looking fully recorded.
+        if set(artifacts) != set(content):
+            missing = sorted(set(artifacts) ^ set(content))
+            raise SystemExit(f"RP2_PUBLISH_ARTIFACT_UNSIGNED:{step.get('name')}:{missing[0]}")
+        for name, digest in artifacts.items():
             path = run_dir / name
             if not path.is_file():
                 raise SystemExit(f"RP2_PUBLISH_ARTIFACT_MISSING:{name}")
+            # Against the signed digest, not only the byte digest beside the file.
+            # `scientific_part` hashes `content` and deliberately not `artifacts`, so an
+            # edit that rewrote a result and the byte digest describing it left the
+            # manifest's own identity intact and satisfied this check with its own account
+            # of itself. `content` cannot be rewritten without moving `scientific_sha256`,
+            # which `assert_manifest_identity_intact` recomputes.
+            if stable_content_digest(path) != content[name]:
+                raise SystemExit(f"RP2_PUBLISH_ARTIFACT_CHANGED:{name}")
             if file_digest(path) != digest:
                 raise SystemExit(f"RP2_PUBLISH_ARTIFACT_CHANGED:{name}")
 
