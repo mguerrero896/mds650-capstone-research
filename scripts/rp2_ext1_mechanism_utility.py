@@ -53,7 +53,7 @@ from mds650.rp2.panel import (
     standardise,
     usable_rows,
 )
-from mds650.rp2.preprocessing import fold_design
+from mds650.rp2.preprocessing import describe_preprocessor, fold_design
 from mds650.rp2.realized import backward_rv, forward_measures, log_returns
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -367,13 +367,18 @@ def run_role(
     _, full_names = build_design(frame, [B0_FEATURES, B1_FEATURES, B2_FEATURES])
     replicated_map = {n: available[n] for n in REPLICATED}
     _, replicated_names = build_design(frame, [B0_FEATURES, B1_FEATURES, replicated_map])
-    base_design, _, _ = fold_design(frame, [*B0_FEATURES, *B1_FEATURES], train)
-    full_design, _, _ = fold_design(
+    base_design, _, base_fitted = fold_design(frame, [*B0_FEATURES, *B1_FEATURES], train)
+    full_design, _, full_fitted = fold_design(
         frame, [*B0_FEATURES, *B1_FEATURES, *B2_FEATURES], train
     )
-    replicated_design, _, _ = fold_design(
+    replicated_design, _, replicated_fitted = fold_design(
         frame, [*B0_FEATURES, *B1_FEATURES, *replicated_map], train
     )
+    preprocessing = {
+        "B0+B1": describe_preprocessor(base_fitted),
+        "B0+B1+mechanism": describe_preprocessor(replicated_fitted),
+        "B0+B1+B2": describe_preprocessor(full_fitted),
+    }
     designs = {
         "B0+B1": base_design,
         "B0+B1+mechanism": replicated_design,
@@ -394,6 +399,7 @@ def run_role(
         "rows": int(keep.sum()),
         "train_share": train_share,
         "information_sets": information_sets,
+        "preprocessing": preprocessing,
         "test_rows": int(test.sum()),
         "sessions": int(np.unique(sessions).size),
         "a_other_targets": target_battery(

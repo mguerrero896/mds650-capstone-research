@@ -256,6 +256,11 @@ def test_every_block_records_the_statistics_it_fitted_with() -> None:
         source = (repo / "scripts" / f"{name}.py").read_text(encoding="utf-8")
         assert "preprocessors[name] = describe_preprocessor(fitted)" in source, name
         assert '"preprocessing": preprocessors' in source, name
+    # The extensions fit registry designs too, and their forecasts are published.
+    for name in ("rp2_ext1_mechanism_utility", "rp2_ext12_level4_and_tensor"):
+        source = (repo / "scripts" / f"{name}.py").read_text(encoding="utf-8")
+        assert "describe_preprocessor(" in source, name
+        assert '"preprocessing":' in source, name
 
 
 def test_a_missing_realised_return_is_not_imputable() -> None:

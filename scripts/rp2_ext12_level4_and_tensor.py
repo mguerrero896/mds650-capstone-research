@@ -58,7 +58,7 @@ from mds650.rp2.panel import (
     session_rank,
     standardise,
 )
-from mds650.rp2.preprocessing import fold_design
+from mds650.rp2.preprocessing import describe_preprocessor, fold_design
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_ext12_level4"
@@ -199,7 +199,7 @@ def run_role(
     # The tabular arm is a registry design and is imputed and scaled fold-locally. The
     # tensor and sequence arms are inputs the registry does not describe, so they keep
     # the plain standardisation and are never part of a primary contrast.
-    base_design, _, _ = fold_design(frame, registry_features, train)
+    base_design, _, base_fitted = fold_design(frame, registry_features, train)
     # The floor holds on the panel and on this role; it also has to hold on the two
     # segments this run fits and scores, which is where a held-out tail with a gap in it
     # would otherwise become a result. The masks are lifted back onto the unfiltered role
@@ -223,6 +223,10 @@ def run_role(
         "test_rows": int(test.sum()),
         "sessions": int(np.unique(ranks).size),
         "information_sets": information_sets,
+        # The tabular arm is a registry design and its fitted statistics are what any
+        # reproduction of these forecasts needs. The tensor and sequence arms are
+        # standardised plainly and are described per arm above.
+        "preprocessing": {"B0+B1+B2": describe_preprocessor(base_fitted)},
     }
 
     # ---- Extension 2: the moneyness x DTE tensor through the same tree family --------
