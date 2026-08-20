@@ -253,6 +253,12 @@ def _digest_outputs(
     return artifacts, content
 
 
+#: Fields the input manifest records but does not identify itself by. They answer "has
+#: anything about the store changed", which is worth knowing and is not the same question
+#: as "is this the same experiment".
+_RECORDED_ONLY: Final = frozenset({"tape_freshness_sha256", "study_window_source"})
+
+
 def _tape_fingerprint(
     paths: Sequence[Path], *, hash_contents: bool
 ) -> tuple[str, str, int, int]:
@@ -365,8 +371,11 @@ def validate_inputs(
     # compared would destroy the record of the previous run's inputs, which is the very
     # thing the comparison needs to read.
     #
-    # The digest covers all three sets, so changing any real input moves it.
-    return record, hashlib.sha256(canonical_json(record).encode("utf-8")).hexdigest()
+    # The digest covers all three sets, so changing any real input moves it - and not the
+    # freshness digest, which is deliberately recorded outside the identity: tape restored
+    # with new modification times is the same tape.
+    identifying = {key: value for key, value in record.items() if key not in _RECORDED_ONLY}
+    return record, hashlib.sha256(canonical_json(identifying).encode("utf-8")).hexdigest()
 
 
 def write_input_manifest(run_dir: Path, record: Mapping[str, object]) -> Path:
@@ -439,6 +448,24 @@ def assert_producers_share_the_mask(run_dir: Path, roles: Sequence[str]) -> dict
     return agreed
 
 
+def frozen_sessions_by_role() -> dict[str, set[str]]:
+    """Every session the frozen inventory holds, by role.
+
+    The partition summary gives a count and two endpoints. The inventory gives the sessions,
+    which is what a panel has to match.
+    """
+
+    sessions: dict[str, set[str]] = {}
+    with TAPE_INVENTORY.open("r", encoding="utf-8") as handle:
+        for line in handle:
+            line = line.strip()
+            if not line:
+                continue
+            record = json.loads(line)
+            sessions.setdefault(str(record["role"]), set()).add(str(record["session_date"]))
+    return sessions
+
+
 def assert_partition_matches(run_dir: Path) -> None:
     """The rebuilt panels cover the frozen partition, session for session.
 
@@ -453,20 +480,24 @@ def assert_partition_matches(run_dir: Path) -> None:
 
     partition = json.loads(PARTITION.read_text(encoding="utf-8"))
     panel = pl.read_parquet(panel_paths(run_dir)["b0"], columns=["role", "session_date"])
+    # The sessions themselves, not their count and their endpoints. One interior session
+    # lost and another gained leaves both of those unchanged, and the panel is then not the
+    # partition it says it validated.
+    expected_sessions = frozen_sessions_by_role()
     breaches: list[str] = []
     for role, expected in partition["roles"].items():
         if not expected["sessions"]:
             continue
-        built = panel.filter(pl.col("role") == role)["session_date"].unique()
-        if built.len() != int(expected["sessions"]):
-            breaches.append(f"{role}:sessions={built.len()}!={expected['sessions']}")
-            continue
-        first, last = str(built.min()), str(built.max())
-        if first != expected["first_session"] or last != expected["last_session"]:
+        built = {str(value) for value in panel.filter(pl.col("role") == role)["session_date"]}
+        frozen = expected_sessions.get(role, set())
+        missing, extra = sorted(frozen - built), sorted(built - frozen)
+        if missing or extra:
             breaches.append(
-                f"{role}:window={first}..{last}!="
-                f"{expected['first_session']}..{expected['last_session']}"
+                f"{role}:missing={len(missing)}({','.join(missing[:3])})"
+                f":extra={len(extra)}({','.join(extra[:3])})"
             )
+        elif len(built) != int(expected["sessions"]):
+            breaches.append(f"{role}:sessions={len(built)}!={expected['sessions']}")
     if breaches:
         raise SystemExit("RP2_RUN_PARTITION_MISMATCH:" + ",".join(breaches))
 

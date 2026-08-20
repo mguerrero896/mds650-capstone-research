@@ -457,3 +457,49 @@ def test_a_reused_panel_does_not_change_what_the_run_says_it_did() -> None:
 
     assert scientific_sha256(manifest(True)) == scientific_sha256(manifest(False))
     assert manifest(True).as_record()["steps"][0]["reused"] is True  # type: ignore[index]
+
+
+def test_a_swapped_interior_session_is_caught(tmp_path: Path) -> None:
+    """One session lost and another gained leaves the count and the endpoints unchanged."""
+
+    import json as _json
+
+    import polars as pl
+
+    runner = _load("run_rp2_v3_pipeline")
+    frozen = runner.frozen_sessions_by_role()
+    development = sorted(frozen["D"])
+    assert len(development) > 3
+
+    run = tmp_path / "run" / "rp2_block4_b0"
+    run.mkdir(parents=True)
+    # Same count, same first and last session, one interior session replaced.
+    swapped = [*development[:-1], "2099-01-01"]
+    swapped[0], swapped[-1] = development[0], development[-1]
+    swapped[1] = "2099-01-02"
+    pl.DataFrame(
+        {"role": ["D"] * len(swapped), "session_date": swapped}
+    ).write_parquet(run / "b0_panel.parquet")
+
+    partition = tmp_path / "partition.json"
+    partition.write_text(
+        _json.dumps(
+            {
+                "roles": {
+                    "D": {
+                        "sessions": len(development),
+                        "first_session": development[0],
+                        "last_session": development[-1],
+                    }
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    original = runner.PARTITION
+    try:
+        runner.PARTITION = partition
+        with pytest.raises(SystemExit, match="RP2_RUN_PARTITION_MISMATCH:D:missing="):
+            runner.assert_partition_matches(tmp_path / "run")
+    finally:
+        runner.PARTITION = original
