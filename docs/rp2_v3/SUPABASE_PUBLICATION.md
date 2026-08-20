@@ -153,6 +153,21 @@ rp2-V3               RP2_PUBLISH_SPEC_VERSION_UNEXPECTED
 (missing or empty)   RP2_PUBLISH_SPEC_VERSION_UNEXPECTED
 ```
 
+## A retry does not restore the run it superseded
+
+The early return exists for this: a run that already published has nothing left to do, and
+standing the current rows down to mark its own current again would roll the public answer
+back to an older experiment. Re-checked against the live schema after every change in this
+gate, because it is the one invariant a later fix could quietly undo:
+
+```text
+1 old run publishes block 06            PUBLISHED
+2 new run supersedes it                 PUBLISHED
+3 the old run is retried, identically   ALREADY_PUBLISHED
+4 current block 06 belongs to           dryrun-new
+5 rows for block 06                     2 (current: 1)
+```
+
 ## A failed attempt survives the run that succeeds
 
 `record_rp2_v3_failure` writes into `attempt_log`, never into `note`. `note` is the run's own
