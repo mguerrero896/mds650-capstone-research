@@ -139,6 +139,12 @@ def run_role(
     )
     cost = 0.5 * relative_spread * implied_variance
     returns = np.asarray(frame["ret_30"].to_numpy(), dtype=np.float64)
+    # The forecasting design is finite everywhere now, because a missing feature is imputed
+    # with an indicator. A missing *realised return* is not imputable: it is the outcome the
+    # certainty equivalent is measured against, and a NaN there counts as a non-breach and
+    # poisons the number. The risk utility is evaluated on the origins that have one, and
+    # the artifact says how many that was.
+    scored = evaluate & np.isfinite(returns)
 
     results: dict[str, object] = {
         "status": "MEASURED",
@@ -146,6 +152,10 @@ def run_role(
         "rows": int(keep.sum()),
         "train_share": train_share,
         "evaluated_rows": int(evaluate.sum()),
+        "risk_utility_rows": int(scored.sum()),
+        "risk_utility_rows_without_a_realised_return": int(
+            (evaluate & ~np.isfinite(returns)).sum()
+        ),
         "median_cost_variance_units": float(np.median(cost[evaluate])),
         "median_implied_variance": float(np.median(implied_variance[evaluate])),
         "median_realized_variance": float(np.median(realized_annual[evaluate])),
@@ -174,9 +184,9 @@ def run_role(
                 metrics.mean / metrics.volatility if metrics.volatility > 0.0 else float("nan")
             )
             utility = risk_management_utility(
-                forecast[evaluate],
-                target[evaluate],
-                returns[evaluate],
+                forecast[scored],
+                target[scored],
+                returns[scored],
                 target_variance=float(np.mean(target[train])),
             )
             block[set_name] = {

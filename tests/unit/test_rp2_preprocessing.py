@@ -231,7 +231,7 @@ def test_a_held_out_asset_fold_refits_its_own_statistics() -> None:
         _Path(__file__).resolve().parents[2] / "scripts" / "rp2_block9_generalization.py"
     ).read_text(encoding="utf-8")
     loop = source[source.index("for asset in sorted(") :]
-    assert "fold_design(frame, features[set_name], asset_train)" in loop, (
+    assert "frame, features[set_name], asset_train" in loop, (
         "the held-out fold must refit its own preprocessing"
     )
     assert "fitter(designs[set_name], target, asset_train)" not in loop
@@ -256,3 +256,32 @@ def test_every_block_records_the_statistics_it_fitted_with() -> None:
         source = (repo / "scripts" / f"{name}.py").read_text(encoding="utf-8")
         assert "preprocessors[name] = describe_preprocessor(fitted)" in source, name
         assert '"preprocessing": preprocessors' in source, name
+
+
+def test_a_missing_realised_return_is_not_imputable() -> None:
+    """An imputed feature is evidence about the state; an imputed outcome is a fabrication.
+
+    The design is finite everywhere now, so the economics has to say which origins actually
+    had the return its certainty equivalent is measured against.
+    """
+
+    from pathlib import Path as _Path
+
+    source = (
+        _Path(__file__).resolve().parents[2] / "scripts" / "rp2_block11_economics.py"
+    ).read_text(encoding="utf-8")
+    assert "scored = evaluate & np.isfinite(returns)" in source
+    assert "returns[scored]" in source and "returns[evaluate]" not in source
+    assert '"risk_utility_rows"' in source
+    assert '"risk_utility_rows_without_a_realised_return"' in source
+
+
+def test_each_held_out_asset_records_the_statistics_it_refitted() -> None:
+    from pathlib import Path as _Path
+
+    source = (
+        _Path(__file__).resolve().parents[2] / "scripts" / "rp2_block9_generalization.py"
+    ).read_text(encoding="utf-8")
+    loop = source[source.index("for asset in sorted(") :]
+    assert "asset_preprocessing[set_name] = describe_preprocessor(asset_fitted)" in loop
+    assert 'entry["preprocessing"] = asset_preprocessing' in loop

@@ -270,12 +270,16 @@ def run_role(
             if asset_train.sum() < 1000 or asset_test.sum() < 200:
                 continue
             asset_losses: dict[str, FloatArray] = {}
+            asset_preprocessing: dict[str, object] = {}
             for set_name in INFORMATION_SETS:
                 # Refit the preprocessing on this fold's own training rows. The panel-wide
                 # design was imputed and scaled with statistics that had seen the held-out
                 # asset's history, and passing asset_train to the model afterwards cannot
                 # undo a median, a centre or an indicator that already learned it.
-                asset_design, _, _ = fold_design(frame, features[set_name], asset_train)
+                asset_design, _, asset_fitted = fold_design(
+                    frame, features[set_name], asset_train
+                )
+                asset_preprocessing[set_name] = describe_preprocessor(asset_fitted)
                 forecast = fitter(asset_design, target, asset_train)
                 asset_losses[set_name] = qlike_losses(target[asset_test], forecast[asset_test])
             # Each held-out asset is a different evaluation sample, so it carries its own
@@ -286,6 +290,10 @@ def run_role(
                 for label, (base, expanded) in CONTRASTS.items()
             }
             entry["evaluation_mask_sha256"] = mask_sha256(lift_mask(keep, asset_test))
+            # Held-out folds have their own medians, scales and indicator columns, so the
+            # top-level record — fitted on the fold that saw every asset — cannot reproduce
+            # these forecasts.
+            entry["preprocessing"] = asset_preprocessing
             entry["rows"] = int(asset_test.sum())
             loao[asset] = entry
         contrast_blocks["leave_one_asset_out"] = loao
