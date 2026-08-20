@@ -328,7 +328,8 @@ def test_a_block_that_measured_nothing_is_not_published_as_measured(tmp_path: Pa
     ladder = run / "rp2_block8_ladder" / "ladder.json"
     step = {"name": "fit-model-ladder", "exit_code": 0, "artifacts": {}}
 
-    ladder.write_text(json.dumps({"D": {"status": "MEASURED"}, "V": {"status": "MEASURED"}}), "utf-8")
+    both = {"D": {"status": "MEASURED"}, "V": {"status": "MEASURED"}}
+    ladder.write_text(json.dumps(both), "utf-8")
     assert module._block_status(run, step) == "MEASURED"
 
     ladder.write_text(
