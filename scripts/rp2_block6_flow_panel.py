@@ -167,6 +167,35 @@ def _read_tape(paths: Sequence[str], asset: str) -> pl.DataFrame | None:
     return tape.sort("created_at")
 
 
+def _in_session(tape: pl.DataFrame, session: str, closes: FloatArray) -> pl.DataFrame:
+    """Keep only prints whose execution lands on a minute the session actually priced.
+
+    The Full Tape carries out-of-session executions (see docs/pit_field_classification.md).
+    Clamping those to the first or last minute prices a pre-open trade at the open and a
+    post-close trade at the close, and every Greeks-weighted total then carries a number
+    that was never a market price. A minute the grid never observed is NaN, which would
+    poison the prefix sums outright.
+    """
+
+    open_us = int(
+        np.datetime64(
+            (
+                datetime.fromisoformat(session).replace(tzinfo=NY)
+                + timedelta(minutes=SESSION_OPEN_MINUTE)
+            )
+            .astimezone(UTC)
+            .replace(tzinfo=None),
+            "us",
+        ).astype(np.int64)
+    )
+    executed = tape["executed_at"].dt.replace_time_zone(None).cast(pl.Int64).to_numpy()
+    minute = (executed - open_us) // 60_000_000
+    inside = (minute >= 0) & (minute < closes.size)
+    priced = np.zeros(tape.height, dtype=bool)
+    priced[inside] = np.isfinite(closes[minute[inside]]) & (closes[minute[inside]] > 0.0)
+    return tape.filter(pl.Series(priced))
+
+
 def _prefix(values: FloatArray) -> FloatArray:
     out = np.zeros(values.size + 1, dtype=np.float64)
     np.cumsum(values, out=out[1:])
@@ -238,6 +267,7 @@ def build_session_flow(
     tape = _read_tape(paths, asset)
     if tape is None:
         return None, "provider_failure"
+    tape = _in_session(tape, session, closes)
     if tape.height < MINIMUM_SESSION_PRINTS:
         return None, "sparse_tape"
     # Two clocks travel together. `executed_at` is when the trade happened at the
@@ -298,9 +328,9 @@ def build_session_flow(
     )
     # The exchange clock, not the availability clock: a batched print must be priced at the
     # underlying level when it happened, not when the provider got round to publishing it.
-    minute_of_trade = np.clip(
-        ((executed - open_us) // 60_000_000).astype(np.int64), 0, closes.size - 1
-    )
+    # Out-of-session executions were removed above, so no clamp is needed and none is used:
+    # a clamp here would silently price a pre-open trade at the open.
+    minute_of_trade = ((executed - open_us) // 60_000_000).astype(np.int64)
     spot = closes[minute_of_trade]
     greeks = black_scholes_greeks(spot, strike, tenor_years, iv, is_call)
     weight = size * CONTRACT_MULTIPLIER * direction

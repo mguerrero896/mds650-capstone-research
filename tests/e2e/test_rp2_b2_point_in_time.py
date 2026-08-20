@@ -268,3 +268,38 @@ def test_a_missing_required_column_stops_the_rebuild(tmp_path: object) -> None:
     pl.DataFrame({"underlying_symbol": ["AAPL"]}).write_parquet(path)
     with _pytest.raises(pl.exceptions.ColumnNotFoundError):
         block6._read_tape([str(path)], "AAPL")
+
+
+def test_out_of_session_executions_are_removed_before_pricing() -> None:
+    """Clamping a pre-open print to the open prices it at a level it never traded at."""
+
+    from datetime import date, datetime, timedelta
+
+    import numpy as np
+    import polars as pl
+
+    block6 = _load("rp2_block6_flow_panel")
+    session = "2026-06-15"
+    open_at = datetime.combine(date.fromisoformat(session), datetime.min.time()).replace(
+        tzinfo=block6.NY
+    ) + timedelta(minutes=block6.SESSION_OPEN_MINUTE)
+    naive_open = open_at.astimezone(block6.UTC).replace(tzinfo=None)
+
+    executions = [
+        naive_open - timedelta(minutes=45),   # pre-open
+        naive_open + timedelta(minutes=10),   # inside
+        naive_open + timedelta(minutes=400),  # after the close
+        naive_open + timedelta(minutes=3),    # inside, but an unobserved minute
+    ]
+    tape = pl.DataFrame({"executed_at": executions})
+    closes = np.full(390, 100.0)
+    closes[3] = np.nan
+
+    kept = block6._in_session(tape, session, closes)
+    assert kept.height == 1, "only the priced in-session print survives"
+    assert kept["executed_at"][0] == executions[1]
+
+    source = _source()
+    assert "np.clip(" not in source.split("minute_of_trade")[1][:200], (
+        "a clamp would price an out-of-session execution at the open or the close"
+    )
