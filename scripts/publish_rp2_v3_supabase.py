@@ -388,6 +388,10 @@ def build_payload(run_dir: Path, *, branch: str) -> dict[str, Any]:
             # carry D's, which attributed the V contrasts to rows they were never scored
             # on; each contrast row still carries its own.
             "common_mask_sha256": _mask_digest(scorecard),
+            # The run's own identity digest, recomputed above before anything was read out
+            # of the manifest. Carried as a field rather than only inside the note: a digest
+            # a reader can reach only by parsing prose cannot be checked or joined on.
+            "scientific_sha256": manifest["scientific_sha256"],
             "note": f"RP2-v3 rebuild, scientific hash {manifest['scientific_sha256'][:16]}",
         },
         "inputs": inputs,

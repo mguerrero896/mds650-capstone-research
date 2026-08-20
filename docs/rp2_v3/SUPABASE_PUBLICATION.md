@@ -8,7 +8,7 @@ still find it.
 
 `supabase/migrations/20260820170000_rp2_v3_versioned_results.sql`:
 
-- six columns on `public.ingestion_runs` — `spec_version`, `branch_name`,
+- seven columns on `public.ingestion_runs` — `spec_version`, `branch_name`,
   `feature_registry_sha256`, `model_config_sha256`, `inference_config_sha256`,
   `common_mask_sha256`;
 - `public.rp2_block_results`, `public.rp2_extension_results`, `public.rp2_power_results`
@@ -159,6 +159,20 @@ owned it:
 Line 3 supplied `supersedes_run_id = a-run-that-never-owned-06`, and line 4 records
 `dryrun-A`: the run that actually owned the block. Block 08 stays with run A because run B
 did not rebuild it — which one caller-supplied identifier could not have said.
+
+The lineage columns are required rather than merely present:
+
+```text
+1 scientific hash omitted    RP2_PUBLISH_LINEAGE_INCOMPLETE:dryrun-sci
+2 branch omitted             RP2_PUBLISH_BRANCH_MISSING:dryrun-sci
+3 complete payload           PUBLISHED
+4 stored scientific hash     bbbbbbbbbbbb
+```
+
+`scientific_sha256` is a column rather than only a phrase inside `note`. The publisher
+recomputes the manifest's own digest before it reads any provenance out of it, so the run
+row can carry the value that assertion was made against — and a reader can check it, or join
+on it, instead of searching prose for sixteen characters.
 
 ## Who may call the publication functions
 

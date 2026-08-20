@@ -19,7 +19,8 @@ alter table public.ingestion_runs
     add column if not exists feature_registry_sha256 text,
     add column if not exists model_config_sha256 text,
     add column if not exists inference_config_sha256 text,
-    add column if not exists common_mask_sha256 text;
+    add column if not exists common_mask_sha256 text,
+    add column if not exists scientific_sha256 text;
 
 comment on column public.ingestion_runs.spec_version is
     'Which frozen specification the run implements, e.g. rp2-v3.';
@@ -238,7 +239,8 @@ begin
        or coalesce(run ->> 'feature_registry_sha256', '') !~ '^[0-9a-f]{64}$'
        or coalesce(run ->> 'model_config_sha256', '') !~ '^[0-9a-f]{64}$'
        or coalesce(run ->> 'inference_config_sha256', '') !~ '^[0-9a-f]{64}$'
-       or coalesce(run ->> 'common_mask_sha256', '') !~ '^[0-9a-f]{64}$' then
+       or coalesce(run ->> 'common_mask_sha256', '') !~ '^[0-9a-f]{64}$'
+       or coalesce(run ->> 'scientific_sha256', '') !~ '^[0-9a-f]{64}$' then
         raise exception 'RP2_PUBLISH_LINEAGE_INCOMPLETE:%', published_run_id;
     end if;
 
@@ -255,6 +257,12 @@ begin
         raise exception 'RP2_PUBLISH_SPEC_VERSION_MISSING:%', published_run_id;
     end if;
 
+    -- The branch the publication came from, for the same reason: it is a lineage column
+    -- this migration adds, and a nullable lineage column is a field nobody has to fill in.
+    if coalesce(run ->> 'branch_name', '') = '' then
+        raise exception 'RP2_PUBLISH_BRANCH_MISSING:%', published_run_id;
+    end if;
+
     -- One run id refers to one experiment. A caller mistake, or a publication from an
     -- altered run directory, would otherwise rewrite a published run's provenance and its
     -- estimates in place and leave nothing saying the number had changed.
@@ -269,6 +277,7 @@ begin
               or r.model_config_sha256 is distinct from (run ->> 'model_config_sha256')
               or r.inference_config_sha256 is distinct from (run ->> 'inference_config_sha256')
               or r.common_mask_sha256 is distinct from (run ->> 'common_mask_sha256')
+              or r.scientific_sha256 is distinct from (run ->> 'scientific_sha256')
           )
     ) then
         raise exception 'RP2_PUBLISH_RUN_ID_IMMUTABLE:%', published_run_id;
@@ -390,7 +399,7 @@ begin
     insert into public.ingestion_runs (
         run_id, started_at, status, code_commit, inputs_sha256, input_count, rows_published,
         note, spec_version, branch_name, feature_registry_sha256, model_config_sha256,
-        inference_config_sha256, common_mask_sha256
+        inference_config_sha256, common_mask_sha256, scientific_sha256
     )
     values (
         published_run_id,
@@ -406,7 +415,8 @@ begin
         run ->> 'feature_registry_sha256',
         run ->> 'model_config_sha256',
         run ->> 'inference_config_sha256',
-        run ->> 'common_mask_sha256'
+        run ->> 'common_mask_sha256',
+        run ->> 'scientific_sha256'
     )
     on conflict (run_id) do update set
         status = 'RUNNING',
@@ -419,7 +429,8 @@ begin
         feature_registry_sha256 = excluded.feature_registry_sha256,
         model_config_sha256 = excluded.model_config_sha256,
         inference_config_sha256 = excluded.inference_config_sha256,
-        common_mask_sha256 = excluded.common_mask_sha256;
+        common_mask_sha256 = excluded.common_mask_sha256,
+        scientific_sha256 = excluded.scientific_sha256;
 
     insert into public.ingestion_inputs (
         run_id, input_name, path, provider, sha256, bytes, rows, schema_sha256, time_min, time_max

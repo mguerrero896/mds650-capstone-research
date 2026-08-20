@@ -646,3 +646,19 @@ def test_a_publication_that_never_reached_the_database_is_still_recorded() -> No
         with pytest.raises(SystemExit, match="RP2_PUBLISH_TRANSPORT_FAILED"):
             module.publish({"run": {"run_id": "r"}}, "key")
     assert attempted[-1].endswith("record_rp2_v3_failure"), "the attempt was never recorded"
+
+
+def test_the_run_publishes_its_scientific_hash_as_a_field(tmp_path: Path) -> None:
+    """A digest a reader can only reach by parsing prose is not really published.
+
+    The publisher recomputes the manifest's `scientific_sha256` before it publishes anything,
+    so the run row can carry the digest that assertion was made against - and a reader can
+    check it, or join on it, rather than searching a free-text note for sixteen characters.
+    """
+
+    module = _load("publish_rp2_v3_supabase")
+    payload = module.build_payload(_run_dir(tmp_path), branch="x")
+    manifest = json.loads((tmp_path / "rp2-v3-test-001" / "run_manifest.json").read_text("utf-8"))
+
+    assert payload["run"]["scientific_sha256"] == manifest["scientific_sha256"]
+    assert len(payload["run"]["scientific_sha256"]) == 64
