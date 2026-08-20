@@ -313,3 +313,34 @@ def test_out_of_session_executions_are_removed_before_pricing() -> None:
     assert "mark_price(minute_of_trade" in source, (
         "bars are labelled by their start, so closes[m] is a price from the trade's future"
     )
+
+
+def test_a_bar_store_without_opens_loses_the_mark_rather_than_inventing_one() -> None:
+    """Two of the six bar stores carry no `open` column.
+
+    Filling it from the close would hand every opening-minute trade the price at the *end*
+    of that minute — the look-ahead the open exists to prevent. The mark is unavailable
+    instead, and the prints that needed it are dropped.
+    """
+
+    import numpy as np
+    import polars as pl
+
+    from mds650.rp2.bars import build_session_grid
+
+    minutes = 390
+    frame = pl.DataFrame(
+        {
+            "minute": np.arange(minutes, dtype=np.int64),
+            "close": np.full(minutes, 101.0),
+            "volume": np.full(minutes, 10.0),
+        }
+    )
+    grid = build_session_grid(frame)
+    assert np.isnan(grid.open).all(), "a store without opens must not borrow the close"
+    assert np.isfinite(grid.close).all()
+
+    block6 = _load("rp2_block6_flow_panel")
+    marks = block6.mark_price(np.array([0, 5], dtype=np.int64), grid.close, grid.open)
+    assert np.isnan(marks[0]), "the opening minute has no mark here, and says so"
+    assert marks[1] == 101.0, "every other minute still marks at the completed bar"

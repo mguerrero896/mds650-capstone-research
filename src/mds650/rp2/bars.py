@@ -229,9 +229,10 @@ class SessionGrid:
     """
 
     close: FloatArray
-    #: The session's first print in each minute. It is the one price a trade *inside* that
-    #: minute can be marked at without reading its own future, which matters for the
-    #: opening minute, where there is no completed bar to fall back to.
+    #: The session's first print in each minute, NaN where the store did not supply one. It
+    #: is the one price a trade *inside* that minute can be marked at without reading its own
+    #: future, which matters for the opening minute, where there is no completed bar to fall
+    #: back to. It is never filled from the close: that would be the look-ahead it prevents.
     open: FloatArray
     high: FloatArray
     low: FloatArray
@@ -296,7 +297,12 @@ def build_session_grid(group: pl.DataFrame, *, session: date | None = None) -> S
 
     fill_share = float(np.isnan(grids["close"]).mean())
     close, valid = _forward_fill(grids["close"])
-    opening = np.where(np.isnan(grids["open"]), close, grids["open"])
+    # The open is NOT filled from the close. A store without the column, or a minute
+    # without a bar, leaves NaN, and the caller loses the marks that depended on it. The
+    # close of minute m is the price at the *end* of minute m, so substituting it here
+    # would hand every opening-minute trade a price from its own future — the exact
+    # look-ahead the open exists to avoid.
+    opening = grids["open"]
     high = np.where(np.isnan(grids["high"]), close, grids["high"])
     low = np.where(np.isnan(grids["low"]), close, grids["low"])
     volume = np.where(np.isnan(grids["volume"]), 0.0, grids["volume"])

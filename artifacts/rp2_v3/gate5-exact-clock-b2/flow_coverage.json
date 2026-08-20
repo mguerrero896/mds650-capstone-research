@@ -4,7 +4,7 @@
   "coverage": {
     "b2_30m_buy_premium_share": {
       "coverage": 1.0,
-      "median": 0.3514124630809822
+      "median": 0.3514419681500196
     },
     "b2_30m_contracts": {
       "coverage": 1.0,
@@ -12,19 +12,19 @@
     },
     "b2_30m_d_iv": {
       "coverage": 1.0,
-      "median": -4.172693156570601e-05
+      "median": -4.124537843472335e-05
     },
     "b2_30m_d_mid_rel": {
       "coverage": 1.0,
-      "median": 9.013286110568565e-05
+      "median": 7.392475838647922e-05
     },
     "b2_30m_d_spread": {
       "coverage": 1.0,
-      "median": -7.10704651273913e-05
+      "median": -6.468082502156995e-05
     },
     "b2_30m_decay_intensity_innovation": {
       "coverage": 1.0,
-      "median": -28.60727354693561
+      "median": -28.573701513794195
     },
     "b2_30m_decay_intensity_last": {
       "coverage": 1.0,
@@ -32,11 +32,11 @@
     },
     "b2_30m_delta_flow": {
       "coverage": 1.0,
-      "median": 562632.3586144298
+      "median": 559746.5156847108
     },
     "b2_30m_gamma_flow": {
       "coverage": 1.0,
-      "median": 16706329.995742887
+      "median": 16637977.118686326
     },
     "b2_30m_is_empty_window": {
       "coverage": 1.0,
@@ -48,19 +48,19 @@
     },
     "b2_30m_mean_age_s": {
       "coverage": 1.0,
-      "median": 922.8264546394348
+      "median": 922.7198766469955
     },
     "b2_30m_mean_provider_latency_s": {
       "coverage": 1.0,
-      "median": 0.076011206934612
+      "median": 0.07599697226413471
     },
     "b2_30m_multileg_premium_share": {
       "coverage": 1.0,
-      "median": 0.20388683355054893
+      "median": 0.20378905060059682
     },
     "b2_30m_multileg_size_share": {
       "coverage": 1.0,
-      "median": 0.1462517711582393
+      "median": 0.14623691536761715
     },
     "b2_30m_observed_span_s": {
       "coverage": 1.0,
@@ -68,27 +68,27 @@
     },
     "b2_30m_otm_premium_share": {
       "coverage": 1.0,
-      "median": 0.18882330775555645
+      "median": 0.1888201119913544
     },
     "b2_30m_passive_premium_share": {
       "coverage": 1.0,
-      "median": 0.28410597802712734
+      "median": 0.2840267264084412
     },
     "b2_30m_premium": {
       "coverage": 1.0,
-      "median": 30118926.5
+      "median": 30114724.5
     },
     "b2_30m_rate_per_second": {
       "coverage": 1.0,
-      "median": 5.2925
+      "median": 5.291111111111111
     },
     "b2_30m_sell_premium_share": {
       "coverage": 1.0,
-      "median": 0.3483355627321092
+      "median": 0.34838829520251424
     },
     "b2_30m_size": {
       "coverage": 1.0,
-      "median": 53147.0
+      "median": 53143.0
     },
     "b2_30m_sweep_premium_share": {
       "coverage": 1.0,
@@ -96,31 +96,31 @@
     },
     "b2_30m_trades": {
       "coverage": 1.0,
-      "median": 9526.5
+      "median": 9524.0
     },
     "b2_30m_vega_flow": {
       "coverage": 1.0,
-      "median": -619327.2211794914
+      "median": -620280.5607413827
     },
     "b2_30m_vega_flow_abs": {
       "coverage": 1.0,
-      "median": 86619728.38601822
+      "median": 86604784.83297199
     },
     "b2_30m_vega_flow_call": {
       "coverage": 1.0,
-      "median": -435692.0835797782
+      "median": -436343.29320448963
     },
     "b2_30m_vega_flow_long_dte": {
       "coverage": 1.0,
-      "median": -732340.8333496939
+      "median": -733119.2148418021
     },
     "b2_30m_vega_flow_put": {
       "coverage": 1.0,
-      "median": -223764.21398784954
+      "median": -223977.61896072817
     },
     "b2_30m_vega_flow_short_dte": {
       "coverage": 1.0,
-      "median": 20851.72790300844
+      "median": 20733.121457295092
     },
     "b2_30m_zero_dte_premium_share": {
       "coverage": 1.0,
@@ -136,7 +136,7 @@
     },
     "b2_5m_buy_premium_share": {
       "coverage": 1.0,
-      "median": 0.350954139402156
+      "median": 0.35098577302839146
     },
     "b2_5m_contract_entropy": {
       "coverage": 1.0,
@@ -148,15 +148,15 @@
     },
     "b2_5m_d_iv": {
       "coverage": 1.0,
-      "median": -4.283312922119405e-05
+      "median": -4.242921055795957e-05
     },
     "b2_5m_d_mid_rel": {
       "coverage": 1.0,
-      "median": -8.030084969396737e-05
+      "median": -8.169142655526035e-05
     },
     "b2_5m_d_spread": {
       "coverage": 1.0,
-      "median": -6.921079048939497e-05
+      "median": -6.540847614216031e-05
     },
     "b2_5m_decay_intensity_innovation": {
       "coverage": 1.0,
@@ -200,11 +200,11 @@
     },
     "b2_5m_multileg_premium_share": {
       "coverage": 1.0,
-      "median": 0.18556173851703128
+      "median": 0.18548527113177748
     },
     "b2_5m_multileg_size_share": {
       "coverage": 1.0,
-      "median": 0.13325154766443142
+      "median": 0.13322864477579205
     },
     "b2_5m_observed_span_s": {
       "coverage": 1.0,
@@ -216,7 +216,7 @@
     },
     "b2_5m_passive_premium_share": {
       "coverage": 1.0,
-      "median": 0.2658013616988532
+      "median": 0.2656971757983936
     },
     "b2_5m_premium": {
       "coverage": 1.0,
@@ -228,7 +228,7 @@
     },
     "b2_5m_sell_premium_share": {
       "coverage": 1.0,
-      "median": 0.34884389834760954
+      "median": 0.34887756787036917
     },
     "b2_5m_size": {
       "coverage": 1.0,
@@ -248,7 +248,7 @@
     },
     "b2_5m_vega_flow": {
       "coverage": 1.0,
-      "median": -95742.25300928572
+      "median": -95749.95172085147
     },
     "b2_5m_vega_flow_abs": {
       "coverage": 1.0,
@@ -256,19 +256,19 @@
     },
     "b2_5m_vega_flow_call": {
       "coverage": 1.0,
-      "median": -72337.49293837557
+      "median": -72314.91806839756
     },
     "b2_5m_vega_flow_long_dte": {
       "coverage": 1.0,
-      "median": -93521.19094590656
+      "median": -93469.51131595159
     },
     "b2_5m_vega_flow_put": {
       "coverage": 1.0,
-      "median": -34737.868686790345
+      "median": -34759.24427663442
     },
     "b2_5m_vega_flow_short_dte": {
       "coverage": 1.0,
-      "median": 174.7661761503623
+      "median": 174.87150609140008
     },
     "b2_5m_zero_dte_premium_share": {
       "coverage": 1.0,
@@ -288,8 +288,8 @@
   "empty_window_share_30m": 0.0021718878634256252,
   "empty_window_share_5m": 0.0022639629100047664,
   "feature_count": 70,
-  "flow_sha256": "32127e12a3e7aa602fa931d2e42e22e61fd2cf721b8c78f7ed24956fe8b9a31a",
-  "generated_at_utc": "2026-08-20T02:38:52.294696+00:00",
+  "flow_sha256": "b27d84a213a14a0d2770b24d031766c0c7c72f3679ec9105342418496e7a5013",
+  "generated_at_utc": "2026-08-20T02:57:24.590917+00:00",
   "label": "EXPLORATORY_MECHANISM_DISCOVERY",
   "limit_sessions": 0,
   "minimum_session_prints": 50,

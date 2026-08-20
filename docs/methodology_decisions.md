@@ -796,5 +796,9 @@ Spec Kit consistency and preregistration gates pass.
    print instead, the earliest price that exists. And the Greeks floor is applied only to a
    non-positive tenor now: a 0DTE contract with one second left keeps that second, where a
    sixty-second floor would have flattened exactly the gamma and vega that make it
-   interesting.
+   interesting. The opening mark is never borrowed from the close: two of the six bar
+   stores carry no `open` column, and filling it would have handed their opening-minute
+   trades the price at the *end* of that minute. Those prints are dropped instead, which
+   costs 0.037 % of thirty-minute trade volume across 347 windows and is a loss the data
+   actually has rather than a number invented to cover it.
 
