@@ -325,6 +325,28 @@ begin
         raise exception 'RP2_PUBLISH_BLOCK_IMMUTABLE:%', published_run_id;
     end if;
 
+    -- And the inputs, which are the third set this function writes. The blocks and the
+    -- contrasts are guarded above; `ingestion_inputs` is where a reader goes to find the
+    -- files a number was built from, so a retry that changes a path, a provider or a digest
+    -- changes the answer to that question while every result stays identical.
+    if exists (
+        select 1
+        from jsonb_array_elements(coalesce(payload -> 'inputs', '[]'::jsonb)) as item
+        join public.ingestion_inputs i
+          on i.run_id = published_run_id
+         and i.input_name = item ->> 'input_name'
+        where i.path is distinct from (item ->> 'path')
+           or i.provider is distinct from (item ->> 'provider')
+           or i.sha256 is distinct from (item ->> 'sha256')
+           or i.bytes is distinct from (item ->> 'bytes')::bigint
+           or i.rows is distinct from nullif(item ->> 'rows', '')::bigint
+           or i.schema_sha256 is distinct from (item ->> 'schema_sha256')
+           or i.time_min is distinct from (item ->> 'time_min')
+           or i.time_max is distinct from (item ->> 'time_max')
+    ) then
+        raise exception 'RP2_PUBLISH_INPUT_IMMUTABLE:%', published_run_id;
+    end if;
+
     -- The comparisons above join on the keys, so they only ever examine the rows present
     -- on both sides. A retry that drops a contrast, adds one, or renames a family changes
     -- no value the joins can see, and would be reported as already published while the
@@ -380,6 +402,29 @@ begin
         )
     ) then
         raise exception 'RP2_PUBLISH_BLOCK_SET_CHANGED:%', published_run_id;
+    end if;
+
+    -- The same for the input inventory: an input added or removed leaves every field
+    -- comparison above with nothing to disagree about.
+    if exists (
+        select 1 from public.ingestion_runs r
+        where r.run_id = published_run_id and r.status = 'PUBLISHED'
+    ) and exists (
+        (
+            select item ->> 'input_name' as input_name
+            from jsonb_array_elements(coalesce(payload -> 'inputs', '[]'::jsonb)) as item
+            except
+            select i.input_name from public.ingestion_inputs i where i.run_id = published_run_id
+        )
+        union all
+        (
+            select i.input_name from public.ingestion_inputs i where i.run_id = published_run_id
+            except
+            select item ->> 'input_name'
+            from jsonb_array_elements(coalesce(payload -> 'inputs', '[]'::jsonb)) as item
+        )
+    ) then
+        raise exception 'RP2_PUBLISH_INPUT_SET_CHANGED:%', published_run_id;
     end if;
 
     -- Nothing left to do, and nothing that may be done. A later run may have superseded

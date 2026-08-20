@@ -138,6 +138,19 @@ the base tables carry row-level security with no reader policy, so a field missi
 view cannot be reached at all, and a contrast whose mask a reader cannot see is a contrast
 whose evaluation rows nobody outside can identify.
 
+The input inventory is guarded the same way, because it is the third set this function
+writes and the one a reader follows to find the files a number was built from:
+
+```text
+1 first publish                  PUBLISHED
+2 identical retry                ALREADY_PUBLISHED
+3 retry, a bar digest changed    RP2_PUBLISH_INPUT_IMMUTABLE:dryrun-inputs
+4 retry, the tape path moved     RP2_PUBLISH_INPUT_IMMUTABLE:dryrun-inputs
+5 retry, an input removed        RP2_PUBLISH_INPUT_SET_CHANGED:dryrun-inputs
+```
+
+Lines 3 and 4 leave every result identical and change the account of what produced them.
+
 ## The version chain builds itself
 
 Nobody is asked to name the predecessor. One identifier cannot describe blocks that belong
