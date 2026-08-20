@@ -11,7 +11,7 @@ from mds650.rp2.flow import (
     CONTRACT_MULTIPLIER,
     black_scholes_greeks,
     burstiness,
-    exponential_decay_intensity,
+    decay_intensity_at,
     herfindahl,
     residualise,
     shannon_entropy,
@@ -46,23 +46,51 @@ def test_signed_exposure_applies_direction_size_and_multiplier() -> None:
     assert scaled == pytest.approx(2.0 * CONTRACT_MULTIPLIER)
 
 
-def test_decay_intensity_matches_the_direct_sum() -> None:
-    times = np.array([0.0, 10.0, 15.0, 100.0], dtype=np.float64)
-    baseline, excitation, decay = 0.1, 0.5, 60.0
-    values = exponential_decay_intensity(
-        times, baseline=baseline, excitation=excitation, decay=decay
+def test_the_decay_intensity_is_evaluated_at_the_cutoff_over_visible_rows() -> None:
+    """Both clocks, and neither alone.
+
+    Ageing an event on the availability clock turns a provider flush into a burst. Ageing
+    it on the exchange clock while ignoring availability lets a trade the provider had not
+    published yet raise the intensity of one it had.
+    """
+
+    events = np.array([0.0, 10.0, 20.0, 30.0])
+    cutoffs = np.array([15.0, 35.0])
+    # At the first cutoff only two rows had been published, even though a third executed.
+    visible = np.array([2, 4], dtype=np.int64)
+    values = decay_intensity_at(
+        cutoffs, events, visible, baseline=0.0, excitation=1.0, decay=10.0
     )
-    for index, moment in enumerate(times):
-        direct = baseline + excitation * sum(
-            math.exp(-(moment - earlier) / decay) for earlier in times[:index]
-        )
-        assert values[index] == pytest.approx(direct)
+    assert values[0] == pytest.approx(np.exp(-1.5) + np.exp(-0.5))
+    assert values[1] == pytest.approx(
+        np.exp(-3.5) + np.exp(-2.5) + np.exp(-1.5) + np.exp(-0.5)
+    )
+    # A row that had not been published cannot contribute, however early it executed.
+    hidden = decay_intensity_at(
+        cutoffs, events, np.array([0, 4], dtype=np.int64), baseline=0.0, excitation=1.0,
+        decay=10.0,
+    )
+    assert hidden[0] == 0.0
+    assert hidden[1] == pytest.approx(values[1])
 
 
-def test_decay_intensity_rejects_a_non_positive_decay() -> None:
+def test_the_decay_intensity_refuses_impossible_inputs() -> None:
+    events = np.array([0.0, 1.0])
     with pytest.raises(ValueError, match="RP2_DECAY_INVALID"):
-        exponential_decay_intensity(np.array([0.0]), baseline=1.0, excitation=1.0, decay=0.0)
-
+        decay_intensity_at(
+            np.array([1.0]), events, np.array([1], dtype=np.int64), baseline=0.0,
+            excitation=1.0, decay=0.0,
+        )
+    with pytest.raises(ValueError, match="RP2_DECAY_CUTOFF_SHAPE"):
+        decay_intensity_at(
+            np.array([1.0, 2.0]), events, np.array([1], dtype=np.int64), baseline=0.0,
+            excitation=1.0,
+        )
+    with pytest.raises(ValueError, match="RP2_DECAY_CUTOFFS_UNSORTED"):
+        decay_intensity_at(
+            np.array([2.0, 1.0]), events, np.array([1, 2], dtype=np.int64), baseline=0.0,
+            excitation=1.0,
+        )
 
 def test_burstiness_separates_regular_from_clustered_arrivals() -> None:
     regular = burstiness(np.arange(0.0, 100.0, 1.0))

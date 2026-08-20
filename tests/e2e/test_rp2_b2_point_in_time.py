@@ -112,12 +112,20 @@ def test_an_unreadable_tape_is_reported_rather_than_fatal() -> None:
     assert block6._read_tape(["no/such/file.parquet"], "AAPL") is None
 
 
-def test_the_intensity_recursion_runs_in_execution_order() -> None:
-    """A non-monotone time series makes an exponential decay amplify instead of decay."""
+def test_the_intensity_is_evaluated_at_each_cutoff_over_visible_rows() -> None:
+    """Ageing on the exchange clock is only half of it; availability is the other half.
+
+    Sorting the whole session by execution and running one recursion would let a trade the
+    provider had not published yet raise the intensity of one it had — a point-in-time
+    violation carrying an economically correct timestamp.
+    """
 
     source = _source()
-    assert "clocks.execution_order" in source
-    assert "intensity[order] = exponential_decay_intensity(" in source
+    assert "decay_intensity_at(" in source
+    assert "exponential_decay_intensity" not in source
     assert "intensity[hi - 1]" not in source, (
         "the last published row of a window is not necessarily its latest execution"
+    )
+    assert "visible = np.searchsorted(created, cutoffs_us" in source, (
+        "the visible prefix at each cutoff is what the recursion may see"
     )

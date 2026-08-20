@@ -89,33 +89,57 @@ def signed_exposure(
     return float(np.sum(direction * weight))
 
 
-def exponential_decay_intensity(
-    times_seconds: FloatArray, *, baseline: float, excitation: float, decay: float = DECAY_SECONDS
+def decay_intensity_at(
+    cutoff_seconds: FloatArray,
+    event_seconds: FloatArray,
+    visible_upto: npt.NDArray[np.int64],
+    *,
+    baseline: float,
+    excitation: float,
+    decay: float = DECAY_SECONDS,
 ) -> FloatArray:
-    """Exponentially-weighted count of recent events, evaluated just before each event.
+    """Decay-weighted recent activity at each cutoff, over the events visible there.
 
-    ``x_i = mu + alpha * sum_{t_j < t_i} exp(-(t_i - t_j) / beta)`` by the standard O(n)
-    recursion, so a long window costs no more than a short one.
+    ``x_k = mu + alpha * sum_i exp(-(c_k - e_i) / beta)`` over the rows the provider had
+    published by ``c_k``. ``event_seconds`` is the exchange clock and stays in publication
+    order; ``visible_upto[k]`` is how far into it the provider had got by ``c_k``.
+
+    Both clocks are needed and neither will do alone. Ageing an event on the availability
+    clock turns a provider flush into a burst of trading. Ageing it on the exchange clock
+    while ignoring availability lets a trade that had not been published yet raise the
+    intensity of one that had — a point-in-time violation with an economically correct
+    timestamp on it.
 
     **This is not a Hawkes intensity.** It has the same functional form, but ``mu``,
-    ``alpha`` and ``beta`` are supplied rather than estimated from the data, so it carries
-    no self-excitation parameter and supports no branching-ratio or stability claim. It is
-    a decay-weighted activity measure; calling it Hawkes would assert a fitted model that
-    does not exist.
+    ``alpha`` and ``beta`` are supplied rather than estimated, so it carries no
+    self-excitation parameter and supports no branching-ratio or stability claim. It is a
+    decay-weighted activity measure; calling it Hawkes would assert a fitted model that does
+    not exist.
     """
 
     if decay <= 0.0:
         raise ValueError("RP2_DECAY_INVALID")
-    if times_seconds.ndim != 1:
-        raise ValueError("RP2_DECAY_TIMES_INVALID")
-    out = np.empty(times_seconds.size, dtype=np.float64)
+    if cutoff_seconds.ndim != 1 or cutoff_seconds.shape != visible_upto.shape:
+        raise ValueError("RP2_DECAY_CUTOFF_SHAPE")
+    if cutoff_seconds.size and (
+        bool(np.any(np.diff(cutoff_seconds) < 0)) or bool(np.any(np.diff(visible_upto) < 0))
+    ):
+        raise ValueError("RP2_DECAY_CUTOFFS_UNSORTED")
+
+    out = np.empty(cutoff_seconds.size, dtype=np.float64)
     state = 0.0
-    previous = times_seconds[0] if times_seconds.size else 0.0
-    for index, moment in enumerate(times_seconds):
-        state *= math.exp(-(float(moment) - float(previous)) / decay)
+    previous: float | None = None
+    start = 0
+    for index in range(cutoff_seconds.size):
+        cutoff = float(cutoff_seconds[index])
+        end = int(visible_upto[index])
+        if previous is not None:
+            state *= math.exp(-(cutoff - previous) / decay)
+        if end > start:
+            ages = np.maximum(cutoff - event_seconds[start:end], 0.0)
+            state += float(np.exp(-ages / decay).sum())
         out[index] = baseline + excitation * state
-        state += 1.0
-        previous = moment
+        previous, start = cutoff, end
     return out
 
 

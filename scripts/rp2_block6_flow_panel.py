@@ -38,7 +38,7 @@ from mds650.rp2.flow import (
     CONTRACT_MULTIPLIER,
     DECAY_SECONDS,
     black_scholes_greeks,
-    exponential_decay_intensity,
+    decay_intensity_at,
     herfindahl,
     shannon_entropy,
 )
@@ -266,15 +266,6 @@ def build_session_flow(
     # Interarrivals and intensity are economics, so they run on the exchange clock too. On
     # the availability clock a provider flushing a backlog reads as a burst of trading.
     seconds = clocks.economic_seconds()
-    # The tape is in publication order, and latency does not always preserve execution
-    # order. Feeding a non-monotone time series to an exponential decay makes it amplify
-    # instead of decay, so the recursion runs on the execution-ordered permutation and the
-    # result is mapped back to publication order for the point-in-time slicing.
-    order = clocks.execution_order
-    intensity = np.empty(seconds.size, dtype=np.float64)
-    intensity[order] = exponential_decay_intensity(
-        seconds[order], baseline=0.0, excitation=1.0, decay=DECAY_SECONDS
-    )
     d_iv, d_mid, d_spread, has_previous = _previous_trade_deltas(keys, iv, mid, relative_spread)
     log_moneyness = np.log(np.maximum(strike, 1e-9) / np.maximum(spot, 1e-9))
 
@@ -319,17 +310,61 @@ def build_session_flow(
     prefixes = {name: _prefix(values) for name, values in channels.items()}
 
     base = datetime.fromisoformat(session).replace(tzinfo=NY)
+    cutoffs_us = np.array(
+        [
+            int(
+                np.datetime64(
+                    (
+                        base + timedelta(minutes=int(SESSION_OPEN_MINUTE + minute))
+                    ).astimezone(UTC).replace(tzinfo=None)
+                    - timedelta(seconds=CUTOFF_SECONDS),
+                    "us",
+                ).astype(np.int64)
+            )
+            for minute in origins
+        ],
+        dtype=np.int64,
+    )
+    visible = np.searchsorted(created, cutoffs_us, side="right").astype(np.int64)
+    # Decay-weighted activity, evaluated at each cutoff and at each window start, over the
+    # rows visible at that instant and aged on the exchange clock. Running one recursion
+    # over the whole session in execution order would let a trade the provider had not
+    # published yet raise the intensity of one it had; taking the window start from an
+    # earlier *origin* would leave the first origins of every session undefined, which the
+    # fail-closed rule turns into dropped evaluation rows.
+    epoch_us = int(executed.min())
+    window_starts_us = {
+        label: cutoffs_us - window_seconds * 1_000_000 for label, window_seconds in WINDOWS
+    }
+    evaluation_us = np.concatenate([cutoffs_us, *window_starts_us.values()])
+    order = np.argsort(evaluation_us, kind="stable")
+    sorted_us = evaluation_us[order]
+    sorted_intensity = decay_intensity_at(
+        (sorted_us - epoch_us) / 1e6,
+        seconds,
+        np.searchsorted(created, sorted_us, side="right").astype(np.int64),
+        baseline=0.0,
+        excitation=1.0,
+        decay=DECAY_SECONDS,
+    )
+    intensity_at = np.empty(evaluation_us.size, dtype=np.float64)
+    intensity_at[order] = sorted_intensity
+    intensity_now = intensity_at[: origins.size]
+    intensity_before = {
+        label: intensity_at[(index + 1) * origins.size : (index + 2) * origins.size]
+        for index, label in enumerate(window_starts_us)
+    }
+
     rows: list[dict[str, float]] = []
-    for minute in origins:
-        origin_time = base + timedelta(minutes=int(SESSION_OPEN_MINUTE + minute))
-        cutoff = origin_time.astimezone(UTC).replace(tzinfo=None) - timedelta(
-            seconds=CUTOFF_SECONDS
-        )
-        cutoff_us = int(np.datetime64(cutoff, "us").astype(np.int64))
-        hi = int(np.searchsorted(created, cutoff_us, side="right"))
+    for position, minute in enumerate(origins):
+        cutoff_us = int(cutoffs_us[position])
+        hi = int(visible[position])
         record: dict[str, float] = {"origin_minute": float(minute)}
         for label, window_seconds in WINDOWS:
             lo = int(np.searchsorted(created, cutoff_us - window_seconds * 1_000_000, side="left"))
+            # The innovation is the rise in intensity across the window: the same measure
+            # at the cutoff and at the window start, each over the rows visible at its own
+            # instant, so neither can see the other's future and both are always defined.
             record.update(
                 _window_record(
                     lo,
@@ -341,8 +376,9 @@ def build_session_flow(
                     strike=strike,
                     expiry_day=expiry_day,
                     premium=premium,
-                    intensity=intensity,
                     seconds=seconds,
+                    intensity_now=float(intensity_now[position]),
+                    intensity_before=float(intensity_before[label][position]),
                 )
             )
         rows.append(record)
@@ -368,8 +404,9 @@ def _window_record(
     strike: FloatArray,
     expiry_day: npt.NDArray[np.int64],
     premium: FloatArray,
-    intensity: FloatArray,
     seconds: FloatArray,
+    intensity_now: float,
+    intensity_before: float,
 ) -> dict[str, float]:
     prefix = f"b2_{label}_"
     if hi <= lo:
@@ -385,7 +422,6 @@ def _window_record(
     # not necessarily its earliest and latest executions.
     window_seconds = seconds[lo:hi]
     span = float(window_seconds.max() - window_seconds.min())
-    last_executed = lo + int(np.argmax(window_seconds))
     record: dict[str, float] = {
         f"{prefix}trades": trades,
         f"{prefix}contracts": float(np.unique(keys[lo:hi]).size),
@@ -410,10 +446,8 @@ def _window_record(
         f"{prefix}d_iv": total("d_iv_sum") / predecessors,
         f"{prefix}d_mid_rel": total("d_mid_sum") / predecessors,
         f"{prefix}d_spread": total("d_spread_sum") / predecessors,
-        f"{prefix}decay_intensity_last": float(intensity[last_executed]),
-        f"{prefix}decay_intensity_innovation": float(
-            intensity[last_executed] - np.mean(intensity[lo:hi])
-        ),
+        f"{prefix}decay_intensity_last": intensity_now,
+        f"{prefix}decay_intensity_innovation": intensity_now - intensity_before,
         f"{prefix}rate_per_second": trades / span if span > 0.0 else float("nan"),
         # A mean, and now named one. It was called a median for the whole programme.
         f"{prefix}mean_age_s": cutoff_us / 1e6 - total("age_sum") / max(trades, 1.0),

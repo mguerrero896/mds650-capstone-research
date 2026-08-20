@@ -760,5 +760,16 @@ Spec Kit consistency and preregistration gates pass.
    0DTE Greeks. A session whose tape cannot be read, a session too thin to build
    microstructure from, and a window in which nobody traded are three separate facts and are
    now counted separately: 0 provider failures, 0 sparse sessions, and 0.226 % empty
-   five-minute windows.
+   five-minute windows. Ordering by execution alone would have introduced a point-in-time
+   violation of its own — an earlier-executed print the provider had not published yet would
+   have raised the intensity of a later-executed one it had — so the decay is now evaluated
+   *at* each instant over the rows visible there: `decay_intensity_at` takes the cutoff and
+   the window start, ages every visible row on the exchange clock, and admits none the
+   provider had not published. `decay_intensity_innovation` is therefore redefined as the
+   rise in intensity across the window rather than the last row minus the window mean; it
+   moves by 106 %, and that is a change of definition, not a correction of arithmetic.
+   Evaluating the window start at the exact instant rather than at an earlier origin keeps
+   the feature defined everywhere: taking it from a lagged origin left the first six origins
+   of every session undefined and cost 9.3 % of evaluation rows under the fail-closed rule.
+   Worst B2 coverage after the rebuild is 99.37 %.
 
