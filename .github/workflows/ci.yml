@@ -45,3 +45,34 @@ jobs:
           --ignore=tests/unit/test_date_level_pit_preflight_request_budget_v1.py
           --ignore=tests/contract/test_b2_confirmation_inputs.py
           --cov=src/mds650 --cov-report=term --cov-fail-under=80
+
+
+  # Tier 1c - the contracts the scientific claims rest on. Separated from `hermetic` so a
+  # breach is legible as such in the checks list: a coverage-gate failure and an
+  # information set that stopped failing closed are not the same kind of red.
+  #
+  # Six of these assertions - the per-set panel coverage checks in
+  # `test_rp2_v3_feature_registry.py` - skip here, because they read panels built from
+  # licensed data that this runner never has. They run where the panels exist, under
+  # `scripts/run_local_evidence_gates.py`. A green check here means the contracts that can
+  # be checked without the licensed evidence hold; it does not mean coverage was measured.
+  scientific-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.12"
+      - name: Sync locked environment
+        run: uv sync --locked
+      - name: RP2 scientific contracts
+        run: >
+          uv run pytest
+          tests/contract/test_rp2_v3_feature_registry.py
+          tests/contract/test_rp2_v3_research_contract.py
+          tests/contract/test_rp2_v3_primary_model_producers.py
+          tests/e2e/test_rp2_b1_contemporaneous.py
+          tests/e2e/test_rp2_b2_point_in_time.py
+          tests/e2e/test_rp2_incremental_inference.py
+          tests/e2e/test_run_rp2_v3_pipeline.py
+          -q
