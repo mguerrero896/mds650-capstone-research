@@ -33,14 +33,14 @@ from mds650.rp2.panel import (
     CORE_SETS,
     build_design,
     chronological_split,
-    common_usable_rows,
+    common_evaluation_mask,
     describe_information_set,
     lift_mask,
     load_merged_panel,
     mask_sha256,
     session_rank,
-    standardise,
 )
+from mds650.rp2.preprocessing import describe_preprocessor, fold_design
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_block9_generalization"
@@ -92,8 +92,17 @@ def _subgroups(frame: pl.DataFrame, test: npt.NDArray[np.bool_]) -> dict[str, np
     source = frame["source"].to_numpy()[test]
 
     def tercile(values: FloatArray, low: str, mid: str, high: str) -> np.ndarray:
+        """Terciles, with an explicit bucket for a value that is not there.
+
+        A NaN fails both comparisons and lands in ``high``, which silently files an origin
+        with no liquidity reading under "most liquid". The common mask retains those rows on
+        purpose — they are imputable in the design — so the regime label says "missing"
+        rather than guessing, and the slice reports it as its own group.
+        """
+
         cuts = np.nanquantile(values, [1 / 3, 2 / 3])
-        return np.where(values <= cuts[0], low, np.where(values <= cuts[1], mid, high))
+        labelled = np.where(values <= cuts[0], low, np.where(values <= cuts[1], mid, high))
+        return np.where(np.isfinite(values), labelled, f"{low.split('_')[0]}_missing")
 
     return {
         "asset": assets,
@@ -104,7 +113,11 @@ def _subgroups(frame: pl.DataFrame, test: npt.NDArray[np.bool_]) -> dict[str, np
         "session_period": np.where(
             minutes < 120, "open", np.where(minutes < 240, "midday", "close")
         ),
-        "market_direction": np.where(market >= 0.0, "market_up", "market_down"),
+        "market_direction": np.where(
+            np.isfinite(market),
+            np.where(market >= 0.0, "market_up", "market_down"),
+            "market_missing",
+        ),
         "expiration_week": np.array(
             ["expiry_week" if _is_expiration_week(str(s)) else "ordinary_week" for s in sessions]
         ),
@@ -179,11 +192,15 @@ def run_role(
         ["session_date", "asset", "origin_minute"]
     )
     target = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
-    designs: dict[str, FloatArray] = {}
+    # build_design still fails closed on a registered feature the panel does not carry; its
+    # matrix is discarded, because the design a fold fits is built by the preprocessor from
+    # that fold's own training statistics.
     resolved: dict[str, tuple[str, ...]] = {}
+    features: dict[str, list[str]] = {}
     for name, maps in INFORMATION_SETS.items():
-        designs[name], resolved[name] = build_design(frame, maps)
-    keep = common_usable_rows(designs, target)
+        _, resolved[name] = build_design(frame, maps)
+        features[name] = [column for mapping in maps for column in mapping]
+    keep = common_evaluation_mask(frame, target)
     information_sets = {
         name: describe_information_set((name,), resolved[name], keep)
         for name in INFORMATION_SETS
@@ -198,7 +215,6 @@ def run_role(
     role_frame = frame
     frame = frame.filter(pl.Series(keep))
     target = target[keep]
-    designs = {name: design[keep] for name, design in designs.items()}
     sessions_rank = session_rank(frame["session_date"].to_numpy())
     train, test = chronological_split(sessions_rank, train_share=train_share)
     # The floor holds on the panel and on this role; it also has to hold on the two
@@ -211,6 +227,12 @@ def run_role(
         {"train": lift_mask(keep, train), "test": lift_mask(keep, test)},
         *CORE_SETS.values(),
     )
+    # One design per information set, imputed and scaled from this fold's training rows.
+    designs: dict[str, FloatArray] = {}
+    preprocessors: dict[str, object] = {}
+    for name in INFORMATION_SETS:
+        designs[name], _, fitted = fold_design(frame, features[name], train)
+        preprocessors[name] = describe_preprocessor(fitted)
     information_sets = {
         name: describe_information_set((name,), resolved[name], lift_mask(keep, test))
         for name in INFORMATION_SETS
@@ -221,6 +243,7 @@ def run_role(
 
     results: dict[str, object] = {
         "status": "MEASURED",
+        "preprocessing": preprocessors,
         "rows": int(keep.sum()),
         "train_share": train_share,
         "train_rows": int(train.sum()),
@@ -232,7 +255,7 @@ def run_role(
         fitter = LADDER[model_name]
         losses: dict[str, FloatArray] = {}
         for set_name in INFORMATION_SETS:
-            forecast = fitter(standardise(designs[set_name], train), target, train)
+            forecast = fitter(designs[set_name], target, train)
             losses[set_name] = qlike_losses(target[test], forecast[test])
 
         contrast_blocks: dict[str, object] = {}
@@ -260,10 +283,17 @@ def run_role(
             if asset_train.sum() < 1000 or asset_test.sum() < 200:
                 continue
             asset_losses: dict[str, FloatArray] = {}
+            asset_preprocessing: dict[str, object] = {}
             for set_name in INFORMATION_SETS:
-                forecast = fitter(
-                    standardise(designs[set_name], asset_train), target, asset_train
+                # Refit the preprocessing on this fold's own training rows. The panel-wide
+                # design was imputed and scaled with statistics that had seen the held-out
+                # asset's history, and passing asset_train to the model afterwards cannot
+                # undo a median, a centre or an indicator that already learned it.
+                asset_design, _, asset_fitted = fold_design(
+                    frame, features[set_name], asset_train
                 )
+                asset_preprocessing[set_name] = describe_preprocessor(asset_fitted)
+                forecast = fitter(asset_design, target, asset_train)
                 asset_losses[set_name] = qlike_losses(target[asset_test], forecast[asset_test])
             # Each held-out asset is a different evaluation sample, so it carries its own
             # mask: one hash for the whole leave-one-out family would say that results
@@ -273,6 +303,10 @@ def run_role(
                 for label, (base, expanded) in CONTRASTS.items()
             }
             entry["evaluation_mask_sha256"] = mask_sha256(lift_mask(keep, asset_test))
+            # Held-out folds have their own medians, scales and indicator columns, so the
+            # top-level record — fitted on the fold that saw every asset — cannot reproduce
+            # these forecasts.
+            entry["preprocessing"] = asset_preprocessing
             entry["rows"] = int(asset_test.sum())
             loao[asset] = entry
         contrast_blocks["leave_one_asset_out"] = loao

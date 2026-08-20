@@ -4,7 +4,7 @@
 > `scripts/generate_canonical_state.py`. Never edit by hand; CI fails on drift.
 > This file supersedes any narrative document that disagrees with it.
 
-- Governance: decision 82 is the latest (82 recorded).
+- Governance: decision 83 is the latest (83 recorded).
 - Frozen evidence: 61 artifacts pinned in `data/FROZEN_ARTIFACTS.json` (physical tripwire on every CI run).
 - Gated data: 15 files in private storage (`data/GATED_DATA_POINTERS.json`).
 

@@ -67,9 +67,18 @@ def _synthetic_panel(sessions: int = 40, origins: int = 40) -> pl.DataFrame:
             "rv30": rng.lognormal(-11.0, 0.4, rows),
         }
     )
+    from mds650.rp2.panel import AVAILABILITY_COLUMNS
+
     registered = {**B0_FEATURES, **B1_FEATURES, **B2_FEATURES}
     return frame.with_columns(
-        **{name: pl.Series(rng.lognormal(0.0, 0.3, rows)) for name in registered}
+        **{name: pl.Series(rng.lognormal(0.0, 0.3, rows)) for name in registered},
+        # Availability is a property of the panel, not a fitted feature: it says the join
+        # found option data at that origin at all.
+        **{
+            name: pl.Series(np.zeros(rows))
+            for name in AVAILABILITY_COLUMNS
+            if name not in registered
+        },
     )
 
 
@@ -122,11 +131,18 @@ def test_each_alternative_target_records_the_rows_it_was_actually_fitted_on() ->
     sparse = dense.copy()
     sparse[:1000] = np.nan
 
+    frame = pl.DataFrame({name: pl.Series(nuisance[:, index + 1]) for index, name in
+                          enumerate(("f0", "f1", "f2"))})
+    features = ["b1_iv_30d", "b1_term_slope", "b1_iv_7d"]
+    frame.columns = features
+
     left = ext1._dml_on_target(
-        nuisance, treatment, dense, sessions, ("a", "b"), folds=3, evaluation_base=base
+        nuisance, treatment, dense, sessions, ("a", "b"), folds=3, evaluation_base=base,
+        frame=frame, nuisance_features=features,
     )
     right = ext1._dml_on_target(
-        nuisance, treatment, sparse, sessions, ("a", "b"), folds=3, evaluation_base=base
+        nuisance, treatment, sparse, sessions, ("a", "b"), folds=3, evaluation_base=base,
+        frame=frame, nuisance_features=features,
     )
     assert left is not None and right is not None
     assert left["evaluation_mask_sha256"] != right["evaluation_mask_sha256"], (
@@ -194,8 +210,8 @@ def test_the_extension_arms_take_part_in_the_fail_closed_mask() -> None:
     """A neural arm that can see a non-finite input is not covered by a tabular mask."""
 
     source = (REPO / "scripts" / "rp2_ext12_level4_and_tensor.py").read_text(encoding="utf-8")
-    mask = source.index("keep = common_usable_rows(")
-    assert "extension_finite" in source[mask : mask + 400], (
+    mask = source.index("keep = common_evaluation_mask(")
+    assert "extension_finite" in source[mask : mask + 200], (
         "the tensor and sequence inputs never enter the mask the run fails closed on"
     )
 

@@ -44,6 +44,7 @@ from mds650.rp2.panel import (
     VARIANCE_FLOOR,
     build_design,
     chronological_split,
+    common_evaluation_mask,
     common_usable_rows,
     describe_information_set,
     lift_mask,
@@ -51,8 +52,8 @@ from mds650.rp2.panel import (
     mask_sha256,
     session_rank,
     standardise,
-    usable_rows,
 )
+from mds650.rp2.preprocessing import describe_preprocessor, fold_design
 from mds650.rp2.realized import backward_rv, forward_measures, log_returns
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -157,15 +158,31 @@ def _dml_on_target(
     *,
     folds: int,
     evaluation_base: npt.NDArray[np.bool_],
+    frame: pl.DataFrame,
+    nuisance_features: Sequence[str],
 ) -> dict[str, object] | None:
     finite = np.isfinite(response)
     if int(finite.sum()) < 2000 or np.unique(sessions[finite]).size < 20:
         return None
     blocks = time_block_folds(sessions[finite], folds=folds, purge_sessions=1)
-    response_residual = cross_fitted_residuals(nuisance[finite], response[finite], blocks)
+
+    # Imputation and scaling are nuisance parameters, so the projection each block is
+    # residualised against is rebuilt from that block's own training rows. Fitting once over
+    # this target's finite subset would let a held-out block choose the medians and scales it
+    # is then held out of.
+    available = frame.filter(pl.Series(finite))
+
+    def nuisance_for(train: npt.NDArray[np.bool_]) -> npt.NDArray[np.float64]:
+        return fold_design(available, list(nuisance_features), train)[0]
+
+    response_residual = cross_fitted_residuals(
+        nuisance[finite], response[finite], blocks, design_builder=nuisance_for
+    )
     treatment_residual = np.column_stack(
         [
-            cross_fitted_residuals(nuisance[finite], treatment[finite, index], blocks)
+            cross_fitted_residuals(
+                nuisance[finite], treatment[finite, index], blocks, design_builder=nuisance_for
+            )
             for index in range(treatment.shape[1])
         ]
     )
@@ -195,6 +212,7 @@ def target_battery(
     *,
     folds: int,
     evaluation_base: npt.NDArray[np.bool_],
+    nuisance_features: Sequence[str],
 ) -> dict[str, object]:
     """DML of the core B2 block against every alternative target.
 
@@ -223,6 +241,8 @@ def target_battery(
             names,
             folds=folds,
             evaluation_base=evaluation_base,
+            frame=frame,
+            nuisance_features=nuisance_features,
         )
         if outcome is None:
             continue
@@ -331,7 +351,8 @@ def run_role(
     )
     rv30 = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
 
-    nuisance, nuisance_names = build_design(frame, [B0_FEATURES, B1_FEATURES])
+    _, nuisance_names = build_design(frame, [B0_FEATURES, B1_FEATURES])
+    nuisance_features = [*B0_FEATURES, *B1_FEATURES]
     # The historical treatment battery predates the core/rich split and names channels
     # that are now B2-rich. The extension resolves against the whole registry: rich means
     # out of the primary contrasts, not out of existence.
@@ -340,8 +361,11 @@ def run_role(
     if unknown:
         raise ValueError(f"RP2_EXT1_UNKNOWN_TREATMENT:{','.join(sorted(unknown))}")
     treatment_map = {n: available[n] for n in CORE_TREATMENTS}
-    treatment, names = build_design(frame, [treatment_map], intercept=False)
-    keep = usable_rows(nuisance, rv30) & np.isfinite(treatment).all(axis=1)
+    _, names = build_design(frame, [treatment_map], intercept=False)
+    # Target, keys and availability, like every primary block: the complete-case gate made
+    # this a feature-selected sample and dropped exactly the origins a missing secondary
+    # feature touched.
+    keep = common_evaluation_mask(frame, rv30)
     information_sets = {
         "B0+B1": describe_information_set(("B0", "B1"), nuisance_names, keep),
         "B2_mechanism": describe_information_set(("B2_mechanism",), names, keep),
@@ -354,17 +378,36 @@ def run_role(
         }
 
     frame = frame.filter(pl.Series(keep))
-    rv30, nuisance, treatment = rv30[keep], nuisance[keep], treatment[keep]
+    rv30 = rv30[keep]
     sessions = session_rank(frame["session_date"].to_numpy())
     train, test = chronological_split(sessions, train_share=train_share)
+    nuisance, _, nuisance_fitted = fold_design(frame, nuisance_features, train)
+    treatment, _, treatment_fitted = fold_design(
+        frame, list(treatment_map), train, intercept=False
+    )
     assets = frame["asset"].to_numpy()
 
-    base_design, base_names = build_design(frame, [B0_FEATURES, B1_FEATURES])
-    full_design, full_names = build_design(frame, [B0_FEATURES, B1_FEATURES, B2_FEATURES])
+    # Registry designs are imputed and scaled from this fold's training rows, like the
+    # primary blocks. build_design still runs first, so a registered feature the panel does
+    # not carry stops the run before anything is fitted.
+    _, base_names = build_design(frame, [B0_FEATURES, B1_FEATURES])
+    _, full_names = build_design(frame, [B0_FEATURES, B1_FEATURES, B2_FEATURES])
     replicated_map = {n: available[n] for n in REPLICATED}
-    replicated_design, replicated_names = build_design(
-        frame, [B0_FEATURES, B1_FEATURES, replicated_map]
+    _, replicated_names = build_design(frame, [B0_FEATURES, B1_FEATURES, replicated_map])
+    base_design, _, base_fitted = fold_design(frame, [*B0_FEATURES, *B1_FEATURES], train)
+    full_design, _, full_fitted = fold_design(
+        frame, [*B0_FEATURES, *B1_FEATURES, *B2_FEATURES], train
     )
+    replicated_design, _, replicated_fitted = fold_design(
+        frame, [*B0_FEATURES, *B1_FEATURES, *replicated_map], train
+    )
+    preprocessing = {
+        "B0+B1_nuisance": describe_preprocessor(nuisance_fitted),
+        "B2_mechanism": describe_preprocessor(treatment_fitted),
+        "B0+B1": describe_preprocessor(base_fitted),
+        "B0+B1+mechanism": describe_preprocessor(replicated_fitted),
+        "B0+B1+B2": describe_preprocessor(full_fitted),
+    }
     designs = {
         "B0+B1": base_design,
         "B0+B1+mechanism": replicated_design,
@@ -385,10 +428,18 @@ def run_role(
         "rows": int(keep.sum()),
         "train_share": train_share,
         "information_sets": information_sets,
+        "preprocessing": preprocessing,
         "test_rows": int(test.sum()),
         "sessions": int(np.unique(sessions).size),
         "a_other_targets": target_battery(
-            frame, nuisance, treatment, sessions, names, folds=folds, evaluation_base=keep
+            frame,
+            nuisance,
+            treatment,
+            sessions,
+            names,
+            folds=folds,
+            evaluation_base=keep,
+            nuisance_features=nuisance_features,
         ),
         "b_tail_classification": tail_classification(
             rv30, designs, train & finite, test & finite, assets

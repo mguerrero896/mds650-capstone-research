@@ -124,6 +124,44 @@ def build_design(
     return np.column_stack(blocks), tuple(names)
 
 
+#: Columns every block emits at every origin it produced, whatever the market did. A null
+#: here means the join found no option data at that origin at all, which is an availability
+#: fact rather than a missing measurement.
+AVAILABILITY_COLUMNS: Final[tuple[str, ...]] = (
+    "b1_surface_coverage",
+    "b2_5m_is_empty_window",
+)
+
+
+def common_evaluation_mask(
+    frame: pl.DataFrame,
+    target: FloatArray,
+    *,
+    availability: Sequence[str] = AVAILABILITY_COLUMNS,
+) -> npt.NDArray[np.bool_]:
+    """The rows a nested contrast is evaluated on: target, keys and availability.
+
+    ``M = valid target ∩ valid keys ∩ valid availability``. Deliberately **not** "every
+    design column is finite": that rule let one missing secondary feature remove the origin
+    from B0's evaluation as well as B1's, so the larger information set was judged on a
+    sample its own missingness had chosen. Missing values inside the design are imputed
+    fold-locally with an indicator; missing *availability* is a different thing and stays
+    excluded.
+    """
+
+    mask = np.isfinite(target) & (target > 0.0)
+    for key in JOIN_KEYS:
+        if key not in frame.columns:
+            raise ValueError(f"RP2_PANEL_ORIGIN_KEY_MISSING:{key}")
+        mask &= ~np.asarray(frame[key].is_null().to_numpy(), dtype=np.bool_)
+    for column in availability:
+        if column not in frame.columns:
+            raise ValueError(f"RP2_PANEL_AVAILABILITY_MISSING:{column}")
+        values = frame[column].cast(pl.Float64)
+        mask &= np.asarray((values.is_finite() & values.is_not_null()).to_numpy(), dtype=np.bool_)
+    return mask
+
+
 def common_usable_rows(
     designs: Mapping[str, FloatArray], target: FloatArray
 ) -> npt.NDArray[np.bool_]:
