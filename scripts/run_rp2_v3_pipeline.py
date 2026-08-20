@@ -39,6 +39,7 @@ from mds650.rp2.feature_registry import registry_sha256  # noqa: E402
 from mds650.rp2.panel import TARGET_ASSETS  # noqa: E402
 from mds650.rp2.run_manifest import (  # noqa: E402
     PIPELINE_STEPS,
+    STEP_NAMES,
     RunManifest,
     StepRecord,
     assert_artifact_stable,
@@ -1011,8 +1012,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     # Verified first. Writing the manifest is what marks the run complete, and a directory
     # marked complete is closed to its producers - so writing it before the verification
     # would make an unverifiable run permanently unrepeatable under its own id.
+    verification_started = time.perf_counter()
     verify_artifacts(run_dir, steps)
-    verification_seconds = round(time.perf_counter() - wall, 3)
+    verification_seconds = round(time.perf_counter() - verification_started, 3)
     # The manifest describes thirteen steps because the pipeline has thirteen. Recording
     # eleven and performing two more leaves a consumer counting the difference.
     steps.append(
@@ -1052,7 +1054,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "started_at_utc",
                 )
             },
-            "steps": tuple(steps),
+            # In the order the pipeline declares, not the order the last two happened to
+            # be appended in. Verification runs before the manifest is written, because a
+            # run is complete only once it has been verified; the record still describes
+            # the fixed sequence.
+            "steps": tuple(sorted(steps, key=lambda step: STEP_NAMES.index(step.name))),
             "finished_at_utc": datetime.now(UTC).isoformat(),
         }
     )

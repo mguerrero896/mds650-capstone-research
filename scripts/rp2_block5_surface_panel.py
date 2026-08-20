@@ -105,7 +105,13 @@ SPARSE_SESSION: Final = pl.DataFrame()
 def _read_tape(paths: Sequence[str], asset: str) -> pl.DataFrame | None:
     frames: list[pl.DataFrame] = []
     for path in paths:
-        frame = pl.read_parquet(path, columns=list(TAPE_COLUMNS))
+        try:
+            frame = pl.read_parquet(path, columns=list(TAPE_COLUMNS))
+        except (OSError, pl.exceptions.PolarsError):
+            # A file that cannot be read is a provider failure, which is what the counter
+            # is for. Letting the error escape aborted the whole build instead, so the
+            # counter could only ever report zero.
+            return None
         frames.append(frame.filter(pl.col("underlying_symbol") == asset))
     if not frames:
         # Nothing to read: no path resolved for this session-asset.
@@ -461,6 +467,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         grid = build_session_grid(group, session=session_date)
         grids[(str(asset), str(session_date))] = grid.close
 
+    unresolved = 0
     jobs: list[tuple[str, str, list[str], npt.NDArray[np.int64], FloatArray, FloatArray]] = []
     for (asset, session_date), group in panel.sort(
         ["asset", "session_date", "origin_minute"]
@@ -468,7 +475,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         key = (str(session_date), str(asset))
         paths = inventory.get(key) or inventory.get((str(session_date), "__ALL__"))
         closes = grids.get((str(asset), str(session_date)))
-        if paths is None or closes is None or closes.size == 0:
+        if paths is None:
+            # No tape at all for a session-asset the panel carries. Skipped silently, this
+            # is a sample that shrank without anything saying so.
+            unresolved += 1
+            continue
+        if closes is None or closes.size == 0:
             continue
         # Origins come from the B0 panel, which is built on each session's real length.
         # A holiday now yields an empty grid and an early close a 210-minute one, so an
@@ -535,7 +547,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         "spec": "docs/rp2_v3/B1_CONTEMPORANEOUS_SPEC.md",
         "constant_maturities_days": list(CONSTANT_MATURITY_DAYS),
         "session_assets_requested": len(jobs),
-        "session_assets_without_tape": failures,
+        "session_assets_without_tape": failures + unresolved,
+        "session_assets_unresolved_in_inventory": unresolved,
         "session_assets_too_sparse": sparse,
         "rows": surface.height,
         "coverage": coverage,
