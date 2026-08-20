@@ -43,15 +43,13 @@ from mds650.rp2.panel import (
     lift_mask,
     load_merged_panel,
     mask_sha256,
+    panel_paths,
     session_rank,
 )
 from mds650.rp2.preprocessing import describe_preprocessor, fold_design
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_block10_inference"
-B0_PANEL = ROOT / "artifacts" / "rp2_block4_b0" / "b0_panel.parquet"
-B1_PANEL = ROOT / "artifacts" / "rp2_block5_surface" / "b1_surface_panel.parquet"
-B2_PANEL = ROOT / "artifacts" / "rp2_block6_flow" / "b2_flow_panel.parquet"
 
 INFORMATION_SETS: dict[str, list[dict[str, str]]] = {
     "B0": [B0_FEATURES],
@@ -157,6 +155,10 @@ def run_role(
         "train_share": train_share,
         "test_rows": int(test.sum()),
         "clusters": int(np.unique(clusters).size),
+        # The rows every contrast in this role was scored on. The ladder records the same
+        # digest for the same role; the runner compares them, and a divergence means the
+        # two producers evaluated different samples.
+        "evaluation_mask_sha256": evaluated_mask_sha256,
         "information_sets": information_sets,
     }
     all_losses: dict[str, FloatArray] = {}
@@ -262,13 +264,18 @@ def run_role(
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
+    # A rebuild writes its panels into its own run directory; without this the
+    # block would silently read the previous run's panels and label the result
+    # with the new run id.
+    parser.add_argument("--panel-root", type=Path, default=None)
     parser.add_argument("--train-share", type=float, default=0.6)
     parser.add_argument("--models", default=",".join(DEFAULT_MODELS))
     args = parser.parse_args(argv)
 
     models = tuple(name.strip() for name in str(args.models).split(",") if name.strip())
     assert_primary_models(models)
-    panel = load_merged_panel(B0_PANEL, B1_PANEL, B2_PANEL)
+    panels = panel_paths(args.panel_root)
+    panel = load_merged_panel(panels["b0"], panels["b1"], panels["b2"])
     document: dict[str, object] = {
         # Which frozen sets were fitted, how complete they were, and the hash of the
         # registry that decided them. Without it an artifact records a design width and

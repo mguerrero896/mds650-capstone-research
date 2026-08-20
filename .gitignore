@@ -67,3 +67,9 @@ artifacts/rp2_block11b_forward/tradeable_legs.parquet
 artifacts/rp2_block5b_independent/paired_surfaces.parquet
 
 .worktrees/
+
+# Working files of an in-flight rebuild: the run id being built and its console log.
+# The run's own artifacts under artifacts/rp2_v3/<run_id>/ are committed by the gate that
+# publishes them, not by the gate that builds the runner.
+.run_id
+pipeline_run.log

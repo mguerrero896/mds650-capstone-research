@@ -40,6 +40,35 @@ INFORMATION_SETS: Final[dict[str, dict[str, str]]] = {
 CORE_SETS: Final[dict[str, str]] = {"B0": "B0_CORE", "B1": "B1_CORE", "B2": "B2_CORE"}
 
 
+#: The forecast targets. Frozen: a rebuild that quietly produced five of them would still
+#: pass a session count, so the universe is stated once and checked against the panel.
+#: SPY and QQQ are in the tape and in the partition as market controls - inputs to B0,
+#: never forecast targets - and are deliberately not here.
+TARGET_ASSETS: Final[tuple[str, ...]] = ("AAPL", "AMZN", "META", "MSFT", "NVDA", "TSLA")
+
+#: Where each derived panel lives, relative to a root. The panels are not versioned in
+#: git: they are large and are derived works of licensed provider data.
+PANEL_LOCATIONS: Final[dict[str, str]] = {
+    "target": "rp2_block3_target/target_panel.parquet",
+    "b0": "rp2_block4_b0/b0_panel.parquet",
+    "b1": "rp2_block5_surface/b1_surface_panel.parquet",
+    "b2": "rp2_block6_flow/b2_flow_panel.parquet",
+}
+
+
+def panel_paths(root: Path | None = None) -> dict[str, Path]:
+    """Resolve the four derived panels under ``root``.
+
+    Four scripts held four copies of these paths, so a rebuild that wrote its panels
+    somewhere else had no way to tell them. A run directory keeps the same layout as
+    ``artifacts/`` rather than flattening it: Block 4 and Block 8 both write a file called
+    ``ladder.json``, and flattening would let the second silently replace the first.
+    """
+
+    base = Path("artifacts") if root is None else root
+    return {name: base / location for name, location in PANEL_LOCATIONS.items()}
+
+
 def load_merged_panel(b0_path: Path, b1_path: Path, b2_path: Path) -> pl.DataFrame:
     """Left-join the surface and flow panels onto the B0 panel on the origin key.
 

@@ -25,7 +25,12 @@ import polars as pl
 
 from mds650.b1v3_confirmation import canonical_sha256
 from mds650.metrics import qlike_losses
-from mds650.rp2.bars import FULL_SESSION_MINUTES, build_session_grid
+from mds650.rp2.bars import (
+    BAR_SOURCES,
+    FULL_SESSION_MINUTES,
+    build_session_grid,
+    deduplicate_bar_sources,
+)
 from mds650.rp2.realized import (
     HORIZONS,
     backward_rv,
@@ -51,12 +56,6 @@ MAX_HORIZON = max(HORIZONS)
 ORIGIN_STEP = 5
 VARIANCE_FLOOR = 1e-12
 
-BAR_SOURCES: tuple[tuple[str, str, str], ...] = (
-    ("gate7_c6", "D", "data/fmp/gate7/underlying_1min_c6.parquet"),
-    ("gate8_c4c", "D", "data/fmp/gate8_c4c/underlying_1min_c4c.parquet"),
-    ("phase6_180d", "D", "phase6/data/fmp/underlying_1min_180d.parquet"),
-    ("gate3_dev80", "V", "data/fmp/gate3/underlying_1min_dev80.parquet"),
-)
 
 
 def _normalise(frame: pl.DataFrame) -> pl.DataFrame:
@@ -92,7 +91,12 @@ def load_bars(data_root: Path) -> pl.DataFrame:
         frames.append(frame.with_columns(source=pl.lit(name), role=pl.lit(role)))
     if not frames:
         raise SystemExit("RP2_BLOCK3_NO_BARS")
-    return pl.concat(frames, how="vertical")
+    # The acquisitions overlap: the backfill re-acquires sessions an earlier campaign
+    # already held. Concatenated and grouped by source, the same origin appears twice and
+    # is double-weighted in every statistic built from it. Block 4 has always deduplicated;
+    # sharing the source list without sharing this would have introduced the duplication
+    # rather than removing a discrepancy.
+    return deduplicate_bar_sources(pl.concat(frames, how="vertical"))
 
 
 def session_origins(minutes: int) -> npt.NDArray[np.int64]:

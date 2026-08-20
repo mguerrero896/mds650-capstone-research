@@ -29,6 +29,7 @@ from collections.abc import Sequence
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
+from typing import Final
 from zoneinfo import ZoneInfo
 
 import numpy as np
@@ -50,13 +51,47 @@ from mds650.rp2.option_clock import (
     expiry_close_timestamps,
     time_to_expiry_years,
 )
+from mds650.rp2.panel import panel_paths
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_block6_flow"
 INVENTORY = ROOT / "artifacts" / "rp2_block1_partition" / "inventory.jsonl"
-B0_PANEL = ROOT / "artifacts" / "rp2_block4_b0" / "b0_panel.parquet"
 CUTOFF_SECONDS = 120
 WINDOWS: tuple[tuple[str, int], ...] = (("5m", 300), ("30m", 1800))
+#: Window used for the per-origin *counters* the scorecard sums. It matches the origin
+#: spacing so the windows tile the session and no trade is counted twice.
+COUNTING_WINDOW_SECONDS: Final = 300
+
+
+def counting_bounds(
+    created: npt.NDArray[np.int64], *, cutoff_us: int, visible: int, first: bool = False
+) -> tuple[int, int]:
+    """The half-open slice of one origin's counting window.
+
+    Both edges use `side="right"`, so a trade whose record was created exactly on a
+    five-minute boundary belongs to the earlier window only. Closed at both ends, adjacent
+    windows share their edge and a trade sitting on it is counted twice.
+
+    The first origin's bucket reaches back to the start of the tape rather than five
+    minutes. Its own thirty-minute features already see everything visible since the open,
+    so a five-minute first bucket would leave the trades of roughly the first twenty-three
+    minutes able to move the fitted features while never entering the count of them.
+    """
+
+    if first:
+        return 0, max(visible, 0)
+    low = int(
+        np.searchsorted(created, cutoff_us - COUNTING_WINDOW_SECONDS * 1_000_000, side="right")
+    )
+    return low, max(visible, low)
+
+
+def window_count(flags: npt.NDArray[np.bool_], low: int, high: int) -> int:
+    """How many flagged trades fall inside one origin's counting window."""
+
+    if high <= low:
+        return 0
+    return int(np.count_nonzero(flags[low:high]))
 #: Concentration statistics are not prefix-summable; they are computed on this window only.
 CONCENTRATION_WINDOW = "5m"
 CALENDAR_YEAR = 365.0
@@ -468,6 +503,30 @@ def build_session_flow(
         cutoff_us = int(cutoffs_us[position])
         hi = int(visible[position])
         record: dict[str, float] = {"origin_minute": float(minute)}
+        # Counted inside the five-minute window rather than since the open. Origins are
+        # five minutes apart and the windows are anchored at the availability cutoff, so
+        # the five-minute windows tile the session: summing these over origins counts each
+        # trade at most once. A running total from the open, summed the same way, would
+        # count the first trade of the day once for every origin that followed it.
+        counting_lo, counting_hi = counting_bounds(
+            created, cutoff_us=cutoff_us, visible=hi, first=position == 0
+        )
+        record["b2_pit_violations"] = float(
+            np.count_nonzero(created[counting_lo:counting_hi] > cutoff_us)
+        )
+        record["b2_zero_dte_trades"] = float(
+            window_count(is_zero_dte, counting_lo, counting_hi)
+        )
+        # The counting window tiles the session, first bucket included, so summing these
+        # over origins counts every trade of the day exactly once. The five-minute feature
+        # windows begin about seven minutes after the open and would leave the opening
+        # trades out of any total built from them, although the first origin's own
+        # thirty-minute features consume them.
+        counted = max(counting_hi - counting_lo, 0)
+        record["b2_counting_trades"] = float(counted)
+        record["b2_counting_mean_latency_s"] = (
+            float(np.mean(latency_seconds[counting_lo:counting_hi])) if counted else 0.0
+        )
         for label, window_seconds in WINDOWS:
             lo_us = cutoff_us - window_seconds * 1_000_000
             lo = int(np.searchsorted(created, lo_us, side="left"))
@@ -497,6 +556,7 @@ def build_session_flow(
                     expiry_day=expiry_day,
                     premium=premium,
                     seconds=seconds,
+                    latency=latency_seconds,
                     intensity_now=float(intensity_now[position]),
                     intensity_before=float(intensity_before[label][position]),
                 )
@@ -511,6 +571,25 @@ def build_session_flow(
         ),
         "measured",
     )
+
+
+def _window_quantile(
+    values: FloatArray, lo: int, hi: int, stale: npt.NDArray[np.int64], quantile: float
+) -> float:
+    """A quantile over one window's own observations, with the stale rows removed.
+
+    The stale rows are those whose record was created inside the window while the trade
+    happened before it; they are excluded from every other window statistic and are
+    excluded here for the same reason.
+    """
+
+    if hi <= lo:
+        return 0.0
+    inside = np.ones(hi - lo, dtype=bool)
+    if stale.size:
+        inside[stale - lo] = False
+    selected = values[lo:hi][inside]
+    return float(np.quantile(selected, quantile)) if selected.size else 0.0
 
 
 def _window_record(
@@ -528,6 +607,7 @@ def _window_record(
     expiry_day: npt.NDArray[np.int64],
     premium: FloatArray,
     seconds: FloatArray,
+    latency: FloatArray,
     intensity_now: float,
     intensity_before: float,
 ) -> dict[str, float]:
@@ -606,6 +686,10 @@ def _window_record(
         f"{prefix}late_arrival_share": (
             total("latency_over_60s") / trades if trades else 0.0
         ),
+        # The tail, taken over the individual lags inside this window. A quantile of
+        # per-window means, computed later, would be a statistic about typical windows:
+        # averaging first suppresses exactly the slow records the tail is asked about.
+        f"{prefix}p95_provider_latency_s": _window_quantile(latency, lo, hi, stale, 0.95),
         f"{prefix}zero_dte_premium_share": total("zero_dte_premium") / total_premium,
         f"{prefix}zero_dte_signed_premium": total("zero_dte_signed_premium"),
         f"{prefix}zero_dte_trade_share": total("zero_dte_trades") / max(trades, 1.0),
@@ -658,11 +742,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-root", type=Path, default=Path("D:/MDS650"))
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
+    # A rebuild reads its own B0 panel, not the previous run's.
+    parser.add_argument("--panel-root", type=Path, default=None)
     parser.add_argument("--workers", type=int, default=6)
     parser.add_argument("--limit-sessions", type=int, default=0)
     args = parser.parse_args(argv)
 
-    panel = pl.read_parquet(B0_PANEL)
+    panel = pl.read_parquet(panel_paths(args.panel_root)["b0"])
     inventory = load_inventory()
     bars = load_bar_sources(args.data_root)
     grids: dict[tuple[str, str], tuple[FloatArray, FloatArray]] = {}

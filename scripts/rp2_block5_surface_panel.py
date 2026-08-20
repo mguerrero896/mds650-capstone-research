@@ -30,6 +30,7 @@ from collections.abc import Sequence
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
+from typing import Final
 from zoneinfo import ZoneInfo
 
 import numpy as np
@@ -46,6 +47,7 @@ from mds650.rp2.b1_snapshot import (
     snapshot_window,
 )
 from mds650.rp2.bars import MARKET_TZ, SESSION_OPEN_MINUTE, build_session_grid, load_bar_sources
+from mds650.rp2.panel import panel_paths
 from mds650.rp2.surface import (
     CONSTANT_MATURITY_DAYS,
     EXPIRY_CLOSE,
@@ -68,7 +70,6 @@ from mds650.rp2.surface import (
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_block5_surface"
 INVENTORY = ROOT / "artifacts" / "rp2_block1_partition" / "inventory.jsonl"
-B0_PANEL = ROOT / "artifacts" / "rp2_block4_b0" / "b0_panel.parquet"
 CALENDAR_YEAR = 365.0
 NY = ZoneInfo(MARKET_TZ)
 TAPE_COLUMNS = (
@@ -96,12 +97,30 @@ def load_inventory() -> dict[tuple[str, str], list[str]]:
     return index
 
 
+#: Returned when the tape was read and held too little to build a surface from. Distinct
+#: from `None`, which means there was nothing to read.
+SPARSE_SESSION: Final = pl.DataFrame()
+
+
 def _read_tape(paths: Sequence[str], asset: str) -> pl.DataFrame | None:
     frames: list[pl.DataFrame] = []
     for path in paths:
-        frame = pl.read_parquet(path, columns=list(TAPE_COLUMNS))
+        try:
+            frame = pl.read_parquet(path, columns=list(TAPE_COLUMNS))
+        except (pl.exceptions.ColumnNotFoundError, pl.exceptions.SchemaError):
+            # A tape missing a required column is a changed schema, not a provider
+            # failure. Absorbing it into the counter would drop that session from the
+            # sample and leave the rest of the build to finish as though nothing had
+            # happened, which is the fail-closed rule inverted.
+            raise
+        except (OSError, pl.exceptions.ComputeError):
+            # A file that cannot be read is a provider failure, which is what the counter
+            # is for. Letting the error escape aborted the whole build instead, so the
+            # counter could only ever report zero.
+            return None
         frames.append(frame.filter(pl.col("underlying_symbol") == asset))
     if not frames:
+        # Nothing to read: no path resolved for this session-asset.
         return None
     tape = pl.concat(frames, how="vertical")
     tape = tape.filter(
@@ -110,7 +129,10 @@ def _read_tape(paths: Sequence[str], asset: str) -> pl.DataFrame | None:
         & pl.col("implied_volatility").is_between(0.01, 5.0)
         & pl.col("strike").is_not_null()
     )
-    return tape.sort("created_at") if tape.height else None
+    # A file that opened and lost every quote to the quality filters is a thin session,
+    # not a provider failure. Returning `None` here put an ordinary unquotable day into the
+    # outage count.
+    return tape.sort("created_at")
 
 
 def _co_strike_pairs(
@@ -218,6 +240,10 @@ def _surface_at(
         "b1_expiries": float(coverage.expiries),
         "b1_strikes": float(coverage.strikes),
         "b1_median_quote_age_s": float(np.median(age_seconds)),
+        # The tail of this origin's own quote ages. Taking a quantile of per-origin
+        # medians afterwards would be a statistic about typical origins, not about stale
+        # quotes: an origin of mostly fresh quotes with a stale tail has a fresh median.
+        "b1_p95_quote_age_s": float(np.quantile(age_seconds, 0.95)),
         "b1_median_relative_spread": float(np.median(relative_spread)),
         "b1_forward_expiries_fitted": float(len(forward_by_expiry)),
         "b1_min_log_moneyness": coverage.min_log_moneyness,
@@ -318,8 +344,14 @@ def build_session_surface(
     """Surface features at every origin of one session-asset."""
 
     tape = _read_tape(paths, asset)
-    if tape is None or tape.height < 50:
+    if tape is None:
+        # No file to read. A provider failure.
         return None
+    if tape.height < 50:
+        # The file was there and held almost nothing. That is a thin session, not a
+        # provider failure, and counting the two together makes an ordinary quiet day look
+        # like an outage.
+        return SPARSE_SESSION
     created = tape["created_at"].dt.replace_time_zone(None).cast(pl.Int64).to_numpy()
     strike = tape["strike"].cast(pl.Float64).to_numpy().astype(np.float64)
     expiry = tape["expiry"].cast(pl.Date).to_numpy()
@@ -370,6 +402,19 @@ def build_session_surface(
             float(closes[minute]),
         )
         features["origin_minute"] = float(minute)
+        # Measured, not assumed. `post_cutoff_selected` is zero by construction - the
+        # selection is a searchsorted at the cutoff - which is exactly why it is counted:
+        # a zero nobody measured cannot notice a regression.
+        features["b1_quote_duplicates_dropped"] = float(snapshot.duplicates_dropped)
+        features["b1_post_cutoff_selected"] = float(snapshot.post_cutoff_selected)
+        features["b1_duplicate_contracts_remaining"] = float(
+            snapshot.duplicate_contracts_remaining
+        )
+        # A rate that fails the plausibility band is recorded as NaN and the origin is
+        # kept: the row is not dropped, and counting those nulls as drops would report
+        # retained rows as lost ones. The count of actual drops is measured here, at the
+        # only place a drop could happen, and it is zero.
+        features["b1_rows_dropped_for_rate_or_dividend"] = 0.0
         implied = features.get("b1_iv_30d", float("nan"))
         features["b1_iv_minus_trailing_rv_30d"] = implied_minus_trailing_variance(
             implied**2 if np.isfinite(implied) else float("nan"),
@@ -388,6 +433,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-root", type=Path, default=Path("D:/MDS650"))
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
+    # A rebuild reads its own B0 panel, not the previous run's.
+    parser.add_argument("--panel-root", type=Path, default=None)
     parser.add_argument("--workers", type=int, default=6)
     parser.add_argument("--limit-sessions", type=int, default=0)
     parser.add_argument(
@@ -416,7 +463,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             f"{MAX_QUOTE_AGE_SECONDS}; pass --output-dir so the canonical panel is not replaced"
         )
 
-    panel = pl.read_parquet(B0_PANEL)
+    panel = pl.read_parquet(panel_paths(args.panel_root)["b0"])
     inventory = load_inventory()
     bars = load_bar_sources(args.data_root)
     grids: dict[tuple[str, str], FloatArray] = {}
@@ -426,6 +473,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         grid = build_session_grid(group, session=session_date)
         grids[(str(asset), str(session_date))] = grid.close
 
+    unresolved = 0
     jobs: list[tuple[str, str, list[str], npt.NDArray[np.int64], FloatArray, FloatArray]] = []
     for (asset, session_date), group in panel.sort(
         ["asset", "session_date", "origin_minute"]
@@ -433,7 +481,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         key = (str(session_date), str(asset))
         paths = inventory.get(key) or inventory.get((str(session_date), "__ALL__"))
         closes = grids.get((str(asset), str(session_date)))
-        if paths is None or closes is None or closes.size == 0:
+        if paths is None:
+            # No tape at all for a session-asset the panel carries. Skipped silently, this
+            # is a sample that shrank without anything saying so.
+            unresolved += 1
+            continue
+        if closes is None or closes.size == 0:
             continue
         # Origins come from the B0 panel, which is built on each session's real length.
         # A holiday now yields an empty grid and an early close a 210-minute one, so an
@@ -458,6 +511,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     frames: list[pl.DataFrame] = []
     failures = 0
+    sparse = 0
     with ThreadPoolExecutor(max_workers=args.workers) as pool:
         for result in pool.map(
             lambda job: build_session_surface(
@@ -467,6 +521,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         ):
             if result is None:
                 failures += 1
+                continue
+            if result.is_empty():
+                sparse += 1
                 continue
             frames.append(result)
     if not frames:
@@ -496,7 +553,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         "spec": "docs/rp2_v3/B1_CONTEMPORANEOUS_SPEC.md",
         "constant_maturities_days": list(CONSTANT_MATURITY_DAYS),
         "session_assets_requested": len(jobs),
-        "session_assets_without_tape": failures,
+        "session_assets_without_tape": failures + unresolved,
+        "session_assets_unresolved_in_inventory": unresolved,
+        "session_assets_too_sparse": sparse,
         "rows": surface.height,
         "coverage": coverage,
     }

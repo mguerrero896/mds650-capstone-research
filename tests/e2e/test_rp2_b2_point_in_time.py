@@ -205,6 +205,7 @@ def test_an_empty_window_still_reports_the_intensity_it_has() -> None:
         expiry_day=np.zeros(2, dtype=np.int64),
         premium=np.zeros(2),
         seconds=np.zeros(2),
+        latency=np.zeros(2),
         intensity_now=12.5,
         intensity_before=4.0,
     )
@@ -255,6 +256,7 @@ def test_a_single_print_window_is_flow_not_silence() -> None:
         expiry_day=np.zeros(2, dtype=np.int64),
         premium=np.ones(2),
         seconds=np.zeros(2),
+        latency=np.zeros(2),
         intensity_now=1.0,
         intensity_before=0.0,
     )
@@ -395,7 +397,8 @@ def test_the_window_edge_is_the_exchange_clock_not_the_record_clock() -> None:
         1, 3, "5m", window_seconds=300, cutoff_us=1_800_000_000_000_000,
         prefixes=prefixes, channels=channels, stale=np.empty(0, dtype=np.int64),
         keys=np.zeros(3, dtype=np.int64), strike=np.ones(3),
-        expiry_day=np.zeros(3, dtype=np.int64), premium=np.ones(3), seconds=np.zeros(3),
+        expiry_day=np.zeros(3, dtype=np.int64), premium=np.ones(3),
+        seconds=np.zeros(3), latency=np.zeros(3),
         intensity_now=1.0, intensity_before=0.0,
     )
     # The first of the two visible rows was executed before the window opened.
@@ -403,7 +406,8 @@ def test_the_window_edge_is_the_exchange_clock_not_the_record_clock() -> None:
         1, 3, "5m", window_seconds=300, cutoff_us=1_800_000_000_000_000,
         prefixes=prefixes, channels=channels, stale=np.array([1], dtype=np.int64),
         keys=np.zeros(3, dtype=np.int64), strike=np.ones(3),
-        expiry_day=np.zeros(3, dtype=np.int64), premium=np.ones(3), seconds=np.zeros(3),
+        expiry_day=np.zeros(3, dtype=np.int64), premium=np.ones(3),
+        seconds=np.zeros(3), latency=np.zeros(3),
         intensity_now=1.0, intensity_before=0.0,
     )
     assert without["b2_5m_trades"] == 2.0

@@ -35,15 +35,13 @@ from mds650.rp2.panel import (
     lift_mask,
     load_merged_panel,
     mask_sha256,
+    panel_paths,
     session_rank,
 )
 from mds650.rp2.preprocessing import describe_preprocessor, fold_design
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_block7_dml"
-B0_PANEL = ROOT / "artifacts" / "rp2_block4_b0" / "b0_panel.parquet"
-B1_PANEL = ROOT / "artifacts" / "rp2_block5_surface" / "b1_surface_panel.parquet"
-B2_PANEL = ROOT / "artifacts" / "rp2_block6_flow" / "b2_flow_panel.parquet"
 
 #: Economically distinct B2 treatments used for the primary joint test.
 #: The sets this block actually fits: the nuisance is B0+B1 core, and two of the ten
@@ -229,11 +227,16 @@ def run_role(
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
+    # A rebuild writes its panels into its own run directory; without this the
+    # block would silently read the previous run's panels and label the result
+    # with the new run id.
+    parser.add_argument("--panel-root", type=Path, default=None)
     parser.add_argument("--folds", type=int, default=5)
     parser.add_argument("--train-share", type=float, default=0.6)
     args = parser.parse_args(argv)
 
-    panel = load_merged_panel(B0_PANEL, B1_PANEL, B2_PANEL)
+    panels = panel_paths(args.panel_root)
+    panel = load_merged_panel(panels["b0"], panels["b1"], panels["b2"])
     document: dict[str, object] = {
         # Which frozen sets were fitted, how complete they were, and the hash of the
         # registry that decided them. Without it an artifact records a design width and

@@ -52,15 +52,13 @@ from mds650.rp2.panel import (
     lift_mask,
     load_merged_panel,
     mask_sha256,
+    panel_paths,
     session_rank,
 )
 from mds650.rp2.preprocessing import describe_preprocessor, fold_design
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_block8_ladder"
-B0_PANEL = ROOT / "artifacts" / "rp2_block4_b0" / "b0_panel.parquet"
-B1_PANEL = ROOT / "artifacts" / "rp2_block5_surface" / "b1_surface_panel.parquet"
-B2_PANEL = ROOT / "artifacts" / "rp2_block6_flow" / "b2_flow_panel.parquet"
 
 INFORMATION_SETS: dict[str, list[dict[str, str]]] = {
     "B0": [B0_FEATURES],
@@ -80,14 +78,22 @@ type FloatArray = npt.NDArray[np.float64]
 
 def _recalibrate(
     forecast: FloatArray, target: FloatArray, train: npt.NDArray[np.bool_]
-) -> FloatArray:
-    """Apply the training-period Mincer-Zarnowitz correction to a forecast."""
+) -> tuple[FloatArray, dict[str, float]]:
+    """Apply the training-period Mincer-Zarnowitz correction, and report what it applied.
+
+    The slope and intercept were computed and thrown away. They are the scorecard's
+    statement of how far the raw forecast was from being conditionally unbiased, and a
+    correction whose size is not reported is a correction nobody can check.
+    """
 
     calibration = mincer_zarnowitz(target[train], forecast[train])
     corrected = np.exp(
         calibration.intercept + calibration.slope * np.log(np.maximum(forecast, 1e-12))
     )
-    return np.asarray(corrected, dtype=np.float64)
+    return (
+        np.asarray(corrected, dtype=np.float64),
+        {"slope": float(calibration.slope), "intercept": float(calibration.intercept)},
+    )
 
 
 def _contrast(
@@ -206,11 +212,13 @@ def run_role(
         losses: dict[str, FloatArray] = {}
         losses_recalibrated: dict[str, FloatArray] = {}
         qlike_levels: dict[str, float] = {}
+        calibrations: dict[str, dict[str, float]] = {}
         for set_name in INFORMATION_SETS:
             design = designs[set_name]
             forecast = fitter(design, target, train)
             losses[set_name] = qlike_losses(target[test], forecast[test])
-            recalibrated = _recalibrate(forecast, target, train)
+            recalibrated, calibration = _recalibrate(forecast, target, train)
+            calibrations[f"{model_name}|{set_name}"] = calibration
             losses_recalibrated[set_name] = qlike_losses(target[test], recalibrated[test])
             qlike_levels[set_name] = float(np.mean(losses[set_name]))
         contrasts: dict[str, object] = {}
@@ -242,6 +250,7 @@ def run_role(
         per_model[model_name] = {
             "family": INDEPENDENT_FAMILIES[model_name],
             "qlike": qlike_levels,
+            "calibration": calibrations,
             "contrasts": contrasts,
             "delta_interaction": interaction,
             "holm_adjusted_p": holm_adjust(raw_p),
@@ -271,13 +280,18 @@ def run_role(
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
+    # A rebuild writes its panels into its own run directory; without this the
+    # block would silently read the previous run's panels and label the result
+    # with the new run id.
+    parser.add_argument("--panel-root", type=Path, default=None)
     parser.add_argument("--train-share", type=float, default=0.6)
     parser.add_argument("--models", default=",".join(LADDER))
     args = parser.parse_args(argv)
 
     models = tuple(name.strip() for name in str(args.models).split(",") if name.strip())
     assert_primary_models(models)
-    panel = load_merged_panel(B0_PANEL, B1_PANEL, B2_PANEL)
+    panels = panel_paths(args.panel_root)
+    panel = load_merged_panel(panels["b0"], panels["b1"], panels["b2"])
     document: dict[str, object] = {
         # Which frozen sets were fitted, how complete they were, and the hash of the
         # registry that decided them. Without it an artifact records a design width and

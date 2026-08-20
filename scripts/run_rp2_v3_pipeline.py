@@ -1,0 +1,1181 @@
+"""One command that rebuilds RP2-v3, in one order, under one run id.
+
+Eight scripts run by hand with scattered configuration is not a pipeline. Whichever one is
+forgotten, or run with last week's flags, still produces an artifact that looks complete,
+and the mismatch surfaces later as a number nobody can reproduce.
+
+This runner fixes the order, gives every step the same run directory, records what each one
+read and wrote, and stops on the first thing that would make the result untrustworthy: a
+missing input, a changed schema, a core feature that does not resolve, a sealed cohort, or
+an artifact that already exists under this run id with a different hash.
+
+    uv run python scripts/run_rp2_v3_pipeline.py \\
+        --data-root D:/MDS650 \\
+        --output-root artifacts/rp2_v3 \\
+        --run-id rp2-v3-20260820-001 \\
+        --roles D V \\
+        --forbid-sealed-cohorts
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import subprocess
+import sys
+import time
+from collections.abc import Callable, Mapping, Sequence
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import Final
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT / "src") not in sys.path:  # pragma: no cover - import bootstrap
+    sys.path.insert(0, str(ROOT / "src"))
+
+from mds650.rp2.feature_registry import CONFIG as REGISTRY_CONFIG  # noqa: E402
+from mds650.rp2.feature_registry import registry_sha256  # noqa: E402
+from mds650.rp2.panel import TARGET_ASSETS  # noqa: E402
+from mds650.rp2.run_manifest import (  # noqa: E402
+    PIPELINE_STEPS,
+    STEP_NAMES,
+    RunManifest,
+    StepRecord,
+    assert_artifact_stable,
+    assert_inventory_is_frozen,
+    assert_no_sealed_paths,
+    assert_no_sealed_roles,
+    assert_run_identity_unchanged,
+    assert_step_artifacts_unchanged,
+    canonical_json,
+    declared_inputs,
+    file_digest,
+    inventory_paths,
+    normalised_digest,
+    record_step_progress,
+    stable_content_digest,
+    write_manifest,
+    write_run_identity,
+)
+
+GATED_MANIFEST = ROOT / "data" / "GATED_DATA_POINTERS.json"
+#: The option tape the producers actually open, one JSON record per session-asset file.
+TAPE_INVENTORY = ROOT / "artifacts" / "rp2_block1_partition" / "inventory.jsonl"
+#: The frozen partition. The sessions a rebuild produces have to be these sessions.
+PARTITION = ROOT / "artifacts" / "rp2_block1_partition" / "partition.json"
+SCORECARD_FIELDS = ROOT / "configs" / "rp2_v3_scorecard_fields.json"
+#: The feature registry. Recorded separately as `feature_registry_sha256`; it is not the
+#: model configuration, and using it for both would report one digest twice under two names.
+MODEL_CONFIG = ROOT / "configs" / "rp2_v3_feature_sets.json"
+#: Seeds are part of the run's identity, so they are declared here rather than left to
+#: each script's default and discovered afterwards.
+SEEDS = {"bootstrap": 650, "lightgbm": 20260818, "dml_folds": 5}
+#: The chronological split every producer uses. Part of the model configuration, so it is
+#: stated here rather than left to each script's default and discovered afterwards.
+DEFAULT_TRAIN_SHARE: Final = 0.6
+#: The roles every producer fits. Blocks 8 and 10 iterate these internally rather than
+#: taking a flag, so the runner refuses any other selection instead of recording one.
+PRODUCER_ROLES: Final[tuple[str, ...]] = ("D", "V")
+
+
+def _peak_memory_bytes(process: subprocess.Popen[bytes]) -> int:
+    """Peak working set of a finished child, without adding a dependency for it.
+
+    On Windows the process handle stays valid after exit, so the counter can still be
+    read; elsewhere the child's rusage is the honest answer. A platform that offers
+    neither records zero rather than a guess.
+    """
+
+    if sys.platform == "win32":  # pragma: no cover - platform specific
+        import ctypes
+        from ctypes import wintypes
+
+        class Counters(ctypes.Structure):
+            _fields_ = [
+                ("cb", wintypes.DWORD),
+                ("PageFaultCount", wintypes.DWORD),
+                ("PeakWorkingSetSize", ctypes.c_size_t),
+                ("WorkingSetSize", ctypes.c_size_t),
+                ("QuotaPeakPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaPeakNonPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaNonPagedPoolUsage", ctypes.c_size_t),
+                ("PagefileUsage", ctypes.c_size_t),
+                ("PeakPagefileUsage", ctypes.c_size_t),
+            ]
+
+        counters = Counters()
+        counters.cb = ctypes.sizeof(Counters)
+        handle = getattr(process, "_handle", None)
+        if handle is None:
+            return 0
+        ok = ctypes.windll.psapi.GetProcessMemoryInfo(
+            int(handle), ctypes.byref(counters), counters.cb
+        )
+        return int(counters.PeakWorkingSetSize) if ok else 0
+    import resource  # pragma: no cover - POSIX only
+
+    usage = resource.getrusage(resource.RUSAGE_CHILDREN)
+    # Linux reports kilobytes, macOS bytes.
+    return int(usage.ru_maxrss * (1024 if sys.platform.startswith("linux") else 1))
+
+
+def _own_peak_memory_bytes() -> int:
+    """Peak working set of the runner itself.
+
+    Steps 6 and 7 materialise the merged panel in this process, so recording zero for them
+    would leave the scorecard's peak memory blind to the largest allocation the run makes.
+    """
+
+    if sys.platform == "win32":  # pragma: no cover - platform specific
+        import ctypes
+
+        handle = ctypes.windll.kernel32.GetCurrentProcess()
+
+        class _Counters(ctypes.Structure):
+            _fields_ = [
+                ("cb", ctypes.c_uint32),
+                ("PageFaultCount", ctypes.c_uint32),
+                ("PeakWorkingSetSize", ctypes.c_size_t),
+                ("WorkingSetSize", ctypes.c_size_t),
+                ("QuotaPeakPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaPeakNonPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaNonPagedPoolUsage", ctypes.c_size_t),
+                ("PagefileUsage", ctypes.c_size_t),
+                ("PeakPagefileUsage", ctypes.c_size_t),
+            ]
+
+        counters = _Counters()
+        counters.cb = ctypes.sizeof(_Counters)
+        ok = ctypes.windll.psapi.GetProcessMemoryInfo(
+            handle, ctypes.byref(counters), counters.cb
+        )
+        return int(counters.PeakWorkingSetSize) if ok else 0
+    import resource  # pragma: no cover - POSIX only
+
+    usage = resource.getrusage(resource.RUSAGE_SELF)
+    return int(usage.ru_maxrss * (1024 if sys.platform.startswith("linux") else 1))
+
+
+def model_config_digest() -> str:
+    """A digest over what configures the models, rather than over what configures the features.
+
+    The feature registry has its own digest. This one covers the frozen families, the
+    booster's hyperparameters, the split, and the inference settings a contrast is computed
+    under - the things that change what the ladder and the tests do without changing a
+    single feature name.
+    """
+
+    from mds650.rp2 import inference, ladder
+
+    configuration = {
+        "primary_models": list(ladder.PRIMARY_MODELS),
+        "ladder_families": sorted(ladder.LADDER),
+        "independent_families": dict(sorted(ladder.INDEPENDENT_FAMILIES.items())),
+        "lightgbm_rounds": ladder._LIGHTGBM_ROUNDS,
+        "lightgbm_leaves": ladder._LIGHTGBM_LEAVES,
+        "lightgbm_learning_rate": ladder._LIGHTGBM_LEARNING_RATE,
+        "variance_floor": ladder.VARIANCE_FLOOR,
+        "session_block_length": inference.SESSION_BLOCK_LENGTH,
+        "bootstrap_repetitions": inference.DEFAULT_BOOTSTRAP,
+        "block_mean": inference.DEFAULT_BLOCK_MEAN,
+        "alpha": inference.DEFAULT_ALPHA,
+        "power": inference.DEFAULT_POWER,
+        "equivalence_fraction": inference.EQUIVALENCE_FRACTION,
+        "train_share": DEFAULT_TRAIN_SHARE,
+        "feature_sets_sha256": file_digest(MODEL_CONFIG),
+    }
+    return hashlib.sha256(canonical_json(configuration).encode("utf-8")).hexdigest()
+
+
+def _code_commit() -> str:
+    """The commit the run is executing, which is half of what makes it reproducible."""
+
+    return subprocess.run(  # noqa: S603
+        ["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True, check=True
+    ).stdout.strip()
+
+
+def assert_worktree_clean(status: str | None = None) -> None:
+    """`rev-parse HEAD` names a commit; the subprocesses run the working tree.
+
+    With uncommitted changes to tracked files those are different things, and the manifest
+    would attribute the artifacts to code that did not produce them. Untracked files are
+    not the code that ran and are left alone.
+    """
+
+    if status is None:  # pragma: no cover - exercised through the injected value
+        status = subprocess.run(  # noqa: S603
+            ["git", "status", "--porcelain"], cwd=ROOT, capture_output=True, text=True, check=True
+        ).stdout
+    dirty = [
+        line for line in status.splitlines() if line.strip() and not line.startswith("??")
+    ]
+    if dirty:
+        raise SystemExit("RP2_RUN_WORKTREE_DIRTY:" + ",".join(line[3:] for line in dirty[:5]))
+
+
+def assert_target_universe(panel_keys: set[tuple[str, str]]) -> None:
+    """The panel carries every frozen forecast target.
+
+    The universe is frozen, not inferred from the panel. Inferring it is what lets an asset
+    that vanished entirely filter its own keys out of the expectation: five assets over the
+    full session list looks exactly like six until someone counts.
+    """
+
+    absent = sorted(set(TARGET_ASSETS) - {asset for asset, _ in panel_keys})
+    if absent:
+        raise SystemExit(f"RP2_RUN_TARGET_ASSET_ABSENT:{','.join(absent)}")
+
+
+def assert_tape_covers_panel(
+    tape_keys: set[tuple[str, str]],
+    panel_keys: set[tuple[str, str]],
+    *,
+    wildcard_sessions: frozenset[str],
+) -> None:
+    """Every session-asset the baseline emits has a tape for Blocks 5 and 6 to read.
+
+    Proving the inventory's paths exist says nothing about whether the inventory covers the
+    panel. A missing key is not an error in Block 5 - it skips that session-asset - so the
+    B1 and B2 rows simply never appear and the common mask drops the origins without
+    anything recording why the sample shrank.
+
+    Some sessions are inventoried once for the whole day rather than per asset, and both
+    producers use that entry as their fallback. Those sessions cover every asset in them,
+    and reading the entry as an asset literally named `__ALL__` would report every concrete
+    asset on those days as a gap.
+    """
+
+    gaps = sorted(key for key in panel_keys - tape_keys if key[1] not in wildcard_sessions)
+    if gaps:
+        listed = ",".join(f"{asset}@{session}" for asset, session in gaps[:5])
+        raise SystemExit(f"RP2_RUN_TAPE_COVERAGE_GAP:{len(gaps)}:{listed}")
+
+    # And the other direction, restricted to what can actually go wrong. Counting sessions
+    # and checking their endpoints does not notice that one asset lost its bars on a date
+    # another asset still covers: the session is still there, its window is unchanged, and
+    # the sample is quietly smaller.
+    #
+    # The comparison is over assets and sessions the panel already carries. The inventory
+    # also holds tape for the market-control assets, which are inputs to B0 and never
+    # forecast targets - 928 session-assets of SPY and QQQ that the panel is not supposed
+    # to contain. Subtracting the raw sets would have called every one of them a gap.
+    panel_sessions = {session for _, session in panel_keys}
+    expected = {
+        key
+        for key in tape_keys
+        if key[0] in TARGET_ASSETS
+        and key[1] in panel_sessions
+        and key[1] not in wildcard_sessions
+    }
+    # A whole-session entry covers every asset in that session, so on those days the
+    # expectation is the frozen universe itself. Excluding them from the reverse check
+    # entirely - which the first version did - leaves an asset that lost its bars on one of
+    # the five wildcard sessions invisible: it is still present on other dates, the session
+    # count is unchanged, and the forward check sees the wildcard and is satisfied.
+    wildcard_in_panel = wildcard_sessions & {session for _, session in panel_keys}
+    expected |= {(asset, session) for asset in TARGET_ASSETS for session in wildcard_in_panel}
+
+    missing = sorted(expected - panel_keys)
+    if missing:
+        listed = ",".join(f"{asset}@{session}" for asset, session in missing[:5])
+        raise SystemExit(f"RP2_RUN_PANEL_COVERAGE_GAP:{len(missing)}:{listed}")
+
+
+def run_step(name: str, command: Sequence[str], run_dir: Path) -> StepRecord:
+    """Run one step, timing it, and refuse to accept a step that did not write its outputs."""
+
+    step = next(candidate for candidate in PIPELINE_STEPS if candidate.name == name)
+    for output in step.outputs:
+        # An interrupted attempt can leave this file behind, and "the step wrote its
+        # output" would then be satisfied by a file the step never touched. Removing it
+        # first makes the check mean what it says.
+        (run_dir / output).unlink(missing_ok=True)
+    started = time.perf_counter()
+    process = subprocess.Popen(list(command), cwd=ROOT)  # noqa: S603 - fixed command list
+    process.wait()
+    memory = _peak_memory_bytes(process)
+    runtime = time.perf_counter() - started
+    if process.returncode != 0:
+        raise SystemExit(f"RP2_RUN_STEP_FAILED:{name}:exit={process.returncode}")
+    artifacts, content = _digest_outputs(name, run_dir, step.outputs)
+    return StepRecord(
+        name=name,
+        command=tuple(command),
+        exit_code=process.returncode,
+        runtime_seconds=round(runtime, 3),
+        peak_memory_bytes=memory,
+        artifacts=artifacts,
+        content=content,
+    )
+
+
+def _digest_outputs(
+    name: str, run_dir: Path, outputs: Sequence[str]
+) -> tuple[dict[str, str], dict[str, str]]:
+    """Both digests of everything a step was supposed to write.
+
+    The byte digest answers whether the file on disk is the file the step wrote. The stable
+    digest answers whether the step produced the same *result*, which is a different
+    question: every block artifact stamps itself with the moment it was written, so two
+    identical executions differ byte for byte and agree on content.
+    """
+
+    artifacts: dict[str, str] = {}
+    content: dict[str, str] = {}
+    for output in outputs:
+        path = run_dir / output
+        if not path.is_file():
+            # A step that exits zero without writing its output has not run. Accepting it
+            # would let the next step read the previous run's file and label the result
+            # with this run id.
+            raise SystemExit(f"RP2_RUN_STEP_OUTPUT_MISSING:{name}:{output}")
+        artifacts[output] = file_digest(path)
+        content[output] = stable_content_digest(path)
+    return artifacts, content
+
+
+#: Fields the input manifest records but does not identify itself by. They answer "has
+#: anything about the store changed", which is worth knowing and is not the same question
+#: as "is this the same experiment".
+_RECORDED_ONLY: Final = frozenset({"tape_freshness_sha256", "study_window_source"})
+
+
+def assert_data_root_matches(data_root: Path) -> None:
+    """The inventory holds absolute paths, so the store has to be where it says it is.
+
+    Blocks 5 and 6 open `row["path"]` verbatim. Pointed at another mount, the run would
+    read the frozen location anyway and record the one it was given, which is a manifest
+    that describes a run that did not happen. Relocation is a real requirement and it needs
+    the inventory rebased; until then the runner says so instead of pretending.
+    """
+
+    frozen = str(json.loads(PARTITION.read_text(encoding="utf-8")).get("data_root", ""))
+    if not frozen:
+        return
+    if Path(frozen).as_posix().rstrip("/").lower() != data_root.as_posix().rstrip("/").lower():
+        raise SystemExit(f"RP2_RUN_DATA_ROOT_MISMATCH:{data_root.as_posix()}!={frozen}")
+
+
+def _tape_fingerprint(
+    paths: Sequence[Path], *, hash_contents: bool
+) -> tuple[str, str, int, int]:
+    """A digest of the option tape the producers will open, and what it cost to compute.
+
+    Eighty-five gigabytes across three thousand seven hundred files is too much to read on
+    every rebuild for no gain, so the default fingerprint is over each file's path, size
+    and modification time: it changes whenever a session is re-acquired, replaced or
+    truncated. `--hash-tape-contents` reads every byte instead, and the artifact records
+    which of the two was done rather than leaving a reader to assume the stronger one.
+    """
+
+    identity = hashlib.sha256()
+    freshness = hashlib.sha256()
+    total = 0
+    for path in sorted(paths, key=lambda item: item.as_posix()):
+        if not path.is_file():
+            raise SystemExit(f"RP2_RUN_TAPE_INPUT_MISSING:{path.as_posix()}")
+        stat = path.stat()
+        total += stat.st_size
+        # The scientific fingerprint is over what the file *is*: its name inside the store
+        # and either its bytes or its size. Byte-identical tape restored to another mount,
+        # or with new modification times, is the same tape.
+        name = path.name if path.parent.name in {"", "."} else f"{path.parent.name}/{path.name}"
+        identity.update(
+            f"{name}:{file_digest(path) if hash_contents else stat.st_size}".encode()
+        )
+        # The freshness digest keeps the absolute path and the modification time. It is
+        # recorded, and it is not part of the run's identity: it detects a re-acquisition
+        # that left the sizes unchanged, which is worth knowing and is not a different
+        # experiment.
+        freshness.update(f"{path.as_posix()}:{stat.st_size}:{stat.st_mtime_ns}".encode())
+    return identity.hexdigest(), freshness.hexdigest(), len(paths), total
+
+
+def validate_inputs(
+    run_dir: Path,
+    *,
+    data_root: Path,
+    forbid_sealed: bool = True,
+    hash_tape_contents: bool = True,
+) -> tuple[dict[str, object], str]:
+    """Step 1: everything the run will actually read exists, and is identified.
+
+    Three sets of files, not one. The gated pointers are hashed byte for byte, because they
+    are small and their digests are already recorded. The one-minute bar stores are hashed
+    the same way. The option tape is fingerprinted from the inventory the producers read,
+    because that is the list of files Blocks 5 and 6 open - and hashing only the gated
+    pointers would leave the provenance unable to tell one acquisition of the tape from
+    another.
+    """
+
+    from mds650.rp2.bars import BAR_SOURCES
+
+    assert_data_root_matches(data_root)
+    paths, manifest_digest = declared_inputs(GATED_MANIFEST)
+    if not TAPE_INVENTORY.is_file():
+        raise SystemExit(f"RP2_RUN_TAPE_INVENTORY_MISSING:{TAPE_INVENTORY.name}")
+    # The expected session sets are read from this file, so it has to be the file the
+    # partition was frozen against rather than one that defines its own expectation.
+    assert_inventory_is_frozen(TAPE_INVENTORY, PARTITION)
+    tape = inventory_paths(TAPE_INVENTORY)
+    bars = [data_root / relative for _, _, relative in BAR_SOURCES]
+    if forbid_sealed:
+        # Every path a producer will open, not only the ones this run declared. The
+        # guarantee `--forbid-sealed-cohorts` makes is about what gets read - including by
+        # the fingerprint below, which opens every one of them.
+        assert_no_sealed_roles(TAPE_INVENTORY)
+        assert_no_sealed_paths([*paths, data_root, TAPE_INVENTORY, *bars, *tape])
+
+    payload = json.loads(GATED_MANIFEST.read_text(encoding="utf-8"))
+    failures: list[str] = []
+    for entry in payload.get("files", []):
+        path = ROOT / str(entry["path"])
+        if not path.is_file():
+            failures.append(f"missing:{entry['path']}")
+            continue
+        recorded = str(entry.get("sha256", ""))
+        if recorded and file_digest(path) != recorded:
+            failures.append(f"changed:{entry['path']}")
+    bar_digests: dict[str, str] = {}
+    for name, role, relative in BAR_SOURCES:
+        path = data_root / relative
+        if not path.is_file():
+            failures.append(f"missing_bars:{name}")
+            continue
+        bar_digests[f"{name}|{role}"] = file_digest(path)
+    if failures:
+        raise SystemExit("RP2_RUN_INPUT_MANIFEST_INVALID:" + ",".join(sorted(failures)))
+
+    tape_digest, tape_freshness, tape_files, tape_bytes = _tape_fingerprint(
+        tape, hash_contents=hash_tape_contents
+    )
+    partition = json.loads(PARTITION.read_text(encoding="utf-8"))
+    record: dict[str, object] = {
+        # The window this run enforces, taken from the frozen partition and recorded so it
+        # is never implicit. See docs/rp2_v3/STUDY_WINDOW.md: the repository holds two
+        # statements about the study window and this is the one the evidence was built on.
+        "study_window_enforced": {
+            role: {
+                "sessions": value["sessions"],
+                "first_session": value["first_session"],
+                "last_session": value["last_session"],
+            }
+            for role, value in partition["roles"].items()
+            if value["sessions"]
+        },
+        "study_window_source": "artifacts/rp2_block1_partition/partition.json",
+        "gated_manifest_sha256": manifest_digest,
+        "gated_files": len(payload.get("files", [])),
+        "bar_sources_sha256": bar_digests,
+        # Normalised, like the frozen check above. A Windows checkout converts this
+        # untracked-attribute `.jsonl` to CRLF, and a raw digest here would put the
+        # checkout's line endings into `input_manifest_sha256`.
+        "tape_inventory_sha256": normalised_digest(TAPE_INVENTORY),
+        "tape_fingerprint_sha256": tape_digest,
+        "tape_freshness_sha256": tape_freshness,
+        "tape_fingerprint_mode": "content" if hash_tape_contents else "path_size_mtime",
+        "tape_files": tape_files,
+        "tape_bytes": tape_bytes,
+    }
+    # Deliberately not written here. Writing the new manifest before the identity has been
+    # compared would destroy the record of the previous run's inputs, which is the very
+    # thing the comparison needs to read.
+    #
+    # The digest covers all three sets, so changing any real input moves it - and not the
+    # freshness digest, which is deliberately recorded outside the identity: tape restored
+    # with new modification times is the same tape.
+    identifying = {key: value for key, value in record.items() if key not in _RECORDED_ONLY}
+    return record, hashlib.sha256(canonical_json(identifying).encode("utf-8")).hexdigest()
+
+
+def write_input_manifest(run_dir: Path, record: Mapping[str, object]) -> Path:
+    """Persist step 1's findings, once the run is known to be the run it claims to be."""
+
+    path = run_dir / "input_manifest.json"
+    path.write_text(json.dumps(record, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return path
+
+
+#: An inventory entry for a whole session rather than one asset. Blocks 5 and 6 fall back
+#: to it for every asset on that day.
+SESSION_WILDCARD: Final = "__ALL__"
+
+
+def tape_coverage(inventory: Path) -> tuple[set[tuple[str, str]], frozenset[str]]:
+    """What the option-tape inventory covers: explicit keys, and whole-session entries."""
+
+    keys: set[tuple[str, str]] = set()
+    wildcards: set[str] = set()
+    with inventory.open("r", encoding="utf-8") as handle:
+        for line in handle:
+            line = line.strip()
+            if not line:
+                continue
+            record = json.loads(line)
+            asset, session = str(record["asset"]), str(record["session_date"])
+            if asset == SESSION_WILDCARD:
+                wildcards.add(session)
+            else:
+                keys.add((asset, session))
+    return keys, frozenset(wildcards)
+
+
+def _panel_keys(run_dir: Path) -> set[tuple[str, str]]:
+    """Every session-asset the baseline panel emitted, which Blocks 5 and 6 must cover."""
+
+    import polars as pl
+
+    from mds650.rp2.panel import panel_paths
+
+    frame = pl.read_parquet(panel_paths(run_dir)["b0"], columns=["asset", "session_date"]).unique()
+    return {(str(asset), str(session)) for asset, session in frame.iter_rows()}
+
+
+def assert_producers_share_the_mask(run_dir: Path, roles: Sequence[str]) -> dict[str, str]:
+    """The ladder and the incremental inference scored the same rows.
+
+    Both record the digest of the evaluation mask they used. They compute it independently,
+    so a divergence in either one's split or ordering shows up here as two different
+    digests - and a contrast measured on one sample beside a ladder fitted on another is
+    not the comparison either artifact claims to be.
+    """
+
+    ladder = json.loads(
+        (run_dir / "rp2_block8_ladder" / "ladder.json").read_text(encoding="utf-8")
+    )
+    inference = json.loads(
+        (run_dir / "rp2_block10_inference" / "inference.json").read_text(encoding="utf-8")
+    )
+    agreed: dict[str, str] = {}
+    for role in roles:
+        left = ladder.get(role, {}).get("evaluation_mask_sha256")
+        right = inference.get(role, {}).get("evaluation_mask_sha256")
+        if left is None or right is None or left != right:
+            raise SystemExit(
+                f"RP2_RUN_MASK_DISAGREEMENT:{role}:{str(left)[:12]}!={str(right)[:12]}"
+            )
+        agreed[role] = str(left)
+    return agreed
+
+
+def frozen_sessions_by_role() -> dict[str, set[str]]:
+    """Every session the frozen inventory holds, by role.
+
+    The partition summary gives a count and two endpoints. The inventory gives the sessions,
+    which is what a panel has to match.
+    """
+
+    sessions: dict[str, set[str]] = {}
+    with TAPE_INVENTORY.open("r", encoding="utf-8") as handle:
+        for line in handle:
+            line = line.strip()
+            if not line:
+                continue
+            record = json.loads(line)
+            sessions.setdefault(str(record["role"]), set()).add(str(record["session_date"]))
+    return sessions
+
+
+def assert_partition_matches(run_dir: Path) -> None:
+    """The rebuilt panels cover the frozen partition, session for session.
+
+    The producers load every bar store they can find. Left unchecked, a store that grew
+    silently widens the sample and one that lost a file silently shortens it, and either
+    way the result is labelled with the same run id as the study it no longer matches.
+    """
+
+    import polars as pl
+
+    from mds650.rp2.panel import panel_paths
+
+    partition = json.loads(PARTITION.read_text(encoding="utf-8"))
+    panel = pl.read_parquet(panel_paths(run_dir)["b0"], columns=["role", "session_date"])
+    # The sessions themselves, not their count and their endpoints. One interior session
+    # lost and another gained leaves both of those unchanged, and the panel is then not the
+    # partition it says it validated.
+    expected_sessions = frozen_sessions_by_role()
+    breaches: list[str] = []
+    for role, expected in partition["roles"].items():
+        if not expected["sessions"]:
+            continue
+        built = {str(value) for value in panel.filter(pl.col("role") == role)["session_date"]}
+        frozen = expected_sessions.get(role, set())
+        missing, extra = sorted(frozen - built), sorted(built - frozen)
+        if missing or extra:
+            breaches.append(
+                f"{role}:missing={len(missing)}({','.join(missing[:3])})"
+                f":extra={len(extra)}({','.join(extra[:3])})"
+            )
+        elif len(built) != int(expected["sessions"]):
+            breaches.append(f"{role}:sessions={len(built)}!={expected['sessions']}")
+    if breaches:
+        raise SystemExit("RP2_RUN_PARTITION_MISMATCH:" + ",".join(breaches))
+
+
+def validate_feature_registry(run_dir: Path) -> Path:
+    """Step 6: the core sets resolve *against this run's panels* and meet their floors.
+
+    Importing the registry proves the configuration parses. It does not prove that the
+    features it names exist in the panels this run just built, which is the only version
+    of the question that can fail.
+    """
+
+    from mds650.rp2.feature_registry import (
+        assert_minimum_coverage,
+        describe_coverage,
+        feature_map,
+        registry_sha256,
+    )
+    from mds650.rp2.panel import CORE_SETS, load_merged_panel, panel_paths
+
+    panels = panel_paths(run_dir)
+    panel = load_merged_panel(panels["b0"], panels["b1"], panels["b2"])
+    for label in CORE_SETS.values():
+        missing = [name for name in feature_map(label) if name not in panel.columns]
+        if missing:
+            # Absent is a different failure from thinly covered, and it has to be said
+            # first: a coverage report over a column that does not exist is a report about
+            # nothing.
+            raise SystemExit(f"RP2_RUN_CORE_FEATURE_ABSENT:{label}:{','.join(sorted(missing))}")
+    assert_minimum_coverage(panel, *CORE_SETS.values())
+    report = {
+        "registry_sha256": registry_sha256(),
+        "rows": panel.height,
+        "coverage": describe_coverage(panel, *CORE_SETS.values()),
+    }
+    path = run_dir / "feature_registry_report.json"
+    path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return path
+
+
+def construct_common_masks(run_dir: Path, roles: Sequence[str]) -> Path:
+    """Step 7: one evaluation mask per role, hashed, before any model is fitted.
+
+    The mask is what makes a nested comparison nested. Recording its digest here - rather
+    than only inside whichever producer happened to compute it - is what lets a reader
+    confirm afterwards that the base and the expanded model were scored on one sample.
+    """
+
+    import numpy as np
+    import polars as pl
+
+    from mds650.rp2.panel import (
+        common_evaluation_mask,
+        load_merged_panel,
+        mask_sha256,
+        panel_paths,
+    )
+
+    panels = panel_paths(run_dir)
+    panel = load_merged_panel(panels["b0"], panels["b1"], panels["b2"])
+    if "rv30" not in panel.columns:
+        raise SystemExit("RP2_RUN_TARGET_ABSENT:rv30")
+    masks: dict[str, object] = {}
+    for role in roles:
+        frame = panel.filter(pl.col("role") == role)
+        if frame.is_empty():
+            raise SystemExit(f"RP2_RUN_ROLE_EMPTY:{role}")
+        target = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
+        mask = common_evaluation_mask(frame, target)
+        masks[role] = {
+            "rows": int(frame.height),
+            "usable_rows": int(mask.sum()),
+            # Named for what it is. The producers hash the *held-out* mask lifted onto the
+            # unfiltered role frame, which is a different object; calling both of them
+            # "the mask" would put two unrelated numbers under one name.
+            "panel_mask_sha256": mask_sha256(mask),
+        }
+    path = run_dir / "common_masks.json"
+    path.write_text(json.dumps(masks, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return path
+
+
+def build_scorecard(
+    run_dir: Path, manifest: RunManifest, *, started_at: float
+) -> dict[str, object]:
+    """Step 11: assemble the scorecard the schema requires, and fail on a missing field."""
+
+    from mds650.rp2.scorecard import assemble_scorecard, render_scorecard
+
+    scorecard = assemble_scorecard(
+        run_dir, manifest, elapsed_seconds=0.0, peak_memory_bytes=_own_peak_memory_bytes()
+    )
+    # Rendered before the clock is read, so the parquet reads, the completeness checks and
+    # the rendering are all inside the measurement. Only the two writes below fall outside
+    # it, and the rendered document points at the manifest for the runtime rather than
+    # printing it, so updating the figure afterwards cannot make the two disagree.
+    rendered = render_scorecard(scorecard)
+    engineering = scorecard["engineering"]
+    assert isinstance(engineering, dict)
+    engineering["runtime_seconds"] = round(time.perf_counter() - started_at, 3)
+    (run_dir / "scorecard.json").write_text(
+        json.dumps(scorecard, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    (run_dir / "scorecard.md").write_text(rendered, encoding="utf-8")
+    return scorecard
+
+
+def assert_inputs_unchanged(run_dir: Path, *, data_root: Path) -> None:
+    """The store the producers read is the store step 1 recorded.
+
+    The freshness digest exists for this: it is over every tape file's absolute path, size
+    and modification time, so a re-acquisition between step 1 and the producers moves it,
+    and recomputing it costs a directory walk rather than another read of 85 GB.
+    """
+
+    recorded = json.loads((run_dir / "input_manifest.json").read_text(encoding="utf-8"))
+    # The inventory itself, first. A synchronisation that reassigned sessions or assets
+    # while keeping the same set of paths would leave the metadata digest below unchanged,
+    # and Blocks 5 and 6 would have consumed the new mapping.
+    if normalised_digest(TAPE_INVENTORY) != recorded.get("tape_inventory_sha256"):
+        raise SystemExit("RP2_RUN_INPUTS_CHANGED_DURING_RUN:inventory")
+    # As strong as step 1 was. Comparing only path, size and modification time would miss
+    # a tape replaced by a tool that preserves timestamps - `rsync -t`, `shutil.copy2` -
+    # with different bytes of the same length, which is exactly the substitution the
+    # content digest exists to catch.
+    read_contents = recorded.get("tape_fingerprint_mode") == "content"
+    identity, freshness, _, _ = _tape_fingerprint(
+        inventory_paths(TAPE_INVENTORY), hash_contents=read_contents
+    )
+    if identity != recorded.get("tape_fingerprint_sha256"):
+        raise SystemExit("RP2_RUN_INPUTS_CHANGED_DURING_RUN:tape_content")
+    if freshness != recorded.get("tape_freshness_sha256"):
+        raise SystemExit("RP2_RUN_INPUTS_CHANGED_DURING_RUN:tape")
+    from mds650.rp2.bars import BAR_SOURCES
+
+    for name, role, relative in BAR_SOURCES:
+        digest = file_digest(data_root / relative)
+        if digest != recorded.get("bar_sources_sha256", {}).get(f"{name}|{role}"):
+            raise SystemExit(f"RP2_RUN_INPUTS_CHANGED_DURING_RUN:bars:{name}")
+
+
+def verify_artifacts(run_dir: Path, steps: Sequence[StepRecord]) -> None:
+    """Step 13: what was written is still what was recorded."""
+
+    for step in steps:
+        for name, digest in step.artifacts.items():
+            assert_artifact_stable(run_dir / name, digest)
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--data-root", type=Path, default=Path("D:/MDS650"))
+    parser.add_argument("--output-root", type=Path, default=ROOT / "artifacts" / "rp2_v3")
+    parser.add_argument("--run-id", required=True)
+    parser.add_argument("--roles", nargs="+", default=["D", "V"])
+    # Accepted and ignored: the guard is unconditional. The flag stays only so the
+    # documented invocation keeps working, because a rule with a switch that turns it off
+    # is a default rather than a rule.
+    parser.add_argument("--forbid-sealed-cohorts", action="store_true", default=True)
+    parser.add_argument(
+        "--skip-panels",
+        action="store_true",
+        help="reuse the panels already in the run directory instead of rebuilding them",
+    )
+    # Reading the tape is the default. A name-and-size fingerprint cannot tell a
+    # re-acquisition with the same file length from the tape the run was built on, which is
+    # exactly the case a resumed run has to detect. Eighty-five gigabytes costs a couple of
+    # minutes against a rebuild that takes ninety.
+    parser.add_argument(
+        "--fast-tape-fingerprint",
+        action="store_true",
+        help="identify the tape by name and size instead of reading it; recorded as such",
+    )
+    parser.add_argument("--dry-run", action="store_true")
+    args = parser.parse_args(argv)
+
+    if args.dry_run:
+        print(f"RP2-v3 pipeline, run id {args.run_id}, roles {' '.join(args.roles)}")
+        for index, step in enumerate(PIPELINE_STEPS, start=1):
+            print(f"{index:2d}. {step.name} - {step.description}")
+        return 0
+
+    # The manifest is about to name a commit. If the working tree has uncommitted changes
+    # to tracked files, the subprocesses run something else, and the name would be wrong.
+    assert_worktree_clean()
+
+    # The producers fit both roles unconditionally. Accepting `--roles D` would produce a
+    # manifest claiming a D-only run beside artifacts containing V, which is a lie the
+    # manifest would carry for good.
+    if tuple(args.roles) != PRODUCER_ROLES:
+        raise SystemExit(
+            f"RP2_RUN_ROLES_UNSUPPORTED:{','.join(args.roles)}!={','.join(PRODUCER_ROLES)}"
+        )
+
+    run_dir = Path(args.output_root) / str(args.run_id)
+    run_dir.mkdir(parents=True, exist_ok=True)
+    started = datetime.now(UTC).isoformat()
+    wall = time.perf_counter()
+    python = [sys.executable]
+    panel_flags = ["--panel-root", str(run_dir)]
+
+    def block_flags(directory: str, *, data: bool = False) -> list[str]:
+        """Each producer writes into its own directory inside the run.
+
+        Block 4 and Block 8 both write a file named `ladder.json`. Pointed at one flat
+        directory the second would replace the first, and the baseline comparison the B0
+        block produced would be gone with nothing recording that it had ever existed.
+        """
+
+        flags = ["--output-dir", str(run_dir / directory)]
+        return ["--data-root", str(args.data_root), *flags] if data else flags
+
+    # Before anything is written: if this run id already holds a run, it has to be the
+    # same run. Discovering that at the end would mean discovering it beside artifacts the
+    # producers had already overwritten.
+    identity = RunManifest(
+        run_id=str(args.run_id),
+        code_commit=_code_commit(),
+        data_root=str(args.data_root),
+        roles=tuple(args.roles),
+        feature_registry_sha256=registry_sha256(),
+        input_manifest_sha256="",
+        model_config_sha256=model_config_digest(),
+        seeds=SEEDS,
+        steps=(),
+        started_at_utc=started,
+        finished_at_utc=started,
+    )
+    assert_run_identity_unchanged(run_dir, identity)
+    # A completed run id is closed to its producers. Re-running them into the directory
+    # would overwrite each artifact before its new digest was compared to the old one, and
+    # an interruption anywhere in the sequence would leave the directory half one run and
+    # half another with the manifest describing neither.
+    # `--skip-panels` resumes a run that never finished; it is not a way back into one
+    # that did. The later steps overwrite the ladder, the diagnostics and the inference
+    # whether or not the panels were rebuilt.
+    if (run_dir / "run_manifest.json").is_file():
+        raise SystemExit(f"RP2_RUN_ALREADY_COMPLETE:{args.run_id}")
+
+    steps: list[StepRecord] = []
+    validation_started = time.perf_counter()
+    input_record, manifest_digest = validate_inputs(
+        run_dir,
+        data_root=Path(args.data_root),
+        forbid_sealed=True,
+        hash_tape_contents=not args.fast_tape_fingerprint,
+    )
+    assert_run_identity_unchanged(
+        run_dir,
+        RunManifest(
+            **{
+                **{
+                    field: getattr(identity, field)
+                    for field in (
+                        "run_id",
+                        "code_commit",
+                        "data_root",
+                        "roles",
+                        "feature_registry_sha256",
+                        "model_config_sha256",
+                        "seeds",
+                        "steps",
+                        "started_at_utc",
+                        "finished_at_utc",
+                    )
+                },
+                "input_manifest_sha256": manifest_digest,
+            }
+        ),
+    )
+
+    write_input_manifest(run_dir, input_record)
+    # Before the first producer: what this run is, so an interruption still leaves a record
+    # a resume can be held to.
+    write_run_identity(
+        run_dir,
+        RunManifest(
+            **{
+                **{
+                    field: getattr(identity, field)
+                    for field in (
+                        "run_id",
+                        "code_commit",
+                        "data_root",
+                        "roles",
+                        "feature_registry_sha256",
+                        "model_config_sha256",
+                        "seeds",
+                        "steps",
+                        "started_at_utc",
+                        "finished_at_utc",
+                    )
+                },
+                "input_manifest_sha256": manifest_digest,
+            }
+        ),
+    )
+    steps.append(
+        StepRecord(
+            name="validate-input-manifests",
+            command=("internal", "validate_inputs"),
+            exit_code=0,
+            # Timed like every other step. With the tape read this is minutes, not zero,
+            # and the scorecard sums these into what it calls the run's runtime.
+            runtime_seconds=round(time.perf_counter() - validation_started, 3),
+            peak_memory_bytes=_own_peak_memory_bytes(),
+            artifacts={"input_manifest.json": file_digest(run_dir / "input_manifest.json")},
+            content={
+                "input_manifest.json": stable_content_digest(run_dir / "input_manifest.json")
+            },
+        )
+    )
+
+    panel_steps = (
+        (
+            "build-targets",
+            [
+                *python,
+                "scripts/rp2_block3_target_panel.py",
+                *block_flags("rp2_block3_target", data=True),
+            ],
+        ),
+        (
+            "build-b0",
+            [*python, "scripts/rp2_block4_b0_panel.py", *block_flags("rp2_block4_b0", data=True)],
+        ),
+        # B1 and B2 are sampled at the origins of this run's own B0 panel, so they are
+        # told where that panel is rather than finding the previous run's.
+        (
+            "build-b1",
+            [
+                *python,
+                "scripts/rp2_block5_surface_panel.py",
+                *block_flags("rp2_block5_surface", data=True),
+                *panel_flags,
+            ],
+        ),
+        (
+            "build-b2",
+            [
+                *python,
+                "scripts/rp2_block6_flow_panel.py",
+                *block_flags("rp2_block6_flow", data=True),
+                *panel_flags,
+            ],
+        ),
+    )
+    for name, command in panel_steps:
+        if args.skip_panels:
+            step = next(candidate for candidate in PIPELINE_STEPS if candidate.name == name)
+            missing = [output for output in step.outputs if not (run_dir / output).is_file()]
+            if missing:
+                raise SystemExit(f"RP2_RUN_PANEL_MISSING:{name}:{','.join(missing)}")
+            # And it is the artifact the interrupted attempt produced, not merely a file
+            # with the right name: otherwise one run id ends up holding two versions of the
+            # same panel, which is what the whole hash discipline exists to prevent.
+            assert_step_artifacts_unchanged(run_dir, name)
+            steps.append(
+                StepRecord(
+                    name=name,
+                    # The command this step would have run. Recording "reused" here instead
+                    # would change the step's scientific identity, so a same-commit retry
+                    # would disagree with the run it is retrying about what it did.
+                    command=tuple(command),
+                    reused=True,
+                    exit_code=0,
+                    runtime_seconds=0.0,
+                    peak_memory_bytes=0,
+                    artifacts={output: file_digest(run_dir / output) for output in step.outputs},
+                    content={
+                        output: stable_content_digest(run_dir / output)
+                        for output in step.outputs
+                    },
+                )
+            )
+            continue
+        record = run_step(name, command, run_dir)
+        # Recorded as it completes. The manifest arrives at the end, which is no use to a
+        # resume of a run that stopped before then.
+        record_step_progress(run_dir, record)
+        steps.append(record)
+
+    assert_partition_matches(run_dir)
+    tape_keys, wildcard_sessions = tape_coverage(TAPE_INVENTORY)
+    assert_target_universe(_panel_keys(run_dir))
+    assert_tape_covers_panel(
+        tape_keys, _panel_keys(run_dir), wildcard_sessions=wildcard_sessions
+    )
+
+    # Steps 6 and 7 run in this process against the panels this run just built. Shelling
+    # out to an import would prove the configuration parses, which is not the question
+    # that can fail: the question is whether the features the registry names exist in
+    # *these* panels and whether the mask they imply is non-empty.
+    internal_steps: tuple[tuple[str, Callable[[], Path]], ...] = (
+        ("validate-feature-registry", lambda: validate_feature_registry(run_dir)),
+        ("construct-common-masks", lambda: construct_common_masks(run_dir, args.roles)),
+    )
+    for name, produce in internal_steps:
+        started_step = time.perf_counter()
+        artifact = produce()
+        steps.append(
+            StepRecord(
+                name=name,
+                command=("internal", name),
+                exit_code=0,
+                runtime_seconds=round(time.perf_counter() - started_step, 3),
+                peak_memory_bytes=_own_peak_memory_bytes(),
+                artifacts={artifact.name: file_digest(artifact)},
+                content={artifact.name: stable_content_digest(artifact)},
+            )
+        )
+
+    for name, script, directory in (
+        ("fit-model-ladder", "scripts/rp2_block8_ladder.py", "rp2_block8_ladder"),
+        ("run-dml-diagnostics", "scripts/rp2_block7_dml.py", "rp2_block7_dml"),
+        ("run-incremental-inference", "scripts/rp2_block10_inference.py", "rp2_block10_inference"),
+    ):
+        command = [*python, script, *block_flags(directory), *panel_flags]
+        steps.append(run_step(name, command, run_dir))
+
+    # Both producers have run: they must have scored the same rows.
+    evaluation_masks = assert_producers_share_the_mask(run_dir, args.roles)
+    masks_path = run_dir / "common_masks.json"
+    recorded = json.loads(masks_path.read_text(encoding="utf-8"))
+    for role, digest in evaluation_masks.items():
+        recorded.setdefault(role, {})["evaluation_mask_sha256"] = digest
+    masks_path.write_text(json.dumps(recorded, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    # The mask step recorded this file's digests before the producers ran, and it has just
+    # been appended to. Left alone, step 13 compares the file against a digest taken of an
+    # earlier version of it and every run aborts after all the expensive work is done.
+    steps[:] = [
+        StepRecord(
+            name=step.name,
+            command=step.command,
+            exit_code=step.exit_code,
+            runtime_seconds=step.runtime_seconds,
+            peak_memory_bytes=step.peak_memory_bytes,
+            artifacts={masks_path.name: file_digest(masks_path)},
+            content={masks_path.name: stable_content_digest(masks_path)},
+        )
+        if step.name == "construct-common-masks"
+        else step
+        for step in steps
+    ]
+
+    manifest = RunManifest(
+        run_id=str(args.run_id),
+        code_commit=_code_commit(),
+        data_root=str(args.data_root),
+        roles=tuple(args.roles),
+        feature_registry_sha256=registry_sha256(),
+        input_manifest_sha256=manifest_digest,
+        model_config_sha256=model_config_digest(),
+        seeds=SEEDS,
+        steps=tuple(steps),
+        started_at_utc=started,
+        finished_at_utc=datetime.now(UTC).isoformat(),
+    )
+    scorecard_started = time.perf_counter()
+    build_scorecard(run_dir, manifest, started_at=wall)
+    steps.append(
+        StepRecord(
+            name="generate-scorecard",
+            command=("internal", "build_scorecard"),
+            exit_code=0,
+            # Parquet reads, completeness checks, rendering and two writes. Recording zero
+            # for them made the per-step provenance false and hid any memory peak the
+            # assembly reached.
+            runtime_seconds=round(time.perf_counter() - scorecard_started, 3),
+            peak_memory_bytes=_own_peak_memory_bytes(),
+            artifacts={
+                "scorecard.json": file_digest(run_dir / "scorecard.json"),
+                "scorecard.md": file_digest(run_dir / "scorecard.md"),
+            },
+            content={
+                "scorecard.json": stable_content_digest(run_dir / "scorecard.json"),
+                "scorecard.md": stable_content_digest(run_dir / "scorecard.md"),
+            },
+        )
+    )
+
+    manifest = RunManifest(
+        **{
+            **{
+                field: getattr(manifest, field)
+                for field in (
+                    "run_id",
+                    "code_commit",
+                    "data_root",
+                    "roles",
+                    "feature_registry_sha256",
+                    "input_manifest_sha256",
+                    "model_config_sha256",
+                    "seeds",
+                    "started_at_utc",
+                )
+            },
+            "steps": tuple(steps),
+            "finished_at_utc": datetime.now(UTC).isoformat(),
+        }
+    )
+    # Verified first. Writing the manifest is what marks the run complete, and a directory
+    # marked complete is closed to its producers - so writing it before the verification
+    # would make an unverifiable run permanently unrepeatable under its own id.
+    # The producers have read the store since step 1 hashed it. A tape replaced in between
+    # would leave the outputs derived from bytes the recorded input digest does not
+    # identify, and verifying only the artifacts would not notice.
+    assert_inputs_unchanged(run_dir, data_root=Path(args.data_root))
+    verification_started = time.perf_counter()
+    verify_artifacts(run_dir, steps)
+    verification_seconds = round(time.perf_counter() - verification_started, 3)
+    # The manifest describes thirteen steps because the pipeline has thirteen. Recording
+    # eleven and performing two more leaves a consumer counting the difference.
+    steps.append(
+        StepRecord(
+            name="verify-artifact-hashes",
+            command=("internal", "verify_artifacts"),
+            exit_code=0,
+            runtime_seconds=verification_seconds,
+            peak_memory_bytes=_own_peak_memory_bytes(),
+        )
+    )
+    # The manifest cannot hash itself, so this step records what it did and no artifact.
+    # Leaving it out entirely would make a thirteen-step pipeline produce an
+    # eleven-step record and leave a reader counting the difference.
+    steps.append(
+        StepRecord(
+            name="generate-provenance",
+            command=("internal", "write_manifest"),
+            exit_code=0,
+            runtime_seconds=0.0,
+            peak_memory_bytes=_own_peak_memory_bytes(),
+        )
+    )
+    manifest = RunManifest(
+        **{
+            **{
+                field: getattr(manifest, field)
+                for field in (
+                    "run_id",
+                    "code_commit",
+                    "data_root",
+                    "roles",
+                    "feature_registry_sha256",
+                    "input_manifest_sha256",
+                    "model_config_sha256",
+                    "seeds",
+                    "started_at_utc",
+                )
+            },
+            # In the order the pipeline declares, not the order the last two happened to
+            # be appended in. Verification runs before the manifest is written, because a
+            # run is complete only once it has been verified; the record still describes
+            # the fixed sequence.
+            "steps": tuple(sorted(steps, key=lambda step: STEP_NAMES.index(step.name))),
+            "finished_at_utc": datetime.now(UTC).isoformat(),
+        }
+    )
+    write_manifest(run_dir, manifest)
+    digest = str(manifest.as_record()["scientific_sha256"])
+    print(f"run {manifest.run_id}: {len(steps)} steps, scientific hash {digest[:16]}")
+    print(f"registry {REGISTRY_CONFIG.name}, scorecard fields {SCORECARD_FIELDS.name}")
+    return 0
+
+
+if __name__ == "__main__":  # pragma: no cover - CLI entry point
+    raise SystemExit(main())

@@ -7,10 +7,12 @@
       "b1_rows",
       "b2_rows",
       "common_evaluation_rows",
+      "masked_rows_by_role",
       "sessions_by_role",
       "assets",
       "duplicate_keys",
-      "provider_failures"
+      "provider_failures",
+      "sparse_session_assets"
     ],
     "b1": [
       "b1_core_coverage",
