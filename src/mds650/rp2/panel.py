@@ -40,6 +40,12 @@ INFORMATION_SETS: Final[dict[str, dict[str, str]]] = {
 CORE_SETS: Final[dict[str, str]] = {"B0": "B0_CORE", "B1": "B1_CORE", "B2": "B2_CORE"}
 
 
+#: The forecast targets. Frozen: a rebuild that quietly produced five of them would still
+#: pass a session count, so the universe is stated once and checked against the panel.
+#: SPY and QQQ are in the tape and in the partition as market controls - inputs to B0,
+#: never forecast targets - and are deliberately not here.
+TARGET_ASSETS: Final[tuple[str, ...]] = ("AAPL", "AMZN", "META", "MSFT", "NVDA", "TSLA")
+
 #: Where each derived panel lives, relative to a root. The panels are not versioned in
 #: git: they are large and are derived works of licensed provider data.
 PANEL_LOCATIONS: Final[dict[str, str]] = {

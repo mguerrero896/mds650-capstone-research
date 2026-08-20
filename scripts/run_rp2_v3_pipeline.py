@@ -36,6 +36,7 @@ if str(ROOT / "src") not in sys.path:  # pragma: no cover - import bootstrap
 
 from mds650.rp2.feature_registry import CONFIG as REGISTRY_CONFIG  # noqa: E402
 from mds650.rp2.feature_registry import registry_sha256  # noqa: E402
+from mds650.rp2.panel import TARGET_ASSETS  # noqa: E402
 from mds650.rp2.run_manifest import (  # noqa: E402
     PIPELINE_STEPS,
     RunManifest,
@@ -135,6 +136,19 @@ def assert_worktree_clean(status: str | None = None) -> None:
         raise SystemExit("RP2_RUN_WORKTREE_DIRTY:" + ",".join(line[3:] for line in dirty[:5]))
 
 
+def assert_target_universe(panel_keys: set[tuple[str, str]]) -> None:
+    """The panel carries every frozen forecast target.
+
+    The universe is frozen, not inferred from the panel. Inferring it is what lets an asset
+    that vanished entirely filter its own keys out of the expectation: five assets over the
+    full session list looks exactly like six until someone counts.
+    """
+
+    absent = sorted(set(TARGET_ASSETS) - {asset for asset, _ in panel_keys})
+    if absent:
+        raise SystemExit(f"RP2_RUN_TARGET_ASSET_ABSENT:{','.join(absent)}")
+
+
 def assert_tape_covers_panel(
     tape_keys: set[tuple[str, str]],
     panel_keys: set[tuple[str, str]],
@@ -168,12 +182,13 @@ def assert_tape_covers_panel(
     # also holds tape for the market-control assets, which are inputs to B0 and never
     # forecast targets - 928 session-assets of SPY and QQQ that the panel is not supposed
     # to contain. Subtracting the raw sets would have called every one of them a gap.
-    panel_assets = {asset for asset, _ in panel_keys}
     panel_sessions = {session for _, session in panel_keys}
     expected = {
         key
         for key in tape_keys
-        if key[0] in panel_assets and key[1] in panel_sessions and key[1] not in wildcard_sessions
+        if key[0] in TARGET_ASSETS
+        and key[1] in panel_sessions
+        and key[1] not in wildcard_sessions
     }
     missing = sorted(expected - panel_keys)
     if missing:
@@ -701,6 +716,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     assert_partition_matches(run_dir)
     tape_keys, wildcard_sessions = tape_coverage(TAPE_INVENTORY)
+    assert_target_universe(_panel_keys(run_dir))
     assert_tape_covers_panel(
         tape_keys, _panel_keys(run_dir), wildcard_sessions=wildcard_sessions
     )

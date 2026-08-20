@@ -33,6 +33,7 @@ from mds650.rp2.baseline import (
     seasonality_index,
     smearing_factor,
 )
+from mds650.rp2.panel import TARGET_ASSETS
 from mds650.rp2.realized import backward_rv, forward_measures, log_returns
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -42,7 +43,6 @@ FIRST_ORIGIN = 30
 LAST_ORIGIN = FULL_SESSION_MINUTES - TARGET_HORIZON
 ORIGIN_STEP = 5
 MARKET_ASSETS = ("SPY", "QQQ")
-TARGET_ASSETS = ("AAPL", "AMZN", "META", "MSFT", "NVDA", "TSLA")
 WEEK_SESSIONS = 5
 SEASONALITY_BUCKETS = FULL_SESSION_MINUTES // ORIGIN_STEP + 1
 

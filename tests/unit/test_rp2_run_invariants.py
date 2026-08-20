@@ -320,7 +320,7 @@ def test_a_session_asset_the_inventory_holds_and_the_panel_lost_is_caught() -> N
         ("MSFT", "2024-08-02"),
         ("MSFT", "2024-08-05"),
         ("QQQ", "2024-08-02"),
-    }
+    }  # a fixture, not the frozen universe: the universe check is its own function
     panel = {("AAPL", "2024-08-02"), ("MSFT", "2024-08-05")}
     with pytest.raises(SystemExit, match="RP2_RUN_PANEL_COVERAGE_GAP:1:MSFT@2024-08-02"):
         runner.assert_tape_covers_panel(tape, panel, wildcard_sessions=frozenset())
@@ -338,3 +338,34 @@ def test_market_control_tape_is_not_mistaken_for_a_missing_panel_asset() -> None
     runner.assert_tape_covers_panel(
         tape, {("AAPL", "2024-08-02")}, wildcard_sessions=frozenset()
     )
+
+
+def test_an_asset_that_vanished_entirely_is_not_filtered_out_of_its_own_check() -> None:
+    """Deriving the expectation from the panel makes the panel unable to be wrong.
+
+    If one forecast asset disappears from the bar store completely, its inventory keys are
+    filtered out along with it and the session count is unchanged, so a five-asset
+    experiment publishes under a six-asset specification.
+    """
+
+    from mds650.rp2.panel import TARGET_ASSETS
+
+    runner = _load("run_rp2_v3_pipeline")
+    sessions = ("2024-08-02", "2024-08-05")
+    tape = {(asset, session) for asset in TARGET_ASSETS for session in sessions}
+    tape |= {("SPY", sessions[0]), ("QQQ", sessions[0])}
+    complete = {(asset, session) for asset in TARGET_ASSETS for session in sessions}
+
+    runner.assert_target_universe(complete)
+    runner.assert_tape_covers_panel(tape, complete, wildcard_sessions=frozenset())
+
+    without_tsla = {key for key in complete if key[0] != "TSLA"}
+    with pytest.raises(SystemExit, match="RP2_RUN_TARGET_ASSET_ABSENT:TSLA"):
+        runner.assert_target_universe(without_tsla)
+
+
+def test_the_scorecard_declares_the_schema_it_was_written_against() -> None:
+    from mds650.rp2.scorecard import SCHEMA_VERSION, required_fields
+
+    assert SCHEMA_VERSION == "rp2-v3-scorecard-v1.0"
+    assert set(required_fields()) >= {"data", "b1", "b2", "forecast", "engineering"}

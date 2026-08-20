@@ -31,6 +31,11 @@ def _config() -> Path:
 CONFIG: Final = _config()
 
 
+#: The contract this document is written against. A consumer that cannot tell which
+#: version it is reading cannot validate it.
+SCHEMA_VERSION: Final = "rp2-v3-scorecard-v1.0"
+
+
 def required_fields() -> dict[str, tuple[str, ...]]:
     """The schema's groups, read once from the file that states the requirement."""
 
@@ -212,6 +217,7 @@ def assemble_scorecard(run_dir: Path, manifest: RunManifest) -> dict[str, Any]:
     calibration = calibration_by_role.get("D", {}).get("lightgbm_qlike", {})
 
     scorecard: dict[str, Any] = {
+        "schema_version": SCHEMA_VERSION,
         "run_id": manifest.run_id,
         "code_commit": manifest.code_commit,
         "data": {
@@ -417,6 +423,8 @@ def render_scorecard(scorecard: Mapping[str, Any]) -> str:
 
     lines = [
         f"# RP2-v3 scorecard - {scorecard['run_id']}",
+        "",
+        f"Schema `{scorecard.get('schema_version', SCHEMA_VERSION)}`.",
         "",
         f"Code commit `{scorecard['code_commit']}`.",
         "",

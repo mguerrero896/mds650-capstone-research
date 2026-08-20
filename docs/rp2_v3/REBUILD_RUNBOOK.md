@@ -72,5 +72,12 @@ they happened.
 ## Resuming
 
 `--skip-panels` reuses the four panels already in the run directory instead of rebuilding
-them, and fails if any of them is missing. It is for re-running the modelling steps after a
-code change that cannot affect the panels; a change that can affect them needs a new run id.
+them, and fails if any of them is missing.
+
+It is for **same-commit** retries only: re-running the modelling steps after an
+interruption, or with a producer that failed for an environmental reason. It is not a way
+to carry panels across a code change. `code_commit` is part of the run identity, so a run
+directory built at one commit and resumed at another is refused before anything runs — and
+a new run id has no panels to reuse. A change that can affect the panels needs a new run
+id and a full rebuild; a change that cannot still needs one, because the manifest would
+otherwise name a commit that did not build what is in the directory.
