@@ -404,6 +404,7 @@ def run_role(
 
     results: dict[str, object] = {
         "status": "MEASURED",
+        "preprocessing": preprocessors,
         "rows": int(frame.height),
         "train_share": train_share,
         "legs_evaluated": int(joined.height),

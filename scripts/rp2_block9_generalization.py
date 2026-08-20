@@ -230,6 +230,7 @@ def run_role(
 
     results: dict[str, object] = {
         "status": "MEASURED",
+        "preprocessing": preprocessors,
         "rows": int(keep.sum()),
         "train_share": train_share,
         "train_rows": int(train.sum()),
@@ -270,9 +271,12 @@ def run_role(
                 continue
             asset_losses: dict[str, FloatArray] = {}
             for set_name in INFORMATION_SETS:
-                forecast = fitter(
-                    designs[set_name], target, asset_train
-                )
+                # Refit the preprocessing on this fold's own training rows. The panel-wide
+                # design was imputed and scaled with statistics that had seen the held-out
+                # asset's history, and passing asset_train to the model afterwards cannot
+                # undo a median, a centre or an indicator that already learned it.
+                asset_design, _, _ = fold_design(frame, features[set_name], asset_train)
+                forecast = fitter(asset_design, target, asset_train)
                 asset_losses[set_name] = qlike_losses(target[asset_test], forecast[asset_test])
             # Each held-out asset is a different evaluation sample, so it carries its own
             # mask: one hash for the whole leave-one-out family would say that results

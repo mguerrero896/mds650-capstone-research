@@ -146,6 +146,7 @@ def run_role(
 
     results: dict[str, object] = {
         "status": "MEASURED",
+        "preprocessing": preprocessors,
         "rows": int(keep.sum()),
         "train_share": train_share,
         "test_rows": int(test.sum()),

@@ -216,3 +216,43 @@ def test_every_primary_block_uses_the_common_mask_and_fold_local_statistics() ->
         assert "fold_design(frame, features[name], train)" in source, name
         assert "common_usable_rows(designs" not in source, name
         assert "standardise(designs" not in source, name
+
+
+def test_a_held_out_asset_fold_refits_its_own_statistics() -> None:
+    """Passing a narrower training mask to the model cannot undo what the design learned.
+
+    A leave-one-asset-out design imputed and scaled with statistics that saw the held-out
+    asset's history is not an unseen-asset result, however the model is then fitted.
+    """
+
+    from pathlib import Path as _Path
+
+    source = (
+        _Path(__file__).resolve().parents[2] / "scripts" / "rp2_block9_generalization.py"
+    ).read_text(encoding="utf-8")
+    loop = source[source.index("for asset in sorted(") :]
+    assert "fold_design(frame, features[set_name], asset_train)" in loop, (
+        "the held-out fold must refit its own preprocessing"
+    )
+    assert "fitter(designs[set_name], target, asset_train)" not in loop
+
+    # And the statistics really do differ once the held-out rows are excluded.
+    frame = _frame([0.2, 0.3, 0.4, 50.0], [0.1, 0.2, 0.3, 0.4])
+    everything = np.ones(4, dtype=bool)
+    without_last = np.array([True, True, True, False])
+    assert (
+        fit_preprocessor(frame, FEATURES, everything).medians
+        != fit_preprocessor(frame, FEATURES, without_last).medians
+    )
+
+
+def test_every_block_records_the_statistics_it_fitted_with() -> None:
+    """Computed and never written is the same as not computed, for an audit."""
+
+    from pathlib import Path as _Path
+
+    repo = _Path(__file__).resolve().parents[2]
+    for name in PRIMARY_BLOCKS:
+        source = (repo / "scripts" / f"{name}.py").read_text(encoding="utf-8")
+        assert "preprocessors[name] = describe_preprocessor(fitted)" in source, name
+        assert '"preprocessing": preprocessors' in source, name

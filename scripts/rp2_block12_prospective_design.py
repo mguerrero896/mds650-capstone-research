@@ -165,7 +165,7 @@ def measure_dispersion(panel: pl.DataFrame, *, role: str, train_share: float
             block[f"{label}_observed_mean"] = float(np.mean(per_session))
         block["evaluation_sessions"] = float(np.unique(session_labels).size)
         out[family] = block
-    return out, dict(information_sets)
+    return out, {**information_sets, "preprocessing": preprocessors}
 
 
 def main(argv: Sequence[str] | None = None) -> int:
