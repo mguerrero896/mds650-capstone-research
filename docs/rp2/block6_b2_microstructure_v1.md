@@ -4,8 +4,8 @@
 `fix/rp2-v3-exact-clock-b2` (methodology decision 81). The run below is retained
 unchanged; the replacement is
 `artifacts/rp2_v3/gate5-exact-clock-b2/flow_coverage.json`
-(`flow_sha256 = 350cbb18606c6c594f7d98bfa954f1054c25873ca7e002792e1a09c798a40ec3`, 70 features, panel
-`14dc4a47…819e4`, 75.5 MB).
+(`flow_sha256 = 773c3d3d7f07ef9214ba6b4bc5383ab34723b6fbdbd4a468544cbbb244516f69`, 70 features, panel
+`972fa80b…a3de2`, 75.5 MB).
 · label `EXPLORATORY_MECHANISM_DISCOVERY`
 **Artifacts:** `artifacts/rp2_block6_flow/flow_coverage.json`
 (`flow_sha256 = d7320a546cfe2ffc113baab555b3b663bbcffa678495d7ee80fb4b31820d3306`);

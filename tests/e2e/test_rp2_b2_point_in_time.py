@@ -403,6 +403,9 @@ def test_the_window_edge_is_the_exchange_clock_not_the_record_clock() -> None:
     assert without["b2_5m_trades"] == 2.0
     assert corrected["b2_5m_trades"] == 1.0
     assert corrected["b2_5m_premium"] == 1.0
+    # The sliced statistics obey the same membership as the totals: one contract, not two.
+    assert without["b2_5m_contracts"] == 1.0
+    assert corrected["b2_5m_contracts"] == 1.0
 
     source = _source()
     assert "executed[lo : min(band, hi)] < lo_us" in source, (

@@ -535,16 +535,21 @@ def _window_record(
         return raw - float(channels[name][stale].sum()) if stale.size else raw
 
     trades = total("trades")
-    empty = empty or trades <= 0.0
     total_premium = max(total("premium"), 1e-9)
     predecessors = max(total("has_previous"), 1.0)
-    # The window is a slice of a publication-ordered array, so its first and last rows are
-    # not necessarily its earliest and latest executions.
-    window = seconds[lo:hi]
+    # The same economic membership the totals use. A row created inside the window but
+    # executed before it is not in the window, and it must be out of the sliced statistics
+    # too — otherwise the concentration, the span and the interarrivals would still treat an
+    # old execution as recent activity while the trade count no longer does.
+    selected = np.ones(max(hi - lo, 0), dtype=bool)
+    if stale.size:
+        selected[stale - lo] = False
+    window = seconds[lo:hi][selected]
+    empty = empty or not selected.any()
     span = float(window.max() - window.min()) if not empty else 0.0
     record: dict[str, float] = {
         f"{prefix}trades": trades,
-        f"{prefix}contracts": float(np.unique(keys[lo:hi]).size),
+        f"{prefix}contracts": float(np.unique(keys[lo:hi][selected]).size),
         f"{prefix}size": total("size"),
         f"{prefix}premium": total("premium"),
         f"{prefix}vega_flow": total("vega_flow"),
@@ -618,20 +623,23 @@ def _window_record(
             )
         return record
     if label == CONCENTRATION_WINDOW:
-        window_premium = premium[lo:hi]
+        window_premium = premium[lo:hi][selected]
         record[f"{prefix}strike_hhi"] = herfindahl(
             np.bincount(
-                np.unique(strike[lo:hi], return_inverse=True)[1], weights=window_premium
+                np.unique(strike[lo:hi][selected], return_inverse=True)[1],
+                weights=window_premium,
             ).astype(np.float64)
         )
         record[f"{prefix}expiry_hhi"] = herfindahl(
             np.bincount(
-                np.unique(expiry_day[lo:hi], return_inverse=True)[1], weights=window_premium
+                np.unique(expiry_day[lo:hi][selected], return_inverse=True)[1],
+                weights=window_premium,
             ).astype(np.float64)
         )
         record[f"{prefix}contract_entropy"] = shannon_entropy(
             np.bincount(
-                np.unique(keys[lo:hi], return_inverse=True)[1], weights=window_premium
+                np.unique(keys[lo:hi][selected], return_inverse=True)[1],
+                weights=window_premium,
             ).astype(np.float64)
         )
         gaps = np.diff(np.sort(window))
