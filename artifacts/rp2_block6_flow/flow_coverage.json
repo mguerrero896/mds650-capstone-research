@@ -38,17 +38,21 @@
       "coverage": 0.9959703626673599,
       "median": 44084324.52109745
     },
+    "b2_30m_is_empty_window": {
+      "coverage": 1.0,
+      "median": 0.0
+    },
     "b2_30m_late_arrival_share": {
-      "coverage": 0.9978281121365744,
+      "coverage": 1.0,
       "median": 0.0
     },
     "b2_30m_mean_age_s": {
-      "coverage": 0.9978281121365744,
-      "median": 923.0276117324829
+      "coverage": 1.0,
+      "median": 922.8264546394348
     },
     "b2_30m_mean_provider_latency_s": {
-      "coverage": 0.9978281121365744,
-      "median": 0.07604775564832089
+      "coverage": 1.0,
+      "median": 0.076011206934612
     },
     "b2_30m_multileg_premium_share": {
       "coverage": 1.0,
@@ -71,8 +75,8 @@
       "median": 30118926.5
     },
     "b2_30m_rate_per_second": {
-      "coverage": 0.9978281121365744,
-      "median": 5.316298187090746
+      "coverage": 1.0,
+      "median": 5.297359674955754
     },
     "b2_30m_sell_premium_share": {
       "coverage": 1.0,
@@ -174,17 +178,21 @@
       "coverage": 0.9977360370899953,
       "median": 1.746526810343249
     },
+    "b2_5m_is_empty_window": {
+      "coverage": 1.0,
+      "median": 0.0
+    },
     "b2_5m_late_arrival_share": {
-      "coverage": 0.9977360370899953,
+      "coverage": 1.0,
       "median": 0.0
     },
     "b2_5m_mean_age_s": {
-      "coverage": 0.9977360370899953,
-      "median": 150.95885527133942
+      "coverage": 1.0,
+      "median": 150.9153027534485
     },
     "b2_5m_mean_provider_latency_s": {
-      "coverage": 0.9977360370899953,
-      "median": 0.0735010952795185
+      "coverage": 1.0,
+      "median": 0.07347571467505434
     },
     "b2_5m_multileg_premium_share": {
       "coverage": 1.0,
@@ -207,8 +215,8 @@
       "median": 4416103.5
     },
     "b2_5m_rate_per_second": {
-      "coverage": 0.9977360370899953,
-      "median": 4.908077975604674
+      "coverage": 1.0,
+      "median": 4.893254795416541
     },
     "b2_5m_sell_premium_share": {
       "coverage": 1.0,
@@ -271,9 +279,9 @@
   "decay_seconds": 60.0,
   "empty_window_share_30m": 0.0021718878634256252,
   "empty_window_share_5m": 0.0022639629100047664,
-  "feature_count": 66,
-  "flow_sha256": "cd109e501b676c97c1375f20e486fb3b64a91e1c93795eb655402f33256ef9ce",
-  "generated_at_utc": "2026-08-20T01:10:50.138254+00:00",
+  "feature_count": 68,
+  "flow_sha256": "85efd706f0530479c92831c49b9ad1efb512432024e9fd4d438d6a2392bc8f45",
+  "generated_at_utc": "2026-08-20T01:23:53.505152+00:00",
   "label": "EXPLORATORY_MECHANISM_DISCOVERY",
   "minimum_session_prints": 50,
   "missing_bar_grid": [],

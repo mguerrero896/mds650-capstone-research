@@ -88,6 +88,9 @@ _B2_SIGNED: Final[tuple[str, ...]] = (
     "zero_dte_signed_premium",
 )
 _B2_RAW: Final[tuple[str, ...]] = (
+    # 1 when nobody traded in this window. The three per-trade averages are 0 there, and
+    # this is what tells a model that those zeros are an absence rather than a measurement.
+    "is_empty_window",
     "zero_dte_premium_share",
     "zero_dte_trade_share",
     "otm_premium_share",

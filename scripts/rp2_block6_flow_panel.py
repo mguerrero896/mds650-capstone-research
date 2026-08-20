@@ -484,18 +484,24 @@ def _window_record(
         f"{prefix}d_spread": total("d_spread_sum") / predecessors,
         f"{prefix}decay_intensity_last": intensity_now,
         f"{prefix}decay_intensity_innovation": intensity_now - intensity_before,
-        f"{prefix}rate_per_second": trades / span if span > 0.0 else float("nan"),
+        f"{prefix}rate_per_second": trades / span if span > 0.0 else 0.0,
         # A mean, and now named one. It was called a median for the whole programme. A mean
         # over nothing is not zero, it is undefined, and the three per-trade averages say so.
+        # A mean over no trades is not zero; it is unmeasured. Rather than leave a NaN that
+        # the fail-closed mask would turn into a dropped origin, the window says so: the
+        # indicator is 1 and the three per-trade averages are 0, which the model reads
+        # together. This is an explicit encoding of one enumerable state, not imputation —
+        # fold-local imputation of the general case is its own gate.
+        f"{prefix}is_empty_window": 1.0 if empty else 0.0,
         f"{prefix}mean_age_s": (
-            cutoff_us / 1e6 - total("age_sum") / trades if trades else float("nan")
+            cutoff_us / 1e6 - total("age_sum") / trades if trades else 0.0
         ),
         # Provider latency, from the exchange clock to the availability clock.
         f"{prefix}mean_provider_latency_s": (
-            total("latency_sum") / trades if trades else float("nan")
+            total("latency_sum") / trades if trades else 0.0
         ),
         f"{prefix}late_arrival_share": (
-            total("latency_over_60s") / trades if trades else float("nan")
+            total("latency_over_60s") / trades if trades else 0.0
         ),
         f"{prefix}zero_dte_premium_share": total("zero_dte_premium") / total_premium,
         f"{prefix}zero_dte_signed_premium": total("zero_dte_signed_premium"),

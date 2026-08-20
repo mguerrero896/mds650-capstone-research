@@ -195,6 +195,11 @@ def test_an_empty_window_still_reports_the_intensity_it_has() -> None:
     assert record["b2_5m_trades"] == 0.0
     assert record["b2_5m_decay_intensity_last"] == 12.5
     assert record["b2_5m_decay_intensity_innovation"] == 8.5
-    # A mean over nothing is undefined, and says so rather than reading as zero.
-    assert np.isnan(record["b2_5m_mean_provider_latency_s"])
-    assert np.isnan(record["b2_5m_mean_age_s"])
+    # A mean over nothing is unmeasured. A NaN here would be honest and would also remove
+    # the origin from every contrast, so the window says so explicitly instead.
+    assert record["b2_5m_is_empty_window"] == 1.0
+    assert record["b2_5m_mean_provider_latency_s"] == 0.0
+    assert record["b2_5m_mean_age_s"] == 0.0
+    assert all(np.isfinite(value) for value in record.values()), (
+        "an empty window must not put a non-finite value into a registered feature"
+    )

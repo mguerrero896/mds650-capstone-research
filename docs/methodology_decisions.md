@@ -777,5 +777,11 @@ Spec Kit consistency and preregistration gates pass.
    described only the part of the study that happened to be complete. The denominator is now
    what the study asked for. Measured: **2,814 of 2,814 session-assets**, with zero missing
    inventory entries, zero missing bar grids, zero provider failures and zero sparse
-   sessions.
+   sessions. One enumerable state is encoded rather than imputed: a window in which nobody
+   traded, 0.226 % of five-minute windows, sets `is_empty_window` to 1 and its three
+   per-trade averages to 0. A NaN there would be honest and would also remove the origin
+   from every contrast under the fail-closed rule; the indicator lets a model read the zeros
+   as an absence. Fold-local imputation of the general case is its own gate. Every registered
+   B2 feature now covers 100 % of origins except the Greeks-weighted 30-minute flows, at
+   99.60 %.
 
