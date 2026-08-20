@@ -59,6 +59,9 @@ CONCENTRATION_WINDOW = "5m"
 CALENDAR_YEAR = 365.0
 NY = ZoneInfo(MARKET_TZ)
 OTM_LOG_MONEYNESS = 0.05
+#: A session with fewer prints than this is too thin to build microstructure from. It
+#: is a sparse session, not a provider failure, and the artifact says which.
+MINIMUM_SESSION_PRINTS = 50
 SHORT_DTE_DAYS = 7.0
 LONG_DTE_DAYS = 30.0
 #: Exact tenors in years, so the DTE buckets compare like with like against the clock.
@@ -97,12 +100,22 @@ def load_inventory() -> dict[tuple[str, str], list[str]]:
 
 
 def _read_tape(paths: Sequence[str], asset: str) -> pl.DataFrame | None:
-    frames = [
-        pl.read_parquet(path, columns=list(TAPE_COLUMNS)).filter(
-            pl.col("underlying_symbol") == asset
-        )
-        for path in paths
-    ]
+    """The session's tape, or ``None`` when the provider's files could not be read.
+
+    A file that will not open is the provider failure this block reports. Letting it raise
+    would abort the whole rebuild over one bad file and, worse, would mean the published
+    failure count could only ever be zero.
+    """
+
+    try:
+        frames = [
+            pl.read_parquet(path, columns=list(TAPE_COLUMNS)).filter(
+                pl.col("underlying_symbol") == asset
+            )
+            for path in paths
+        ]
+    except (OSError, pl.exceptions.PolarsError):
+        return None
     if not frames:
         return None
     tape = pl.concat(frames, how="vertical").filter(
@@ -173,12 +186,19 @@ def build_session_flow(
     paths: Sequence[str],
     origins: npt.NDArray[np.int64],
     closes: FloatArray,
-) -> pl.DataFrame | None:
-    """Microstructure features at every origin of one session-asset."""
+) -> tuple[pl.DataFrame | None, str]:
+    """Microstructure features at every origin of one session-asset, plus why not.
+
+    The outcome is named. A tape that could not be read is a provider failure; a tape that
+    was read and held almost nothing is a sparse session, which is a fact about the market.
+    Returning ``None`` for both made the published failure count measure neither.
+    """
 
     tape = _read_tape(paths, asset)
-    if tape is None or tape.height < 50:
-        return None
+    if tape is None:
+        return None, "provider_failure"
+    if tape.height < MINIMUM_SESSION_PRINTS:
+        return None, "sparse_tape"
     # Two clocks travel together. `executed_at` is when the trade happened at the
     # exchange; `created_at` is when the provider made it available to us. Windows are
     # selected on availability, because that is what a forecaster could actually see, but
@@ -246,8 +266,14 @@ def build_session_flow(
     # Interarrivals and intensity are economics, so they run on the exchange clock too. On
     # the availability clock a provider flushing a backlog reads as a burst of trading.
     seconds = clocks.economic_seconds()
-    intensity = exponential_decay_intensity(
-        seconds, baseline=0.0, excitation=1.0, decay=DECAY_SECONDS
+    # The tape is in publication order, and latency does not always preserve execution
+    # order. Feeding a non-monotone time series to an exponential decay makes it amplify
+    # instead of decay, so the recursion runs on the execution-ordered permutation and the
+    # result is mapped back to publication order for the point-in-time slicing.
+    order = clocks.execution_order
+    intensity = np.empty(seconds.size, dtype=np.float64)
+    intensity[order] = exponential_decay_intensity(
+        seconds[order], baseline=0.0, excitation=1.0, decay=DECAY_SECONDS
     )
     d_iv, d_mid, d_spread, has_previous = _previous_trade_deltas(keys, iv, mid, relative_spread)
     log_moneyness = np.log(np.maximum(strike, 1e-9) / np.maximum(spot, 1e-9))
@@ -321,10 +347,13 @@ def build_session_flow(
             )
         rows.append(record)
     frame = pl.DataFrame(rows)
-    return frame.with_columns(
-        asset=pl.lit(asset),
-        session_date=pl.lit(session),
-        origin_minute=pl.col("origin_minute").cast(pl.Int64),
+    return (
+        frame.with_columns(
+            asset=pl.lit(asset),
+            session_date=pl.lit(session),
+            origin_minute=pl.col("origin_minute").cast(pl.Int64),
+        ),
+        "measured",
     )
 
 
@@ -352,7 +381,11 @@ def _window_record(
     trades = total("trades")
     total_premium = max(total("premium"), 1e-9)
     predecessors = max(total("has_previous"), 1.0)
-    span = float(seconds[hi - 1] - seconds[lo])
+    # The window is a slice of a publication-ordered array, so its first and last rows are
+    # not necessarily its earliest and latest executions.
+    window_seconds = seconds[lo:hi]
+    span = float(window_seconds.max() - window_seconds.min())
+    last_executed = lo + int(np.argmax(window_seconds))
     record: dict[str, float] = {
         f"{prefix}trades": trades,
         f"{prefix}contracts": float(np.unique(keys[lo:hi]).size),
@@ -377,8 +410,10 @@ def _window_record(
         f"{prefix}d_iv": total("d_iv_sum") / predecessors,
         f"{prefix}d_mid_rel": total("d_mid_sum") / predecessors,
         f"{prefix}d_spread": total("d_spread_sum") / predecessors,
-        f"{prefix}decay_intensity_last": float(intensity[hi - 1]),
-        f"{prefix}decay_intensity_innovation": float(intensity[hi - 1] - np.mean(intensity[lo:hi])),
+        f"{prefix}decay_intensity_last": float(intensity[last_executed]),
+        f"{prefix}decay_intensity_innovation": float(
+            intensity[last_executed] - np.mean(intensity[lo:hi])
+        ),
         f"{prefix}rate_per_second": trades / span if span > 0.0 else float("nan"),
         # A mean, and now named one. It was called a median for the whole programme.
         f"{prefix}mean_age_s": cutoff_us / 1e6 - total("age_sum") / max(trades, 1.0),
@@ -406,7 +441,7 @@ def _window_record(
                 np.unique(keys[lo:hi], return_inverse=True)[1], weights=window_premium
             ).astype(np.float64)
         )
-        gaps = np.diff(seconds[lo:hi])
+        gaps = np.diff(np.sort(window_seconds))
         mean_gap = float(np.mean(gaps)) if gaps.size else float("nan")
         record[f"{prefix}interarrival_cv"] = (
             float(np.std(gaps) / mean_gap) if gaps.size and mean_gap > 0.0 else float("nan")
@@ -463,15 +498,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         jobs = jobs[: args.limit_sessions]
 
     frames: list[pl.DataFrame] = []
-    # A session whose tape could not be read is a provider failure. A window in which
-    # nobody traded is a fact about the market. Both would otherwise arrive downstream as
-    # "no flow", and only one of them is evidence about flow, so the failures are named.
+    # A tape that could not be read is a provider failure. A tape that was read and held
+    # almost nothing is a sparse session. A window in which nobody traded is a fact about
+    # the market. All three would otherwise arrive downstream as "no flow", and only the
+    # last is evidence about flow, so each is named separately.
     provider_failures: list[dict[str, str]] = []
+    sparse_sessions: list[dict[str, str]] = []
     with ThreadPoolExecutor(max_workers=args.workers) as pool:
         results = pool.map(lambda job: build_session_flow(*job), jobs)
-        for job, result in zip(jobs, results, strict=True):
+        for job, (result, outcome) in zip(jobs, results, strict=True):
             if result is None:
-                provider_failures.append({"asset": job[0], "session_date": job[1]})
+                entry = {"asset": job[0], "session_date": job[1]}
+                if outcome == "provider_failure":
+                    provider_failures.append(entry)
+                else:
+                    sparse_sessions.append(entry)
                 continue
             frames.append(result)
     if not frames:
@@ -501,6 +542,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         "session_assets_requested": len(jobs),
         "session_assets_without_tape": len(provider_failures),
         "provider_failures": provider_failures,
+        "minimum_session_prints": MINIMUM_SESSION_PRINTS,
+        "sparse_sessions": sparse_sessions,
         "empty_window_share_5m": float(
             (flow["b2_5m_trades"].fill_null(0.0) == 0.0).sum() / flow.height
         ),

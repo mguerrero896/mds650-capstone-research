@@ -745,5 +745,20 @@ Spec Kit consistency and preregistration gates pass.
    the mean. A session whose tape cannot be read is now recorded by name as a provider
    failure rather than arriving downstream as a window in which nobody traded. Verified on a
    real session of 304,386 tape rows: 1,607,405 events used across all windows, **zero PIT
-   violations**, and zero rows where execution followed publication.
+   violations**, and zero rows where execution followed publication. Two further corrections
+   followed from the same principle. The tape arrives in publication order and latency does
+   not preserve execution order — **42.1 % of adjacent rows are inverted** over 725,914 rows
+   of three sessions — so feeding those timestamps to an exponential decay made it amplify
+   rather than decay; the recursion now runs on the execution-ordered permutation and is
+   mapped back, and window spans and interarrival gaps are taken from the window's extremes
+   and from sorted gaps rather than from its first and last published rows. The measured
+   effect is small, 0.17 % on the decay innovation, because the inversions are sub-second
+   and the decay constant is much longer; it is now correct by construction rather than by
+   that coincidence. And the expiry close comes from the exchange calendar rather than a
+   fixed 16:00: **five sessions in the study window close at 13:00**, where the fixed time
+   would have handed every same-day contract three hours it never had, straight into the
+   0DTE Greeks. A session whose tape cannot be read, a session too thin to build
+   microstructure from, and a window in which nobody traded are three separate facts and are
+   now counted separately: 0 provider failures, 0 sparse sessions, and 0.226 % empty
+   five-minute windows.
 

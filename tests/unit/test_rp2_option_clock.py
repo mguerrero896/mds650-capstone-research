@@ -90,3 +90,52 @@ def test_the_clocks_refuse_mismatched_shapes() -> None:
         )
     with pytest.raises(ValueError, match="RP2_CLOCK_SHAPE_MISMATCH"):
         time_to_expiry_years(np.array([1], dtype=np.int64), np.array([1, 2], dtype=np.int64))
+
+
+def test_latency_can_reorder_prints_and_the_economics_must_notice() -> None:
+    """The tape arrives in publication order, which is not always execution order.
+
+    A later trade published sooner puts a negative gap into every interarrival statistic
+    computed by subtracting neighbours, and makes an exponential-decay intensity amplify
+    instead of decay.
+    """
+
+    executed = np.array([BASE + 60 * MICROSECONDS, BASE], dtype=np.int64)
+    created = np.array([BASE + 61 * MICROSECONDS, BASE + 62 * MICROSECONDS], dtype=np.int64)
+    clocks = OptionClocks(executed_us=executed, created_us=created)
+
+    assert clocks.is_reordered, "publication order differs from execution order here"
+    assert clocks.execution_order.tolist() == [1, 0]
+    # Seconds are measured from the earliest execution, so they are never negative even
+    # though the array is in publication order.
+    assert clocks.economic_seconds().tolist() == [60.0, 0.0]
+    assert clocks.economic_seconds().min() == 0.0
+
+
+def test_a_tape_in_execution_order_is_not_reordered() -> None:
+    clocks = OptionClocks(
+        executed_us=np.array([BASE, BASE + 60 * MICROSECONDS], dtype=np.int64),
+        created_us=np.array(
+            [BASE + MICROSECONDS, BASE + 61 * MICROSECONDS], dtype=np.int64
+        ),
+    )
+    assert not clocks.is_reordered
+    assert clocks.execution_order.tolist() == [0, 1]
+
+
+def test_the_expiry_close_follows_the_exchange_calendar() -> None:
+    """An early close is three hours the 0DTE tenor does not have."""
+
+    from mds650.rp2.option_clock import expiry_close_timestamps
+
+    normal = np.array(["2025-11-26"], dtype="datetime64[D]")
+    early = np.array(["2025-11-28"], dtype="datetime64[D]")
+    normal_close = expiry_close_timestamps(normal, "America/New_York")[0]
+    early_close = expiry_close_timestamps(early, "America/New_York")[0]
+
+    def minute_of_day(stamp: int) -> int:
+        return int(stamp // MICROSECONDS // 60) % (24 * 60)
+
+    assert minute_of_day(early_close) < minute_of_day(normal_close), (
+        "2025-11-28 is an early close; a fixed 16:00 adds hours the contract never had"
+    )

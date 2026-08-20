@@ -90,10 +90,34 @@ def test_a_mean_is_not_called_a_median() -> None:
 
 
 def test_empty_window_is_distinct_from_provider_failure() -> None:
-    """Zero trades in a window and no tape at all are different facts about the world."""
+    """Three different facts that all used to arrive downstream as "no flow"."""
 
     source = _source()
     assert "provider_failure" in source, (
         "a session whose tape could not be read must be recorded as a failure, not as a "
         "window in which nobody traded"
+    )
+    assert "sparse_sessions" in source, (
+        "a session that was read and held almost nothing is sparse, not a failure"
+    )
+    assert "empty_window_share_5m" in source, (
+        "a window in which nobody traded is a fact about the market and must be counted"
+    )
+
+
+def test_an_unreadable_tape_is_reported_rather_than_fatal() -> None:
+    """If a bad file aborts the run, the published failure count can only ever be zero."""
+
+    block6 = _load("rp2_block6_flow_panel")
+    assert block6._read_tape(["no/such/file.parquet"], "AAPL") is None
+
+
+def test_the_intensity_recursion_runs_in_execution_order() -> None:
+    """A non-monotone time series makes an exponential decay amplify instead of decay."""
+
+    source = _source()
+    assert "clocks.execution_order" in source
+    assert "intensity[order] = exponential_decay_intensity(" in source
+    assert "intensity[hi - 1]" not in source, (
+        "the last published row of a window is not necessarily its latest execution"
     )

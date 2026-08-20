@@ -102,6 +102,21 @@ def session_open_minute(session: date) -> int:
     return int(row["open_minute"][0])
 
 
+@lru_cache(maxsize=4096)
+def session_close_minute(session: date) -> int:
+    """Minutes past New-York midnight at which this session closed.
+
+    Returns 0 for a date the exchange did not trade, so a caller can tell "closed early"
+    from "did not trade at all" rather than being handed a plausible-looking 16:00.
+    """
+
+    table = _schedule()
+    row = table.filter(pl.col("session_date") == session)
+    if row.height == 0:
+        return 0
+    return int(row["close_minute"][0])
+
+
 def is_early_close(session: date) -> bool:
     """True when the exchange closed before its usual time on this session."""
 
