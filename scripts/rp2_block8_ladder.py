@@ -32,7 +32,7 @@ from mds650.b1v3_confirmation import canonical_sha256
 from mds650.metrics import holm_adjust, qlike_losses
 from mds650.rp2.baseline import mincer_zarnowitz
 from mds650.rp2.feature_registry import assert_segment_coverage, describe_coverage
-from mds650.rp2.inference import session_contrast
+from mds650.rp2.inference import DEFAULT_SEED, session_contrast
 from mds650.rp2.ladder import (
     INDEPENDENT_FAMILIES,
     LADDER,
@@ -121,7 +121,7 @@ def _contrast(
         expanded_information_set=expanded,
         common_mask_sha256=common_mask_sha256,
         repetitions=2000,
-        seed=650,
+        seed=DEFAULT_SEED,
     ).as_record()
     # `delta` is kept as an alias of `estimate` so that documents and downstream readers
     # written against the earlier artifact still resolve, and both names mean one number.

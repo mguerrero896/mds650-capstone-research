@@ -207,6 +207,8 @@ declare
     input_rows integer := coalesce(jsonb_array_length(payload -> 'inputs'), 0);
     block_rows integer := coalesce(jsonb_array_length(payload -> 'blocks'), 0);
     contrast_rows integer := coalesce(jsonb_array_length(payload -> 'contrasts'), 0);
+    --: block id -> the run whose row this publication replaces, read before it is replaced.
+    superseded jsonb;
 begin
     if published_run_id is null or length(published_run_id) = 0 then
         raise exception 'RP2_PUBLISH_RUN_ID_MISSING';
@@ -300,7 +302,8 @@ begin
            or b.verdict is distinct from (item ->> 'verdict')
            or b.document is distinct from (item ->> 'document')
            or b.artifact_sha256 is distinct from (item ->> 'artifact_sha256')
-           or b.supersedes_run_id is distinct from nullif(item ->> 'supersedes_run_id', '')
+           or (item ->> 'supersedes_run_id' is not null
+               and b.supersedes_run_id is distinct from nullif(item ->> 'supersedes_run_id', ''))
     ) then
         raise exception 'RP2_PUBLISH_BLOCK_IMMUTABLE:%', published_run_id;
     end if;
@@ -438,6 +441,20 @@ begin
     -- Stand the previous rows down before the new ones claim to be current: the partial
     -- index permits exactly one current row per subject, so doing it the other way round
     -- is a constraint violation rather than a silent overwrite. That is the intent.
+    -- Which run each block currently belongs to, captured before `is_current` is cleared.
+    -- The caller's `--supersedes` is one id for the whole run, it is omitted by the
+    -- documented rebuild command, and different blocks can belong to different runs, so a
+    -- version chain built from it is empty in the normal case and wrong in the interesting
+    -- one. The rows themselves know what they are replacing.
+    select jsonb_object_agg(b.block_id, b.run_id) into superseded
+    from public.rp2_block_results b
+    where b.is_current
+      and b.run_id is distinct from published_run_id
+      and b.block_id in (
+          select item ->> 'block_id'
+          from jsonb_array_elements(coalesce(payload -> 'blocks', '[]'::jsonb)) as item
+      );
+
     update public.rp2_block_results r
     set is_current = false
     where r.is_current
@@ -456,7 +473,10 @@ begin
         item ->> 'verdict',
         item ->> 'document',
         item ->> 'artifact_sha256',
-        nullif(item ->> 'supersedes_run_id', ''),
+        coalesce(
+            nullif(item ->> 'supersedes_run_id', ''),
+            coalesce(superseded, '{}'::jsonb) ->> (item ->> 'block_id')
+        ),
         true
     from jsonb_array_elements(coalesce(payload -> 'blocks', '[]'::jsonb)) as item
     on conflict (block_id, run_id) do update set

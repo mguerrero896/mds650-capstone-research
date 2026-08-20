@@ -32,6 +32,7 @@ if str(ROOT / "src") not in sys.path:  # pragma: no cover - import bootstrap
 
 from mds650.rp2.inference import inference_config_digest  # noqa: E402
 from mds650.rp2.run_manifest import (  # noqa: E402
+    IDENTITY_FILE,
     assert_manifest_identity_intact,
     file_digest,
 )
@@ -251,6 +252,27 @@ def _bar_inputs(resolved: dict[str, Any], data_root: Path) -> list[dict[str, Any
     return rows
 
 
+def assert_run_id_is_the_one_that_ran(run_dir: Path, manifest: dict[str, Any]) -> None:
+    """The name the results are published under is the name that produced them.
+
+    `scientific_part_of_record` leaves the run id out on purpose - the same inputs rebuilt
+    under a new label are the same experiment - so an edited `run_id` passes the identity
+    check and every artifact digest still matches. The run wrote its own name into
+    `run_identity.json` before it produced anything, and that is what this compares against.
+    """
+
+    identity_path = run_dir / IDENTITY_FILE
+    if not identity_path.is_file():
+        raise SystemExit(f"RP2_PUBLISH_RUN_IDENTITY_MISSING:{identity_path.name}")
+    identity = _read(identity_path)
+    for field in ("run_id", "code_commit"):
+        if identity.get(field) != manifest.get(field):
+            raise SystemExit(
+                f"RP2_PUBLISH_RUN_ID_MISMATCH:{field}:"
+                f"{identity.get(field)}!={manifest.get(field)}"
+            )
+
+
 def assert_published_at_the_run_commit(manifest: dict[str, Any]) -> None:
     """The code publishing the run is the code that produced it.
 
@@ -289,6 +311,7 @@ def build_payload(run_dir: Path, *, branch: str, supersedes: str | None) -> dict
         assert_manifest_identity_intact(manifest)
     except (ValueError, KeyError) as error:
         raise SystemExit(f"RP2_PUBLISH_MANIFEST_ALTERED:{error}") from error
+    assert_run_id_is_the_one_that_ran(run_dir, manifest)
     assert_artifacts_match_manifest(run_dir, manifest)
     scorecard = _read(run_dir / "scorecard.json")
     ladder = _read(run_dir / "rp2_block8_ladder" / "ladder.json")

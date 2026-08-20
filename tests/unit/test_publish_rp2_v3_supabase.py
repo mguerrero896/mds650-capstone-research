@@ -107,9 +107,13 @@ def _run_dir(tmp_path: Path) -> Path:
     # A real record, not a hand-written stand-in: the publisher recomputes the manifest's
     # own scientific digest, so a fixture whose digest does not describe its own contents
     # is not a manifest the publisher would ever have been given.
-    (run / "run_manifest.json").write_text(
-        json.dumps(_manifest_record(data_root=str(store))), encoding="utf-8"
-    )
+    record = _manifest_record(data_root=str(store))
+    (run / "run_manifest.json").write_text(json.dumps(record), encoding="utf-8")
+    # The run writes its own name down before it produces anything, so a manifest relabelled
+    # afterwards has something to disagree with.
+    from mds650.rp2.run_manifest import IDENTITY_FILE
+
+    (run / IDENTITY_FILE).write_text(json.dumps(record), encoding="utf-8")
     return run
 
 
@@ -506,3 +510,48 @@ def test_a_block_that_wrote_no_panel_is_not_published_as_measured(tmp_path: Path
 
     coverage.write_text(json.dumps({"block": 6, "rows": 0}), encoding="utf-8")
     assert module._block_status(run, step) == "EMPTY_PANEL"
+
+
+def test_a_relabelled_manifest_cannot_publish_under_the_new_name(tmp_path: Path) -> None:
+    """The scientific digest deliberately excludes the run id, so it cannot catch this.
+
+    `scientific_part_of_record` leaves out the run id on purpose: the same inputs rebuilt
+    under a new label are the same experiment. That is what makes an edited `run_id` invisible
+    to the identity check, and every result would be published under a name that produced
+    nothing while the artifacts beside it still carry the original one.
+    """
+
+    module = _load("publish_rp2_v3_supabase")
+    run = _run_dir(tmp_path)
+    module.build_payload(run, branch="x", supersedes=None)
+
+    (run / "run_manifest.json").write_text(
+        json.dumps(
+            _manifest_record(data_root=str(_bar_store(tmp_path)), run_id="rp2-v3-someone-else")
+        ),
+        encoding="utf-8",
+    )
+    with pytest.raises(SystemExit, match="RP2_PUBLISH_RUN_ID_MISMATCH"):
+        module.build_payload(run, branch="x", supersedes=None)
+
+
+def test_one_constant_decides_the_bootstrap_seed() -> None:
+    """A declared constant nothing calls is a claim about the code, not a property of it."""
+
+    import inspect
+
+    from mds650.rp2 import inference
+
+    seeded = [
+        (name, function)
+        for name, function in inspect.getmembers(inference, inspect.isfunction)
+        if "seed" in inspect.signature(function).parameters
+    ]
+    assert seeded, "the module is supposed to have seeded estimators"
+    for name, function in seeded:
+        default = inspect.signature(function).parameters["seed"].default
+        if default is not inspect.Parameter.empty:
+            assert default == inference.DEFAULT_SEED, f"{name} carries its own seed"
+
+    ladder = (REPO / "scripts" / "rp2_block8_ladder.py").read_text(encoding="utf-8")
+    assert "seed=DEFAULT_SEED" in ladder, "the producer passes a literal instead of the constant"

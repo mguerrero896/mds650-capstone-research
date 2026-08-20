@@ -136,7 +136,7 @@ def session_block_draws(
     *,
     block_length: int = SESSION_BLOCK_LENGTH,
     repetitions: int = DEFAULT_BOOTSTRAP,
-    seed: int = 650,
+    seed: int = DEFAULT_SEED,
 ) -> FloatArray:
     """Circular block resamples of a session series, one row per repetition.
 
@@ -162,7 +162,7 @@ def session_block_bootstrap(
     *,
     block_length: int = 5,
     repetitions: int = DEFAULT_BOOTSTRAP,
-    seed: int = 650,
+    seed: int = DEFAULT_SEED,
 ) -> dict[str, float]:
     """Circular block bootstrap over whole sessions.
 
@@ -193,7 +193,7 @@ def wild_cluster_bootstrap(
     session_values: FloatArray,
     *,
     repetitions: int = DEFAULT_BOOTSTRAP,
-    seed: int = 650,
+    seed: int = DEFAULT_SEED,
 ) -> float:
     """Two-sided p-value for a zero session mean under Rademacher wild weights.
 
@@ -396,7 +396,7 @@ def hansen_spa(
     benchmark_name: str | None = None,
     repetitions: int = DEFAULT_BOOTSTRAP,
     block_mean: float = DEFAULT_BLOCK_MEAN,
-    seed: int = 650,
+    seed: int = DEFAULT_SEED,
 ) -> SuperiorPredictiveAbility:
     """Test whether *any* candidate genuinely beats the benchmark, after selection.
 
@@ -534,7 +534,7 @@ def session_contrast(
     common_mask_sha256: str,
     block_length: int = SESSION_BLOCK_LENGTH,
     repetitions: int = DEFAULT_BOOTSTRAP,
-    seed: int = 650,
+    seed: int = DEFAULT_SEED,
     alpha: float = DEFAULT_ALPHA,
     power: float = DEFAULT_POWER,
     equivalence_bound: float | None = None,
