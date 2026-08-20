@@ -28,6 +28,20 @@ def _arrays(
     return observed, np.maximum(predicted, floor)
 
 
+def qlike_from_variance(target: FloatArray, variance: FloatArray) -> FloatArray:
+    """The QLIKE algebra itself, on two strictly positive variance arrays.
+
+    This is the single definition of the loss in the programme. The reporting metric below
+    validates its inputs and calls it; the boosting objective in
+    :mod:`mds650.rp2.qlike_objective` maps a raw log-variance score onto a variance and
+    calls it. A model that descends one and is scored on the other is descending the same
+    function, which is the whole point of training on QLIKE rather than on log-MSE.
+    """
+
+    ratio = target / variance
+    return np.asarray(ratio - np.log(ratio) - 1.0, dtype=np.float64)
+
+
 def qlike_losses(
     actual: Sequence[float] | FloatArray,
     forecast: Sequence[float] | FloatArray,
@@ -54,8 +68,7 @@ def qlike_losses(
         If shapes, targets or forecasts violate the metric contract.
     """
     observed, predicted = _arrays(actual, forecast, floor)
-    ratio = observed / predicted
-    return ratio - np.log(ratio) - 1.0
+    return qlike_from_variance(observed, predicted)
 
 
 def regression_metrics(

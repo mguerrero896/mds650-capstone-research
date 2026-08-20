@@ -14,9 +14,9 @@ Primary comparisons:
 Primary loss:
     QLIKE
 Primary models:
-    Gamma GLM
-    Ridge-log
-    LightGBM-QLIKE
+    gamma_glm
+    ridge_log
+    lightgbm_qlike
 Inference unit:
     Trading session
 Primary B1:
@@ -52,9 +52,14 @@ Comparisons are *family-matched* and *nested*: a model family is compared agains
 across information sets, never against a different family across information sets.
 
 ```text
-gamma    B0     vs gamma    B0+B1        gamma    B0+B1 vs gamma    B0+B1+B2
-ridge    B0     vs ridge    B0+B1        ridge    B0+B1 vs ridge    B0+B1+B2
-lightgbm B0     vs lightgbm B0+B1        lightgbm B0+B1 vs lightgbm B0+B1+B2
+gamma_glm      B0    vs gamma_glm      B0+B1    gamma_glm      B0+B1 vs gamma_glm      B0+B1+B2
+ridge_log      B0    vs ridge_log      B0+B1    ridge_log      B0+B1 vs ridge_log      B0+B1+B2
+lightgbm_qlike B0    vs lightgbm_qlike B0+B1    lightgbm_qlike B0+B1 vs lightgbm_qlike B0+B1+B2
+
+The identifiers are the registry keys of `mds650.rp2.ladder.PRIMARY_MODELS`; the producer
+refuses to write a ladder artifact that omits one of them. `lightgbm` (log-MSE) remains in
+the ladder as robustness and is not a deciding family: it and `lightgbm_qlike` are the same
+independent family, so they are never counted as two pieces of evidence.
 ```
 
 Every nested pair is evaluated on exactly one common row mask, recorded as

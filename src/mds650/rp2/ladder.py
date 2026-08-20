@@ -25,6 +25,8 @@ from sklearn.linear_model import (  # type: ignore[import-untyped]
 )
 from sklearn.preprocessing import SplineTransformer  # type: ignore[import-untyped]
 
+from mds650.rp2.qlike_objective import EXPONENT_CLIP, lightgbm_objective
+
 type FloatArray = npt.NDArray[np.float64]
 
 VARIANCE_FLOOR: Final = 1e-12
@@ -132,6 +134,54 @@ def fit_lightgbm(
     return np.asarray(np.exp(fitted) * _smearing(response[train] - fitted[train]))
 
 
+def fit_lightgbm_qlike(
+    design: FloatArray,
+    target: FloatArray,
+    train: npt.NDArray[np.bool_],
+    *,
+    monotone: Sequence[int] | None = None,
+    seed: int = 20260818,
+) -> FloatArray:
+    """Gradient-boosted trees that descend QLIKE itself.
+
+    The decision criterion of this programme is QLIKE, and the log-MSE variant is judged on
+    it after being trained on something else. Log-MSE is symmetric in log space: it charges
+    the same for over-forecasting a variance by a factor of two as for under-forecasting it
+    by a factor of two. QLIKE does not, and QLIKE is what decides the result.
+
+    No smearing correction is applied and none is needed. The minimiser of
+    ``E[y e^{-z} + z]`` is ``e^z = E[y | x]``, so the raw score already targets the
+    conditional mean of the variance rather than of its logarithm — the retransformation
+    bias the log-MSE fit has to correct for never arises.
+    """
+
+    import lightgbm as lgb
+
+    parameters: dict[str, object] = {
+        "objective": lightgbm_objective(target[train]),
+        "num_leaves": _LIGHTGBM_LEAVES,
+        "learning_rate": _LIGHTGBM_LEARNING_RATE,
+        "verbose": -1,
+        "seed": seed,
+        "deterministic": True,
+        "force_row_wise": True,
+    }
+    if monotone is not None:
+        parameters["monotone_constraints"] = list(monotone)
+    # The booster starts from the training mean log variance rather than from zero: a first
+    # step of exp(0) = 1 against a target near 1e-8 is a gradient of -1e8.
+    start = float(np.mean(_log(target[train])))
+    dataset = lgb.Dataset(
+        design[train],
+        label=_log(target[train]),
+        init_score=np.full(int(train.sum()), start),
+        free_raw_data=False,
+    )
+    booster = lgb.train(parameters, dataset, num_boost_round=_LIGHTGBM_ROUNDS)
+    raw = start + np.asarray(booster.predict(design), dtype=np.float64)
+    return np.asarray(np.exp(np.clip(raw, -EXPONENT_CLIP, EXPONENT_CLIP)), dtype=np.float64)
+
+
 @dataclass(frozen=True, slots=True)
 class PooledIntercepts:
     """Empirical-Bayes partial pooling of per-group offsets."""
@@ -180,6 +230,11 @@ def partial_pooling(
 #: Every model the ladder runs, keyed by name.
 Fitter = Callable[[FloatArray, FloatArray, npt.NDArray[np.bool_]], FloatArray]
 
+#: The three primary families of the frozen research contract. No fourth family is added
+#: until these are closed; a family introduced after the numbers arrive is a search over
+#: model space wearing the costume of a robustness check.
+PRIMARY_MODELS: Final[tuple[str, ...]] = ("gamma_glm", "ridge_log", "lightgbm_qlike")
+
 LADDER: Final[dict[str, Fitter]] = {
     "log_ols": fit_log_ols,
     "ridge_log": fit_ridge_log,
@@ -187,6 +242,7 @@ LADDER: Final[dict[str, Fitter]] = {
     "tweedie_glm": fit_tweedie_glm,
     "spline_additive": fit_spline_additive,
     "lightgbm": fit_lightgbm,
+    "lightgbm_qlike": fit_lightgbm_qlike,
 }
 
 #: Families that count as genuinely independent for the two-family requirement.
@@ -197,4 +253,5 @@ INDEPENDENT_FAMILIES: Final[dict[str, str]] = {
     "tweedie_glm": "smooth_glm",
     "spline_additive": "smooth_additive",
     "lightgbm": "tree",
+    "lightgbm_qlike": "tree",
 }
