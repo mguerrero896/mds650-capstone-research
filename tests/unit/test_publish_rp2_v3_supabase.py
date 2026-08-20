@@ -280,3 +280,11 @@ def test_the_published_inputs_are_the_inputs(tmp_path: Path) -> None:
     assert "gated_manifest" in names
     assert any(name.startswith("bars_") for name in names)
     assert not any("ladder" in name or "panel" in name for name in names)
+
+
+def test_publication_from_another_commit_is_refused(tmp_path: Path) -> None:
+    """The inference digest is computed from the working tree, so the tree has to be the run's."""
+
+    module = _load("publish_rp2_v3_supabase")
+    with pytest.raises(SystemExit, match="RP2_PUBLISH_COMMIT_MISMATCH"):
+        module.assert_published_at_the_run_commit({"code_commit": "9" * 40})

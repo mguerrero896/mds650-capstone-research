@@ -212,6 +212,43 @@ begin
         raise exception 'RP2_PUBLISH_CODE_COMMIT_INVALID';
     end if;
 
+    -- One run id refers to one experiment. A caller mistake, or a publication from an
+    -- altered run directory, would otherwise rewrite a published run's provenance and its
+    -- estimates in place and leave nothing saying the number had changed.
+    if exists (
+        select 1 from public.ingestion_runs r
+        where r.run_id = published_run_id
+          and r.status = 'PUBLISHED'
+          and (
+              r.code_commit is distinct from (run ->> 'code_commit')
+              or r.inputs_sha256 is distinct from (run ->> 'inputs_sha256')
+              or r.feature_registry_sha256 is distinct from (run ->> 'feature_registry_sha256')
+              or r.model_config_sha256 is distinct from (run ->> 'model_config_sha256')
+              or r.inference_config_sha256 is distinct from (run ->> 'inference_config_sha256')
+              or r.common_mask_sha256 is distinct from (run ->> 'common_mask_sha256')
+          )
+    ) then
+        raise exception 'RP2_PUBLISH_RUN_ID_IMMUTABLE:%', published_run_id;
+    end if;
+
+    if exists (
+        select 1
+        from jsonb_array_elements(coalesce(payload -> 'contrasts', '[]'::jsonb)) as item
+        join public.rp2_contrast_results c
+          on c.run_id = published_run_id
+         and c.role = item ->> 'role'
+         and c.model_family = item ->> 'model_family'
+         and c.base_information_set = item ->> 'base_information_set'
+         and c.expanded_information_set = item ->> 'expanded_information_set'
+        where c.estimate is distinct from (item ->> 'estimate')::double precision
+           or c.ci_low is distinct from (item ->> 'ci_low')::double precision
+           or c.ci_high is distinct from (item ->> 'ci_high')::double precision
+           or c.p_value is distinct from (item ->> 'p_value')::double precision
+           or c.common_mask_sha256 is distinct from (item ->> 'common_mask_sha256')
+    ) then
+        raise exception 'RP2_PUBLISH_CONTRAST_IMMUTABLE:%', published_run_id;
+    end if;
+
     insert into public.ingestion_runs (
         run_id, started_at, status, code_commit, inputs_sha256, input_count, rows_published,
         note, spec_version, branch_name, feature_registry_sha256, model_config_sha256,

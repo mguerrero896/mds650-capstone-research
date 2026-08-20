@@ -30,6 +30,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / "src") not in sys.path:  # pragma: no cover - import bootstrap
     sys.path.insert(0, str(ROOT / "src"))
 
+from mds650.rp2.inference import inference_config_digest  # noqa: E402
+
 PROJECT_REF = "eqpyjikcewqaegnbaemf"
 REST = f"https://{PROJECT_REF}.supabase.co/rest/v1"
 SPEC_VERSION = "rp2-v3"
@@ -125,6 +127,25 @@ def _mask_digest(scorecard: dict[str, Any]) -> str:
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
+def assert_published_at_the_run_commit(manifest: dict[str, Any]) -> None:
+    """The code publishing the run is the code that produced it.
+
+    The inference configuration digest is computed here, from the constants in the working
+    tree. Publishing from a different commit would record the settings of code the run never
+    used, which is the drift this whole discipline exists to prevent.
+    """
+
+    import subprocess
+
+    head = subprocess.run(  # noqa: S603
+        ["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True, check=True
+    ).stdout.strip()
+    if head != manifest.get("code_commit"):
+        raise SystemExit(
+            f"RP2_PUBLISH_COMMIT_MISMATCH:{head[:12]}!={str(manifest.get('code_commit'))[:12]}"
+        )
+
+
 def build_payload(run_dir: Path, *, branch: str, supersedes: str | None) -> dict[str, Any]:
     """Assemble what the transaction needs, from the run's own manifest and artifacts."""
 
@@ -200,7 +221,10 @@ def build_payload(run_dir: Path, *, branch: str, supersedes: str | None) -> dict
             "branch_name": branch,
             "feature_registry_sha256": manifest["feature_registry_sha256"],
             "model_config_sha256": manifest["model_config_sha256"],
-            "inference_config_sha256": manifest["scientific_sha256"],
+            # The settings a contrast is computed under, not the run's scientific hash:
+            # that covers the commit, the inputs and the step outputs, and tells a reader
+            # nothing about the block length, the bootstrap or the equivalence margin.
+            "inference_config_sha256": inference_config_digest(),
             # A digest over every role's mask, not one role's. The run-level field used to
             # carry D's, which attributed the V contrasts to rows they were never scored
             # on; each contrast row still carries its own.
@@ -243,6 +267,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args(argv)
 
+    # Before anything is assembled: the inference-configuration digest below is computed
+    # from the working tree, so publishing from another commit would record settings the run
+    # never used.
+    assert_published_at_the_run_commit(_read(args.run_root / "run_manifest.json"))
     payload = build_payload(args.run_root, branch=args.branch, supersedes=args.supersedes)
     if args.dry_run:
         print(json.dumps(payload, indent=2, sort_keys=True)[:4000])

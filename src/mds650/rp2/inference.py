@@ -11,6 +11,8 @@ standard error by roughly the square root of the origins per day.
 
 from __future__ import annotations
 
+import hashlib
+import json
 import math
 from collections.abc import Sequence
 from dataclasses import dataclass
@@ -586,3 +588,24 @@ def session_contrast(
         # merely quiet.
         equivalent=bool(float(blocked["ci_low"]) > -bound and float(blocked["ci_high"]) < bound),
     )
+
+
+def inference_config_digest() -> str:
+    """A digest of the settings every contrast is computed under.
+
+    Distinct from the model configuration and from the run's scientific hash: neither of
+    those lets a reader ask whether two published contrasts were tested the same way. The
+    block length, the number of bootstrap repetitions, the stationary block mean, the test
+    size, the target power and the equivalence margin are what decide that.
+    """
+
+    configuration = {
+        "session_block_length": SESSION_BLOCK_LENGTH,
+        "bootstrap_repetitions": DEFAULT_BOOTSTRAP,
+        "block_mean": DEFAULT_BLOCK_MEAN,
+        "alpha": DEFAULT_ALPHA,
+        "power": DEFAULT_POWER,
+        "equivalence_fraction": EQUIVALENCE_FRACTION,
+    }
+    payload = json.dumps(configuration, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
