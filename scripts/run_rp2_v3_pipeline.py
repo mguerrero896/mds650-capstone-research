@@ -43,6 +43,7 @@ from mds650.rp2.run_manifest import (  # noqa: E402
     RunManifest,
     StepRecord,
     assert_artifact_stable,
+    assert_inventory_is_frozen,
     assert_no_sealed_paths,
     assert_no_sealed_roles,
     assert_run_identity_unchanged,
@@ -378,6 +379,9 @@ def validate_inputs(
     paths, manifest_digest = declared_inputs(GATED_MANIFEST)
     if not TAPE_INVENTORY.is_file():
         raise SystemExit(f"RP2_RUN_TAPE_INVENTORY_MISSING:{TAPE_INVENTORY.name}")
+    # The expected session sets are read from this file, so it has to be the file the
+    # partition was frozen against rather than one that defines its own expectation.
+    assert_inventory_is_frozen(TAPE_INVENTORY, PARTITION)
     tape = inventory_paths(TAPE_INVENTORY)
     bars = [data_root / relative for _, _, relative in BAR_SOURCES]
     if forbid_sealed:

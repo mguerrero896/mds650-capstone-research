@@ -365,11 +365,44 @@ def assert_no_sealed_roles(inventory: Path) -> None:
             line = line.strip()
             if not line:
                 continue
-            role = str(json.loads(line).get("role", "")).strip().upper().replace("_", "")
+            # Every non-alphanumeric character removed, not only underscores: `Phase 8`
+            # and `phase-9` name the same sealed cohort as `PHASE8`, and a guard that
+            # matches one spelling is a guard against that spelling.
+            raw = str(json.loads(line).get("role", ""))
+            role = re.sub(r"[^A-Za-z0-9]", "", raw).upper()
             if role in SEALED_ROLES:
                 offending.add(role)
     if offending:
         raise ValueError(f"RP2_RUN_SEALED_COHORT_FORBIDDEN:role={','.join(sorted(offending))}")
+
+
+def normalised_digest(path: Path) -> str:
+    """sha256 of a text file with its line endings normalised to LF.
+
+    The frozen digests were taken over the bytes as stored in git. A Windows checkout
+    converts those to CRLF, so a raw digest of the working tree disagrees with the record
+    on one platform and agrees on the other - a gate that fires by operating system rather
+    than by content is worse than no gate.
+    """
+
+    normalised = path.read_bytes().replace(b"\r\n", b"\n")
+    return hashlib.sha256(normalised).hexdigest()
+
+
+def assert_inventory_is_frozen(inventory: Path, partition: Path) -> None:
+    """The inventory this run reads is the one the partition was frozen against.
+
+    The expected session sets are read from the inventory, so an inventory regenerated with
+    one interior session exchanged for another would define its own expectation and pass
+    every check built on it.
+    """
+
+    recorded = str(json.loads(partition.read_text(encoding="utf-8")).get("inventory_sha256", ""))
+    if not recorded:
+        return
+    actual = normalised_digest(inventory)
+    if actual != recorded:
+        raise ValueError(f"RP2_RUN_INVENTORY_NOT_FROZEN:{actual[:12]}!={recorded[:12]}")
 
 
 def inventory_paths(path: Path) -> list[Path]:

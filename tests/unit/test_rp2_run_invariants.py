@@ -70,11 +70,12 @@ def test_the_scorecard_refuses_a_run_whose_point_in_time_invariants_broke() -> N
 
     scorecard["forecast"] = {
         family: {
-            "D": {
+            role: {
                 field: 1.0
                 for field in groups["forecast"]
                 if field not in ("calibration_slope", "calibration_intercept")
             }
+            for role in ("D", "V")
         }
         for family in PRIMARY_MODELS
     }

@@ -382,7 +382,7 @@ def assemble_scorecard(
         "by_role_and_family": calibration_by_role,
         "headline": "lightgbm_qlike on D at B0+B1+B2",
     }
-    assert_scorecard_complete(scorecard)
+    assert_scorecard_complete(scorecard, required_roles=manifest.roles)
     return scorecard
 
 
@@ -416,7 +416,9 @@ def _unmeasured(value: Any) -> bool:
     return False
 
 
-def assert_scorecard_complete(scorecard: Mapping[str, Any]) -> None:
+def assert_scorecard_complete(
+    scorecard: Mapping[str, Any], *, required_roles: Sequence[str] = ("D", "V")
+) -> None:
     """Every field the schema names carries a measured value, in both directions."""
 
     required = required_fields()
@@ -448,6 +450,12 @@ def assert_scorecard_complete(scorecard: Mapping[str, Any]) -> None:
         roles = reported.get(family, {})
         if not roles:
             missing.append(f"forecast.{family}:absent")
+            continue
+        # Every role the run fitted, for every family. Complete D metrics for all three
+        # families and no V would otherwise pass, because only emitted leaves are checked.
+        for role in required_roles:
+            if not roles.get(role):
+                missing.append(f"forecast.{family}.{role}:absent")
     for label, values in leaves:
         for field in forecast_fields:
             if _unmeasured(values.get(field)):

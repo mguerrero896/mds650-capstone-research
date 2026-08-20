@@ -84,11 +84,12 @@ def test_the_scorecard_refuses_a_field_it_could_not_measure() -> None:
 
     scorecard["forecast"] = {
         family: {
-            "D": {
+            role: {
                 field: 1.0
                 for field in groups["forecast"]
                 if field not in ("calibration_slope", "calibration_intercept")
             }
+            for role in ("D", "V")
         }
         for family in PRIMARY_MODELS
     }
@@ -127,11 +128,12 @@ def test_a_container_that_measured_nothing_is_not_a_measurement() -> None:
 
     scorecard["forecast"] = {
         family: {
-            "D": {
+            role: {
                 field: 1.0
                 for field in groups["forecast"]
                 if field not in ("calibration_slope", "calibration_intercept")
             }
+            for role in ("D", "V")
         }
         for family in PRIMARY_MODELS
     }

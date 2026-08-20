@@ -359,3 +359,40 @@ def test_the_confirmation_role_this_codebase_uses_is_sealed() -> None:
 
     assert assign_role(date(2026, 12, 31)) == "BURNED"
     assert "BURNED" in SEALED_ROLES
+
+
+def test_the_inventory_is_checked_against_the_digest_the_partition_froze(tmp_path: Path) -> None:
+    """The expected session sets are read from the inventory, so it has to be the frozen one.
+
+    Line endings are normalised first. The frozen digests were taken over the bytes as
+    stored in git, and a Windows checkout converts them to CRLF — a gate that fires by
+    operating system rather than by content is worse than no gate.
+    """
+
+    from mds650.rp2.run_manifest import assert_inventory_is_frozen, normalised_digest
+
+    inventory = tmp_path / "inventory.jsonl"
+    inventory.write_bytes(b'{"asset":"AAPL","role":"D"}\r\n{"asset":"MSFT","role":"D"}\r\n')
+    digest = normalised_digest(inventory)
+    assert digest != __import__("hashlib").sha256(inventory.read_bytes()).hexdigest()
+
+    partition = tmp_path / "partition.json"
+    partition.write_text(json.dumps({"inventory_sha256": digest}), encoding="utf-8")
+    assert_inventory_is_frozen(inventory, partition)
+
+    inventory.write_bytes(b'{"asset":"AAPL","role":"D"}\r\n{"asset":"NVDA","role":"D"}\r\n')
+    with pytest.raises(ValueError, match="RP2_RUN_INVENTORY_NOT_FROZEN"):
+        assert_inventory_is_frozen(inventory, partition)
+
+
+def test_a_sealed_role_is_recognised_however_it_is_spelled(tmp_path: Path) -> None:
+    from mds650.rp2.run_manifest import assert_no_sealed_roles
+
+    for spelling in ("Phase 8", "phase-9", "PHASE_8", "burned", "c"):
+        inventory = tmp_path / "inventory.jsonl"
+        inventory.write_text(
+            json.dumps({"role": spelling, "path": "D:/MDS650/store/x.parquet"}) + "\n",
+            encoding="utf-8",
+        )
+        with pytest.raises(ValueError, match="RP2_RUN_SEALED_COHORT_FORBIDDEN"):
+            assert_no_sealed_roles(inventory)
