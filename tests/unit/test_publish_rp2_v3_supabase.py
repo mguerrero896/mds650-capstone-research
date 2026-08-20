@@ -485,3 +485,24 @@ def test_an_unrecorded_failure_is_not_reported_as_an_audited_one(
         module.publish({"run": {"run_id": "r"}}, "key")
     assert "RP2_PUBLISH_FAILED" in str(raised.value)
     assert "RP2_FAILURE_UNRECORDED" in str(raised.value)
+
+
+def test_a_block_that_wrote_no_panel_is_not_published_as_measured(tmp_path: Path) -> None:
+    """The panel blocks record no per-role status, but they do record a row count.
+
+    Blocks 3 to 6 write a coverage or comparison report rather than a role-keyed result, so
+    there is no status to read out of them. There is a row count, and a block that wrote an
+    empty panel measured nothing however its process exited.
+    """
+
+    module = _load("publish_rp2_v3_supabase")
+    run = tmp_path / "run"
+    (run / "rp2_block6_flow").mkdir(parents=True)
+    coverage = run / "rp2_block6_flow" / "flow_coverage.json"
+    step = {"name": "build-b2", "exit_code": 0, "artifacts": {}}
+
+    coverage.write_text(json.dumps({"block": 6, "rows": 184632}), encoding="utf-8")
+    assert module._block_status(run, step) == "MEASURED"
+
+    coverage.write_text(json.dumps({"block": 6, "rows": 0}), encoding="utf-8")
+    assert module._block_status(run, step) == "EMPTY_PANEL"

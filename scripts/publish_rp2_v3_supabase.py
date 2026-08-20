@@ -177,7 +177,17 @@ def _block_status(run_dir: Path, step: dict[str, Any]) -> str:
         if isinstance(value, dict) and value.get("status")
     }
     unmeasured = sorted(status for status in statuses if status != "MEASURED")
-    return unmeasured[0] if unmeasured else "MEASURED"
+    if unmeasured:
+        return unmeasured[0]
+    if statuses:
+        return "MEASURED"
+    # Blocks 3 to 6 write a coverage or comparison report rather than a role-keyed result,
+    # so there is no status to read. There is a row count, and a block that wrote an empty
+    # panel measured nothing however its process exited.
+    for key in ("rows", "panel_rows"):
+        if isinstance(payload.get(key), int):
+            return "MEASURED" if payload[key] > 0 else "EMPTY_PANEL"
+    return "MEASURED"
 
 
 def _block_result_digest(step: dict[str, Any]) -> str | None:
