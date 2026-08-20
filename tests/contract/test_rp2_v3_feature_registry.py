@@ -287,3 +287,32 @@ def test_the_configuration_travels_with_the_installed_package() -> None:
 
     assert feature_registry.CONFIG.is_file()
     assert feature_registry._PACKAGED.name == feature_registry._IN_TREE.name
+
+
+def test_the_floor_is_enforced_within_each_role_not_across_them() -> None:
+    """Validation is a sixth of the rows, so an average can hide a breach in it.
+
+    A complete discovery partition would otherwise hold the merged coverage above the floor
+    while validation had already fallen through it, and the validation experiment would run
+    on a panel that silently dropped those rows.
+    """
+
+    from mds650.rp2.panel import assert_coverage_by_role
+
+    core = list(feature_map("B1_CORE"))
+    rows = 100
+    values = {name: [1.0] * rows for name in core}
+    # Ninety discovery rows complete, ten validation rows with a hole in one feature.
+    values["b1_iv_30d"] = [1.0] * 90 + [None] * 10  # type: ignore[list-item]
+    frame = pl.DataFrame({"role": ["D"] * 90 + ["V"] * 10, **values})
+
+    # Ninety per cent across the whole panel: the floor holds on the average.
+    assert_minimum_coverage(frame, "B1_CORE")
+    # Zero per cent inside validation: it does not hold where the experiment runs.
+    with pytest.raises(ValueError, match="role=V"):
+        assert_coverage_by_role(frame, "B1_CORE")
+
+    source = (REPO / "src" / "mds650" / "rp2" / "panel.py").read_text(encoding="utf-8")
+    assert "assert_coverage_by_role(panel" in source, (
+        "the loader must enforce the floor per partition"
+    )

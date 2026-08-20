@@ -59,11 +59,30 @@ def load_merged_panel(b0_path: Path, b1_path: Path, b2_path: Path) -> pl.DataFra
         joined = panel.join(other, on=list(JOIN_KEYS), how="left")
         assert_one_to_one_join(panel, other, joined)
         panel = joined
-    # The registry declares a coverage floor per core set. Checking it once here, against
-    # the panel a run will actually fit, is what makes the floor a floor rather than a
-    # number in a configuration file.
-    assert_minimum_coverage(panel, *CORE_SETS.values())
+    # The registry declares a coverage floor per core set. Checking it here, against the
+    # panel a run will actually fit, is what makes the floor a floor rather than a number in
+    # a configuration file — and it is checked **per role**, because validation is a sixth
+    # of the rows and a complete discovery partition would otherwise hold the average above
+    # a floor validation had already broken.
+    assert_coverage_by_role(panel, *CORE_SETS.values())
     return panel
+
+
+def assert_coverage_by_role(panel: pl.DataFrame, *sets: str) -> None:
+    """Enforce each set's coverage floor within every partition the panel carries."""
+
+    if "role" not in panel.columns:
+        assert_minimum_coverage(panel, *sets)
+        return
+    for role in sorted({str(value) for value in panel["role"].unique()}):
+        frame = panel.filter(pl.col("role") == role)
+        if not frame.height:
+            continue
+        try:
+            assert_minimum_coverage(frame, *sets)
+        except ValueError as error:
+            raise ValueError(f"{error.args[0]}:role={role}") from error
+    return
 
 
 def transform_column(values: FloatArray, kind: str) -> FloatArray:

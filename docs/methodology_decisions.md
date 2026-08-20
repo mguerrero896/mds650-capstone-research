@@ -825,8 +825,12 @@ Spec Kit consistency and preregistration gates pass.
    unchanged at 98.0 % of discovery and 99.8 % of validation rows — the reduction costs no
    evidence. Core coverage on the rebuilt panels is 98.93 % at worst (`rv_week`), 99.34 %
    for B1 (`b1_risk_reversal_25`) and 100 % for every B2 core feature. Each set declares a
-   coverage floor and `load_merged_panel` enforces it on every run, because a floor nobody
-   checks is not a floor. `registry_sha256` hashes the sets and their floors and ignores the
+   coverage floor and `load_merged_panel` enforces it on every run — **within each partition,
+   not across them**, because validation is a sixth of the rows and a complete discovery
+   partition would otherwise hold the average above a floor validation had already broken.
+   Measured per role: worst B0 coverage 98.71 % in discovery and 100 % in validation,
+   worst B1 99.26 % and 99.76 %, and 100 % for every B2 core feature in both. A floor
+   nobody checks is not a floor. `registry_sha256` hashes the sets and their floors and ignores the
    prose beside them, so a run's provenance moves when a feature moves and not when a
    sentence is edited. Registry `3c108a14a5a88e4d…`.
 
