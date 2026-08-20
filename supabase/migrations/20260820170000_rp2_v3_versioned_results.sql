@@ -197,6 +197,46 @@ grant select on api.current_rp2_power_results to anon, authenticated;
 -- half its results published and the previous run already stood down, and nothing in
 -- the database says which half is missing.
 -- ---------------------------------------------------------------------------
+-- Seed the versioned register from the register that already exists.
+--
+-- `rp2_block_results` starts empty, and `api.current_rp2_block_results` reads only it, so
+-- without this the public view would show the blocks an RP2-v3 run publishes and nothing
+-- else. Blocks 9 and 11 are the two this pipeline never emits — the generalization cohort is
+-- sealed and the economics are frozen — so they would have disappeared from the versioned
+-- result set entirely rather than staying current, which is what a run that did not
+-- remeasure them should leave behind.
+--
+-- Only rows carrying an artifact digest are seeded: a block with no artifact has no result
+-- to version. Block 9's legacy row names no run, and inventing one would be a provenance
+-- claim, so it is attributed to an explicit placeholder whose note says the originating run
+-- was never recorded.
+insert into public.ingestion_runs (run_id, started_at, status, input_count, rows_published, note)
+select 'rp2-legacy-unrecorded', now(), 'PUBLISHED', 0, 0,
+       'Placeholder for RP2 blocks whose originating run was never recorded by the '
+       || 'pre-RP2-v3 sync. Not a run: a named absence, so a block with a real artifact '
+       || 'digest is not dropped from the versioned register for want of an attribution.'
+where exists (
+    select 1 from public.rp2_blocks b
+    where b.artifact_sha256 ~ '^[0-9a-f]{64}$' and b.run_id is null
+)
+on conflict (run_id) do nothing;
+
+insert into public.rp2_block_results (
+    block_id, run_id, status, verdict, document, artifact_sha256, supersedes_run_id, is_current
+)
+select b.block_id,
+       coalesce(b.run_id, 'rp2-legacy-unrecorded'),
+       b.status,
+       b.verdict,
+       b.document,
+       b.artifact_sha256,
+       null,
+       true
+from public.rp2_blocks b
+where b.artifact_sha256 ~ '^[0-9a-f]{64}$'
+  and coalesce(b.run_id, 'rp2-legacy-unrecorded') in (select run_id from public.ingestion_runs)
+on conflict (block_id, run_id) do nothing;
+
 create or replace function public.publish_rp2_v3(payload jsonb)
 returns jsonb
 language plpgsql

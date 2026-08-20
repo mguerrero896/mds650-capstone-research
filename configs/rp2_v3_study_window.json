@@ -6,14 +6,14 @@
     "twelve_month": {
       "source": "AGENTS.md, 'Study window rule (binding)'",
       "first_session": "2025-07-21",
-      "last_session": "2026-07-21",
-      "note": "End exclusive. Adopting this discards roughly 309 of the 389 development sessions every existing artifact was built on, and every frozen RP2 result would be superseded rather than corrected."
+      "note": "The end is exclusive, so the last trading session inside this window is the last one before 2026-07-21. Adopting it discards roughly 309 of the 389 development sessions every existing artifact was built on, and every frozen RP2 result would be superseded rather than corrected.",
+      "end_exclusive": "2026-07-21"
     },
     "partition": {
       "source": "artifacts/rp2_block1_partition/partition.json",
       "first_session": "2024-08-02",
-      "last_session": "2026-07-17",
-      "note": "The window every RP2 and RP2-v3 artifact was actually built on: D 2024-08-02 to 2026-03-23 (389 sessions), V 2026-03-24 to 2026-07-17 (80). Adopting this amends a rule AGENTS.md calls binding, which the rule itself says requires a recorded configuration change."
+      "note": "The window every RP2 and RP2-v3 artifact was actually built on: D 2024-08-02 to 2026-03-23 (389 sessions), V 2026-03-24 to 2026-07-17 (80), so the exclusive end is the day after the last session. Adopting this amends a rule AGENTS.md calls binding, which the rule itself says requires a recorded configuration change.",
+      "end_exclusive": "2026-07-18"
     }
   }
 }

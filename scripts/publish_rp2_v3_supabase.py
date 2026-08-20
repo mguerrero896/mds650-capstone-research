@@ -254,11 +254,11 @@ def _bar_inputs(resolved: dict[str, Any], data_root: Path) -> list[dict[str, Any
 
 #: Which window results may be published under. `adopted` is null until the owner of the
 #: research programme records the decision; see `docs/rp2_v3/STUDY_WINDOW.md`.
-#: Overridable so a test can supply a decided configuration without editing the shipped one,
-#: which records no decision on purpose.
-STUDY_WINDOW_CONFIG: Final = Path(
-    os.environ.get("RP2_STUDY_WINDOW_CONFIG", ROOT / "configs" / "rp2_v3_study_window.json")
-)
+#: The tracked path, and only the tracked path. An environment variable pointing somewhere
+#: else would let an operator or a stale runner substitute a window without the recorded
+#: configuration change the study rule requires, and neither the commit check nor the
+#: dirty-worktree check can see a file outside the repository.
+STUDY_WINDOW_CONFIG: Final = ROOT / "configs" / "rp2_v3_study_window.json"
 
 
 def assert_study_window_decided(
@@ -286,10 +286,15 @@ def assert_study_window_decided(
         raise SystemExit(f"RP2_PUBLISH_STUDY_WINDOW_UNKNOWN:{adopted}")
     first = min(str(role["first_session"]) for role in enforced.values())
     last = max(str(role["last_session"]) for role in enforced.values())
-    if (first, last) != (str(window["first_session"]), str(window["last_session"])):
+    # The configured end is exclusive, because the rule it comes from is written that way:
+    # a window of `2025-07-21` through `2026-07-21` (end exclusive) has its last trading
+    # session before July 21, not on it. Comparing an exclusive bound against an observed
+    # session would refuse every correctly built run.
+    start, end = str(window["first_session"]), str(window["end_exclusive"])
+    if first != start or not last < end:
         raise SystemExit(
             f"RP2_PUBLISH_STUDY_WINDOW_MISMATCH:{adopted}:"
-            f"{first}..{last}!={window['first_session']}..{window['last_session']}"
+            f"{first}..{last} is not {start}..{end} (end exclusive)"
         )
 
 

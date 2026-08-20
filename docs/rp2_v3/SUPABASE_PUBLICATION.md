@@ -153,6 +153,35 @@ rp2-V3               RP2_PUBLISH_SPEC_VERSION_UNEXPECTED
 (missing or empty)   RP2_PUBLISH_SPEC_VERSION_UNEXPECTED
 ```
 
+## The versioned register starts from the register that exists
+
+`rp2_block_results` starts empty and `api.current_rp2_block_results` reads only it, so
+without a backfill the public view would have shown the blocks an RP2-v3 run publishes and
+nothing else. Blocks 9 and 11 are the two this pipeline never emits — the generalization
+cohort is sealed, the economics are frozen — so they would have disappeared rather than
+stayed current, which is the opposite of what a run that did not remeasure them should leave
+behind.
+
+The migration seeds every legacy block carrying an artifact digest. Block 9's legacy row
+names no run; inventing one would be a provenance claim, so it is attributed to
+`rp2-legacy-unrecorded`, a placeholder whose note says the originating run was never
+recorded. After the seed and a rebuild that publishes the seven blocks it rebuilt:
+
+```text
+03  rp2-v3-dryrun          supersedes rp2v2-remediation
+04  rp2-v3-dryrun          supersedes rp2v2-remediation
+05  rp2-v3-dryrun          supersedes rp2v2-remediation
+06  rp2-v3-dryrun          supersedes rp2v2-remediation
+07  rp2-v3-dryrun          supersedes rp2v2-remediation
+08  rp2-v3-dryrun          supersedes rp2v2-remediation
+09  rp2-legacy-unrecorded  -
+10  rp2-v3-dryrun          supersedes rp2v2-remediation
+11  rp2v2-remediation      -
+```
+
+Nine current blocks, one per block, and the two RP2-v3 did not touch still pointing at what
+produced them.
+
 ## A retry does not restore the run it superseded
 
 The early return exists for this: a run that already published has nothing left to do, and

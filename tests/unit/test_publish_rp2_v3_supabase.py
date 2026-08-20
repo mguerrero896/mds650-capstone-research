@@ -30,22 +30,18 @@ def _load(name: str) -> ModuleType:
     module = importlib.util.module_from_spec(spec)
     sys.modules[name] = module
     spec.loader.exec_module(module)
+    if name == "publish_rp2_v3_supabase":
+        # The shipped configuration records no decision, on purpose, so `build_payload`
+        # refuses. These tests are about the rest of the publisher; the guard itself is
+        # exercised directly in its own test with the undecided configuration.
+        module.STUDY_WINDOW_CONFIG = _decided_window_file()
     return module
 
 
-@pytest.fixture(autouse=True)
-def _decided_study_window(tmp_path_factory: pytest.TempPathFactory) -> Any:
-    """These tests are about publication, not about which window the programme adopts.
+def _decided_window_file() -> Path:
+    import tempfile
 
-    The shipped configuration records no decision, so `build_payload` refuses - which is the
-    point of it. Each test here supplies a decided one so the rest of the publisher is
-    reachable; `test_a_run_cannot_be_published_under_an_undecided_study_window` calls the
-    guard directly with the undecided configuration instead.
-    """
-
-    import importlib.util
-
-    decided = tmp_path_factory.mktemp("window") / "rp2_v3_study_window.json"
+    decided = Path(tempfile.mkdtemp()) / "rp2_v3_study_window.json"
     decided.write_text(
         json.dumps(
             {
@@ -53,20 +49,14 @@ def _decided_study_window(tmp_path_factory: pytest.TempPathFactory) -> Any:
                 "candidates": {
                     "partition": {
                         "first_session": "2024-08-02",
-                        "last_session": "2026-07-17",
+                        "end_exclusive": "2026-07-18",
                     }
                 },
             }
         ),
         encoding="utf-8",
     )
-    spec = importlib.util.spec_from_file_location(
-        "publish_rp2_v3_supabase", REPO / "scripts" / "publish_rp2_v3_supabase.py"
-    )
-    assert spec is not None and spec.loader is not None
-    with pytest.MonkeyPatch.context() as patch:
-        patch.setenv("RP2_STUDY_WINDOW_CONFIG", str(decided))
-        yield decided
+    return decided
 
 
 def _rp2_producers() -> list[Path]:
@@ -744,15 +734,26 @@ def test_a_run_cannot_be_published_under_an_undecided_study_window(tmp_path: Pat
 
     decided = {
         "adopted": "partition",
-        "candidates": {"partition": {"first_session": "2024-08-02", "last_session": "2026-07-17"}},
+        "candidates": {
+            "partition": {"first_session": "2024-08-02", "end_exclusive": "2026-07-18"}
+        },
     }
     module.assert_study_window_decided(enforced, decided)
 
     twelve = {
         "adopted": "twelve_month",
         "candidates": {
-            "twelve_month": {"first_session": "2025-07-21", "last_session": "2026-07-21"}
+            "twelve_month": {"first_session": "2025-07-21", "end_exclusive": "2026-07-21"}
         },
     }
     with pytest.raises(SystemExit, match="RP2_PUBLISH_STUDY_WINDOW_MISMATCH"):
         module.assert_study_window_decided(enforced, twelve)
+
+    # The configured end is exclusive: a run whose last session is the day before it is
+    # inside the window, and comparing the bound against an observed session would refuse
+    # every correctly built run.
+    inside = {
+        "D": {"first_session": "2025-07-21", "last_session": "2026-01-02"},
+        "V": {"first_session": "2026-01-05", "last_session": "2026-07-20"},
+    }
+    module.assert_study_window_decided(inside, twelve)
