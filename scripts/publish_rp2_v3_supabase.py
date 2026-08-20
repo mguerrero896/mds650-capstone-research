@@ -206,7 +206,9 @@ def build_payload(run_dir: Path, *, branch: str, supersedes: str | None) -> dict
             "path": "data/GATED_DATA_POINTERS.json",
             "provider": DERIVED,
             "sha256": resolved["gated_manifest_sha256"],
-            "bytes": int(resolved.get("gated_files", 0)) or 1,
+            # The file's size. Publishing the entry count here while `path` and `sha256`
+            # identify the file makes the row disagree with itself.
+            "bytes": (ROOT / "data" / "GATED_DATA_POINTERS.json").stat().st_size,
             "rows": resolved.get("gated_files"),
             "schema_sha256": None,
             "time_min": None,

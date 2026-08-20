@@ -205,6 +205,12 @@ begin
     if published_run_id is null or length(published_run_id) = 0 then
         raise exception 'RP2_PUBLISH_RUN_ID_MISSING';
     end if;
+
+    -- Publications of one run id serialise. Without this, two callers submitting the same
+    -- previously unseen id with different payloads both pass the immutability checks before
+    -- either commits, and the second overwrites the first. The lock is transaction-scoped,
+    -- so it is released by the commit or the rollback that ends this function.
+    perform pg_advisory_xact_lock(hashtext('rp2_publish:' || published_run_id));
     if block_rows = 0 and contrast_rows = 0 then
         raise exception 'RP2_PUBLISH_NOTHING_TO_PUBLISH';
     end if;
@@ -445,8 +451,18 @@ as $$
     values (failed_run_id, now(), 'FAILED', 0, 0, reason)
     on conflict (run_id) do update set
         status = case when public.ingestion_runs.status = 'PUBLISHED' then 'PUBLISHED' else 'FAILED' end,
-        note = excluded.note,
-        completed_at = now();
+        -- A published run keeps its own note, which carries its scientific hash. The failed
+        -- attempt is appended: replacing it would destroy the provenance of a run that
+        -- succeeded in order to record that something else did not.
+        note = case
+            when public.ingestion_runs.status = 'PUBLISHED'
+                then public.ingestion_runs.note || ' | failed retry: ' || excluded.note
+            else excluded.note
+        end,
+        completed_at = case
+            when public.ingestion_runs.status = 'PUBLISHED' then public.ingestion_runs.completed_at
+            else now()
+        end;
 $$;
 
 revoke all on function public.record_rp2_v3_failure(text, text) from anon, authenticated;
