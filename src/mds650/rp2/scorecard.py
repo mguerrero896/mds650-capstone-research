@@ -349,7 +349,11 @@ def assemble_scorecard(
             for family in ("gamma_glm", "ridge_log", "lightgbm_qlike")
         },
         "engineering": {
-            "runtime_seconds": round(sum(step.runtime_seconds for step in manifest.steps), 3),
+            # Wall clock from the start of the run to the moment this scorecard was
+            # assembled. Summing the recorded step runtimes would miss the steps that run
+            # after it - the scorecard's own, the provenance and the verification - and
+            # whatever the run spent between steps.
+            "runtime_seconds": elapsed_seconds,
             "peak_memory_bytes": max(
                 (step.peak_memory_bytes for step in manifest.steps), default=0
             ),

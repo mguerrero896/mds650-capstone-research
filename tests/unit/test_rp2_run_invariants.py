@@ -503,3 +503,26 @@ def test_a_swapped_interior_session_is_caught(tmp_path: Path) -> None:
             runner.assert_partition_matches(tmp_path / "run")
     finally:
         runner.PARTITION = original
+
+
+def test_the_mask_comparison_reads_the_digest_the_producers_actually_write() -> None:
+    """A comparison that always finds `None` aborts every run after all the work.
+
+    Block 10 stated its mask digest only inside each nested-test entry, so a check reading
+    a role-level field found nothing and raised on every rebuild. Both producers now state
+    it at the role level, which is where the comparison is made.
+    """
+
+    from pathlib import Path
+
+    runner = _load("run_rp2_v3_pipeline")
+    ladder_source = (
+        Path(__file__).resolve().parents[2] / "scripts" / "rp2_block8_ladder.py"
+    ).read_text(encoding="utf-8")
+    inference_source = (
+        Path(__file__).resolve().parents[2] / "scripts" / "rp2_block10_inference.py"
+    ).read_text(encoding="utf-8")
+
+    assert '"evaluation_mask_sha256": evaluated_mask_sha256' in ladder_source
+    assert '"evaluation_mask_sha256": evaluated_mask_sha256' in inference_source
+    assert callable(runner.assert_producers_share_the_mask)

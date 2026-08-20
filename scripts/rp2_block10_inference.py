@@ -155,6 +155,10 @@ def run_role(
         "train_share": train_share,
         "test_rows": int(test.sum()),
         "clusters": int(np.unique(clusters).size),
+        # The rows every contrast in this role was scored on. The ladder records the same
+        # digest for the same role; the runner compares them, and a divergence means the
+        # two producers evaluated different samples.
+        "evaluation_mask_sha256": evaluated_mask_sha256,
         "information_sets": information_sets,
     }
     all_losses: dict[str, FloatArray] = {}
