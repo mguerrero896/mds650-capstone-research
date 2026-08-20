@@ -248,6 +248,13 @@ begin
         raise exception 'RP2_PUBLISH_INPUTS_MISSING:%', published_run_id;
     end if;
 
+    -- The specification the results implement. It is a lineage field like the digests
+    -- above and was left outside the guard with them: a run published without it states
+    -- what it measured and not what it was measuring against.
+    if coalesce(run ->> 'spec_version', '') = '' then
+        raise exception 'RP2_PUBLISH_SPEC_VERSION_MISSING:%', published_run_id;
+    end if;
+
     -- One run id refers to one experiment. A caller mistake, or a publication from an
     -- altered run directory, would otherwise rewrite a published run's provenance and its
     -- estimates in place and leave nothing saying the number had changed.
@@ -305,8 +312,6 @@ begin
            or b.verdict is distinct from (item ->> 'verdict')
            or b.document is distinct from (item ->> 'document')
            or b.artifact_sha256 is distinct from (item ->> 'artifact_sha256')
-           or (item ->> 'supersedes_run_id' is not null
-               and b.supersedes_run_id is distinct from nullif(item ->> 'supersedes_run_id', ''))
     ) then
         raise exception 'RP2_PUBLISH_BLOCK_IMMUTABLE:%', published_run_id;
     end if;
@@ -476,10 +481,7 @@ begin
         item ->> 'verdict',
         item ->> 'document',
         item ->> 'artifact_sha256',
-        coalesce(
-            nullif(item ->> 'supersedes_run_id', ''),
-            coalesce(superseded, '{}'::jsonb) ->> (item ->> 'block_id')
-        ),
+        coalesce(superseded, '{}'::jsonb) ->> (item ->> 'block_id'),
         true
     from jsonb_array_elements(coalesce(payload -> 'blocks', '[]'::jsonb)) as item
     on conflict (block_id, run_id) do update set

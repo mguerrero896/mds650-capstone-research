@@ -180,7 +180,7 @@ def test_only_the_primary_families_are_published(tmp_path: Path) -> None:
     from mds650.rp2.ladder import PRIMARY_MODELS
 
     module = _load("publish_rp2_v3_supabase")
-    payload = module.build_payload(_run_dir(tmp_path), branch="x", supersedes=None)
+    payload = module.build_payload(_run_dir(tmp_path), branch="x")
     families = {row["model_family"] for row in payload["contrasts"]}
     assert families == set(PRIMARY_MODELS)
     assert len(payload["contrasts"]) == 2 * len(PRIMARY_MODELS) * 2
@@ -194,14 +194,14 @@ def test_a_contrast_without_its_mask_is_refused(tmp_path: Path) -> None:
     (run / "rp2_block8_ladder" / "ladder.json").write_text(json.dumps(ladder), encoding="utf-8")
 
     with pytest.raises(SystemExit, match="RP2_PUBLISH_CONTRAST_WITHOUT_MASK"):
-        module.build_payload(run, branch="x", supersedes=None)
+        module.build_payload(run, branch="x")
 
 
 def test_nothing_origin_level_leaves_the_repository(tmp_path: Path) -> None:
     """What is published is what the public report is written from, and nothing else."""
 
     module = _load("publish_rp2_v3_supabase")
-    payload = module.build_payload(_run_dir(tmp_path), branch="x", supersedes=None)
+    payload = module.build_payload(_run_dir(tmp_path), branch="x")
 
     def keys(value: Any, found: set[str]) -> set[str]:
         if isinstance(value, dict):
@@ -240,7 +240,7 @@ def test_the_publication_is_one_call_and_a_failure_is_recorded_separately(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     module = _load("publish_rp2_v3_supabase")
-    payload = module.build_payload(_run_dir(tmp_path), branch="x", supersedes=None)
+    payload = module.build_payload(_run_dir(tmp_path), branch="x")
     calls: list[str] = []
 
     def handler(request: httpx.Request) -> httpx.Response:
@@ -298,18 +298,18 @@ def test_an_artifact_changed_since_the_run_is_refused(tmp_path: Path) -> None:
         ),
         encoding="utf-8",
     )
-    module.build_payload(run, branch="x", supersedes=None)
+    module.build_payload(run, branch="x")
 
     ladder.write_text(ladder.read_text(encoding="utf-8") + " ", encoding="utf-8")
     with pytest.raises(SystemExit, match="RP2_PUBLISH_ARTIFACT_CHANGED"):
-        module.build_payload(run, branch="x", supersedes=None)
+        module.build_payload(run, branch="x")
 
 
 def test_the_run_level_mask_identifies_every_role(tmp_path: Path) -> None:
     """One role's digest under a run-level field says the other was scored on rows it never saw."""
 
     module = _load("publish_rp2_v3_supabase")
-    payload = module.build_payload(_run_dir(tmp_path), branch="x", supersedes=None)
+    payload = module.build_payload(_run_dir(tmp_path), branch="x")
     assert payload["run"]["common_mask_sha256"] not in {MASK, "b" * 64}
 
     scorecard = {"forecast": {"gamma_glm": {"D": {"common_mask_sha256": MASK}}}}
@@ -331,7 +331,7 @@ def test_the_published_inputs_are_the_inputs(tmp_path: Path) -> None:
     """A consumer following `ingestion_inputs` must find what the results were built on."""
 
     module = _load("publish_rp2_v3_supabase")
-    payload = module.build_payload(_run_dir(tmp_path), branch="x", supersedes=None)
+    payload = module.build_payload(_run_dir(tmp_path), branch="x")
     names = {row["input_name"] for row in payload["inputs"]}
     assert "option_tape" in names
     assert "gated_manifest" in names
@@ -417,7 +417,7 @@ def test_a_manifest_edited_after_the_run_is_refused(tmp_path: Path) -> None:
         json.dumps(_manifest_record(input_manifest_sha256="9" * 64)), encoding="utf-8"
     )
     with pytest.raises(SystemExit, match="RP2_PUBLISH_MANIFEST_ALTERED"):
-        module.build_payload(run, branch="db/rp2-v3-versioned-results", supersedes=None)
+        module.build_payload(run, branch="db/rp2-v3-versioned-results")
 
 
 def test_a_bar_store_changed_since_the_run_is_refused(tmp_path: Path) -> None:
@@ -464,7 +464,7 @@ def test_blocks_are_published_under_the_register_s_own_ids(tmp_path: Path) -> No
         ),
         encoding="utf-8",
     )
-    payload = module.build_payload(run, branch="x", supersedes=None)
+    payload = module.build_payload(run, branch="x")
     assert {row["block_id"] for row in payload["blocks"]} == {"08"}
 
 
@@ -524,7 +524,7 @@ def test_a_relabelled_manifest_cannot_publish_under_the_new_name(tmp_path: Path)
 
     module = _load("publish_rp2_v3_supabase")
     run = _run_dir(tmp_path)
-    module.build_payload(run, branch="x", supersedes=None)
+    module.build_payload(run, branch="x")
 
     (run / "run_manifest.json").write_text(
         json.dumps(
@@ -533,7 +533,7 @@ def test_a_relabelled_manifest_cannot_publish_under_the_new_name(tmp_path: Path)
         encoding="utf-8",
     )
     with pytest.raises(SystemExit, match="RP2_PUBLISH_RUN_ID_MISMATCH"):
-        module.build_payload(run, branch="x", supersedes=None)
+        module.build_payload(run, branch="x")
 
     # The marker is a file too, so editing both would agree. The directory the run wrote
     # into is named after it, and that is a third thing to have to keep consistent.
@@ -544,7 +544,7 @@ def test_a_relabelled_manifest_cannot_publish_under_the_new_name(tmp_path: Path)
 
     (run / IDENTITY_FILE).write_text(json.dumps(relabelled), encoding="utf-8")
     with pytest.raises(SystemExit, match="RP2_PUBLISH_RUN_ID_MISMATCH:directory"):
-        module.build_payload(run, branch="x", supersedes=None)
+        module.build_payload(run, branch="x")
 
 
 def test_one_constant_decides_the_bootstrap_seed() -> None:
@@ -604,3 +604,45 @@ def test_no_rp2_producer_writes_an_inference_setting_down_for_itself() -> None:
     covered = json.loads(inference.inference_config_payload())
     assert covered["spa_repetitions"] == inference.SPA_REPETITIONS
     assert covered["bootstrap_repetitions"] == inference.DEFAULT_BOOTSTRAP
+
+
+def test_the_publisher_does_not_offer_to_name_the_predecessor(tmp_path: Path) -> None:
+    """The rows know what they replace, so nothing else is asked to say it.
+
+    A single identifier cannot describe blocks that currently belong to different runs, and
+    the transaction reads each block's owner before standing it down. An option that
+    overrides that answer can only make it wrong.
+    """
+
+    module = _load("publish_rp2_v3_supabase")
+    payload = module.build_payload(_run_dir(tmp_path), branch="x")
+    assert all("supersedes_run_id" not in row for row in payload["blocks"])
+
+    parser_options = module.main.__doc__ or ""
+    assert "--supersedes" not in parser_options
+    source = (REPO / "scripts" / "publish_rp2_v3_supabase.py").read_text(encoding="utf-8")
+    assert "--supersedes" not in source, "an option nothing acts on is worse than none"
+
+
+def test_a_publication_that_never_reached_the_database_is_still_recorded() -> None:
+    """DNS, connection and read failures are how a publication most often does not happen."""
+
+    module = _load("publish_rp2_v3_supabase")
+    original = httpx.Client
+    attempted: list[str] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        attempted.append(request.url.path)
+        if request.url.path.endswith("publish_rp2_v3"):
+            raise httpx.ConnectError("name or service not known")
+        return httpx.Response(200, json=None)
+
+    def client(*args: object, **kwargs: object) -> httpx.Client:
+        kwargs["transport"] = httpx.MockTransport(handler)
+        return original(*args, **kwargs)  # type: ignore[arg-type]
+
+    with pytest.MonkeyPatch.context() as patch:
+        patch.setattr(module.httpx, "Client", client)
+        with pytest.raises(SystemExit, match="RP2_PUBLISH_TRANSPORT_FAILED"):
+            module.publish({"run": {"run_id": "r"}}, "key")
+    assert attempted[-1].endswith("record_rp2_v3_failure"), "the attempt was never recorded"

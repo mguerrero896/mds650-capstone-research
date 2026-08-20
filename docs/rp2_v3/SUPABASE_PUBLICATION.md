@@ -140,21 +140,25 @@ whose evaluation rows nobody outside can identify.
 
 ## The version chain builds itself
 
-`--supersedes` is one identifier for a whole run, the documented rebuild command omits it,
-and different blocks can belong to different runs — so a chain built from it is empty in the
-normal case and wrong in the interesting one. Each block's current owner is read inside the
-transaction, before `is_current` is cleared. Two runs, the second rebuilding one block:
+Nobody is asked to name the predecessor. One identifier cannot describe blocks that belong
+to different runs, so an option to supply one could only ever override the right answer with
+a single wrong one; the publisher does not offer it and the function ignores a payload that
+carries it. Each block's current owner is read inside the transaction, before `is_current`
+is cleared. Two runs, the second rebuilding one block and naming a predecessor that never
+owned it:
 
 ```text
-1 run A publishes 06 and 08     PUBLISHED
-2 run B rebuilds only 06        PUBLISHED
-3 chain: 06 run=dryrun-A        (null)    current=false
-3 chain: 06 run=dryrun-B        dryrun-A  current=true
-3 chain: 08 run=dryrun-A        (null)    current=true
+1 spec_version omitted                      RP2_PUBLISH_SPEC_VERSION_MISSING:dryrun-A
+2 run A publishes 06 and 08                 PUBLISHED
+3 run B, caller names a false predecessor   PUBLISHED
+4 chain: 06 run=dryrun-A                    (null)    current=false
+4 chain: 06 run=dryrun-B                    dryrun-A  current=true
+4 chain: 08 run=dryrun-A                    (null)    current=true
 ```
 
-Block 08 stays with run A because run B did not rebuild it. One caller-supplied identifier
-could not have said that.
+Line 3 supplied `supersedes_run_id = a-run-that-never-owned-06`, and line 4 records
+`dryrun-A`: the run that actually owned the block. Block 08 stays with run A because run B
+did not rebuild it — which one caller-supplied identifier could not have said.
 
 ## Who may call the publication functions
 

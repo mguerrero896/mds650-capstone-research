@@ -307,7 +307,7 @@ def assert_published_at_the_run_commit(manifest: dict[str, Any]) -> None:
         raise SystemExit("RP2_PUBLISH_WORKTREE_DIRTY:" + ",".join(line[3:] for line in dirty[:5]))
 
 
-def build_payload(run_dir: Path, *, branch: str, supersedes: str | None) -> dict[str, Any]:
+def build_payload(run_dir: Path, *, branch: str) -> dict[str, Any]:
     """Assemble what the transaction needs, from the run's own manifest and artifacts."""
 
     manifest = _read(run_dir / "run_manifest.json")
@@ -364,7 +364,6 @@ def build_payload(run_dir: Path, *, branch: str, supersedes: str | None) -> dict
             "verdict": "SEE_ARTIFACT",
             "document": "docs/rp2_v3/REBUILD_RUNBOOK.md",
             "artifact_sha256": digest,
-            "supersedes_run_id": supersedes,
         }
         for step in artifacts
         if str(step["name"]) in RESULT_BLOCKS
@@ -406,38 +405,49 @@ def publish(payload: dict[str, Any], key: str, *, timeout: float = 120.0) -> dic
         "Content-Type": "application/json",
     }
     with httpx.Client(timeout=timeout, headers=headers) as client:
-        response = client.post(f"{REST}/rpc/publish_rp2_v3", json={"payload": payload})
+        try:
+            response = client.post(f"{REST}/rpc/publish_rp2_v3", json={"payload": payload})
+        except httpx.HTTPError as error:
+            # Name resolution, connection setup and response reading are how a publication
+            # most often fails to happen at all. Letting the exception leave here skipped
+            # the failure record entirely, so the attempt left no trace anywhere - which is
+            # the state the separate record exists to prevent.
+            raise SystemExit(
+                f"RP2_PUBLISH_TRANSPORT_FAILED:{type(error).__name__}:{error}"
+                f"{_record_failure(client, payload, f'{type(error).__name__}: {error}')}"
+            ) from error
         if response.status_code not in (200, 201):
-            # A rollback leaves no trace, so the failure is recorded by its own call - and
-            # that call can fail too. Discarding its response would report an unrecorded
-            # failure as an audited one, which is the state this record exists to prevent.
-            unrecorded = ""
-            try:
-                recorded = client.post(
-                    f"{REST}/rpc/record_rp2_v3_failure",
-                    json={
-                        "failed_run_id": payload["run"]["run_id"],
-                        "reason": response.text[:400],
-                    },
-                )
-            except httpx.HTTPError as error:
-                unrecorded = f":RP2_FAILURE_UNRECORDED:{type(error).__name__}"
-            else:
-                if recorded.status_code not in (200, 201, 204):
-                    unrecorded = (
-                        f":RP2_FAILURE_UNRECORDED:{recorded.status_code}:{recorded.text[:120]}"
-                    )
+            unrecorded = _record_failure(client, payload, response.text[:400])
             raise SystemExit(
                 f"RP2_PUBLISH_FAILED:{response.status_code}:{response.text[:300]}{unrecorded}"
             )
         return dict(response.json())
 
 
+def _record_failure(client: httpx.Client, payload: dict[str, Any], reason: str) -> str:
+    """Write the failed attempt down, and say so when even that could not be written.
+
+    A rollback leaves no trace, so the failure is recorded by its own call - and that call
+    can fail too. Discarding its response would report an unrecorded failure as an audited
+    one, which is the state this record exists to prevent.
+    """
+
+    try:
+        recorded = client.post(
+            f"{REST}/rpc/record_rp2_v3_failure",
+            json={"failed_run_id": payload["run"]["run_id"], "reason": reason},
+        )
+    except httpx.HTTPError as error:
+        return f":RP2_FAILURE_UNRECORDED:{type(error).__name__}"
+    if recorded.status_code not in (200, 201, 204):
+        return f":RP2_FAILURE_UNRECORDED:{recorded.status_code}:{recorded.text[:120]}"
+    return ""
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run-root", type=Path, required=True)
     parser.add_argument("--branch", default="results/rp2-v3-rebuild")
-    parser.add_argument("--supersedes", default=None)
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args(argv)
 
@@ -445,7 +455,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     # from the working tree, so publishing from another commit would record settings the run
     # never used.
     assert_published_at_the_run_commit(_read(args.run_root / "run_manifest.json"))
-    payload = build_payload(args.run_root, branch=args.branch, supersedes=args.supersedes)
+    payload = build_payload(args.run_root, branch=args.branch)
     if args.dry_run:
         print(json.dumps(payload, indent=2, sort_keys=True)[:4000])
         print(
