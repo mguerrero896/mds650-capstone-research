@@ -145,3 +145,30 @@ def test_residualise_returns_nan_without_enough_training_rows() -> None:
     assert np.isnan(out).all()
     with pytest.raises(ValueError, match="RP2_RESIDUALISE_SHAPE_MISMATCH"):
         residualise(values, design[:3], np.ones(5, dtype=bool))
+
+
+def test_a_four_hour_tenor_is_not_priced_as_a_full_day() -> None:
+    """The one-day floor lived inside the Greeks, where the exact tenor could not reach it.
+
+    Gate 5 measures time to expiry from the trade's own execution stamp, which is the whole
+    point for 0DTE. A floor of one day inside black_scholes_greeks silently rounded every
+    such contract back up, so the exact tenor changed nothing where it mattered most.
+    """
+
+    from mds650.rp2.flow import MIN_TENOR_YEARS, black_scholes_greeks
+    from mds650.rp2.option_clock import SECONDS_PER_YEAR
+
+    spot = np.array([100.0, 100.0])
+    strike = np.array([100.0, 100.0])
+    iv = np.array([0.3, 0.3])
+    is_call = np.array([True, True])
+    four_hours = 4 * 3600 / SECONDS_PER_YEAR
+    one_day = 24 * 3600 / SECONDS_PER_YEAR
+
+    greeks = black_scholes_greeks(spot, strike, np.array([four_hours, one_day]), iv, is_call)
+    assert greeks.vega[0] < 0.9 * greeks.vega[1], (
+        "a contract with four hours left is being priced as if it had a full day"
+    )
+    assert greeks.gamma[0] > 1.1 * greeks.gamma[1]
+    # The floor is only there to keep the square root away from zero.
+    assert MIN_TENOR_YEARS * SECONDS_PER_YEAR <= 60.0

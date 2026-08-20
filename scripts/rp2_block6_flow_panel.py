@@ -42,6 +42,11 @@ from mds650.rp2.flow import (
     herfindahl,
     shannon_entropy,
 )
+from mds650.rp2.option_clock import (
+    OptionClocks,
+    expiry_close_timestamps,
+    time_to_expiry_years,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_block6_flow"
@@ -56,6 +61,9 @@ NY = ZoneInfo(MARKET_TZ)
 OTM_LOG_MONEYNESS = 0.05
 SHORT_DTE_DAYS = 7.0
 LONG_DTE_DAYS = 30.0
+#: Exact tenors in years, so the DTE buckets compare like with like against the clock.
+SHORT_DTE_YEARS = SHORT_DTE_DAYS / CALENDAR_YEAR
+LONG_DTE_YEARS = LONG_DTE_DAYS / CALENDAR_YEAR
 TAPE_COLUMNS = (
     "underlying_symbol",
     # Both clocks. `executed_at` is read for the latency features and must be declared
@@ -178,12 +186,17 @@ def build_session_flow(
     # an unmeasured assumption.
     created = tape["created_at"].dt.replace_time_zone(None).cast(pl.Int64).to_numpy()
     executed = tape["executed_at"].dt.replace_time_zone(None).cast(pl.Int64).to_numpy()
-    latency_seconds = (created - executed) / 1e6
+    clocks = OptionClocks(executed_us=executed, created_us=created)
+    latency_seconds = clocks.latency_seconds
     strike = tape["strike"].cast(pl.Float64).to_numpy().astype(np.float64)
     expiry = tape["expiry"].cast(pl.Date).to_numpy()
-    tenor_days = np.maximum(
-        (expiry - np.datetime64(session, "D")).astype("timedelta64[D]").astype(np.float64), 1.0
-    )
+    expiry_day = expiry.astype("datetime64[D]").astype(np.int64)
+    # Exact time to the expiry close, measured from each trade's own execution stamp. The
+    # producer floored this at one day, which priced a contract with four hours left as if
+    # it had twenty-four and collided 0DTE with 1DTE in the contract key below.
+    expiry_close_us = expiry_close_timestamps(expiry, MARKET_TZ)
+    tenor_years = time_to_expiry_years(expiry_close_us, executed)
+    is_zero_dte = expiry == np.datetime64(session, "D")
     iv = tape["implied_volatility"].cast(pl.Float64).to_numpy().astype(np.float64)
     size = tape["size"].cast(pl.Float64).to_numpy().astype(np.float64)
     premium = tape["premium"].cast(pl.Float64).to_numpy().astype(np.float64)
@@ -200,7 +213,7 @@ def build_session_flow(
     )
     is_sweep = tape["report_flags"].cast(pl.Utf8).fill_null("").str.contains("sweep").to_numpy()
     keys = (
-        np.round(tenor_days).astype(np.int64) * 20_000_000
+        expiry_day * 20_000_000
         + np.round(strike * 1000.0).astype(np.int64) * 2
         + is_call.astype(np.int64)
     )
@@ -222,13 +235,17 @@ def build_session_flow(
     open_us = int(
         np.datetime64(session_open.astimezone(UTC).replace(tzinfo=None), "us").astype(np.int64)
     )
+    # The exchange clock, not the availability clock: a batched print must be priced at the
+    # underlying level when it happened, not when the provider got round to publishing it.
     minute_of_trade = np.clip(
-        ((created - open_us) // 60_000_000).astype(np.int64), 0, closes.size - 1
+        ((executed - open_us) // 60_000_000).astype(np.int64), 0, closes.size - 1
     )
     spot = closes[minute_of_trade]
-    greeks = black_scholes_greeks(spot, strike, tenor_days / CALENDAR_YEAR, iv, is_call)
+    greeks = black_scholes_greeks(spot, strike, tenor_years, iv, is_call)
     weight = size * CONTRACT_MULTIPLIER * direction
-    seconds = (created - created[0]) / 1e6
+    # Interarrivals and intensity are economics, so they run on the exchange clock too. On
+    # the availability clock a provider flushing a backlog reads as a burst of trading.
+    seconds = clocks.economic_seconds()
     intensity = exponential_decay_intensity(
         seconds, baseline=0.0, excitation=1.0, decay=DECAY_SECONDS
     )
@@ -245,8 +262,12 @@ def build_session_flow(
         "vega_flow_abs": np.abs(greeks.vega * size * CONTRACT_MULTIPLIER),
         "vega_flow_call": greeks.vega * weight * is_call,
         "vega_flow_put": greeks.vega * weight * (~is_call),
-        "vega_flow_short_dte": greeks.vega * weight * (tenor_days <= SHORT_DTE_DAYS),
-        "vega_flow_long_dte": greeks.vega * weight * (tenor_days > LONG_DTE_DAYS),
+        "vega_flow_short_dte": greeks.vega * weight * (tenor_years <= SHORT_DTE_YEARS),
+        "vega_flow_long_dte": greeks.vega * weight * (tenor_years > LONG_DTE_YEARS),
+        # Same-session expiries, whose whole behaviour is that they have hours left.
+        "zero_dte_premium": premium * is_zero_dte,
+        "zero_dte_signed_premium": premium * direction * is_zero_dte,
+        "zero_dte_trades": is_zero_dte.astype(np.float64),
         # OTM is sided. abs(log_moneyness) lumps out-of-the-money calls together with
         # IN-the-money puts at the same strike distance, which is the opposite exposure.
         "otm_premium": premium
@@ -267,7 +288,7 @@ def build_session_flow(
         "has_previous": has_previous,
         "age_sum": created / 1e6,
         "latency_sum": latency_seconds,
-        "latency_over_60s": (latency_seconds > 60.0).astype(np.float64),
+        "latency_over_60s": clocks.late_arrivals.astype(np.float64),
     }
     prefixes = {name: _prefix(values) for name, values in channels.items()}
 
@@ -292,7 +313,7 @@ def build_session_flow(
                     prefixes=prefixes,
                     keys=keys,
                     strike=strike,
-                    tenor_days=tenor_days,
+                    expiry_day=expiry_day,
                     premium=premium,
                     intensity=intensity,
                     seconds=seconds,
@@ -316,7 +337,7 @@ def _window_record(
     prefixes: dict[str, FloatArray],
     keys: npt.NDArray[np.int64],
     strike: FloatArray,
-    tenor_days: FloatArray,
+    expiry_day: npt.NDArray[np.int64],
     premium: FloatArray,
     intensity: FloatArray,
     seconds: FloatArray,
@@ -359,10 +380,14 @@ def _window_record(
         f"{prefix}decay_intensity_last": float(intensity[hi - 1]),
         f"{prefix}decay_intensity_innovation": float(intensity[hi - 1] - np.mean(intensity[lo:hi])),
         f"{prefix}rate_per_second": trades / span if span > 0.0 else float("nan"),
-        f"{prefix}median_age_s": cutoff_us / 1e6 - total("age_sum") / max(trades, 1.0),
+        # A mean, and now named one. It was called a median for the whole programme.
+        f"{prefix}mean_age_s": cutoff_us / 1e6 - total("age_sum") / max(trades, 1.0),
         # Provider latency, from the exchange clock to the availability clock.
-        f"{prefix}mean_latency_s": total("latency_sum") / max(trades, 1.0),
+        f"{prefix}mean_provider_latency_s": total("latency_sum") / max(trades, 1.0),
         f"{prefix}late_arrival_share": total("latency_over_60s") / max(trades, 1.0),
+        f"{prefix}zero_dte_premium_share": total("zero_dte_premium") / total_premium,
+        f"{prefix}zero_dte_signed_premium": total("zero_dte_signed_premium"),
+        f"{prefix}zero_dte_trade_share": total("zero_dte_trades") / max(trades, 1.0),
     }
     if label == CONCENTRATION_WINDOW:
         window_premium = premium[lo:hi]
@@ -373,7 +398,7 @@ def _window_record(
         )
         record[f"{prefix}expiry_hhi"] = herfindahl(
             np.bincount(
-                np.unique(tenor_days[lo:hi], return_inverse=True)[1], weights=window_premium
+                np.unique(expiry_day[lo:hi], return_inverse=True)[1], weights=window_premium
             ).astype(np.float64)
         )
         record[f"{prefix}contract_entropy"] = shannon_entropy(
@@ -438,11 +463,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         jobs = jobs[: args.limit_sessions]
 
     frames: list[pl.DataFrame] = []
-    failures = 0
+    # A session whose tape could not be read is a provider failure. A window in which
+    # nobody traded is a fact about the market. Both would otherwise arrive downstream as
+    # "no flow", and only one of them is evidence about flow, so the failures are named.
+    provider_failures: list[dict[str, str]] = []
     with ThreadPoolExecutor(max_workers=args.workers) as pool:
-        for result in pool.map(lambda job: build_session_flow(*job), jobs):
+        results = pool.map(lambda job: build_session_flow(*job), jobs)
+        for job, result in zip(jobs, results, strict=True):
             if result is None:
-                failures += 1
+                provider_failures.append({"asset": job[0], "session_date": job[1]})
                 continue
             frames.append(result)
     if not frames:
@@ -470,7 +499,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         "concentration_window": CONCENTRATION_WINDOW,
         "decay_seconds": DECAY_SECONDS,
         "session_assets_requested": len(jobs),
-        "session_assets_without_tape": failures,
+        "session_assets_without_tape": len(provider_failures),
+        "provider_failures": provider_failures,
+        "empty_window_share_5m": float(
+            (flow["b2_5m_trades"].fill_null(0.0) == 0.0).sum() / flow.height
+        ),
+        "empty_window_share_30m": float(
+            (flow["b2_30m_trades"].fill_null(0.0) == 0.0).sum() / flow.height
+        ),
         "rows": flow.height,
         "feature_count": len(coverage),
         "coverage": coverage,

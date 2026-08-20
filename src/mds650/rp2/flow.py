@@ -24,7 +24,10 @@ type FloatArray = npt.NDArray[np.float64]
 
 MIN_IV: Final = 0.01
 MAX_IV: Final = 5.0
-MIN_TENOR_YEARS: Final = 1.0 / 365.0
+#: Only large enough to keep the square root away from zero. It used to be one day,
+#: which quietly re-floored every 0DTE contract back to a full day inside the Greeks —
+#: exactly the rounding the exact-clock tenor exists to remove.
+MIN_TENOR_YEARS: Final = 60.0 / (365.25 * 24 * 3600)
 #: Contract multiplier for US equity options.
 CONTRACT_MULTIPLIER: Final = 100.0
 #: Default decay constant, in seconds: clustering at the one-minute scale.

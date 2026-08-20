@@ -718,4 +718,32 @@ Spec Kit consistency and preregistration gates pass.
    Block 5b, which measures the trade-sampling bias of decision 77 against an independent
    quote feed, now reads the window through the same rule; in RP2-v2 it defined its own and
    audited a surface the panel did not carry.
+81. **B2 measured its economics on the provider's clock, and priced 0DTE as a full day
+   (2026-08-20)** — every tape row carries two timestamps. `created_at` is when the provider
+   published it and answers availability; `executed_at` is when the trade happened and
+   answers economics. Block 6 selected windows on availability, correctly, and then also
+   chose the spot minute, the interarrivals and the decay intensity on it, so provider
+   behaviour entered the features as market behaviour. `src/mds650/rp2/option_clock.py`
+   separates them: spot as-of, Greeks, tenor and intensity now run on `executed_at`, and
+   only visibility runs on `created_at`. Time to expiry was
+   `max(expiry_date - session_date, 1 day)`, so a contract with four hours left was priced
+   as if it had twenty-four, and 0DTE and 1DTE at the same strike collided in the contract
+   key. It is now `(expiry_close_utc - executed_at) / (365.25 x 24 x 3600)`. A second floor
+   was hiding inside `black_scholes_greeks`, `MIN_TENOR_YEARS = 1/365`, which silently
+   re-rounded every 0DTE contract back up to a day and would have made the exact clock
+   change nothing where it mattered most; it is now one minute, which is all a square root
+   needs. Rebuilt over all 184,632 origins: `b2_5m_vega_flow_short_dte` moves by 7.4 %,
+   `b2_5m_gamma_flow` by 3.7 %, the vega and delta flows by about 1.3 % at the median, and
+   33 of 56 shared features do not move at all. The contract-key collision affected 0.9 % of
+   windows. The clock swap itself is small in this provider's data — median latency is
+   0.073 s, so the two clocks nearly coincide — and it is now correct by construction rather
+   than by the provider's speed. Five features are added because the mechanism was
+   unmeasurable without them: `zero_dte_premium_share`, `zero_dte_signed_premium` and
+   `zero_dte_trade_share` per window, which show that **11.9 % of trades and 4.3 % of
+   premium** in a five-minute window are same-session expiries. `mean_latency_s` becomes
+   `mean_provider_latency_s`, and `median_age_s` becomes `mean_age_s` because it was always
+   the mean. A session whose tape cannot be read is now recorded by name as a provider
+   failure rather than arriving downstream as a window in which nobody traded. Verified on a
+   real session of 304,386 tape rows: 1,607,405 events used across all windows, **zero PIT
+   violations**, and zero rows where execution followed publication.
 

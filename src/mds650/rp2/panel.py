@@ -85,8 +85,11 @@ _B2_SIGNED: Final[tuple[str, ...]] = (
     "d_mid_rel",
     "d_spread",
     "decay_intensity_innovation",
+    "zero_dte_signed_premium",
 )
 _B2_RAW: Final[tuple[str, ...]] = (
+    "zero_dte_premium_share",
+    "zero_dte_trade_share",
     "otm_premium_share",
     "buy_premium_share",
     "sell_premium_share",
@@ -112,7 +115,7 @@ _B2_LOG: Final[tuple[str, ...]] = (
     "vega_flow_abs",
     "decay_intensity_last",
     "rate_per_second",
-    "mean_latency_s",
+    "mean_provider_latency_s",
 )
 
 
