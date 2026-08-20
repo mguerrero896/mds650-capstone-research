@@ -860,3 +860,23 @@ Spec Kit consistency and preregistration gates pass.
    standardisation: they are inputs the registry does not describe and are never part of a
    primary contrast.
 
+84. **The study window for RP2 is the frozen partition, by recorded configuration change
+    (2026-08-21)** — the repository stated two windows and had never reconciled them.
+    `AGENTS.md` froze `2025-07-21` through `2026-07-21` (end exclusive) on the strength of the
+    window probe; `artifacts/rp2_block1_partition/partition.json`, written 2026-08-18, covers
+    D `2024-08-02..2026-03-23` (389 sessions) and V `2026-03-24..2026-07-17` (80), and every
+    RP2 and RP2-v3 artifact was built on it. The rule itself says widening or shortening
+    requires another recorded configuration change, so this is that change: **the partition is
+    the RP2 study window**, and the twelve-month rule is retained for the acquisition
+    programme it was written for. Measured against
+    `artifacts/rp2_block1_partition/inventory.jsonl` before deciding: of the 389 development
+    sessions, **170** fall inside the twelve-month window and all 80 validation sessions do.
+    Adopting the twelve-month window would therefore have discarded 219 development sessions —
+    a 56 % reduction — requiring Block 1 to be re-run with a lower bound it does not have, and
+    superseding every frozen result the repository cites, to answer a different question on a
+    smaller sample. The programme owner's reasons, recorded as given: it preserves D=389/V=80,
+    uses the rebuild already completed, keeps the statistical power of every contrast, and
+    does not stall the project. What this decision does **not** do is change any number: no
+    sample was widened, nothing was re-fitted, and the artifacts are exactly the ones that
+    existed before it. It records which of two written statements governs, and
+    `configs/rp2_v3_study_window.json` is where publication reads it.
