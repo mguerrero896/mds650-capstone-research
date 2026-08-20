@@ -33,6 +33,18 @@ def _load(name: str) -> ModuleType:
     return module
 
 
+def _rp2_producers() -> list[Path]:
+    """The producer scripts a scan is supposed to cover, proven to be some of them.
+
+    A glob that matches nothing reports nothing, and a scan over no files is
+    indistinguishable in a green run from a scan that found nothing wrong.
+    """
+
+    scripts = sorted((REPO / "scripts").glob("rp2_*.py"))
+    assert len(scripts) > 5, f"the producer glob found {len(scripts)} scripts"
+    return scripts
+
+
 def _contrast(base: str, expanded: str) -> dict[str, Any]:
     return {
         "raw": {
@@ -216,6 +228,9 @@ def test_nothing_origin_level_leaves_the_repository(tmp_path: Path) -> None:
     # Field names, not substrings of them: `common_mask_sha256` contains "ask" and is an
     # aggregate digest, while a field actually named `ask` would be a quote.
     published = keys(payload, set())
+    # The walk found something. A `keys` that returned nothing would satisfy every
+    # exclusion below by having looked at no fields at all.
+    assert {"run_id", "code_commit", "estimate"} <= published
     for forbidden in ("origin_minute", "forecast", "premium", "bid", "ask", "trade", "iv"):
         assert forbidden not in published, forbidden
     for row in payload["contrasts"]:
@@ -575,7 +590,8 @@ def test_one_constant_decides_the_bootstrap_seed() -> None:
     # And no RP2 producer writes the number down for itself. A literal at a call site is the
     # same defect as a literal in a default: the digest stops describing what ran.
     literal = re.compile(r"seed\s*=\s*\d+")
-    for script in sorted((REPO / "scripts").glob("rp2_*.py")):
+    assert literal.findall("session_contrast(x, seed=650)") == ["seed=650"], "the scan scans"
+    for script in _rp2_producers():
         found = literal.findall(script.read_text(encoding="utf-8"))
         assert not found, f"{script.name} passes {found} instead of DEFAULT_SEED"
 
@@ -601,7 +617,7 @@ def test_no_rp2_producer_writes_an_inference_setting_down_for_itself() -> None:
     # nothing, which is the same result as finding nothing wrong.
     assert literal.findall("hansen_spa(x, repetitions=1000)") == ["repetitions"]
     assert not literal.findall("Ridge(alpha=1e-4)")
-    for script in sorted((REPO / "scripts").glob("rp2_*.py")):
+    for script in _rp2_producers():
         found = literal.findall(script.read_text(encoding="utf-8"))
         assert not found, f"{script.name} sets {found} itself"
 
