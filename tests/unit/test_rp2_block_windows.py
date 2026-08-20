@@ -111,7 +111,7 @@ def test_both_panel_builders_refuse_an_origin_past_the_end_of_its_grid() -> None
 
     for module in (BLOCK5, BLOCK6):
         source = (REPO / "scripts" / f"{module.__name__}.py").read_text(encoding="utf-8")
-        assert "closes.size == 0" in source, f"{module.__name__} accepts an empty grid"
+        assert "size == 0" in source, f"{module.__name__} accepts an empty grid"
         assert "origin_minutes < closes.size" in source, (
             f"{module.__name__} indexes the grid without bounding the origin"
         )

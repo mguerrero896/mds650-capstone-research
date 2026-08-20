@@ -167,7 +167,9 @@ def _read_tape(paths: Sequence[str], asset: str) -> pl.DataFrame | None:
     return tape.sort("created_at")
 
 
-def _in_session(tape: pl.DataFrame, session: str, closes: FloatArray) -> pl.DataFrame:
+def _in_session(
+    tape: pl.DataFrame, session: str, closes: FloatArray, opens: FloatArray
+) -> pl.DataFrame:
     """Keep only prints the session can price from a bar that had already closed.
 
     The Full Tape carries out-of-session executions (see docs/pit_field_classification.md).
@@ -177,10 +179,12 @@ def _in_session(tape: pl.DataFrame, session: str, closes: FloatArray) -> pl.Data
     poison the prefix sums outright.
 
     Bars are labelled by their **start**, so ``closes[m]`` is the price at the end of minute
-    ``m`` — after a trade executed inside it. The price a trade may be marked at is the
-    close of minute ``m - 1``, which the market had already printed when the trade
-    happened. That leaves the first minute of the session with no completed bar, and its
-    prints are dropped rather than marked at a price from their own future.
+    ``m`` — after a trade executed inside it. A trade is marked at the close of minute
+    ``m - 1``, which the market had already printed. The session's opening minute has no
+    completed bar before it, and its prints are the most active of the day; dropping them
+    would take trades, premium, direction, 0DTE share, latency and concentration out of the
+    thirty-minute window of every early origin. They are marked at ``opens[0]`` instead,
+    the session's first print, which is the earliest price that exists.
     """
 
     open_us = int(
@@ -196,11 +200,22 @@ def _in_session(tape: pl.DataFrame, session: str, closes: FloatArray) -> pl.Data
     )
     executed = tape["executed_at"].dt.replace_time_zone(None).cast(pl.Int64).to_numpy()
     minute = (executed - open_us) // 60_000_000
-    inside = (minute >= 1) & (minute < closes.size)
+    inside = (minute >= 0) & (minute < closes.size)
     priced = np.zeros(tape.height, dtype=bool)
-    marked = closes[minute[inside] - 1]
+    marked = mark_price(minute[inside], closes, opens)
     priced[inside] = np.isfinite(marked) & (marked > 0.0)
     return tape.filter(pl.Series(priced))
+
+
+def mark_price(minute: npt.NDArray[np.int64], closes: FloatArray, opens: FloatArray) -> FloatArray:
+    """The price a trade in each minute may be marked at without reading its own future.
+
+    The close of the preceding minute, which the market had already printed; the session's
+    opening print for the opening minute, which has nothing before it.
+    """
+
+    opening = float(opens[0]) if opens.size else float("nan")
+    return np.where(minute > 0, closes[np.maximum(minute - 1, 0)], opening)
 
 
 def _prefix(values: FloatArray) -> FloatArray:
@@ -263,6 +278,7 @@ def build_session_flow(
     paths: Sequence[str],
     origins: npt.NDArray[np.int64],
     closes: FloatArray,
+    opens: FloatArray,
 ) -> tuple[pl.DataFrame | None, str]:
     """Microstructure features at every origin of one session-asset, plus why not.
 
@@ -274,7 +290,7 @@ def build_session_flow(
     tape = _read_tape(paths, asset)
     if tape is None:
         return None, "provider_failure"
-    tape = _in_session(tape, session, closes)
+    tape = _in_session(tape, session, closes, opens)
     if tape.height < MINIMUM_SESSION_PRINTS:
         return None, "sparse_tape"
     # Two clocks travel together. `executed_at` is when the trade happened at the
@@ -344,7 +360,7 @@ def build_session_flow(
     # whole window sits before the origin either way — but it mistimed the exposure of every
     # Greeks-weighted total by up to sixty seconds.
     minute_of_trade = ((executed - open_us) // 60_000_000).astype(np.int64)
-    spot = closes[minute_of_trade - 1]
+    spot = mark_price(minute_of_trade, closes, opens)
     greeks = black_scholes_greeks(spot, strike, tenor_years, iv, is_call)
     weight = size * CONTRACT_MULTIPLIER * direction
     # Interarrivals and intensity are economics, so they run on the exchange clock too. On
@@ -613,14 +629,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     panel = pl.read_parquet(B0_PANEL)
     inventory = load_inventory()
     bars = load_bar_sources(args.data_root)
-    grids: dict[tuple[str, str], FloatArray] = {}
+    grids: dict[tuple[str, str], tuple[FloatArray, FloatArray]] = {}
     for (asset, session_date), group in bars.sort(["asset", "session_date", "minute"]).group_by(
         ["asset", "session_date"], maintain_order=True
     ):
         grid = build_session_grid(group, session=session_date)
-        grids[(str(asset), str(session_date))] = grid.close
+        grids[(str(asset), str(session_date))] = (grid.close, grid.open)
 
-    jobs: list[tuple[str, str, list[str], npt.NDArray[np.int64], FloatArray]] = []
+    jobs: list[
+        tuple[str, str, list[str], npt.NDArray[np.int64], FloatArray, FloatArray]
+    ] = []
     # A session-asset the B0 panel carries but the tape inventory or the bar grid does not
     # is an incomplete acquisition. Skipping it silently made every coverage number in this
     # artifact describe only the part of the study that happened to be complete.
@@ -632,13 +650,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         paths = inventory.get((str(session_date), str(asset))) or inventory.get(
             (str(session_date), "__ALL__")
         )
-        closes = grids.get((str(asset), str(session_date)))
+        grid_pair = grids.get((str(asset), str(session_date)))
         if paths is None:
             missing_tape_inventory.append({"asset": str(asset), "session_date": str(session_date)})
             continue
-        if closes is None or closes.size == 0:
+        if grid_pair is None or grid_pair[0].size == 0:
             missing_bar_grid.append({"asset": str(asset), "session_date": str(session_date)})
             continue
+        closes, opens = grid_pair
         # Origins come from the B0 panel, which is built on each session's real length.
         # A holiday now yields an empty grid and an early close a 210-minute one, so an
         # origin is only usable if the grid actually holds that minute — indexing past it
@@ -654,6 +673,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 paths,
                 origin_minutes[inside],
                 closes,
+                opens,
             )
         )
     # The accounting below covers the whole B0 panel. A limited run attempts a prefix of

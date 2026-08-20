@@ -65,7 +65,10 @@ def black_scholes_greeks(
     Vega is per one volatility point (not per 100), gamma is per unit of spot.
     """
 
-    tenor = np.maximum(tenor_years, MIN_TENOR_YEARS)
+    # A positive tenor is kept exactly, however small: a 0DTE contract with one second
+    # left has a gamma and a vega that a sixty-second floor would flatten. The floor is
+    # only there to keep a non-positive tenor out of the square root.
+    tenor = np.where(tenor_years > 0.0, tenor_years, MIN_TENOR_YEARS)
     sigma = np.clip(iv, MIN_IV, MAX_IV)
     root = sigma * np.sqrt(tenor)
     d1 = (np.log(np.maximum(spot, 1e-9) / np.maximum(strike, 1e-9)) + 0.5 * sigma**2 * tenor) / root

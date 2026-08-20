@@ -290,20 +290,26 @@ def test_out_of_session_executions_are_removed_before_pricing() -> None:
         naive_open + timedelta(minutes=10),   # inside
         naive_open + timedelta(minutes=400),  # after the close
         naive_open + timedelta(minutes=4),    # inside, but the previous bar is unobserved
-        naive_open + timedelta(seconds=20),   # the opening minute: no completed bar yet
+        naive_open + timedelta(seconds=20),   # the opening minute: marked at the open print
     ]
     tape = pl.DataFrame({"executed_at": executions})
     closes = np.full(390, 100.0)
     closes[3] = np.nan
+    opens = np.full(390, 99.5)
 
-    kept = block6._in_session(tape, session, closes)
-    assert kept.height == 1, "only prints a completed bar can mark survive"
-    assert kept["executed_at"][0] == executions[1]
+    kept = block6._in_session(tape, session, closes, opens)
+    assert kept.height == 2, "the in-session print and the opening-minute print survive"
+    assert set(kept["executed_at"].to_list()) == {executions[1], executions[4]}
+
+    # The opening minute is marked at the session's first print; every other minute at the
+    # close of the one before it.
+    marks = block6.mark_price(np.array([0, 10], dtype=np.int64), closes, opens)
+    assert marks.tolist() == [99.5, 100.0]
 
     source = _source()
     assert "np.clip(" not in source.split("minute_of_trade")[1][:200], (
         "a clamp would price an out-of-session execution at the open or the close"
     )
-    assert "closes[minute_of_trade - 1]" in source, (
+    assert "mark_price(minute_of_trade" in source, (
         "bars are labelled by their start, so closes[m] is a price from the trade's future"
     )

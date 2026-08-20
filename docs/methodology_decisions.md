@@ -790,5 +790,11 @@ Spec Kit consistency and preregistration gates pass.
    was the exposure of each trade. Marking at the last completed bar moves
    `b2_5m_delta_flow` by 1.06 %, `b2_5m_gamma_flow` by 1.59 % and `b2_5m_vega_flow` by
    0.49 % at the median across essentially every window, and drops the opening minute's
-   prints, which have no completed bar to be marked at.
+   prints. Those are the most active minute of the day and sit inside the thirty-minute
+   window of every early origin, so dropping them would have taken 9.1 million trades and
+   28.7 billion of premium out of 2,799 windows; they are marked at the session's opening
+   print instead, the earliest price that exists. And the Greeks floor is applied only to a
+   non-positive tenor now: a 0DTE contract with one second left keeps that second, where a
+   sixty-second floor would have flattened exactly the gamma and vega that make it
+   interesting.
 
