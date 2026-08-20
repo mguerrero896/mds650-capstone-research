@@ -808,4 +808,32 @@ Spec Kit consistency and preregistration gates pass.
    trades the price at the *end* of that minute. Those prints are dropped instead, which
    costs 0.037 % of thirty-minute trade volume across 347 windows and is a loss the data
    actually has rather than a number invented to cover it.
+82. **One hundred dimensions against eighty validation sessions (2026-08-20)** — the primary
+   B2 information set carried every channel the block emits, at both windows: 68 features,
+   making a `B0+B1+B2` design 101 columns wide against 389 discovery and **80 validation
+   sessions**. That is 1.25 features per independent validation session, which is estimation
+   variance rather than information. `configs/rp2_v3_feature_sets.json` freezes five sets —
+   `B0_CORE` (22), `B1_CORE` (10), `B2_CORE` (12), `B1_RICH` (18), `B2_RICH` (56) — and
+   `src/mds650/rp2/feature_registry.py` is the only place that decides what is in them.
+   `panel.py` loads them rather than restating them, because a second copy of a feature list
+   is a copy that drifts, and that is now a test. The core dozen is the mechanism list of the
+   master plan's section 7, chosen for economic mechanism, coverage, stability and
+   point-in-time availability — never for an individual feature's historical p-value, which
+   is how a null becomes a finding. Measured on the real panels: the design falls from
+   **101 columns to 45**, evaluation rows per fitted column rise from 316 to 718 in
+   validation and from 1,498 to 3,405 in discovery, and the common evaluation mask is
+   unchanged at 98.0 % of discovery and 99.8 % of validation rows — the reduction costs no
+   evidence. Core coverage on the rebuilt panels is 98.93 % at worst (`rv_week`), 99.34 %
+   for B1 (`b1_risk_reversal_25`) and 100 % for every B2 core feature. Each set declares a
+   coverage floor and `load_merged_panel` enforces it on every run — **within each partition,
+   not across them**, because validation is a sixth of the rows and a complete discovery
+   partition would otherwise hold the average above a floor validation had already broken.
+   Measured per role: worst B0 coverage 98.71 % in discovery and 100 % in validation,
+   worst B1 99.26 % and 99.76 %, and 100 % for every B2 core feature in both. The same
+   floor is checked on the two segments each run fits and scores, because a partition can
+   hold its average while the held-out tail it is scored on falls through — measured at
+   0.6 and 0.8 train shares, the worst segment coverage is 97.84 %, so it does not bind
+   today and a future gap cannot become a result. A floor nobody checks is not a floor. `registry_sha256` hashes the sets and their floors and ignores the
+   prose beside them, so a run's provenance moves when a feature moves and not when a
+   sentence is edited. Registry `3c108a14a5a88e4d…`.
 

@@ -1,0 +1,383 @@
+"""The frozen feature sets: what is in them, and that nothing else decides.
+
+The failure this guards is not a wrong feature list. It is two feature lists — one in the
+configuration, one restated in code — that agree on the day they are written and disagree
+on the day somebody edits one of them.
+"""
+
+from __future__ import annotations
+
+import json
+import re
+from pathlib import Path
+
+import numpy as np
+import polars as pl
+import pytest
+
+from mds650.rp2.feature_registry import (
+    CONFIG,
+    FeatureSet,
+    assert_minimum_coverage,
+    coverage_by_feature,
+    describe_coverage,
+    describe_features,
+    feature_map,
+    registry,
+    registry_sha256,
+    transforms,
+)
+
+REPO = Path(__file__).resolve().parents[2]
+
+REQUIRED_SETS: tuple[str, ...] = ("B0_CORE", "B1_CORE", "B2_CORE", "B1_RICH", "B2_RICH")
+
+PANELS: tuple[tuple[str, str, Path], ...] = (
+    ("B0_CORE", "B0", REPO / "artifacts" / "rp2_block4_b0" / "b0_panel.parquet"),
+    ("B1_CORE", "B1", REPO / "artifacts" / "rp2_block5_surface" / "b1_surface_panel.parquet"),
+    ("B1_RICH", "B1", REPO / "artifacts" / "rp2_block5_surface" / "b1_surface_panel.parquet"),
+    ("B2_CORE", "B2", REPO / "artifacts" / "rp2_block6_flow" / "b2_flow_panel.parquet"),
+    ("B2_RICH", "B2", REPO / "artifacts" / "rp2_block6_flow" / "b2_flow_panel.parquet"),
+)
+
+
+def test_every_required_set_is_registered_and_nothing_else_is() -> None:
+    assert set(registry()) == set(REQUIRED_SETS)
+    for entry in registry().values():
+        assert isinstance(entry, FeatureSet)
+        assert entry.version == "1.0"
+
+
+def test_the_registry_is_loaded_from_the_configuration_not_restated() -> None:
+    """One list. A second copy is a copy that drifts."""
+
+    declared = json.loads(CONFIG.read_text(encoding="utf-8"))["sets"]
+    for name, entry in registry().items():
+        assert entry.features == tuple(declared[name]["features"]), name
+        assert entry.minimum_coverage == declared[name]["minimum_coverage"], name
+
+
+def test_the_panel_information_sets_come_from_the_registry() -> None:
+    from mds650.rp2 import panel
+
+    assert feature_map("B0_CORE") == panel.B0_FEATURES
+    assert feature_map("B1_CORE") == panel.B1_FEATURES
+    assert feature_map("B2_CORE") == panel.B2_FEATURES
+    source = (REPO / "src" / "mds650" / "rp2" / "panel.py").read_text(encoding="utf-8")
+    assert "feature_map(" in source, "the panel must load the sets, not restate them"
+
+
+def test_core_and_rich_are_disjoint_within_a_block() -> None:
+    """A feature is in the primary set or out of it; it cannot be both."""
+
+    for block in ("B1", "B2"):
+        core = set(registry()[f"{block}_CORE"].features)
+        rich = set(registry()[f"{block}_RICH"].features)
+        assert not core & rich, f"{block}: {sorted(core & rich)}"
+
+
+def test_b2_core_is_a_dozen_mechanisms_not_the_whole_block() -> None:
+    """The point of the split: 12 against a few dozen sessions, not 68."""
+
+    core = registry()["B2_CORE"]
+    rich = registry()["B2_RICH"]
+    assert 10 <= len(core.features) <= 12, len(core.features)
+    assert len(rich.features) > len(core.features)
+    # Every core feature is a five-minute one: the thirty-minute window is the rich set's.
+    assert all(name.startswith("b2_5m_") for name in core.features)
+
+
+def test_the_named_mechanisms_of_the_plan_are_all_registered() -> None:
+    """Pinned by name, so a later edit is a decision rather than an accident."""
+
+    core = set(registry()["B2_CORE"].features)
+    for name in (
+        "b2_5m_trades",
+        "b2_5m_premium",
+        "b2_5m_buy_premium_share",
+        "b2_5m_delta_flow",
+        "b2_5m_vega_flow",
+        "b2_5m_vega_flow_short_dte",
+        "b2_5m_zero_dte_premium_share",
+        "b2_5m_decay_intensity_innovation",
+        "b2_5m_d_iv",
+        "b2_5m_strike_hhi",
+        "b2_5m_mean_provider_latency_s",
+    ):
+        assert name in core, name
+    # The plan names `b2_5m_multileg_share`; the panel splits it by size and by premium and
+    # the configuration records which one was registered and why.
+    assert "b2_5m_multileg_size_share" in core
+    notes = json.loads(CONFIG.read_text(encoding="utf-8"))["notes"]
+    assert "b2_5m_multileg_share" in notes
+
+
+def test_a_feature_may_not_change_transform_between_sets() -> None:
+    kinds = transforms()
+    for entry in registry().values():
+        for name in entry.features:
+            assert name in kinds
+    assert kinds["b2_5m_trades"] == "log"
+    assert kinds["b1_iv_minus_trailing_rv_30d"] == "signed"
+
+
+def test_the_registry_hash_is_content_only_and_moves_with_content() -> None:
+    """Prose may be edited without invalidating a run; a feature may not."""
+
+    digest = registry_sha256()
+    assert len(digest) == 64
+    assert digest == registry_sha256()
+
+    payload = json.loads(CONFIG.read_text(encoding="utf-8"))
+    assert "description" in payload, "the hash must ignore prose that exists to be ignored"
+    assert "mechanism" in payload["sets"]["B2_CORE"]
+
+
+def test_minimum_coverage_is_enforced_and_not_merely_declared() -> None:
+    """A floor nobody checks is not a floor."""
+
+    complete = pl.DataFrame(
+        {name: pl.Series([1.0, 2.0, 3.0, 4.0]) for name in feature_map("B1_CORE")}
+    )
+    assert_minimum_coverage(complete, "B1_CORE")
+
+    holed = complete.with_columns(b1_iv_30d=pl.Series([1.0, None, None, None]))
+    with pytest.raises(ValueError, match="RP2_FEATURE_SET_COVERAGE_BREACH"):
+        assert_minimum_coverage(holed, "B1_CORE")
+
+    missing = complete.drop("b1_iv_7d")
+    with pytest.raises(ValueError, match="b1_iv_7d=0.0000"):
+        assert_minimum_coverage(missing, "B1_CORE")
+
+
+def test_coverage_counts_a_non_finite_value_as_absent() -> None:
+    frame = pl.DataFrame({"b1_iv_30d": pl.Series([1.0, np.nan, np.inf, None])})
+    assert coverage_by_feature(frame, ["b1_iv_30d"])["b1_iv_30d"] == 0.25
+    assert coverage_by_feature(frame, ["absent"])["absent"] == 0.0
+
+
+def test_the_run_record_carries_the_registry_and_its_coverage() -> None:
+    frame = pl.DataFrame(
+        {name: pl.Series([1.0, 2.0]) for name in feature_map("B0_CORE", "B1_CORE")}
+    )
+    record = describe_coverage(frame, "B0_CORE", "B1_CORE")
+    assert record["feature_registry_sha256"] == registry_sha256()
+    assert record["feature_count"] == len(feature_map("B0_CORE", "B1_CORE"))
+    assert set(record["coverage_by_feature"]) == set(record["missingness_by_feature"])  # type: ignore[arg-type]
+    assert all(value == 1.0 for value in record["coverage_by_feature"].values())  # type: ignore[union-attr]
+    assert all(value == 0.0 for value in record["missingness_by_feature"].values())  # type: ignore[union-attr]
+
+
+@pytest.mark.parametrize(("name", "block", "path"), PANELS, ids=[row[0] for row in PANELS])
+def test_every_registered_feature_exists_in_its_panel(name: str, block: str, path: Path) -> None:
+    if not path.is_file():
+        pytest.skip(f"{block} panel not built here; licensed derived data is local only")
+    columns = set(pl.read_parquet_schema(path))
+    missing = sorted(set(registry()[name].features) - columns)
+    assert not missing, f"{name} registers features the panel does not carry: {missing}"
+
+
+def test_the_core_coverage_floors_hold_on_the_real_panels() -> None:
+    """The floors are a claim about this evidence, so they are checked against it."""
+
+    built = [(name, path) for name, _, path in PANELS if path.is_file() and name.endswith("_CORE")]
+    if not built:
+        pytest.skip("no panels built here; licensed derived data is local only")
+    for name, path in built:
+        panel = pl.read_parquet(path)
+        assert_minimum_coverage(panel, name)
+
+
+#: Every script that writes an RP2 artifact from a fitted design.
+ARTIFACT_WRITERS: tuple[str, ...] = (
+    "rp2_block7_dml",
+    "rp2_block8_ladder",
+    "rp2_block9_generalization",
+    "rp2_block10_inference",
+    "rp2_block11_economics",
+    "rp2_block11b_forward_economics",
+    "rp2_block12_prospective_design",
+    "rp2_ext1_mechanism_utility",
+    "rp2_ext12_level4_and_tensor",
+)
+
+
+def test_every_artifact_writer_records_the_registry_it_fitted() -> None:
+    """The recurring defect of this programme, in its newest form.
+
+    A helper that produces the mandatory provenance and is called only by its own test
+    produces no provenance. Without this the artifacts carry a design width and nothing a
+    reader can check that width against.
+    """
+
+    missing = [
+        name
+        for name in ARTIFACT_WRITERS
+        if "describe_coverage(" not in (REPO / "scripts" / f"{name}.py").read_text(
+            encoding="utf-8"
+        )
+        and "describe_features(" not in (REPO / "scripts" / f"{name}.py").read_text(
+            encoding="utf-8"
+        )
+    ]
+    assert not missing, f"artifact writers with no registry provenance: {missing}"
+
+
+#: Scripts whose treatment battery is a set of mechanisms to partial out rather than a
+#: primary information set. Block 7 is the decisive DML experiment; ext1 replicates it.
+TREATMENT_SCRIPTS: tuple[str, ...] = ("rp2_block7_dml", "rp2_ext1_mechanism_utility")
+
+
+def test_a_treatment_battery_resolves_against_the_whole_registry() -> None:
+    """Rich means out of the primary contrasts, not out of existence.
+
+    Both batteries predate the core/rich split and name channels that are now B2-rich.
+    Resolving them against the primary set alone makes the run raise on its first role
+    instead of producing results — and one of the two is the decisive DML experiment.
+    """
+
+    available = feature_map("B2_CORE", "B2_RICH")
+    for name in ("b2_5m_gamma_flow", "b2_5m_otm_premium_share"):
+        assert name in available, name
+    for script in TREATMENT_SCRIPTS:
+        source = (REPO / "scripts" / f"{script}.py").read_text(encoding="utf-8")
+        assert 'feature_map("B2_CORE", "B2_RICH")' in source, script
+        battery = re.findall(r'"(b2_5m_[a-z0-9_]+)"', source.split("CORE_TREATMENTS")[1])
+        assert battery, script
+        unresolved = sorted(set(battery) - set(available))
+        assert not unresolved, f"{script}: {unresolved}"
+
+
+def test_a_record_lists_the_features_fitted_and_no_others() -> None:
+    """Both overstatements are the same failure, pointed in opposite directions.
+
+    Recording the core sets alone omits the rich treatments the battery fits. Recording the
+    whole rich set claims fifty-four variables the design never saw.
+    """
+
+    for script in TREATMENT_SCRIPTS:
+        source = (REPO / "scripts" / f"{script}.py").read_text(encoding="utf-8")
+        assert "describe_features(" in source, script
+        assert "*CORE_TREATMENTS]" in source, script
+        assert "describe_coverage(panel, *FITTED_SETS)" not in source, script
+
+    everything = feature_map("B0_CORE", "B1_CORE", "B2_CORE", "B2_RICH")
+    panel = pl.DataFrame({name: pl.Series([1.0, 2.0]) for name in everything})
+    fitted = [*feature_map("B0_CORE", "B1_CORE", "B2_CORE"), "b2_5m_gamma_flow"]
+    record = describe_features(panel, fitted, sets=("B0_CORE", "B1_CORE", "B2_CORE", "B2_RICH"))
+    assert record["feature_count"] == len(set(fitted))
+    assert record["feature_count"] < len(everything)
+    assert "b2_5m_gamma_flow" in record["feature_names"]  # type: ignore[operator]
+    assert "b2_5m_otm_premium_share" not in record["feature_names"]  # type: ignore[operator]
+
+
+def test_a_record_refuses_a_feature_no_set_registers() -> None:
+    panel = pl.DataFrame({"b2_5m_trades": pl.Series([1.0])})
+    with pytest.raises(ValueError, match="RP2_FEATURE_UNREGISTERED:invented"):
+        describe_features(panel, ["b2_5m_trades", "invented"], sets=("B2_CORE",))
+
+
+def test_the_configuration_travels_with_the_installed_package() -> None:
+    """Importing the panel resolves the sets eagerly, so a wheel without them cannot start."""
+
+    pyproject = (REPO / "pyproject.toml").read_text(encoding="utf-8")
+    assert "force-include" in pyproject
+    assert "configs/rp2_v3_feature_sets.json" in pyproject
+    from mds650.rp2 import feature_registry
+
+    assert feature_registry.CONFIG.is_file()
+    assert feature_registry._PACKAGED.name == feature_registry._IN_TREE.name
+
+
+def test_the_floor_is_enforced_within_each_role_not_across_them() -> None:
+    """Validation is a sixth of the rows, so an average can hide a breach in it.
+
+    A complete discovery partition would otherwise hold the merged coverage above the floor
+    while validation had already fallen through it, and the validation experiment would run
+    on a panel that silently dropped those rows.
+    """
+
+    from mds650.rp2.panel import assert_coverage_by_role
+
+    core = list(feature_map("B1_CORE"))
+    rows = 100
+    values = {name: [1.0] * rows for name in core}
+    # Ninety discovery rows complete, ten validation rows with a hole in one feature.
+    values["b1_iv_30d"] = [1.0] * 90 + [None] * 10  # type: ignore[list-item]
+    frame = pl.DataFrame({"role": ["D"] * 90 + ["V"] * 10, **values})
+
+    # Ninety per cent across the whole panel: the floor holds on the average.
+    assert_minimum_coverage(frame, "B1_CORE")
+    # Zero per cent inside validation: it does not hold where the experiment runs.
+    with pytest.raises(ValueError, match="role=V"):
+        assert_coverage_by_role(frame, "B1_CORE")
+
+    source = (REPO / "src" / "mds650" / "rp2" / "panel.py").read_text(encoding="utf-8")
+    assert "assert_coverage_by_role(panel" in source, (
+        "the loader must enforce the floor per partition"
+    )
+
+
+#: Every block that splits its role chronologically and therefore fits and scores segments.
+SPLIT_BLOCKS: tuple[str, ...] = (
+    "rp2_ext12_level4_and_tensor",
+    "rp2_block8_ladder",
+    "rp2_block9_generalization",
+    "rp2_block10_inference",
+    "rp2_block11_economics",
+    "rp2_block11b_forward_economics",
+    "rp2_block12_prospective_design",
+)
+
+
+def test_the_floor_holds_on_the_segments_a_run_fits_and_scores() -> None:
+    """A role can hold its floor on average and lose it in the tail it is scored on."""
+
+    from mds650.rp2.feature_registry import assert_segment_coverage
+
+    core = list(feature_map("B1_CORE"))
+    rows = 100
+    values: dict[str, list[float | None]] = {name: [1.0] * rows for name in core}
+    values["b1_iv_30d"] = [1.0] * 90 + [None] * 10
+    frame = pl.DataFrame(values)
+    train = np.array([True] * 90 + [False] * 10)
+    test = ~train
+
+    assert_minimum_coverage(frame, "B1_CORE")
+    assert_segment_coverage(frame, {"train": train}, "B1_CORE")
+    with pytest.raises(ValueError, match="segment=test"):
+        assert_segment_coverage(frame, {"train": train, "test": test}, "B1_CORE")
+
+    with pytest.raises(ValueError, match="RP2_FEATURE_SEGMENT_SHAPE"):
+        assert_segment_coverage(frame, {"short": np.ones(3, dtype=bool)}, "B1_CORE")
+
+
+def test_every_splitting_block_checks_its_own_segments() -> None:
+    missing = [
+        name
+        for name in SPLIT_BLOCKS
+        if "assert_segment_coverage(" not in (REPO / "scripts" / f"{name}.py").read_text(
+            encoding="utf-8"
+        )
+    ]
+    assert not missing, f"blocks that split without checking the segments: {missing}"
+
+
+NL = chr(10)
+
+
+def test_the_segment_check_runs_on_the_unfiltered_frame() -> None:
+    """Otherwise it checks that the rows which survived the mask survived the mask.
+
+    Most blocks filter the role frame by the common mask before splitting it. Checking
+    coverage on that frame is vacuous — every core feature is finite there by construction —
+    so a held-out tail that was below the floor passes after its incomplete rows have
+    already been discarded.
+    """
+
+    for name in SPLIT_BLOCKS:
+        source = (REPO / "scripts" / f"{name}.py").read_text(encoding="utf-8")
+        assert "role_frame = frame" in source, name
+        assert "assert_segment_coverage(" + NL + "        role_frame," in source, name
+        assert "lift_mask(keep, train)" in source and "lift_mask(keep, test)" in source, name
+        assert 'assert_segment_coverage(frame,' not in source, name

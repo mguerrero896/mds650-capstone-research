@@ -67,8 +67,12 @@ def test_zero_dte_uses_fractional_time_until_expiry() -> None:
 
 
 def test_the_zero_dte_features_exist() -> None:
+    """Registered somewhere in the frozen registry: core for the two the plan promotes."""
+
+    from mds650.rp2.feature_registry import feature_map
     from mds650.rp2.panel import B2_FEATURES
 
+    registered = set(feature_map("B2_CORE", "B2_RICH"))
     required = (
         "b2_5m_zero_dte_premium_share",
         "b2_5m_zero_dte_signed_premium",
@@ -76,8 +80,10 @@ def test_the_zero_dte_features_exist() -> None:
         "b2_5m_mean_provider_latency_s",
         "b2_5m_late_arrival_share",
     )
-    missing = [name for name in required if name not in B2_FEATURES]
+    missing = [name for name in required if name not in registered]
     assert not missing, f"B2 features the gate requires are not registered: {missing}"
+    for name in ("b2_5m_zero_dte_premium_share", "b2_5m_mean_provider_latency_s"):
+        assert name in B2_FEATURES, f"{name} is a core mechanism of the plan"
 
 
 def test_a_mean_is_not_called_a_median() -> None:

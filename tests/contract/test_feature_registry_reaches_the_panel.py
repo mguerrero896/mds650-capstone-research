@@ -25,6 +25,7 @@ from pathlib import Path
 import polars as pl
 import pytest
 
+from mds650.rp2.feature_registry import feature_map, registry
 from mds650.rp2.panel import B0_FEATURES, B1_FEATURES, B2_FEATURES
 
 REPO = Path(__file__).resolve().parents[2]
@@ -117,17 +118,20 @@ def test_no_panel_column_is_a_feature_nobody_registered() -> None:
     """The same defect in the other direction, across every panel that exists locally."""
 
     unregistered: list[str] = []
-    for name, path, features in PANELS:
+    for name, path, _ in PANELS:
         if not path.is_file():
             continue
         columns = set(pl.read_parquet_schema(path))
         prefix = {"B1": "b1_", "B2": "b2_"}.get(name)
+        # Registered means in the frozen registry, core *or* rich. A rich feature is out of
+        # every primary contrast and is still a feature somebody chose to build.
+        registered = set(feature_map(*[s for s in registry() if s.startswith(name)]))
         candidates = {
             column
             for column in columns - KEY_AND_TARGET_COLUMNS - DECLARED_DIAGNOSTICS
             if prefix is None or column.startswith(prefix)
         }
-        for column in sorted(candidates - set(features)):
+        for column in sorted(candidates - registered):
             unregistered.append(f"{name}:{column}")
     assert not unregistered, (
         "panel columns that are neither a registered feature nor a declared diagnostic — "

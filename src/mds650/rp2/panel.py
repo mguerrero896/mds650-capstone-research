@@ -15,6 +15,8 @@ import numpy as np
 import numpy.typing as npt
 import polars as pl
 
+from mds650.rp2.feature_registry import assert_minimum_coverage, feature_map
+
 type FloatArray = npt.NDArray[np.float64]
 type IntArray = npt.NDArray[np.int64]
 
@@ -22,130 +24,20 @@ JOIN_KEYS: Final[tuple[str, ...]] = ("asset", "session_date", "origin_minute")
 TARGET: Final = "rv30"
 VARIANCE_FLOOR: Final = 1e-12
 
-#: B0 columns and how to transform them. ``log`` for strictly positive levels, ``signed``
-#: for quantities that take either sign over many orders of magnitude, ``raw`` otherwise.
-B0_FEATURES: Final[dict[str, str]] = {
-    "rv_back_5": "log",
-    "rv_back_15": "log",
-    "rv_back_30": "log",
-    "rq_back_30": "log",
-    "rs_up_back_30": "log",
-    "rs_down_back_30": "log",
-    "jump_back_30": "log",
-    "rv_session_to_date": "log",
-    "rv_prev_day": "log",
-    "rv_week": "log",
-    "parkinson_30": "log",
-    "volume_30": "log",
-    "dollar_volume_30": "log",
-    "ret_5": "raw",
-    "ret_30": "raw",
-    "minutes_since_open": "raw",
-    "minutes_to_close": "raw",
-    "day_of_week": "raw",
-    # Market-wide state. These columns were built into the panel from the start and were
-    # never registered, so every block downstream of 4 ran a B0 that could not see the
-    # market at all — the ladder's own `b0_market` variant was the only thing using them.
-    # A B2 increment measured against a baseline blind to SPY and QQQ credits option flow
-    # with whatever the market was doing at the time.
-    "SPY_rv_30": "log",
-    "SPY_ret_30": "raw",
-    "QQQ_rv_30": "log",
-    "QQQ_ret_30": "raw",
-}
-
-#: B1-core: the primary option-state set, ten high-coverage features. Everything else the
-#: surface emits is B1-rich — reported, hashed and available, but out of the primary set,
-#: because a feature present on 60% of origins removes 40% of the evaluation rows from
-#: every nested contrast that includes it. See docs/rp2_v3/B1_CONTEMPORANEOUS_SPEC.md.
-B1_FEATURES: Final[dict[str, str]] = {
-    "b1_iv_7d": "log",
-    "b1_iv_30d": "log",
-    "b1_iv_60d": "log",
-    "b1_term_slope": "raw",
-    "b1_smile_level": "log",
-    "b1_risk_reversal_25": "raw",
-    "b1_median_relative_spread": "log",
-    "b1_median_quote_age_s": "log",
-    "b1_surface_coverage": "raw",
-    "b1_iv_minus_trailing_rv_30d": "signed",
-}
-
-_B2_WINDOWS: Final[tuple[str, ...]] = ("5m", "30m")
-_B2_LEVELS: Final[tuple[str, ...]] = ("trades", "contracts", "size", "premium")
-_B2_SIGNED: Final[tuple[str, ...]] = (
-    "vega_flow",
-    "gamma_flow",
-    "delta_flow",
-    "vega_flow_call",
-    "vega_flow_put",
-    "vega_flow_short_dte",
-    "vega_flow_long_dte",
-    "d_iv",
-    "d_mid_rel",
-    "d_spread",
-    "decay_intensity_innovation",
-    "zero_dte_signed_premium",
-)
-_B2_RAW: Final[tuple[str, ...]] = (
-    # 1 when nobody traded in this window. The three per-trade averages are 0 there, and
-    # this is what tells a model that those zeros are an absence rather than a measurement.
-    "is_empty_window",
-    "zero_dte_premium_share",
-    "zero_dte_trade_share",
-    "otm_premium_share",
-    "buy_premium_share",
-    "sell_premium_share",
-    "passive_premium_share",
-    "sweep_premium_share",
-    "late_arrival_share",
-    "multileg_size_share",
-    "multileg_premium_share",
-)
-#: Concentration and arrival-shape statistics are not prefix-summable, so the builder
-#: computes them on the concentration window only. Registering them for every window
-#: claimed four features that cannot exist — and `build_design` skips absent columns
-#: silently, so the claim went unnoticed for the whole programme.
-_B2_CONCENTRATION: Final[tuple[str, ...]] = (
-    "strike_hhi",
-    "expiry_hhi",
-    "contract_entropy",
-    "interarrival_cv",
-)
-#: The window those statistics are computed on; must match the builder's own constant.
-_B2_CONCENTRATION_WINDOW: Final = "5m"
-_B2_LOG: Final[tuple[str, ...]] = (
-    "vega_flow_abs",
-    "decay_intensity_last",
-    "rate_per_second",
-    "observed_span_s",
-    "mean_provider_latency_s",
-)
-
-
-def b2_features() -> dict[str, str]:
-    """B2 column-to-transform map: per-window features, plus the concentration window."""
-
-    mapping: dict[str, str] = {}
-    for window in _B2_WINDOWS:
-        for name in _B2_LEVELS + _B2_LOG:
-            mapping[f"b2_{window}_{name}"] = "log"
-        for name in _B2_SIGNED:
-            mapping[f"b2_{window}_{name}"] = "signed"
-        for name in _B2_RAW:
-            mapping[f"b2_{window}_{name}"] = "raw"
-    for name in _B2_CONCENTRATION:
-        mapping[f"b2_{_B2_CONCENTRATION_WINDOW}_{name}"] = "raw"
-    return mapping
-
-
-B2_FEATURES: Final[dict[str, str]] = b2_features()
+#: The three primary information sets, loaded from the frozen registry rather than restated
+#: here. A second copy of a feature list is a copy that drifts; the registry decides, and
+#: `configs/rp2_v3_feature_sets.json` is what it reads.
+B0_FEATURES: Final[dict[str, str]] = feature_map("B0_CORE")
+B1_FEATURES: Final[dict[str, str]] = feature_map("B1_CORE")
+B2_FEATURES: Final[dict[str, str]] = feature_map("B2_CORE")
 
 INFORMATION_SETS: Final[dict[str, dict[str, str]]] = {
     "B0": B0_FEATURES,
     "B1": B1_FEATURES,
     "B2": B2_FEATURES,
 }
+#: The registry name behind each information set, so a run can record what it fitted.
+CORE_SETS: Final[dict[str, str]] = {"B0": "B0_CORE", "B1": "B1_CORE", "B2": "B2_CORE"}
 
 
 def load_merged_panel(b0_path: Path, b1_path: Path, b2_path: Path) -> pl.DataFrame:
@@ -167,7 +59,30 @@ def load_merged_panel(b0_path: Path, b1_path: Path, b2_path: Path) -> pl.DataFra
         joined = panel.join(other, on=list(JOIN_KEYS), how="left")
         assert_one_to_one_join(panel, other, joined)
         panel = joined
+    # The registry declares a coverage floor per core set. Checking it here, against the
+    # panel a run will actually fit, is what makes the floor a floor rather than a number in
+    # a configuration file — and it is checked **per role**, because validation is a sixth
+    # of the rows and a complete discovery partition would otherwise hold the average above
+    # a floor validation had already broken.
+    assert_coverage_by_role(panel, *CORE_SETS.values())
     return panel
+
+
+def assert_coverage_by_role(panel: pl.DataFrame, *sets: str) -> None:
+    """Enforce each set's coverage floor within every partition the panel carries."""
+
+    if "role" not in panel.columns:
+        assert_minimum_coverage(panel, *sets)
+        return
+    for role in sorted({str(value) for value in panel["role"].unique()}):
+        frame = panel.filter(pl.col("role") == role)
+        if not frame.height:
+            continue
+        try:
+            assert_minimum_coverage(frame, *sets)
+        except ValueError as error:
+            raise ValueError(f"{error.args[0]}:role={role}") from error
+    return
 
 
 def transform_column(values: FloatArray, kind: str) -> FloatArray:

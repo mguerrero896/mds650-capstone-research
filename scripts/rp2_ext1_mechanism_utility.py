@@ -35,6 +35,7 @@ from mds650.b1v3_confirmation import canonical_sha256
 from mds650.metrics import holm_adjust
 from mds650.rp2.bars import FULL_SESSION_MINUTES, build_session_grid, load_bar_sources
 from mds650.rp2.dml import cross_fitted_residuals, dml_partial_out, time_block_folds
+from mds650.rp2.feature_registry import describe_features, feature_map
 from mds650.rp2.ladder import LADDER
 from mds650.rp2.panel import (
     B0_FEATURES,
@@ -62,6 +63,11 @@ B2_PANEL = ROOT / "artifacts" / "rp2_block6_flow" / "b2_flow_panel.parquet"
 
 #: The two treatments that replicated across universes in Block 7, plus the eight others
 #: from the core block so the joint test is comparable to Block 7's.
+#: The sets this extension actually fits. Its battery predates the core/rich split and
+#: includes rich channels, so a record built from the core sets alone would omit
+#: variables that were fitted.
+FITTED_SETS: tuple[str, ...] = ("B0_CORE", "B1_CORE", "B2_CORE", "B2_RICH")
+
 CORE_TREATMENTS: tuple[str, ...] = (
     "b2_5m_vega_flow",
     "b2_5m_gamma_flow",
@@ -326,10 +332,14 @@ def run_role(
     rv30 = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
 
     nuisance, nuisance_names = build_design(frame, [B0_FEATURES, B1_FEATURES])
-    unknown = [n for n in CORE_TREATMENTS if n not in B2_FEATURES]
+    # The historical treatment battery predates the core/rich split and names channels
+    # that are now B2-rich. The extension resolves against the whole registry: rich means
+    # out of the primary contrasts, not out of existence.
+    available = feature_map("B2_CORE", "B2_RICH")
+    unknown = [n for n in CORE_TREATMENTS if n not in available]
     if unknown:
         raise ValueError(f"RP2_EXT1_UNKNOWN_TREATMENT:{','.join(sorted(unknown))}")
-    treatment_map = {n: B2_FEATURES[n] for n in CORE_TREATMENTS}
+    treatment_map = {n: available[n] for n in CORE_TREATMENTS}
     treatment, names = build_design(frame, [treatment_map], intercept=False)
     keep = usable_rows(nuisance, rv30) & np.isfinite(treatment).all(axis=1)
     information_sets = {
@@ -351,7 +361,7 @@ def run_role(
 
     base_design, base_names = build_design(frame, [B0_FEATURES, B1_FEATURES])
     full_design, full_names = build_design(frame, [B0_FEATURES, B1_FEATURES, B2_FEATURES])
-    replicated_map = {n: B2_FEATURES[n] for n in REPLICATED}
+    replicated_map = {n: available[n] for n in REPLICATED}
     replicated_design, replicated_names = build_design(
         frame, [B0_FEATURES, B1_FEATURES, replicated_map]
     )
@@ -406,6 +416,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     targets = build_target_battery(args.data_root, origins_by_key)
 
     document: dict[str, object] = {
+        # Which frozen sets were fitted, how complete they were, and the hash of the
+        # registry that decided them. Without it an artifact records a design width and
+        # nothing a reader can check that width against.
+        "feature_registry": describe_features(
+            panel,
+            [*feature_map("B0_CORE", "B1_CORE", "B2_CORE"), *CORE_TREATMENTS],
+            sets=FITTED_SETS,
+        ),
         "extension": 1,
         "program": "docs/research_program_v2.md",
         "label": "EXPLORATORY_MECHANISM_DISCOVERY",

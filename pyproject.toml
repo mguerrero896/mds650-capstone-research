@@ -44,6 +44,11 @@ dev = [
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/mds650"]
+# The frozen feature sets are data the package cannot start without: importing
+# mds650.rp2.panel resolves them eagerly. Without this a non-editable wheel installs
+# cleanly and then fails on first import.
+[tool.hatch.build.targets.wheel.force-include]
+"configs/rp2_v3_feature_sets.json" = "mds650/rp2/configs/rp2_v3_feature_sets.json"
 
 [tool.pytest.ini_options]
 addopts = "-q --strict-markers -m \"not live\""

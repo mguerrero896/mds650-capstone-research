@@ -41,11 +41,13 @@ except ModuleNotFoundError as error:  # pragma: no cover - explicit, actionable 
 from mds650.b1v3_confirmation import canonical_sha256
 from mds650.metrics import paired_day_bootstrap, qlike_losses
 from mds650.rp2.baseline import mincer_zarnowitz
+from mds650.rp2.feature_registry import assert_segment_coverage, describe_coverage
 from mds650.rp2.ladder import LADDER
 from mds650.rp2.panel import (
     B0_FEATURES,
     B1_FEATURES,
     B2_FEATURES,
+    CORE_SETS,
     VARIANCE_FLOOR,
     build_design,
     chronological_split,
@@ -187,10 +189,21 @@ def run_role(
             "information_sets": information_sets,
         }
 
+    role_frame = frame
     frame = frame.filter(pl.Series(keep))
     target, base_design, index = target[keep], base_design[keep], index[keep]
     ranks = session_rank(frame["session_date"].to_numpy())
     train, test = chronological_split(ranks, train_share=train_share)
+    # The floor holds on the panel and on this role; it also has to hold on the two
+    # segments this run fits and scores, which is where a held-out tail with a gap in it
+    # would otherwise become a result. The masks are lifted back onto the unfiltered role
+    # frame: checking them on the frame the common mask has already pruned would be
+    # checking that the rows which survived are the rows which survived.
+    assert_segment_coverage(
+        role_frame,
+        {"train": lift_mask(keep, train), "test": lift_mask(keep, test)},
+        *CORE_SETS.values(),
+    )
     information_sets["B0+B1+B2"] = describe_information_set(
         ("B0", "B1", "B2"), base_names, lift_mask(keep, test)
     )
@@ -312,6 +325,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         keys, on=["asset", "session_date", "origin_minute"], how="inner"
     )
     document: dict[str, object] = {
+        # Which frozen sets were fitted, how complete they were, and the hash of the
+        # registry that decided them. Without it an artifact records a design width and
+        # nothing a reader can check that width against.
+        "feature_registry": describe_coverage(panel, *CORE_SETS.values()),
+        "extension_inputs": "the tensor and sequence arms add inputs outside the registry; "
+        "their resolved names are recorded per arm under information_sets",
         "extensions": [1, 2],
         "program": "docs/research_program_v2.md",
         "label": "EXPLORATORY_MECHANISM_DISCOVERY",
