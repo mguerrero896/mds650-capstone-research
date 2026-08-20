@@ -93,7 +93,14 @@ def test_the_scorecard_refuses_a_field_it_could_not_measure() -> None:
         }
         for family in PRIMARY_MODELS
     }
-    scorecard["forecast_calibration"] = {"calibration_slope": 1.0, "calibration_intercept": 0.0}
+    scorecard["forecast_calibration"] = {
+        "calibration_slope": 1.0,
+        "calibration_intercept": 0.0,
+        "by_role_and_family": {
+            role: {family: {"slope": 1.0, "intercept": 0.0} for family in PRIMARY_MODELS}
+            for role in ("D", "V")
+        },
+    }
     assert_scorecard_complete(scorecard)
 
     scorecard["b2"] = {**scorecard["b2"], "b2_pit_violation_count": None}  # type: ignore[dict-item]
@@ -137,7 +144,14 @@ def test_a_container_that_measured_nothing_is_not_a_measurement() -> None:
         }
         for family in PRIMARY_MODELS
     }
-    scorecard["forecast_calibration"] = {"calibration_slope": 1.0, "calibration_intercept": 0.0}
+    scorecard["forecast_calibration"] = {
+        "calibration_slope": 1.0,
+        "calibration_intercept": 0.0,
+        "by_role_and_family": {
+            role: {family: {"slope": 1.0, "intercept": 0.0} for family in PRIMARY_MODELS}
+            for role in ("D", "V")
+        },
+    }
 
     for value in ((None, None), {}, {"D": None}, []):
         scorecard["data"] = {**scorecard["data"], "provider_failures": value}  # type: ignore[dict-item]

@@ -79,7 +79,14 @@ def test_the_scorecard_refuses_a_run_whose_point_in_time_invariants_broke() -> N
         }
         for family in PRIMARY_MODELS
     }
-    scorecard["forecast_calibration"] = {"calibration_slope": 1.0, "calibration_intercept": 0.0}
+    scorecard["forecast_calibration"] = {
+        "calibration_slope": 1.0,
+        "calibration_intercept": 0.0,
+        "by_role_and_family": {
+            role: {family: {"slope": 1.0, "intercept": 0.0} for family in PRIMARY_MODELS}
+            for role in ("D", "V")
+        },
+    }
     assert_scorecard_complete(scorecard)
 
     for group, field in (

@@ -460,9 +460,20 @@ def assert_scorecard_complete(
         for field in forecast_fields:
             if _unmeasured(values.get(field)):
                 missing.append(f"{label}.{field}:unmeasured")
+    calibration = scorecard.get("forecast_calibration", {})
     for field in ("calibration_slope", "calibration_intercept"):
-        if _unmeasured(scorecard.get("forecast_calibration", {}).get(field)):
+        if _unmeasured(calibration.get(field)):
             missing.append(f"forecast.{field}:unmeasured")
+    # The headline pair is a pointer into the matrix, not a substitute for it. Validating
+    # only the two scalars let the table omit, say, `ridge_log` on V - which is exactly the
+    # comparison the calibration numbers exist to support.
+    table = calibration.get("by_role_and_family", {})
+    for role in required_roles:
+        for family in PRIMARY_MODELS:
+            entry = table.get(role, {}).get(family, {})
+            for field in ("slope", "intercept"):
+                if _unmeasured(entry.get(field)):
+                    missing.append(f"forecast_calibration.{role}.{family}.{field}:unmeasured")
     if missing:
         raise ValueError("RP2_SCORECARD_INCOMPLETE:" + ",".join(sorted(missing)))
     assert_scorecard_invariants(scorecard)

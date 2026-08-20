@@ -722,6 +722,11 @@ def assert_inputs_unchanged(run_dir: Path, *, data_root: Path) -> None:
     """
 
     recorded = json.loads((run_dir / "input_manifest.json").read_text(encoding="utf-8"))
+    # The inventory itself, first. A synchronisation that reassigned sessions or assets
+    # while keeping the same set of paths would leave the metadata digest below unchanged,
+    # and Blocks 5 and 6 would have consumed the new mapping.
+    if file_digest(TAPE_INVENTORY) != recorded.get("tape_inventory_sha256"):
+        raise SystemExit("RP2_RUN_INPUTS_CHANGED_DURING_RUN:inventory")
     _, freshness, _, _ = _tape_fingerprint(
         inventory_paths(TAPE_INVENTORY), hash_contents=False
     )
