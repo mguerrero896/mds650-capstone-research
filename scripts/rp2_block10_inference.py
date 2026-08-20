@@ -139,7 +139,11 @@ def run_role(
     # tests beside it used the recorded common mask. The origin minute is exact and needs no
     # imputation, but is standardised with the same fold statistics for comparability.
     conditioner_features = ["rv_back_30", "dollar_volume_30", "minutes_since_open"]
-    conditioners = fold_design(frame, conditioner_features, train, intercept=False)[0][test]
+    conditioners, _, conditioner_fitted = fold_design(
+        frame, conditioner_features, train, intercept=False
+    )
+    conditioners = conditioners[test]
+    preprocessors["giacomini_white_conditioners"] = describe_preprocessor(conditioner_fitted)
 
     results: dict[str, object] = {
         "status": "MEASURED",

@@ -305,9 +305,12 @@ def test_the_conditional_test_uses_the_same_sample_as_the_unconditional_ones() -
     source = (
         _Path(__file__).resolve().parents[2] / "scripts" / "rp2_block10_inference.py"
     ).read_text(encoding="utf-8")
-    assert "fold_design(frame, conditioner_features, train, intercept=False)" in source
+    assert "frame, conditioner_features, train, intercept=False" in source
     assert 'np.log(np.maximum(frame["rv_back_30"]' not in source
     assert 'np.log(np.maximum(frame["dollar_volume_30"]' not in source
+    # The conditioner fold has its own statistics, so the Wald statistic's design is
+    # identifiable from the artifact rather than only the forecasting designs.
+    assert 'preprocessors["giacomini_white_conditioners"]' in source
 
 
 def test_a_regime_label_says_missing_rather_than_guessing() -> None:
