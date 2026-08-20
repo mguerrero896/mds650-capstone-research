@@ -578,3 +578,23 @@ def test_one_constant_decides_the_bootstrap_seed() -> None:
     for script in sorted((REPO / "scripts").glob("rp2_*.py")):
         found = literal.findall(script.read_text(encoding="utf-8"))
         assert not found, f"{script.name} passes {found} instead of DEFAULT_SEED"
+
+
+def test_no_rp2_producer_writes_an_inference_setting_down_for_itself() -> None:
+    """The digest describes the settings, so the settings come from what the digest covers.
+
+    The seed was the first of these; `repetitions=1000` in the SPA call was the second, and
+    the digest recorded 2000. A literal at a producer's call site is a setting the published
+    configuration does not describe.
+    """
+
+    from mds650.rp2 import inference
+
+    literal = re.compile(r"\b(repetitions|seed|block_length|alpha)\s*=\s*[\d.]+")
+    for script in sorted((REPO / "scripts").glob("rp2_*.py")):
+        found = literal.findall(script.read_text(encoding="utf-8"))
+        assert not found, f"{script.name} sets {found} itself"
+
+    covered = json.loads(inference.inference_config_payload())
+    assert covered["spa_repetitions"] == inference.SPA_REPETITIONS
+    assert covered["bootstrap_repetitions"] == inference.DEFAULT_BOOTSTRAP

@@ -222,7 +222,10 @@ begin
     if block_rows = 0 and contrast_rows = 0 then
         raise exception 'RP2_PUBLISH_NOTHING_TO_PUBLISH';
     end if;
-    if (run ->> 'code_commit') !~ '^[0-9a-f]{40}$' then
+    -- `coalesce` for the same reason as the digests below: a regex against NULL is NULL,
+    -- and `if NULL then` does not raise, so an omitted commit would have reached PUBLISHED
+    -- through the check written to prevent exactly that.
+    if coalesce(run ->> 'code_commit', '') !~ '^[0-9a-f]{40}$' then
         raise exception 'RP2_PUBLISH_CODE_COMMIT_INVALID';
     end if;
 

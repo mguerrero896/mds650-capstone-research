@@ -26,6 +26,10 @@ type FloatArray = npt.NDArray[np.float64]
 type IntArray = npt.NDArray[np.int64]
 
 DEFAULT_BOOTSTRAP: Final = 2000
+#: Resamples for the family-matched SPA. Fewer than the interval bootstrap because the SPA
+#: recentres and re-ranks every candidate on each draw; it is a separate setting, and the
+#: digest records it separately rather than letting `DEFAULT_BOOTSTRAP` stand for both.
+SPA_REPETITIONS: Final = 1000
 #: The frozen resampling seed. Every producer passes it; it is stated once here so the
 #: inference configuration digest can cover it.
 DEFAULT_SEED: Final = 650
@@ -602,6 +606,12 @@ def inference_config_digest() -> str:
     size, the target power and the equivalence margin are what decide that.
     """
 
+    return hashlib.sha256(inference_config_payload().encode("utf-8")).hexdigest()
+
+
+def inference_config_payload() -> str:
+    """The settings themselves, canonically encoded. Separated so a test can read them."""
+
     configuration = {
         "session_block_length": SESSION_BLOCK_LENGTH,
         # The seed decides which resamples the bootstrap draws, so two contrasts computed
@@ -609,10 +619,10 @@ def inference_config_digest() -> str:
         # matches.
         "bootstrap_seed": DEFAULT_SEED,
         "bootstrap_repetitions": DEFAULT_BOOTSTRAP,
+        "spa_repetitions": SPA_REPETITIONS,
         "block_mean": DEFAULT_BLOCK_MEAN,
         "alpha": DEFAULT_ALPHA,
         "power": DEFAULT_POWER,
         "equivalence_fraction": EQUIVALENCE_FRACTION,
     }
-    payload = json.dumps(configuration, sort_keys=True, separators=(",", ":"))
-    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+    return json.dumps(configuration, sort_keys=True, separators=(",", ":"))

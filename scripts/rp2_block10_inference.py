@@ -25,6 +25,7 @@ from mds650.metrics import qlike_losses
 from mds650.rp2.feature_registry import assert_segment_coverage, describe_coverage
 from mds650.rp2.inference import (
     DEFAULT_SEED,
+    SPA_REPETITIONS,
     clark_west_terms,
     clustered_mean_test,
     hansen_spa,
@@ -245,7 +246,7 @@ def run_role(
                 candidates,
                 sessions=clusters,
                 benchmark_name=f"{model_name}|{benchmark_set}",
-                repetitions=1000,
+                repetitions=SPA_REPETITIONS,
                 seed=DEFAULT_SEED,
             )
             family[benchmark_set] = {
