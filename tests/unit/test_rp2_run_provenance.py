@@ -396,3 +396,46 @@ def test_a_sealed_role_is_recognised_however_it_is_spelled(tmp_path: Path) -> No
         )
         with pytest.raises(ValueError, match="RP2_RUN_SEALED_COHORT_FORBIDDEN"):
             assert_no_sealed_roles(inventory)
+
+
+def test_a_reused_panel_must_be_the_one_the_interrupted_attempt_produced(tmp_path: Path) -> None:
+    """Otherwise one run id holds two versions of the same panel.
+
+    The manifest arrives at the end, which is no use to a resume of a run that stopped
+    before then, so each step records its digests as it completes.
+    """
+
+    from mds650.rp2.run_manifest import (
+        StepRecord,
+        assert_step_artifacts_unchanged,
+        record_step_progress,
+        stable_content_digest,
+    )
+
+    run_dir = tmp_path / "rp2-v3-20260820-001"
+    (run_dir / "rp2_block5_surface").mkdir(parents=True)
+    panel = run_dir / "rp2_block5_surface" / "b1_surface_panel.parquet"
+    panel.write_bytes(b"the panel the attempt produced")
+    write_run_identity(run_dir, _manifest(run_id="rp2-v3-20260820-001"))
+
+    relative = "rp2_block5_surface/b1_surface_panel.parquet"
+    record_step_progress(
+        run_dir,
+        StepRecord(
+            name="build-b1",
+            command=("python", "scripts/rp2_block5_surface_panel.py"),
+            exit_code=0,
+            runtime_seconds=1.0,
+            peak_memory_bytes=1,
+            artifacts={relative: file_digest(panel)},
+            content={relative: stable_content_digest(panel)},
+        ),
+    )
+    assert_step_artifacts_unchanged(run_dir, "build-b1")
+
+    panel.write_bytes(b"something else entirely")
+    with pytest.raises(ValueError, match="RP2_RUN_REUSED_ARTIFACT_CHANGED:build-b1"):
+        assert_step_artifacts_unchanged(run_dir, "build-b1")
+
+    with pytest.raises(ValueError, match="RP2_RUN_STEP_NOT_RECORDED:build-b2"):
+        assert_step_artifacts_unchanged(run_dir, "build-b2")

@@ -47,10 +47,12 @@ from mds650.rp2.run_manifest import (  # noqa: E402
     assert_no_sealed_paths,
     assert_no_sealed_roles,
     assert_run_identity_unchanged,
+    assert_step_artifacts_unchanged,
     canonical_json,
     declared_inputs,
     file_digest,
     inventory_paths,
+    record_step_progress,
     stable_content_digest,
     write_manifest,
     write_run_identity,
@@ -945,6 +947,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             missing = [output for output in step.outputs if not (run_dir / output).is_file()]
             if missing:
                 raise SystemExit(f"RP2_RUN_PANEL_MISSING:{name}:{','.join(missing)}")
+            # And it is the artifact the interrupted attempt produced, not merely a file
+            # with the right name: otherwise one run id ends up holding two versions of the
+            # same panel, which is what the whole hash discipline exists to prevent.
+            assert_step_artifacts_unchanged(run_dir, name)
             steps.append(
                 StepRecord(
                     name=name,
@@ -964,7 +970,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                 )
             )
             continue
-        steps.append(run_step(name, command, run_dir))
+        record = run_step(name, command, run_dir)
+        # Recorded as it completes. The manifest arrives at the end, which is no use to a
+        # resume of a run that stopped before then.
+        record_step_progress(run_dir, record)
+        steps.append(record)
 
     assert_partition_matches(run_dir)
     tape_keys, wildcard_sessions = tape_coverage(TAPE_INVENTORY)

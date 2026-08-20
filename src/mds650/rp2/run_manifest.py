@@ -512,6 +512,53 @@ def write_run_identity(run_dir: Path, manifest: RunManifest) -> Path:
     return path
 
 
+def record_step_progress(run_dir: Path, step: StepRecord) -> None:
+    """Add one completed step's digests to the marker, as it completes.
+
+    The full manifest arrives only at the end, so an interrupted run would otherwise leave
+    its panels with nothing recorded about them - and a resume would hash whatever is on
+    disk and accept it as the original output, letting one run id hold two versions of an
+    artifact.
+    """
+
+    path = run_dir / IDENTITY_FILE
+    payload: dict[str, object] = {}
+    if path.is_file():
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    existing = payload.get("steps")
+    progress: dict[str, object] = dict(existing) if isinstance(existing, dict) else {}
+    progress[step.name] = {
+        "artifacts": dict(sorted(step.artifacts.items())),
+        "content": dict(sorted(step.content.items())),
+    }
+    payload["steps"] = dict(sorted(progress.items()))
+    staging = path.with_suffix(".json.partial")
+    body = json.dumps(payload, indent=2, sort_keys=True)
+    staging.write_text(body + "\n", encoding="utf-8")
+    os.replace(staging, path)
+
+
+def assert_step_artifacts_unchanged(run_dir: Path, name: str) -> None:
+    """A reused artifact is the one the interrupted attempt produced, not merely a file.
+
+    Without this, `--skip-panels` hashes whatever is on disk and records it as this run's
+    output, and one run id ends up holding two versions of the same panel.
+    """
+
+    path = run_dir / IDENTITY_FILE
+    if not path.is_file():
+        raise ValueError(f"RP2_RUN_NO_PROGRESS_RECORD:{name}")
+    recorded = json.loads(path.read_text(encoding="utf-8")).get("steps", {}).get(name)
+    if not recorded:
+        raise ValueError(f"RP2_RUN_STEP_NOT_RECORDED:{name}")
+    for artifact, digest in recorded.get("artifacts", {}).items():
+        actual = run_dir / artifact
+        if not actual.is_file():
+            raise ValueError(f"RP2_RUN_REUSED_ARTIFACT_MISSING:{name}:{artifact}")
+        if file_digest(actual) != digest:
+            raise ValueError(f"RP2_RUN_REUSED_ARTIFACT_CHANGED:{name}:{artifact}")
+
+
 def assert_run_identity_unchanged(run_dir: Path, manifest: RunManifest) -> None:
     """Refuse a run id that already holds a different run, *before* anything overwrites it.
 
