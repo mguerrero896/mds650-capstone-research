@@ -1,10 +1,12 @@
 # Block 6 — Gate 5: B2 rebuilt as microstructure
 
-**Status:** `EXECUTED — 2026-08-19` · label `EXPLORATORY_MECHANISM_DISCOVERY`
+**Status:** `EXECUTED — 2026-08-20` · label `EXPLORATORY_MECHANISM_DISCOVERY`
+**Superseded:** the 2026-08-19 run of this block is `SUPERSEDED_BY_RP2_V3`; see
+`docs/rp2_v3/SUPERSEDED_RESULTS.md` and methodology decision 81.
 **Artifacts:** `artifacts/rp2_block6_flow/flow_coverage.json`
-(`flow_sha256 = d7320a546cfe2ffc113baab555b3b663bbcffa678495d7ee80fb4b31820d3306`);
+(`flow_sha256 = cd109e501b676c97c1375f20e486fb3b64a91e1c93795eb655402f33256ef9ce`);
 panel `b2_flow_panel.parquet` is local-only, hashed in `artifacts/rp2_panel_pointers.json`
-(`b4066780…5e9e4`, 43.7 MB).
+(`91ba60a1…214f2`, 74.8 MB).
 **Code:** `src/mds650/rp2/flow.py`, `scripts/rp2_block6_flow_panel.py`
 **Tests:** `tests/unit/test_rp2_flow.py` (10 tests)
 
@@ -66,7 +68,7 @@ are still evaluated on a window slice — and only on the short 5-minute one.
 ## 3. What the rebuilt B2 looks like
 
 184,632 origins over 2,814 session-assets,
-0 without tape, **60 features**.
+0 without tape, **66 features**.
 
 Medians over all origins:
 

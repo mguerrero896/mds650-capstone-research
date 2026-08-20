@@ -62,6 +62,38 @@ OTM_LOG_MONEYNESS = 0.05
 #: A session with fewer prints than this is too thin to build microstructure from. It
 #: is a sparse session, not a provider failure, and the artifact says which.
 MINIMUM_SESSION_PRINTS = 50
+#: Every per-trade quantity the window aggregator prefix-sums. Named here so a caller — a
+#: test, or a future runner — can build the prefix table without reconstructing a session.
+CHANNEL_NAMES: tuple[str, ...] = (
+    "trades",
+    "size",
+    "premium",
+    "vega_flow",
+    "gamma_flow",
+    "delta_flow",
+    "vega_flow_abs",
+    "vega_flow_call",
+    "vega_flow_put",
+    "vega_flow_short_dte",
+    "vega_flow_long_dte",
+    "zero_dte_premium",
+    "zero_dte_signed_premium",
+    "zero_dte_trades",
+    "otm_premium",
+    "buy_premium",
+    "sell_premium",
+    "passive_premium",
+    "sweep_premium",
+    "multileg_size",
+    "multileg_premium",
+    "d_iv_sum",
+    "d_mid_sum",
+    "d_spread_sum",
+    "has_previous",
+    "age_sum",
+    "latency_sum",
+    "latency_over_60s",
+)
 SHORT_DTE_DAYS = 7.0
 LONG_DTE_DAYS = 30.0
 #: Exact tenors in years, so the DTE buckets compare like with like against the clock.
@@ -312,6 +344,7 @@ def build_session_flow(
         "latency_over_60s": clocks.late_arrivals.astype(np.float64),
     }
     prefixes = {name: _prefix(values) for name, values in channels.items()}
+    assert set(prefixes) == set(CHANNEL_NAMES), "CHANNEL_NAMES is out of date"
 
     base = datetime.fromisoformat(session).replace(tzinfo=NY)
     cutoffs_us = np.array(
@@ -413,8 +446,7 @@ def _window_record(
     intensity_before: float,
 ) -> dict[str, float]:
     prefix = f"b2_{label}_"
-    if hi <= lo:
-        return {f"{prefix}trades": 0.0, f"{prefix}premium": 0.0}
+    empty = hi <= lo
 
     def total(name: str) -> float:
         return float(prefixes[name][hi] - prefixes[name][lo])
@@ -425,7 +457,7 @@ def _window_record(
     # The window is a slice of a publication-ordered array, so its first and last rows are
     # not necessarily its earliest and latest executions.
     window_seconds = seconds[lo:hi]
-    span = float(window_seconds.max() - window_seconds.min())
+    span = float(window_seconds.max() - window_seconds.min()) if not empty else 0.0
     record: dict[str, float] = {
         f"{prefix}trades": trades,
         f"{prefix}contracts": float(np.unique(keys[lo:hi]).size),
@@ -453,15 +485,28 @@ def _window_record(
         f"{prefix}decay_intensity_last": intensity_now,
         f"{prefix}decay_intensity_innovation": intensity_now - intensity_before,
         f"{prefix}rate_per_second": trades / span if span > 0.0 else float("nan"),
-        # A mean, and now named one. It was called a median for the whole programme.
-        f"{prefix}mean_age_s": cutoff_us / 1e6 - total("age_sum") / max(trades, 1.0),
+        # A mean, and now named one. It was called a median for the whole programme. A mean
+        # over nothing is not zero, it is undefined, and the three per-trade averages say so.
+        f"{prefix}mean_age_s": (
+            cutoff_us / 1e6 - total("age_sum") / trades if trades else float("nan")
+        ),
         # Provider latency, from the exchange clock to the availability clock.
-        f"{prefix}mean_provider_latency_s": total("latency_sum") / max(trades, 1.0),
-        f"{prefix}late_arrival_share": total("latency_over_60s") / max(trades, 1.0),
+        f"{prefix}mean_provider_latency_s": (
+            total("latency_sum") / trades if trades else float("nan")
+        ),
+        f"{prefix}late_arrival_share": (
+            total("latency_over_60s") / trades if trades else float("nan")
+        ),
         f"{prefix}zero_dte_premium_share": total("zero_dte_premium") / total_premium,
         f"{prefix}zero_dte_signed_premium": total("zero_dte_signed_premium"),
         f"{prefix}zero_dte_trade_share": total("zero_dte_trades") / max(trades, 1.0),
     }
+    if empty:
+        # The concentration statistics of an empty window do not exist. The intensity does:
+        # it is the decay-weighted activity at this instant, which earlier visible trades
+        # still support, and dropping it would remove the origin from every contrast under
+        # the fail-closed mask for the sake of a window in which nobody traded.
+        return record
     if label == CONCENTRATION_WINDOW:
         window_premium = premium[lo:hi]
         record[f"{prefix}strike_hhi"] = herfindahl(

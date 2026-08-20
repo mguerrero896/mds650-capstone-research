@@ -164,3 +164,37 @@ def test_a_session_asset_with_no_tape_at_all_is_counted() -> None:
     assert "session_assets_in_b0_panel" in source, (
         "the denominator has to be what the study asked for, not what it managed"
     )
+
+
+def test_an_empty_window_still_reports_the_intensity_it_has() -> None:
+    """Nobody traded in the last five minutes; the tape before that still exists.
+
+    Returning only trades and premium filled every other registered feature with null, and
+    the fail-closed mask then removed the origin from every contrast — for the sake of a
+    window in which nobody traded, which is a fact worth keeping.
+    """
+
+    import numpy as np
+
+    block6 = _load("rp2_block6_flow_panel")
+    prefixes = {name: np.zeros(3, dtype=np.float64) for name in block6.CHANNEL_NAMES}
+    record = block6._window_record(
+        2,
+        2,
+        "5m",
+        cutoff_us=1_800_000_000_000_000,
+        prefixes=prefixes,
+        keys=np.zeros(2, dtype=np.int64),
+        strike=np.zeros(2),
+        expiry_day=np.zeros(2, dtype=np.int64),
+        premium=np.zeros(2),
+        seconds=np.zeros(2),
+        intensity_now=12.5,
+        intensity_before=4.0,
+    )
+    assert record["b2_5m_trades"] == 0.0
+    assert record["b2_5m_decay_intensity_last"] == 12.5
+    assert record["b2_5m_decay_intensity_innovation"] == 8.5
+    # A mean over nothing is undefined, and says so rather than reading as zero.
+    assert np.isnan(record["b2_5m_mean_provider_latency_s"])
+    assert np.isnan(record["b2_5m_mean_age_s"])

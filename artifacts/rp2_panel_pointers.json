@@ -13,8 +13,8 @@
       "sha256": "ec6409e9075175e214a69069f8aa970ba1cdf7f900cb8d254b3b739ba54fa65c"
     },
     "artifacts/rp2_block6_flow/b2_flow_panel.parquet": {
-      "bytes": 43657271,
-      "sha256": "b4066780568870ca14b70bc41054737f68b91337915a47c10810af34b1d5e9e4"
+      "bytes": 74792563,
+      "sha256": "91ba60a1c67b962867dde077cf19677dae9686ba495fd7c3ee32876a34c214f2"
     }
   },
   "purpose": "Content hashes of the Research Program v2 derived panels, which are not versioned in git: they are large and are derived works of licensed provider data (see docs/provider_license_review_v1.md).",
