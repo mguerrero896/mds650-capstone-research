@@ -533,8 +533,16 @@ $$;
 comment on function public.publish_rp2_v3(jsonb) is
     'Publish one RP2-v3 run atomically: the run, its inputs, its block results and its contrasts, with the previous current rows stood down. Raises rather than half-publishing.';
 
+-- `PUBLIC` first: PostgreSQL grants EXECUTE on a new function to that pseudo-role, so
+-- revoking from `anon` and `authenticated` alone leaves the inherited grant in place.
 revoke all on function public.publish_rp2_v3(jsonb) from public;
 revoke all on function public.publish_rp2_v3(jsonb) from anon, authenticated;
+-- And then say who may call it. This project's `ALTER DEFAULT PRIVILEGES` happens to grant
+-- EXECUTE on new `public` functions to `service_role`, so publication would work here
+-- without this line - but that is ambient configuration this migration does not own, and a
+-- database restored or created without it would refuse every publication with a permission
+-- error. The grant the publisher depends on is stated rather than inherited.
+grant execute on function public.publish_rp2_v3(jsonb) to service_role;
 
 -- A failed publication is recorded separately, outside the transaction that rolled back:
 -- a run that raised leaves no trace by construction, and a rebuild that failed silently
@@ -569,3 +577,4 @@ $$;
 
 revoke all on function public.record_rp2_v3_failure(text, text) from public;
 revoke all on function public.record_rp2_v3_failure(text, text) from anon, authenticated;
+grant execute on function public.record_rp2_v3_failure(text, text) to service_role;

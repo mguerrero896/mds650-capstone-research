@@ -138,6 +138,31 @@ the base tables carry row-level security with no reader policy, so a field missi
 view cannot be reached at all, and a contrast whose mask a reader cannot see is a contrast
 whose evaluation rows nobody outside can identify.
 
+## Who may call the publication functions
+
+The end state, read off the function's own access list inside a rolled-back transaction:
+
+```text
+0 acl as created      {=X/postgres,postgres=X/postgres,anon=X/postgres,authenticated=X/postgres,service_role=X/postgres}
+1 acl after grants    {postgres=X/postgres,service_role=X/postgres}
+2 publish: service_role   true
+3 publish: anon           false
+4 publish: PUBLIC         false
+5 failure: service_role   true
+6 failure: anon           false
+```
+
+The leading `=X/postgres` on line 0 is the `PUBLIC` grant PostgreSQL attaches to every new
+function. The `service_role=X` beside it does not come from `PUBLIC`: this project's
+`ALTER DEFAULT PRIVILEGES` grants EXECUTE on new `public` functions to `anon`,
+`authenticated` and `service_role` individually, so revoking `PUBLIC` never took the
+publisher's own access away and publication would work here without the explicit grant.
+
+It is stated anyway, because that default-privilege setting is ambient configuration this
+migration does not own. A database restored or created without it would refuse every
+publication with a permission error, and the grant a publisher depends on should be written
+down rather than inherited.
+
 ## What the publisher checks before it calls
 
 The manifest carries its own `scientific_sha256`, covering the commit, the input digest, the
