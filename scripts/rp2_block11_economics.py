@@ -44,6 +44,7 @@ from mds650.rp2.panel import (
     describe_information_set,
     lift_mask,
     load_merged_panel,
+    mask_sha256,
     session_rank,
 )
 from mds650.rp2.preprocessing import describe_preprocessor, fold_design
@@ -153,6 +154,10 @@ def run_role(
         "train_share": train_share,
         "evaluated_rows": int(evaluate.sum()),
         "risk_utility_rows": int(scored.sum()),
+        # A count says how many were removed, not which. The subset the certainty
+        # equivalent was measured on gets its own panel-space hash, like every other
+        # evaluated sample in this programme.
+        "risk_utility_evaluation_mask_sha256": mask_sha256(lift_mask(keep, scored)),
         "risk_utility_rows_without_a_realised_return": int(
             (evaluate & ~np.isfinite(returns)).sum()
         ),

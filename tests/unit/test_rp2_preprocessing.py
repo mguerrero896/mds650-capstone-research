@@ -413,3 +413,27 @@ def test_the_cross_fit_blocks_impute_from_their_own_training_rows() -> None:
 
     cross_fitted_residuals(design, response, folds, design_builder=builder)
     assert len(calls) == 2, "the design must be rebuilt once per fold"
+
+
+def test_the_dml_record_describes_the_folds_that_produced_it() -> None:
+    """A full-sample fit no projection used is an artifact about nothing."""
+
+    from pathlib import Path as _Path
+
+    source = (
+        _Path(__file__).resolve().parents[2] / "scripts" / "rp2_block7_dml.py"
+    ).read_text(encoding="utf-8")
+    assert "preprocessing[outcome_name] = [" in source
+    assert '"preprocessing": preprocessing[outcome_name],' in source
+    assert "fit_preprocessor(kept_frame" not in source, (
+        "the full-sample surrogate must be gone, not merely supplemented"
+    )
+
+
+def test_the_risk_utility_subset_carries_its_own_hash() -> None:
+    from pathlib import Path as _Path
+
+    source = (
+        _Path(__file__).resolve().parents[2] / "scripts" / "rp2_block11_economics.py"
+    ).read_text(encoding="utf-8")
+    assert '"risk_utility_evaluation_mask_sha256": mask_sha256(lift_mask(keep, scored))' in source

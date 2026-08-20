@@ -37,7 +37,7 @@ from mds650.rp2.panel import (
     mask_sha256,
     session_rank,
 )
-from mds650.rp2.preprocessing import describe_preprocessor, fit_preprocessor, fold_design
+from mds650.rp2.preprocessing import describe_preprocessor, fold_design
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_block7_dml"
@@ -129,15 +129,13 @@ def run_role(
             kept_frame, list(treatment_map), train, intercept=False
         )[0]
 
+    # A shape only: the projections below rebuild the design per cross-fit block, and the
+    # statistics that produced each of them are recorded per outcome and per block. A
+    # full-sample fit here would be an artifact nothing used.
     seed = np.ones(int(keep.sum()), dtype=bool)
     nuisance = nuisance_for(seed)
     treatment_design = treatment_for(seed)
-    preprocessing = {
-        "B0+B1": describe_preprocessor(fit_preprocessor(kept_frame, nuisance_features, seed)),
-        "B2_treatment": describe_preprocessor(
-            fit_preprocessor(kept_frame, list(treatment_map), seed)
-        ),
-    }
+    preprocessing: dict[str, object] = {}
 
     results: dict[str, object] = {
         "status": "MEASURED",
@@ -167,10 +165,18 @@ def run_role(
         outcome_blocks = time_block_folds(sessions[finite], folds=folds, purge_sessions=1)
         outcome_frame = kept_frame.filter(pl.Series(finite))
 
+        fold_statistics: list[dict[str, object]] = []
+
         def outcome_nuisance(
-            train: npt.NDArray[np.bool_], _frame: pl.DataFrame = outcome_frame
+            train: npt.NDArray[np.bool_],
+            _frame: pl.DataFrame = outcome_frame,
+            _record: list[dict[str, object]] = fold_statistics,
         ) -> npt.NDArray[np.float64]:
-            return fold_design(_frame, nuisance_features, train)[0]
+            design, _, fitted = fold_design(_frame, nuisance_features, train)
+            _record.append(
+                {"train_rows": int(train.sum()), **describe_preprocessor(fitted)}
+            )
+            return design
 
         response_residual = cross_fitted_residuals(
             nuisance[finite], response[finite], outcome_blocks, design_builder=outcome_nuisance
@@ -193,8 +199,16 @@ def run_role(
         except ValueError as error:  # pragma: no cover - defensive
             results[outcome_name] = {"status": str(error)}
             continue
+        # Every cross-fit block appears once per residualised column, so the distinct
+        # training masks are what identify the folds.
+        preprocessing[outcome_name] = [
+            record
+            for index, record in enumerate(fold_statistics)
+            if record["train_rows"] not in [r["train_rows"] for r in fold_statistics[:index]]
+        ]
         results[outcome_name] = {
             "evaluation_mask_sha256": mask_sha256(lift_mask(keep, finite)),
+            "preprocessing": preprocessing[outcome_name],
             "joint_wald": estimate.joint_statistic,
             "joint_p_value": estimate.joint_p_value,
             "clusters": estimate.clusters,
