@@ -408,6 +408,9 @@ def build_session_flow(
         "latency_over_60s": clocks.late_arrivals.astype(np.float64),
     }
     prefixes = {name: _prefix(values) for name, values in channels.items()}
+    # The widest record-creation lag in this session bounds how far a stale row can sit
+    # inside a window edge, so the correction above only has to scan that band.
+    max_lag_us = int(max((created - executed).max(), 0)) if created.size else 0
     assert set(prefixes) == set(CHANNEL_NAMES), "CHANNEL_NAMES is out of date"
 
     base = datetime.fromisoformat(session).replace(tzinfo=NY)
@@ -462,7 +465,16 @@ def build_session_flow(
         hi = int(visible[position])
         record: dict[str, float] = {"origin_minute": float(minute)}
         for label, window_seconds in WINDOWS:
-            lo = int(np.searchsorted(created, cutoff_us - window_seconds * 1_000_000, side="left"))
+            lo_us = cutoff_us - window_seconds * 1_000_000
+            lo = int(np.searchsorted(created, lo_us, side="left"))
+            # Membership in the window is an economic question, so the lower edge is the
+            # exchange clock. `created >= executed` always holds, so selecting on `created`
+            # can only over-include: a row with `created < lo_us` also has
+            # `executed < lo_us`. The rows to remove are therefore those whose record was
+            # created inside the window while the trade happened before it, and they all
+            # sit within one record-creation lag of the edge.
+            band = int(np.searchsorted(created, lo_us + max_lag_us, side="right"))
+            stale = lo + np.flatnonzero(executed[lo : min(band, hi)] < lo_us)
             # The innovation is the rise in intensity across the window: the same measure
             # at the cutoff and at the window start, each over the rows visible at its own
             # instant, so neither can see the other's future and both are always defined.
@@ -474,6 +486,8 @@ def build_session_flow(
                     window_seconds=window_seconds,
                     cutoff_us=cutoff_us,
                     prefixes=prefixes,
+                    channels=channels,
+                    stale=stale,
                     keys=keys,
                     strike=strike,
                     expiry_day=expiry_day,
@@ -503,6 +517,8 @@ def _window_record(
     window_seconds: int,
     cutoff_us: int,
     prefixes: dict[str, FloatArray],
+    channels: dict[str, FloatArray],
+    stale: npt.NDArray[np.int64],
     keys: npt.NDArray[np.int64],
     strike: FloatArray,
     expiry_day: npt.NDArray[np.int64],
@@ -515,9 +531,11 @@ def _window_record(
     empty = hi <= lo
 
     def total(name: str) -> float:
-        return float(prefixes[name][hi] - prefixes[name][lo])
+        raw = float(prefixes[name][hi] - prefixes[name][lo])
+        return raw - float(channels[name][stale].sum()) if stale.size else raw
 
     trades = total("trades")
+    empty = empty or trades <= 0.0
     total_premium = max(total("premium"), 1e-9)
     predecessors = max(total("has_previous"), 1.0)
     # The window is a slice of a publication-ordered array, so its first and last rows are

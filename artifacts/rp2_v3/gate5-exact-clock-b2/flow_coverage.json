@@ -4,7 +4,7 @@
   "coverage": {
     "b2_30m_buy_premium_share": {
       "coverage": 1.0,
-      "median": 0.3514419681500196
+      "median": 0.35144728957328286
     },
     "b2_30m_contracts": {
       "coverage": 1.0,
@@ -12,15 +12,15 @@
     },
     "b2_30m_d_iv": {
       "coverage": 1.0,
-      "median": -4.124537843472335e-05
+      "median": -4.1224514274066905e-05
     },
     "b2_30m_d_mid_rel": {
       "coverage": 1.0,
-      "median": 7.392475838647922e-05
+      "median": 7.391572408018558e-05
     },
     "b2_30m_d_spread": {
       "coverage": 1.0,
-      "median": -6.468082502156995e-05
+      "median": -6.463036592458688e-05
     },
     "b2_30m_decay_intensity_innovation": {
       "coverage": 1.0,
@@ -32,11 +32,11 @@
     },
     "b2_30m_delta_flow": {
       "coverage": 1.0,
-      "median": 559746.5156847108
+      "median": 553060.0928072217
     },
     "b2_30m_gamma_flow": {
       "coverage": 1.0,
-      "median": 16637977.118686326
+      "median": 16647393.202263474
     },
     "b2_30m_is_empty_window": {
       "coverage": 1.0,
@@ -48,19 +48,19 @@
     },
     "b2_30m_mean_age_s": {
       "coverage": 1.0,
-      "median": 922.7198766469955
+      "median": 922.6177730560303
     },
     "b2_30m_mean_provider_latency_s": {
       "coverage": 1.0,
-      "median": 0.07599697226413471
+      "median": 0.07599538320168617
     },
     "b2_30m_multileg_premium_share": {
       "coverage": 1.0,
-      "median": 0.20378905060059682
+      "median": 0.20380575298330303
     },
     "b2_30m_multileg_size_share": {
       "coverage": 1.0,
-      "median": 0.14623691536761715
+      "median": 0.14623895769639103
     },
     "b2_30m_observed_span_s": {
       "coverage": 1.0,
@@ -68,59 +68,59 @@
     },
     "b2_30m_otm_premium_share": {
       "coverage": 1.0,
-      "median": 0.1888201119913544
+      "median": 0.1888180848580145
     },
     "b2_30m_passive_premium_share": {
       "coverage": 1.0,
-      "median": 0.2840267264084412
+      "median": 0.28403149957757495
     },
     "b2_30m_premium": {
       "coverage": 1.0,
-      "median": 30114724.5
+      "median": 30113257.0
     },
     "b2_30m_rate_per_second": {
       "coverage": 1.0,
-      "median": 5.291111111111111
+      "median": 5.290555555555556
     },
     "b2_30m_sell_premium_share": {
       "coverage": 1.0,
-      "median": 0.34838829520251424
+      "median": 0.34839449242416753
     },
     "b2_30m_size": {
       "coverage": 1.0,
-      "median": 53143.0
+      "median": 53132.0
     },
     "b2_30m_sweep_premium_share": {
       "coverage": 1.0,
-      "median": 0.017387023001300426
+      "median": 0.017385354611973866
     },
     "b2_30m_trades": {
       "coverage": 1.0,
-      "median": 9524.0
+      "median": 9523.0
     },
     "b2_30m_vega_flow": {
       "coverage": 1.0,
-      "median": -620280.5607413827
+      "median": -620076.4320482761
     },
     "b2_30m_vega_flow_abs": {
       "coverage": 1.0,
-      "median": 86604784.83297199
+      "median": 86589352.42430037
     },
     "b2_30m_vega_flow_call": {
       "coverage": 1.0,
-      "median": -436343.29320448963
+      "median": -436035.15173533314
     },
     "b2_30m_vega_flow_long_dte": {
       "coverage": 1.0,
-      "median": -733119.2148418021
+      "median": -733377.2409055539
     },
     "b2_30m_vega_flow_put": {
       "coverage": 1.0,
-      "median": -223977.61896072817
+      "median": -223636.98334283836
     },
     "b2_30m_vega_flow_short_dte": {
       "coverage": 1.0,
-      "median": 20733.121457295092
+      "median": 20725.043133528154
     },
     "b2_30m_zero_dte_premium_share": {
       "coverage": 1.0,
@@ -140,7 +140,7 @@
     },
     "b2_5m_contract_entropy": {
       "coverage": 1.0,
-      "median": 0.7219524344985175
+      "median": 0.7219484906365429
     },
     "b2_5m_contracts": {
       "coverage": 1.0,
@@ -148,15 +148,15 @@
     },
     "b2_5m_d_iv": {
       "coverage": 1.0,
-      "median": -4.242921055795957e-05
+      "median": -4.231924150769054e-05
     },
     "b2_5m_d_mid_rel": {
       "coverage": 1.0,
-      "median": -8.169142655526035e-05
+      "median": -8.198401401200223e-05
     },
     "b2_5m_d_spread": {
       "coverage": 1.0,
-      "median": -6.540847614216031e-05
+      "median": -6.54315132022797e-05
     },
     "b2_5m_decay_intensity_innovation": {
       "coverage": 1.0,
@@ -172,7 +172,7 @@
     },
     "b2_5m_expiry_hhi": {
       "coverage": 1.0,
-      "median": 0.1094806659615126
+      "median": 0.10947821124949624
     },
     "b2_5m_gamma_flow": {
       "coverage": 1.0,
@@ -180,7 +180,7 @@
     },
     "b2_5m_interarrival_cv": {
       "coverage": 1.0,
-      "median": 1.746095997011857
+      "median": 1.746088156653017
     },
     "b2_5m_is_empty_window": {
       "coverage": 1.0,
@@ -192,83 +192,83 @@
     },
     "b2_5m_mean_age_s": {
       "coverage": 1.0,
-      "median": 150.9153027534485
+      "median": 150.85998129844666
     },
     "b2_5m_mean_provider_latency_s": {
       "coverage": 1.0,
-      "median": 0.07347571467505434
+      "median": 0.07347273979653186
     },
     "b2_5m_multileg_premium_share": {
       "coverage": 1.0,
-      "median": 0.18548527113177748
+      "median": 0.1854794996232359
     },
     "b2_5m_multileg_size_share": {
       "coverage": 1.0,
-      "median": 0.13322864477579205
+      "median": 0.1332418866840953
     },
     "b2_5m_observed_span_s": {
       "coverage": 1.0,
-      "median": 299.3781879999992
+      "median": 299.378152
     },
     "b2_5m_otm_premium_share": {
       "coverage": 1.0,
-      "median": 0.18173468383519087
+      "median": 0.1817297670725302
     },
     "b2_5m_passive_premium_share": {
       "coverage": 1.0,
-      "median": 0.2656971757983936
+      "median": 0.2656838243237465
     },
     "b2_5m_premium": {
       "coverage": 1.0,
-      "median": 4416103.5
+      "median": 4413792.0
     },
     "b2_5m_rate_per_second": {
       "coverage": 1.0,
-      "median": 4.88
+      "median": 4.876666666666667
     },
     "b2_5m_sell_premium_share": {
       "coverage": 1.0,
-      "median": 0.34887756787036917
+      "median": 0.3488471844156974
     },
     "b2_5m_size": {
       "coverage": 1.0,
-      "median": 8023.0
+      "median": 8016.5
     },
     "b2_5m_strike_hhi": {
       "coverage": 1.0,
-      "median": 0.0789131640352827
+      "median": 0.0789121680766621
     },
     "b2_5m_sweep_premium_share": {
       "coverage": 1.0,
-      "median": 0.01436057534386308
+      "median": 0.01435790555989351
     },
     "b2_5m_trades": {
       "coverage": 1.0,
-      "median": 1464.0
+      "median": 1463.0
     },
     "b2_5m_vega_flow": {
       "coverage": 1.0,
-      "median": -95749.95172085147
+      "median": -95339.76497890428
     },
     "b2_5m_vega_flow_abs": {
       "coverage": 1.0,
-      "median": 12901706.539829552
+      "median": 12894635.385974541
     },
     "b2_5m_vega_flow_call": {
       "coverage": 1.0,
-      "median": -72314.91806839756
+      "median": -71926.98211290748
     },
     "b2_5m_vega_flow_long_dte": {
       "coverage": 1.0,
-      "median": -93469.51131595159
+      "median": -93327.3967378973
     },
     "b2_5m_vega_flow_put": {
       "coverage": 1.0,
-      "median": -34759.24427663442
+      "median": -34734.254360135645
     },
     "b2_5m_vega_flow_short_dte": {
       "coverage": 1.0,
-      "median": 174.87150609140008
+      "median": 174.48928855128906
     },
     "b2_5m_zero_dte_premium_share": {
       "coverage": 1.0,
@@ -285,11 +285,11 @@
   },
   "cutoff_seconds": 120,
   "decay_seconds": 60.0,
-  "empty_window_share_30m": 0.0021718878634256252,
-  "empty_window_share_5m": 0.0022639629100047664,
+  "empty_window_share_30m": 0.002177304042636163,
+  "empty_window_share_5m": 0.0023181247021101434,
   "feature_count": 70,
-  "flow_sha256": "b27d84a213a14a0d2770b24d031766c0c7c72f3679ec9105342418496e7a5013",
-  "generated_at_utc": "2026-08-20T02:57:24.590917+00:00",
+  "flow_sha256": "350cbb18606c6c594f7d98bfa954f1054c25873ca7e002792e1a09c798a40ec3",
+  "generated_at_utc": "2026-08-20T03:21:30.568838+00:00",
   "label": "EXPLORATORY_MECHANISM_DISCOVERY",
   "limit_sessions": 0,
   "minimum_session_prints": 50,

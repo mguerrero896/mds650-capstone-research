@@ -192,6 +192,8 @@ def test_an_empty_window_still_reports_the_intensity_it_has() -> None:
         window_seconds=300,
         cutoff_us=1_800_000_000_000_000,
         prefixes=prefixes,
+        channels={name: np.zeros(2, dtype=np.float64) for name in block6.CHANNEL_NAMES},
+        stale=np.empty(0, dtype=np.int64),
         keys=np.zeros(2, dtype=np.int64),
         strike=np.zeros(2),
         expiry_day=np.zeros(2, dtype=np.int64),
@@ -240,6 +242,8 @@ def test_a_single_print_window_is_flow_not_silence() -> None:
         window_seconds=300,
         cutoff_us=1_800_000_000_000_000,
         prefixes=prefixes,
+        channels={name: np.zeros(2, dtype=np.float64) for name in block6.CHANNEL_NAMES},
+        stale=np.empty(0, dtype=np.int64),
         keys=np.zeros(2, dtype=np.int64),
         strike=np.ones(2),
         expiry_day=np.zeros(2, dtype=np.int64),
@@ -357,9 +361,50 @@ def test_the_latency_feature_does_not_claim_provider_delivery_behaviour() -> Non
 
     from mds650.rp2.option_clock import OptionClocks
 
-    assert "record-creation lag" in (OptionClocks.latency_seconds.__doc__ or "")
-    assert "provider_timing_pit_contract_v22" in (OptionClocks.latency_seconds.__doc__ or "")
+    doc = (OptionClocks.latency_seconds.__doc__ or "").lower()
+    assert "record-creation lag" in doc
+    assert "provider_timing_pit_contract_v22" in doc
     source = _source()
     assert "record-creation proxy" in source, (
         "the feature that carries the name must carry the disavowal beside it"
+    )
+
+
+def test_the_window_edge_is_the_exchange_clock_not_the_record_clock() -> None:
+    """A trade that happened before the window but was recorded inside it is not in it.
+
+    `created >= executed` always holds, so selecting the lower edge on `created` can only
+    over-include: record-creation lag was being counted as recent market activity.
+    """
+
+    import numpy as np
+
+    block6 = _load("rp2_block6_flow_panel")
+    channels = {name: np.zeros(3, dtype=np.float64) for name in block6.CHANNEL_NAMES}
+    for name in ("trades", "premium"):
+        channels[name] = np.array([0.0, 1.0, 1.0])
+    prefixes = {name: block6._prefix(values) for name, values in channels.items()}
+
+    without = block6._window_record(
+        1, 3, "5m", window_seconds=300, cutoff_us=1_800_000_000_000_000,
+        prefixes=prefixes, channels=channels, stale=np.empty(0, dtype=np.int64),
+        keys=np.zeros(3, dtype=np.int64), strike=np.ones(3),
+        expiry_day=np.zeros(3, dtype=np.int64), premium=np.ones(3), seconds=np.zeros(3),
+        intensity_now=1.0, intensity_before=0.0,
+    )
+    # The first of the two visible rows was executed before the window opened.
+    corrected = block6._window_record(
+        1, 3, "5m", window_seconds=300, cutoff_us=1_800_000_000_000_000,
+        prefixes=prefixes, channels=channels, stale=np.array([1], dtype=np.int64),
+        keys=np.zeros(3, dtype=np.int64), strike=np.ones(3),
+        expiry_day=np.zeros(3, dtype=np.int64), premium=np.ones(3), seconds=np.zeros(3),
+        intensity_now=1.0, intensity_before=0.0,
+    )
+    assert without["b2_5m_trades"] == 2.0
+    assert corrected["b2_5m_trades"] == 1.0
+    assert corrected["b2_5m_premium"] == 1.0
+
+    source = _source()
+    assert "executed[lo : min(band, hi)] < lo_us" in source, (
+        "the lower window edge must be decided on the exchange clock"
     )
