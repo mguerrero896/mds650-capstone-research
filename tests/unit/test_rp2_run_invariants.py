@@ -66,14 +66,17 @@ def test_the_scorecard_refuses_a_run_whose_point_in_time_invariants_broke() -> N
         "b1_rows_dropped_for_rate_or_dividend": 0,
     }  # type: ignore[dict-item]
     scorecard["b2"] = {**scorecard["b2"], "b2_pit_violation_count": 0}  # type: ignore[dict-item]
+    from mds650.rp2.ladder import PRIMARY_MODELS
+
     scorecard["forecast"] = {
-        "gamma_glm": {
+        family: {
             "D": {
                 field: 1.0
                 for field in groups["forecast"]
                 if field not in ("calibration_slope", "calibration_intercept")
             }
         }
+        for family in PRIMARY_MODELS
     }
     scorecard["forecast_calibration"] = {"calibration_slope": 1.0, "calibration_intercept": 0.0}
     assert_scorecard_complete(scorecard)

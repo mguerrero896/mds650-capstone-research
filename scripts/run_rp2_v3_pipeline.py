@@ -248,12 +248,17 @@ def assert_tape_covers_panel(
 def run_step(name: str, command: Sequence[str], run_dir: Path) -> StepRecord:
     """Run one step, timing it, and refuse to accept a step that did not write its outputs."""
 
+    step = next(candidate for candidate in PIPELINE_STEPS if candidate.name == name)
+    for output in step.outputs:
+        # An interrupted attempt can leave this file behind, and "the step wrote its
+        # output" would then be satisfied by a file the step never touched. Removing it
+        # first makes the check mean what it says.
+        (run_dir / output).unlink(missing_ok=True)
     started = time.perf_counter()
     process = subprocess.Popen(list(command), cwd=ROOT)  # noqa: S603 - fixed command list
     process.wait()
     memory = _peak_memory_bytes(process)
     runtime = time.perf_counter() - started
-    step = next(candidate for candidate in PIPELINE_STEPS if candidate.name == name)
     if process.returncode != 0:
         raise SystemExit(f"RP2_RUN_STEP_FAILED:{name}:exit={process.returncode}")
     artifacts, content = _digest_outputs(name, run_dir, step.outputs)

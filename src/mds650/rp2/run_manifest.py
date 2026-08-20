@@ -342,7 +342,13 @@ def stable_content_digest(path: Path) -> str:
 
 #: Roles a development run must never read. The path check catches a sealed cohort that
 #: names itself; this catches one that does not.
-SEALED_ROLES: Final[frozenset[str]] = frozenset({"C", "PHASE8", "PHASE9"})
+#:
+#: `BURNED` is this codebase's own name for the confirmation cohort:
+#: `mds650.rp2.partition.assign_role` returns it for every session on or after the
+#: confirmation start, and its docstring says those sessions "are never used for anything".
+#: Omitting it left the sealed-cohort guarantee resting on the sealed sessions never being
+#: enumerated, rather than on their being refused.
+SEALED_ROLES: Final[frozenset[str]] = frozenset({"C", "PHASE8", "PHASE9", "BURNED"})
 
 
 def assert_no_sealed_roles(inventory: Path) -> None:

@@ -342,3 +342,20 @@ def test_the_manifest_is_published_whole_or_not_at_all(tmp_path: Path) -> None:
     assert not list(run_dir.glob("*.partial")), "the staging file is replaced, not left"
     payload = json.loads((run_dir / "run_manifest.json").read_text(encoding="utf-8"))
     assert payload["run_id"] == "rp2-v3-20260820-001"
+
+
+def test_the_confirmation_role_this_codebase_uses_is_sealed() -> None:
+    """`BURNED` is what `assign_role` returns for every confirmation session.
+
+    Its own docstring says those sessions are never used for anything. Leaving it out of
+    the sealed roles left the guarantee resting on the sealed sessions never being
+    enumerated rather than on their being refused.
+    """
+
+    from datetime import date
+
+    from mds650.rp2.partition import assign_role
+    from mds650.rp2.run_manifest import SEALED_ROLES
+
+    assert assign_role(date(2026, 12, 31)) == "BURNED"
+    assert "BURNED" in SEALED_ROLES

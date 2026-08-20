@@ -436,9 +436,18 @@ def assert_scorecard_complete(scorecard: Mapping[str, Any]) -> None:
         for field in required["forecast"]
         if field not in ("calibration_slope", "calibration_intercept")
     )
+    from mds650.rp2.ladder import PRIMARY_MODELS
+
     leaves = _forecast_leaves(scorecard)
     if not leaves:
         missing.append("forecast:empty")
+    # Present families are not the required families. A ladder that omitted one and kept
+    # another complete would have passed on whatever happened to exist.
+    reported = scorecard.get("forecast", {})
+    for family in PRIMARY_MODELS:
+        roles = reported.get(family, {})
+        if not roles:
+            missing.append(f"forecast.{family}:absent")
     for label, values in leaves:
         for field in forecast_fields:
             if _unmeasured(values.get(field)):
