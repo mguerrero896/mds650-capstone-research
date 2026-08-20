@@ -136,7 +136,10 @@ def assert_worktree_clean(status: str | None = None) -> None:
 
 
 def assert_tape_covers_panel(
-    tape_keys: set[tuple[str, str]], panel_keys: set[tuple[str, str]]
+    tape_keys: set[tuple[str, str]],
+    panel_keys: set[tuple[str, str]],
+    *,
+    wildcard_sessions: frozenset[str],
 ) -> None:
     """Every session-asset the baseline emits has a tape for Blocks 5 and 6 to read.
 
@@ -144,9 +147,16 @@ def assert_tape_covers_panel(
     panel. A missing key is not an error in Block 5 - it skips that session-asset - so the
     B1 and B2 rows simply never appear and the common mask drops the origins without
     anything recording why the sample shrank.
+
+    Some sessions are inventoried once for the whole day rather than per asset, and both
+    producers use that entry as their fallback. Those sessions cover every asset in them,
+    and reading the entry as an asset literally named `__ALL__` would report every concrete
+    asset on those days as a gap.
     """
 
-    gaps = sorted(panel_keys - tape_keys)
+    gaps = sorted(
+        key for key in panel_keys - tape_keys if key[1] not in wildcard_sessions
+    )
     if gaps:
         listed = ",".join(f"{asset}@{session}" for asset, session in gaps[:5])
         raise SystemExit(f"RP2_RUN_TAPE_COVERAGE_GAP:{len(gaps)}:{listed}")
@@ -225,7 +235,7 @@ def _tape_fingerprint(paths: Sequence[Path], *, hash_contents: bool) -> tuple[st
 
 
 def validate_inputs(
-    run_dir: Path, *, data_root: Path, forbid_sealed: bool, hash_tape_contents: bool = False
+    run_dir: Path, *, data_root: Path, forbid_sealed: bool = True, hash_tape_contents: bool = False
 ) -> tuple[dict[str, object], str]:
     """Step 1: everything the run will actually read exists, and is identified.
 
@@ -298,18 +308,28 @@ def write_input_manifest(run_dir: Path, record: Mapping[str, object]) -> Path:
     return path
 
 
-def _tape_keys() -> set[tuple[str, str]]:
-    """Every session-asset the option-tape inventory holds a file for."""
+#: An inventory entry for a whole session rather than one asset. Blocks 5 and 6 fall back
+#: to it for every asset on that day.
+SESSION_WILDCARD: Final = "__ALL__"
+
+
+def tape_coverage(inventory: Path) -> tuple[set[tuple[str, str]], frozenset[str]]:
+    """What the option-tape inventory covers: explicit keys, and whole-session entries."""
 
     keys: set[tuple[str, str]] = set()
-    with TAPE_INVENTORY.open("r", encoding="utf-8") as handle:
+    wildcards: set[str] = set()
+    with inventory.open("r", encoding="utf-8") as handle:
         for line in handle:
             line = line.strip()
             if not line:
                 continue
             record = json.loads(line)
-            keys.add((str(record["asset"]), str(record["session_date"])))
-    return keys
+            asset, session = str(record["asset"]), str(record["session_date"])
+            if asset == SESSION_WILDCARD:
+                wildcards.add(session)
+            else:
+                keys.add((asset, session))
+    return keys, frozenset(wildcards)
 
 
 def _panel_keys(run_dir: Path) -> set[tuple[str, str]]:
@@ -321,6 +341,33 @@ def _panel_keys(run_dir: Path) -> set[tuple[str, str]]:
 
     frame = pl.read_parquet(panel_paths(run_dir)["b0"], columns=["asset", "session_date"]).unique()
     return {(str(asset), str(session)) for asset, session in frame.iter_rows()}
+
+
+def assert_producers_share_the_mask(run_dir: Path, roles: Sequence[str]) -> dict[str, str]:
+    """The ladder and the incremental inference scored the same rows.
+
+    Both record the digest of the evaluation mask they used. They compute it independently,
+    so a divergence in either one's split or ordering shows up here as two different
+    digests - and a contrast measured on one sample beside a ladder fitted on another is
+    not the comparison either artifact claims to be.
+    """
+
+    ladder = json.loads(
+        (run_dir / "rp2_block8_ladder" / "ladder.json").read_text(encoding="utf-8")
+    )
+    inference = json.loads(
+        (run_dir / "rp2_block10_inference" / "inference.json").read_text(encoding="utf-8")
+    )
+    agreed: dict[str, str] = {}
+    for role in roles:
+        left = ladder.get(role, {}).get("evaluation_mask_sha256")
+        right = inference.get(role, {}).get("evaluation_mask_sha256")
+        if left is None or right is None or left != right:
+            raise SystemExit(
+                f"RP2_RUN_MASK_DISAGREEMENT:{role}:{str(left)[:12]}!={str(right)[:12]}"
+            )
+        agreed[role] = str(left)
+    return agreed
 
 
 def assert_partition_matches(run_dir: Path) -> None:
@@ -423,7 +470,10 @@ def construct_common_masks(run_dir: Path, roles: Sequence[str]) -> Path:
         masks[role] = {
             "rows": int(frame.height),
             "usable_rows": int(mask.sum()),
-            "mask_sha256": mask_sha256(mask),
+            # Named for what it is. The producers hash the *held-out* mask lifted onto the
+            # unfiltered role frame, which is a different object; calling both of them
+            # "the mask" would put two unrelated numbers under one name.
+            "panel_mask_sha256": mask_sha256(mask),
         }
     path = run_dir / "common_masks.json"
     path.write_text(json.dumps(masks, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -457,10 +507,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--output-root", type=Path, default=ROOT / "artifacts" / "rp2_v3")
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--roles", nargs="+", default=["D", "V"])
+    # Accepted and ignored: the guard is unconditional. The flag stays only so the
+    # documented invocation keeps working, because a rule with a switch that turns it off
+    # is a default rather than a rule.
     parser.add_argument("--forbid-sealed-cohorts", action="store_true", default=True)
-    parser.add_argument(
-        "--allow-sealed-cohorts", dest="forbid_sealed_cohorts", action="store_false"
-    )
     parser.add_argument(
         "--skip-panels",
         action="store_true",
@@ -531,7 +581,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     input_record, manifest_digest = validate_inputs(
         run_dir,
         data_root=Path(args.data_root),
-        forbid_sealed=args.forbid_sealed_cohorts,
+        forbid_sealed=True,
         hash_tape_contents=args.hash_tape_contents,
     )
     assert_run_identity_unchanged(
@@ -631,7 +681,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         steps.append(run_step(name, command, run_dir))
 
     assert_partition_matches(run_dir)
-    assert_tape_covers_panel(_tape_keys(), _panel_keys(run_dir))
+    tape_keys, wildcard_sessions = tape_coverage(TAPE_INVENTORY)
+    assert_tape_covers_panel(
+        tape_keys, _panel_keys(run_dir), wildcard_sessions=wildcard_sessions
+    )
 
     # Steps 6 and 7 run in this process against the panels this run just built. Shelling
     # out to an import would prove the configuration parses, which is not the question
@@ -663,6 +716,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     ):
         command = [*python, script, *block_flags(directory), *panel_flags]
         steps.append(run_step(name, command, run_dir))
+
+    # Both producers have run: they must have scored the same rows.
+    evaluation_masks = assert_producers_share_the_mask(run_dir, args.roles)
+    masks_path = run_dir / "common_masks.json"
+    recorded = json.loads(masks_path.read_text(encoding="utf-8"))
+    for role, digest in evaluation_masks.items():
+        recorded.setdefault(role, {})["evaluation_mask_sha256"] = digest
+    masks_path.write_text(json.dumps(recorded, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
     manifest = RunManifest(
         run_id=str(args.run_id),

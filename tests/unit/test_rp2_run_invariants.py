@@ -107,6 +107,125 @@ def test_every_session_asset_the_baseline_emits_has_a_tape_to_read() -> None:
 
     runner = _load("run_rp2_v3_pipeline")
     covered = {("AAPL", "2024-08-02"), ("MSFT", "2024-08-02")}
-    runner.assert_tape_covers_panel(covered, covered)
+    runner.assert_tape_covers_panel(covered, covered, wildcard_sessions=frozenset())
     with pytest.raises(SystemExit, match="RP2_RUN_TAPE_COVERAGE_GAP:1:MSFT@2024-08-02"):
-        runner.assert_tape_covers_panel({("AAPL", "2024-08-02")}, covered)
+        runner.assert_tape_covers_panel(
+            {("AAPL", "2024-08-02")}, covered, wildcard_sessions=frozenset()
+        )
+
+
+def test_a_session_level_tape_covers_every_asset_in_that_session() -> None:
+    """Five V sessions are inventoried once, as `__ALL__`, and both producers use it.
+
+    Treating that entry as an asset named `__ALL__` would report every concrete asset on
+    those sessions as an uncovered gap and abort a rebuild that had nothing wrong with it.
+    """
+
+    runner = _load("run_rp2_v3_pipeline")
+    panel = {("AAPL", "2026-07-13"), ("NVDA", "2026-07-13"), ("TSLA", "2026-07-17")}
+    runner.assert_tape_covers_panel(
+        set(), panel, wildcard_sessions=frozenset({"2026-07-13", "2026-07-17"})
+    )
+    with pytest.raises(SystemExit, match="RP2_RUN_TAPE_COVERAGE_GAP:1:TSLA@2026-07-17"):
+        runner.assert_tape_covers_panel(
+            set(), panel, wildcard_sessions=frozenset({"2026-07-13"})
+        )
+
+
+def test_the_frozen_inventory_covers_the_frozen_partition() -> None:
+    """The real inventory against the real partition, not a fixture.
+
+    Five V sessions carry only a session-level entry; the check has to accept them.
+    """
+
+    runner = _load("run_rp2_v3_pipeline")
+    keys, wildcards = runner.tape_coverage(runner.TAPE_INVENTORY)
+    assert wildcards == {"2026-07-13", "2026-07-14", "2026-07-15", "2026-07-16", "2026-07-17"}
+    assert ("AAPL", "2024-08-02") in keys
+
+
+def test_the_sealed_cohort_guard_has_no_opt_out() -> None:
+    """A rule with a flag that switches it off is a default, not a rule."""
+
+    source = (REPO / "scripts" / "run_rp2_v3_pipeline.py").read_text(encoding="utf-8")
+    assert "--allow-sealed-cohorts" not in source
+    assert "forbid_sealed_cohorts" not in source
+
+
+def test_the_scorecard_does_not_change_between_identical_runs(tmp_path: Path) -> None:
+    """The scorecard is an artifact of the run, so its digest is part of the run's identity.
+
+    Embedding byte-level artifact digests puts the producers' timestamps into it, and
+    printing the runtime into the Markdown puts the clock there too — so an otherwise
+    identical retry would disagree with itself and be refused as a conflicting run.
+    """
+
+    from mds650.rp2.run_manifest import stable_content_digest
+
+    from mds650.rp2.scorecard import render_scorecard
+
+    def scorecard(runtime: float, digest: str) -> dict[str, object]:
+        return {
+            "run_id": "r",
+            "code_commit": "c" * 40,
+            "data": {"b0_rows": 1},
+            "b1": {"b1_core_coverage": 1.0},
+            "b2": {"b2_zero_dte_count": 2},
+            "engineering": {
+                "runtime_seconds": runtime,
+                "peak_memory_bytes": int(runtime),
+                "artifact_sha256": {"ladder.json": digest},
+                "code_commit": "c" * 40,
+            },
+            "forecast": {
+                "gamma_glm": {
+                    "D": {
+                        "qlike_b0": 0.1,
+                        "delta_b1": 0.01,
+                        "delta_b2_given_b1": 0.0,
+                        "mde": {"delta_b1": 0.002},
+                    }
+                }
+            },
+            "forecast_calibration": {"calibration_slope": 1.0, "calibration_intercept": 0.0},
+        }
+
+    first = tmp_path / "a.md"
+    second = tmp_path / "b.md"
+    first.write_text(render_scorecard(scorecard(91.0, "a" * 64)), encoding="utf-8")
+    second.write_text(render_scorecard(scorecard(4242.0, "a" * 64)), encoding="utf-8")
+    assert stable_content_digest(first) == stable_content_digest(second), (
+        "the rendered scorecard must not carry the run's runtime"
+    )
+
+
+def test_the_two_producers_are_held_to_the_same_evaluation_mask(tmp_path: Path) -> None:
+    """The ladder and the inference must score the same rows, and the run must check it.
+
+    Step 7's own digest is over the pre-split common mask in panel order, which is a
+    different object from the held-out mask the producers hash. Recording it as though it
+    were the same mask would put two unrelated numbers under one name; the check that
+    matters is whether the two producers agree with each other.
+    """
+
+    runner = _load("run_rp2_v3_pipeline")
+    import json as _json
+
+    run = tmp_path / "run"
+    (run / "rp2_block8_ladder").mkdir(parents=True)
+    (run / "rp2_block10_inference").mkdir(parents=True)
+
+    def write(ladder_digest: str, inference_digest: str) -> None:
+        (run / "rp2_block8_ladder" / "ladder.json").write_text(
+            _json.dumps({"D": {"evaluation_mask_sha256": ladder_digest}}), encoding="utf-8"
+        )
+        (run / "rp2_block10_inference" / "inference.json").write_text(
+            _json.dumps({"D": {"evaluation_mask_sha256": inference_digest}}), encoding="utf-8"
+        )
+
+    write("a" * 64, "a" * 64)
+    assert runner.assert_producers_share_the_mask(run, ("D",)) == {"D": "a" * 64}
+
+    write("a" * 64, "b" * 64)
+    with pytest.raises(SystemExit, match="RP2_RUN_MASK_DISAGREEMENT:D"):
+        runner.assert_producers_share_the_mask(run, ("D",))

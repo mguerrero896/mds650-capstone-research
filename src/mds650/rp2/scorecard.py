@@ -288,8 +288,13 @@ def assemble_scorecard(run_dir: Path, manifest: RunManifest) -> dict[str, Any]:
             "model_config_sha256": manifest.model_config_sha256,
             "feature_registry_sha256": manifest.feature_registry_sha256,
             "code_commit": manifest.code_commit,
+            # The *content* digests, not the byte digests. A producer stamps its output
+            # with the time it wrote it, so the byte digests differ between two identical
+            # executions - and this map is inside the scorecard, which is itself an
+            # artifact of the run. The byte digests live in `run_manifest.json`, which is
+            # where an integrity check belongs.
             "artifact_sha256": {
-                name: digest for step in manifest.steps for name, digest in step.artifacts.items()
+                name: digest for step in manifest.steps for name, digest in step.content.items()
             },
         },
         "inference_sessions": {
@@ -391,6 +396,11 @@ def assert_scorecard_invariants(scorecard: Mapping[str, Any]) -> None:
         raise ValueError("RP2_SCORECARD_INVARIANT_BREACH:" + ",".join(breaches))
 
 
+#: Fields the Markdown rendering points at rather than prints, because they vary between
+#: two runs that produced the same result.
+_RENDER_OMITTED: Final = frozenset({"runtime_seconds", "peak_memory_bytes"})
+
+
 def render_scorecard(scorecard: Mapping[str, Any]) -> str:
     """The same numbers as Markdown, so the scorecard can be read without a JSON viewer."""
 
@@ -403,6 +413,13 @@ def render_scorecard(scorecard: Mapping[str, Any]) -> str:
     for group in ("data", "b1", "b2", "engineering"):
         lines += [f"## {group}", "", "| Field | Value |", "| --- | ---: |"]
         for field, value in sorted(scorecard[group].items()):
+            # Runtime and peak memory are engineering facts about one execution, not
+            # findings. Printing them here would make the rendered scorecard - an artifact
+            # whose digest is part of the run's identity - differ between two identical
+            # runs. They are in `run_manifest.json`.
+            if field in _RENDER_OMITTED:
+                lines.append(f"| `{field}` | see `run_manifest.json` |")
+                continue
             rendered = json.dumps(value) if isinstance(value, dict | list | tuple) else str(value)
             lines.append(f"| `{field}` | {rendered} |")
         lines.append("")
