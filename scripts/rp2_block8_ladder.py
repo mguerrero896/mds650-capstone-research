@@ -32,7 +32,12 @@ from mds650.b1v3_confirmation import canonical_sha256
 from mds650.metrics import holm_adjust, paired_day_bootstrap, qlike_losses
 from mds650.rp2.baseline import mincer_zarnowitz
 from mds650.rp2.feature_registry import assert_segment_coverage, describe_coverage
-from mds650.rp2.ladder import INDEPENDENT_FAMILIES, LADDER, partial_pooling
+from mds650.rp2.ladder import (
+    INDEPENDENT_FAMILIES,
+    LADDER,
+    PRIMARY_MODELS,
+    partial_pooling,
+)
 from mds650.rp2.panel import (
     B0_FEATURES,
     B1_FEATURES,
@@ -224,6 +229,20 @@ def run_role(
     return results
 
 
+def assert_primary_models(models: Sequence[str]) -> None:
+    """Refuse a run that would report a ladder without one of the deciding families.
+
+    The contract freezes three families and the programme's conclusions are read off them.
+    A run that quietly dropped one would still produce an artifact, and the artifact would
+    look complete.
+    """
+
+    fitted = set(models)
+    for name in PRIMARY_MODELS:
+        if name not in fitted:
+            raise ValueError(f"RP2_BLOCK8_PRIMARY_MODEL_MISSING:{name}")
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
@@ -232,6 +251,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     models = tuple(name.strip() for name in str(args.models).split(",") if name.strip())
+    assert_primary_models(models)
     panel = load_merged_panel(B0_PANEL, B1_PANEL, B2_PANEL)
     document: dict[str, object] = {
         # Which frozen sets were fitted, how complete they were, and the hash of the
@@ -243,6 +263,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         "label": "EXPLORATORY_MECHANISM_DISCOVERY",
         "decision": 65,
         "models": list(models),
+        # The families the research contract decides on. Everything else in the ladder
+        # is robustness: it can move a conclusion only by contradicting these three.
+        "primary_models": list(PRIMARY_MODELS),
         "information_sets": list(INFORMATION_SETS),
         "level_4_sequence_models": "NOT_RUN: no deep-learning stack installed; also gated "
         "by the program behind a demonstrated tabular failure",

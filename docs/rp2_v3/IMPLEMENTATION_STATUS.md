@@ -13,8 +13,8 @@ its final commit.
 | 4 | `feat/rp2-v3-contemporaneous-b1` | B1 as contemporaneous option state | merged |
 | 5 | `fix/rp2-v3-exact-clock-b2` | B2 dual clocks, exact expiry, 0DTE | merged |
 | 6 | `feat/rp2-v3-core-feature-registry` | Core versus rich feature sets | merged |
-| 7 | `feat/rp2-v3-fold-local-preprocessing` | Fold-local imputation, common mask | in review |
-| 8 | `feat/rp2-v3-qlike-models` | LightGBM aligned to QLIKE | pending |
+| 7 | `feat/rp2-v3-fold-local-preprocessing` | Fold-local imputation, common mask | merged |
+| 8 | `feat/rp2-v3-qlike-models` | LightGBM aligned to QLIKE | in review |
 | 9 | `fix/rp2-v3-session-inference` | Session-level, family-matched inference | pending |
 | 10 | `feat/rp2-v3-pipeline-runner` | One reproducible runner | pending |
 | 11 | `db/rp2-v3-versioned-results` | Versioned Supabase results | pending |

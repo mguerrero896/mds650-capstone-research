@@ -39,9 +39,9 @@ FROZEN_SPECIFICATION: tuple[str, ...] = (
     "B0+B1 vs B0+B1+B2",
     "Primary loss:",
     "QLIKE",
-    "Gamma GLM",
-    "Ridge-log",
-    "LightGBM-QLIKE",
+    "gamma_glm",
+    "ridge_log",
+    "lightgbm_qlike",
     "Inference unit:",
     "Trading session",
     "Contemporaneous option-state snapshot",
@@ -226,3 +226,19 @@ def test_superseded_results_supersedes_rather_than_deletes() -> None:
     assert "never deleted" in superseded.lower(), (
         "the retention rule must be stated: a superseded artifact is retained, not removed"
     )
+
+
+def test_the_contract_names_families_the_code_can_actually_fit() -> None:
+    """A contract that names a model the ladder cannot build decides nothing.
+
+    The document and the registry have to agree on identifiers, not on prose: `lightgbm`
+    and `lightgbm_qlike` are different estimators trained on different losses, and a reader
+    checking which one produced a delta must be able to find that name in both places.
+    """
+
+    from mds650.rp2.ladder import LADDER, PRIMARY_MODELS
+
+    contract = _read("RESEARCH_CONTRACT.md")
+    for name in PRIMARY_MODELS:
+        assert name in LADDER, f"the contract's primary model {name} is not in the ladder"
+        assert name in contract, f"RESEARCH_CONTRACT.md does not name {name}"
