@@ -30,6 +30,12 @@ DEFAULT_BOOTSTRAP: Final = 2000
 #: recentres and re-ranks every candidate on each draw; it is a separate setting, and the
 #: digest records it separately rather than letting `DEFAULT_BOOTSTRAP` stand for both.
 SPA_REPETITIONS: Final = 1000
+#: Newey-West lags for the SPA's long-run variances. Equal to the session block length today
+#: and not the same decision: one says how far dependence is carried when sessions are
+#: resampled, the other how far it is carried when a variance is estimated. Leaving the SPA
+#: reading the block-length constant would tie two settings that can move apart; leaving it
+#: as a literal would move p-values without moving the digest.
+SPA_HAC_LAGS: Final = 5
 #: The frozen resampling seed. Every producer passes it; it is stated once here so the
 #: inference configuration digest can cover it.
 DEFAULT_SEED: Final = 650
@@ -432,7 +438,10 @@ def hansen_spa(
         raise ValueError("RP2_INFERENCE_TOO_FEW_OBSERVATIONS")
     means = differences.mean(axis=0)
     variances = np.array(
-        [max(newey_west_variance(differences[:, k], lags=5), 1e-18) for k in range(len(names))]
+        [
+            max(newey_west_variance(differences[:, k], lags=SPA_HAC_LAGS), 1e-18)
+            for k in range(len(names))
+        ]
     )
     scaled = math.sqrt(size) * means
     statistic = float(np.max(np.maximum(scaled / np.sqrt(variances), 0.0)))
@@ -620,6 +629,7 @@ def inference_config_payload() -> str:
         "bootstrap_seed": DEFAULT_SEED,
         "bootstrap_repetitions": DEFAULT_BOOTSTRAP,
         "spa_repetitions": SPA_REPETITIONS,
+        "spa_hac_lags": SPA_HAC_LAGS,
         "block_mean": DEFAULT_BLOCK_MEAN,
         "alpha": DEFAULT_ALPHA,
         "power": DEFAULT_POWER,

@@ -138,6 +138,16 @@ the base tables carry row-level security with no reader policy, so a field missi
 view cannot be reached at all, and a contrast whose mask a reader cannot see is a contrast
 whose evaluation rows nobody outside can identify.
 
+The specification is checked against its frozen value rather than for presence, because a
+row that names a specification it does not implement says so in its own column:
+
+```text
+rp2-v3               accepted
+rp2-v4               RP2_PUBLISH_SPEC_VERSION_UNEXPECTED
+rp2-V3               RP2_PUBLISH_SPEC_VERSION_UNEXPECTED
+(missing or empty)   RP2_PUBLISH_SPEC_VERSION_UNEXPECTED
+```
+
 ## What a retry has to match
 
 The function writes four sets: the run row, its inputs, its blocks and its contrasts. A

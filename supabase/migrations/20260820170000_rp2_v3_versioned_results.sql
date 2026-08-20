@@ -253,8 +253,12 @@ begin
     -- The specification the results implement. It is a lineage field like the digests
     -- above and was left outside the guard with them: a run published without it states
     -- what it measured and not what it was measuring against.
-    if coalesce(run ->> 'spec_version', '') = '' then
-        raise exception 'RP2_PUBLISH_SPEC_VERSION_MISSING:%', published_run_id;
+    -- The frozen value, not merely a value. A typo or a version this function was never
+    -- written for would attribute the current rows to a specification they do not
+    -- implement, and the row would say so in its own column.
+    if coalesce(run ->> 'spec_version', '') is distinct from 'rp2-v3' then
+        raise exception 'RP2_PUBLISH_SPEC_VERSION_UNEXPECTED:%:%',
+            published_run_id, coalesce(run ->> 'spec_version', '(missing)');
     end if;
 
     -- The branch the publication came from, for the same reason: it is a lineage column

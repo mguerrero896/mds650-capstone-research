@@ -594,9 +594,13 @@ def test_no_rp2_producer_writes_an_inference_setting_down_for_itself() -> None:
     # as an inference setting - `Ridge(alpha=1e-4)`, `TweedieRegressor(power=...)` - and
     # those belong to `model_config_sha256`. A check that fired on them would be
     # reporting the wrong digest.
-    literal = re.compile(
-        r"(repetitions|seed|block_length|block_mean|equivalence_fraction)\s*=\s*[\d.]+"
-    )
+    names = "repetitions|seed|block_length|block_mean|equivalence_fraction"
+    literal = re.compile(r"\b(" + names + r")\s*=\s*[\d.]+")
+    # The pattern is checked against a case it must catch. A scan that silently stopped
+    # matching - a mangled escape, a renamed setting - would otherwise pass by finding
+    # nothing, which is the same result as finding nothing wrong.
+    assert literal.findall("hansen_spa(x, repetitions=1000)") == ["repetitions"]
+    assert not literal.findall("Ridge(alpha=1e-4)")
     for script in sorted((REPO / "scripts").glob("rp2_*.py")):
         found = literal.findall(script.read_text(encoding="utf-8"))
         assert not found, f"{script.name} sets {found} itself"
