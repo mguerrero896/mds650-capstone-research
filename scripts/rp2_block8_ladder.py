@@ -29,13 +29,15 @@ import numpy.typing as npt
 import polars as pl
 
 from mds650.b1v3_confirmation import canonical_sha256
-from mds650.metrics import holm_adjust, paired_day_bootstrap, qlike_losses
+from mds650.metrics import holm_adjust, qlike_losses
 from mds650.rp2.baseline import mincer_zarnowitz
 from mds650.rp2.feature_registry import assert_segment_coverage, describe_coverage
+from mds650.rp2.inference import session_contrast
 from mds650.rp2.ladder import (
     INDEPENDENT_FAMILIES,
     LADDER,
     PRIMARY_MODELS,
+    assert_primary_models,
     partial_pooling,
 )
 from mds650.rp2.panel import (
@@ -49,6 +51,7 @@ from mds650.rp2.panel import (
     describe_information_set,
     lift_mask,
     load_merged_panel,
+    mask_sha256,
     session_rank,
 )
 from mds650.rp2.preprocessing import describe_preprocessor, fold_design
@@ -88,18 +91,36 @@ def _recalibrate(
 
 
 def _contrast(
-    losses: dict[str, FloatArray], sessions: npt.NDArray[np.str_], base: str, expanded: str
-) -> dict[str, float]:
-    difference = losses[base] - losses[expanded]
-    frame = pl.DataFrame({"session_date": sessions, "loss_difference": difference})
-    boot = paired_day_bootstrap(frame, repetitions=2000, seed=650)
-    return {
-        "delta": float(boot["estimate"]),
-        "ci_low": float(boot["ci_low"]),
-        "ci_high": float(boot["ci_high"]),
-        "p_value": float(boot["p_value_two_sided"]),
-        "clusters": float(boot["clusters"]),
-    }
+    losses: dict[str, FloatArray],
+    sessions: npt.NDArray[np.int64],
+    base: str,
+    expanded: str,
+    *,
+    model_family: str,
+    common_mask_sha256: str,
+) -> dict[str, object]:
+    """One nested increment, aggregated to the session before anything is inferred.
+
+    The previous estimator averaged over origins, so a session with more five-minute
+    origins weighed more than a quiet one and an early close weighed less than a full day.
+    The unit of observation is the trading session.
+    """
+
+    record = session_contrast(
+        losses[base],
+        losses[expanded],
+        sessions,
+        model_family=model_family,
+        base_information_set=base,
+        expanded_information_set=expanded,
+        common_mask_sha256=common_mask_sha256,
+        repetitions=2000,
+        seed=650,
+    ).as_record()
+    # `delta` is kept as an alias of `estimate` so that documents and downstream readers
+    # written against the earlier artifact still resolve, and both names mean one number.
+    record["delta"] = record["estimate"]
+    return record
 
 
 def run_role(
@@ -160,6 +181,10 @@ def run_role(
         name: describe_information_set((name,), resolved[name], lift_mask(keep, test))
         for name in INFORMATION_SETS
     }
+    # Every contrast below is scored on exactly these rows. The digest is what lets a
+    # reader confirm that the base and the expanded model were judged on one sample.
+    evaluated_mask_sha256 = mask_sha256(lift_mask(keep, test))
+    session_index = np.unique(session_labels[test], return_inverse=True)[1].astype(np.int64)
 
     results: dict[str, object] = {
         "status": "MEASURED",
@@ -172,6 +197,8 @@ def run_role(
         "design_columns": {name: designs[name].shape[1] for name in INFORMATION_SETS},
         "preprocessing": preprocessors,
         "information_sets": information_sets,
+        "evaluation_mask_sha256": evaluated_mask_sha256,
+        "evaluated_sessions": int(np.unique(session_index).size),
     }
     per_model: dict[str, object] = {}
     for model_name in models:
@@ -189,12 +216,24 @@ def run_role(
         contrasts: dict[str, object] = {}
         raw_p: dict[str, float] = {}
         for label, (base, expanded) in CONTRASTS.items():
-            stats = _contrast(losses, session_labels[test], base, expanded)
+            stats = _contrast(
+                losses,
+                session_index,
+                base,
+                expanded,
+                model_family=model_name,
+                common_mask_sha256=evaluated_mask_sha256,
+            )
             stats_recalibrated = _contrast(
-                losses_recalibrated, session_labels[test], base, expanded
+                losses_recalibrated,
+                session_index,
+                base,
+                expanded,
+                model_family=model_name,
+                common_mask_sha256=evaluated_mask_sha256,
             )
             contrasts[label] = {"raw": stats, "recalibrated": stats_recalibrated}
-            raw_p[label] = stats["p_value"]
+            raw_p[label] = float(stats["p_value"])  # type: ignore[arg-type]
         interaction = (
             float(contrasts["delta_total"]["raw"]["delta"])  # type: ignore[index]
             - float(contrasts["delta_b1"]["raw"]["delta"])  # type: ignore[index]
@@ -227,20 +266,6 @@ def run_role(
         },
     }
     return results
-
-
-def assert_primary_models(models: Sequence[str]) -> None:
-    """Refuse a run that would report a ladder without one of the deciding families.
-
-    The contract freezes three families and the programme's conclusions are read off them.
-    A run that quietly dropped one would still produce an artifact, and the artifact would
-    look complete.
-    """
-
-    fitted = set(models)
-    for name in PRIMARY_MODELS:
-        if name not in fitted:
-            raise ValueError(f"RP2_BLOCK8_PRIMARY_MODEL_MISSING:{name}")
 
 
 def main(argv: Sequence[str] | None = None) -> int:

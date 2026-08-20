@@ -246,6 +246,20 @@ LADDER: Final[dict[str, Fitter]] = {
 }
 
 #: Families that count as genuinely independent for the two-family requirement.
+def assert_primary_models(models: Sequence[str]) -> None:
+    """Refuse a run that would report results without one of the deciding families.
+
+    The contract freezes three families and the programme's conclusions are read off them.
+    A run that quietly dropped one would still produce an artifact, and the artifact would
+    look complete.
+    """
+
+    fitted = set(models)
+    for name in PRIMARY_MODELS:
+        if name not in fitted:
+            raise ValueError(f"RP2_PRIMARY_MODEL_MISSING:{name}")
+
+
 INDEPENDENT_FAMILIES: Final[dict[str, str]] = {
     "log_ols": "smooth_linear",
     "ridge_log": "smooth_linear",

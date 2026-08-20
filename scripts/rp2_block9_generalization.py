@@ -25,7 +25,7 @@ import polars as pl
 from mds650.b1v3_confirmation import canonical_sha256
 from mds650.metrics import qlike_losses
 from mds650.rp2.feature_registry import assert_segment_coverage, describe_coverage
-from mds650.rp2.ladder import LADDER
+from mds650.rp2.ladder import LADDER, PRIMARY_MODELS, assert_primary_models
 from mds650.rp2.panel import (
     B0_FEATURES,
     B1_FEATURES,
@@ -60,7 +60,10 @@ CONTRASTS: dict[str, tuple[str, str]] = {
     "delta_b2_given_b0": ("B0", "B0+B2"),
     "delta_total": ("B0", "B0+B1+B2"),
 }
-DEFAULT_MODELS: tuple[str, ...] = ("log_ols", "gamma_glm", "lightgbm")
+#: The families the research contract decides on. `log_ols` and `lightgbm` remain
+#: available through --models as robustness, but a default run reports the three
+#: families the conclusions are read off.
+DEFAULT_MODELS: tuple[str, ...] = PRIMARY_MODELS
 NON_OVERLAPPING_STEP = 30
 
 type FloatArray = npt.NDArray[np.float64]
@@ -323,6 +326,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     models = tuple(name.strip() for name in str(args.models).split(",") if name.strip())
+    assert_primary_models(models)
     panel = load_merged_panel(B0_PANEL, B1_PANEL, B2_PANEL)
     document: dict[str, object] = {
         # Which frozen sets were fitted, how complete they were, and the hash of the

@@ -24,14 +24,13 @@ from mds650.b1v3_confirmation import canonical_sha256
 from mds650.metrics import qlike_losses
 from mds650.rp2.feature_registry import assert_segment_coverage, describe_coverage
 from mds650.rp2.inference import (
-    aggregate_by_session,
     clark_west_terms,
     clustered_mean_test,
-    giacomini_white,
     hansen_spa,
-    session_block_bootstrap,
+    session_contrast,
+    session_giacomini_white,
 )
-from mds650.rp2.ladder import LADDER
+from mds650.rp2.ladder import LADDER, PRIMARY_MODELS, assert_primary_models
 from mds650.rp2.panel import (
     B0_FEATURES,
     B1_FEATURES,
@@ -43,6 +42,7 @@ from mds650.rp2.panel import (
     describe_information_set,
     lift_mask,
     load_merged_panel,
+    mask_sha256,
     session_rank,
 )
 from mds650.rp2.preprocessing import describe_preprocessor, fold_design
@@ -65,7 +65,10 @@ NESTED_PAIRS: dict[str, tuple[str, str]] = {
     "b2_over_b0": ("B0", "B0+B2"),
     "total_over_b0": ("B0", "B0+B1+B2"),
 }
-DEFAULT_MODELS: tuple[str, ...] = ("log_ols", "gamma_glm", "lightgbm")
+#: The families the research contract decides on. `log_ols` and `lightgbm` remain
+#: available through --models as robustness, but a default run reports the three
+#: families the conclusions are read off.
+DEFAULT_MODELS: tuple[str, ...] = PRIMARY_MODELS
 #: Families whose restricted form really is a parameter restriction of the unrestricted
 #: one, which is the precondition Clark-West is derived under.
 NESTED_LINEAR_FAMILIES: frozenset[str] = frozenset({"log_ols", "ridge_log"})
@@ -130,6 +133,8 @@ def run_role(
         for name in INFORMATION_SETS
     }
     clusters = sessions_rank[test]
+    # The rows every contrast below is scored on, and the digest that identifies them.
+    evaluated_mask_sha256 = mask_sha256(lift_mask(keep, test))
     log_target = np.log(np.maximum(target, 1e-12))
 
     # Conditioning variables for Giacomini-White: ex-ante observable state, taken from the
@@ -185,38 +190,72 @@ def run_role(
             else:
                 cw = None
             difference = losses[base] - losses[expanded]
-            gw = giacomini_white(difference, conditioners, clusters)
-            session_means, _ = aggregate_by_session(difference, clusters)
-            blocked = session_block_bootstrap(session_means)
-            block[label] = {
-                "clark_west_applicable": nested_linear,
-                "clark_west_mean": cw.mean if cw else None,
-                "clark_west_t": cw.t_statistic if cw else None,
-                "clark_west_p_one_sided": cw.p_value_one_sided if cw else None,
-                "session_blocked_delta": blocked["estimate"],
-                "session_blocked_ci_low": blocked["ci_low"],
-                "session_blocked_ci_high": blocked["ci_high"],
-                "session_blocked_p": blocked["p_value_two_sided"],
-                "sessions": blocked["sessions"],
-                "giacomini_white_wald": gw.wald,
-                "giacomini_white_p": gw.p_value,
-                "unconditional_delta_qlike": float(np.mean(difference)),
-            }
+            gw = session_giacomini_white(difference, conditioners, clusters)
+            contrast = session_contrast(
+                losses[base],
+                losses[expanded],
+                clusters,
+                model_family=model_name,
+                base_information_set=base,
+                expanded_information_set=expanded,
+                common_mask_sha256=evaluated_mask_sha256,
+            )
+            record = contrast.as_record()
+            record.update(
+                {
+                    "clark_west_applicable": nested_linear,
+                    "clark_west_mean": cw.mean if cw else None,
+                    "clark_west_t": cw.t_statistic if cw else None,
+                    "clark_west_p_one_sided": cw.p_value_one_sided if cw else None,
+                    "giacomini_white_wald": gw.wald,
+                    "giacomini_white_p": gw.p_value,
+                }
+            )
+            block[label] = record
         per_model[model_name] = block
     results["nested_tests"] = per_model
 
-    # SPA / Reality Check: every model x information set against the plain B0 benchmark.
-    benchmark = all_losses[f"{models[0]}|B0"]
-    candidates = {name: values for name, values in all_losses.items() if not name.endswith("|B0")}
-    spa = hansen_spa(benchmark, candidates, repetitions=1000, seed=650)
-    results["superior_predictive_ability"] = {
-        "benchmark": f"{models[0]}|B0",
-        "best_model": spa.best_model,
-        "best_mean_delta_qlike": spa.best_mean_difference,
-        "spa_p_value": spa.spa_p_value,
-        "reality_check_p_value": spa.reality_check_p_value,
-        "candidates": spa.candidates,
-    }
+    # SPA / Reality Check, one per family: each family's own B0 is the benchmark and its
+    # own expansions are the candidates. Racing `log_ols|B0` against `lightgbm|B0+B1+B2`
+    # would confound the estimator with the information set, which is the one thing these
+    # contrasts exist to separate.
+    # Two benchmarks per family, because the programme asks two questions. Against B0 the
+    # candidates answer "does anything beyond the baseline help"; against B0+B1 the single
+    # candidate answers the frozen dB2|B1 question, which a B0 benchmark cannot: there,
+    # B0+B1+B2 is credited with B1's increment as well.
+    spa_by_family: dict[str, object] = {}
+    for model_name in models:
+        family: dict[str, object] = {}
+        for benchmark_set, candidate_sets in (
+            ("B0", ("B0+B1", "B0+B2", "B0+B1+B2")),
+            ("B0+B1", ("B0+B1+B2",)),
+        ):
+            candidates = {
+                f"{model_name}|{name}": all_losses[f"{model_name}|{name}"]
+                for name in candidate_sets
+                if f"{model_name}|{name}" in all_losses
+            }
+            if not candidates:
+                continue
+            spa = hansen_spa(
+                all_losses[f"{model_name}|{benchmark_set}"],
+                candidates,
+                sessions=clusters,
+                benchmark_name=f"{model_name}|{benchmark_set}",
+                repetitions=1000,
+                seed=650,
+            )
+            family[benchmark_set] = {
+                "benchmark": f"{model_name}|{benchmark_set}",
+                "best_model": spa.best_model,
+                "best_mean_delta_qlike": spa.best_mean_difference,
+                "spa_p_value": spa.spa_p_value,
+                "reality_check_p_value": spa.reality_check_p_value,
+                "candidates": spa.candidates,
+                "sessions": spa.observations,
+            }
+        spa_by_family[model_name] = family
+    results["superior_predictive_ability"] = spa_by_family
     return results
 
 
@@ -228,6 +267,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     models = tuple(name.strip() for name in str(args.models).split(",") if name.strip())
+    assert_primary_models(models)
     panel = load_merged_panel(B0_PANEL, B1_PANEL, B2_PANEL)
     document: dict[str, object] = {
         # Which frozen sets were fitted, how complete they were, and the hash of the
@@ -270,15 +310,23 @@ def main(argv: Sequence[str] | None = None) -> int:
                     print(
                         f"  {model_name:<11} {label:<14} {cw_text}  "
                         f"GW p={stats['giacomini_white_p']:.4f}  "
-                        f"session dQLIKE={stats['session_blocked_delta']:+.5f} "
-                        f"p={stats['session_blocked_p']:.4f} n={stats['sessions']:.0f}"
+                        f"session dQLIKE={stats['estimate']:+.5f} "
+                        f"p={stats['p_value']:.4f} n={stats['sessions']:d} "
+                        f"mde={stats['mde']:.5f}"
                     )
-        spa = block.get("superior_predictive_ability")
-        if isinstance(spa, dict):
-            print(
-                f"  SPA best={spa['best_model']} delta={spa['best_mean_delta_qlike']:+.5f} "
-                f"SPA p={spa['spa_p_value']:.4f} RC p={spa['reality_check_p_value']:.4f}"
-            )
+        spa_by_family = block.get("superior_predictive_ability")
+        if isinstance(spa_by_family, dict):
+            for family, by_benchmark in spa_by_family.items():
+                assert isinstance(by_benchmark, dict)
+                for benchmark_set, spa in by_benchmark.items():
+                    assert isinstance(spa, dict)
+                    print(
+                        f"  SPA {family:<15} vs {benchmark_set:<6} "
+                        f"best={spa['best_model']:<26} "
+                        f"delta={spa['best_mean_delta_qlike']:+.5f} "
+                        f"SPA p={spa['spa_p_value']:.4f} "
+                        f"RC p={spa['reality_check_p_value']:.4f} n={spa['sessions']:d}"
+                    )
     return 0
 
 
