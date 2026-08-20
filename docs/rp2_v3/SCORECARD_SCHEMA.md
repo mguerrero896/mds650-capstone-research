@@ -26,7 +26,8 @@ as an unmeasured one.
 | `b0_rows` | int | rows in the causal baseline panel |
 | `b1_rows` | int | rows in the contemporaneous option-state panel |
 | `b2_rows` | int | rows in the point-in-time flow panel |
-| `common_evaluation_rows` | int | rows every nested model in a contrast is scored on |
+| `common_evaluation_rows` | object | `{"D": int, "V": int}` — held-out rows every nested model in a contrast is scored on |
+| `masked_rows_by_role` | object | `{"D": int, "V": int}` — rows surviving the common mask, of which only the held-out segment is evaluated |
 | `sessions_by_role` | object | `{"D": int, "V": int}` |
 | `assets` | int | distinct assets in the evaluation mask |
 | `duplicate_keys` | int | must be 0 |

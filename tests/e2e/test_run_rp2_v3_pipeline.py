@@ -21,6 +21,7 @@ from mds650.rp2.run_manifest import (
     assert_no_sealed_paths,
     file_digest,
     scientific_sha256,
+    stable_content_digest,
 )
 
 REPO = Path(__file__).resolve().parents[2]
@@ -113,28 +114,24 @@ def test_a_step_that_produced_a_different_artifact_changes_the_hash(tmp_path: Pa
     second = tmp_path / "two.json"
     second.write_text('{"a": 2}', encoding="utf-8")
 
-    def record(path: Path) -> StepRecord:
+    def record(path: Path, *, runtime: float = 1.0, memory: int = 1024) -> StepRecord:
+        # Both digests, the way the runner records them: the bytes for integrity, the
+        # volatile-free content for the science.
         return StepRecord(
             name="fit-model-ladder",
             command=("uv", "run", "python", "scripts/rp2_block8_ladder.py"),
             exit_code=0,
-            runtime_seconds=1.0,
-            peak_memory_bytes=1024,
+            runtime_seconds=runtime,
+            peak_memory_bytes=memory,
             artifacts={"ladder.json": file_digest(path)},
+            content={"ladder.json": stable_content_digest(path)},
         )
 
     assert scientific_sha256(_manifest(steps=(record(first),))) != scientific_sha256(
         _manifest(steps=(record(second),))
     )
     # Runtime and memory are engineering facts, not scientific ones.
-    slow = StepRecord(
-        name="fit-model-ladder",
-        command=("uv", "run", "python", "scripts/rp2_block8_ladder.py"),
-        exit_code=0,
-        runtime_seconds=9999.0,
-        peak_memory_bytes=99_999_999,
-        artifacts={"ladder.json": file_digest(first)},
-    )
+    slow = record(first, runtime=9999.0, memory=99_999_999)
     assert scientific_sha256(_manifest(steps=(slow,))) == scientific_sha256(
         _manifest(steps=(record(first),))
     )

@@ -121,8 +121,14 @@ class StepRecord:
     exit_code: int
     runtime_seconds: float
     peak_memory_bytes: int
-    #: Artifact path relative to the run directory -> sha256 of its bytes.
+    #: Artifact path relative to the run directory -> sha256 of its bytes. This is the
+    #: integrity digest: it answers "is the file on disk the file this step wrote".
     artifacts: Mapping[str, str] = field(default_factory=dict)
+    #: The same artifacts, digested with their volatile fields removed. This is the
+    #: scientific digest: it answers "did this step produce the same result", which is a
+    #: different question, because every block artifact stamps itself with the time it was
+    #: written and the scorecard records how long the run took.
+    content: Mapping[str, str] = field(default_factory=dict)
 
     def scientific_part(self) -> dict[str, object]:
         """The step's contribution to the run's identity: what it ran and what it produced."""
@@ -131,12 +137,16 @@ class StepRecord:
             "name": self.name,
             "command": list(self.command),
             "exit_code": self.exit_code,
-            "artifacts": dict(sorted(self.artifacts.items())),
+            # Deliberately the stable digests. Using the byte digests here would let the
+            # clock into the run's scientific identity through the artifacts, which is
+            # precisely what keeping `started_at_utc` out of it was for.
+            "content": dict(sorted(self.content.items())),
         }
 
     def as_record(self) -> dict[str, object]:
         return {
             **self.scientific_part(),
+            "artifacts": dict(sorted(self.artifacts.items())),
             "runtime_seconds": self.runtime_seconds,
             "peak_memory_bytes": self.peak_memory_bytes,
         }
@@ -193,6 +203,77 @@ def scientific_sha256(manifest: RunManifest) -> str:
     return hashlib.sha256(canonical_json(manifest.scientific_part()).encode("utf-8")).hexdigest()
 
 
+#: Fields that record *when* or *how long*, not *what*. They are stripped before an
+#: artifact is digested for the run's scientific identity, because every block artifact
+#: stamps itself and the scorecard records its own runtime: hashing those bytes would make
+#: two identical executions disagree.
+VOLATILE_KEYS: Final[frozenset[str]] = frozenset(
+    {
+        "generated_at_utc",
+        "generated_at",
+        "started_at_utc",
+        "finished_at_utc",
+        "created_at",
+        "runtime_seconds",
+        "peak_memory_bytes",
+        "elapsed_seconds",
+    }
+)
+
+
+def _without_volatile(value: object) -> object:
+    """The same structure with every volatile field removed, however deeply it is nested."""
+
+    if isinstance(value, Mapping):
+        return {
+            key: _without_volatile(item)
+            for key, item in sorted(value.items())
+            if key not in VOLATILE_KEYS
+        }
+    if isinstance(value, list):
+        return [_without_volatile(item) for item in value]
+    return value
+
+
+def stable_content_digest(path: Path) -> str:
+    """Digest of what an artifact *says*, rather than of the bytes it happens to occupy.
+
+    JSON artifacts are reparsed, stripped of their volatile fields and re-serialised
+    canonically, so indentation and a timestamp cannot move the digest. Anything else -
+    a parquet panel, a rendered document - is digested by its bytes, which for those is
+    already the content.
+    """
+
+    if path.suffix.lower() != ".json":
+        return file_digest(path)
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return file_digest(path)
+    return hashlib.sha256(canonical_json(_without_volatile(payload)).encode("utf-8")).hexdigest()
+
+
+def inventory_paths(path: Path) -> list[Path]:
+    """Every file the option-tape inventory points a producer at.
+
+    Blocks 5 and 6 open each of these. A sealed-cohort check that inspects only the gated
+    manifest and the data root leaves the guarantee resting on the inventory happening to
+    be the one somebody looked at once.
+    """
+
+    paths: list[Path] = []
+    with path.open("r", encoding="utf-8") as handle:
+        for line in handle:
+            line = line.strip()
+            if not line:
+                continue
+            record = json.loads(line)
+            target = record.get("path")
+            if target:
+                paths.append(Path(str(target)))
+    return paths
+
+
 def file_digest(path: Path) -> str:
     """sha256 of a file's bytes, read in chunks so a multi-gigabyte panel still fits."""
 
@@ -235,6 +316,45 @@ def assert_artifact_stable(path: Path, expected_sha256: str) -> None:
     if actual != expected_sha256:
         raise ValueError(
             f"RP2_RUN_ARTIFACT_HASH_CONFLICT:{path.name}:{actual[:12]}!={expected_sha256[:12]}"
+        )
+
+
+#: What makes two runs the same run. Everything here is decided before the first producer
+#: starts, which is why it can be checked before one does.
+_IDENTITY_FIELDS: Final[tuple[str, ...]] = (
+    "code_commit",
+    "data_root",
+    "feature_registry_sha256",
+    "model_config_sha256",
+    "seeds",
+    "roles",
+)
+
+
+def assert_run_identity_unchanged(run_dir: Path, manifest: RunManifest) -> None:
+    """Refuse a run id that already holds a different run, *before* anything overwrites it.
+
+    Checking this at the end is too late: by then every producer has already written its
+    output over the previous run's, and the conflict is discovered next to artifacts that
+    no longer match the manifest sitting beside them.
+    """
+
+    path = run_dir / "run_manifest.json"
+    if not path.is_file():
+        return
+    try:
+        existing = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        raise ValueError(f"RP2_RUN_IDENTITY_CONFLICT:{manifest.run_id}:unreadable") from None
+    proposed = manifest.scientific_part()
+    differing = [
+        field
+        for field in _IDENTITY_FIELDS
+        if existing.get(field) is not None and existing.get(field) != proposed.get(field)
+    ]
+    if differing:
+        raise ValueError(
+            f"RP2_RUN_IDENTITY_CONFLICT:{manifest.run_id}:{','.join(sorted(differing))}"
         )
 
 

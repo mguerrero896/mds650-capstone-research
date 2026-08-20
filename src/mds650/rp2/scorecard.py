@@ -193,7 +193,13 @@ def assemble_scorecard(run_dir: Path, manifest: RunManifest) -> dict[str, Any]:
             "b0_rows": _height(panels["b0"]),
             "b1_rows": _height(panels["b1"]),
             "b2_rows": _height(panels["b2"]),
+            # The rows the contrasts were *evaluated* on, which is the held-out segment,
+            # not every row that survived the common mask. Reporting the latter under this
+            # name overstates the evaluated sample by the train share.
             "common_evaluation_rows": {
+                role: ladder.get(role, {}).get("test_rows") for role in manifest.roles
+            },
+            "masked_rows_by_role": {
                 role: ladder.get(role, {}).get("rows") for role in manifest.roles
             },
             "sessions_by_role": {

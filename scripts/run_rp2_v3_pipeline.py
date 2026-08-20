@@ -20,6 +20,7 @@ an artifact that already exists under this run id with a different hash.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import subprocess
 import sys
@@ -40,12 +41,20 @@ from mds650.rp2.run_manifest import (  # noqa: E402
     StepRecord,
     assert_artifact_stable,
     assert_no_sealed_paths,
+    assert_run_identity_unchanged,
+    canonical_json,
     declared_inputs,
     file_digest,
+    inventory_paths,
+    stable_content_digest,
     write_manifest,
 )
 
 GATED_MANIFEST = ROOT / "data" / "GATED_DATA_POINTERS.json"
+#: The option tape the producers actually open, one JSON record per session-asset file.
+TAPE_INVENTORY = ROOT / "artifacts" / "rp2_block1_partition" / "inventory.jsonl"
+#: The frozen partition. The sessions a rebuild produces have to be these sessions.
+PARTITION = ROOT / "artifacts" / "rp2_block1_partition" / "partition.json"
 SCORECARD_FIELDS = ROOT / "configs" / "rp2_v3_scorecard_fields.json"
 MODEL_CONFIG = ROOT / "configs" / "rp2_v3_feature_sets.json"
 #: Seeds are part of the run's identity, so they are declared here rather than left to
@@ -95,6 +104,14 @@ def _peak_memory_bytes(process: subprocess.Popen[bytes]) -> int:
     return int(usage.ru_maxrss * (1024 if sys.platform.startswith("linux") else 1))
 
 
+def _code_commit() -> str:
+    """The commit the run is executing, which is half of what makes it reproducible."""
+
+    return subprocess.run(  # noqa: S603
+        ["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True, check=True
+    ).stdout.strip()
+
+
 def run_step(name: str, command: Sequence[str], run_dir: Path) -> StepRecord:
     """Run one step, timing it, and refuse to accept a step that did not write its outputs."""
 
@@ -106,15 +123,7 @@ def run_step(name: str, command: Sequence[str], run_dir: Path) -> StepRecord:
     step = next(candidate for candidate in PIPELINE_STEPS if candidate.name == name)
     if process.returncode != 0:
         raise SystemExit(f"RP2_RUN_STEP_FAILED:{name}:exit={process.returncode}")
-    artifacts: dict[str, str] = {}
-    for output in step.outputs:
-        path = run_dir / output
-        if not path.is_file():
-            # A step that exits zero without writing its output has not run. Accepting it
-            # would let the next step read the previous run's file and label the result
-            # with this run id.
-            raise SystemExit(f"RP2_RUN_STEP_OUTPUT_MISSING:{name}:{output}")
-        artifacts[output] = file_digest(path)
+    artifacts, content = _digest_outputs(name, run_dir, step.outputs)
     return StepRecord(
         name=name,
         command=tuple(command),
@@ -122,15 +131,84 @@ def run_step(name: str, command: Sequence[str], run_dir: Path) -> StepRecord:
         runtime_seconds=round(runtime, 3),
         peak_memory_bytes=memory,
         artifacts=artifacts,
+        content=content,
     )
 
 
-def validate_inputs(run_dir: Path, *, data_root: Path, forbid_sealed: bool) -> str:
-    """Step 1: every declared input exists and still hashes as recorded."""
+def _digest_outputs(
+    name: str, run_dir: Path, outputs: Sequence[str]
+) -> tuple[dict[str, str], dict[str, str]]:
+    """Both digests of everything a step was supposed to write.
+
+    The byte digest answers whether the file on disk is the file the step wrote. The stable
+    digest answers whether the step produced the same *result*, which is a different
+    question: every block artifact stamps itself with the moment it was written, so two
+    identical executions differ byte for byte and agree on content.
+    """
+
+    artifacts: dict[str, str] = {}
+    content: dict[str, str] = {}
+    for output in outputs:
+        path = run_dir / output
+        if not path.is_file():
+            # A step that exits zero without writing its output has not run. Accepting it
+            # would let the next step read the previous run's file and label the result
+            # with this run id.
+            raise SystemExit(f"RP2_RUN_STEP_OUTPUT_MISSING:{name}:{output}")
+        artifacts[output] = file_digest(path)
+        content[output] = stable_content_digest(path)
+    return artifacts, content
+
+
+def _tape_fingerprint(paths: Sequence[Path], *, hash_contents: bool) -> tuple[str, int, int]:
+    """A digest of the option tape the producers will open, and what it cost to compute.
+
+    Eighty-five gigabytes across three thousand seven hundred files is too much to read on
+    every rebuild for no gain, so the default fingerprint is over each file's path, size
+    and modification time: it changes whenever a session is re-acquired, replaced or
+    truncated. `--hash-tape-contents` reads every byte instead, and the artifact records
+    which of the two was done rather than leaving a reader to assume the stronger one.
+    """
+
+    digest = hashlib.sha256()
+    total = 0
+    for path in sorted(paths, key=lambda item: item.as_posix()):
+        if not path.is_file():
+            raise SystemExit(f"RP2_RUN_TAPE_INPUT_MISSING:{path.as_posix()}")
+        stat = path.stat()
+        total += stat.st_size
+        if hash_contents:
+            digest.update(f"{path.as_posix()}:{file_digest(path)}".encode())
+        else:
+            digest.update(f"{path.as_posix()}:{stat.st_size}:{stat.st_mtime_ns}".encode())
+    return digest.hexdigest(), len(paths), total
+
+
+def validate_inputs(
+    run_dir: Path, *, data_root: Path, forbid_sealed: bool, hash_tape_contents: bool = False
+) -> str:
+    """Step 1: everything the run will actually read exists, and is identified.
+
+    Three sets of files, not one. The gated pointers are hashed byte for byte, because they
+    are small and their digests are already recorded. The one-minute bar stores are hashed
+    the same way. The option tape is fingerprinted from the inventory the producers read,
+    because that is the list of files Blocks 5 and 6 open - and hashing only the gated
+    pointers would leave the provenance unable to tell one acquisition of the tape from
+    another.
+    """
+
+    from mds650.rp2.bars import BAR_SOURCES
 
     paths, manifest_digest = declared_inputs(GATED_MANIFEST)
+    if not TAPE_INVENTORY.is_file():
+        raise SystemExit(f"RP2_RUN_TAPE_INVENTORY_MISSING:{TAPE_INVENTORY.name}")
+    tape = inventory_paths(TAPE_INVENTORY)
+    bars = [data_root / relative for _, _, relative in BAR_SOURCES]
     if forbid_sealed:
-        assert_no_sealed_paths([*paths, data_root])
+        # Every path a producer will open, not only the ones this run declared. The
+        # guarantee `--forbid-sealed-cohorts` makes is about what gets read.
+        assert_no_sealed_paths([*paths, data_root, TAPE_INVENTORY, *bars, *tape])
+
     payload = json.loads(GATED_MANIFEST.read_text(encoding="utf-8"))
     failures: list[str] = []
     for entry in payload.get("files", []):
@@ -141,18 +219,67 @@ def validate_inputs(run_dir: Path, *, data_root: Path, forbid_sealed: bool) -> s
         recorded = str(entry.get("sha256", ""))
         if recorded and file_digest(path) != recorded:
             failures.append(f"changed:{entry['path']}")
+    bar_digests: dict[str, str] = {}
+    for name, role, relative in BAR_SOURCES:
+        path = data_root / relative
+        if not path.is_file():
+            failures.append(f"missing_bars:{name}")
+            continue
+        bar_digests[f"{name}|{role}"] = file_digest(path)
     if failures:
         raise SystemExit("RP2_RUN_INPUT_MANIFEST_INVALID:" + ",".join(sorted(failures)))
-    (run_dir / "input_manifest.json").write_text(
-        json.dumps(
-            {"manifest_sha256": manifest_digest, "declared_files": len(payload.get("files", []))},
-            indent=2,
-            sort_keys=True,
-        )
-        + "\n",
-        encoding="utf-8",
+
+    tape_digest, tape_files, tape_bytes = _tape_fingerprint(
+        tape, hash_contents=hash_tape_contents
     )
-    return manifest_digest
+    record = {
+        "gated_manifest_sha256": manifest_digest,
+        "gated_files": len(payload.get("files", [])),
+        "bar_sources_sha256": bar_digests,
+        "tape_inventory_sha256": file_digest(TAPE_INVENTORY),
+        "tape_fingerprint_sha256": tape_digest,
+        "tape_fingerprint_mode": "content" if hash_tape_contents else "path_size_mtime",
+        "tape_files": tape_files,
+        "tape_bytes": tape_bytes,
+    }
+    (run_dir / "input_manifest.json").write_text(
+        json.dumps(record, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    # The digest the manifest carries covers all three sets, so changing any real input
+    # moves it.
+    return hashlib.sha256(canonical_json(record).encode("utf-8")).hexdigest()
+
+
+def assert_partition_matches(run_dir: Path) -> None:
+    """The rebuilt panels cover the frozen partition, session for session.
+
+    The producers load every bar store they can find. Left unchecked, a store that grew
+    silently widens the sample and one that lost a file silently shortens it, and either
+    way the result is labelled with the same run id as the study it no longer matches.
+    """
+
+    import polars as pl
+
+    from mds650.rp2.panel import panel_paths
+
+    partition = json.loads(PARTITION.read_text(encoding="utf-8"))
+    panel = pl.read_parquet(panel_paths(run_dir)["b0"], columns=["role", "session_date"])
+    breaches: list[str] = []
+    for role, expected in partition["roles"].items():
+        if not expected["sessions"]:
+            continue
+        built = panel.filter(pl.col("role") == role)["session_date"].unique()
+        if built.len() != int(expected["sessions"]):
+            breaches.append(f"{role}:sessions={built.len()}!={expected['sessions']}")
+            continue
+        first, last = str(built.min()), str(built.max())
+        if first != expected["first_session"] or last != expected["last_session"]:
+            breaches.append(
+                f"{role}:window={first}..{last}!="
+                f"{expected['first_session']}..{expected['last_session']}"
+            )
+    if breaches:
+        raise SystemExit("RP2_RUN_PARTITION_MISMATCH:" + ",".join(breaches))
 
 
 def validate_feature_registry(run_dir: Path) -> Path:
@@ -266,6 +393,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         action="store_true",
         help="reuse the panels already in the run directory instead of rebuilding them",
     )
+    parser.add_argument(
+        "--hash-tape-contents",
+        action="store_true",
+        help="read all 85 GB of option tape to digest it, instead of path/size/mtime",
+    )
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args(argv)
 
@@ -292,9 +424,30 @@ def main(argv: Sequence[str] | None = None) -> int:
         flags = ["--output-dir", str(run_dir / directory)]
         return ["--data-root", str(args.data_root), *flags] if data else flags
 
+    # Before anything is written: if this run id already holds a run, it has to be the
+    # same run. Discovering that at the end would mean discovering it beside artifacts the
+    # producers had already overwritten.
+    identity = RunManifest(
+        run_id=str(args.run_id),
+        code_commit=_code_commit(),
+        data_root=str(args.data_root),
+        roles=tuple(args.roles),
+        feature_registry_sha256=registry_sha256(),
+        input_manifest_sha256="",
+        model_config_sha256=file_digest(MODEL_CONFIG),
+        seeds=SEEDS,
+        steps=(),
+        started_at_utc=started,
+        finished_at_utc=started,
+    )
+    assert_run_identity_unchanged(run_dir, identity)
+
     steps: list[StepRecord] = []
     manifest_digest = validate_inputs(
-        run_dir, data_root=Path(args.data_root), forbid_sealed=args.forbid_sealed_cohorts
+        run_dir,
+        data_root=Path(args.data_root),
+        forbid_sealed=args.forbid_sealed_cohorts,
+        hash_tape_contents=args.hash_tape_contents,
     )
     steps.append(
         StepRecord(
@@ -304,6 +457,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             runtime_seconds=0.0,
             peak_memory_bytes=0,
             artifacts={"input_manifest.json": file_digest(run_dir / "input_manifest.json")},
+            content={
+                "input_manifest.json": stable_content_digest(run_dir / "input_manifest.json")
+            },
         )
     )
 
@@ -360,6 +516,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             continue
         steps.append(run_step(name, command, run_dir))
 
+    assert_partition_matches(run_dir)
+
     # Steps 6 and 7 run in this process against the panels this run just built. Shelling
     # out to an import would prove the configuration parses, which is not the question
     # that can fail: the question is whether the features the registry names exist in
@@ -379,6 +537,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 runtime_seconds=round(time.perf_counter() - started_step, 3),
                 peak_memory_bytes=0,
                 artifacts={artifact.name: file_digest(artifact)},
+                content={artifact.name: stable_content_digest(artifact)},
             )
         )
 
@@ -392,9 +551,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     manifest = RunManifest(
         run_id=str(args.run_id),
-        code_commit=subprocess.run(  # noqa: S603
-            ["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True, check=True
-        ).stdout.strip(),
+        code_commit=_code_commit(),
         data_root=str(args.data_root),
         roles=tuple(args.roles),
         feature_registry_sha256=registry_sha256(),
@@ -416,6 +573,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             artifacts={
                 "scorecard.json": file_digest(run_dir / "scorecard.json"),
                 "scorecard.md": file_digest(run_dir / "scorecard.md"),
+            },
+            content={
+                "scorecard.json": stable_content_digest(run_dir / "scorecard.json"),
+                "scorecard.md": stable_content_digest(run_dir / "scorecard.md"),
             },
         )
     )

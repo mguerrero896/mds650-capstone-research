@@ -7,6 +7,7 @@
       "b1_rows",
       "b2_rows",
       "common_evaluation_rows",
+      "masked_rows_by_role",
       "sessions_by_role",
       "assets",
       "duplicate_keys",
