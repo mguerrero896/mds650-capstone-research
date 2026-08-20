@@ -62,10 +62,15 @@ TAPE_INVENTORY = ROOT / "artifacts" / "rp2_block1_partition" / "inventory.jsonl"
 #: The frozen partition. The sessions a rebuild produces have to be these sessions.
 PARTITION = ROOT / "artifacts" / "rp2_block1_partition" / "partition.json"
 SCORECARD_FIELDS = ROOT / "configs" / "rp2_v3_scorecard_fields.json"
+#: The feature registry. Recorded separately as `feature_registry_sha256`; it is not the
+#: model configuration, and using it for both would report one digest twice under two names.
 MODEL_CONFIG = ROOT / "configs" / "rp2_v3_feature_sets.json"
 #: Seeds are part of the run's identity, so they are declared here rather than left to
 #: each script's default and discovered afterwards.
 SEEDS = {"bootstrap": 650, "lightgbm": 20260818, "dml_folds": 5}
+#: The chronological split every producer uses. Part of the model configuration, so it is
+#: stated here rather than left to each script's default and discovered afterwards.
+DEFAULT_TRAIN_SHARE: Final = 0.6
 #: The roles every producer fits. Blocks 8 and 10 iterate these internally rather than
 #: taking a flag, so the runner refuses any other selection instead of recording one.
 PRODUCER_ROLES: Final[tuple[str, ...]] = ("D", "V")
@@ -149,6 +154,37 @@ def _own_peak_memory_bytes() -> int:
 
     usage = resource.getrusage(resource.RUSAGE_SELF)
     return int(usage.ru_maxrss * (1024 if sys.platform.startswith("linux") else 1))
+
+
+def model_config_digest() -> str:
+    """A digest over what configures the models, rather than over what configures the features.
+
+    The feature registry has its own digest. This one covers the frozen families, the
+    booster's hyperparameters, the split, and the inference settings a contrast is computed
+    under - the things that change what the ladder and the tests do without changing a
+    single feature name.
+    """
+
+    from mds650.rp2 import inference, ladder
+
+    configuration = {
+        "primary_models": list(ladder.PRIMARY_MODELS),
+        "ladder_families": sorted(ladder.LADDER),
+        "independent_families": dict(sorted(ladder.INDEPENDENT_FAMILIES.items())),
+        "lightgbm_rounds": ladder._LIGHTGBM_ROUNDS,
+        "lightgbm_leaves": ladder._LIGHTGBM_LEAVES,
+        "lightgbm_learning_rate": ladder._LIGHTGBM_LEARNING_RATE,
+        "variance_floor": ladder.VARIANCE_FLOOR,
+        "session_block_length": inference.SESSION_BLOCK_LENGTH,
+        "bootstrap_repetitions": inference.DEFAULT_BOOTSTRAP,
+        "block_mean": inference.DEFAULT_BLOCK_MEAN,
+        "alpha": inference.DEFAULT_ALPHA,
+        "power": inference.DEFAULT_POWER,
+        "equivalence_fraction": inference.EQUIVALENCE_FRACTION,
+        "train_share": DEFAULT_TRAIN_SHARE,
+        "feature_sets_sha256": file_digest(MODEL_CONFIG),
+    }
+    return hashlib.sha256(canonical_json(configuration).encode("utf-8")).hexdigest()
 
 
 def _code_commit() -> str:
@@ -675,6 +711,28 @@ def build_scorecard(
     return scorecard
 
 
+def assert_inputs_unchanged(run_dir: Path, *, data_root: Path) -> None:
+    """The store the producers read is the store step 1 recorded.
+
+    The freshness digest exists for this: it is over every tape file's absolute path, size
+    and modification time, so a re-acquisition between step 1 and the producers moves it,
+    and recomputing it costs a directory walk rather than another read of 85 GB.
+    """
+
+    recorded = json.loads((run_dir / "input_manifest.json").read_text(encoding="utf-8"))
+    _, freshness, _, _ = _tape_fingerprint(
+        inventory_paths(TAPE_INVENTORY), hash_contents=False
+    )
+    if freshness != recorded.get("tape_freshness_sha256"):
+        raise SystemExit("RP2_RUN_INPUTS_CHANGED_DURING_RUN:tape")
+    from mds650.rp2.bars import BAR_SOURCES
+
+    for name, role, relative in BAR_SOURCES:
+        digest = file_digest(data_root / relative)
+        if digest != recorded.get("bar_sources_sha256", {}).get(f"{name}|{role}"):
+            raise SystemExit(f"RP2_RUN_INPUTS_CHANGED_DURING_RUN:bars:{name}")
+
+
 def verify_artifacts(run_dir: Path, steps: Sequence[StepRecord]) -> None:
     """Step 13: what was written is still what was recorded."""
 
@@ -756,7 +814,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         roles=tuple(args.roles),
         feature_registry_sha256=registry_sha256(),
         input_manifest_sha256="",
-        model_config_sha256=file_digest(MODEL_CONFIG),
+        model_config_sha256=model_config_digest(),
         seeds=SEEDS,
         steps=(),
         started_at_utc=started,
@@ -978,7 +1036,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         roles=tuple(args.roles),
         feature_registry_sha256=registry_sha256(),
         input_manifest_sha256=manifest_digest,
-        model_config_sha256=file_digest(MODEL_CONFIG),
+        model_config_sha256=model_config_digest(),
         seeds=SEEDS,
         steps=tuple(steps),
         started_at_utc=started,
@@ -1026,6 +1084,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     # Verified first. Writing the manifest is what marks the run complete, and a directory
     # marked complete is closed to its producers - so writing it before the verification
     # would make an unverifiable run permanently unrepeatable under its own id.
+    # The producers have read the store since step 1 hashed it. A tape replaced in between
+    # would leave the outputs derived from bytes the recorded input digest does not
+    # identify, and verifying only the artifacts would not notice.
+    assert_inputs_unchanged(run_dir, data_root=Path(args.data_root))
     verification_started = time.perf_counter()
     verify_artifacts(run_dir, steps)
     verification_seconds = round(time.perf_counter() - verification_started, 3)
