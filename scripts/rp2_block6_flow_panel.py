@@ -168,13 +168,19 @@ def _read_tape(paths: Sequence[str], asset: str) -> pl.DataFrame | None:
 
 
 def _in_session(tape: pl.DataFrame, session: str, closes: FloatArray) -> pl.DataFrame:
-    """Keep only prints whose execution lands on a minute the session actually priced.
+    """Keep only prints the session can price from a bar that had already closed.
 
     The Full Tape carries out-of-session executions (see docs/pit_field_classification.md).
     Clamping those to the first or last minute prices a pre-open trade at the open and a
     post-close trade at the close, and every Greeks-weighted total then carries a number
     that was never a market price. A minute the grid never observed is NaN, which would
     poison the prefix sums outright.
+
+    Bars are labelled by their **start**, so ``closes[m]`` is the price at the end of minute
+    ``m`` — after a trade executed inside it. The price a trade may be marked at is the
+    close of minute ``m - 1``, which the market had already printed when the trade
+    happened. That leaves the first minute of the session with no completed bar, and its
+    prints are dropped rather than marked at a price from their own future.
     """
 
     open_us = int(
@@ -190,9 +196,10 @@ def _in_session(tape: pl.DataFrame, session: str, closes: FloatArray) -> pl.Data
     )
     executed = tape["executed_at"].dt.replace_time_zone(None).cast(pl.Int64).to_numpy()
     minute = (executed - open_us) // 60_000_000
-    inside = (minute >= 0) & (minute < closes.size)
+    inside = (minute >= 1) & (minute < closes.size)
     priced = np.zeros(tape.height, dtype=bool)
-    priced[inside] = np.isfinite(closes[minute[inside]]) & (closes[minute[inside]] > 0.0)
+    marked = closes[minute[inside] - 1]
+    priced[inside] = np.isfinite(marked) & (marked > 0.0)
     return tape.filter(pl.Series(priced))
 
 
@@ -330,8 +337,14 @@ def build_session_flow(
     # underlying level when it happened, not when the provider got round to publishing it.
     # Out-of-session executions were removed above, so no clamp is needed and none is used:
     # a clamp here would silently price a pre-open trade at the open.
+    #
+    # The last *completed* bar, because bars are labelled by their start: `closes[m]` is the
+    # price at the end of minute m, which for a trade inside minute m lies in that trade's
+    # own future. This was never a violation of the forecast's point-in-time rule — the
+    # whole window sits before the origin either way — but it mistimed the exposure of every
+    # Greeks-weighted total by up to sixty seconds.
     minute_of_trade = ((executed - open_us) // 60_000_000).astype(np.int64)
-    spot = closes[minute_of_trade]
+    spot = closes[minute_of_trade - 1]
     greeks = black_scholes_greeks(spot, strike, tenor_years, iv, is_call)
     weight = size * CONTRACT_MULTIPLIER * direction
     # Interarrivals and intensity are economics, so they run on the exchange clock too. On

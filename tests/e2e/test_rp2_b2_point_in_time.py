@@ -289,17 +289,21 @@ def test_out_of_session_executions_are_removed_before_pricing() -> None:
         naive_open - timedelta(minutes=45),   # pre-open
         naive_open + timedelta(minutes=10),   # inside
         naive_open + timedelta(minutes=400),  # after the close
-        naive_open + timedelta(minutes=3),    # inside, but an unobserved minute
+        naive_open + timedelta(minutes=4),    # inside, but the previous bar is unobserved
+        naive_open + timedelta(seconds=20),   # the opening minute: no completed bar yet
     ]
     tape = pl.DataFrame({"executed_at": executions})
     closes = np.full(390, 100.0)
     closes[3] = np.nan
 
     kept = block6._in_session(tape, session, closes)
-    assert kept.height == 1, "only the priced in-session print survives"
+    assert kept.height == 1, "only prints a completed bar can mark survive"
     assert kept["executed_at"][0] == executions[1]
 
     source = _source()
     assert "np.clip(" not in source.split("minute_of_trade")[1][:200], (
         "a clamp would price an out-of-session execution at the open or the close"
+    )
+    assert "closes[minute_of_trade - 1]" in source, (
+        "bars are labelled by their start, so closes[m] is a price from the trade's future"
     )

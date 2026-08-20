@@ -783,5 +783,12 @@ Spec Kit consistency and preregistration gates pass.
    from every contrast under the fail-closed rule; the indicator lets a model read the zeros
    as an absence. Fold-local imputation of the general case is its own gate. Every registered
    B2 feature now covers 100 % of origins except the Greeks-weighted 30-minute flows, at
-   99.60 %.
+   99.60 %. One further mistiming, pre-existing and not a point-in-time violation: bars are
+   labelled by their start, so `closes[m]` is the price at the *end* of minute m and a trade
+   executed inside that minute was marked at a price from its own future. The whole window
+   still sat before the forecast origin, so no forecast ever saw the future; what was wrong
+   was the exposure of each trade. Marking at the last completed bar moves
+   `b2_5m_delta_flow` by 1.06 %, `b2_5m_gamma_flow` by 1.59 % and `b2_5m_vega_flow` by
+   0.49 % at the median across essentially every window, and drops the opening minute's
+   prints, which have no completed bar to be marked at.
 
