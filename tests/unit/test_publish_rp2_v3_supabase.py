@@ -590,7 +590,13 @@ def test_no_rp2_producer_writes_an_inference_setting_down_for_itself() -> None:
 
     from mds650.rp2 import inference
 
-    literal = re.compile(r"\b(repetitions|seed|block_length|alpha)\s*=\s*[\d.]+")
+    # Deliberately not `alpha` or `power`: both name a model hyperparameter here as well
+    # as an inference setting - `Ridge(alpha=1e-4)`, `TweedieRegressor(power=...)` - and
+    # those belong to `model_config_sha256`. A check that fired on them would be
+    # reporting the wrong digest.
+    literal = re.compile(
+        r"(repetitions|seed|block_length|block_mean|equivalence_fraction)\s*=\s*[\d.]+"
+    )
     for script in sorted((REPO / "scripts").glob("rp2_*.py")):
         found = literal.findall(script.read_text(encoding="utf-8"))
         assert not found, f"{script.name} sets {found} itself"
