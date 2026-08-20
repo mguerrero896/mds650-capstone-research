@@ -68,5 +68,23 @@ One of these, recorded with its reason:
    development sample falls to roughly 80 sessions, and the power of every contrast falls
    with it.
 
+## What happens until it is chosen
+
+Nothing is published. `configs/rp2_v3_study_window.json` records both candidates with
+`"adopted": null`, and `scripts/publish_rp2_v3_supabase.py` refuses to build a payload while
+that is so:
+
+```text
+RP2_PUBLISH_STUDY_WINDOW_UNDECIDED:set 'adopted' in rp2_v3_study_window.json
+```
+
+Once a window is adopted there, the publisher also refuses a run whose enforced window is
+not that one, so a decision cannot be recorded and then quietly departed from. The completed
+rebuild `rp2-v3-20260820-1710` enforces `2024-08-02..2026-07-17` and would be refused under
+`twelve_month` with `RP2_PUBLISH_STUDY_WINDOW_MISMATCH`.
+
+This does not choose. It makes the choice a precondition of publication rather than an
+assumption inside it, which is the most a code change can honestly do here.
+
 Until one is chosen, this document is the reconciliation: the artifacts say what they were
 built on, and so does this page.

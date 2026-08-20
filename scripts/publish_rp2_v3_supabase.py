@@ -252,6 +252,47 @@ def _bar_inputs(resolved: dict[str, Any], data_root: Path) -> list[dict[str, Any
     return rows
 
 
+#: Which window results may be published under. `adopted` is null until the owner of the
+#: research programme records the decision; see `docs/rp2_v3/STUDY_WINDOW.md`.
+#: Overridable so a test can supply a decided configuration without editing the shipped one,
+#: which records no decision on purpose.
+STUDY_WINDOW_CONFIG: Final = Path(
+    os.environ.get("RP2_STUDY_WINDOW_CONFIG", ROOT / "configs" / "rp2_v3_study_window.json")
+)
+
+
+def assert_study_window_decided(
+    enforced: dict[str, Any], configured: dict[str, Any]
+) -> None:
+    """Publish only under a window somebody chose, and only the window the run used.
+
+    The repository states two: `AGENTS.md` freezes twelve months from 2025-07-21, and every
+    artifact was built on the partition, 2024-08-02 through 2026-07-17. A code change cannot
+    settle that - adopting the twelve-month window discards roughly 309 of the 389
+    development sessions, which is a different study rather than a correction - so this
+    refuses to publish while the choice is unrecorded instead of publishing under whichever
+    window the run happened to use.
+    """
+
+    adopted = configured.get("adopted")
+    if not adopted:
+        raise SystemExit(
+            "RP2_PUBLISH_STUDY_WINDOW_UNDECIDED:"
+            f"set 'adopted' in {STUDY_WINDOW_CONFIG.name} "
+            "(see docs/rp2_v3/STUDY_WINDOW.md)"
+        )
+    window = configured.get("candidates", {}).get(adopted)
+    if not window:
+        raise SystemExit(f"RP2_PUBLISH_STUDY_WINDOW_UNKNOWN:{adopted}")
+    first = min(str(role["first_session"]) for role in enforced.values())
+    last = max(str(role["last_session"]) for role in enforced.values())
+    if (first, last) != (str(window["first_session"]), str(window["last_session"])):
+        raise SystemExit(
+            f"RP2_PUBLISH_STUDY_WINDOW_MISMATCH:{adopted}:"
+            f"{first}..{last}!={window['first_session']}..{window['last_session']}"
+        )
+
+
 def assert_run_id_is_the_one_that_ran(run_dir: Path, manifest: dict[str, Any]) -> None:
     """The name the results are published under is the name that produced them.
 
@@ -329,6 +370,9 @@ def build_payload(run_dir: Path, *, branch: str) -> dict[str, Any]:
     # described the panels and reports the run produced, so a consumer following
     # `ingestion_inputs` to find out what the results were built on found the results.
     resolved = _read(run_dir / "input_manifest.json")
+    assert_study_window_decided(
+        resolved.get("study_window_enforced", {}), _read(STUDY_WINDOW_CONFIG)
+    )
     inputs = [
         {
             "input_name": "gated_manifest",

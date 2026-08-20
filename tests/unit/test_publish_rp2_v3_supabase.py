@@ -33,6 +33,42 @@ def _load(name: str) -> ModuleType:
     return module
 
 
+@pytest.fixture(autouse=True)
+def _decided_study_window(tmp_path_factory: pytest.TempPathFactory) -> Any:
+    """These tests are about publication, not about which window the programme adopts.
+
+    The shipped configuration records no decision, so `build_payload` refuses - which is the
+    point of it. Each test here supplies a decided one so the rest of the publisher is
+    reachable; `test_a_run_cannot_be_published_under_an_undecided_study_window` calls the
+    guard directly with the undecided configuration instead.
+    """
+
+    import importlib.util
+
+    decided = tmp_path_factory.mktemp("window") / "rp2_v3_study_window.json"
+    decided.write_text(
+        json.dumps(
+            {
+                "adopted": "partition",
+                "candidates": {
+                    "partition": {
+                        "first_session": "2024-08-02",
+                        "last_session": "2026-07-17",
+                    }
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    spec = importlib.util.spec_from_file_location(
+        "publish_rp2_v3_supabase", REPO / "scripts" / "publish_rp2_v3_supabase.py"
+    )
+    assert spec is not None and spec.loader is not None
+    with pytest.MonkeyPatch.context() as patch:
+        patch.setenv("RP2_STUDY_WINDOW_CONFIG", str(decided))
+        yield decided
+
+
 def _rp2_producers() -> list[Path]:
     """The producer scripts a scan is supposed to cover, proven to be some of them.
 
@@ -111,6 +147,10 @@ def _run_dir(tmp_path: Path) -> Path:
                 "bar_sources_sha256": _bar_digests(store),
                 "tape_inventory_sha256": "3" * 64,
                 "tape_fingerprint_sha256": "4" * 64,
+                "study_window_enforced": {
+                    "D": {"first_session": "2024-08-02", "last_session": "2026-03-23"},
+                    "V": {"first_session": "2026-03-24", "last_session": "2026-07-17"},
+                },
                 "tape_files": 3717,
                 "tape_bytes": 84_600_000_000,
             }
@@ -682,3 +722,37 @@ def test_the_run_publishes_its_scientific_hash_as_a_field(tmp_path: Path) -> Non
 
     assert payload["run"]["scientific_sha256"] == manifest["scientific_sha256"]
     assert len(payload["run"]["scientific_sha256"]) == 64
+
+
+def test_a_run_cannot_be_published_under_an_undecided_study_window(tmp_path: Path) -> None:
+    """The repository states two windows, and publication is where that stops being free.
+
+    `AGENTS.md` freezes twelve months from 2025-07-21; every artifact was built on the
+    partition, 2024-08-02 to 2026-07-17. Choosing between them is a research decision - one
+    of them discards roughly 309 of 389 development sessions - so this refuses to publish
+    rather than picking, and refuses again if a run's enforced window is not the adopted one.
+    """
+
+    module = _load("publish_rp2_v3_supabase")
+    enforced = {
+        "D": {"first_session": "2024-08-02", "last_session": "2026-03-23"},
+        "V": {"first_session": "2026-03-24", "last_session": "2026-07-17"},
+    }
+
+    with pytest.raises(SystemExit, match="RP2_PUBLISH_STUDY_WINDOW_UNDECIDED"):
+        module.assert_study_window_decided(enforced, {"adopted": None, "candidates": {}})
+
+    decided = {
+        "adopted": "partition",
+        "candidates": {"partition": {"first_session": "2024-08-02", "last_session": "2026-07-17"}},
+    }
+    module.assert_study_window_decided(enforced, decided)
+
+    twelve = {
+        "adopted": "twelve_month",
+        "candidates": {
+            "twelve_month": {"first_session": "2025-07-21", "last_session": "2026-07-21"}
+        },
+    }
+    with pytest.raises(SystemExit, match="RP2_PUBLISH_STUDY_WINDOW_MISMATCH"):
+        module.assert_study_window_decided(enforced, twelve)
