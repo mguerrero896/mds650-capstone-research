@@ -418,6 +418,21 @@ _IDENTITY_FIELDS: Final[tuple[str, ...]] = (
 )
 
 
+#: Written before the first producer, so an interrupted run leaves a record of what it was.
+#: The full manifest is only written after the modelling steps, which is too late to stop a
+#: resume from reusing panels built at another commit.
+IDENTITY_FILE: Final = "run_identity.json"
+
+
+def write_run_identity(run_dir: Path, manifest: RunManifest) -> Path:
+    """Record who this run is, before it produces anything."""
+
+    path = run_dir / IDENTITY_FILE
+    payload = json.dumps(manifest.identity_part(), indent=2, sort_keys=True)
+    path.write_text(payload + "\n", encoding="utf-8")
+    return path
+
+
 def assert_run_identity_unchanged(run_dir: Path, manifest: RunManifest) -> None:
     """Refuse a run id that already holds a different run, *before* anything overwrites it.
 
@@ -426,7 +441,12 @@ def assert_run_identity_unchanged(run_dir: Path, manifest: RunManifest) -> None:
     no longer match the manifest sitting beside them.
     """
 
+    # The finished manifest if the run completed, otherwise the marker it wrote before its
+    # first producer. Without the second, a resume of an interrupted run has nothing to
+    # compare against and can reuse panels built at another commit or from other inputs.
     path = run_dir / "run_manifest.json"
+    if not path.is_file():
+        path = run_dir / IDENTITY_FILE
     if not path.is_file():
         return
     try:

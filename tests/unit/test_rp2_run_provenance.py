@@ -242,3 +242,60 @@ def test_every_artifact_the_scorecard_reads_is_a_recorded_output() -> None:
         "rp2_block4_b0/ladder.json",
     ):
         assert required in declared, required
+
+
+def test_a_resumed_run_is_held_to_the_identity_it_started_with(tmp_path: Path) -> None:
+    """The manifest is written last, which is too late to stop a resume from drifting.
+
+    An interrupted run has no manifest, so an identity check that reads only the manifest
+    compares nothing and `--skip-panels` can reuse panels built at another commit or from
+    other inputs, publishing them under the current identity.
+    """
+
+    from mds650.rp2.run_manifest import write_run_identity
+
+    run_dir = tmp_path / "rp2-v3-20260820-001"
+    run_dir.mkdir()
+    write_run_identity(run_dir, _manifest(run_id="rp2-v3-20260820-001"))
+    assert (run_dir / "run_identity.json").is_file()
+    assert not (run_dir / "run_manifest.json").exists(), "the run never finished"
+
+    assert_run_identity_unchanged(run_dir, _manifest(run_id="rp2-v3-20260820-001"))
+    for field, value in (("code_commit", "1" * 40), ("input_manifest_sha256", "9" * 64)):
+        with pytest.raises(ValueError, match="RP2_RUN_IDENTITY_CONFLICT"):
+            assert_run_identity_unchanged(
+                run_dir, _manifest(run_id="rp2-v3-20260820-001", **{field: value})
+            )
+
+
+def test_a_metric_that_is_not_a_number_was_not_measured() -> None:
+    """`NaN` is a scalar, so a null check accepts it and `json.dumps` writes `NaN`."""
+
+    from mds650.rp2.scorecard import assert_scorecard_complete, required_fields
+
+    groups = required_fields()
+    scorecard: dict[str, object] = {
+        group: dict.fromkeys(fields, 1.0) for group, fields in groups.items() if group != "forecast"
+    }
+    scorecard["data"] = {**scorecard["data"], "duplicate_keys": 0}  # type: ignore[dict-item]
+    scorecard["b1"] = {
+        **scorecard["b1"],
+        "b1_post_cutoff_observations": 0,
+        "b1_duplicate_contracts_per_snapshot": 0,
+        "b1_rows_dropped_for_rate_or_dividend": 0,
+        "b1_core_coverage": float("nan"),
+    }  # type: ignore[dict-item]
+    scorecard["b2"] = {**scorecard["b2"], "b2_pit_violation_count": 0}  # type: ignore[dict-item]
+    scorecard["forecast"] = {
+        "gamma_glm": {
+            "D": {
+                field: 1.0
+                for field in groups["forecast"]
+                if field not in ("calibration_slope", "calibration_intercept")
+            }
+        }
+    }
+    scorecard["forecast_calibration"] = {"calibration_slope": 1.0, "calibration_intercept": 0.0}
+
+    with pytest.raises(ValueError, match="b1.b1_core_coverage:unmeasured"):
+        assert_scorecard_complete(scorecard)

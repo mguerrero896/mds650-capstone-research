@@ -50,6 +50,7 @@ from mds650.rp2.run_manifest import (  # noqa: E402
     inventory_paths,
     stable_content_digest,
     write_manifest,
+    write_run_identity,
 )
 
 GATED_MANIFEST = ROOT / "data" / "GATED_DATA_POINTERS.json"
@@ -252,7 +253,9 @@ def _digest_outputs(
     return artifacts, content
 
 
-def _tape_fingerprint(paths: Sequence[Path], *, hash_contents: bool) -> tuple[str, int, int]:
+def _tape_fingerprint(
+    paths: Sequence[Path], *, hash_contents: bool
+) -> tuple[str, str, int, int]:
     """A digest of the option tape the producers will open, and what it cost to compute.
 
     Eighty-five gigabytes across three thousand seven hundred files is too much to read on
@@ -262,18 +265,27 @@ def _tape_fingerprint(paths: Sequence[Path], *, hash_contents: bool) -> tuple[st
     which of the two was done rather than leaving a reader to assume the stronger one.
     """
 
-    digest = hashlib.sha256()
+    identity = hashlib.sha256()
+    freshness = hashlib.sha256()
     total = 0
     for path in sorted(paths, key=lambda item: item.as_posix()):
         if not path.is_file():
             raise SystemExit(f"RP2_RUN_TAPE_INPUT_MISSING:{path.as_posix()}")
         stat = path.stat()
         total += stat.st_size
-        if hash_contents:
-            digest.update(f"{path.as_posix()}:{file_digest(path)}".encode())
-        else:
-            digest.update(f"{path.as_posix()}:{stat.st_size}:{stat.st_mtime_ns}".encode())
-    return digest.hexdigest(), len(paths), total
+        # The scientific fingerprint is over what the file *is*: its name inside the store
+        # and either its bytes or its size. Byte-identical tape restored to another mount,
+        # or with new modification times, is the same tape.
+        name = path.name if path.parent.name in {"", "."} else f"{path.parent.name}/{path.name}"
+        identity.update(
+            f"{name}:{file_digest(path) if hash_contents else stat.st_size}".encode()
+        )
+        # The freshness digest keeps the absolute path and the modification time. It is
+        # recorded, and it is not part of the run's identity: it detects a re-acquisition
+        # that left the sizes unchanged, which is worth knowing and is not a different
+        # experiment.
+        freshness.update(f"{path.as_posix()}:{stat.st_size}:{stat.st_mtime_ns}".encode())
+    return identity.hexdigest(), freshness.hexdigest(), len(paths), total
 
 
 def validate_inputs(
@@ -321,7 +333,7 @@ def validate_inputs(
     if failures:
         raise SystemExit("RP2_RUN_INPUT_MANIFEST_INVALID:" + ",".join(sorted(failures)))
 
-    tape_digest, tape_files, tape_bytes = _tape_fingerprint(
+    tape_digest, tape_freshness, tape_files, tape_bytes = _tape_fingerprint(
         tape, hash_contents=hash_tape_contents
     )
     partition = json.loads(PARTITION.read_text(encoding="utf-8"))
@@ -344,6 +356,7 @@ def validate_inputs(
         "bar_sources_sha256": bar_digests,
         "tape_inventory_sha256": file_digest(TAPE_INVENTORY),
         "tape_fingerprint_sha256": tape_digest,
+        "tape_freshness_sha256": tape_freshness,
         "tape_fingerprint_mode": "content" if hash_tape_contents else "path_size_mtime",
         "tape_files": tape_files,
         "tape_bytes": tape_bytes,
@@ -674,6 +687,31 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
 
     write_input_manifest(run_dir, input_record)
+    # Before the first producer: what this run is, so an interruption still leaves a record
+    # a resume can be held to.
+    write_run_identity(
+        run_dir,
+        RunManifest(
+            **{
+                **{
+                    field: getattr(identity, field)
+                    for field in (
+                        "run_id",
+                        "code_commit",
+                        "data_root",
+                        "roles",
+                        "feature_registry_sha256",
+                        "model_config_sha256",
+                        "seeds",
+                        "steps",
+                        "started_at_utc",
+                        "finished_at_utc",
+                    )
+                },
+                "input_manifest_sha256": manifest_digest,
+            }
+        ),
+    )
     steps.append(
         StepRecord(
             name="validate-input-manifests",

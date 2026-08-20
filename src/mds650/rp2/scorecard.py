@@ -10,6 +10,7 @@ hide.
 from __future__ import annotations
 
 import json
+import math
 from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Final
@@ -375,6 +376,11 @@ def _unmeasured(value: Any) -> bool:
     """
 
     if value is None:
+        return True
+    if isinstance(value, float) and not math.isfinite(value):
+        # A degenerate fit or an all-null aggregation produces one of these. It is a
+        # scalar, so a null check accepts it, and `json.dumps` then writes `NaN` - a token
+        # no JSON reader is required to accept - into the document that gates the run.
         return True
     if isinstance(value, Mapping):
         return not value or any(_unmeasured(item) for item in value.values())
