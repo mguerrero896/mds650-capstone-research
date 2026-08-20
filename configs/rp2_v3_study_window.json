@@ -1,0 +1,25 @@
+{
+  "description": "Which window RP2-v3 results may be published under. `adopted` records the window the repository has already frozen, not a preference chosen here; changing it is a recorded configuration change and requires a reason in docs/rp2_v3/STUDY_WINDOW.md.",
+  "adopted": "twelve_month",
+  "decision_document": "docs/rp2_v3/STUDY_WINDOW.md",
+  "candidates": {
+    "twelve_month": {
+      "source": "AGENTS.md, 'Study window rule (binding)'",
+      "first_session": "2025-07-21",
+      "note": "The end is exclusive, so the last trading session inside this window is the last one before 2026-07-21. Adopting it discards roughly 309 of the 389 development sessions every existing artifact was built on, and every frozen RP2 result would be superseded rather than corrected. `last_session` is the final trading session inside the window and is not known until Block 1 has been re-run against it; publication refuses until it is recorded, so the window cannot be shortened by a run that simply stopped early.",
+      "end_exclusive": "2026-07-21",
+      "last_session": "2026-07-17",
+      "last_session_is": "The final session eligible for D or V inside the frozen window, which is not the calendar day before the exclusive end. 2026-07-20 is a market session but Block 1 assigns it to the sealed Phase 8 cohort, and the run manifest refuses BURNED inputs, so a rebuild reaching it would either be impossible or would read a sealed cohort.",
+      "end_exclusive_note": "2026-07-21, from the rule. The window is [first_session, end_exclusive); last_session is the last day inside it that a rebuild may actually use."
+    },
+    "partition": {
+      "source": "artifacts/rp2_block1_partition/partition.json",
+      "first_session": "2024-08-02",
+      "note": "The window every RP2 and RP2-v3 artifact was actually built on: D 2024-08-02 to 2026-03-23 (389 sessions), V 2026-03-24 to 2026-07-17 (80), so the exclusive end is the day after the last session. Adopting this amends a rule AGENTS.md calls binding, which the rule itself says requires a recorded configuration change.",
+      "end_exclusive": "2026-07-18",
+      "last_session": "2026-07-17"
+    }
+  },
+  "adopted_because": "AGENTS.md, 'Study window rule (binding)', states that a recorded configuration change already froze 2025-07-21 through 2026-07-21 (end exclusive). Recording anything else here would be a new decision; recording nothing claimed no decision existed, which the rule contradicts.",
+  "consequence": "Measured against artifacts/rp2_block1_partition/inventory.jsonl: of the 389 development sessions, 170 fall inside 2025-07-21..2026-07-17, and all 80 validation sessions do. Publishing under this window therefore requires re-running Block 1 against it and rebuilding downstream, with D falling from 389 to 170 sessions. Adopting 'partition' instead amends a rule AGENTS.md calls binding and needs its own recorded configuration change."
+}

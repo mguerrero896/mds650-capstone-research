@@ -16,8 +16,8 @@ its final commit.
 | 7 | `feat/rp2-v3-fold-local-preprocessing` | Fold-local imputation, common mask | merged |
 | 8 | `feat/rp2-v3-qlike-models` | LightGBM aligned to QLIKE | merged |
 | 9 | `fix/rp2-v3-session-inference` | Session-level, family-matched inference | merged |
-| 10 | `feat/rp2-v3-pipeline-runner` | One reproducible runner | in review |
-| 11 | `db/rp2-v3-versioned-results` | Versioned Supabase results | pending |
+| 10 | `feat/rp2-v3-pipeline-runner` | One reproducible runner | merged |
+| 11 | `db/rp2-v3-versioned-results` | Versioned Supabase results | in review |
 | 12 | `results/rp2-v3-rebuild` | Rebuild, scorecard, publication | pending |
 
 ## Open decision
@@ -27,6 +27,15 @@ The repository states two different study windows and has never reconciled them:
 was built on covers 2024-08-02 to 2026-07-17. [`STUDY_WINDOW.md`](STUDY_WINDOW.md) states
 both, records which one produced the evidence, and sets out the decision that is owed. No
 sample was widened or narrowed to resolve it.
+
+## Carried into the rebuild gate
+
+`role_for` in `src/mds650/rp2/partition.py` has no lower bound, so Block 1 enumerates from
+the start of the tape and labels every pre-validation session `D`. With `twelve_month`
+adopted, a rebuild therefore produces 2024-08-02 and publication refuses it. Giving `role_for`
+the window's first session changes which sessions are `D`, which changes the frozen partition
+and everything built on it — so it is the rebuild gate's first task, done there with the
+supersession that implies, rather than smuggled into the publication gate.
 
 ## Standing constraints
 

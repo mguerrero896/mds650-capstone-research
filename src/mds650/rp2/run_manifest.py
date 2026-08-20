@@ -19,7 +19,7 @@ import re
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Final
+from typing import Final, cast
 
 #: Cohorts that must not be read during development. Matched on whole path components so
 #: that `cohort_c` is caught and `concentration` is not.
@@ -283,6 +283,52 @@ def scientific_sha256(manifest: RunManifest) -> str:
     return hashlib.sha256(canonical_json(manifest.scientific_part()).encode("utf-8")).hexdigest()
 
 
+def scientific_part_of_record(record: Mapping[str, object]) -> dict[str, object]:
+    """Rebuild the scientific part from a manifest that was written to disk.
+
+    `as_record` writes the verbatim command over the normalised one and adds the fields
+    that do not decide the result, so the scientific part cannot simply be read back out
+    of the record: it is reconstructed here from the same fields, the same way.
+    """
+
+    steps = cast("Sequence[Mapping[str, object]]", record.get("steps", ()))
+    seeds = cast("Mapping[str, int]", record["seeds"])
+    return {
+        "code_commit": record["code_commit"],
+        "roles": list(cast("Sequence[str]", record["roles"])),
+        "feature_registry_sha256": record["feature_registry_sha256"],
+        "input_manifest_sha256": record["input_manifest_sha256"],
+        "model_config_sha256": record["model_config_sha256"],
+        "seeds": dict(sorted(seeds.items())),
+        "steps": [
+            {
+                "name": step["name"],
+                "command": normalise_command(cast("Sequence[str]", step["command"])),
+                "exit_code": step["exit_code"],
+                "content": dict(sorted(cast("Mapping[str, str]", step["content"]).items())),
+            }
+            for step in steps
+        ],
+    }
+
+
+def assert_manifest_identity_intact(record: Mapping[str, object]) -> None:
+    """The digest a manifest carries is the digest of the manifest it is carried by.
+
+    The recorded `scientific_sha256` covers the commit, the input digest, the seeds and
+    every step's content. A consumer that reads those fields without recomputing the
+    digest will believe an edited manifest, and the digest sitting beside the edit is what
+    makes the edit detectable.
+    """
+
+    recomputed = hashlib.sha256(
+        canonical_json(scientific_part_of_record(record)).encode("utf-8")
+    ).hexdigest()
+    recorded = str(record.get("scientific_sha256", ""))
+    if recomputed != recorded:
+        raise ValueError(f"RP2_MANIFEST_ALTERED:{recomputed[:16]}!={recorded[:16]}")
+
+
 #: Fields that record *when* or *how long*, not *what*. They are stripped before an
 #: artifact is digested for the run's scientific identity, because every block artifact
 #: stamps itself and the scorecard records its own runtime: hashing those bytes would make
@@ -428,6 +474,51 @@ def inventory_paths(path: Path) -> list[Path]:
             if target:
                 paths.append(Path(str(target)))
     return paths
+
+
+#: The option tape the producers open, listed by Block 1.
+TAPE_INVENTORY: Final = (
+    Path(__file__).resolve().parents[3]
+    / "artifacts"
+    / "rp2_block1_partition"
+    / "inventory.jsonl"
+)
+
+
+def tape_fingerprint(
+    paths: Sequence[Path], *, hash_contents: bool
+) -> tuple[str, str, int, int]:
+    """A digest of the option tape the producers will open, and what it cost to compute.
+
+    Eighty-five gigabytes across three thousand seven hundred files is too much to read on
+    every rebuild for no gain, so the default fingerprint is over each file's path, size
+    and modification time: it changes whenever a session is re-acquired, replaced or
+    truncated. `--hash-tape-contents` reads every byte instead, and the artifact records
+    which of the two was done rather than leaving a reader to assume the stronger one.
+    """
+
+    identity = hashlib.sha256()
+    freshness = hashlib.sha256()
+    total = 0
+    for path in sorted(paths, key=lambda item: item.as_posix()):
+        if not path.is_file():
+            raise SystemExit(f"RP2_RUN_TAPE_INPUT_MISSING:{path.as_posix()}")
+        stat = path.stat()
+        total += stat.st_size
+        # The scientific fingerprint is over what the file *is*: its name inside the store
+        # and either its bytes or its size. Byte-identical tape restored to another mount,
+        # or with new modification times, is the same tape.
+        name = path.name if path.parent.name in {"", "."} else f"{path.parent.name}/{path.name}"
+        identity.update(
+            f"{name}:{file_digest(path) if hash_contents else stat.st_size}".encode()
+        )
+        # The freshness digest keeps the absolute path and the modification time. It is
+        # recorded, and it is not part of the run's identity: it detects a re-acquisition
+        # that left the sizes unchanged, which is worth knowing and is not a different
+        # experiment.
+        freshness.update(f"{path.as_posix()}:{stat.st_size}:{stat.st_mtime_ns}".encode())
+    return identity.hexdigest(), freshness.hexdigest(), len(paths), total
+
 
 
 def file_digest(path: Path) -> str:

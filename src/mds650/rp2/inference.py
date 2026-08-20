@@ -11,6 +11,8 @@ standard error by roughly the square root of the origins per day.
 
 from __future__ import annotations
 
+import hashlib
+import json
 import math
 from collections.abc import Sequence
 from dataclasses import dataclass
@@ -24,6 +26,19 @@ type FloatArray = npt.NDArray[np.float64]
 type IntArray = npt.NDArray[np.int64]
 
 DEFAULT_BOOTSTRAP: Final = 2000
+#: Resamples for the family-matched SPA. Fewer than the interval bootstrap because the SPA
+#: recentres and re-ranks every candidate on each draw; it is a separate setting, and the
+#: digest records it separately rather than letting `DEFAULT_BOOTSTRAP` stand for both.
+SPA_REPETITIONS: Final = 1000
+#: Newey-West lags for the SPA's long-run variances. Equal to the session block length today
+#: and not the same decision: one says how far dependence is carried when sessions are
+#: resampled, the other how far it is carried when a variance is estimated. Leaving the SPA
+#: reading the block-length constant would tie two settings that can move apart; leaving it
+#: as a literal would move p-values without moving the digest.
+SPA_HAC_LAGS: Final = 5
+#: The frozen resampling seed. Every producer passes it; it is stated once here so the
+#: inference configuration digest can cover it.
+DEFAULT_SEED: Final = 650
 DEFAULT_BLOCK_MEAN: Final = 5.0
 #: Primary block length for the session bootstrap, fixed in advance.
 SESSION_BLOCK_LENGTH: Final = 5
@@ -131,7 +146,7 @@ def session_block_draws(
     *,
     block_length: int = SESSION_BLOCK_LENGTH,
     repetitions: int = DEFAULT_BOOTSTRAP,
-    seed: int = 650,
+    seed: int = DEFAULT_SEED,
 ) -> FloatArray:
     """Circular block resamples of a session series, one row per repetition.
 
@@ -157,7 +172,7 @@ def session_block_bootstrap(
     *,
     block_length: int = 5,
     repetitions: int = DEFAULT_BOOTSTRAP,
-    seed: int = 650,
+    seed: int = DEFAULT_SEED,
 ) -> dict[str, float]:
     """Circular block bootstrap over whole sessions.
 
@@ -188,7 +203,7 @@ def wild_cluster_bootstrap(
     session_values: FloatArray,
     *,
     repetitions: int = DEFAULT_BOOTSTRAP,
-    seed: int = 650,
+    seed: int = DEFAULT_SEED,
 ) -> float:
     """Two-sided p-value for a zero session mean under Rademacher wild weights.
 
@@ -391,7 +406,7 @@ def hansen_spa(
     benchmark_name: str | None = None,
     repetitions: int = DEFAULT_BOOTSTRAP,
     block_mean: float = DEFAULT_BLOCK_MEAN,
-    seed: int = 650,
+    seed: int = DEFAULT_SEED,
 ) -> SuperiorPredictiveAbility:
     """Test whether *any* candidate genuinely beats the benchmark, after selection.
 
@@ -423,7 +438,10 @@ def hansen_spa(
         raise ValueError("RP2_INFERENCE_TOO_FEW_OBSERVATIONS")
     means = differences.mean(axis=0)
     variances = np.array(
-        [max(newey_west_variance(differences[:, k], lags=5), 1e-18) for k in range(len(names))]
+        [
+            max(newey_west_variance(differences[:, k], lags=SPA_HAC_LAGS), 1e-18)
+            for k in range(len(names))
+        ]
     )
     scaled = math.sqrt(size) * means
     statistic = float(np.max(np.maximum(scaled / np.sqrt(variances), 0.0)))
@@ -529,7 +547,7 @@ def session_contrast(
     common_mask_sha256: str,
     block_length: int = SESSION_BLOCK_LENGTH,
     repetitions: int = DEFAULT_BOOTSTRAP,
-    seed: int = 650,
+    seed: int = DEFAULT_SEED,
     alpha: float = DEFAULT_ALPHA,
     power: float = DEFAULT_POWER,
     equivalence_bound: float | None = None,
@@ -586,3 +604,35 @@ def session_contrast(
         # merely quiet.
         equivalent=bool(float(blocked["ci_low"]) > -bound and float(blocked["ci_high"]) < bound),
     )
+
+
+def inference_config_digest() -> str:
+    """A digest of the settings every contrast is computed under.
+
+    Distinct from the model configuration and from the run's scientific hash: neither of
+    those lets a reader ask whether two published contrasts were tested the same way. The
+    block length, the number of bootstrap repetitions, the stationary block mean, the test
+    size, the target power and the equivalence margin are what decide that.
+    """
+
+    return hashlib.sha256(inference_config_payload().encode("utf-8")).hexdigest()
+
+
+def inference_config_payload() -> str:
+    """The settings themselves, canonically encoded. Separated so a test can read them."""
+
+    configuration = {
+        "session_block_length": SESSION_BLOCK_LENGTH,
+        # The seed decides which resamples the bootstrap draws, so two contrasts computed
+        # under different seeds are not computed the same way even when every other setting
+        # matches.
+        "bootstrap_seed": DEFAULT_SEED,
+        "bootstrap_repetitions": DEFAULT_BOOTSTRAP,
+        "spa_repetitions": SPA_REPETITIONS,
+        "spa_hac_lags": SPA_HAC_LAGS,
+        "block_mean": DEFAULT_BLOCK_MEAN,
+        "alpha": DEFAULT_ALPHA,
+        "power": DEFAULT_POWER,
+        "equivalence_fraction": EQUIVALENCE_FRACTION,
+    }
+    return json.dumps(configuration, sort_keys=True, separators=(",", ":"))
