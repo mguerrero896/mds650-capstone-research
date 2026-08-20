@@ -28,6 +28,7 @@ import time
 from collections.abc import Callable, Sequence
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Final
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / "src") not in sys.path:  # pragma: no cover - import bootstrap
@@ -60,6 +61,9 @@ MODEL_CONFIG = ROOT / "configs" / "rp2_v3_feature_sets.json"
 #: Seeds are part of the run's identity, so they are declared here rather than left to
 #: each script's default and discovered afterwards.
 SEEDS = {"bootstrap": 650, "lightgbm": 20260818, "dml_folds": 5}
+#: The roles every producer fits. Blocks 8 and 10 iterate these internally rather than
+#: taking a flag, so the runner refuses any other selection instead of recording one.
+PRODUCER_ROLES: Final[tuple[str, ...]] = ("D", "V")
 
 
 def _peak_memory_bytes(process: subprocess.Popen[bytes]) -> int:
@@ -407,6 +411,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             print(f"{index:2d}. {step.name} - {step.description}")
         return 0
 
+    # The producers fit both roles unconditionally. Accepting `--roles D` would produce a
+    # manifest claiming a D-only run beside artifacts containing V, which is a lie the
+    # manifest would carry for good.
+    if tuple(args.roles) != PRODUCER_ROLES:
+        raise SystemExit(
+            f"RP2_RUN_ROLES_UNSUPPORTED:{','.join(args.roles)}!={','.join(PRODUCER_ROLES)}"
+        )
+
     run_dir = Path(args.output_root) / str(args.run_id)
     run_dir.mkdir(parents=True, exist_ok=True)
     started = datetime.now(UTC).isoformat()
@@ -449,6 +461,30 @@ def main(argv: Sequence[str] | None = None) -> int:
         forbid_sealed=args.forbid_sealed_cohorts,
         hash_tape_contents=args.hash_tape_contents,
     )
+    assert_run_identity_unchanged(
+        run_dir,
+        RunManifest(
+            **{
+                **{
+                    field: getattr(identity, field)
+                    for field in (
+                        "run_id",
+                        "code_commit",
+                        "data_root",
+                        "roles",
+                        "feature_registry_sha256",
+                        "model_config_sha256",
+                        "seeds",
+                        "steps",
+                        "started_at_utc",
+                        "finished_at_utc",
+                    )
+                },
+                "input_manifest_sha256": manifest_digest,
+            }
+        ),
+    )
+
     steps.append(
         StepRecord(
             name="validate-input-manifests",
@@ -511,6 +547,10 @@ def main(argv: Sequence[str] | None = None) -> int:
                     runtime_seconds=0.0,
                     peak_memory_bytes=0,
                     artifacts={output: file_digest(run_dir / output) for output in step.outputs},
+                    content={
+                        output: stable_content_digest(run_dir / output)
+                        for output in step.outputs
+                    },
                 )
             )
             continue

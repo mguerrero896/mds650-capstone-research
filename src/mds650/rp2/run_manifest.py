@@ -58,22 +58,33 @@ PIPELINE_STEPS: Final[tuple[PipelineStep, ...]] = (
     PipelineStep(
         "build-targets",
         "Block 3 realized-variance targets",
-        ("rp2_block3_target/target_panel.parquet",),
+        (
+            "rp2_block3_target/target_panel.parquet",
+            "rp2_block3_target/comparison.json",
+        ),
     ),
     PipelineStep(
         "build-b0",
         "causal, asset-local baseline panel",
-        ("rp2_block4_b0/b0_panel.parquet",),
+        ("rp2_block4_b0/b0_panel.parquet", "rp2_block4_b0/ladder.json"),
     ),
     PipelineStep(
         "build-b1",
         "contemporaneous option-state snapshot",
-        ("rp2_block5_surface/b1_surface_panel.parquet",),
+        (
+            "rp2_block5_surface/b1_surface_panel.parquet",
+            # The scorecard reads this. An artifact a result depends on that the manifest
+            # never hashed is an artifact a rebuild cannot be checked against.
+            "rp2_block5_surface/surface_coverage.json",
+        ),
     ),
     PipelineStep(
         "build-b2",
         "point-in-time option flow on both clocks",
-        ("rp2_block6_flow/b2_flow_panel.parquet",),
+        (
+            "rp2_block6_flow/b2_flow_panel.parquet",
+            "rp2_block6_flow/flow_coverage.json",
+        ),
     ),
     PipelineStep(
         "validate-feature-registry",
@@ -129,6 +140,14 @@ class StepRecord:
     #: different question, because every block artifact stamps itself with the time it was
     #: written and the scorecard records how long the run took.
     content: Mapping[str, str] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        # A step that recorded byte digests and no content digests would contribute
+        # nothing to the run's identity while looking fully recorded - which is exactly
+        # what the resumed-run branch did to the four reused panels.
+        missing = sorted(set(self.artifacts) - set(self.content))
+        if missing:
+            raise ValueError(f"RP2_STEP_CONTENT_MISSING:{self.name}:{','.join(missing)}")
 
     def scientific_part(self) -> dict[str, object]:
         """The step's contribution to the run's identity: what it ran and what it produced."""
@@ -326,6 +345,9 @@ _IDENTITY_FIELDS: Final[tuple[str, ...]] = (
     "data_root",
     "feature_registry_sha256",
     "model_config_sha256",
+    # Same commit, same seeds, different data is a different run and not a retry. Left out
+    # of this list, a re-acquired input would silently overwrite the previous outputs.
+    "input_manifest_sha256",
     "seeds",
     "roles",
 )
@@ -347,10 +369,16 @@ def assert_run_identity_unchanged(run_dir: Path, manifest: RunManifest) -> None:
     except json.JSONDecodeError:
         raise ValueError(f"RP2_RUN_IDENTITY_CONFLICT:{manifest.run_id}:unreadable") from None
     proposed = manifest.scientific_part()
+    # A field the caller cannot know yet is skipped rather than compared against a blank:
+    # the input digest is only available once step 1 has hashed the inputs, so the check
+    # runs twice - before anything at all, and again after step 1 and still before the
+    # first producer.
     differing = [
         field
         for field in _IDENTITY_FIELDS
-        if existing.get(field) is not None and existing.get(field) != proposed.get(field)
+        if proposed.get(field)
+        and existing.get(field) is not None
+        and existing.get(field) != proposed.get(field)
     ]
     if differing:
         raise ValueError(

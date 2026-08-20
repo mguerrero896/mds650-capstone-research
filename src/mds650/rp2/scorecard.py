@@ -10,7 +10,7 @@ hide.
 from __future__ import annotations
 
 import json
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Final
 
@@ -153,6 +153,36 @@ def _forecast_block(ladder: Mapping[str, Any], family: str) -> dict[str, Any]:
     return out
 
 
+def calibration_table(
+    ladder: Mapping[str, Any], roles: Sequence[str], *, information_set: str = "B0+B1+B2"
+) -> dict[str, dict[str, dict[str, float]]]:
+    """Mincer-Zarnowitz slope and intercept per role and per primary family.
+
+    One family on one role is not the run's calibration. A smooth family can be well
+    calibrated where the booster is not, and V can differ from D; reporting a single pair
+    hides exactly the comparison the number exists to support. A family the run did not fit
+    is absent rather than reported as zero.
+    """
+
+    from mds650.rp2.ladder import PRIMARY_MODELS
+
+    table: dict[str, dict[str, dict[str, float]]] = {}
+    for role in roles:
+        models = ladder.get(role, {}).get("models", {})
+        entries: dict[str, dict[str, float]] = {}
+        for family in PRIMARY_MODELS:
+            calibration = models.get(family, {}).get("calibration", {})
+            entry = calibration.get(f"{family}|{information_set}")
+            if isinstance(entry, Mapping) and entry.get("slope") is not None:
+                entries[family] = {
+                    "slope": float(entry["slope"]),
+                    "intercept": float(entry["intercept"]),
+                }
+        if entries:
+            table[role] = entries
+    return table
+
+
 def assemble_scorecard(run_dir: Path, manifest: RunManifest) -> dict[str, Any]:
     """Measure every field the schema names, from the artifacts this run produced."""
 
@@ -175,16 +205,11 @@ def assemble_scorecard(run_dir: Path, manifest: RunManifest) -> dict[str, Any]:
         if present:
             core_coverage = min(coverage_by_feature(frame, present).values())
 
-    # The scorecard reports one calibration: the primary non-linear family on the full
-    # information set, which is the forecast the verdict is read off. The rest are in the
-    # ladder artifact beside it.
-    calibration = (
-        ladder.get("D", {})
-        .get("models", {})
-        .get("lightgbm_qlike", {})
-        .get("calibration", {})
-        .get("lightgbm_qlike|B0+B1+B2", {})
-    )
+    # Every primary family, on every role the run fitted. The headline pair below is the
+    # non-linear family on D, which is the forecast the verdict is read off, but it is a
+    # pointer into this table rather than a substitute for it.
+    calibration_by_role = calibration_table(ladder, manifest.roles)
+    calibration = calibration_by_role.get("D", {}).get("lightgbm_qlike", {})
 
     scorecard: dict[str, Any] = {
         "run_id": manifest.run_id,
@@ -276,6 +301,8 @@ def assemble_scorecard(run_dir: Path, manifest: RunManifest) -> dict[str, Any]:
     scorecard["forecast_calibration"] = {
         "calibration_slope": calibration.get("slope"),
         "calibration_intercept": calibration.get("intercept"),
+        "by_role_and_family": calibration_by_role,
+        "headline": "lightgbm_qlike on D at B0+B1+B2",
     }
     assert_scorecard_complete(scorecard)
     return scorecard

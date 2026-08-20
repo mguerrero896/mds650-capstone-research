@@ -120,3 +120,41 @@ def test_a_container_that_measured_nothing_is_not_a_measurement() -> None:
 
     scorecard["data"] = {**scorecard["data"], "provider_failures": (0, 0)}  # type: ignore[dict-item]
     assert_scorecard_complete(scorecard)
+
+
+def test_calibration_is_reported_for_every_primary_family_and_role() -> None:
+    """One family's calibration on one role is not the run's calibration.
+
+    The scorecard reported the D-role `lightgbm_qlike` slope and intercept and nothing
+    else, so a reader could not see that a smooth family was well calibrated where the
+    booster was not, or that V differed from D — which is the comparison the number exists
+    to support.
+    """
+
+    from mds650.rp2.ladder import PRIMARY_MODELS
+    from mds650.rp2.scorecard import calibration_table
+
+    ladder = {
+        role: {
+            "models": {
+                family: {
+                    "calibration": {
+                        f"{family}|B0": {"slope": 1.0, "intercept": 0.0},
+                        f"{family}|B0+B1+B2": {"slope": 1.1, "intercept": -0.2},
+                    }
+                }
+                for family in PRIMARY_MODELS
+            }
+        }
+        for role in ("D", "V")
+    }
+    table = calibration_table(ladder, ("D", "V"))
+    for role in ("D", "V"):
+        for family in PRIMARY_MODELS:
+            entry = table[role][family]
+            assert entry["slope"] == 1.1, (role, family)
+            assert entry["intercept"] == -0.2, (role, family)
+
+    # A family the run did not fit is absent, not silently reported as zero.
+    partial = {"D": {"models": {"gamma_glm": ladder["D"]["models"]["gamma_glm"]}}}
+    assert set(calibration_table(partial, ("D",))["D"]) == {"gamma_glm"}

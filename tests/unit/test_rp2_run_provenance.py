@@ -179,3 +179,66 @@ def test_the_tape_inventory_is_read_and_every_path_in_it_is_checked(tmp_path: Pa
     )
     with pytest.raises(ValueError, match="RP2_RUN_SEALED_COHORT_FORBIDDEN"):
         assert_no_sealed_paths(inventory_paths(sealed))
+
+
+def test_a_step_cannot_record_bytes_without_recording_content() -> None:
+    """The invariant, rather than the call site.
+
+    The `--skip-panels` branch recorded byte digests and left `content` empty, so the four
+    reused panels were absent from the scientific hash entirely: a resumed run claimed an
+    identity that did not bind the panels it was built on. Making the record refuse that
+    shape fixes every call site at once, including the ones not written yet.
+    """
+
+    with pytest.raises(ValueError, match="RP2_STEP_CONTENT_MISSING:build-b1"):
+        StepRecord(
+            name="build-b1",
+            command=("reused",),
+            exit_code=0,
+            runtime_seconds=0.0,
+            peak_memory_bytes=0,
+            artifacts={"rp2_block5_surface/b1_surface_panel.parquet": "a" * 64},
+        )
+
+    # A step with no artifacts at all is ordinary: not every step writes one.
+    StepRecord(
+        name="verify-artifact-hashes",
+        command=("internal",),
+        exit_code=0,
+        runtime_seconds=0.0,
+        peak_memory_bytes=0,
+    )
+
+
+def test_a_changed_input_moves_the_identity_even_when_everything_else_matches(
+    tmp_path: Path,
+) -> None:
+    """Same commit, same seeds, different data. That is a different run, not a retry."""
+
+    run_dir = tmp_path / "rp2-v3-20260820-001"
+    run_dir.mkdir()
+    write_manifest(run_dir, _manifest(input_manifest_sha256="1" * 64))
+
+    assert_run_identity_unchanged(run_dir, _manifest(input_manifest_sha256="1" * 64))
+    with pytest.raises(ValueError, match="RP2_RUN_IDENTITY_CONFLICT.*input_manifest_sha256"):
+        assert_run_identity_unchanged(run_dir, _manifest(input_manifest_sha256="2" * 64))
+
+
+def test_every_artifact_the_scorecard_reads_is_a_recorded_output() -> None:
+    """A result that depends on a file the manifest never hashed is not reproducible.
+
+    The scorecard reads both coverage reports; the step outputs listed only the panels, so
+    a rebuild could have been assembled from one run's panels and another's coverage with
+    nothing recording it.
+    """
+
+    from mds650.rp2.run_manifest import PIPELINE_STEPS
+
+    declared = {output for step in PIPELINE_STEPS for output in step.outputs}
+    for required in (
+        "rp2_block5_surface/surface_coverage.json",
+        "rp2_block6_flow/flow_coverage.json",
+        "rp2_block3_target/comparison.json",
+        "rp2_block4_b0/ladder.json",
+    ):
+        assert required in declared, required
