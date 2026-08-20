@@ -771,7 +771,7 @@ Spec Kit consistency and preregistration gates pass.
    Evaluating the window start at the exact instant rather than at an earlier origin keeps
    the feature defined everywhere: taking it from a lagged origin left the first six origins
    of every session undefined and cost 9.3 % of evaluation rows under the fail-closed rule.
-   Worst B2 coverage after the rebuild is 99.37 %. Finally, the coverage accounting was
+   Finally, the coverage accounting was
    itself incomplete: a session-asset the B0 panel carried but the tape inventory or the bar
    grid did not was skipped before any counter saw it, so every number in the artifact
    described only the part of the study that happened to be complete. The denominator is now
@@ -781,9 +781,9 @@ Spec Kit consistency and preregistration gates pass.
    traded, 0.226 % of five-minute windows, sets `is_empty_window` to 1 and its three
    per-trade averages to 0. A NaN there would be honest and would also remove the origin
    from every contrast under the fail-closed rule; the indicator lets a model read the zeros
-   as an absence. Fold-local imputation of the general case is its own gate. Every registered
-   B2 feature now covers 100 % of origins except the Greeks-weighted 30-minute flows, at
-   99.60 %. One further mistiming, pre-existing and not a point-in-time violation: bars are
+   as an absence. Fold-local imputation of the general case is its own gate. **All 70
+   features now cover 100 % of the 184,632 origins**, against a minimum of 59.7 % before the
+   gate. One further mistiming, pre-existing and not a point-in-time violation: bars are
    labelled by their start, so `closes[m]` is the price at the *end* of minute m and a trade
    executed inside that minute was marked at a price from its own future. The whole window
    still sat before the forecast origin, so no forecast ever saw the future; what was wrong
