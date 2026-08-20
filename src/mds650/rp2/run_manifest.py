@@ -192,11 +192,27 @@ class RunManifest:
     started_at_utc: str
     finished_at_utc: str
 
-    def scientific_part(self) -> dict[str, object]:
+    def identity_part(self) -> dict[str, object]:
+        """What makes a retry the same run, including where it was run and what it is called."""
+
         return {
+            **self.scientific_part(),
             "run_id": self.run_id,
-            "code_commit": self.code_commit,
             "data_root": self.data_root,
+        }
+
+    def scientific_part(self) -> dict[str, object]:
+        """What decides the result.
+
+        Deliberately without the run id and the data root. The same inputs rebuilt under a
+        new label, or from a store mounted at a different letter, are the same experiment;
+        a hash that disagreed there would contradict the reproducibility it exists to
+        establish. Both stay in the record, and both are still compared when a run id is
+        reused.
+        """
+
+        return {
+            "code_commit": self.code_commit,
             "roles": list(self.roles),
             "feature_registry_sha256": self.feature_registry_sha256,
             "input_manifest_sha256": self.input_manifest_sha256,
@@ -207,7 +223,7 @@ class RunManifest:
 
     def as_record(self) -> dict[str, object]:
         return {
-            **self.scientific_part(),
+            **self.identity_part(),
             "steps": [step.as_record() for step in self.steps],
             "started_at_utc": self.started_at_utc,
             "finished_at_utc": self.finished_at_utc,
@@ -406,7 +422,7 @@ def assert_run_identity_unchanged(run_dir: Path, manifest: RunManifest) -> None:
         existing = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
         raise ValueError(f"RP2_RUN_IDENTITY_CONFLICT:{manifest.run_id}:unreadable") from None
-    proposed = manifest.scientific_part()
+    proposed = manifest.identity_part()
     # A field the caller cannot know yet is skipped rather than compared against a blank:
     # the input digest is only available once step 1 has hashed the inputs, so the check
     # runs twice - before anything at all, and again after step 1 and still before the

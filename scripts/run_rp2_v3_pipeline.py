@@ -190,6 +190,14 @@ def assert_tape_covers_panel(
         and key[1] in panel_sessions
         and key[1] not in wildcard_sessions
     }
+    # A whole-session entry covers every asset in that session, so on those days the
+    # expectation is the frozen universe itself. Excluding them from the reverse check
+    # entirely - which the first version did - leaves an asset that lost its bars on one of
+    # the five wildcard sessions invisible: it is still present on other dates, the session
+    # count is unchanged, and the forward check sees the wildcard and is satisfied.
+    wildcard_in_panel = wildcard_sessions & {session for _, session in panel_keys}
+    expected |= {(asset, session) for asset in TARGET_ASSETS for session in wildcard_in_panel}
+
     missing = sorted(expected - panel_keys)
     if missing:
         listed = ",".join(f"{asset}@{session}" for asset, session in missing[:5])
@@ -759,6 +767,23 @@ def main(argv: Sequence[str] | None = None) -> int:
     for role, digest in evaluation_masks.items():
         recorded.setdefault(role, {})["evaluation_mask_sha256"] = digest
     masks_path.write_text(json.dumps(recorded, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    # The mask step recorded this file's digests before the producers ran, and it has just
+    # been appended to. Left alone, step 13 compares the file against a digest taken of an
+    # earlier version of it and every run aborts after all the expensive work is done.
+    steps[:] = [
+        StepRecord(
+            name=step.name,
+            command=step.command,
+            exit_code=step.exit_code,
+            runtime_seconds=step.runtime_seconds,
+            peak_memory_bytes=step.peak_memory_bytes,
+            artifacts={masks_path.name: file_digest(masks_path)},
+            content={masks_path.name: stable_content_digest(masks_path)},
+        )
+        if step.name == "construct-common-masks"
+        else step
+        for step in steps
+    ]
 
     manifest = RunManifest(
         run_id=str(args.run_id),

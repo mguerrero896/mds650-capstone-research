@@ -121,14 +121,39 @@ def test_a_session_level_tape_covers_every_asset_in_that_session() -> None:
     those sessions as an uncovered gap and abort a rebuild that had nothing wrong with it.
     """
 
+    from mds650.rp2.panel import TARGET_ASSETS
+
     runner = _load("run_rp2_v3_pipeline")
-    panel = {("AAPL", "2026-07-13"), ("NVDA", "2026-07-13"), ("TSLA", "2026-07-17")}
-    runner.assert_tape_covers_panel(
-        set(), panel, wildcard_sessions=frozenset({"2026-07-13", "2026-07-17"})
-    )
-    with pytest.raises(SystemExit, match="RP2_RUN_TAPE_COVERAGE_GAP:1:TSLA@2026-07-17"):
+    wildcards = frozenset({"2026-07-13", "2026-07-17"})
+    panel = {(asset, session) for asset in TARGET_ASSETS for session in wildcards}
+    runner.assert_tape_covers_panel(set(), panel, wildcard_sessions=wildcards)
+
+    # Read as a literal asset, the whole-session entry leaves every concrete asset on that
+    # day looking like a gap.
+    with pytest.raises(SystemExit, match="RP2_RUN_TAPE_COVERAGE_GAP"):
         runner.assert_tape_covers_panel(
             set(), panel, wildcard_sessions=frozenset({"2026-07-13"})
+        )
+
+
+def test_an_asset_missing_on_a_wildcard_session_is_still_a_gap() -> None:
+    """A whole-session tape covers every asset, so the panel has to carry every asset.
+
+    Excluding those sessions from the reverse check leaves an asset that lost its bars on
+    one of the five wildcard days invisible: it is present on other dates, the session
+    count is unchanged, and the forward check sees the wildcard and is satisfied.
+    """
+
+    from mds650.rp2.panel import TARGET_ASSETS
+
+    runner = _load("run_rp2_v3_pipeline")
+    wildcards = frozenset({"2026-07-13"})
+    complete = {(asset, "2026-07-13") for asset in TARGET_ASSETS}
+    runner.assert_tape_covers_panel(set(), complete, wildcard_sessions=wildcards)
+
+    with pytest.raises(SystemExit, match="RP2_RUN_PANEL_COVERAGE_GAP:1:TSLA@2026-07-13"):
+        runner.assert_tape_covers_panel(
+            set(), {k for k in complete if k[0] != "TSLA"}, wildcard_sessions=wildcards
         )
 
 
