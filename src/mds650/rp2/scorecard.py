@@ -114,6 +114,20 @@ def _null_count(path: Path, name: str) -> int | None:
     return int(column.null_count() + int(column.is_nan().sum() if column.dtype.is_float() else 0))
 
 
+def _quantile_where(path: Path, name: str, weight: str, quantile: float) -> float | None:
+    """A quantile over the windows that observed something, ignoring the empty ones."""
+
+    values = _column(path, name)
+    weights = _column(path, weight)
+    if values is None or weights is None:
+        return None
+    frame = pl.DataFrame({"v": values, "w": weights}).drop_nulls().filter(pl.col("w") > 0)
+    if frame.height == 0:
+        return None
+    result = frame["v"].quantile(quantile)
+    return None if result is None else float(result)
+
+
 def _weighted_mean(path: Path, name: str, weight: str) -> float | None:
     """A mean over observations, not over the windows that happened to contain them."""
 
@@ -306,8 +320,11 @@ def assemble_scorecard(run_dir: Path, manifest: RunManifest) -> dict[str, Any]:
             ),
             # Likewise the producer's own per-window tail: averaging first suppresses
             # the slow records the tail is asked about.
-            "b2_p95_provider_latency_s": _quantile(
-                panels["b2"], "b2_30m_p95_provider_latency_s", 0.5
+            # Only windows that saw a trade. An empty window encodes its latency as zero,
+            # and including those sentinels drags the reported tail down - to exactly zero
+            # once half the origins are empty - although no latency was observed in them.
+            "b2_p95_provider_latency_s": _quantile_where(
+                panels["b2"], "b2_30m_p95_provider_latency_s", "b2_30m_trades", 0.5
             ),
             "b2_multileg_share": _mean(panels["b2"], "b2_30m_multileg_premium_share"),
             "b2_empty_window_share": flow.get(

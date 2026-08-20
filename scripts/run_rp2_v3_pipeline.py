@@ -311,7 +311,11 @@ def _tape_fingerprint(
 
 
 def validate_inputs(
-    run_dir: Path, *, data_root: Path, forbid_sealed: bool = True, hash_tape_contents: bool = False
+    run_dir: Path,
+    *,
+    data_root: Path,
+    forbid_sealed: bool = True,
+    hash_tape_contents: bool = True,
 ) -> tuple[dict[str, object], str]:
     """Step 1: everything the run will actually read exists, and is identified.
 
@@ -633,10 +637,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         action="store_true",
         help="reuse the panels already in the run directory instead of rebuilding them",
     )
+    # Reading the tape is the default. A name-and-size fingerprint cannot tell a
+    # re-acquisition with the same file length from the tape the run was built on, which is
+    # exactly the case a resumed run has to detect. Eighty-five gigabytes costs a couple of
+    # minutes against a rebuild that takes ninety.
     parser.add_argument(
-        "--hash-tape-contents",
+        "--fast-tape-fingerprint",
         action="store_true",
-        help="read all 85 GB of option tape to digest it, instead of path/size/mtime",
+        help="identify the tape by name and size instead of reading it; recorded as such",
     )
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args(argv)
@@ -704,11 +712,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         raise SystemExit(f"RP2_RUN_ALREADY_COMPLETE:{args.run_id}")
 
     steps: list[StepRecord] = []
+    validation_started = time.perf_counter()
     input_record, manifest_digest = validate_inputs(
         run_dir,
         data_root=Path(args.data_root),
         forbid_sealed=True,
-        hash_tape_contents=args.hash_tape_contents,
+        hash_tape_contents=not args.fast_tape_fingerprint,
     )
     assert_run_identity_unchanged(
         run_dir,
@@ -765,7 +774,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             name="validate-input-manifests",
             command=("internal", "validate_inputs"),
             exit_code=0,
-            runtime_seconds=0.0,
+            # Timed like every other step. With the tape read this is minutes, not zero,
+            # and the scorecard sums these into what it calls the run's runtime.
+            runtime_seconds=round(time.perf_counter() - validation_started, 3),
             peak_memory_bytes=0,
             artifacts={"input_manifest.json": file_digest(run_dir / "input_manifest.json")},
             content={

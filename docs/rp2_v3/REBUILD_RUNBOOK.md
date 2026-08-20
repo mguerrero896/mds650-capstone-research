@@ -13,6 +13,12 @@ uv run python scripts/run_rp2_v3_pipeline.py `
 
 `--dry-run` prints the thirteen steps and exits without creating anything.
 
+Step 1 reads and digests all 3 717 option-tape files — about 85 GB, a couple of minutes —
+because a name-and-size fingerprint cannot tell a re-acquisition of the same file length
+from the tape a run was built on, which is precisely the case a resumed run has to detect.
+`--fast-tape-fingerprint` skips the read, and `input_manifest.json` records which was done
+under `tape_fingerprint_mode`.
+
 ## What it runs, in this order
 
 | # | Step | Producer |
