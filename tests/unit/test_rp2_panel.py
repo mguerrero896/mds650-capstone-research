@@ -13,7 +13,6 @@ from mds650.rp2.panel import (
     INFORMATION_SETS,
     JOIN_KEYS,
     VARIANCE_FLOOR,
-    b2_features,
     build_design,
     chronological_split,
     common_usable_rows,
@@ -34,15 +33,20 @@ def test_the_three_information_sets_are_disjoint_and_registered() -> None:
     assert not set(B0_FEATURES) & set(B2_FEATURES)
 
 
-def test_b2_features_cover_both_windows_with_known_transforms() -> None:
-    mapping = b2_features()
-    assert mapping == B2_FEATURES
-    assert any(name.startswith("b2_5m_") for name in mapping)
-    assert any(name.startswith("b2_30m_") for name in mapping)
-    assert set(mapping.values()) <= {"log", "signed", "raw"}
+def test_b2_is_the_core_dozen_with_known_transforms() -> None:
+    """The primary B2 set is the twelve core mechanisms, not every channel the block emits.
+
+    The thirty-minute window and the remaining channels are B2-rich: reported and hashed,
+    outside every primary contrast, because a hundred-plus dimensions against a few dozen
+    independent sessions is estimation variance rather than information.
+    """
+
+    assert 10 <= len(B2_FEATURES) <= 12
+    assert all(name.startswith("b2_5m_") for name in B2_FEATURES)
+    assert set(B2_FEATURES.values()) <= {"log", "signed", "raw"}
     # Signed flow really is registered as signed: it takes both signs.
-    assert mapping["b2_5m_vega_flow"] == "signed"
-    assert mapping["b2_5m_premium"] == "log"
+    assert B2_FEATURES["b2_5m_vega_flow"] == "signed"
+    assert B2_FEATURES["b2_5m_premium"] == "log"
 
 
 def test_transforms_behave_as_declared() -> None:
@@ -214,40 +218,58 @@ def test_standardise_tolerates_a_constant_column_and_validates_inputs() -> None:
         standardise(design, np.zeros(4, dtype=bool))
 
 
-def test_load_merged_panel_joins_on_the_origin_key(
-    tmp_path: object,
-) -> None:
+def _complete(root: object) -> object:
+    """Write a B0/B1/B2 trio that meets every core coverage floor.
+
+    The loader enforces the registry's floors, so a fixture that is merely enough to join
+    is no longer enough to load. That is the point of the floor, and it means the join
+    semantics and the floor need separate tests.
+    """
+
     from pathlib import Path
 
-    root = Path(str(tmp_path))
-    base = _panel()
-    base.write_parquet(root / "b0.parquet")
-    surface = pl.DataFrame(
-        {
-            "asset": ["AAPL", "MSFT"],
-            "session_date": ["2026-01-05", "2026-01-05"],
-            "origin_minute": [30, 30],
-            "b1_iv_30d": [0.30, 0.40],
-        }
+    directory = Path(str(root))
+    keys = {
+        "asset": ["AAPL", "AAPL", "MSFT", "MSFT"],
+        "session_date": ["2026-01-05", "2026-01-06", "2026-01-05", "2026-01-06"],
+        "origin_minute": [30, 30, 30, 30],
+    }
+    pl.DataFrame(
+        {**keys, "rv30": [1e-5, 2e-5, 3e-5, 4e-5]}
+        | {name: [1.0, 2.0, 3.0, 4.0] for name in B0_FEATURES}
+    ).write_parquet(directory / "b0.parquet")
+    pl.DataFrame({**keys} | {name: [0.30, 0.31, 0.40, 0.41] for name in B1_FEATURES}).write_parquet(
+        directory / "b1.parquet"
     )
-    surface.write_parquet(root / "b1.parquet")
+    pl.DataFrame(
+        {**keys} | {name: [1000.0, 1100.0, 2000.0, 2100.0] for name in B2_FEATURES}
+    ).write_parquet(directory / "b2.parquet")
+    return directory
 
-    flow = pl.DataFrame(
-        {
-            "asset": ["AAPL", "MSFT"],
-            "session_date": ["2026-01-05", "2026-01-05"],
-            "origin_minute": [30, 30],
-            "b2_5m_premium": [1000.0, 2000.0],
-        }
-    )
-    flow.write_parquet(root / "b2.parquet")
 
+def test_load_merged_panel_joins_on_the_origin_key(tmp_path: object) -> None:
+    root = _complete(tmp_path)
     merged = load_merged_panel(root / "b0.parquet", root / "b1.parquet", root / "b2.parquet")
-    assert merged.height == base.height
+    assert merged.height == 4
     assert set(JOIN_KEYS) <= set(merged.columns)
     assert "b1_iv_30d" in merged.columns
-    # Rows without a surface match keep a null rather than being dropped.
-    assert merged["b1_iv_30d"].null_count() == 2
+    assert "b2_5m_premium" in merged.columns
+    assert merged["b1_iv_30d"].null_count() == 0
+
+
+def test_load_merged_panel_refuses_a_panel_below_its_coverage_floor(tmp_path: object) -> None:
+    """A left join keeps unmatched rows as nulls, and the floor is what says how many.
+
+    Without it, a B1 build covering half the origins would arrive as a panel with half its
+    surface missing, and every contrast would quietly drop those rows instead of the run
+    stopping.
+    """
+
+    root = _complete(tmp_path)
+    surface = pl.read_parquet(root / "b1.parquet").head(1)
+    surface.write_parquet(root / "sparse_b1.parquet")
+    with pytest.raises(ValueError, match="RP2_FEATURE_SET_COVERAGE_BREACH"):
+        load_merged_panel(root / "b0.parquet", root / "sparse_b1.parquet", root / "b2.parquet")
 
 
 def test_missing_b1_file_fails_closed(tmp_path: object) -> None:
