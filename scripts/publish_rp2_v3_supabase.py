@@ -461,7 +461,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     assert_published_at_the_run_commit(_read(args.run_root / "run_manifest.json"))
     payload = build_payload(args.run_root, branch=args.branch)
     if args.dry_run:
-        print(json.dumps(payload, indent=2, sort_keys=True)[:4000])
+        # Whole, not the first four thousand characters. The step this supports is an
+        # operator reading what is about to be published, and a truncated payload drops
+        # exactly the contrast estimates and lineage fields that reading is for.
+        review = args.run_root / "publication_payload.json"
+        review.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        print(f"[dry-run] written to {review}")
         print(
             f"[dry-run] {len(payload['inputs'])} inputs, {len(payload['blocks'])} blocks, "
             f"{len(payload['contrasts'])} contrasts"

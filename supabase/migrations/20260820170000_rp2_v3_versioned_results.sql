@@ -20,7 +20,8 @@ alter table public.ingestion_runs
     add column if not exists model_config_sha256 text,
     add column if not exists inference_config_sha256 text,
     add column if not exists common_mask_sha256 text,
-    add column if not exists scientific_sha256 text;
+    add column if not exists scientific_sha256 text,
+    add column if not exists attempt_log text;
 
 comment on column public.ingestion_runs.spec_version is
     'Which frozen specification the run implements, e.g. rp2-v3.';
@@ -488,6 +489,8 @@ begin
         inference_config_sha256 = excluded.inference_config_sha256,
         common_mask_sha256 = excluded.common_mask_sha256,
         scientific_sha256 = excluded.scientific_sha256;
+    -- `attempt_log` is deliberately absent from that list: a run that failed before it
+    -- succeeded keeps the record of the attempt that failed.
 
     insert into public.ingestion_inputs (
         run_id, input_name, path, provider, sha256, bytes, rows, schema_sha256, time_min, time_max
@@ -650,18 +653,21 @@ as $$
     -- still current, so marking it FAILED would leave the database showing current results
     -- attributed to a run it says did not succeed. A failed attempt to publish over it is a
     -- fact about the attempt, and it is recorded in the note.
-    insert into public.ingestion_runs (run_id, started_at, status, input_count, rows_published, note)
-    values (failed_run_id, now(), 'FAILED', 0, 0, reason)
+    -- The attempt goes in `attempt_log`, not in `note`. `note` is the run's own account of
+    -- itself and is compared when a retry claims to be identical, so writing an attempt
+    -- into it made a later legitimate retry disagree with the row it was retrying. Writing
+    -- the attempt over it also destroyed whatever it replaced: a failure recorded before a
+    -- successful publication was erased by the success, and a failure recorded after one
+    -- overwrote the successful run's own provenance.
+    insert into public.ingestion_runs (run_id, started_at, status, input_count, rows_published,
+                                       attempt_log)
+    values (failed_run_id, now(), 'FAILED', 0, 0, now()::text || ' ' || reason)
     on conflict (run_id) do update set
         status = case when public.ingestion_runs.status = 'PUBLISHED' then 'PUBLISHED' else 'FAILED' end,
-        -- A published run keeps its own note, which carries its scientific hash. The failed
-        -- attempt is appended: replacing it would destroy the provenance of a run that
-        -- succeeded in order to record that something else did not.
-        note = case
-            when public.ingestion_runs.status = 'PUBLISHED'
-                then public.ingestion_runs.note || ' | failed retry: ' || excluded.note
-            else excluded.note
-        end,
+        attempt_log = concat_ws(
+            E'
+', nullif(public.ingestion_runs.attempt_log, ''), excluded.attempt_log
+        ),
         completed_at = case
             when public.ingestion_runs.status = 'PUBLISHED' then public.ingestion_runs.completed_at
             else now()

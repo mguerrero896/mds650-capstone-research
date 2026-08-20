@@ -55,6 +55,11 @@ published.
 
 ## The dry run
 
+`--dry-run` prints the payload whole and writes it to `publication_payload.json` beside the
+run. The step it supports is an operator reading what is about to be published: the real
+payload is 18 219 characters, so stopping at four thousand showed four of the twenty-four
+contrasts and hid the rest along with the lineage fields.
+
 The plan calls for `supabase db push --dry-run` before applying. The CLI needs a personal
 access token or the database password, and neither is available in this environment; only
 `SUPABASE_SERVICE_KEY` is. The equivalent was performed instead, and it is stronger in one
@@ -147,6 +152,27 @@ rp2-v4               RP2_PUBLISH_SPEC_VERSION_UNEXPECTED
 rp2-V3               RP2_PUBLISH_SPEC_VERSION_UNEXPECTED
 (missing or empty)   RP2_PUBLISH_SPEC_VERSION_UNEXPECTED
 ```
+
+## A failed attempt survives the run that succeeds
+
+`record_rp2_v3_failure` writes into `attempt_log`, never into `note`. `note` is the run's own
+account of itself and is compared when a retry claims to be identical, so an attempt written
+into it made the next legitimate retry disagree with the row it was retrying — and writing
+over it destroyed whatever was there: a failure recorded before a successful publication was
+erased by the success, and one recorded afterwards overwrote the successful run's provenance.
+The publication's conflict update does not list `attempt_log`, so the record of the attempts
+that preceded it survives. The whole lifecycle, against the live schema:
+
+```text
+1 after a failed first attempt        FAILED    | log=2026-08-20 20:43:56… | note=(null)
+2 the retry publishes                 PUBLISHED
+3 the failure survived the success    PUBLISHED | log=2026-08-20 20:43:56… | note=RP2-v3 rebuild…
+4 identical retry after all that      ALREADY_PUBLISHED
+5 a failure after publication         PUBLISHED | log lines=2             | note=RP2-v3 rebuild…
+6 idempotent retry still works        ALREADY_PUBLISHED
+```
+
+Line 6 is the one that could not have held while attempts were appended to `note`.
 
 ## What a retry has to match
 
