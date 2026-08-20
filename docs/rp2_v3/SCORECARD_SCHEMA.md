@@ -31,7 +31,7 @@ as an unmeasured one.
 | `sessions_by_role` | object | `{"D": int, "V": int}` |
 | `assets` | int | distinct assets in the evaluation mask |
 | `duplicate_keys` | int | must be 0 |
-| `provider_failures` | int | windows where the provider failed, distinct from empty windows |
+| `provider_failures` | int | session-assets whose tape either block could not read, summed over B1 and B2; distinct from empty windows |
 
 ## B1
 
@@ -40,6 +40,12 @@ as an unmeasured one.
 | `b1_core_coverage` | float | > 0.90 |
 | `b1_median_quote_age_s` | float | < 900 |
 | `b1_p95_quote_age_s` | float | <= 1800 |
+
+`b1_p95_quote_age_s` is the median across origins of *each origin's* 95th-percentile quote
+age. The producer computes the tail over that origin's own quotes: an origin of mostly
+fresh quotes with a stale tail has a fresh median, so a quantile taken over per-origin
+medians afterwards would describe typical origins rather than stale quotes.
+
 | `b1_surface_contracts_per_origin` | float | reported |
 | `b1_surface_expiry_coverage` | float | reported |
 | `b1_rows_dropped_for_rate_or_dividend` | int | 0 |
@@ -58,6 +64,10 @@ as an unmeasured one.
 | `b2_multileg_share` | float | reported |
 | `b2_empty_window_share` | float | reported |
 | `b2_provider_failure_share` | float | reported |
+
+`b2_p95_provider_latency_s` is the median across origins of *each 30-minute window's*
+95th-percentile record lag, for the same reason: averaging inside the window first would
+suppress exactly the slow records the tail is asked about.
 
 ## Forecast
 

@@ -234,10 +234,11 @@ def assemble_scorecard(run_dir: Path, manifest: RunManifest) -> dict[str, Any]:
             # it here would emit an array under a field documented as an integer.
             "assets": len(ladder.get("D", {}).get("assets") or []) or None,
             "duplicate_keys": _duplicate_keys(panels["target"]),
-            "provider_failures": (
-                surface.get("session_assets_without_tape"),
-                flow.get("session_assets_without_tape"),
-            ),
+            # One count, as the schema declares. Session-assets whose tape either block
+            # could not read; a pair here would serialise as an array under a field
+            # documented as an integer.
+            "provider_failures": int(surface.get("session_assets_without_tape") or 0)
+            + int(flow.get("session_assets_without_tape") or 0),
         },
         "b1": {
             "b1_core_coverage": core_coverage,
@@ -245,7 +246,10 @@ def assemble_scorecard(run_dir: Path, manifest: RunManifest) -> dict[str, Any]:
             # and on a skewed age distribution it can decide whether the reported
             # freshness clears its target.
             "b1_median_quote_age_s": _quantile(b1_panel, "b1_median_quote_age_s", 0.5),
-            "b1_p95_quote_age_s": _quantile(b1_panel, "b1_median_quote_age_s", 0.95),
+            # The producer's own per-origin tail, summarised across origins. Taking a
+            # quantile of per-origin medians would be a statistic about typical origins:
+            # an origin of mostly fresh quotes with a stale tail has a fresh median.
+            "b1_p95_quote_age_s": _quantile(b1_panel, "b1_p95_quote_age_s", 0.5),
             "b1_surface_contracts_per_origin": _mean(b1_panel, "b1_contracts"),
             "b1_surface_expiry_coverage": _coverage(b1_coverage, "b1_expiries"),
             # An origin whose implied rate did not survive the plausibility gate carries a
@@ -265,8 +269,10 @@ def assemble_scorecard(run_dir: Path, manifest: RunManifest) -> dict[str, Any]:
             "b2_pit_violation_count": _sum(panels["b2"], "b2_pit_violations"),
             "b2_zero_dte_count": _sum(panels["b2"], "b2_zero_dte_trades"),
             "b2_mean_provider_latency_s": _mean(panels["b2"], "b2_30m_mean_provider_latency_s"),
+            # Likewise the producer's own per-window tail: averaging first suppresses
+            # the slow records the tail is asked about.
             "b2_p95_provider_latency_s": _quantile(
-                panels["b2"], "b2_30m_mean_provider_latency_s", 0.95
+                panels["b2"], "b2_30m_p95_provider_latency_s", 0.5
             ),
             "b2_multileg_share": _mean(panels["b2"], "b2_30m_multileg_premium_share"),
             "b2_empty_window_share": flow.get(

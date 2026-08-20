@@ -537,6 +537,7 @@ def build_session_flow(
                     expiry_day=expiry_day,
                     premium=premium,
                     seconds=seconds,
+                    latency=latency_seconds,
                     intensity_now=float(intensity_now[position]),
                     intensity_before=float(intensity_before[label][position]),
                 )
@@ -551,6 +552,25 @@ def build_session_flow(
         ),
         "measured",
     )
+
+
+def _window_quantile(
+    values: FloatArray, lo: int, hi: int, stale: npt.NDArray[np.int64], quantile: float
+) -> float:
+    """A quantile over one window's own observations, with the stale rows removed.
+
+    The stale rows are those whose record was created inside the window while the trade
+    happened before it; they are excluded from every other window statistic and are
+    excluded here for the same reason.
+    """
+
+    if hi <= lo:
+        return 0.0
+    inside = np.ones(hi - lo, dtype=bool)
+    if stale.size:
+        inside[stale - lo] = False
+    selected = values[lo:hi][inside]
+    return float(np.quantile(selected, quantile)) if selected.size else 0.0
 
 
 def _window_record(
@@ -568,6 +588,7 @@ def _window_record(
     expiry_day: npt.NDArray[np.int64],
     premium: FloatArray,
     seconds: FloatArray,
+    latency: FloatArray,
     intensity_now: float,
     intensity_before: float,
 ) -> dict[str, float]:
@@ -646,6 +667,10 @@ def _window_record(
         f"{prefix}late_arrival_share": (
             total("latency_over_60s") / trades if trades else 0.0
         ),
+        # The tail, taken over the individual lags inside this window. A quantile of
+        # per-window means, computed later, would be a statistic about typical windows:
+        # averaging first suppresses exactly the slow records the tail is asked about.
+        f"{prefix}p95_provider_latency_s": _window_quantile(latency, lo, hi, stale, 0.95),
         f"{prefix}zero_dte_premium_share": total("zero_dte_premium") / total_premium,
         f"{prefix}zero_dte_signed_premium": total("zero_dte_signed_premium"),
         f"{prefix}zero_dte_trade_share": total("zero_dte_trades") / max(trades, 1.0),

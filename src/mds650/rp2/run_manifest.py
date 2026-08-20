@@ -366,7 +366,9 @@ def assert_artifact_stable(path: Path, expected_sha256: str) -> None:
     """
 
     if not path.is_file():
-        return
+        # Absence is not agreement. A step recorded this file; if it is gone by the time
+        # the run verifies itself, the manifest describes something that no longer exists.
+        raise ValueError(f"RP2_RUN_ARTIFACT_MISSING:{path.name}")
     actual = file_digest(path)
     if actual != expected_sha256:
         raise ValueError(

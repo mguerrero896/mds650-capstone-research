@@ -218,6 +218,10 @@ def _surface_at(
         "b1_expiries": float(coverage.expiries),
         "b1_strikes": float(coverage.strikes),
         "b1_median_quote_age_s": float(np.median(age_seconds)),
+        # The tail of this origin's own quote ages. Taking a quantile of per-origin
+        # medians afterwards would be a statistic about typical origins, not about stale
+        # quotes: an origin of mostly fresh quotes with a stale tail has a fresh median.
+        "b1_p95_quote_age_s": float(np.quantile(age_seconds, 0.95)),
         "b1_median_relative_spread": float(np.median(relative_spread)),
         "b1_forward_expiries_fitted": float(len(forward_by_expiry)),
         "b1_min_log_moneyness": coverage.min_log_moneyness,

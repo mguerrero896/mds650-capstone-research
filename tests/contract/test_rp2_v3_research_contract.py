@@ -167,7 +167,7 @@ def test_a_field_documented_under_the_wrong_group_is_rejected() -> None:
     """
 
     document = _read("SCORECARD_SCHEMA.md")
-    data_row = "| `provider_failures` | int | windows where the provider failed"
+    data_row = "| `provider_failures` | int |"
     original = next(line for line in document.splitlines() if line.startswith(data_row))
     moved = document.replace(original + "\n", "").replace(
         "| `mde` | object |", original + "\n| `mde` | object |"
