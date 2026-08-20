@@ -207,6 +207,15 @@ def test_an_empty_window_still_reports_the_intensity_it_has() -> None:
     assert record["b2_5m_is_empty_window"] == 1.0
     assert record["b2_5m_mean_provider_latency_s"] == 0.0
     assert record["b2_5m_mean_age_s"] == 0.0
-    assert all(np.isfinite(value) for value in record.values()), (
+
+    # Every registered five-minute feature, not merely the ones the record happened to
+    # return: a key that is absent becomes a null in the panel and the fail-closed mask
+    # removes the origin, which is the same failure by a quieter route.
+    from mds650.rp2.panel import B2_FEATURES
+
+    registered = {name for name in B2_FEATURES if name.startswith("b2_5m_")}
+    missing = sorted(registered - set(record))
+    assert not missing, f"registered features an empty window does not emit: {missing}"
+    assert all(np.isfinite(record[name]) for name in registered), (
         "an empty window must not put a non-finite value into a registered feature"
     )

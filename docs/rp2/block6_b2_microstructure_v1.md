@@ -1,12 +1,16 @@
 # Block 6 — Gate 5: B2 rebuilt as microstructure
 
-**Status:** `EXECUTED — 2026-08-20` · label `EXPLORATORY_MECHANISM_DISCOVERY`
-**Superseded:** the 2026-08-19 run of this block is `SUPERSEDED_BY_RP2_V3`; see
-`docs/rp2_v3/SUPERSEDED_RESULTS.md` and methodology decision 81.
+**Status:** `SUPERSEDED_BY_RP2_V3` — executed 2026-08-19, superseded 2026-08-20 by
+`fix/rp2-v3-exact-clock-b2` (methodology decision 81). The run below is retained
+unchanged; the replacement is
+`artifacts/rp2_v3/gate5-exact-clock-b2/flow_coverage.json`
+(`flow_sha256 = 05823dc46827b808f94979f8602b7550e97817d29ba433f5b90bd9440909cd41`, 68 features, panel
+`f49aa674…9649f`, 74.8 MB).
+· label `EXPLORATORY_MECHANISM_DISCOVERY`
 **Artifacts:** `artifacts/rp2_block6_flow/flow_coverage.json`
-(`flow_sha256 = 2358b25912e289c1c7f30958d4e951d0d65b9b98ee58064867114b67c17624f4`);
+(`flow_sha256 = d7320a546cfe2ffc113baab555b3b663bbcffa678495d7ee80fb4b31820d3306`);
 panel `b2_flow_panel.parquet` is local-only, hashed in `artifacts/rp2_panel_pointers.json`
-(`c9299a23…09a85`, 74.8 MB).
+(`b4066780…5e9e4`, 43.7 MB).
 **Code:** `src/mds650/rp2/flow.py`, `scripts/rp2_block6_flow_panel.py`
 **Tests:** `tests/unit/test_rp2_flow.py` (10 tests)
 
@@ -68,7 +72,7 @@ are still evaluated on a window slice — and only on the short 5-minute one.
 ## 3. What the rebuilt B2 looks like
 
 184,632 origins over 2,814 session-assets,
-0 without tape, **68 features**.
+0 without tape, **60 features**.
 
 Medians over all origins:
 

@@ -508,10 +508,20 @@ def _window_record(
         f"{prefix}zero_dte_trade_share": total("zero_dte_trades") / max(trades, 1.0),
     }
     if empty:
-        # The concentration statistics of an empty window do not exist. The intensity does:
-        # it is the decay-weighted activity at this instant, which earlier visible trades
-        # still support, and dropping it would remove the origin from every contrast under
-        # the fail-closed mask for the sake of a window in which nobody traded.
+        # Concentration over no trades is not a number, but leaving it out puts a null into
+        # four registered features and the fail-closed mask then removes the origin from
+        # every contrast — for the sake of a window in which nobody traded. They are zero
+        # here, and `is_empty_window` is what tells a model those zeros are an absence. The
+        # intensity is not zero: earlier visible trades still support it.
+        if label == CONCENTRATION_WINDOW:
+            record.update(
+                {
+                    f"{prefix}strike_hhi": 0.0,
+                    f"{prefix}expiry_hhi": 0.0,
+                    f"{prefix}contract_entropy": 0.0,
+                    f"{prefix}interarrival_cv": 0.0,
+                }
+            )
         return record
     if label == CONCENTRATION_WINDOW:
         window_premium = premium[lo:hi]
