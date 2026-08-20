@@ -31,11 +31,13 @@ import polars as pl
 from mds650.b1v3_confirmation import canonical_sha256
 from mds650.metrics import holm_adjust, paired_day_bootstrap, qlike_losses
 from mds650.rp2.baseline import mincer_zarnowitz
+from mds650.rp2.feature_registry import describe_coverage
 from mds650.rp2.ladder import INDEPENDENT_FAMILIES, LADDER, partial_pooling
 from mds650.rp2.panel import (
     B0_FEATURES,
     B1_FEATURES,
     B2_FEATURES,
+    CORE_SETS,
     build_design,
     chronological_split,
     common_usable_rows,
@@ -209,6 +211,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     models = tuple(name.strip() for name in str(args.models).split(",") if name.strip())
     panel = load_merged_panel(B0_PANEL, B1_PANEL, B2_PANEL)
     document: dict[str, object] = {
+        # Which frozen sets were fitted, how complete they were, and the hash of the
+        # registry that decided them. Without it an artifact records a design width and
+        # nothing a reader can check that width against.
+        "feature_registry": describe_coverage(panel, *CORE_SETS.values()),
         "block": 8,
         "program": "docs/research_program_v2.md",
         "label": "EXPLORATORY_MECHANISM_DISCOVERY",

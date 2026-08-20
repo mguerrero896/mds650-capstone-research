@@ -184,3 +184,62 @@ def test_the_core_coverage_floors_hold_on_the_real_panels() -> None:
     for name, path in built:
         panel = pl.read_parquet(path)
         assert_minimum_coverage(panel, name)
+
+
+#: Every script that writes an RP2 artifact from a fitted design.
+ARTIFACT_WRITERS: tuple[str, ...] = (
+    "rp2_block7_dml",
+    "rp2_block8_ladder",
+    "rp2_block9_generalization",
+    "rp2_block10_inference",
+    "rp2_block11_economics",
+    "rp2_block11b_forward_economics",
+    "rp2_block12_prospective_design",
+    "rp2_ext1_mechanism_utility",
+    "rp2_ext12_level4_and_tensor",
+)
+
+
+def test_every_artifact_writer_records_the_registry_it_fitted() -> None:
+    """The recurring defect of this programme, in its newest form.
+
+    A helper that produces the mandatory provenance and is called only by its own test
+    produces no provenance. Without this the artifacts carry a design width and nothing a
+    reader can check that width against.
+    """
+
+    missing = [
+        name
+        for name in ARTIFACT_WRITERS
+        if "describe_coverage(" not in (REPO / "scripts" / f"{name}.py").read_text(
+            encoding="utf-8"
+        )
+    ]
+    assert not missing, f"artifact writers with no registry provenance: {missing}"
+
+
+def test_the_historical_treatment_battery_resolves_against_the_whole_registry() -> None:
+    """Rich means out of the primary contrasts, not out of existence.
+
+    The mechanism extension's battery predates the core/rich split and names channels that
+    are now B2-rich. Resolving it against the primary set alone would make the extension
+    raise RP2_EXT1_UNKNOWN_TREATMENT and stop running altogether.
+    """
+
+    source = (REPO / "scripts" / "rp2_ext1_mechanism_utility.py").read_text(encoding="utf-8")
+    assert 'feature_map("B2_CORE", "B2_RICH")' in source
+    available = feature_map("B2_CORE", "B2_RICH")
+    for name in ("b2_5m_gamma_flow", "b2_5m_otm_premium_share"):
+        assert name in available, name
+
+
+def test_the_configuration_travels_with_the_installed_package() -> None:
+    """Importing the panel resolves the sets eagerly, so a wheel without them cannot start."""
+
+    pyproject = (REPO / "pyproject.toml").read_text(encoding="utf-8")
+    assert "force-include" in pyproject
+    assert "configs/rp2_v3_feature_sets.json" in pyproject
+    from mds650.rp2 import feature_registry
+
+    assert feature_registry.CONFIG.is_file()
+    assert feature_registry._PACKAGED.name == feature_registry._IN_TREE.name

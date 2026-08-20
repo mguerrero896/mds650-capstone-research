@@ -25,7 +25,14 @@ from typing import Final
 
 import polars as pl
 
-CONFIG: Final = Path(__file__).resolve().parents[3] / "configs" / "rp2_v3_feature_sets.json"
+#: The frozen sets live in the repository's `configs/` directory and are force-included in
+#: the wheel beside this module, because importing the panel resolves them eagerly and an
+#: installed package cannot reach back into a source tree.
+_PACKAGED: Final = Path(__file__).resolve().parent / "configs" / "rp2_v3_feature_sets.json"
+_IN_TREE: Final = (
+    Path(__file__).resolve().parents[3] / "configs" / "rp2_v3_feature_sets.json"
+)
+CONFIG: Final = _IN_TREE if _IN_TREE.is_file() else _PACKAGED
 SCHEMA_VERSION: Final = "rp2-v3-feature-sets-v1.0"
 #: Transform kinds a feature may declare; `panel.transform_column` implements them.
 TRANSFORM_KINDS: Final = frozenset({"log", "signed", "raw"})
