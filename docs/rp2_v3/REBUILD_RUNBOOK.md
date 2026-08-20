@@ -68,12 +68,23 @@ it: a metric reported as absent and a metric never computed look identical after
 
 ## Reproducibility
 
-`run_manifest.json` carries a `scientific_sha256` over the run id, the commit, the data
-root, the roles, the registry, input-manifest and model-config digests, the seeds, and
-every step's command, exit code and artifact hashes. The execution clock, the runtime and
-the peak memory are recorded beside it and are deliberately outside the hash: two runs of
-the same inputs at the same commit must agree on the science and will not agree on when
-they happened.
+`run_manifest.json` carries a `scientific_sha256` over the commit, the roles, the registry,
+input-manifest and model-config digests, the seeds, and every step's normalised command,
+exit code and **content** digests.
+
+Four things are deliberately outside it, each because two runs that are the same experiment
+would otherwise disagree:
+
+- the **run id** and the **data root** — the same inputs under a new label, or from a store
+  mounted at a different letter, are the same experiment;
+- the **execution clock**, the **runtime** and the **peak memory** — engineering facts;
+- the **byte digests** of the artifacts — every block artifact stamps itself with the time
+  it was written, so the content digest is taken after the volatile fields are stripped and
+  the byte digests are kept beside it for integrity;
+- whether a step **reused** an artifact from an interrupted attempt — a byte-identical
+  panel is the same panel either way.
+
+All of them are recorded in the manifest; none of them identifies the run.
 
 ## Resuming
 

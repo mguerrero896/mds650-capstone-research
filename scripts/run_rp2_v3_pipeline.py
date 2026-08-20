@@ -731,9 +731,16 @@ def assert_inputs_unchanged(run_dir: Path, *, data_root: Path) -> None:
     # and Blocks 5 and 6 would have consumed the new mapping.
     if normalised_digest(TAPE_INVENTORY) != recorded.get("tape_inventory_sha256"):
         raise SystemExit("RP2_RUN_INPUTS_CHANGED_DURING_RUN:inventory")
-    _, freshness, _, _ = _tape_fingerprint(
-        inventory_paths(TAPE_INVENTORY), hash_contents=False
+    # As strong as step 1 was. Comparing only path, size and modification time would miss
+    # a tape replaced by a tool that preserves timestamps - `rsync -t`, `shutil.copy2` -
+    # with different bytes of the same length, which is exactly the substitution the
+    # content digest exists to catch.
+    read_contents = recorded.get("tape_fingerprint_mode") == "content"
+    identity, freshness, _, _ = _tape_fingerprint(
+        inventory_paths(TAPE_INVENTORY), hash_contents=read_contents
     )
+    if identity != recorded.get("tape_fingerprint_sha256"):
+        raise SystemExit("RP2_RUN_INPUTS_CHANGED_DURING_RUN:tape_content")
     if freshness != recorded.get("tape_freshness_sha256"):
         raise SystemExit("RP2_RUN_INPUTS_CHANGED_DURING_RUN:tape")
     from mds650.rp2.bars import BAR_SOURCES
@@ -1061,14 +1068,18 @@ def main(argv: Sequence[str] | None = None) -> int:
         started_at_utc=started,
         finished_at_utc=datetime.now(UTC).isoformat(),
     )
+    scorecard_started = time.perf_counter()
     build_scorecard(run_dir, manifest, started_at=wall)
     steps.append(
         StepRecord(
             name="generate-scorecard",
             command=("internal", "build_scorecard"),
             exit_code=0,
-            runtime_seconds=0.0,
-            peak_memory_bytes=0,
+            # Parquet reads, completeness checks, rendering and two writes. Recording zero
+            # for them made the per-step provenance false and hid any memory peak the
+            # assembly reached.
+            runtime_seconds=round(time.perf_counter() - scorecard_started, 3),
+            peak_memory_bytes=_own_peak_memory_bytes(),
             artifacts={
                 "scorecard.json": file_digest(run_dir / "scorecard.json"),
                 "scorecard.md": file_digest(run_dir / "scorecard.md"),
