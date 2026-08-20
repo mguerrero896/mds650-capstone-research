@@ -118,6 +118,7 @@ _B2_LOG: Final[tuple[str, ...]] = (
     "vega_flow_abs",
     "decay_intensity_last",
     "rate_per_second",
+    "observed_span_s",
     "mean_provider_latency_s",
 )
 

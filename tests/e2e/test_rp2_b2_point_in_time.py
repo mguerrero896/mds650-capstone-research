@@ -189,6 +189,7 @@ def test_an_empty_window_still_reports_the_intensity_it_has() -> None:
         2,
         2,
         "5m",
+        window_seconds=300,
         cutoff_us=1_800_000_000_000_000,
         prefixes=prefixes,
         keys=np.zeros(2, dtype=np.int64),
@@ -205,6 +206,8 @@ def test_an_empty_window_still_reports_the_intensity_it_has() -> None:
     # A mean over nothing is unmeasured. A NaN here would be honest and would also remove
     # the origin from every contrast, so the window says so explicitly instead.
     assert record["b2_5m_is_empty_window"] == 1.0
+    assert record["b2_5m_rate_per_second"] == 0.0
+    assert record["b2_5m_observed_span_s"] == 0.0
     assert record["b2_5m_mean_provider_latency_s"] == 0.0
     assert record["b2_5m_mean_age_s"] == 0.0
 
@@ -219,3 +222,49 @@ def test_an_empty_window_still_reports_the_intensity_it_has() -> None:
     assert all(np.isfinite(record[name]) for name in registered), (
         "an empty window must not put a non-finite value into a registered feature"
     )
+
+
+def test_a_single_print_window_is_flow_not_silence() -> None:
+    """One trade has a zero observed span, and a rate divided by that span is nonsense."""
+
+    import numpy as np
+
+    block6 = _load("rp2_block6_flow_panel")
+    prefixes = {name: np.zeros(3, dtype=np.float64) for name in block6.CHANNEL_NAMES}
+    for name in ("trades", "premium", "size"):
+        prefixes[name] = np.array([0.0, 0.0, 1.0])
+    record = block6._window_record(
+        1,
+        2,
+        "5m",
+        window_seconds=300,
+        cutoff_us=1_800_000_000_000_000,
+        prefixes=prefixes,
+        keys=np.zeros(2, dtype=np.int64),
+        strike=np.ones(2),
+        expiry_day=np.zeros(2, dtype=np.int64),
+        premium=np.ones(2),
+        seconds=np.zeros(2),
+        intensity_now=1.0,
+        intensity_before=0.0,
+    )
+    assert record["b2_5m_trades"] == 1.0
+    assert record["b2_5m_is_empty_window"] == 0.0
+    assert record["b2_5m_observed_span_s"] == 0.0
+    assert record["b2_5m_rate_per_second"] > 0.0, (
+        "positive flow reported as a rate of zero contradicts is_empty_window"
+    )
+    assert record["b2_5m_rate_per_second"] == 1.0 / 300
+
+
+def test_a_missing_required_column_stops_the_rebuild(tmp_path: object) -> None:
+    """A schema regression is not an acquisition gap and must not be counted as one."""
+
+    import polars as pl
+    import pytest as _pytest
+
+    block6 = _load("rp2_block6_flow_panel")
+    path = Path(str(tmp_path)) / "no_executed_at.parquet"
+    pl.DataFrame({"underlying_symbol": ["AAPL"]}).write_parquet(path)
+    with _pytest.raises(pl.exceptions.ColumnNotFoundError):
+        block6._read_tape([str(path)], "AAPL")

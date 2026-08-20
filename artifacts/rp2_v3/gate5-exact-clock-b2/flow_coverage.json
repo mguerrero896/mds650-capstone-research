@@ -62,6 +62,10 @@
       "coverage": 1.0,
       "median": 0.1462517711582393
     },
+    "b2_30m_observed_span_s": {
+      "coverage": 1.0,
+      "median": 1799.3802180000005
+    },
     "b2_30m_otm_premium_share": {
       "coverage": 1.0,
       "median": 0.1887939380465103
@@ -76,7 +80,7 @@
     },
     "b2_30m_rate_per_second": {
       "coverage": 1.0,
-      "median": 5.297359674955754
+      "median": 5.2925
     },
     "b2_30m_sell_premium_share": {
       "coverage": 1.0,
@@ -202,6 +206,10 @@
       "coverage": 1.0,
       "median": 0.13325154766443142
     },
+    "b2_5m_observed_span_s": {
+      "coverage": 1.0,
+      "median": 299.3781879999992
+    },
     "b2_5m_otm_premium_share": {
       "coverage": 1.0,
       "median": 0.18175465612891778
@@ -216,7 +224,7 @@
     },
     "b2_5m_rate_per_second": {
       "coverage": 1.0,
-      "median": 4.893254795416541
+      "median": 4.88
     },
     "b2_5m_sell_premium_share": {
       "coverage": 1.0,
@@ -279,9 +287,9 @@
   "decay_seconds": 60.0,
   "empty_window_share_30m": 0.0021718878634256252,
   "empty_window_share_5m": 0.0022639629100047664,
-  "feature_count": 68,
-  "flow_sha256": "05823dc46827b808f94979f8602b7550e97817d29ba433f5b90bd9440909cd41",
-  "generated_at_utc": "2026-08-20T01:46:13.669389+00:00",
+  "feature_count": 70,
+  "flow_sha256": "b4fdb270679e173a9b78a75802f7c561b3e0a39bfef5fc24e573164b3d4a8d92",
+  "generated_at_utc": "2026-08-20T01:59:12.803837+00:00",
   "label": "EXPLORATORY_MECHANISM_DISCOVERY",
   "limit_sessions": 0,
   "minimum_session_prints": 50,

@@ -150,7 +150,12 @@ def _read_tape(paths: Sequence[str], asset: str) -> pl.DataFrame | None:
             )
             for path in paths
         ]
-    except (OSError, pl.exceptions.PolarsError):
+    except pl.exceptions.ColumnNotFoundError:
+        # A partition missing a required column is a producer or schema regression, not an
+        # acquisition gap. Recording it as a provider failure would hide a broken tape
+        # behind ordinary coverage accounting and let the rebuild finish on partial data.
+        raise
+    except (OSError, pl.exceptions.ComputeError, pl.exceptions.NoDataError):
         return None
     if not frames:
         return None
@@ -407,6 +412,7 @@ def build_session_flow(
                     lo,
                     hi,
                     label,
+                    window_seconds=window_seconds,
                     cutoff_us=cutoff_us,
                     prefixes=prefixes,
                     keys=keys,
@@ -435,6 +441,7 @@ def _window_record(
     hi: int,
     label: str,
     *,
+    window_seconds: int,
     cutoff_us: int,
     prefixes: dict[str, FloatArray],
     keys: npt.NDArray[np.int64],
@@ -456,8 +463,8 @@ def _window_record(
     predecessors = max(total("has_previous"), 1.0)
     # The window is a slice of a publication-ordered array, so its first and last rows are
     # not necessarily its earliest and latest executions.
-    window_seconds = seconds[lo:hi]
-    span = float(window_seconds.max() - window_seconds.min()) if not empty else 0.0
+    window = seconds[lo:hi]
+    span = float(window.max() - window.min()) if not empty else 0.0
     record: dict[str, float] = {
         f"{prefix}trades": trades,
         f"{prefix}contracts": float(np.unique(keys[lo:hi]).size),
@@ -484,7 +491,11 @@ def _window_record(
         f"{prefix}d_spread": total("d_spread_sum") / predecessors,
         f"{prefix}decay_intensity_last": intensity_now,
         f"{prefix}decay_intensity_innovation": intensity_now - intensity_before,
-        f"{prefix}rate_per_second": trades / span if span > 0.0 else 0.0,
+        # Trades per second of the window, not per second of the observed span. A window
+        # holding one print — or several stamped at the same instant — has a span of zero
+        # and would otherwise report positive flow as a rate of nothing.
+        f"{prefix}rate_per_second": trades / window_seconds,
+        f"{prefix}observed_span_s": span,
         # A mean, and now named one. It was called a median for the whole programme. A mean
         # over nothing is not zero, it is undefined, and the three per-trade averages say so.
         # A mean over no trades is not zero; it is unmeasured. Rather than leave a NaN that
@@ -540,7 +551,7 @@ def _window_record(
                 np.unique(keys[lo:hi], return_inverse=True)[1], weights=window_premium
             ).astype(np.float64)
         )
-        gaps = np.diff(np.sort(window_seconds))
+        gaps = np.diff(np.sort(window))
         mean_gap = float(np.mean(gaps)) if gaps.size else float("nan")
         record[f"{prefix}interarrival_cv"] = (
             float(np.std(gaps) / mean_gap) if gaps.size and mean_gap > 0.0 else float("nan")
