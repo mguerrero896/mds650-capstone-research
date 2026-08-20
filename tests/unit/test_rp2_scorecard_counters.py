@@ -73,7 +73,12 @@ def test_the_scorecard_refuses_a_field_it_could_not_measure() -> None:
     }
     # The three counters whose only admissible value is zero.
     scorecard["data"] = {**scorecard["data"], "duplicate_keys": 0}  # type: ignore[dict-item]
-    scorecard["b1"] = {**scorecard["b1"], "b1_post_cutoff_observations": 0}  # type: ignore[dict-item]
+    scorecard["b1"] = {
+        **scorecard["b1"],
+        "b1_post_cutoff_observations": 0,
+        "b1_duplicate_contracts_per_snapshot": 0,
+        "b1_rows_dropped_for_rate_or_dividend": 0,
+    }  # type: ignore[dict-item]
     scorecard["b2"] = {**scorecard["b2"], "b2_pit_violation_count": 0}  # type: ignore[dict-item]
     scorecard["forecast"] = {
         "gamma_glm": {
@@ -108,7 +113,12 @@ def test_a_container_that_measured_nothing_is_not_a_measurement() -> None:
     }
     # The three counters whose only admissible value is zero.
     scorecard["data"] = {**scorecard["data"], "duplicate_keys": 0}  # type: ignore[dict-item]
-    scorecard["b1"] = {**scorecard["b1"], "b1_post_cutoff_observations": 0}  # type: ignore[dict-item]
+    scorecard["b1"] = {
+        **scorecard["b1"],
+        "b1_post_cutoff_observations": 0,
+        "b1_duplicate_contracts_per_snapshot": 0,
+        "b1_rows_dropped_for_rate_or_dividend": 0,
+    }  # type: ignore[dict-item]
     scorecard["b2"] = {**scorecard["b2"], "b2_pit_violation_count": 0}  # type: ignore[dict-item]
     scorecard["forecast"] = {
         "gamma_glm": {

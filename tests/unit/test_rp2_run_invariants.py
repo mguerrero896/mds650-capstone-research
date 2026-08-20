@@ -59,7 +59,12 @@ def test_the_scorecard_refuses_a_run_whose_point_in_time_invariants_broke() -> N
         group: dict.fromkeys(fields, 1.0) for group, fields in groups.items() if group != "forecast"
     }
     scorecard["data"] = {**scorecard["data"], "duplicate_keys": 0}  # type: ignore[dict-item]
-    scorecard["b1"] = {**scorecard["b1"], "b1_post_cutoff_observations": 0}  # type: ignore[dict-item]
+    scorecard["b1"] = {
+        **scorecard["b1"],
+        "b1_post_cutoff_observations": 0,
+        "b1_duplicate_contracts_per_snapshot": 0,
+        "b1_rows_dropped_for_rate_or_dividend": 0,
+    }  # type: ignore[dict-item]
     scorecard["b2"] = {**scorecard["b2"], "b2_pit_violation_count": 0}  # type: ignore[dict-item]
     scorecard["forecast"] = {
         "gamma_glm": {

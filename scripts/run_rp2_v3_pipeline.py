@@ -636,7 +636,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     # would overwrite each artifact before its new digest was compared to the old one, and
     # an interruption anywhere in the sequence would leave the directory half one run and
     # half another with the manifest describing neither.
-    if (run_dir / "run_manifest.json").is_file() and not args.skip_panels:
+    # `--skip-panels` resumes a run that never finished; it is not a way back into one
+    # that did. The later steps overwrite the ladder, the diagnostics and the inference
+    # whether or not the panels were rebuilt.
+    if (run_dir / "run_manifest.json").is_file():
         raise SystemExit(f"RP2_RUN_ALREADY_COMPLETE:{args.run_id}")
 
     steps: list[StepRecord] = []

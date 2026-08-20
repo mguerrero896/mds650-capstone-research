@@ -25,7 +25,12 @@ import polars as pl
 
 from mds650.b1v3_confirmation import canonical_sha256
 from mds650.metrics import qlike_losses
-from mds650.rp2.bars import BAR_SOURCES, FULL_SESSION_MINUTES, build_session_grid
+from mds650.rp2.bars import (
+    BAR_SOURCES,
+    FULL_SESSION_MINUTES,
+    build_session_grid,
+    deduplicate_bar_sources,
+)
 from mds650.rp2.realized import (
     HORIZONS,
     backward_rv,
@@ -86,7 +91,12 @@ def load_bars(data_root: Path) -> pl.DataFrame:
         frames.append(frame.with_columns(source=pl.lit(name), role=pl.lit(role)))
     if not frames:
         raise SystemExit("RP2_BLOCK3_NO_BARS")
-    return pl.concat(frames, how="vertical")
+    # The acquisitions overlap: the backfill re-acquires sessions an earlier campaign
+    # already held. Concatenated and grouped by source, the same origin appears twice and
+    # is double-weighted in every statistic built from it. Block 4 has always deduplicated;
+    # sharing the source list without sharing this would have introduced the duplication
+    # rather than removing a discrepancy.
+    return deduplicate_bar_sources(pl.concat(frames, how="vertical"))
 
 
 def session_origins(minutes: int) -> npt.NDArray[np.int64]:

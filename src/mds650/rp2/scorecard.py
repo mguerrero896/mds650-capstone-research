@@ -113,6 +113,21 @@ def _null_count(path: Path, name: str) -> int | None:
     return int(column.null_count() + int(column.is_nan().sum() if column.dtype.is_float() else 0))
 
 
+def _weighted_mean(path: Path, name: str, weight: str) -> float | None:
+    """A mean over observations, not over the windows that happened to contain them."""
+
+    values = _column(path, name)
+    weights = _column(path, weight)
+    if values is None or weights is None:
+        return None
+    frame = pl.DataFrame({"v": values, "w": weights}).drop_nulls()
+    total = float(frame["w"].sum())
+    if total <= 0.0:
+        return None
+    weighted = float((frame["v"] * frame["w"]).sum())
+    return weighted / total
+
+
 def _duplicate_keys(path: Path) -> int | None:
     """Origins that appear twice. The key is asset, session and origin minute."""
 
@@ -281,7 +296,13 @@ def assemble_scorecard(run_dir: Path, manifest: RunManifest) -> dict[str, Any]:
         "b2": {
             "b2_pit_violation_count": _sum(panels["b2"], "b2_pit_violations"),
             "b2_zero_dte_count": _sum(panels["b2"], "b2_zero_dte_trades"),
-            "b2_mean_provider_latency_s": _mean(panels["b2"], "b2_30m_mean_provider_latency_s"),
+            # Weighted by the trades each window actually saw, over the five-minute
+            # windows that tile the session. Averaging the thirty-minute per-origin means
+            # would give every origin equal weight, count an empty window's encoded zero as
+            # an observed latency, and count each trade once per overlapping window.
+            "b2_mean_provider_latency_s": _weighted_mean(
+                panels["b2"], "b2_5m_mean_provider_latency_s", "b2_5m_trades"
+            ),
             # Likewise the producer's own per-window tail: averaging first suppresses
             # the slow records the tail is asked about.
             "b2_p95_provider_latency_s": _quantile(
@@ -404,6 +425,8 @@ def assert_scorecard_complete(scorecard: Mapping[str, Any]) -> None:
 _ZERO_INVARIANTS: Final = (
     ("data", "duplicate_keys"),
     ("b1", "b1_post_cutoff_observations"),
+    ("b1", "b1_duplicate_contracts_per_snapshot"),
+    ("b1", "b1_rows_dropped_for_rate_or_dividend"),
     ("b2", "b2_pit_violation_count"),
 )
 
@@ -429,9 +452,12 @@ def render_scorecard(scorecard: Mapping[str, Any]) -> str:
     """The same numbers as Markdown, so the scorecard can be read without a JSON viewer."""
 
     lines = [
-        f"# RP2-v3 scorecard - {scorecard['run_id']}",
+        "# RP2-v3 scorecard",
         "",
-        f"Schema `{scorecard.get('schema_version', SCHEMA_VERSION)}`.",
+        f"Schema `{scorecard.get('schema_version', SCHEMA_VERSION)}`. The run this describes"
+        " is named by the directory it sits in and by `run_manifest.json` beside it; the"
+        " rendering does not repeat it, so two runs of the same experiment produce the same"
+        " document.",
         "",
         f"Code commit `{scorecard['code_commit']}`.",
         "",

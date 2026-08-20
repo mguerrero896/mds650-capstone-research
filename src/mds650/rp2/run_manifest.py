@@ -238,7 +238,9 @@ class RunManifest:
 
 
 #: Arguments whose value is a path on this machine rather than a decision about the run.
-_LOCAL_PATH_FLAGS: Final = frozenset({"--output-dir", "--panel-root", "--output-root"})
+_LOCAL_PATH_FLAGS: Final = frozenset(
+    {"--output-dir", "--panel-root", "--output-root", "--data-root"}
+)
 
 
 def normalise_command(command: Sequence[str]) -> list[str]:
@@ -294,6 +296,9 @@ VOLATILE_KEYS: Final[frozenset[str]] = frozenset(
         "runtime_seconds",
         "peak_memory_bytes",
         "elapsed_seconds",
+        # The run's label. Administration, like the data root: the same experiment under a
+        # new name is the same experiment, and the scorecard is itself a hashed artifact.
+        "run_id",
     }
 )
 
