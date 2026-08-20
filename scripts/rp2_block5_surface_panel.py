@@ -107,7 +107,13 @@ def _read_tape(paths: Sequence[str], asset: str) -> pl.DataFrame | None:
     for path in paths:
         try:
             frame = pl.read_parquet(path, columns=list(TAPE_COLUMNS))
-        except (OSError, pl.exceptions.PolarsError):
+        except (pl.exceptions.ColumnNotFoundError, pl.exceptions.SchemaError):
+            # A tape missing a required column is a changed schema, not a provider
+            # failure. Absorbing it into the counter would drop that session from the
+            # sample and leave the rest of the build to finish as though nothing had
+            # happened, which is the fail-closed rule inverted.
+            raise
+        except (OSError, pl.exceptions.ComputeError):
             # A file that cannot be read is a provider failure, which is what the counter
             # is for. Letting the error escape aborted the whole build instead, so the
             # counter could only ever report zero.

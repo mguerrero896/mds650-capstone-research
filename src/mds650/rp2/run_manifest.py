@@ -340,6 +340,32 @@ def stable_content_digest(path: Path) -> str:
     return hashlib.sha256(canonical_json(_without_volatile(payload)).encode("utf-8")).hexdigest()
 
 
+#: Roles a development run must never read. The path check catches a sealed cohort that
+#: names itself; this catches one that does not.
+SEALED_ROLES: Final[frozenset[str]] = frozenset({"C", "PHASE8", "PHASE9"})
+
+
+def assert_no_sealed_roles(inventory: Path) -> None:
+    """Refuse an inventory that offers a sealed cohort under a neutral path.
+
+    The path check reads names. A row whose `role` is `C` and whose file sits somewhere
+    ordinary passes it, and the input fingerprint then opens and reads that file - which is
+    a sealed-cohort read whether or not a producer later selects the row.
+    """
+
+    offending: set[str] = set()
+    with inventory.open("r", encoding="utf-8") as handle:
+        for line in handle:
+            line = line.strip()
+            if not line:
+                continue
+            role = str(json.loads(line).get("role", "")).strip().upper().replace("_", "")
+            if role in SEALED_ROLES:
+                offending.add(role)
+    if offending:
+        raise ValueError(f"RP2_RUN_SEALED_COHORT_FORBIDDEN:role={','.join(sorted(offending))}")
+
+
 def inventory_paths(path: Path) -> list[Path]:
     """Every file the option-tape inventory points a producer at.
 

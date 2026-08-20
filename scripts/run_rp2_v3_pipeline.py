@@ -44,6 +44,7 @@ from mds650.rp2.run_manifest import (  # noqa: E402
     StepRecord,
     assert_artifact_stable,
     assert_no_sealed_paths,
+    assert_no_sealed_roles,
     assert_run_identity_unchanged,
     canonical_json,
     declared_inputs,
@@ -376,7 +377,9 @@ def validate_inputs(
     bars = [data_root / relative for _, _, relative in BAR_SOURCES]
     if forbid_sealed:
         # Every path a producer will open, not only the ones this run declared. The
-        # guarantee `--forbid-sealed-cohorts` makes is about what gets read.
+        # guarantee `--forbid-sealed-cohorts` makes is about what gets read - including by
+        # the fingerprint below, which opens every one of them.
+        assert_no_sealed_roles(TAPE_INVENTORY)
         assert_no_sealed_paths([*paths, data_root, TAPE_INVENTORY, *bars, *tape])
 
     payload = json.loads(GATED_MANIFEST.read_text(encoding="utf-8"))

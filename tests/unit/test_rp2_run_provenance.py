@@ -299,3 +299,46 @@ def test_a_metric_that_is_not_a_number_was_not_measured() -> None:
 
     with pytest.raises(ValueError, match="b1.b1_core_coverage:unmeasured"):
         assert_scorecard_complete(scorecard)
+
+
+def test_a_sealed_cohort_is_refused_by_its_role_even_under_a_neutral_path(
+    tmp_path: Path,
+) -> None:
+    """The path check reads names; a sealed row need not carry one.
+
+    The input fingerprint opens every inventoried file, so a row whose role is `C` and
+    whose path looks ordinary would be read whether or not a producer later selected it.
+    """
+
+    from mds650.rp2.run_manifest import assert_no_sealed_roles
+
+    ordinary = tmp_path / "ordinary.jsonl"
+    ordinary.write_text(
+        "\n".join(
+            json.dumps({"role": role, "path": "D:/MDS650/store/events.parquet"})
+            for role in ("D", "V")
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    assert_no_sealed_roles(ordinary)
+
+    disguised = tmp_path / "disguised.jsonl"
+    disguised.write_text(
+        json.dumps({"role": "C", "path": "D:/MDS650/store/events.parquet"}) + "\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="RP2_RUN_SEALED_COHORT_FORBIDDEN:role=C"):
+        assert_no_sealed_roles(disguised)
+
+
+def test_the_manifest_is_published_whole_or_not_at_all(tmp_path: Path) -> None:
+    """A truncated manifest is read as an unreadable identity and closes the run id."""
+
+    run_dir = tmp_path / "rp2-v3-20260820-001"
+    run_dir.mkdir()
+    write_manifest(run_dir, _manifest(run_id="rp2-v3-20260820-001"))
+
+    assert not list(run_dir.glob("*.partial")), "the staging file is replaced, not left"
+    payload = json.loads((run_dir / "run_manifest.json").read_text(encoding="utf-8"))
+    assert payload["run_id"] == "rp2-v3-20260820-001"
