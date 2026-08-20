@@ -161,7 +161,13 @@ select
     p_value,
     sessions,
     mde,
-    equivalence_bound
+    equivalence_bound,
+    -- The resampling design and the rows the estimate was measured on. A reader who cannot
+    -- see the mask cannot tell whether two of these contrasts scored the same rows, which
+    -- is the question the digest exists to answer, and the base table has row-level
+    -- security with no reader policy, so the view is the only way to see it.
+    block_length,
+    common_mask_sha256
 from public.rp2_contrast_results
 where is_current;
 
@@ -278,6 +284,25 @@ begin
            or c.common_mask_sha256 is distinct from (item ->> 'common_mask_sha256')
     ) then
         raise exception 'RP2_PUBLISH_CONTRAST_IMMUTABLE:%', published_run_id;
+    end if;
+
+    -- The same question for the blocks. The key-set check below notices a block added or
+    -- removed; without this, a retry that keeps the same block ids and changes what they
+    -- say - a status, a verdict, the digest of the artifact behind it - is reported as
+    -- already published while the stored row disagrees with the submitted one.
+    if exists (
+        select 1
+        from jsonb_array_elements(coalesce(payload -> 'blocks', '[]'::jsonb)) as item
+        join public.rp2_block_results b
+          on b.run_id = published_run_id
+         and b.block_id = item ->> 'block_id'
+        where b.status is distinct from (item ->> 'status')
+           or b.verdict is distinct from (item ->> 'verdict')
+           or b.document is distinct from (item ->> 'document')
+           or b.artifact_sha256 is distinct from (item ->> 'artifact_sha256')
+           or b.supersedes_run_id is distinct from nullif(item ->> 'supersedes_run_id', '')
+    ) then
+        raise exception 'RP2_PUBLISH_BLOCK_IMMUTABLE:%', published_run_id;
     end if;
 
     -- The comparisons above join on the keys, so they only ever examine the rows present

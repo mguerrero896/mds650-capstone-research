@@ -121,6 +121,23 @@ as `validate-feature-registry` appeared as research blocks. Blocks `09` and `11`
 from a RP2-v3 publication because this pipeline does not rebuild them, so their existing
 rows stay current — which is what a run that did not remeasure them should leave behind.
 
+A fourth transaction checked the block guards and what a public reader can actually see:
+
+```text
+0 public view columns              estimate,block_length,common_mask_sha256
+1 first publish                    PUBLISHED
+2 identical retry                  ALREADY_PUBLISHED
+3 retry, block status changed      RP2_PUBLISH_BLOCK_IMMUTABLE:dryrun-blockfields
+4 retry, block artifact changed    RP2_PUBLISH_BLOCK_IMMUTABLE:dryrun-blockfields
+5 public view row                  5 aaaaaaaa
+```
+
+The key-set guard notices a block added or removed; these two notice a block that kept its
+id and changed what it says. Line 0 and line 5 are the same point from the reader's side:
+the base tables carry row-level security with no reader policy, so a field missing from the
+view cannot be reached at all, and a contrast whose mask a reader cannot see is a contrast
+whose evaluation rows nobody outside can identify.
+
 ## What the publisher checks before it calls
 
 The manifest carries its own `scientific_sha256`, covering the commit, the input digest, the
