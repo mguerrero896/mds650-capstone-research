@@ -410,6 +410,7 @@ def test_a_reused_panel_must_be_the_one_the_interrupted_attempt_produced(tmp_pat
         assert_step_artifacts_unchanged,
         record_step_progress,
         stable_content_digest,
+        write_run_identity,
     )
 
     run_dir = tmp_path / "rp2-v3-20260820-001"
