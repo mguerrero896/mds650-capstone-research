@@ -132,18 +132,25 @@ def _mask_digest(scorecard: dict[str, Any]) -> str:
 #: The artifact that carries each step's outcome. Taking whichever mapping key sorted first
 #: published a panel's digest as Block 3's result while the block registry names its
 #: comparison, so the row pointed at a file that is not the finding.
-BLOCK_RESULT_ARTIFACT: Final[dict[str, str]] = {
-    "build-targets": "rp2_block3_target/comparison.json",
-    "build-b0": "rp2_block4_b0/ladder.json",
-    "build-b1": "rp2_block5_surface/surface_coverage.json",
-    "build-b2": "rp2_block6_flow/flow_coverage.json",
-    "fit-model-ladder": "rp2_block8_ladder/ladder.json",
-    "run-dml-diagnostics": "rp2_block7_dml/dml.json",
-    "run-incremental-inference": "rp2_block10_inference/inference.json",
-    "generate-scorecard": "scorecard.json",
-    "validate-input-manifests": "input_manifest.json",
-    "construct-common-masks": "common_masks.json",
-    "validate-feature-registry": "feature_registry_report.json",
+#: Pipeline step -> (canonical RP2 block id, the artifact that is that block's result).
+#:
+#: The block register in `scripts/sync_supabase_rp2_blocks.py` numbers the research blocks
+#: `03` through `11`, and `rp2_block_results` keys its one-current-row index on that id.
+#: Publishing under step names would open a second, disjoint namespace: `03` would never be
+#: superseded, a join on it would find nothing, and the pipeline's administrative steps
+#: would appear in the register as though they were research blocks.
+#:
+#: Blocks `09` and `11` are absent because this pipeline does not rebuild them - the
+#: generalization cohort is sealed and the economics are frozen - so their existing rows
+#: stay current, which is what a run that did not remeasure them should leave behind.
+RESULT_BLOCKS: Final[dict[str, tuple[str, str]]] = {
+    "build-targets": ("03", "rp2_block3_target/comparison.json"),
+    "build-b0": ("04", "rp2_block4_b0/ladder.json"),
+    "build-b1": ("05", "rp2_block5_surface/surface_coverage.json"),
+    "build-b2": ("06", "rp2_block6_flow/flow_coverage.json"),
+    "run-dml-diagnostics": ("07", "rp2_block7_dml/dml.json"),
+    "fit-model-ladder": ("08", "rp2_block8_ladder/ladder.json"),
+    "run-incremental-inference": ("10", "rp2_block10_inference/inference.json"),
 }
 
 
@@ -157,7 +164,7 @@ def _block_status(run_dir: Path, step: dict[str, Any]) -> str:
 
     if step.get("exit_code") != 0:
         return "FAILED"
-    designated = BLOCK_RESULT_ARTIFACT.get(str(step.get("name")))
+    designated = _designated_artifact(step)
     if designated is None or not (run_dir / designated).is_file():
         return "MEASURED"
     try:
@@ -176,11 +183,18 @@ def _block_status(run_dir: Path, step: dict[str, Any]) -> str:
 def _block_result_digest(step: dict[str, Any]) -> str | None:
     """The digest of the artifact that *is* this step's result, or nothing if it has none."""
 
-    designated = BLOCK_RESULT_ARTIFACT.get(str(step.get("name")))
+    designated = _designated_artifact(step)
     if designated is None:
         return None
     digest = step.get("artifacts", {}).get(designated)
     return str(digest) if digest else None
+
+
+def _designated_artifact(step: dict[str, Any]) -> str | None:
+    """The artifact that is this step's block result, if the step produces one."""
+
+    entry = RESULT_BLOCKS.get(str(step.get("name")))
+    return entry[1] if entry else None
 
 
 def _bar_inputs(resolved: dict[str, Any], data_root: Path) -> list[dict[str, Any]]:
@@ -305,7 +319,7 @@ def build_payload(run_dir: Path, *, branch: str, supersedes: str | None) -> dict
 
     blocks = [
         {
-            "block_id": step["name"],
+            "block_id": RESULT_BLOCKS[str(step["name"])][0],
             "status": _block_status(run_dir, step),
             "verdict": "SEE_ARTIFACT",
             "document": "docs/rp2_v3/REBUILD_RUNBOOK.md",
@@ -313,6 +327,7 @@ def build_payload(run_dir: Path, *, branch: str, supersedes: str | None) -> dict
             "supersedes_run_id": supersedes,
         }
         for step in artifacts
+        if str(step["name"]) in RESULT_BLOCKS
         for digest in [_block_result_digest(step)]
         if digest is not None
     ]
@@ -353,14 +368,28 @@ def publish(payload: dict[str, Any], key: str, *, timeout: float = 120.0) -> dic
     with httpx.Client(timeout=timeout, headers=headers) as client:
         response = client.post(f"{REST}/rpc/publish_rp2_v3", json={"payload": payload})
         if response.status_code not in (200, 201):
-            client.post(
-                f"{REST}/rpc/record_rp2_v3_failure",
-                json={
-                    "failed_run_id": payload["run"]["run_id"],
-                    "reason": response.text[:400],
-                },
+            # A rollback leaves no trace, so the failure is recorded by its own call - and
+            # that call can fail too. Discarding its response would report an unrecorded
+            # failure as an audited one, which is the state this record exists to prevent.
+            unrecorded = ""
+            try:
+                recorded = client.post(
+                    f"{REST}/rpc/record_rp2_v3_failure",
+                    json={
+                        "failed_run_id": payload["run"]["run_id"],
+                        "reason": response.text[:400],
+                    },
+                )
+            except httpx.HTTPError as error:
+                unrecorded = f":RP2_FAILURE_UNRECORDED:{type(error).__name__}"
+            else:
+                if recorded.status_code not in (200, 201, 204):
+                    unrecorded = (
+                        f":RP2_FAILURE_UNRECORDED:{recorded.status_code}:{recorded.text[:120]}"
+                    )
+            raise SystemExit(
+                f"RP2_PUBLISH_FAILED:{response.status_code}:{response.text[:300]}{unrecorded}"
             )
-            raise SystemExit(f"RP2_PUBLISH_FAILED:{response.status_code}:{response.text[:300]}")
         return dict(response.json())
 
 

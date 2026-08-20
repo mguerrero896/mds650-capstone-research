@@ -97,10 +97,37 @@ publish_function_left 0
 new_columns_left      0
 ```
 
+A third transaction checked the lineage guards and the function's reachability:
+
+```text
+0 PUBLIC execute before revoke   true
+1 PUBLIC execute after revoke    false
+2 anon execute after revoke      false
+3 lineage digest missing         RP2_PUBLISH_LINEAGE_INCOMPLETE:dryrun-lineage
+4 no input inventory             RP2_PUBLISH_INPUTS_MISSING:dryrun-lineage
+5 complete payload               PUBLISHED
+6 block id stored                06
+```
+
+Line 0 is the reason line 1 is there: PostgreSQL grants `EXECUTE` on a new function to the
+`PUBLIC` pseudo-role, so revoking from `anon` and `authenticated` left the inherited grant
+in place and any unauthenticated caller could still reach the function, parse a payload and
+take its advisory lock.
+
+Line 6 is the block register's own identifier. The research blocks are numbered `03`
+through `11`; publishing under pipeline step names would have opened a second namespace, in
+which `03` was never superseded, a join on it found nothing, and administrative steps such
+as `validate-feature-registry` appeared as research blocks. Blocks `09` and `11` are absent
+from a RP2-v3 publication because this pipeline does not rebuild them, so their existing
+rows stay current — which is what a run that did not remeasure them should leave behind.
+
 ## What the publisher checks before it calls
 
 The manifest carries its own `scientific_sha256`, covering the commit, the input digest, the
 seeds and every step's content. The publisher recomputes it before reading any provenance
 out of the manifest: a file edited after the run finished would otherwise be published as
 its own account of itself. The bar stores are re-digested for the same reason, because the
-run-time digest paired with today's file size describes neither.
+run-time digest paired with today's file size describes neither. When publication fails,
+the separate failure record can fail too; its response is checked, and an unrecorded failure
+is reported as `RP2_FAILURE_UNRECORDED` beside the original error rather than being
+mistaken for an audited one.

@@ -218,6 +218,25 @@ begin
         raise exception 'RP2_PUBLISH_CODE_COMMIT_INVALID';
     end if;
 
+    -- And the rest of the lineage, because the columns that carry it are nullable and a
+    -- caller that omits them still reaches `PUBLISHED`. A result row nobody can tie to its
+    -- inputs, its feature registry, its model configuration, its inference settings or its
+    -- evaluation mask is a number without an experiment behind it. `coalesce` first: a
+    -- regex against NULL is NULL, and `if NULL then` does not raise.
+    if coalesce(run ->> 'inputs_sha256', '') !~ '^[0-9a-f]{64}$'
+       or coalesce(run ->> 'feature_registry_sha256', '') !~ '^[0-9a-f]{64}$'
+       or coalesce(run ->> 'model_config_sha256', '') !~ '^[0-9a-f]{64}$'
+       or coalesce(run ->> 'inference_config_sha256', '') !~ '^[0-9a-f]{64}$'
+       or coalesce(run ->> 'common_mask_sha256', '') !~ '^[0-9a-f]{64}$' then
+        raise exception 'RP2_PUBLISH_LINEAGE_INCOMPLETE:%', published_run_id;
+    end if;
+
+    -- The inputs themselves. `ingestion_inputs` is where a reader goes to find the files a
+    -- number was built from, and an empty inventory answers that question with silence.
+    if input_rows = 0 then
+        raise exception 'RP2_PUBLISH_INPUTS_MISSING:%', published_run_id;
+    end if;
+
     -- One run id refers to one experiment. A caller mistake, or a publication from an
     -- altered run directory, would otherwise rewrite a published run's provenance and its
     -- estimates in place and leave nothing saying the number had changed.
@@ -489,6 +508,7 @@ $$;
 comment on function public.publish_rp2_v3(jsonb) is
     'Publish one RP2-v3 run atomically: the run, its inputs, its block results and its contrasts, with the previous current rows stood down. Raises rather than half-publishing.';
 
+revoke all on function public.publish_rp2_v3(jsonb) from public;
 revoke all on function public.publish_rp2_v3(jsonb) from anon, authenticated;
 
 -- A failed publication is recorded separately, outside the transaction that rolled back:
@@ -522,4 +542,5 @@ as $$
         end;
 $$;
 
+revoke all on function public.record_rp2_v3_failure(text, text) from public;
 revoke all on function public.record_rp2_v3_failure(text, text) from anon, authenticated;

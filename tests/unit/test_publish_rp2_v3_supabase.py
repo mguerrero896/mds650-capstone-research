@@ -432,3 +432,56 @@ def test_a_bar_store_changed_since_the_run_is_refused(tmp_path: Path) -> None:
     path.write_bytes(b"the bars as they are now")
     with pytest.raises(SystemExit, match="RP2_PUBLISH_BAR_INPUT_CHANGED"):
         module._bar_inputs(resolved, tmp_path)
+
+
+def test_blocks_are_published_under_the_register_s_own_ids(tmp_path: Path) -> None:
+    """One namespace, or the versioned row never supersedes the block it rebuilt."""
+
+    module = _load("publish_rp2_v3_supabase")
+    canonical = _load("sync_supabase_rp2_blocks")
+
+    published = {block for block, _ in module.RESULT_BLOCKS.values()}
+    assert published <= set(canonical.BLOCK_ARTIFACTS)
+    # The administrative steps are not research blocks and do not belong in the register.
+    for step in ("generate-scorecard", "validate-input-manifests", "validate-feature-registry"):
+        assert step not in module.RESULT_BLOCKS
+
+    from mds650.rp2.run_manifest import file_digest
+
+    run = _run_dir(tmp_path)
+    ladder = run / "rp2_block8_ladder" / "ladder.json"
+    (run / "run_manifest.json").write_text(
+        json.dumps(
+            _manifest_record(
+                data_root=str(_bar_store(tmp_path)),
+                artifacts={"rp2_block8_ladder/ladder.json": file_digest(ladder)},
+            )
+        ),
+        encoding="utf-8",
+    )
+    payload = module.build_payload(run, branch="x", supersedes=None)
+    assert {row["block_id"] for row in payload["blocks"]} == {"08"}
+
+
+def test_an_unrecorded_failure_is_not_reported_as_an_audited_one(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The separate failure record is a promise, so its own failure has to be visible."""
+
+    module = _load("publish_rp2_v3_supabase")
+    original = httpx.Client
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.url.path.endswith("publish_rp2_v3"):
+            return httpx.Response(500, text="publication exploded")
+        return httpx.Response(403, text="record_rp2_v3_failure is not permitted")
+
+    def client(*args: object, **kwargs: object) -> httpx.Client:
+        kwargs["transport"] = httpx.MockTransport(handler)
+        return original(*args, **kwargs)  # type: ignore[arg-type]
+
+    monkeypatch.setattr(module.httpx, "Client", client)
+    with pytest.raises(SystemExit) as raised:
+        module.publish({"run": {"run_id": "r"}}, "key")
+    assert "RP2_PUBLISH_FAILED" in str(raised.value)
+    assert "RP2_FAILURE_UNRECORDED" in str(raised.value)
