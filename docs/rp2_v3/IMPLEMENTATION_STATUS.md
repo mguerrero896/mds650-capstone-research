@@ -20,6 +20,14 @@ its final commit.
 | 11 | `db/rp2-v3-versioned-results` | Versioned Supabase results | pending |
 | 12 | `results/rp2-v3-rebuild` | Rebuild, scorecard, publication | pending |
 
+## Open decision
+
+The repository states two different study windows and has never reconciled them:
+`AGENTS.md` freezes twelve months from 2025-07-21, and the frozen partition every artifact
+was built on covers 2024-08-02 to 2026-07-17. [`STUDY_WINDOW.md`](STUDY_WINDOW.md) states
+both, records which one produced the evidence, and sets out the decision that is owed. No
+sample was widened or narrowed to resolve it.
+
 ## Standing constraints
 
 - Sealed cohort reads: 0. C, Phase 8 and Phase 9 stay closed for the whole programme.

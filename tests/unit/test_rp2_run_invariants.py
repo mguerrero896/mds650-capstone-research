@@ -394,3 +394,61 @@ def test_the_scorecard_declares_the_schema_it_was_written_against() -> None:
 
     assert SCHEMA_VERSION == "rp2-v3-scorecard-v1.0"
     assert set(required_fields()) >= {"data", "b1", "b2", "forecast", "engineering"}
+
+
+def test_the_first_origin_counts_the_flow_its_features_can_see() -> None:
+    """The first origin's thirty-minute features see the session from the open.
+
+    A five-minute first bucket lets roughly the first twenty-three minutes of 0DTE trades
+    move the fitted features while never entering the count of them.
+    """
+
+    block6 = _load("rp2_block6_flow_panel")
+    created = np.array([0, 60, 300, 600], dtype=np.int64) * 1_000_000
+
+    low, high = block6.counting_bounds(
+        created, cutoff_us=600 * 1_000_000, visible=4, first=True
+    )
+    assert (low, high) == (0, 4), "the first bucket reaches the start of the tape"
+
+    later_low, later_high = block6.counting_bounds(
+        created, cutoff_us=600 * 1_000_000, visible=4, first=False
+    )
+    assert later_low > 0, "a later bucket is five minutes, not the whole session"
+    assert later_high == 4
+
+
+def test_a_reused_panel_does_not_change_what_the_run_says_it_did() -> None:
+    """A byte-identical panel is the same panel whether it was rebuilt or reused."""
+
+    from mds650.rp2.run_manifest import RunManifest as Manifest
+    from mds650.rp2.run_manifest import StepRecord, scientific_sha256
+
+    def manifest(reused: bool) -> Manifest:
+        return Manifest(
+            run_id="r",
+            code_commit="0" * 40,
+            data_root="D:/MDS650",
+            roles=("D", "V"),
+            feature_registry_sha256="a" * 64,
+            input_manifest_sha256="b" * 64,
+            model_config_sha256="c" * 64,
+            seeds={"bootstrap": 650},
+            steps=(
+                StepRecord(
+                    name="build-b1",
+                    command=("python", "scripts/rp2_block5_surface_panel.py"),
+                    exit_code=0,
+                    runtime_seconds=0.0,
+                    peak_memory_bytes=0,
+                    artifacts={"b1.parquet": "d" * 64},
+                    content={"b1.parquet": "d" * 64},
+                    reused=reused,
+                ),
+            ),
+            started_at_utc="t",
+            finished_at_utc="t",
+        )
+
+    assert scientific_sha256(manifest(True)) == scientific_sha256(manifest(False))
+    assert manifest(True).as_record()["steps"][0]["reused"] is True  # type: ignore[index]

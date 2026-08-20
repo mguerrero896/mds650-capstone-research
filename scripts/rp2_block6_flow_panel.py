@@ -64,15 +64,22 @@ COUNTING_WINDOW_SECONDS: Final = 300
 
 
 def counting_bounds(
-    created: npt.NDArray[np.int64], *, cutoff_us: int, visible: int
+    created: npt.NDArray[np.int64], *, cutoff_us: int, visible: int, first: bool = False
 ) -> tuple[int, int]:
     """The half-open slice of one origin's counting window.
 
     Both edges use `side="right"`, so a trade whose record was created exactly on a
     five-minute boundary belongs to the earlier window only. Closed at both ends, adjacent
     windows share their edge and a trade sitting on it is counted twice.
+
+    The first origin's bucket reaches back to the start of the tape rather than five
+    minutes. Its own thirty-minute features already see everything visible since the open,
+    so a five-minute first bucket would leave the trades of roughly the first twenty-three
+    minutes able to move the fitted features while never entering the count of them.
     """
 
+    if first:
+        return 0, max(visible, 0)
     low = int(
         np.searchsorted(created, cutoff_us - COUNTING_WINDOW_SECONDS * 1_000_000, side="right")
     )
@@ -501,7 +508,9 @@ def build_session_flow(
         # the five-minute windows tile the session: summing these over origins counts each
         # trade at most once. A running total from the open, summed the same way, would
         # count the first trade of the day once for every origin that followed it.
-        counting_lo, counting_hi = counting_bounds(created, cutoff_us=cutoff_us, visible=hi)
+        counting_lo, counting_hi = counting_bounds(
+            created, cutoff_us=cutoff_us, visible=hi, first=position == 0
+        )
         record["b2_pit_violations"] = float(
             np.count_nonzero(created[counting_lo:counting_hi] > cutoff_us)
         )

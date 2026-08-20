@@ -324,7 +324,21 @@ def validate_inputs(
     tape_digest, tape_files, tape_bytes = _tape_fingerprint(
         tape, hash_contents=hash_tape_contents
     )
+    partition = json.loads(PARTITION.read_text(encoding="utf-8"))
     record: dict[str, object] = {
+        # The window this run enforces, taken from the frozen partition and recorded so it
+        # is never implicit. See docs/rp2_v3/STUDY_WINDOW.md: the repository holds two
+        # statements about the study window and this is the one the evidence was built on.
+        "study_window_enforced": {
+            role: {
+                "sessions": value["sessions"],
+                "first_session": value["first_session"],
+                "last_session": value["last_session"],
+            }
+            for role, value in partition["roles"].items()
+            if value["sessions"]
+        },
+        "study_window_source": "artifacts/rp2_block1_partition/partition.json",
         "gated_manifest_sha256": manifest_digest,
         "gated_files": len(payload.get("files", [])),
         "bar_sources_sha256": bar_digests,
@@ -708,7 +722,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             steps.append(
                 StepRecord(
                     name=name,
-                    command=("reused", *command[1:]),
+                    # The command this step would have run. Recording "reused" here instead
+                    # would change the step's scientific identity, so a same-commit retry
+                    # would disagree with the run it is retrying about what it did.
+                    command=tuple(command),
+                    reused=True,
                     exit_code=0,
                     runtime_seconds=0.0,
                     peak_memory_bytes=0,

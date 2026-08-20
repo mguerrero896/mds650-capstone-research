@@ -140,6 +140,11 @@ class StepRecord:
     #: different question, because every block artifact stamps itself with the time it was
     #: written and the scorecard records how long the run took.
     content: Mapping[str, str] = field(default_factory=dict)
+    #: Whether this step reused an artifact a previous attempt at the same run produced.
+    #: Provenance, not science: a byte-identical panel is the same panel whether it was
+    #: rebuilt or reused, and recording the difference in the identity would make a
+    #: same-commit retry disagree with the run it is retrying.
+    reused: bool = False
 
     def __post_init__(self) -> None:
         # A step that recorded byte digests and no content digests would contribute
@@ -170,6 +175,7 @@ class StepRecord:
         return {
             **self.scientific_part(),
             "command": list(self.command),
+            "reused": self.reused,
             "artifacts": dict(sorted(self.artifacts.items())),
             "runtime_seconds": self.runtime_seconds,
             "peak_memory_bytes": self.peak_memory_bytes,
