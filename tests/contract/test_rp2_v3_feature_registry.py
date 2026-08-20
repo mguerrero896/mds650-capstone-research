@@ -21,6 +21,7 @@ from mds650.rp2.feature_registry import (
     assert_minimum_coverage,
     coverage_by_feature,
     describe_coverage,
+    describe_features,
     feature_map,
     registry,
     registry_sha256,
@@ -215,6 +216,9 @@ def test_every_artifact_writer_records_the_registry_it_fitted() -> None:
         if "describe_coverage(" not in (REPO / "scripts" / f"{name}.py").read_text(
             encoding="utf-8"
         )
+        and "describe_features(" not in (REPO / "scripts" / f"{name}.py").read_text(
+            encoding="utf-8"
+        )
     ]
     assert not missing, f"artifact writers with no registry provenance: {missing}"
 
@@ -244,13 +248,33 @@ def test_a_treatment_battery_resolves_against_the_whole_registry() -> None:
         assert not unresolved, f"{script}: {unresolved}"
 
 
-def test_a_record_covers_every_set_the_script_actually_fits() -> None:
-    """A battery that includes rich channels needs a record that includes them too."""
+def test_a_record_lists_the_features_fitted_and_no_others() -> None:
+    """Both overstatements are the same failure, pointed in opposite directions.
+
+    Recording the core sets alone omits the rich treatments the battery fits. Recording the
+    whole rich set claims fifty-four variables the design never saw.
+    """
 
     for script in TREATMENT_SCRIPTS:
         source = (REPO / "scripts" / f"{script}.py").read_text(encoding="utf-8")
-        assert "describe_coverage(panel, *FITTED_SETS)" in source, script
-        assert '"B2_RICH"' in source.split("FITTED_SETS")[1][:200], script
+        assert "describe_features(" in source, script
+        assert "*CORE_TREATMENTS]" in source, script
+        assert "describe_coverage(panel, *FITTED_SETS)" not in source, script
+
+    everything = feature_map("B0_CORE", "B1_CORE", "B2_CORE", "B2_RICH")
+    panel = pl.DataFrame({name: pl.Series([1.0, 2.0]) for name in everything})
+    fitted = [*feature_map("B0_CORE", "B1_CORE", "B2_CORE"), "b2_5m_gamma_flow"]
+    record = describe_features(panel, fitted, sets=("B0_CORE", "B1_CORE", "B2_CORE", "B2_RICH"))
+    assert record["feature_count"] == len(set(fitted))
+    assert record["feature_count"] < len(everything)
+    assert "b2_5m_gamma_flow" in record["feature_names"]  # type: ignore[operator]
+    assert "b2_5m_otm_premium_share" not in record["feature_names"]  # type: ignore[operator]
+
+
+def test_a_record_refuses_a_feature_no_set_registers() -> None:
+    panel = pl.DataFrame({"b2_5m_trades": pl.Series([1.0])})
+    with pytest.raises(ValueError, match="RP2_FEATURE_UNREGISTERED:invented"):
+        describe_features(panel, ["b2_5m_trades", "invented"], sets=("B2_CORE",))
 
 
 def test_the_configuration_travels_with_the_installed_package() -> None:

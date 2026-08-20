@@ -147,18 +147,36 @@ def coverage_by_feature(panel: pl.DataFrame, features: Sequence[str]) -> dict[st
     return out
 
 
-def describe_coverage(panel: pl.DataFrame, *names: str) -> dict[str, object]:
-    """The provenance a run must record about the sets it fitted."""
+def describe_features(
+    panel: pl.DataFrame, features: Sequence[str], *, sets: Sequence[str]
+) -> dict[str, object]:
+    """The provenance a run must record about the features it actually fitted.
 
-    covered = coverage_by_feature(panel, list(feature_map(*names)))
+    ``features`` is the exact list, not a set expansion. A block that fits the core sets
+    plus two rich treatments must say so: recording the whole rich set instead would claim
+    fifty-four variables the design never saw, which is the same overstatement the record
+    exists to prevent, pointed the other way.
+    """
+
+    ordered = list(dict.fromkeys(features))
+    unknown = sorted(set(ordered) - set(transforms()))
+    if unknown:
+        raise ValueError(f"RP2_FEATURE_UNREGISTERED:{','.join(unknown)}")
+    covered = coverage_by_feature(panel, ordered)
     return {
         "feature_registry_sha256": registry_sha256(),
-        "feature_sets": list(names),
+        "feature_sets": list(sets),
         "feature_names": sorted(covered),
         "feature_count": len(covered),
         "coverage_by_feature": covered,
         "missingness_by_feature": {name: 1.0 - share for name, share in covered.items()},
     }
+
+
+def describe_coverage(panel: pl.DataFrame, *names: str) -> dict[str, object]:
+    """The provenance for a run that fits whole sets and nothing else."""
+
+    return describe_features(panel, list(feature_map(*names)), sets=names)
 
 
 def assert_minimum_coverage(panel: pl.DataFrame, *names: str) -> None:

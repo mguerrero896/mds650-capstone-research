@@ -22,7 +22,7 @@ import polars as pl
 
 from mds650.b1v3_confirmation import canonical_sha256
 from mds650.rp2.dml import cross_fitted_residuals, dml_partial_out, time_block_folds
-from mds650.rp2.feature_registry import describe_coverage, feature_map
+from mds650.rp2.feature_registry import describe_features, feature_map
 from mds650.rp2.panel import (
     B0_FEATURES,
     B1_FEATURES,
@@ -165,7 +165,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         # Which frozen sets were fitted, how complete they were, and the hash of the
         # registry that decided them. Without it an artifact records a design width and
         # nothing a reader can check that width against.
-        "feature_registry": describe_coverage(panel, *FITTED_SETS),
+        "feature_registry": describe_features(
+            panel,
+            [*feature_map("B0_CORE", "B1_CORE", "B2_CORE"), *CORE_TREATMENTS],
+            sets=FITTED_SETS,
+        ),
         "block": 7,
         "program": "docs/research_program_v2.md",
         "label": "EXPLORATORY_MECHANISM_DISCOVERY",
