@@ -24,6 +24,7 @@ from mds650.b1v3_confirmation import canonical_sha256
 from mds650.metrics import qlike_losses
 from mds650.rp2.feature_registry import assert_segment_coverage, describe_coverage
 from mds650.rp2.inference import (
+    DEFAULT_SEED,
     clark_west_terms,
     clustered_mean_test,
     hansen_spa,
@@ -245,7 +246,7 @@ def run_role(
                 sessions=clusters,
                 benchmark_name=f"{model_name}|{benchmark_set}",
                 repetitions=1000,
-                seed=650,
+                seed=DEFAULT_SEED,
             )
             family[benchmark_set] = {
                 "benchmark": f"{model_name}|{benchmark_set}",

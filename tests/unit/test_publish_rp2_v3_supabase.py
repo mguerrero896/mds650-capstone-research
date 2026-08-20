@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import re
 import sys
 from pathlib import Path
 from types import ModuleType
@@ -534,6 +535,17 @@ def test_a_relabelled_manifest_cannot_publish_under_the_new_name(tmp_path: Path)
     with pytest.raises(SystemExit, match="RP2_PUBLISH_RUN_ID_MISMATCH"):
         module.build_payload(run, branch="x", supersedes=None)
 
+    # The marker is a file too, so editing both would agree. The directory the run wrote
+    # into is named after it, and that is a third thing to have to keep consistent.
+    relabelled = _manifest_record(
+        data_root=str(_bar_store(tmp_path)), run_id="rp2-v3-someone-else"
+    )
+    from mds650.rp2.run_manifest import IDENTITY_FILE
+
+    (run / IDENTITY_FILE).write_text(json.dumps(relabelled), encoding="utf-8")
+    with pytest.raises(SystemExit, match="RP2_PUBLISH_RUN_ID_MISMATCH:directory"):
+        module.build_payload(run, branch="x", supersedes=None)
+
 
 def test_one_constant_decides_the_bootstrap_seed() -> None:
     """A declared constant nothing calls is a claim about the code, not a property of it."""
@@ -553,5 +565,16 @@ def test_one_constant_decides_the_bootstrap_seed() -> None:
         if default is not inspect.Parameter.empty:
             assert default == inference.DEFAULT_SEED, f"{name} carries its own seed"
 
-    ladder = (REPO / "scripts" / "rp2_block8_ladder.py").read_text(encoding="utf-8")
-    assert "seed=DEFAULT_SEED" in ladder, "the producer passes a literal instead of the constant"
+    from mds650.rp2 import power
+
+    for name, function in inspect.getmembers(power, inspect.isfunction):
+        parameter = inspect.signature(function).parameters.get("seed")
+        if parameter is not None and parameter.default is not inspect.Parameter.empty:
+            assert parameter.default == inference.DEFAULT_SEED, f"power.{name} carries its own"
+
+    # And no RP2 producer writes the number down for itself. A literal at a call site is the
+    # same defect as a literal in a default: the digest stops describing what ran.
+    literal = re.compile(r"seed\s*=\s*\d+")
+    for script in sorted((REPO / "scripts").glob("rp2_*.py")):
+        found = literal.findall(script.read_text(encoding="utf-8"))
+        assert not found, f"{script.name} passes {found} instead of DEFAULT_SEED"

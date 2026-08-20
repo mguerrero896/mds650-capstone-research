@@ -265,6 +265,13 @@ def assert_run_id_is_the_one_that_ran(run_dir: Path, manifest: dict[str, Any]) -
     if not identity_path.is_file():
         raise SystemExit(f"RP2_PUBLISH_RUN_IDENTITY_MISSING:{identity_path.name}")
     identity = _read(identity_path)
+    # The directory the run wrote into is named after it. The marker is a file and can be
+    # edited alongside the manifest; the directory name is a third thing to have to keep
+    # consistent, and it is the one the artifacts actually sit inside.
+    if run_dir.name != manifest.get("run_id"):
+        raise SystemExit(
+            f"RP2_PUBLISH_RUN_ID_MISMATCH:directory:{run_dir.name}!={manifest.get('run_id')}"
+        )
     for field in ("run_id", "code_commit"):
         if identity.get(field) != manifest.get(field):
             raise SystemExit(

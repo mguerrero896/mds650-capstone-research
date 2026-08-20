@@ -42,6 +42,7 @@ from mds650.b1v3_confirmation import canonical_sha256
 from mds650.metrics import paired_day_bootstrap, qlike_losses
 from mds650.rp2.baseline import mincer_zarnowitz
 from mds650.rp2.feature_registry import assert_segment_coverage, describe_coverage
+from mds650.rp2.inference import DEFAULT_SEED
 from mds650.rp2.ladder import LADDER
 from mds650.rp2.panel import (
     B0_FEATURES,
@@ -150,7 +151,7 @@ def _contrast(
     difference = qlike_losses(target, base) - qlike_losses(target, expanded)
     boot = paired_day_bootstrap(
         pl.DataFrame({"session_date": sessions, "loss_difference": difference}),
-        repetitions=2000, seed=650,
+        repetitions=2000, seed=DEFAULT_SEED,
     )
     return {
         "delta_qlike": float(boot["estimate"]),

@@ -21,6 +21,8 @@ from typing import Final
 import numpy as np
 import numpy.typing as npt
 
+from mds650.rp2.inference import DEFAULT_SEED
+
 type FloatArray = npt.NDArray[np.float64]
 
 DEFAULT_REPETITIONS: Final = 2000
@@ -96,7 +98,7 @@ def simulate_power(
     sessions: int,
     repetitions: int = DEFAULT_REPETITIONS,
     block_length: int = DEFAULT_BLOCK_LENGTH,
-    seed: int = 650,
+    seed: int = DEFAULT_SEED,
 ) -> PowerResult:
     """Power and null rejection rate by resampling whole blocks of observed sessions.
 
@@ -151,7 +153,7 @@ def sessions_for_power(
     candidates: tuple[int, ...] = (30, 60, 90, 120, 180, 240, 360, 540, 750),
     repetitions: int = DEFAULT_REPETITIONS,
     block_length: int = DEFAULT_BLOCK_LENGTH,
-    seed: int = 650,
+    seed: int = DEFAULT_SEED,
 ) -> tuple[int | None, list[PowerResult]]:
     """Smallest simulated sample size reaching ``target_power``, plus the whole curve.
 
