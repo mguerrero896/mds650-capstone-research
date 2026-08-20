@@ -291,3 +291,29 @@ def test_publication_from_another_commit_is_refused(tmp_path: Path) -> None:
     module = _load("publish_rp2_v3_supabase")
     with pytest.raises(SystemExit, match="RP2_PUBLISH_COMMIT_MISMATCH"):
         module.assert_published_at_the_run_commit({"code_commit": "9" * 40})
+
+
+def test_each_block_publishes_the_artifact_that_is_its_result() -> None:
+    """Taking whichever key sorted first published a panel as Block 3's finding."""
+
+    module = _load("publish_rp2_v3_supabase")
+    step = {
+        "name": "build-targets",
+        "exit_code": 0,
+        "artifacts": {
+            "rp2_block3_target/target_panel.parquet": "a" * 64,
+            "rp2_block3_target/comparison.json": "b" * 64,
+        },
+    }
+    assert module._block_result_digest(step) == "b" * 64
+
+    # A step with no designated result contributes no block row.
+    assert module._block_result_digest({"name": "build-b1", "artifacts": {}}) is None
+    assert module._block_result_digest({"name": "unknown-step", "artifacts": {}}) is None
+
+
+def test_a_missing_bar_store_is_refused_rather_than_invented(tmp_path: Path) -> None:
+    module = _load("publish_rp2_v3_supabase")
+    resolved = {"bar_sources_sha256": {"gate7_c6|D": "2" * 64}}
+    with pytest.raises(SystemExit, match="RP2_PUBLISH_BAR_INPUT_MISSING"):
+        module._bar_inputs(resolved, tmp_path / "absent")

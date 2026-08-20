@@ -22,7 +22,7 @@ import os
 import sys
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Any
+from typing import Any, Final
 
 import httpx
 
@@ -127,6 +127,34 @@ def _mask_digest(scorecard: dict[str, Any]) -> str:
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
+#: The artifact that carries each step's outcome. Taking whichever mapping key sorted first
+#: published a panel's digest as Block 3's result while the block registry names its
+#: comparison, so the row pointed at a file that is not the finding.
+BLOCK_RESULT_ARTIFACT: Final[dict[str, str]] = {
+    "build-targets": "rp2_block3_target/comparison.json",
+    "build-b0": "rp2_block4_b0/ladder.json",
+    "build-b1": "rp2_block5_surface/surface_coverage.json",
+    "build-b2": "rp2_block6_flow/flow_coverage.json",
+    "fit-model-ladder": "rp2_block8_ladder/ladder.json",
+    "run-dml-diagnostics": "rp2_block7_dml/dml.json",
+    "run-incremental-inference": "rp2_block10_inference/inference.json",
+    "generate-scorecard": "scorecard.json",
+    "validate-input-manifests": "input_manifest.json",
+    "construct-common-masks": "common_masks.json",
+    "validate-feature-registry": "feature_registry_report.json",
+}
+
+
+def _block_result_digest(step: dict[str, Any]) -> str | None:
+    """The digest of the artifact that *is* this step's result, or nothing if it has none."""
+
+    designated = BLOCK_RESULT_ARTIFACT.get(str(step.get("name")))
+    if designated is None:
+        return None
+    digest = step.get("artifacts", {}).get(designated)
+    return str(digest) if digest else None
+
+
 def _bar_inputs(resolved: dict[str, Any], data_root: Path) -> list[dict[str, Any]]:
     """The bar stores as they are: their real relative paths and their real sizes.
 
@@ -143,13 +171,17 @@ def _bar_inputs(resolved: dict[str, Any], data_root: Path) -> list[dict[str, Any
         if key not in digests:
             continue
         path = data_root / relative
+        if not path.is_file():
+            # Publishing a one-byte size beside a path and a digest that describe a real
+            # parquet makes the row describe a file that does not exist.
+            raise SystemExit(f"RP2_PUBLISH_BAR_INPUT_MISSING:{relative}")
         rows.append(
             {
                 "input_name": f"bars_{name}",
                 "path": relative,
                 "provider": "fmp",
                 "sha256": digests[key],
-                "bytes": path.stat().st_size if path.is_file() else 1,
+                "bytes": path.stat().st_size,
                 "rows": None,
                 "schema_sha256": None,
                 "time_min": None,
@@ -238,7 +270,8 @@ def build_payload(run_dir: Path, *, branch: str, supersedes: str | None) -> dict
             "supersedes_run_id": supersedes,
         }
         for step in artifacts
-        for digest in list(step.get("artifacts", {}).values())[:1]
+        for digest in [_block_result_digest(step)]
+        if digest is not None
     ]
 
     return {
