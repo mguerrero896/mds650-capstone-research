@@ -30,6 +30,7 @@ from collections.abc import Sequence
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
+from typing import Final
 from zoneinfo import ZoneInfo
 
 import numpy as np
@@ -94,6 +95,11 @@ def load_inventory() -> dict[tuple[str, str], list[str]]:
             row = json.loads(line)
             index.setdefault((row["session_date"], row["asset"]), []).append(row["path"])
     return index
+
+
+#: Returned when the tape was read and held too little to build a surface from. Distinct
+#: from `None`, which means there was nothing to read.
+SPARSE_SESSION: Final = pl.DataFrame()
 
 
 def _read_tape(paths: Sequence[str], asset: str) -> pl.DataFrame | None:
@@ -322,8 +328,14 @@ def build_session_surface(
     """Surface features at every origin of one session-asset."""
 
     tape = _read_tape(paths, asset)
-    if tape is None or tape.height < 50:
+    if tape is None:
+        # No file to read. A provider failure.
         return None
+    if tape.height < 50:
+        # The file was there and held almost nothing. That is a thin session, not a
+        # provider failure, and counting the two together makes an ordinary quiet day look
+        # like an outage.
+        return SPARSE_SESSION
     created = tape["created_at"].dt.replace_time_zone(None).cast(pl.Int64).to_numpy()
     strike = tape["strike"].cast(pl.Float64).to_numpy().astype(np.float64)
     expiry = tape["expiry"].cast(pl.Date).to_numpy()
@@ -477,6 +489,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     frames: list[pl.DataFrame] = []
     failures = 0
+    sparse = 0
     with ThreadPoolExecutor(max_workers=args.workers) as pool:
         for result in pool.map(
             lambda job: build_session_surface(
@@ -486,6 +499,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         ):
             if result is None:
                 failures += 1
+                continue
+            if result.is_empty():
+                sparse += 1
                 continue
             frames.append(result)
     if not frames:
@@ -516,6 +532,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "constant_maturities_days": list(CONSTANT_MATURITY_DAYS),
         "session_assets_requested": len(jobs),
         "session_assets_without_tape": failures,
+        "session_assets_too_sparse": sparse,
         "rows": surface.height,
         "coverage": coverage,
     }

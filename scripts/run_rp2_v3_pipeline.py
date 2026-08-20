@@ -110,6 +110,44 @@ def _peak_memory_bytes(process: subprocess.Popen[bytes]) -> int:
     return int(usage.ru_maxrss * (1024 if sys.platform.startswith("linux") else 1))
 
 
+def _own_peak_memory_bytes() -> int:
+    """Peak working set of the runner itself.
+
+    Steps 6 and 7 materialise the merged panel in this process, so recording zero for them
+    would leave the scorecard's peak memory blind to the largest allocation the run makes.
+    """
+
+    if sys.platform == "win32":  # pragma: no cover - platform specific
+        import ctypes
+
+        handle = ctypes.windll.kernel32.GetCurrentProcess()
+
+        class _Counters(ctypes.Structure):
+            _fields_ = [
+                ("cb", ctypes.c_uint32),
+                ("PageFaultCount", ctypes.c_uint32),
+                ("PeakWorkingSetSize", ctypes.c_size_t),
+                ("WorkingSetSize", ctypes.c_size_t),
+                ("QuotaPeakPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaPeakNonPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaNonPagedPoolUsage", ctypes.c_size_t),
+                ("PagefileUsage", ctypes.c_size_t),
+                ("PeakPagefileUsage", ctypes.c_size_t),
+            ]
+
+        counters = _Counters()
+        counters.cb = ctypes.sizeof(_Counters)
+        ok = ctypes.windll.psapi.GetProcessMemoryInfo(
+            handle, ctypes.byref(counters), counters.cb
+        )
+        return int(counters.PeakWorkingSetSize) if ok else 0
+    import resource  # pragma: no cover - POSIX only
+
+    usage = resource.getrusage(resource.RUSAGE_SELF)
+    return int(usage.ru_maxrss * (1024 if sys.platform.startswith("linux") else 1))
+
+
 def _code_commit() -> str:
     """The commit the run is executing, which is half of what makes it reproducible."""
 
@@ -601,12 +639,14 @@ def construct_common_masks(run_dir: Path, roles: Sequence[str]) -> Path:
     return path
 
 
-def build_scorecard(run_dir: Path, manifest: RunManifest) -> dict[str, object]:
+def build_scorecard(
+    run_dir: Path, manifest: RunManifest, *, elapsed_seconds: float
+) -> dict[str, object]:
     """Step 11: assemble the scorecard the schema requires, and fail on a missing field."""
 
     from mds650.rp2.scorecard import assemble_scorecard, render_scorecard
 
-    scorecard = assemble_scorecard(run_dir, manifest)
+    scorecard = assemble_scorecard(run_dir, manifest, elapsed_seconds=elapsed_seconds)
     (run_dir / "scorecard.json").write_text(
         json.dumps(scorecard, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
@@ -670,6 +710,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     run_dir = Path(args.output_root) / str(args.run_id)
     run_dir.mkdir(parents=True, exist_ok=True)
     started = datetime.now(UTC).isoformat()
+    wall = time.perf_counter()
     python = [sys.executable]
     panel_flags = ["--panel-root", str(run_dir)]
 
@@ -777,7 +818,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             # Timed like every other step. With the tape read this is minutes, not zero,
             # and the scorecard sums these into what it calls the run's runtime.
             runtime_seconds=round(time.perf_counter() - validation_started, 3),
-            peak_memory_bytes=0,
+            peak_memory_bytes=_own_peak_memory_bytes(),
             artifacts={"input_manifest.json": file_digest(run_dir / "input_manifest.json")},
             content={
                 "input_manifest.json": stable_content_digest(run_dir / "input_manifest.json")
@@ -870,7 +911,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 command=("internal", name),
                 exit_code=0,
                 runtime_seconds=round(time.perf_counter() - started_step, 3),
-                peak_memory_bytes=0,
+                peak_memory_bytes=_own_peak_memory_bytes(),
                 artifacts={artifact.name: file_digest(artifact)},
                 content={artifact.name: stable_content_digest(artifact)},
             )
@@ -922,7 +963,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         started_at_utc=started,
         finished_at_utc=datetime.now(UTC).isoformat(),
     )
-    build_scorecard(run_dir, manifest)
+    build_scorecard(run_dir, manifest, elapsed_seconds=round(time.perf_counter() - wall, 3))
     steps.append(
         StepRecord(
             name="generate-scorecard",

@@ -11,7 +11,8 @@
       "sessions_by_role",
       "assets",
       "duplicate_keys",
-      "provider_failures"
+      "provider_failures",
+      "sparse_session_assets"
     ],
     "b1": [
       "b1_core_coverage",

@@ -218,8 +218,13 @@ def calibration_table(
     return table
 
 
-def assemble_scorecard(run_dir: Path, manifest: RunManifest) -> dict[str, Any]:
+def assemble_scorecard(
+    run_dir: Path, manifest: RunManifest, *, elapsed_seconds: float | None = None
+) -> dict[str, Any]:
     """Measure every field the schema names, from the artifacts this run produced."""
+
+    if elapsed_seconds is None:
+        elapsed_seconds = round(sum(step.runtime_seconds for step in manifest.steps), 3)
 
     from mds650.rp2.feature_registry import coverage_by_feature, feature_map
     from mds650.rp2.panel import panel_paths
@@ -270,11 +275,12 @@ def assemble_scorecard(run_dir: Path, manifest: RunManifest) -> dict[str, Any]:
             # it here would emit an array under a field documented as an integer.
             "assets": len(ladder.get("D", {}).get("assets") or []) or None,
             "duplicate_keys": _duplicate_keys(panels["target"]),
-            # One count, as the schema declares. Session-assets whose tape either block
-            # could not read; a pair here would serialise as an array under a field
-            # documented as an integer.
+            # One count, as the schema declares: session-assets with no tape to read at
+            # all. A session whose tape opened and held too little to build a surface from
+            # is a thin day, not an outage, and is counted separately by the producer.
             "provider_failures": int(surface.get("session_assets_without_tape") or 0)
             + int(flow.get("session_assets_without_tape") or 0),
+            "sparse_session_assets": int(surface.get("session_assets_too_sparse") or 0),
         },
         "b1": {
             "b1_core_coverage": core_coverage,

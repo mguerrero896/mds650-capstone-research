@@ -31,7 +31,8 @@ as an unmeasured one.
 | `sessions_by_role` | object | `{"D": int, "V": int}` |
 | `assets` | int | distinct assets in the evaluation mask |
 | `duplicate_keys` | int | must be 0 |
-| `provider_failures` | int | session-assets whose tape either block could not read, summed over B1 and B2; distinct from empty windows |
+| `provider_failures` | int | session-assets with no tape to read at all, summed over B1 and B2; distinct from empty windows and from sparse sessions |
+| `sparse_session_assets` | int | session-assets whose tape opened and held too little to build a surface from — a thin day, not an outage |
 
 ## B1
 
@@ -89,7 +90,7 @@ suppress exactly the slow records the tail is asked about.
 
 | Field | Type | Meaning |
 | --- | --- | --- |
-| `runtime_seconds` | float | wall clock of the run |
+| `runtime_seconds` | float | wall clock from the start of the run to the moment the scorecard was assembled; the steps after it are recorded in `run_manifest.json` |
 | `peak_memory_bytes` | int | peak resident memory |
 | `input_manifest_sha256` | str | hash of the resolved input manifest |
 | `feature_registry_sha256` | str | hash of the frozen feature registry |
