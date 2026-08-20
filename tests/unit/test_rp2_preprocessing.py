@@ -303,3 +303,43 @@ def test_the_conditional_test_uses_the_same_sample_as_the_unconditional_ones() -
     assert "fold_design(frame, conditioner_features, train, intercept=False)" in source
     assert 'np.log(np.maximum(frame["rv_back_30"]' not in source
     assert 'np.log(np.maximum(frame["dollar_volume_30"]' not in source
+
+
+def test_a_regime_label_says_missing_rather_than_guessing() -> None:
+    """A NaN fails both tercile comparisons and lands in the top bucket, silently.
+
+    The common mask retains those rows on purpose — they are imputable in the design — so a
+    regime slice must label them rather than file an origin with no liquidity reading under
+    "most liquid".
+    """
+
+    import importlib.util
+    import sys
+    from pathlib import Path as _Path
+
+    repo = _Path(__file__).resolve().parents[2]
+    spec = importlib.util.spec_from_file_location(
+        "rp2_block9_generalization", repo / "scripts" / "rp2_block9_generalization.py"
+    )
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules["rp2_block9_generalization"] = module
+    spec.loader.exec_module(module)
+
+    rows = 7
+    frame = pl.DataFrame(
+        {
+            "session_date": ["2026-01-05"] * rows,
+            "asset": ["AAA"] * rows,
+            "origin_minute": list(range(30, 30 + rows)),
+            "source": ["synthetic"] * rows,
+            "rv_back_30": [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, None],
+            "dollar_volume_30": [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, None],
+            "ret_30": [0.1, -0.1, 0.1, -0.1, 0.1, -0.1, None],
+        }
+    )
+    labels = module._subgroups(frame, np.ones(rows, dtype=bool))
+    assert labels["volatility_regime"][-1] == "vol_missing"
+    assert labels["liquidity_regime"][-1] == "liq_missing"
+    assert labels["market_direction"][-1] == "market_missing"
+    assert set(labels["volatility_regime"][:-1]) <= {"vol_low", "vol_mid", "vol_high"}

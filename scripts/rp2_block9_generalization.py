@@ -92,8 +92,17 @@ def _subgroups(frame: pl.DataFrame, test: npt.NDArray[np.bool_]) -> dict[str, np
     source = frame["source"].to_numpy()[test]
 
     def tercile(values: FloatArray, low: str, mid: str, high: str) -> np.ndarray:
+        """Terciles, with an explicit bucket for a value that is not there.
+
+        A NaN fails both comparisons and lands in ``high``, which silently files an origin
+        with no liquidity reading under "most liquid". The common mask retains those rows on
+        purpose — they are imputable in the design — so the regime label says "missing"
+        rather than guessing, and the slice reports it as its own group.
+        """
+
         cuts = np.nanquantile(values, [1 / 3, 2 / 3])
-        return np.where(values <= cuts[0], low, np.where(values <= cuts[1], mid, high))
+        labelled = np.where(values <= cuts[0], low, np.where(values <= cuts[1], mid, high))
+        return np.where(np.isfinite(values), labelled, f"{low.split('_')[0]}_missing")
 
     return {
         "asset": assets,
@@ -104,7 +113,11 @@ def _subgroups(frame: pl.DataFrame, test: npt.NDArray[np.bool_]) -> dict[str, np
         "session_period": np.where(
             minutes < 120, "open", np.where(minutes < 240, "midday", "close")
         ),
-        "market_direction": np.where(market >= 0.0, "market_up", "market_down"),
+        "market_direction": np.where(
+            np.isfinite(market),
+            np.where(market >= 0.0, "market_up", "market_down"),
+            "market_missing",
+        ),
         "expiration_week": np.array(
             ["expiry_week" if _is_expiration_week(str(s)) else "ordinary_week" for s in sessions]
         ),
