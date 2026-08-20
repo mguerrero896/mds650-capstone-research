@@ -771,5 +771,11 @@ Spec Kit consistency and preregistration gates pass.
    Evaluating the window start at the exact instant rather than at an earlier origin keeps
    the feature defined everywhere: taking it from a lagged origin left the first six origins
    of every session undefined and cost 9.3 % of evaluation rows under the fail-closed rule.
-   Worst B2 coverage after the rebuild is 99.37 %.
+   Worst B2 coverage after the rebuild is 99.37 %. Finally, the coverage accounting was
+   itself incomplete: a session-asset the B0 panel carried but the tape inventory or the bar
+   grid did not was skipped before any counter saw it, so every number in the artifact
+   described only the part of the study that happened to be complete. The denominator is now
+   what the study asked for. Measured: **2,814 of 2,814 session-assets**, with zero missing
+   inventory entries, zero missing bar grids, zero provider failures and zero sparse
+   sessions.
 

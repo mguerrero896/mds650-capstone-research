@@ -151,3 +151,16 @@ def test_the_intensity_is_evaluated_at_each_cutoff_over_visible_rows() -> None:
     assert "visible = np.searchsorted(created, cutoffs_us" in source, (
         "the visible prefix at each cutoff is what the recursion may see"
     )
+
+
+def test_a_session_asset_with_no_tape_at_all_is_counted() -> None:
+    """A skipped session-asset makes every coverage number describe only what was complete."""
+
+    source = _source()
+    assert "missing_tape_inventory" in source, (
+        "a B0 session-asset with no inventory entry must be recorded, not skipped"
+    )
+    assert "missing_bar_grid" in source, "nor may a missing bar grid vanish"
+    assert "session_assets_in_b0_panel" in source, (
+        "the denominator has to be what the study asked for, not what it managed"
+    )

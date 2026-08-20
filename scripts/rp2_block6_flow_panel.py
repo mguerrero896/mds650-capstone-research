@@ -506,6 +506,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         grids[(str(asset), str(session_date))] = grid.close
 
     jobs: list[tuple[str, str, list[str], npt.NDArray[np.int64], FloatArray]] = []
+    # A session-asset the B0 panel carries but the tape inventory or the bar grid does not
+    # is an incomplete acquisition. Skipping it silently made every coverage number in this
+    # artifact describe only the part of the study that happened to be complete.
+    missing_tape_inventory: list[dict[str, str]] = []
+    missing_bar_grid: list[dict[str, str]] = []
     for (asset, session_date), group in panel.sort(
         ["asset", "session_date", "origin_minute"]
     ).group_by(["asset", "session_date"], maintain_order=True):
@@ -513,7 +518,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             (str(session_date), "__ALL__")
         )
         closes = grids.get((str(asset), str(session_date)))
-        if paths is None or closes is None or closes.size == 0:
+        if paths is None:
+            missing_tape_inventory.append({"asset": str(asset), "session_date": str(session_date)})
+            continue
+        if closes is None or closes.size == 0:
+            missing_bar_grid.append({"asset": str(asset), "session_date": str(session_date)})
             continue
         # Origins come from the B0 panel, which is built on each session's real length.
         # A holiday now yields an empty grid and an early close a 210-minute one, so an
@@ -582,6 +591,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         "provider_failures": provider_failures,
         "minimum_session_prints": MINIMUM_SESSION_PRINTS,
         "sparse_sessions": sparse_sessions,
+        "session_assets_in_b0_panel": (
+            len(jobs) + len(missing_tape_inventory) + len(missing_bar_grid)
+        ),
+        "missing_tape_inventory": missing_tape_inventory,
+        "missing_bar_grid": missing_bar_grid,
         "empty_window_share_5m": float(
             (flow["b2_5m_trades"].fill_null(0.0) == 0.0).sum() / flow.height
         ),
