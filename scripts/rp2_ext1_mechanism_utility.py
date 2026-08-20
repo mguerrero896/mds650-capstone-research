@@ -53,6 +53,7 @@ from mds650.rp2.panel import (
     standardise,
     usable_rows,
 )
+from mds650.rp2.preprocessing import fold_design
 from mds650.rp2.realized import backward_rv, forward_measures, log_returns
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -359,11 +360,19 @@ def run_role(
     train, test = chronological_split(sessions, train_share=train_share)
     assets = frame["asset"].to_numpy()
 
-    base_design, base_names = build_design(frame, [B0_FEATURES, B1_FEATURES])
-    full_design, full_names = build_design(frame, [B0_FEATURES, B1_FEATURES, B2_FEATURES])
+    # Registry designs are imputed and scaled from this fold's training rows, like the
+    # primary blocks. build_design still runs first, so a registered feature the panel does
+    # not carry stops the run before anything is fitted.
+    _, base_names = build_design(frame, [B0_FEATURES, B1_FEATURES])
+    _, full_names = build_design(frame, [B0_FEATURES, B1_FEATURES, B2_FEATURES])
     replicated_map = {n: available[n] for n in REPLICATED}
-    replicated_design, replicated_names = build_design(
-        frame, [B0_FEATURES, B1_FEATURES, replicated_map]
+    _, replicated_names = build_design(frame, [B0_FEATURES, B1_FEATURES, replicated_map])
+    base_design, _, _ = fold_design(frame, [*B0_FEATURES, *B1_FEATURES], train)
+    full_design, _, _ = fold_design(
+        frame, [*B0_FEATURES, *B1_FEATURES, *B2_FEATURES], train
+    )
+    replicated_design, _, _ = fold_design(
+        frame, [*B0_FEATURES, *B1_FEATURES, *replicated_map], train
     )
     designs = {
         "B0+B1": base_design,

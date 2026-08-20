@@ -40,13 +40,13 @@ from mds650.rp2.panel import (
     CORE_SETS,
     build_design,
     chronological_split,
-    common_usable_rows,
+    common_evaluation_mask,
     describe_information_set,
     lift_mask,
     load_merged_panel,
     session_rank,
-    standardise,
 )
+from mds650.rp2.preprocessing import describe_preprocessor, fold_design
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_block8_ladder"
@@ -108,12 +108,16 @@ def run_role(
     target = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
     sessions_rank = session_rank(frame["session_date"].to_numpy())
 
-    designs: dict[str, FloatArray] = {}
+    # build_design still fails closed on a registered feature the panel does not carry; its
+    # matrix is discarded, because the design a fold fits is built by the preprocessor from
+    # that fold's own training statistics.
     resolved: dict[str, tuple[str, ...]] = {}
+    features: dict[str, list[str]] = {}
     for name, maps in INFORMATION_SETS.items():
-        designs[name], resolved[name] = build_design(frame, maps)
+        _, resolved[name] = build_design(frame, maps)
+        features[name] = [column for mapping in maps for column in mapping]
     role_frame = frame
-    keep = common_usable_rows(designs, target)
+    keep = common_evaluation_mask(frame, target)
     information_sets = {
         name: describe_information_set((name,), resolved[name], keep)
         for name in INFORMATION_SETS
@@ -125,11 +129,18 @@ def run_role(
             "information_sets": information_sets,
         }
 
+    frame = frame.filter(pl.Series(keep))
     target = target[keep]
     sessions_rank = sessions_rank[keep]
-    session_labels = frame["session_date"].to_numpy()[keep]
-    assets = frame["asset"].to_numpy()[keep]
+    session_labels = frame["session_date"].to_numpy()
+    assets = frame["asset"].to_numpy()
     train, test = chronological_split(sessions_rank, train_share=train_share)
+    # One design per information set, imputed and scaled from this fold's training rows.
+    designs: dict[str, FloatArray] = {}
+    preprocessors: dict[str, object] = {}
+    for name in INFORMATION_SETS:
+        designs[name], _, fitted = fold_design(frame, features[name], train)
+        preprocessors[name] = describe_preprocessor(fitted)
     # The floor holds on the panel and on this role; it also has to hold on the two
     # segments this run fits and scores, which is where a held-out tail with a gap in it
     # would otherwise become a result. The masks are lifted back onto the unfiltered role
@@ -154,6 +165,7 @@ def run_role(
         "sessions": int(np.unique(sessions_rank).size),
         "assets": sorted({str(a) for a in assets}),
         "design_columns": {name: designs[name].shape[1] for name in INFORMATION_SETS},
+        "preprocessing": preprocessors,
         "information_sets": information_sets,
     }
     per_model: dict[str, object] = {}
@@ -163,7 +175,7 @@ def run_role(
         losses_recalibrated: dict[str, FloatArray] = {}
         qlike_levels: dict[str, float] = {}
         for set_name in INFORMATION_SETS:
-            design = standardise(designs[set_name][keep], train)
+            design = designs[set_name]
             forecast = fitter(design, target, train)
             losses[set_name] = qlike_losses(target[test], forecast[test])
             recalibrated = _recalibrate(forecast, target, train)
@@ -193,7 +205,7 @@ def run_role(
     results["models"] = per_model
 
     # Level 3: hierarchical partial pooling of per-asset offsets on the best smooth model.
-    design = standardise(designs["B0+B1+B2"][keep], train)
+    design = designs["B0+B1+B2"]
     forecast = LADDER["log_ols"](design, target, train)
     residual = np.log(np.maximum(target, 1e-12)) - np.log(np.maximum(forecast, 1e-12))
     asset_index = np.unique(assets, return_inverse=True)[1].astype(np.int64)

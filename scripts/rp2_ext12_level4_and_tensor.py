@@ -51,13 +51,14 @@ from mds650.rp2.panel import (
     VARIANCE_FLOOR,
     build_design,
     chronological_split,
-    common_usable_rows,
+    common_evaluation_mask,
     describe_information_set,
     lift_mask,
     load_merged_panel,
     session_rank,
     standardise,
 )
+from mds650.rp2.preprocessing import fold_design
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_ext12_level4"
@@ -169,7 +170,8 @@ def run_role(
     )
     index = np.asarray(frame["_row"].to_numpy(), dtype=np.int64)
     target = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
-    base_design, base_names = build_design(frame, [B0_FEATURES, B1_FEATURES, B2_FEATURES])
+    _, base_names = build_design(frame, [B0_FEATURES, B1_FEATURES, B2_FEATURES])
+    registry_features = [*B0_FEATURES, *B1_FEATURES, *B2_FEATURES]
     # The tensor and the trade sequence are inputs to two of the three published arms, so
     # they belong in the mask the run fails closed on. A tape row with a null premium makes
     # a non-finite tensor cell; leaving those rows in lets the neural arm produce NaN
@@ -178,7 +180,7 @@ def run_role(
     extension_finite = np.isfinite(
         tensor[index].reshape(index.size, -1).astype(np.float64)
     ).all(axis=1) & np.isfinite(sequence[index].astype(np.float64)).all(axis=(1, 2))
-    keep = common_usable_rows({"B0+B1+B2": base_design}, target) & extension_finite
+    keep = common_evaluation_mask(frame, target) & extension_finite
     information_sets: dict[str, object] = {
         "B0+B1+B2": describe_information_set(("B0", "B1", "B2"), base_names, keep)
     }
@@ -191,9 +193,13 @@ def run_role(
 
     role_frame = frame
     frame = frame.filter(pl.Series(keep))
-    target, base_design, index = target[keep], base_design[keep], index[keep]
+    target, index = target[keep], index[keep]
     ranks = session_rank(frame["session_date"].to_numpy())
     train, test = chronological_split(ranks, train_share=train_share)
+    # The tabular arm is a registry design and is imputed and scaled fold-locally. The
+    # tensor and sequence arms are inputs the registry does not describe, so they keep
+    # the plain standardisation and are never part of a primary contrast.
+    base_design, _, _ = fold_design(frame, registry_features, train)
     # The floor holds on the panel and on this role; it also has to hold on the two
     # segments this run fits and scores, which is where a held-out tail with a gap in it
     # would otherwise become a result. The masks are lifted back onto the unfiltered role
@@ -229,7 +235,7 @@ def run_role(
         lift_mask(keep, test),
     )
     forecasts = {
-        "tabular": LADDER["lightgbm"](standardise(base_design, train), target, train),
+        "tabular": LADDER["lightgbm"](base_design, target, train),
         "tabular+tensor": LADDER["lightgbm"](standardise(with_tensor, train), target, train),
     }
     results["extension_2_tensor"] = {
@@ -246,7 +252,7 @@ def run_role(
 
     # ---- Extension 1: DeepSets over the raw trade sequence ---------------------------
     torch.manual_seed(SEED)
-    standardised = standardise(base_design, train)
+    standardised = base_design
     sequence_block = sequence[index]
     flat = sequence_block.reshape(-1, sequence_block.shape[-1])
     centre = flat[flat[:, 2] != 0.0].mean(axis=0)

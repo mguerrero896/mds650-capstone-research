@@ -40,13 +40,13 @@ from mds650.rp2.panel import (
     CORE_SETS,
     build_design,
     chronological_split,
-    common_usable_rows,
+    common_evaluation_mask,
     describe_information_set,
     lift_mask,
     load_merged_panel,
     session_rank,
-    standardise,
 )
+from mds650.rp2.preprocessing import describe_preprocessor, fold_design
 from mds650.rp2.surface import annualise_intraday_variance
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -74,11 +74,15 @@ def run_role(
         ["session_date", "asset", "origin_minute"]
     )
     target = np.asarray(frame["rv30"].to_numpy(), dtype=np.float64)
-    designs: dict[str, FloatArray] = {}
+    # build_design still fails closed on a registered feature the panel does not carry; its
+    # matrix is discarded, because the design a fold fits is built by the preprocessor from
+    # that fold's own training statistics.
     resolved: dict[str, tuple[str, ...]] = {}
+    features: dict[str, list[str]] = {}
     for name, maps in INFORMATION_SETS.items():
-        designs[name], resolved[name] = build_design(frame, maps)
-    keep = common_usable_rows(designs, target)
+        _, resolved[name] = build_design(frame, maps)
+        features[name] = [column for mapping in maps for column in mapping]
+    keep = common_evaluation_mask(frame, target)
     # The economics needs a quote it can trade against, so two surface columns join the
     # usable-row rule. The provenance is built after them: a record made before the filter
     # would report the filtered row count and hash the wider sample.
@@ -98,7 +102,6 @@ def run_role(
     role_frame = frame
     frame = frame.filter(pl.Series(keep))
     target = target[keep]
-    designs = {name: design[keep] for name, design in designs.items()}
     sessions_rank = session_rank(frame["session_date"].to_numpy())
     train, test = chronological_split(sessions_rank, train_share=train_share)
     # The floor holds on the panel and on this role; it also has to hold on the two
@@ -111,6 +114,12 @@ def run_role(
         {"train": lift_mask(keep, train), "test": lift_mask(keep, test)},
         *CORE_SETS.values(),
     )
+    # One design per information set, imputed and scaled from this fold's training rows.
+    designs: dict[str, FloatArray] = {}
+    preprocessors: dict[str, object] = {}
+    for name in INFORMATION_SETS:
+        designs[name], _, fitted = fold_design(frame, features[name], train)
+        preprocessors[name] = describe_preprocessor(fitted)
     minutes = frame["origin_minute"].to_numpy().astype(np.int64)
     # Evaluate on non-overlapping origins only: overlapping 30-minute payoffs would count
     # the same variance six times and inflate every Sharpe by roughly sqrt(6).
@@ -147,7 +156,7 @@ def run_role(
         fitter = LADDER[model_name]
         block: dict[str, object] = {}
         for set_name in INFORMATION_SETS:
-            forecast = fitter(standardise(designs[set_name], train), target, train)
+            forecast = fitter(designs[set_name], target, train)
             forecast_annual = np.array(
                 [annualise_intraday_variance(value) for value in forecast], dtype=np.float64
             )

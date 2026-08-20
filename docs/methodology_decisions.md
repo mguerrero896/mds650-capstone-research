@@ -836,4 +836,27 @@ Spec Kit consistency and preregistration gates pass.
    today and a future gap cannot become a result. A floor nobody checks is not a floor. `registry_sha256` hashes the sets and their floors and ignores the
    prose beside them, so a run's provenance moves when a feature moves and not when a
    sentence is edited. Registry `3c108a14a5a88e4d…`.
+83. **A missing diagnostic removed the origin from B0's evaluation too (2026-08-20)** — the
+   common mask of a nested contrast was "every design column is finite", so a single absent
+   B1 or B2 feature dropped that origin from *every* set in the comparison, B0 included. The
+   larger information set was then judged on a sample its own missingness had chosen, and the
+   smaller one was credited with rows the contrast never used. `src/mds650/rp2/preprocessing.py`
+   replaces it. The mask becomes the master plan's `M = valid target ∩ valid keys ∩ valid
+   availability` — availability being whether the join found option data at that origin at
+   all, read from `b1_surface_coverage` and `b2_5m_is_empty_window`, both of which every block
+   emits at every origin it produced. Values missing *inside* the design are imputed with the
+   median of the fold's **training rows only**, and the fact that a value was absent survives
+   as its own indicator column rather than being dissolved into that median. Nothing is learned
+   from the rows being scored: a validation row of 10⁴ or 10⁻⁴ leaves the training median,
+   centre and scale bit-identical, which is a test. A feature complete in training earns no
+   indicator, because a column that is constant by construction costs a degree of freedom and
+   says nothing; its absence at scoring time is imputed and the run records that it happened.
+   Measured on the real panels through Block 8: the evaluation mask rises from **149,837 to
+   152,954** discovery rows and from **31,601 to 31,678** validation rows — every origin the
+   blocks produced. Three features are imputed in discovery (`rv_prev_day`, `rv_week`,
+   `b1_risk_reversal_25`) and one in validation (`b1_risk_reversal_25`), each with its own
+   indicator, so the `B0+B1+B2` design is 48 columns in discovery and 46 in validation rather
+   than 45. The tensor and sequence arms of the level-4 extension keep the plain
+   standardisation: they are inputs the registry does not describe and are never part of a
+   primary contrast.
 

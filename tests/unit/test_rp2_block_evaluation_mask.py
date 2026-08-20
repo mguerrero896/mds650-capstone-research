@@ -67,9 +67,18 @@ def _synthetic_panel(sessions: int = 40, origins: int = 40) -> pl.DataFrame:
             "rv30": rng.lognormal(-11.0, 0.4, rows),
         }
     )
+    from mds650.rp2.panel import AVAILABILITY_COLUMNS
+
     registered = {**B0_FEATURES, **B1_FEATURES, **B2_FEATURES}
     return frame.with_columns(
-        **{name: pl.Series(rng.lognormal(0.0, 0.3, rows)) for name in registered}
+        **{name: pl.Series(rng.lognormal(0.0, 0.3, rows)) for name in registered},
+        # Availability is a property of the panel, not a fitted feature: it says the join
+        # found option data at that origin at all.
+        **{
+            name: pl.Series(np.zeros(rows))
+            for name in AVAILABILITY_COLUMNS
+            if name not in registered
+        },
     )
 
 
@@ -194,8 +203,8 @@ def test_the_extension_arms_take_part_in_the_fail_closed_mask() -> None:
     """A neural arm that can see a non-finite input is not covered by a tabular mask."""
 
     source = (REPO / "scripts" / "rp2_ext12_level4_and_tensor.py").read_text(encoding="utf-8")
-    mask = source.index("keep = common_usable_rows(")
-    assert "extension_finite" in source[mask : mask + 400], (
+    mask = source.index("keep = common_evaluation_mask(")
+    assert "extension_finite" in source[mask : mask + 200], (
         "the tensor and sequence inputs never enter the mask the run fails closed on"
     )
 
