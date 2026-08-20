@@ -186,13 +186,17 @@ def _run_dir(tmp_path: Path) -> Path:
     # machine running it.
     store = _bar_store(tmp_path)
     tape_identity, tape_freshness = _tape_digests(_shared_tape())
+    from mds650.rp2.run_manifest import normalised_digest
+
+    inventory_digest = normalised_digest(_shared_tape())
+    gated_digest = normalised_digest(REPO / "data" / "GATED_DATA_POINTERS.json")
     (run / "input_manifest.json").write_text(
         json.dumps(
             {
-                "gated_manifest_sha256": "1" * 64,
+                "gated_manifest_sha256": gated_digest,
                 "gated_files": 15,
                 "bar_sources_sha256": _bar_digests(store),
-                "tape_inventory_sha256": "3" * 64,
+                "tape_inventory_sha256": inventory_digest,
                 "tape_fingerprint_sha256": tape_identity,
                 "tape_freshness_sha256": tape_freshness,
                 "study_window_enforced": {

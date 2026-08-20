@@ -100,5 +100,18 @@ Publishing under the frozen window means re-running Block 1 against it and rebui
 downstream. Measured against `artifacts/rp2_block1_partition/inventory.jsonl`: 170 of the 389
 development sessions fall inside it, and all 80 validation sessions do.
 
+## What Block 1 cannot do yet
+
+Re-running Block 1 as it stands does not produce that window. `discover_sessions` enumerates
+every session the tape holds and `role_for` labels everything before `VALIDATION_FIRST_SESSION`
+as `D`, so a rebuild starts at 2024-08-02 whatever window has been adopted, and the publisher
+rejects it. The adopted window is therefore not merely unbuilt: it is unreachable by the
+documented process until `role_for` takes a lower bound and Block 1 is regenerated against it.
+
+That change alters which sessions are `D`, so it alters the frozen partition and every
+artifact built on it. It belongs to the rebuild gate rather than to the publication gate,
+and it is recorded here as the first thing that gate must do — not left to be discovered
+when the rebuild is rejected.
+
 The reconciliation is this page: the artifacts say what they were built on, the
 configuration says what may be published, and neither is inferred from the other.

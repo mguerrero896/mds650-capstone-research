@@ -37,6 +37,7 @@ from mds650.rp2.run_manifest import (  # noqa: E402
     assert_manifest_identity_intact,
     file_digest,
     inventory_paths,
+    normalised_digest,
     stable_content_digest,
     tape_fingerprint,
 )
@@ -228,6 +229,21 @@ def _designated_artifact(step: dict[str, Any]) -> str | None:
     return entry[1] if entry else None
 
 
+def _verified_gated_manifest(resolved: dict[str, Any]) -> str:
+    """The gated manifest as it is now, checked against the one the run read.
+
+    It is the source of truth for which licensed files a run may open, and it was the last
+    input published from its run-time digest alone: the row would have carried that digest
+    beside the current file's size, describing two different versions of the same manifest.
+    """
+
+    recorded = str(resolved["gated_manifest_sha256"])
+    current = normalised_digest(ROOT / "data" / "GATED_DATA_POINTERS.json")
+    if current != recorded:
+        raise SystemExit(f"RP2_PUBLISH_GATED_MANIFEST_CHANGED:{current[:12]}!={recorded[:12]}")
+    return recorded
+
+
 def _verified_tape_fingerprint(resolved: dict[str, Any]) -> str:
     """The tape as it is now, checked against the tape the run read.
 
@@ -238,6 +254,15 @@ def _verified_tape_fingerprint(resolved: dict[str, Any]) -> str:
     check is as strong as the record it is checking.
     """
 
+    # The inventory's own rows, first. The fingerprints below cover the files it points at
+    # and their filesystem metadata, so an inventory edited to reassign a session or a role
+    # produces the same tape identity while describing a different experiment.
+    inventory = normalised_digest(TAPE_INVENTORY)
+    if inventory != str(resolved.get("tape_inventory_sha256")):
+        raise SystemExit(
+            f"RP2_PUBLISH_TAPE_INVENTORY_CHANGED:{inventory[:12]}"
+            f"!={str(resolved.get('tape_inventory_sha256'))[:12]}"
+        )
     recorded = str(resolved["tape_fingerprint_sha256"])
     identity, freshness, _, _ = tape_fingerprint(
         inventory_paths(TAPE_INVENTORY),
@@ -434,7 +459,7 @@ def build_payload(run_dir: Path, *, branch: str) -> dict[str, Any]:
             "input_name": "gated_manifest",
             "path": "data/GATED_DATA_POINTERS.json",
             "provider": DERIVED,
-            "sha256": resolved["gated_manifest_sha256"],
+            "sha256": _verified_gated_manifest(resolved),
             # The file's size. Publishing the entry count here while `path` and `sha256`
             # identify the file makes the row disagree with itself.
             "bytes": (ROOT / "data" / "GATED_DATA_POINTERS.json").stat().st_size,
