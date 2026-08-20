@@ -74,7 +74,30 @@ def _run_dir(tmp_path: Path) -> Path:
     }
     (run / "rp2_block8_ladder" / "ladder.json").write_text(json.dumps(ladder), encoding="utf-8")
     (run / "scorecard.json").write_text(
-        json.dumps({"forecast": {"gamma_glm": {"D": {"common_mask_sha256": MASK}}}}),
+        json.dumps(
+            {
+                "forecast": {
+                    "gamma_glm": {
+                        "D": {"common_mask_sha256": MASK},
+                        "V": {"common_mask_sha256": "b" * 64},
+                    }
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    (run / "input_manifest.json").write_text(
+        json.dumps(
+            {
+                "gated_manifest_sha256": "1" * 64,
+                "gated_files": 15,
+                "bar_sources_sha256": {"gate7_c6|D": "2" * 64},
+                "tape_inventory_sha256": "3" * 64,
+                "tape_fingerprint_sha256": "4" * 64,
+                "tape_files": 3717,
+                "tape_bytes": 84_600_000_000,
+            }
+        ),
         encoding="utf-8",
     )
     (run / "run_manifest.json").write_text(
@@ -86,13 +109,7 @@ def _run_dir(tmp_path: Path) -> Path:
                 "feature_registry_sha256": "d" * 64,
                 "model_config_sha256": "e" * 64,
                 "scientific_sha256": "f" * 64,
-                "steps": [
-                    {
-                        "name": "fit-model-ladder",
-                        "exit_code": 0,
-                        "artifacts": {"rp2_block8_ladder/ladder.json": "1" * 64},
-                    }
-                ],
+                "steps": [{"name": "fit-model-ladder", "exit_code": 0, "artifacts": {}}],
             }
         ),
         encoding="utf-8",
@@ -205,3 +222,61 @@ def test_the_publication_is_one_call_and_a_failure_is_recorded_separately(
         "/rest/v1/rpc/publish_rp2_v3",
         "/rest/v1/rpc/record_rp2_v3_failure",
     ], "a rollback leaves no trace, so the failure is recorded by its own call"
+
+
+def test_an_artifact_changed_since_the_run_is_refused(tmp_path: Path) -> None:
+    """The manifest is written when the run finishes; publication happens afterwards."""
+
+    from mds650.rp2.run_manifest import file_digest
+
+    module = _load("publish_rp2_v3_supabase")
+    run = _run_dir(tmp_path)
+    ladder = run / "rp2_block8_ladder" / "ladder.json"
+    manifest = json.loads((run / "run_manifest.json").read_text(encoding="utf-8"))
+    manifest["steps"] = [
+        {
+            "name": "fit-model-ladder",
+            "exit_code": 0,
+            "artifacts": {"rp2_block8_ladder/ladder.json": file_digest(ladder)},
+        }
+    ]
+    (run / "run_manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+    module.build_payload(run, branch="x", supersedes=None)
+
+    ladder.write_text(ladder.read_text(encoding="utf-8") + " ", encoding="utf-8")
+    with pytest.raises(SystemExit, match="RP2_PUBLISH_ARTIFACT_CHANGED"):
+        module.build_payload(run, branch="x", supersedes=None)
+
+
+def test_the_run_level_mask_identifies_every_role(tmp_path: Path) -> None:
+    """One role's digest under a run-level field says the other was scored on rows it never saw."""
+
+    module = _load("publish_rp2_v3_supabase")
+    payload = module.build_payload(_run_dir(tmp_path), branch="x", supersedes=None)
+    assert payload["run"]["common_mask_sha256"] not in {MASK, "b" * 64}
+
+    scorecard = {"forecast": {"gamma_glm": {"D": {"common_mask_sha256": MASK}}}}
+    only_d = module._mask_digest(scorecard)
+    both = module._mask_digest(
+        {
+            "forecast": {
+                "gamma_glm": {
+                    "D": {"common_mask_sha256": MASK},
+                    "V": {"common_mask_sha256": "b" * 64},
+                }
+            }
+        }
+    )
+    assert only_d != both
+
+
+def test_the_published_inputs_are_the_inputs(tmp_path: Path) -> None:
+    """A consumer following `ingestion_inputs` must find what the results were built on."""
+
+    module = _load("publish_rp2_v3_supabase")
+    payload = module.build_payload(_run_dir(tmp_path), branch="x", supersedes=None)
+    names = {row["input_name"] for row in payload["inputs"]}
+    assert "option_tape" in names
+    assert "gated_manifest" in names
+    assert any(name.startswith("bars_") for name in names)
+    assert not any("ladder" in name or "panel" in name for name in names)

@@ -380,9 +380,16 @@ language sql
 security invoker
 set search_path = public
 as $$
+    -- A run that already published keeps its status. Its result rows are committed and
+    -- still current, so marking it FAILED would leave the database showing current results
+    -- attributed to a run it says did not succeed. A failed attempt to publish over it is a
+    -- fact about the attempt, and it is recorded in the note.
     insert into public.ingestion_runs (run_id, started_at, status, input_count, rows_published, note)
     values (failed_run_id, now(), 'FAILED', 0, 0, reason)
-    on conflict (run_id) do update set status = 'FAILED', note = excluded.note, completed_at = now();
+    on conflict (run_id) do update set
+        status = case when public.ingestion_runs.status = 'PUBLISHED' then 'PUBLISHED' else 'FAILED' end,
+        note = excluded.note,
+        completed_at = now();
 $$;
 
 revoke all on function public.record_rp2_v3_failure(text, text) from anon, authenticated;

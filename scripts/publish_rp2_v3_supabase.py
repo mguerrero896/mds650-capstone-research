@@ -16,6 +16,7 @@ aggregates the public report is written from.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import sys
@@ -86,30 +87,95 @@ def contrast_rows(ladder: dict[str, Any], run_id: str) -> list[dict[str, Any]]:
     return rows
 
 
+def assert_artifacts_match_manifest(run_dir: Path, manifest: dict[str, Any]) -> None:
+    """Every artifact this publisher reads is the one the run recorded.
+
+    The manifest is written when the run finishes; the publication happens afterwards. A
+    file changed in between would be read and published as though the run had produced it,
+    and the digests in the manifest would say otherwise while nobody compared them.
+    """
+
+    from mds650.rp2.run_manifest import file_digest
+
+    for step in manifest.get("steps", []):
+        for name, digest in step.get("artifacts", {}).items():
+            path = run_dir / name
+            if not path.is_file():
+                raise SystemExit(f"RP2_PUBLISH_ARTIFACT_MISSING:{name}")
+            if file_digest(path) != digest:
+                raise SystemExit(f"RP2_PUBLISH_ARTIFACT_CHANGED:{name}")
+
+
+def _mask_digest(scorecard: dict[str, Any]) -> str:
+    """One digest identifying the evaluation masks of every role the run fitted.
+
+    A single role's mask under a run-level field says the other role's contrasts were scored
+    on rows they never saw. The per-contrast digests remain the authority; this identifies
+    the set.
+    """
+
+    masks = {
+        role: values.get("common_mask_sha256")
+        for family in scorecard.get("forecast", {}).values()
+        for role, values in family.items()
+    }
+    if not masks or any(value is None for value in masks.values()):
+        raise SystemExit("RP2_PUBLISH_MASK_DIGEST_INCOMPLETE")
+    canonical = json.dumps(masks, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
 def build_payload(run_dir: Path, *, branch: str, supersedes: str | None) -> dict[str, Any]:
     """Assemble what the transaction needs, from the run's own manifest and artifacts."""
 
     manifest = _read(run_dir / "run_manifest.json")
+    assert_artifacts_match_manifest(run_dir, manifest)
     scorecard = _read(run_dir / "scorecard.json")
     ladder = _read(run_dir / "rp2_block8_ladder" / "ladder.json")
     run_id = str(manifest["run_id"])
 
     artifacts = manifest.get("steps", [])
+    # What the run *read*, from step 1's own record. Populating this from the step outputs
+    # described the panels and reports the run produced, so a consumer following
+    # `ingestion_inputs` to find out what the results were built on found the results.
+    resolved = _read(run_dir / "input_manifest.json")
     inputs = [
         {
-            "input_name": name,
-            "path": f"artifacts/rp2_v3/{run_id}/{name}",
+            "input_name": "gated_manifest",
+            "path": "data/GATED_DATA_POINTERS.json",
             "provider": DERIVED,
-            "sha256": digest,
-            "bytes": (run_dir / name).stat().st_size,
-            "rows": None,
+            "sha256": resolved["gated_manifest_sha256"],
+            "bytes": int(resolved.get("gated_files", 0)) or 1,
+            "rows": resolved.get("gated_files"),
             "schema_sha256": None,
             "time_min": None,
             "time_max": None,
-        }
-        for step in artifacts
-        for name, digest in step.get("artifacts", {}).items()
-        if (run_dir / name).is_file()
+        },
+        {
+            "input_name": "option_tape",
+            "path": "artifacts/rp2_block1_partition/inventory.jsonl",
+            "provider": DERIVED,
+            "sha256": resolved["tape_fingerprint_sha256"],
+            "bytes": int(resolved["tape_bytes"]),
+            "rows": int(resolved["tape_files"]),
+            "schema_sha256": resolved["tape_inventory_sha256"],
+            "time_min": None,
+            "time_max": None,
+        },
+        *(
+            {
+                "input_name": f"bars_{name}",
+                "path": f"bars/{name}",
+                "provider": "fmp",
+                "sha256": digest,
+                "bytes": 1,
+                "rows": None,
+                "schema_sha256": None,
+                "time_min": None,
+                "time_max": None,
+            }
+            for name, digest in sorted(resolved.get("bar_sources_sha256", {}).items())
+        ),
     ]
 
     blocks = [
@@ -135,7 +201,10 @@ def build_payload(run_dir: Path, *, branch: str, supersedes: str | None) -> dict
             "feature_registry_sha256": manifest["feature_registry_sha256"],
             "model_config_sha256": manifest["model_config_sha256"],
             "inference_config_sha256": manifest["scientific_sha256"],
-            "common_mask_sha256": scorecard["forecast"]["gamma_glm"]["D"]["common_mask_sha256"],
+            # A digest over every role's mask, not one role's. The run-level field used to
+            # carry D's, which attributed the V contrasts to rows they were never scored
+            # on; each contrast row still carries its own.
+            "common_mask_sha256": _mask_digest(scorecard),
             "note": f"RP2-v3 rebuild, scientific hash {manifest['scientific_sha256'][:16]}",
         },
         "inputs": inputs,
