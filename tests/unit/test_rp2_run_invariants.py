@@ -161,7 +161,6 @@ def test_the_scorecard_does_not_change_between_identical_runs(tmp_path: Path) ->
     """
 
     from mds650.rp2.run_manifest import stable_content_digest
-
     from mds650.rp2.scorecard import render_scorecard
 
     def scorecard(runtime: float, digest: str) -> dict[str, object]:
