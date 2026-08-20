@@ -365,6 +365,30 @@ def assert_scorecard_complete(scorecard: Mapping[str, Any]) -> None:
             missing.append(f"forecast.{field}:unmeasured")
     if missing:
         raise ValueError("RP2_SCORECARD_INCOMPLETE:" + ",".join(sorted(missing)))
+    assert_scorecard_invariants(scorecard)
+
+
+#: Fields whose only admissible value is zero. They are zero by construction - the
+#: selections are searchsorted at the availability cutoff, and the panel key is unique -
+#: which is why a nonzero one is a regression rather than a datum, and why measuring them
+#: without checking them would be a counter nobody reads.
+_ZERO_INVARIANTS: Final = (
+    ("data", "duplicate_keys"),
+    ("b1", "b1_post_cutoff_observations"),
+    ("b2", "b2_pit_violation_count"),
+)
+
+
+def assert_scorecard_invariants(scorecard: Mapping[str, Any]) -> None:
+    """The counters that must be zero are zero, and the run stops if one is not."""
+
+    breaches = [
+        f"{group}.{field}={scorecard.get(group, {}).get(field)}"
+        for group, field in _ZERO_INVARIANTS
+        if scorecard.get(group, {}).get(field)
+    ]
+    if breaches:
+        raise ValueError("RP2_SCORECARD_INVARIANT_BREACH:" + ",".join(breaches))
 
 
 def render_scorecard(scorecard: Mapping[str, Any]) -> str:

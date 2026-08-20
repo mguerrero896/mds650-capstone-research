@@ -29,6 +29,7 @@ from collections.abc import Sequence
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
+from typing import Final
 from zoneinfo import ZoneInfo
 
 import numpy as np
@@ -57,6 +58,17 @@ DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_block6_flow"
 INVENTORY = ROOT / "artifacts" / "rp2_block1_partition" / "inventory.jsonl"
 CUTOFF_SECONDS = 120
 WINDOWS: tuple[tuple[str, int], ...] = (("5m", 300), ("30m", 1800))
+#: Window used for the per-origin *counters* the scorecard sums. It matches the origin
+#: spacing so the windows tile the session and no trade is counted twice.
+COUNTING_WINDOW_SECONDS: Final = 300
+
+
+def window_count(flags: npt.NDArray[np.bool_], low: int, high: int) -> int:
+    """How many flagged trades fall inside one origin's counting window."""
+
+    if high <= low:
+        return 0
+    return int(np.count_nonzero(flags[low:high]))
 #: Concentration statistics are not prefix-summable; they are computed on this window only.
 CONCENTRATION_WINDOW = "5m"
 CALENDAR_YEAR = 365.0
@@ -468,10 +480,18 @@ def build_session_flow(
         cutoff_us = int(cutoffs_us[position])
         hi = int(visible[position])
         record: dict[str, float] = {"origin_minute": float(minute)}
-        # Trades selected as visible whose provider record was created after the
-        # availability cutoff. Zero by construction; counted so the claim is a measurement.
-        record["b2_pit_violations"] = float(np.count_nonzero(created[:hi] > cutoff_us))
-        record["b2_zero_dte_trades"] = float(np.count_nonzero(is_zero_dte[:hi]))
+        # Counted inside the five-minute window rather than since the open. Origins are
+        # five minutes apart and the windows are anchored at the availability cutoff, so
+        # the five-minute windows tile the session: summing these over origins counts each
+        # trade at most once. A running total from the open, summed the same way, would
+        # count the first trade of the day once for every origin that followed it.
+        counting_lo = int(
+            np.searchsorted(created, cutoff_us - COUNTING_WINDOW_SECONDS * 1_000_000, side="left")
+        )
+        record["b2_pit_violations"] = float(
+            np.count_nonzero(created[counting_lo:hi] > cutoff_us)
+        )
+        record["b2_zero_dte_trades"] = float(window_count(is_zero_dte, counting_lo, hi))
         for label, window_seconds in WINDOWS:
             lo_us = cutoff_us - window_seconds * 1_000_000
             lo = int(np.searchsorted(created, lo_us, side="left"))

@@ -25,7 +25,7 @@ import json
 import subprocess
 import sys
 import time
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Final
@@ -116,6 +116,42 @@ def _code_commit() -> str:
     ).stdout.strip()
 
 
+def assert_worktree_clean(status: str | None = None) -> None:
+    """`rev-parse HEAD` names a commit; the subprocesses run the working tree.
+
+    With uncommitted changes to tracked files those are different things, and the manifest
+    would attribute the artifacts to code that did not produce them. Untracked files are
+    not the code that ran and are left alone.
+    """
+
+    if status is None:  # pragma: no cover - exercised through the injected value
+        status = subprocess.run(  # noqa: S603
+            ["git", "status", "--porcelain"], cwd=ROOT, capture_output=True, text=True, check=True
+        ).stdout
+    dirty = [
+        line for line in status.splitlines() if line.strip() and not line.startswith("??")
+    ]
+    if dirty:
+        raise SystemExit("RP2_RUN_WORKTREE_DIRTY:" + ",".join(line[3:] for line in dirty[:5]))
+
+
+def assert_tape_covers_panel(
+    tape_keys: set[tuple[str, str]], panel_keys: set[tuple[str, str]]
+) -> None:
+    """Every session-asset the baseline emits has a tape for Blocks 5 and 6 to read.
+
+    Proving the inventory's paths exist says nothing about whether the inventory covers the
+    panel. A missing key is not an error in Block 5 - it skips that session-asset - so the
+    B1 and B2 rows simply never appear and the common mask drops the origins without
+    anything recording why the sample shrank.
+    """
+
+    gaps = sorted(panel_keys - tape_keys)
+    if gaps:
+        listed = ",".join(f"{asset}@{session}" for asset, session in gaps[:5])
+        raise SystemExit(f"RP2_RUN_TAPE_COVERAGE_GAP:{len(gaps)}:{listed}")
+
+
 def run_step(name: str, command: Sequence[str], run_dir: Path) -> StepRecord:
     """Run one step, timing it, and refuse to accept a step that did not write its outputs."""
 
@@ -190,7 +226,7 @@ def _tape_fingerprint(paths: Sequence[Path], *, hash_contents: bool) -> tuple[st
 
 def validate_inputs(
     run_dir: Path, *, data_root: Path, forbid_sealed: bool, hash_tape_contents: bool = False
-) -> str:
+) -> tuple[dict[str, object], str]:
     """Step 1: everything the run will actually read exists, and is identified.
 
     Three sets of files, not one. The gated pointers are hashed byte for byte, because they
@@ -236,7 +272,7 @@ def validate_inputs(
     tape_digest, tape_files, tape_bytes = _tape_fingerprint(
         tape, hash_contents=hash_tape_contents
     )
-    record = {
+    record: dict[str, object] = {
         "gated_manifest_sha256": manifest_digest,
         "gated_files": len(payload.get("files", [])),
         "bar_sources_sha256": bar_digests,
@@ -246,12 +282,45 @@ def validate_inputs(
         "tape_files": tape_files,
         "tape_bytes": tape_bytes,
     }
-    (run_dir / "input_manifest.json").write_text(
-        json.dumps(record, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-    )
-    # The digest the manifest carries covers all three sets, so changing any real input
-    # moves it.
-    return hashlib.sha256(canonical_json(record).encode("utf-8")).hexdigest()
+    # Deliberately not written here. Writing the new manifest before the identity has been
+    # compared would destroy the record of the previous run's inputs, which is the very
+    # thing the comparison needs to read.
+    #
+    # The digest covers all three sets, so changing any real input moves it.
+    return record, hashlib.sha256(canonical_json(record).encode("utf-8")).hexdigest()
+
+
+def write_input_manifest(run_dir: Path, record: Mapping[str, object]) -> Path:
+    """Persist step 1's findings, once the run is known to be the run it claims to be."""
+
+    path = run_dir / "input_manifest.json"
+    path.write_text(json.dumps(record, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return path
+
+
+def _tape_keys() -> set[tuple[str, str]]:
+    """Every session-asset the option-tape inventory holds a file for."""
+
+    keys: set[tuple[str, str]] = set()
+    with TAPE_INVENTORY.open("r", encoding="utf-8") as handle:
+        for line in handle:
+            line = line.strip()
+            if not line:
+                continue
+            record = json.loads(line)
+            keys.add((str(record["asset"]), str(record["session_date"])))
+    return keys
+
+
+def _panel_keys(run_dir: Path) -> set[tuple[str, str]]:
+    """Every session-asset the baseline panel emitted, which Blocks 5 and 6 must cover."""
+
+    import polars as pl
+
+    from mds650.rp2.panel import panel_paths
+
+    frame = pl.read_parquet(panel_paths(run_dir)["b0"], columns=["asset", "session_date"]).unique()
+    return {(str(asset), str(session)) for asset, session in frame.iter_rows()}
 
 
 def assert_partition_matches(run_dir: Path) -> None:
@@ -411,6 +480,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             print(f"{index:2d}. {step.name} - {step.description}")
         return 0
 
+    # The manifest is about to name a commit. If the working tree has uncommitted changes
+    # to tracked files, the subprocesses run something else, and the name would be wrong.
+    assert_worktree_clean()
+
     # The producers fit both roles unconditionally. Accepting `--roles D` would produce a
     # manifest claiming a D-only run beside artifacts containing V, which is a lie the
     # manifest would carry for good.
@@ -455,7 +528,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     assert_run_identity_unchanged(run_dir, identity)
 
     steps: list[StepRecord] = []
-    manifest_digest = validate_inputs(
+    input_record, manifest_digest = validate_inputs(
         run_dir,
         data_root=Path(args.data_root),
         forbid_sealed=args.forbid_sealed_cohorts,
@@ -485,6 +558,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         ),
     )
 
+    write_input_manifest(run_dir, input_record)
     steps.append(
         StepRecord(
             name="validate-input-manifests",
@@ -557,6 +631,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         steps.append(run_step(name, command, run_dir))
 
     assert_partition_matches(run_dir)
+    assert_tape_covers_panel(_tape_keys(), _panel_keys(run_dir))
 
     # Steps 6 and 7 run in this process against the panels this run just built. Shelling
     # out to an import would prove the configuration parses, which is not the question
