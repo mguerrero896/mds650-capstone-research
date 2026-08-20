@@ -195,15 +195,22 @@ def run_role(
             "information_sets": information_sets,
         }
 
+    role_frame = frame
     frame = frame.filter(pl.Series(keep))
     target = target[keep]
     designs = {name: design[keep] for name, design in designs.items()}
     sessions_rank = session_rank(frame["session_date"].to_numpy())
     train, test = chronological_split(sessions_rank, train_share=train_share)
     # The floor holds on the panel and on this role; it also has to hold on the two
-    # segments this run fits and scores, which is where a held-out tail with a gap in
-    # it would otherwise become a result.
-    assert_segment_coverage(frame, {"train": train, "test": test}, *CORE_SETS.values())
+    # segments this run fits and scores, which is where a held-out tail with a gap in it
+    # would otherwise become a result. The masks are lifted back onto the unfiltered role
+    # frame: checking them on the frame the common mask has already pruned would be
+    # checking that the rows which survived are the rows which survived.
+    assert_segment_coverage(
+        role_frame,
+        {"train": lift_mask(keep, train), "test": lift_mask(keep, test)},
+        *CORE_SETS.values(),
+    )
     information_sets = {
         name: describe_information_set((name,), resolved[name], lift_mask(keep, test))
         for name in INFORMATION_SETS

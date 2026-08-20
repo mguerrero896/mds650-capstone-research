@@ -320,6 +320,7 @@ def test_the_floor_is_enforced_within_each_role_not_across_them() -> None:
 
 #: Every block that splits its role chronologically and therefore fits and scores segments.
 SPLIT_BLOCKS: tuple[str, ...] = (
+    "rp2_ext12_level4_and_tensor",
     "rp2_block8_ladder",
     "rp2_block9_generalization",
     "rp2_block10_inference",
@@ -360,3 +361,23 @@ def test_every_splitting_block_checks_its_own_segments() -> None:
         )
     ]
     assert not missing, f"blocks that split without checking the segments: {missing}"
+
+
+NL = chr(10)
+
+
+def test_the_segment_check_runs_on_the_unfiltered_frame() -> None:
+    """Otherwise it checks that the rows which survived the mask survived the mask.
+
+    Most blocks filter the role frame by the common mask before splitting it. Checking
+    coverage on that frame is vacuous — every core feature is finite there by construction —
+    so a held-out tail that was below the floor passes after its incomplete rows have
+    already been discarded.
+    """
+
+    for name in SPLIT_BLOCKS:
+        source = (REPO / "scripts" / f"{name}.py").read_text(encoding="utf-8")
+        assert "role_frame = frame" in source, name
+        assert "assert_segment_coverage(" + NL + "        role_frame," in source, name
+        assert "lift_mask(keep, train)" in source and "lift_mask(keep, test)" in source, name
+        assert 'assert_segment_coverage(frame,' not in source, name
