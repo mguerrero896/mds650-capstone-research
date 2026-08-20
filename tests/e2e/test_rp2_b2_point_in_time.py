@@ -112,6 +112,28 @@ def test_an_unreadable_tape_is_reported_rather_than_fatal() -> None:
     assert block6._read_tape(["no/such/file.parquet"], "AAPL") is None
 
 
+def test_a_readable_tape_with_no_qualifying_prints_is_not_a_provider_failure(
+    tmp_path: object,
+) -> None:
+    """Nobody traded is a fact about the market, not the provider being broken."""
+
+    import polars as pl
+
+    block6 = _load("rp2_block6_flow_panel")
+    path = Path(str(tmp_path)) / "empty.parquet"
+    pl.DataFrame(
+        {name: pl.Series(name, [], dtype=pl.Utf8) for name in block6.TAPE_COLUMNS}
+    ).with_columns(
+        size=pl.lit(None, pl.Float64),
+        strike=pl.lit(None, pl.Float64),
+        implied_volatility=pl.lit(None, pl.Float64),
+    ).write_parquet(path)
+
+    tape = block6._read_tape([str(path)], "AAPL")
+    assert tape is not None, "a readable file with nothing in it is not an I/O failure"
+    assert tape.height == 0
+
+
 def test_the_intensity_is_evaluated_at_each_cutoff_over_visible_rows() -> None:
     """Ageing on the exchange clock is only half of it; availability is the other half.
 

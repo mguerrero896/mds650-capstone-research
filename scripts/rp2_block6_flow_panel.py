@@ -105,6 +105,10 @@ def _read_tape(paths: Sequence[str], asset: str) -> pl.DataFrame | None:
     A file that will not open is the provider failure this block reports. Letting it raise
     would abort the whole rebuild over one bad file and, worse, would mean the published
     failure count could only ever be zero.
+
+    A file that opens and holds nothing for this asset returns an **empty frame**, not
+    ``None``: nobody traded is a fact about the market and must not be counted as the
+    provider being broken.
     """
 
     try:
@@ -123,7 +127,7 @@ def _read_tape(paths: Sequence[str], asset: str) -> pl.DataFrame | None:
         & pl.col("strike").is_not_null()
         & pl.col("implied_volatility").is_between(0.01, 5.0)
     )
-    return tape.sort("created_at") if tape.height else None
+    return tape.sort("created_at")
 
 
 def _prefix(values: FloatArray) -> FloatArray:
