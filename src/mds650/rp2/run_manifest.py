@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
@@ -399,7 +400,10 @@ def assert_inventory_is_frozen(inventory: Path, partition: Path) -> None:
 
     recorded = str(json.loads(partition.read_text(encoding="utf-8")).get("inventory_sha256", ""))
     if not recorded:
-        return
+        # A partition regenerated without the binding would otherwise accept any inventory,
+        # and the inventory is where the expected sessions come from. An absent digest is
+        # not a permissive one.
+        raise ValueError(f"RP2_RUN_PARTITION_UNBOUND:{partition.name}")
     actual = normalised_digest(inventory)
     if actual != recorded:
         raise ValueError(f"RP2_RUN_INVENTORY_NOT_FROZEN:{actual[:12]}!={recorded[:12]}")
@@ -499,7 +503,12 @@ def write_run_identity(run_dir: Path, manifest: RunManifest) -> Path:
 
     path = run_dir / IDENTITY_FILE
     payload = json.dumps(manifest.identity_part(), indent=2, sort_keys=True)
-    path.write_text(payload + "\n", encoding="utf-8")
+    # Staged and renamed, for the same reason as the manifest and with a worse consequence:
+    # a half-written marker is read as an unreadable identity, and on a `--skip-panels`
+    # resume that closes the run id against the panels the resume exists to reuse.
+    staging = path.with_suffix(".json.partial")
+    staging.write_text(payload + "\n", encoding="utf-8")
+    os.replace(staging, path)
     return path
 
 
@@ -550,7 +559,12 @@ def write_manifest(run_dir: Path, manifest: RunManifest) -> Path:
         existing = json.loads(path.read_text(encoding="utf-8"))
         if existing.get("scientific_sha256") != manifest.as_record()["scientific_sha256"]:
             raise ValueError(f"RP2_RUN_MANIFEST_CONFLICT:{manifest.run_id}")
-    path.write_text(payload, encoding="utf-8")
+    # Written whole or not at all. This file is what marks a run complete and what a resume
+    # is held to; a truncated one is read as an unreadable identity and closes the run id
+    # against every later attempt.
+    staging = path.with_suffix(".json.partial")
+    staging.write_text(payload, encoding="utf-8")
+    os.replace(staging, path)
     return path
 
 

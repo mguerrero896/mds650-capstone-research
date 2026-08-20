@@ -660,16 +660,18 @@ def build_scorecard(
     from mds650.rp2.scorecard import assemble_scorecard, render_scorecard
 
     scorecard = assemble_scorecard(run_dir, manifest, elapsed_seconds=0.0)
-    # Sampled here rather than at the call site: the parquet reads, the completeness checks
-    # and the rendering all happen inside the assembly, and an argument evaluated before it
-    # would exclude every one of them.
+    # Rendered before the clock is read, so the parquet reads, the completeness checks and
+    # the rendering are all inside the measurement. Only the two writes below fall outside
+    # it, and the rendered document points at the manifest for the runtime rather than
+    # printing it, so updating the figure afterwards cannot make the two disagree.
+    rendered = render_scorecard(scorecard)
     engineering = scorecard["engineering"]
     assert isinstance(engineering, dict)
     engineering["runtime_seconds"] = round(time.perf_counter() - started_at, 3)
     (run_dir / "scorecard.json").write_text(
         json.dumps(scorecard, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
-    (run_dir / "scorecard.md").write_text(render_scorecard(scorecard), encoding="utf-8")
+    (run_dir / "scorecard.md").write_text(rendered, encoding="utf-8")
     return scorecard
 
 
