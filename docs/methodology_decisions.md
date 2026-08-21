@@ -1147,3 +1147,61 @@ Spec Kit consistency and preregistration gates pass.
     The ladder's published levels still predate the session weighting: that producer has not
     been re-run here, and no number depending on those levels should be published until it
     is.
+
+90. **The section 21 verdict is restated on a repaired baseline, and its one refutation is
+    withdrawn (2026-08-22)** — `rp2-v3-20260822-054000`, scientific hash `07456efcd4bce4ec` at
+    commit `7225fdf`, thirteen steps, supersedes `rp2-v3-20260821-134741`.
+
+    The published page claimed that `ridge_log` **refuted** the development effect:
+    "validation was powered to see a development-sized effect and did not. That is evidence of
+    absence rather than absence of evidence." That claim rested on a development baseline in
+    which three B0 features were fabricated zeros on 15 % of the rows (decision 89). With the
+    baseline repaired, the development effect falls below validation's own minimum detectable
+    effect and the claim does not survive:
+
+    | Family | Effect in D, before → after | MDE in V | Detectable |
+    | --- | ---: | ---: | --- |
+    | `ridge_log` | +0.00424 → **+0.00250** | 0.00268 | **yes → no**, ~37 sessions needed, 32 available |
+    | `gamma_glm` | +0.00408 → **+0.00234** | 0.00413 | no → no, ~100 needed |
+    | `lightgbm_qlike` | +0.00381 → **+0.00314** | 0.01770 | no → no, ~1019 needed |
+
+    **No family refutes.** Validation is unchanged to the digit in all three, which is the
+    control: no deficient bar store supplied it. Every validation null on this page is
+    therefore absence of evidence rather than evidence of absence, and the page now says so.
+
+    Result C still stands on its own criterion — ΔB1 is negative in validation for two of the
+    three families, on a contemporaneous B1 with core coverage 0.9934 and zero post-cutoff
+    observations. What is withdrawn is the strength the previous page claimed for it. The
+    "not D" argument also loses one of its two grounds; the surviving one, `gamma_glm`'s
+    validation B2-over-B1 interval excluding zero, is stated together with its measured
+    empirical coverage of 0.784 against a nominal 0.95, so a reader is not left to assume the
+    interval reads as tightly as its label.
+
+    Two counts moved with the rebuild, from eight to **seven** intervals containing zero and
+    from ten to **nine** contrasts below their own MDE, because a new contrast appeared:
+    `lightgbm_qlike`'s development B2-over-B1 is now +0.00113 with an interval
+    [+0.00042, +0.00188] excluding zero — the only positive B2 increment in the twelve.
+
+    Seventy-four of 162 comparable scorecard fields moved, which is what four corrections to
+    the science should do. One of them is not a change in the data and is labelled as such:
+    `b2_p95_provider_latency_s` reads 0.3555 s against 0.2802 s, and those are **adjacent
+    edges of the same log-spaced bin**, 26.9 % wide. A 0.12 % shift in counted trades crossed
+    the boundary and the reported figure moved by a full bin. The value is the bin's lower
+    edge, so the tail is at least 0.3555 s and below 0.4508 s; nothing on the page depends on
+    it, and the page says that rather than presenting the figure as resolved.
+
+    The tables on the verdict page are now emitted by `scripts/rp2_verdict_tables.py` rather
+    than transcribed, validated by reproducing the previous published page row for row before
+    being used here. `tests/contract/test_verdict_matches_artifact.py` reads the three counts
+    out of the document's own prose instead of pinning them as literals — a test that has to
+    be edited to keep a document honest will eventually be edited to agree with it — and it
+    now also verifies the before/after table against **both** runs, so the claim that
+    validation did not move is checked rather than asserted.
+
+    Two things about how this was written, recorded because each was a real failure. A
+    generated string in the contract test lost an escape and produced an unterminated literal;
+    `tests/contract/test_source_integrity.py`, added for exactly that class after it had
+    happened twice before, caught it as `unterminated string literal (detected at line 259)`
+    rather than letting it ship. And the verdict's table parser refused the new before/after
+    table instead of skipping the rows it could not read, which is what sent that table to be
+    checked rather than ignored.

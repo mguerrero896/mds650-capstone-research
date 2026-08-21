@@ -1,0 +1,470 @@
+{
+  "block": 5,
+  "constant_maturities_days": [
+    7,
+    14,
+    30,
+    60,
+    90
+  ],
+  "coverage": {
+    "b1_butterfly_25": {
+      "coverage": 0.9934247584384072,
+      "median": -0.0005803487788025308
+    },
+    "b1_butterfly_violations": {
+      "coverage": 0.9978281121365744,
+      "median": 2.0
+    },
+    "b1_calendar_violations": {
+      "coverage": 0.9978281121365744,
+      "median": 1.0
+    },
+    "b1_contracts": {
+      "coverage": 1.0,
+      "median": 680.0
+    },
+    "b1_duplicate_contracts_remaining": {
+      "coverage": 1.0,
+      "median": 0.0
+    },
+    "b1_expiries": {
+      "coverage": 0.9978281121365744,
+      "median": 21.0
+    },
+    "b1_forward_expiries_fitted": {
+      "coverage": 0.9978281121365744,
+      "median": 9.0
+    },
+    "b1_implied_dividend_yield": {
+      "coverage": 0.5694624983751463,
+      "median": -0.015271222904750087
+    },
+    "b1_implied_rate": {
+      "coverage": 0.5694624983751463,
+      "median": 0.026737919697613646
+    },
+    "b1_iv_14d": {
+      "coverage": 0.9978281121365744,
+      "median": 0.3378768358041797
+    },
+    "b1_iv_30d": {
+      "coverage": 0.9978281121365744,
+      "median": 0.3446087496658776
+    },
+    "b1_iv_60d": {
+      "coverage": 0.9978281121365744,
+      "median": 0.3523513618700465
+    },
+    "b1_iv_7d": {
+      "coverage": 0.9978281121365744,
+      "median": 0.34622293355815853
+    },
+    "b1_iv_90d": {
+      "coverage": 0.9978281121365744,
+      "median": 0.35765033178563443
+    },
+    "b1_iv_minus_trailing_rv_30d": {
+      "coverage": 0.9978281121365744,
+      "median": 0.06758317930504704
+    },
+    "b1_max_log_moneyness": {
+      "coverage": 0.9978281121365744,
+      "median": 0.6916323969548628
+    },
+    "b1_median_quote_age_s": {
+      "coverage": 0.9978281121365744,
+      "median": 578.753286
+    },
+    "b1_median_relative_spread": {
+      "coverage": 0.9978281121365744,
+      "median": 0.015873015873015817
+    },
+    "b1_mfiv": {
+      "coverage": 0.9978226959573638,
+      "median": 0.12859216880691254
+    },
+    "b1_min_log_moneyness": {
+      "coverage": 0.9978281121365744,
+      "median": -1.8625564304245794
+    },
+    "b1_p95_quote_age_s": {
+      "coverage": 0.9978281121365744,
+      "median": 1723.9153418499998
+    },
+    "b1_pcp_residual": {
+      "coverage": 0.8918497335239829,
+      "median": 0.0005853931128308542
+    },
+    "b1_post_cutoff_selected": {
+      "coverage": 1.0,
+      "median": 0.0
+    },
+    "b1_quote_age_bin_0": {
+      "coverage": 0.9978281121365744,
+      "median": 0.0
+    },
+    "b1_quote_age_bin_1": {
+      "coverage": 0.9978281121365744,
+      "median": 0.0
+    },
+    "b1_quote_age_bin_10": {
+      "coverage": 0.9978281121365744,
+      "median": 20.0
+    },
+    "b1_quote_age_bin_11": {
+      "coverage": 0.9978281121365744,
+      "median": 18.0
+    },
+    "b1_quote_age_bin_12": {
+      "coverage": 0.9978281121365744,
+      "median": 18.0
+    },
+    "b1_quote_age_bin_13": {
+      "coverage": 0.9978281121365744,
+      "median": 15.0
+    },
+    "b1_quote_age_bin_14": {
+      "coverage": 0.9978281121365744,
+      "median": 14.0
+    },
+    "b1_quote_age_bin_15": {
+      "coverage": 0.9978281121365744,
+      "median": 14.0
+    },
+    "b1_quote_age_bin_16": {
+      "coverage": 0.9978281121365744,
+      "median": 13.0
+    },
+    "b1_quote_age_bin_17": {
+      "coverage": 0.9978281121365744,
+      "median": 13.0
+    },
+    "b1_quote_age_bin_18": {
+      "coverage": 0.9978281121365744,
+      "median": 12.0
+    },
+    "b1_quote_age_bin_19": {
+      "coverage": 0.9978281121365744,
+      "median": 12.0
+    },
+    "b1_quote_age_bin_2": {
+      "coverage": 0.9978281121365744,
+      "median": 0.0
+    },
+    "b1_quote_age_bin_20": {
+      "coverage": 0.9978281121365744,
+      "median": 11.0
+    },
+    "b1_quote_age_bin_21": {
+      "coverage": 0.9978281121365744,
+      "median": 11.0
+    },
+    "b1_quote_age_bin_22": {
+      "coverage": 0.9978281121365744,
+      "median": 10.0
+    },
+    "b1_quote_age_bin_23": {
+      "coverage": 0.9978281121365744,
+      "median": 10.0
+    },
+    "b1_quote_age_bin_24": {
+      "coverage": 0.9978281121365744,
+      "median": 10.0
+    },
+    "b1_quote_age_bin_25": {
+      "coverage": 0.9978281121365744,
+      "median": 9.0
+    },
+    "b1_quote_age_bin_26": {
+      "coverage": 0.9978281121365744,
+      "median": 9.0
+    },
+    "b1_quote_age_bin_27": {
+      "coverage": 0.9978281121365744,
+      "median": 9.0
+    },
+    "b1_quote_age_bin_28": {
+      "coverage": 0.9978281121365744,
+      "median": 8.0
+    },
+    "b1_quote_age_bin_29": {
+      "coverage": 0.9978281121365744,
+      "median": 8.0
+    },
+    "b1_quote_age_bin_3": {
+      "coverage": 0.9978281121365744,
+      "median": 0.0
+    },
+    "b1_quote_age_bin_30": {
+      "coverage": 0.9978281121365744,
+      "median": 8.0
+    },
+    "b1_quote_age_bin_31": {
+      "coverage": 0.9978281121365744,
+      "median": 8.0
+    },
+    "b1_quote_age_bin_32": {
+      "coverage": 0.9978281121365744,
+      "median": 8.0
+    },
+    "b1_quote_age_bin_33": {
+      "coverage": 0.9978281121365744,
+      "median": 8.0
+    },
+    "b1_quote_age_bin_34": {
+      "coverage": 0.9978281121365744,
+      "median": 8.0
+    },
+    "b1_quote_age_bin_35": {
+      "coverage": 0.9978281121365744,
+      "median": 7.0
+    },
+    "b1_quote_age_bin_36": {
+      "coverage": 0.9978281121365744,
+      "median": 8.0
+    },
+    "b1_quote_age_bin_37": {
+      "coverage": 0.9978281121365744,
+      "median": 7.0
+    },
+    "b1_quote_age_bin_38": {
+      "coverage": 0.9978281121365744,
+      "median": 7.0
+    },
+    "b1_quote_age_bin_39": {
+      "coverage": 0.9978281121365744,
+      "median": 7.0
+    },
+    "b1_quote_age_bin_4": {
+      "coverage": 0.9978281121365744,
+      "median": 0.0
+    },
+    "b1_quote_age_bin_40": {
+      "coverage": 0.9978281121365744,
+      "median": 6.0
+    },
+    "b1_quote_age_bin_41": {
+      "coverage": 0.9978281121365744,
+      "median": 7.0
+    },
+    "b1_quote_age_bin_42": {
+      "coverage": 0.9978281121365744,
+      "median": 6.0
+    },
+    "b1_quote_age_bin_43": {
+      "coverage": 0.9978281121365744,
+      "median": 6.0
+    },
+    "b1_quote_age_bin_44": {
+      "coverage": 0.9978281121365744,
+      "median": 6.0
+    },
+    "b1_quote_age_bin_45": {
+      "coverage": 0.9978281121365744,
+      "median": 6.0
+    },
+    "b1_quote_age_bin_46": {
+      "coverage": 0.9978281121365744,
+      "median": 6.0
+    },
+    "b1_quote_age_bin_47": {
+      "coverage": 0.9978281121365744,
+      "median": 6.0
+    },
+    "b1_quote_age_bin_48": {
+      "coverage": 0.9978281121365744,
+      "median": 6.0
+    },
+    "b1_quote_age_bin_49": {
+      "coverage": 0.9978281121365744,
+      "median": 5.0
+    },
+    "b1_quote_age_bin_5": {
+      "coverage": 0.9978281121365744,
+      "median": 13.0
+    },
+    "b1_quote_age_bin_50": {
+      "coverage": 0.9978281121365744,
+      "median": 5.0
+    },
+    "b1_quote_age_bin_51": {
+      "coverage": 0.9978281121365744,
+      "median": 5.0
+    },
+    "b1_quote_age_bin_52": {
+      "coverage": 0.9978281121365744,
+      "median": 5.0
+    },
+    "b1_quote_age_bin_53": {
+      "coverage": 0.9978281121365744,
+      "median": 5.0
+    },
+    "b1_quote_age_bin_54": {
+      "coverage": 0.9978281121365744,
+      "median": 5.0
+    },
+    "b1_quote_age_bin_55": {
+      "coverage": 0.9978281121365744,
+      "median": 5.0
+    },
+    "b1_quote_age_bin_56": {
+      "coverage": 0.9978281121365744,
+      "median": 5.0
+    },
+    "b1_quote_age_bin_57": {
+      "coverage": 0.9978281121365744,
+      "median": 5.0
+    },
+    "b1_quote_age_bin_58": {
+      "coverage": 0.9978281121365744,
+      "median": 5.0
+    },
+    "b1_quote_age_bin_59": {
+      "coverage": 0.9978281121365744,
+      "median": 5.0
+    },
+    "b1_quote_age_bin_6": {
+      "coverage": 0.9978281121365744,
+      "median": 44.0
+    },
+    "b1_quote_age_bin_60": {
+      "coverage": 0.9978281121365744,
+      "median": 5.0
+    },
+    "b1_quote_age_bin_61": {
+      "coverage": 0.9978281121365744,
+      "median": 5.0
+    },
+    "b1_quote_age_bin_62": {
+      "coverage": 0.9978281121365744,
+      "median": 5.0
+    },
+    "b1_quote_age_bin_63": {
+      "coverage": 0.9978281121365744,
+      "median": 5.0
+    },
+    "b1_quote_age_bin_64": {
+      "coverage": 0.9978281121365744,
+      "median": 5.0
+    },
+    "b1_quote_age_bin_65": {
+      "coverage": 0.9978281121365744,
+      "median": 5.0
+    },
+    "b1_quote_age_bin_66": {
+      "coverage": 0.9978281121365744,
+      "median": 4.0
+    },
+    "b1_quote_age_bin_67": {
+      "coverage": 0.9978281121365744,
+      "median": 5.0
+    },
+    "b1_quote_age_bin_68": {
+      "coverage": 0.9978281121365744,
+      "median": 4.0
+    },
+    "b1_quote_age_bin_69": {
+      "coverage": 0.9978281121365744,
+      "median": 4.0
+    },
+    "b1_quote_age_bin_7": {
+      "coverage": 0.9978281121365744,
+      "median": 31.0
+    },
+    "b1_quote_age_bin_70": {
+      "coverage": 0.9978281121365744,
+      "median": 4.0
+    },
+    "b1_quote_age_bin_71": {
+      "coverage": 0.9978281121365744,
+      "median": 4.0
+    },
+    "b1_quote_age_bin_72": {
+      "coverage": 0.9978281121365744,
+      "median": 5.0
+    },
+    "b1_quote_age_bin_73": {
+      "coverage": 0.9978281121365744,
+      "median": 20.0
+    },
+    "b1_quote_age_bin_8": {
+      "coverage": 0.9978281121365744,
+      "median": 25.0
+    },
+    "b1_quote_age_bin_9": {
+      "coverage": 0.9978281121365744,
+      "median": 22.0
+    },
+    "b1_quote_duplicates_dropped": {
+      "coverage": 1.0,
+      "median": 8689.0
+    },
+    "b1_risk_reversal_25": {
+      "coverage": 0.9934247584384072,
+      "median": -0.008914196635511101
+    },
+    "b1_rows_dropped_for_rate_or_dividend": {
+      "coverage": 1.0,
+      "median": 0.0
+    },
+    "b1_smile_curvature": {
+      "coverage": 0.9978281121365744,
+      "median": 1.1192497368632612
+    },
+    "b1_smile_level": {
+      "coverage": 0.9978281121365744,
+      "median": 0.34347833364074026
+    },
+    "b1_smile_residual": {
+      "coverage": 0.9978281121365744,
+      "median": 0.021569772891198172
+    },
+    "b1_smile_slope": {
+      "coverage": 0.9978281121365744,
+      "median": -0.20735375800073494
+    },
+    "b1_spans_call_wing": {
+      "coverage": 0.9978281121365744,
+      "median": 1.0
+    },
+    "b1_spans_put_wing": {
+      "coverage": 0.9978281121365744,
+      "median": 1.0
+    },
+    "b1_strikes": {
+      "coverage": 0.9978281121365744,
+      "median": 103.0
+    },
+    "b1_surface_coverage": {
+      "coverage": 1.0,
+      "median": 1.0
+    },
+    "b1_term_convexity": {
+      "coverage": 0.9978281121365744,
+      "median": 0.044361406908028145
+    },
+    "b1_term_slope": {
+      "coverage": 0.9978281121365744,
+      "median": 7.360802283090662e-05
+    },
+    "b1_zero_dte_contracts": {
+      "coverage": 0.9978281121365744,
+      "median": 0.0
+    }
+  },
+  "cutoff_seconds": 120,
+  "generated_at_utc": "2026-08-21T20:47:32.384135+00:00",
+  "label": "EXPLORATORY_MECHANISM_DISCOVERY",
+  "max_quote_age_seconds": 1800,
+  "program": "docs/research_program_v2.md",
+  "rows": 184632,
+  "sensitivity_max_quote_age_seconds": 3600,
+  "session_assets_requested": 2814,
+  "session_assets_too_sparse": 0,
+  "session_assets_unresolved_in_inventory": 0,
+  "session_assets_without_tape": 0,
+  "source_label": "trade_sampled_contemporaneous_nbbo",
+  "spec": "docs/rp2_v3/B1_CONTEMPORANEOUS_SPEC.md",
+  "surface_sha256": "5fa3134d70da680e6339aa45653949acff1ba44f018d77e9b6e893198f7c02f5"
+}

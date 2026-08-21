@@ -18,6 +18,7 @@ from __future__ import annotations
 import json
 import math
 import re
+from collections.abc import Callable
 from pathlib import Path
 
 import pytest
@@ -31,13 +32,35 @@ ESCAPED_PIPE = chr(92) + "|"
 MASK = "\x00"
 
 CONTRAST_KEY = {"B1": "b1_over_b0", "B2|B1": "b2_over_b1"}
-#: Stated in the prose beneath the two tables. Changing a number without changing these
-#: is the failure this guards against.
-CLAIMED_INTERVALS_CONTAINING_ZERO = 8
-CLAIMED_BELOW_OWN_MDE = 10
-CLAIMED_POSITIVE_DELTAS = 5
-#: "~33 sessions needed, 32 available" and "roughly 692 sessions would be needed".
-CLAIMED_SESSIONS_NEEDED = {"gamma_glm": 33, "lightgbm_qlike": 692}
+
+#: The three counts are stated in the prose as English words. They were pinned here as
+#: literals, so a rebuild that moved a count needed this file edited alongside the
+#: document — and a test you have to edit to keep a document honest will eventually be
+#: edited to agree with it. They are read out of the document instead, which is what this
+#: file is for: checking that the document agrees with the run it names.
+WORDS = {
+    "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6,
+    "seven": 7, "eight": 8, "nine": 9, "ten": 10, "eleven": 11, "twelve": 12,
+}
+#: Each stated count, and how the same thing is counted from the artifact. "intervals
+#: contain zero" appears twice in the document, so every occurrence is collected and they
+#: must agree with each other as well as with the run.
+CLAIMS: tuple[tuple[str, str, Callable[[dict], bool]], ...] = (
+    ("positive deltas", r"(\w+) of twelve deltas are positive", lambda c: c["estimate"] > 0),
+    (
+        "intervals containing zero",
+        r"(\w+) of twelve intervals contain zero",
+        lambda c: c["ci_low"] <= 0 <= c["ci_high"],
+    ),
+    (
+        "below own MDE",
+        r"(\w+) of the twelve contrasts sit below their own",
+        lambda c: abs(c["estimate"]) < c["mde"],
+    ),
+)
+#: The two sizing figures the power table's prose states, read from the document so the
+#: same rule applies to them.
+SESSIONS_NEEDED = r"~(\d+) sessions needed|roughly (\d+) sessions would be needed"
 
 TOLERANCE = 6e-6
 
@@ -72,9 +95,10 @@ def inference(document: str) -> dict:
 
 
 @pytest.fixture(scope="module")
-def tables(document: str) -> tuple[list[tuple], list[tuple]]:
+def tables(document: str) -> tuple[list[tuple], list[tuple], list[tuple]]:
     contrasts: list[tuple] = []
     power: list[tuple] = []
+    movement: list[tuple] = []
     unparsed: list[tuple[str, int]] = []
     for line in document.splitlines():
         if not line.startswith("| `"):
@@ -90,6 +114,15 @@ def tables(document: str) -> tuple[list[tuple], list[tuple]]:
         elif len(cells) == 4:
             family, effect, mde, note = cells
             power.append((family.strip("`"), _number(effect), _number(mde), note))
+        elif len(cells) == 3 and "→" in cells[1]:
+            # The rebuild's before/after table. Its "unchanged" column is a claim about
+            # validation, so it is parsed and checked rather than skipped.
+            family, moved, in_validation = cells
+            before, after = (part.strip(" *") for part in moved.split("→"))
+            movement.append(
+                (family.strip("`"), _number(before), _number(after),
+                 _number(in_validation.split(",")[0]), "unchanged" in in_validation)
+            )
         else:
             unparsed.append((line[:80], len(cells)))
 
@@ -99,11 +132,11 @@ def tables(document: str) -> tuple[list[tuple], list[tuple]]:
         "drops rows makes every count below pass vacuously"
     )
     assert len(power) == 3, f"expected three families in the power table, parsed {len(power)}"
-    return contrasts, power
+    return contrasts, power, movement
 
 
 def test_every_contrast_matches_the_artifact(tables, inference) -> None:
-    contrasts, _ = tables
+    contrasts, _, _ = tables
     wrong: list[str] = []
     for family, role, contrast, delta, low, high, contains_zero in contrasts:
         measured = inference[role]["nested_tests"][family][CONTRAST_KEY[contrast]]
@@ -122,33 +155,34 @@ def test_every_contrast_matches_the_artifact(tables, inference) -> None:
     assert not wrong, "the verdict disagrees with its own run:\n  " + "\n  ".join(wrong)
 
 
-def test_the_three_counts_match_the_artifact(tables, inference) -> None:
-    contrasts, _ = tables
+def test_the_three_counts_match_the_artifact(document, tables, inference) -> None:
+    contrasts, _, _ = tables
     measured = [
         inference[role]["nested_tests"][family][CONTRAST_KEY[contrast]]
         for family, role, contrast, *_ in contrasts
     ]
-    counts = {
-        "intervals containing zero": (
-            sum(1 for c in measured if c["ci_low"] <= 0 <= c["ci_high"]),
-            CLAIMED_INTERVALS_CONTAINING_ZERO,
-        ),
-        "below own MDE": (
-            sum(1 for c in measured if abs(c["estimate"]) < c["mde"]),
-            CLAIMED_BELOW_OWN_MDE,
-        ),
-        "positive deltas": (
-            sum(1 for c in measured if c["estimate"] > 0),
-            CLAIMED_POSITIVE_DELTAS,
-        ),
-    }
-    wrong = [f"{k}: measured {got}, document says {claimed}"
-             for k, (got, claimed) in counts.items() if got != claimed]
+    wrong: list[str] = []
+    for label, pattern, predicate in CLAIMS:
+        stated = re.findall(pattern, document, flags=re.IGNORECASE)
+        if not stated:
+            wrong.append(f"{label}: the document no longer states this count")
+            continue
+        claimed = {WORDS.get(word.lower()) for word in stated}
+        if None in claimed:
+            wrong.append(f"{label}: {stated} is not a number word this test can read")
+        elif len(claimed) > 1:
+            wrong.append(
+                f"{label}: the document states it {len(stated)} times and they disagree: {stated}"
+            )
+        else:
+            got = sum(1 for c in measured if predicate(c))
+            if got != claimed.pop():
+                wrong.append(f"{label}: measured {got}, document says {stated[0]}")
     assert not wrong, "a stated count no longer matches:\n  " + "\n  ".join(wrong)
 
 
 def test_power_table_and_its_detectability_verdicts(tables, inference) -> None:
-    _, power = tables
+    _, power, _ = tables
     wrong: list[str] = []
     for family, effect, mde, note in power:
         development = inference["D"]["nested_tests"][family]["b1_over_b0"]
@@ -162,16 +196,67 @@ def test_power_table_and_its_detectability_verdicts(tables, inference) -> None:
         if detectable != note.lower().startswith("**yes"):
             wrong.append(f"{family}: the document's detectability verdict contradicts the numbers")
 
-        if family in CLAIMED_SESSIONS_NEEDED:
-            # The minimum detectable effect falls as one over the square root of the
-            # sample, so reaching a development-sized effect needs n*(mde/effect)^2.
+        # The sizing figure, when the row states one, is read out of that row rather than
+        # pinned in this file: the minimum detectable effect falls as one over the square
+        # root of the sample, so reaching a development-sized effect needs n*(mde/effect)^2.
+        sizing = re.search(SESSIONS_NEEDED, note)
+        if sizing:
+            claimed = int(next(group for group in sizing.groups() if group))
             needed = math.ceil(
                 validation["sessions"] * (validation["mde"] / abs(development["estimate"])) ** 2
             )
-            claimed = CLAIMED_SESSIONS_NEEDED[family]
             if abs(needed - claimed) > 1:
                 wrong.append(
-                    f"{family}: document says ~{claimed} sessions, "
-                    f"arithmetic gives {needed}"
+                    f"{family}: document says ~{claimed} sessions, arithmetic gives {needed}"
                 )
+        elif not detectable:
+            wrong.append(
+                f"{family}: the row says validation could not detect the effect but states "
+                "no sample size that could, so a reader cannot tell how far short it fell"
+            )
     assert not wrong, "the power table no longer matches its run:\n  " + "\n  ".join(wrong)
+
+
+def test_the_rebuild_table_matches_both_runs(document, tables, inference) -> None:
+    """The before/after table states that validation did not move. That is checkable.
+
+    The page argues the development effect fell because the baseline was repaired, and
+    points at validation as the control: no deficient bar store supplied it, so nothing
+    there should have changed. Each row's "after" is checked against the run this document
+    names, and each row's "before" against the run it says it supersedes, so the claim of
+    an unchanged control is verified rather than asserted.
+    """
+    _, _, movement = tables
+    assert len(movement) == 3, (
+        f"expected three families in the rebuild table, parsed {len(movement)}"
+    )
+
+    superseded = re.search(r"supersedes `(rp2-v3-[\w-]+)`", document)
+    assert superseded, "the page no longer names the run it supersedes"
+    older_path = (
+        REPO / "artifacts" / "rp2_v3" / superseded.group(1)
+        / "rp2_block10_inference" / "inference.json"
+    )
+    older = json.loads(older_path.read_text(encoding="utf-8")) if older_path.is_file() else None
+
+    wrong: list[str] = []
+    for family, before, after, in_validation, claims_unchanged in movement:
+        current_d = inference["D"]["nested_tests"][family]["b1_over_b0"]["estimate"]
+        current_v = inference["V"]["nested_tests"][family]["b1_over_b0"]["estimate"]
+        if abs(after - current_d) >= TOLERANCE:
+            wrong.append(f"{family}: table says the rebuild gives {after}, run gives {current_d}")
+        if abs(in_validation - current_v) >= TOLERANCE:
+            wrong.append(f"{family}: table says V is {in_validation}, run gives {current_v}")
+        if older is None:
+            continue
+        previous_d = older["D"]["nested_tests"][family]["b1_over_b0"]["estimate"]
+        previous_v = older["V"]["nested_tests"][family]["b1_over_b0"]["estimate"]
+        if abs(before - previous_d) >= TOLERANCE:
+            wrong.append(f"{family}: table says the old run gave {before}, it gave {previous_d}")
+        if claims_unchanged and abs(previous_v - current_v) >= TOLERANCE:
+            wrong.append(
+                f"{family}: the table calls validation unchanged, but it moved from "
+                f"{previous_v} to {current_v}"
+            )
+    joined = "\n  ".join(wrong)
+    assert not wrong, f"the rebuild table does not match the runs:\n  {joined}"
