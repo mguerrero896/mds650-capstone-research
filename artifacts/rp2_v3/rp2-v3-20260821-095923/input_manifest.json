@@ -1,0 +1,31 @@
+{
+  "bar_sources_sha256": {
+    "ext3_missing|D": "b1150c4d4814dbd6571c7826ef38ed301a1fdf0376bd009e7ed88efffd537196",
+    "gate3_dev80|V": "894d6874e6910f2b54b9467a5dc9ac0e3a7b0fc56cdbc8d8b2a0235048917eb1",
+    "gate7_c6|D": "d70001bc02a5dc9bee3e5002d4c32f0b0c770788662ae71eb596f38e92a97bba",
+    "gate8_c4c|D": "46b8138cce84228a19f51de629a6c0992533b912632b2fba23f150728689cbd5",
+    "phase6_180d|D": "07d1dcf4c87d206bb1ede55b82802467eb6af2d289d11c46ff12a2f9bb886a02",
+    "validation_market|V": "e06a7d70fee2f40de18570c334f4e19f15b63fe474558e49111f354aea19ad0b"
+  },
+  "gated_files": 15,
+  "gated_manifest_sha256": "f6fbe1e0b9188d57cfb22b89dbd608cbb2aa10750783e3da3df50c5b6480b5d2",
+  "study_window_enforced": {
+    "D": {
+      "first_session": "2024-08-02",
+      "last_session": "2026-03-23",
+      "sessions": 389
+    },
+    "V": {
+      "first_session": "2026-03-24",
+      "last_session": "2026-07-17",
+      "sessions": 80
+    }
+  },
+  "study_window_source": "artifacts/rp2_block1_partition/partition.json",
+  "tape_bytes": 84643218911,
+  "tape_files": 3717,
+  "tape_fingerprint_mode": "content",
+  "tape_fingerprint_sha256": "0a54fcea4801f8592f8b5c92aa8cbdf9cd97ad328ae8e5975c0c6f86b6710d3a",
+  "tape_freshness_sha256": "329cb8ad84962b336127f99b84e69e8aa56bf27f4d81e534913b029380be1e19",
+  "tape_inventory_sha256": "ded4bc9b5d0e4c748e11e259d7b44660d3000e5b78fee6951376e76dd7a50abd"
+}
