@@ -98,10 +98,12 @@ improvement in QLIKE: the smaller information set's loss minus the larger one's.
 | `ridge_log` | +0.00424 | −0.15509 | −0.00084 | −0.00195 |
 | `lightgbm_qlike` | +0.00381 | +0.00065 | +0.00092 | −0.00051 |
 
-1. **Contemporaneous option state helps in development, consistently.** ΔB1 is positive in
-   all three families, +0.0038 to +0.0042, with 95 % intervals excluding zero and effects
-   1.7 times the minimum this design could detect. This is the one finding the evidence
-   supports without qualification.
+1. **Contemporaneous option state helps in development, in two of three families.** ΔB1 is
+   positive in all three, +0.0038 to +0.0042, with 95 % intervals excluding zero. Against the
+   minimum this design could detect, the three differ: `gamma_glm` 1.66×, `ridge_log` 1.75×,
+   and `lightgbm_qlike` **0.93× — below its own threshold**. So two families report an effect
+   their design could resolve and the third reports one it could not, which is a weaker
+   statement than "consistently" and the one the numbers support.
 
 2. **It does not survive out of sample where the design could test it.** `ridge_log`'s
    validation MDE is 0.0027 against a development effect of 0.0042 — powered to see it, and

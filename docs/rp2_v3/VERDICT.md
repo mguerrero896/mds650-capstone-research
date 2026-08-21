@@ -88,9 +88,20 @@ nulls without saying so would state a finding the design could not support.
 The rebuild replaced a reported latency tail that was a median across windows of each
 window's own 95th percentile — not a quantile of any population. Measured over all
 580,549,989 trades, the record lag is `p50 0.067 s, p90 0.137 s, p95 0.280 s, p99 4.877 s`.
-Against the previous run, **5 of 162 scorecard fields moved**: that tail, the commit, and the
-three digests that depend on the new column. Every scientific number is identical, which is
-the determinism the runner exists to provide.
+
+Determinism, reproducible from the two scorecards this repository carries:
+
+```text
+scripts/rp2_v3_scorecard_diff.py     --before artifacts/rp2_v3/rp2-v3-20260821-110033/scorecard.json     --after  artifacts/rp2_v3/rp2-v3-20260821-134741/scorecard.json --only-moved
+-> 2 of 162 comparable fields moved, both copies of code_commit
+```
+
+Two independent executions, five hours apart, on different commits, agree on every
+scientific field. An earlier draft of this page reported five fields moving; that comparison
+was against `rp2-v3-20260820-1710`, a run whose worktree has since been removed, so the
+figure could not be reproduced from anything versioned here. The five were the latency tail
+and the digests that changed when the histogram column was added — a real difference, but
+between this run and one the repository no longer holds.
 
 ## What this verdict does not claim
 
