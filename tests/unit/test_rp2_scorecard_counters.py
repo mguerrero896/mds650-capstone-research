@@ -245,3 +245,29 @@ def test_block_three_and_block_four_read_one_list_of_bar_stores() -> None:
 
     assert module.BAR_SOURCES is BAR_SOURCES
     assert len(BAR_SOURCES) == 6
+
+
+def test_the_latency_tail_is_a_quantile_of_trades_not_of_windows() -> None:
+    """Quantiles do not merge by averaging, whatever windows they came from.
+
+    Taking the median across counting windows of each window's own 95th percentile lets a
+    window holding one trade weigh as much as a window holding ninety-nine, and the result is
+    not the 95th percentile of any population. The producer emits a fixed-bin histogram of
+    the latencies it saw, the histograms add, and the quantile is read off the total.
+    """
+
+    from mds650.rp2.scorecard import LATENCY_BIN_EDGES, latency_quantile
+
+    # One window of ninety-nine fast trades and one window of a single slow trade. A median
+    # of per-window tails calls this slow; the population's 95th percentile is fast.
+    fast = np.zeros(len(LATENCY_BIN_EDGES) + 1, dtype=np.int64)
+    fast[np.searchsorted(LATENCY_BIN_EDGES, 0.5, side="right")] = 99
+    slow = np.zeros_like(fast)
+    slow[np.searchsorted(LATENCY_BIN_EDGES, 600.0, side="right")] = 1
+
+    assert latency_quantile(fast + slow, 0.95) == pytest.approx(0.5, rel=0.5)
+    # And the tail does find the slow trades once there are enough of them to be the tail.
+    many_slow = np.zeros_like(fast)
+    many_slow[np.searchsorted(LATENCY_BIN_EDGES, 600.0, side="right")] = 20
+    assert latency_quantile(fast + many_slow, 0.95) > 100.0
+    assert latency_quantile(np.zeros_like(fast), 0.95) == 0.0

@@ -52,6 +52,7 @@ from mds650.rp2.option_clock import (
     time_to_expiry_years,
 )
 from mds650.rp2.panel import panel_paths
+from mds650.rp2.scorecard import LATENCY_BIN_EDGES as SCORECARD_LATENCY_BIN_EDGES
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_block6_flow"
@@ -84,6 +85,25 @@ def counting_bounds(
         np.searchsorted(created, cutoff_us - COUNTING_WINDOW_SECONDS * 1_000_000, side="right")
     )
     return low, max(visible, low)
+
+
+#: Shared with the scorecard, which adds these bins across every window of the run. Importing
+#: keeps one definition: bins that differ between producer and reader do not add.
+LATENCY_BIN_EDGES = SCORECARD_LATENCY_BIN_EDGES
+
+
+def counting_latency_bins(latency: FloatArray, low: int, high: int) -> npt.NDArray[np.int64]:
+    """How many of this window's trades fall in each latency bin.
+
+    The mean of a window merges by weighting; its 95th percentile does not merge at all, so
+    a tail assembled from per-window tails is not the tail of any population. Counts in fixed
+    bins do merge, by adding.
+    """
+
+    if high <= low:
+        return np.zeros(len(LATENCY_BIN_EDGES) + 1, dtype=np.int64)
+    placed = np.searchsorted(LATENCY_BIN_EDGES, latency[low:high], side="right")
+    return np.bincount(placed, minlength=len(LATENCY_BIN_EDGES) + 1).astype(np.int64)
 
 
 def counting_latency(latency: FloatArray, low: int, high: int) -> tuple[float, float]:
@@ -546,6 +566,12 @@ def build_session_flow(
         )
         record["b2_counting_mean_latency_s"] = mean_latency
         record["b2_counting_p95_latency_s"] = p95_latency
+        # And the distribution itself, in bins that add. The p95 above describes this window;
+        # the run's p95 is read off the sum of these.
+        for index, count in enumerate(
+            counting_latency_bins(latency_seconds, counting_lo, counting_hi)
+        ):
+            record[f"b2_latency_bin_{index}"] = float(count)
         for label, window_seconds in WINDOWS:
             lo_us = cutoff_us - window_seconds * 1_000_000
             lo = int(np.searchsorted(created, lo_us, side="left"))

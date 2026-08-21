@@ -66,12 +66,14 @@ medians afterwards would describe typical origins rather than stale quotes.
 | `b2_empty_window_share` | float | reported |
 | `b2_provider_failure_share` | float | reported |
 
-`b2_p95_provider_latency_s` is the median across *counting* windows of each window's own
-95th-percentile record lag, weighted-where-counted like the mean beside it. Both statistics
-are taken over the same trades on purpose. Read from the thirty-minute windows it was a
-different population: those open after the session does and overlap each other, so they never
-see the trades the first counting bucket carries — the tape's opening records, which arrive
-slowest — and the published pair had a p95 *below* its own mean.
+`b2_p95_provider_latency_s` is the 95th percentile of the run's record lags, read off a
+histogram the producer emits per counting window and the scorecard adds. Per-window
+quantiles cannot be merged: a median across windows of their own 95th percentiles lets a
+window holding one trade weigh as much as a window holding ninety-nine, and the result is not
+the 95th percentile of any population. Counts in fixed bins do merge, by adding. The bins are
+log-spaced from 0.01 s to about 3.5 hours, and the reported value is the lower edge of the
+bin the quantile falls in, so it understates rather than overstates a number reported as a
+worst case.
 
 ## Forecast
 

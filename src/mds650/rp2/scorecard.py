@@ -15,6 +15,8 @@ from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Final
 
+import numpy as np
+import numpy.typing as npt
 import polars as pl
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
@@ -126,6 +128,54 @@ def _quantile_where(path: Path, name: str, weight: str, quantile: float) -> floa
         return None
     result = frame["v"].quantile(quantile)
     return None if result is None else float(result)
+
+
+#: Latency bin edges, log-spaced from a hundredth of a second to a little over three hours.
+#: A quantile of a population cannot be recovered from per-window quantiles - they do not
+#: merge - but counts in fixed bins do, so the producer emits the bins and the scorecard adds
+#: them. Sixty bins put the resolution near 20 % of the value, which is far finer than the
+#: difference the reported tail exists to show.
+LATENCY_BIN_EDGES: Final[npt.NDArray[np.float64]] = np.logspace(-2.0, 4.1, 60)
+
+
+def latency_quantile(counts: npt.NDArray[np.int64], quantile: float) -> float:
+    """The quantile of the latencies these bin counts describe.
+
+    `counts` has one entry per bin plus one for everything above the last edge, exactly as
+    `numpy.searchsorted(..., side="right")` produces. The value returned is the lower edge of
+    the bin the quantile falls in, so it understates rather than overstates the tail, which
+    is the safer direction for a number reported as a worst case.
+    """
+
+    total = int(counts.sum())
+    if total <= 0:
+        return 0.0
+    target = quantile * total
+    cumulative = np.cumsum(counts)
+    index = int(np.searchsorted(cumulative, target, side="left"))
+    if index == 0:
+        return float(LATENCY_BIN_EDGES[0])
+    if index >= len(LATENCY_BIN_EDGES):
+        return float(LATENCY_BIN_EDGES[-1])
+    return float(LATENCY_BIN_EDGES[index - 1])
+
+
+def latency_histogram(path: Path, prefix: str) -> npt.NDArray[np.int64]:
+    """Add every window's latency bins into one histogram of the run's trades.
+
+    A window absent from the panel contributes nothing, and a run whose producer wrote no
+    bins yields an empty histogram, which `latency_quantile` reports as zero rather than as
+    a tail nobody measured.
+    """
+
+    empty = np.zeros(len(LATENCY_BIN_EDGES) + 1, dtype=np.int64)
+    counts = empty.copy()
+    for index in range(len(LATENCY_BIN_EDGES) + 1):
+        column = _column(path, f"{prefix}{index}")
+        if column is None:
+            continue
+        counts[index] = int(column.fill_null(0).sum())
+    return counts
 
 
 def _weighted_mean(path: Path, name: str, weight: str) -> float | None:
@@ -328,14 +378,12 @@ def assemble_scorecard(
             "b2_mean_provider_latency_s": _weighted_mean(
                 panels["b2"], "b2_counting_mean_latency_s", "b2_counting_trades"
             ),
-            # The median across counting windows that saw a trade of each window's own
-            # 95th percentile. The counting windows tile the session, so this tail and the
-            # mean above are taken over the same trades. Read from the overlapping
-            # thirty-minute windows it was a different population: they open after the
-            # session does, so they never see the trades the first counting bucket carries,
-            # and the reported p95 came out below the reported mean.
-            "b2_p95_provider_latency_s": _quantile_where(
-                panels["b2"], "b2_counting_p95_latency_s", "b2_counting_trades", 0.5
+            # The 95th percentile of the run's record lags, read off the summed bins. A
+            # median across windows of their own tails let a window of one trade weigh as
+            # much as a window of ninety-nine, and quantiles do not merge that way in any
+            # case, so the number was not the 95th percentile of any population.
+            "b2_p95_provider_latency_s": latency_quantile(
+                latency_histogram(panels["b2"], "b2_latency_bin_"), 0.95
             ),
             "b2_multileg_share": _mean(panels["b2"], "b2_30m_multileg_premium_share"),
             "b2_empty_window_share": flow.get(
