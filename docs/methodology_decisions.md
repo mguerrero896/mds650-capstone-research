@@ -909,15 +909,18 @@ Spec Kit consistency and preregistration gates pass.
     though the verdict it supported was not. Guarded by
     `tests/unit/test_rp2_level4_pooling.py`, which fails against the sentinel.
 
-    A second defect was found and fixed in the same reading and is reported as measured: the
+    **A second defect was reported here and did not exist. Withdrawn.** The entry claimed the
     variable feeding the tabular block to both neural arms was named `standardised` and held
-    the raw design, whose 45 columns span standard deviations from 0 to 95.28 and means from
-    −22.69 to 197.2. It was fixed because the name asserted something false and because
-    LightGBM, being scale-invariant, was not subject to it. **It explained nothing**: every
-    figure moved by under 1 %, and the sequence arm's fitted-scale RMSE did not move at all
-    (1.10246 → 1.10286), because AdamW rescales by each parameter's second moment and absorbs
-    most of the conditioning. Recorded so that a reader does not credit the correction with
-    the recovery, which belongs entirely to the sentinel.
+    a raw design spanning standard deviations from 0 to 95.28. Those statistics are real but
+    they belong to `build_design`, the raw constructor; the script does not use it. It uses
+    `fold_design`, whose `transform_features` imputes and z-scores every feature on the
+    training fold, and a comment six lines above the call already said so. Measured on the
+    design the script actually builds: **43 of its 47 non-intercept columns already had a
+    training standard deviation of exactly 1**, and the added `standardise` call changed only
+    three columns — the missingness indicators — turning clean 0/1 flags into z-scores
+    reaching 14.18. It was not a correction and the before/after movement attributed to it
+    was that unintended rescaling. The call is removed. The finding was raised in review; the
+    error was measuring one function and reasoning about another.
 
 86. **Two development bar stores never carried a range or a volume, and the grid invented
     both (2026-08-21)** — `data/fmp/gate7/underlying_1min_c6.parquet` and
@@ -1002,3 +1005,56 @@ Spec Kit consistency and preregistration gates pass.
 
     Guarded by `tests/unit/test_rp2_scorecard_pooling.py` and the normalisation tests in
     `tests/unit/test_rp2_level4_pooling.py`.
+
+
+88. **The level-4 arms were fitted to a loss the preregistration did not freeze (2026-08-21)**
+    — `docs/rp2_v3/LEVEL4_PREREGISTRATION.md` freezes `Loss | QLIKE, the same the ladder
+    decides on`. `_train` minimised `nn.MSELoss()` against the log response instead, so the
+    committed arms were fitted under log-MSE and scored under QLIKE, and the `lightgbm_qlike`
+    reference they are measured against *is* fitted to QLIKE. The second reference therefore
+    confounded the architecture with the objective, and the artifact could not honestly be
+    described as a run under this preregistration. Raised in review.
+
+    Corrected by honouring the preregistration rather than by amending it: both arms now
+    minimise QLIKE, using the same exponent clip of 30 and target floor of 1e-12 that
+    `mds650.rp2.qlike_objective` applies for the LightGBM arm, so the two are fitted to one
+    function rather than to two spellings of it. Two things had to be right for that to run
+    at all, and both are recorded because each was a real failure first:
+
+    - QLIKE's `y·exp(−r)` term is unbounded as the log forecast falls. A randomly initialised
+      head predicts near zero while the optimum sits near −11, the descent gradient stays
+      close to 1 over that whole distance, and the corrective gradient past the optimum grows
+      exponentially — but gradient clipping caps both at the same norm, so the descent is paid
+      in full and the correction is not. Measured: the control reached a prediction of −100.9
+      against a target range of [−13.97, −7.13] in its second epoch and the loss stopped being
+      finite. The output layer's bias now starts at the training mean of the log variance,
+      which removes the runaway without touching the frozen objective.
+    - Clipping alone does not fix it, because `torch.clamp` has zero gradient outside its
+      range: a prediction that leaves never returns. The clip is kept for the same safety the
+      LightGBM arm has, not as the remedy.
+
+    **Measured under the frozen loss**, both neural arms improve substantially and the
+    conclusion sharpens rather than softening:
+
+    | | log-MSE, as committed | QLIKE, as preregistered |
+    | --- | ---: | ---: |
+    | `mlp_tabular` | 0.16548 | **0.14843** |
+    | `deepsets_sequence` | 0.16920 | **0.15507** |
+    | Δ against the control | −0.00372, p 0.6477 | **−0.00664 [−0.01392, −0.00138], p 0.0080** |
+    | Δ against `lightgbm_qlike` | −0.03457 | **−0.02044 [−0.03041, −0.01349], p 0.0010** |
+
+    The arm moves from indistinguishable from its control to **significantly worse than it**,
+    and three internal consistency checks that previously disagreed now agree: the fitted-scale
+    RMSEs are 0.50822 against 0.50148 for near-identical architectures, the delta against
+    LightGBM equals the raw QLIKE gap 0.13463 − 0.15507 exactly, and the fitted-scale delta
+    (−0.00681) matches the QLIKE delta (−0.00664) in sign and size. The preregistered verdict
+    is unchanged — the sequence fails both references — and it is now measured under the loss
+    that was frozen for it.
+
+    The preregistration's own digest was also wrong: `LEVEL4_PREREGISTRATION.sha256` recorded
+    `549beb9c…`, taken over CRLF bytes, while the committed document is stored with LF and
+    hashes to `2ebfb745…`. The sidecar identified no checkout and `sha256sum -c` failed on
+    every POSIX one. It now records the LF-normalised digest, the convention
+    `mds650.rp2.run_manifest.normalised_digest` already uses, and verifies. The document's
+    content was never edited, so the freeze itself held throughout; only its receipt was
+    unusable.

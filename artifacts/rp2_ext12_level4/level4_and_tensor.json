@@ -2,37 +2,37 @@
   "D": {
     "extension_1_level4": {
       "delta_log_scale_sequence_over_tabular": {
-        "ci_high": 0.029043023982734582,
-        "ci_low": -0.08276131470352992,
+        "ci_high": -0.003003075388031164,
+        "ci_low": -0.010673519906014351,
         "clusters": 156.0,
-        "delta_squared_error": -0.01260069515196397,
-        "p_value": 0.800599700149925
+        "delta_squared_error": -0.006813386296675898,
+        "p_value": 0.0009995002498750624
       },
       "delta_sequence_over_lightgbm": {
-        "ci_high": -0.011505822679161162,
-        "ci_low": -0.0748536278866314,
+        "ci_high": -0.013485206721119546,
+        "ci_low": -0.03040676544829773,
         "clusters": 156.0,
-        "delta_qlike": -0.03456684016291095,
+        "delta_qlike": -0.020436586025757892,
         "p_value": 0.0009995002498750624
       },
       "delta_sequence_over_tabular": {
-        "ci_high": 0.007609816688564601,
-        "ci_low": -0.01671236357892229,
+        "ci_high": -0.0013835323637823363,
+        "ci_low": -0.013918246409608566,
         "clusters": 156.0,
-        "delta_qlike": -0.003721464246225291,
-        "p_value": 0.6476761619190404
+        "delta_qlike": -0.006642358766947197,
+        "p_value": 0.0079960019990005
       },
       "device": "cuda",
       "epochs": 30,
       "log_scale_rmse": {
-        "deepsets_sequence": 0.5716163064538959,
-        "mlp_tabular": 0.560485955802668
+        "deepsets_sequence": 0.5082237633625037,
+        "mlp_tabular": 0.5014758292776136
       },
       "mean_trades_per_origin": 47.86796188354492,
       "qlike_lightgbm_reference": 0.13463375186327192,
       "qlike_recalibrated": {
-        "deepsets_sequence": 0.16920059202618287,
-        "mlp_tabular": 0.16547912777995757
+        "deepsets_sequence": 0.1550703378890298,
+        "mlp_tabular": 0.1484279791220826
       },
       "sequence_length": 48
     },
@@ -543,7 +543,7 @@
     "train_share": 0.6
   },
   "device": "cuda",
-  "ext12_sha256": "16aeac824dd0a5685f506631f8e976d29a095089e3d37459d32dc35e2e2abe8c",
+  "ext12_sha256": "57e995a2fe40d573d65746f5a456a3596027dc4c9c7f6d3ffe1b6b05a2dfe0b5",
   "extension_inputs": "the tensor and sequence arms add inputs outside the registry; their resolved names are recorded per arm under information_sets",
   "extensions": [
     1,
@@ -697,7 +697,7 @@
     }
   },
   "gate_met_by": "Block 7 signal present + Block 8 tabular ladder fails to convert it",
-  "generated_at_utc": "2026-08-21T09:55:09.914037+00:00",
+  "generated_at_utc": "2026-08-21T11:17:03.828118+00:00",
   "gpu": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "label": "EXPLORATORY_MECHANISM_DISCOVERY",
   "panel_rows": 184632,

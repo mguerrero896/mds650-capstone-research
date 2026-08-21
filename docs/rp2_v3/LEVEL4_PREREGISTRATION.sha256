@@ -1,1 +1,6 @@
-549beb9c3fd24624d01a2ee27c961a0ef38aafdcda760e040ef3f9dcdfe77925  LEVEL4_PREREGISTRATION.md
+# sha256 over the document with line endings normalised to LF, which is how git stores
+# it. A raw digest of the working tree disagrees with this record on a Windows checkout
+# and agrees on a POSIX one, so it would fire by operating system rather than by
+# content. Verify with mds650.rp2.run_manifest.normalised_digest, or on an LF checkout
+# with: sha256sum -c LEVEL4_PREREGISTRATION.sha256
+2ebfb745a4e608fdc1c554336f63dbfa24018b9d249ab2e1f54eaa266b5ed9b9  LEVEL4_PREREGISTRATION.md

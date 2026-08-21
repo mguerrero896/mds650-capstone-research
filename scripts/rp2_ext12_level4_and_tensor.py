@@ -142,13 +142,38 @@ def sequence_normalisation(
     return centre, spread
 
 
+def qlike_of_log_forecast(predicted: torch.Tensor, response: torch.Tensor) -> torch.Tensor:
+    """QLIKE for a network that predicts a log variance, against a log realised variance.
+
+    The preregistration freezes the loss as QLIKE, the one the ladder decides on, and the
+    `lightgbm_qlike` reference is fitted to it. Training these arms on the mean squared
+    error of the log response instead left the comparison confounding the architecture with
+    the objective. With ``predicted`` the log forecast r and ``response`` the log target,
+    QLIKE(y, exp(r)) = r + y*exp(-r), which is what this returns.
+    """
+
+    target = torch.exp(response)
+    return torch.mean(predicted + target * torch.exp(-predicted))
+
+
 def _train(
     model: nn.Module, tabular: torch.Tensor, sequence: torch.Tensor, mask: torch.Tensor,
     response: torch.Tensor, train_index: torch.Tensor, device: torch.device
 ) -> None:
+    # Start the output at the training mean of the log variance. A randomly initialised head
+    # predicts near zero while the optimum sits near -11, and under QLIKE the descent term
+    # 1 - y*exp(-r) stays close to 1 over that whole distance while the corrective term past
+    # the optimum grows exponentially. Gradient clipping caps both at the same norm, so the
+    # descent is paid in full and the correction is not: measured, the control reached -100.9
+    # against a target range of [-13.97, -7.13] in its second epoch. Starting calibrated
+    # removes the runaway without touching the objective the preregistration froze.
+    with torch.no_grad():
+        output_layer = model.head[-1]  # type: ignore[index]
+        assert isinstance(output_layer, nn.Linear), "the head must end in a linear layer"
+        output_layer.bias.fill_(float(response[train_index].mean()))
     optimiser = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-4)
     schedule = torch.optim.lr_scheduler.CosineAnnealingLR(optimiser, T_max=EPOCHS)
-    loss_fn = nn.MSELoss()
+    loss_fn = qlike_of_log_forecast
     generator = torch.Generator(device="cpu").manual_seed(SEED)
     model.train()
     for _epoch in range(EPOCHS):
@@ -157,8 +182,8 @@ def _train(
             batch = order[start : start + BATCH].to(device)
             optimiser.zero_grad(set_to_none=True)
             predicted = model(tabular[batch], sequence[batch], mask[batch])
-            loss = loss_fn(predicted, response[batch])
-            loss.backward()
+            loss: torch.Tensor = loss_fn(predicted, response[batch])
+            loss.backward()  # type: ignore[no-untyped-call]
             nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             optimiser.step()
         schedule.step()
@@ -312,14 +337,13 @@ def run_role(
 
     # ---- Extension 1: DeepSets over the raw trade sequence ---------------------------
     torch.manual_seed(SEED)
-    # The variable was named `standardised` and held the raw design. Measured on the RP2-v3
-    # panels, that block spans standard deviations from 0 to 95.28 and means from -22.69 to
-    # 197.2, so an MLP under AdamW at 1e-3 spends its capacity on scale rather than signal.
-    # LightGBM is unaffected because trees are scale-invariant, which is most of why it won.
-    # BOTH blocks take their statistics from the training fold. An earlier version of this
-    # comment claimed that while the sequence block was still centred and scaled over every
-    # row, so the two halves of one network disagreed about which rows they could see.
-    standardised = standardise(base_design, train)
+    # `base_design` arrives from `fold_design` already imputed and z-scored on the training
+    # fold, so it is fed to the networks as it is. A re-standardisation was added here on the
+    # belief that the block was raw; measured, 43 of its 47 non-intercept columns already had
+    # a training standard deviation of exactly 1, and the call changed only the three
+    # missingness indicators - turning clean 0/1 flags into z-scores reaching 14.18. The
+    # sequence block is not a registry design, so it carries its own normalisation, taken
+    # from the training fold for the same reason.
     sequence_block = sequence[index]
     centre, spread = sequence_normalisation(sequence_block, train)
     normalised = (sequence_block - centre) / spread
@@ -330,7 +354,7 @@ def run_role(
         lift_mask(keep, test),
     )
 
-    tabular_t = torch.tensor(standardised, dtype=torch.float32, device=device)
+    tabular_t = torch.tensor(base_design, dtype=torch.float32, device=device)
     sequence_t = torch.tensor(normalised, dtype=torch.float32, device=device)
     mask_t = torch.tensor(
         (sequence_block[:, :, 2] != 0.0).astype(np.float32), dtype=torch.float32, device=device
