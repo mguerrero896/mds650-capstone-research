@@ -59,6 +59,19 @@ exclude list. NEVER push to the remote directly; ALWAYS publish via
 `bash scripts/publish_mirror.sh`. Pointers + access policy:
 `data/GATED_DATA_POINTERS.json`, `data/DATA_ACCESS.md`.
 
+**That instruction is currently blocked, and deliberately so.** The canonical
+tree stopped projecting the public repository when the RP2-v3 gates landed there
+as pull requests: the two histories are disjoint, and the script's closing
+`git push --force` would drop every published commit
+(`docs/rp2_v3/MIRROR_HAZARD.md` measures 392). `publish_mirror.sh` therefore runs
+`scripts/publish_ancestry_guard.py` as check 4 and refuses unless the branch it
+would overwrite is contained in what replaces it. Verified against the live
+remote: the guard refuses with `ancestry violation … would drop 392 published
+commit(s)`. Unblocking it is an owner decision — adopt the public lineage, or
+publish somewhere other than `main` — not a code change, and not something to
+work around. `SKIP_TIER2=1` skips the local gates only; it does not and must not
+bypass check 4.
+
 ## Supabase research catalog (2026-08-18)
 
 The same Supabase project also hosts Postgres catalog tables (`campaigns`,

@@ -66,6 +66,14 @@ git -C "$MIRROR" worktree add --detach "$PUBCHECK" main >/dev/null 2>&1 || git c
 echo "[publish] check 3: hermetic suite on the stripped public tree"
 (cd "$PUBCHECK" && env -u MDS650_EVIDENCE_ROOT uv run --project . pytest tests -q --ignore=tests/unit/test_generate_date_level_pit_preflight_plan_v1.py --ignore=tests/unit/test_independent_replication_panel.py --ignore=tests/unit/test_date_level_pit_preflight_request_budget_v1.py --ignore=tests/contract/test_b2_confirmation_inputs.py --cov=src/mds650 --cov-report=term --cov-fail-under=80) || {
     echo "PUBLISH REFUSED: hermetic suite FAILS on the stripped public tree" >&2; exit 1; }
+# Check 4: never force-push a lineage that does not contain what is already
+# published. The mirror is built from the canonical tree, which no longer
+# projects the public repository — the RP2-v3 gates landed there as pull
+# requests. docs/rp2_v3/MIRROR_HAZARD.md measures the two histories as disjoint,
+# and --force means the remote would not refuse the loss.
+uv run python "$CANON/scripts/publish_ancestry_guard.py" \
+    --mirror "$MIRROR" --remote "$REMOTE" --branch main \
+    --expect-remote "$REMOTE" || exit 1
 git -C "$MIRROR" push --force "$REMOTE" main
 git -C "$MIRROR" push --force "$REMOTE" --tags
 echo "mirror published: canonical $(git rev-parse --short HEAD) -> mirror $(git -C "$MIRROR" rev-parse --short main) (gated data stripped)"
