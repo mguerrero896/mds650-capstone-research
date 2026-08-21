@@ -2,51 +2,51 @@
   "D": {
     "extension_1_level4": {
       "delta_log_scale_sequence_over_tabular": {
-        "ci_high": -0.003003076392142577,
-        "ci_low": -0.010673524518983407,
+        "ci_high": -0.0023873255355990005,
+        "ci_low": -0.009635094505481173,
         "clusters": 156.0,
-        "delta_squared_error": -0.0068133875887557566,
+        "delta_squared_error": -0.006063565519630033,
         "p_value": 0.0009995002498750624
       },
       "delta_sequence_over_lightgbm": {
-        "ci_high": -0.013485206721119546,
-        "ci_low": -0.03040676544829773,
+        "ci_high": -0.013350178122451373,
+        "ci_low": -0.02883734795320888,
         "clusters": 156.0,
-        "delta_qlike": -0.020436586025757892,
+        "delta_qlike": -0.019866518532488386,
         "p_value": 0.0009995002498750624
       },
       "delta_sequence_over_tabular": {
-        "ci_high": -0.0013835330865602372,
-        "ci_low": -0.01391824273280258,
+        "ci_high": -0.0012964430808138894,
+        "ci_low": -0.012493575469038922,
         "clusters": 156.0,
-        "delta_qlike": -0.0066423578388822655,
-        "p_value": 0.0079960019990005
+        "delta_qlike": -0.006072290345612754,
+        "p_value": 0.0069965017491254375
       },
       "device": "cuda",
       "epochs": 30,
       "log_scale_rmse": {
-        "deepsets_sequence": 0.5082237633625037,
+        "deepsets_sequence": 0.5074855382936744,
         "mlp_tabular": 0.5014758279893363
       },
       "mean_trades_per_origin": 47.86796188354492,
       "qlike_lightgbm_reference": 0.13463375186327192,
       "qlike_recalibrated": {
-        "deepsets_sequence": 0.1550703378890298,
+        "deepsets_sequence": 0.15450027039576025,
         "mlp_tabular": 0.14842798005014754
       },
       "sequence_length": 48
     },
     "extension_2_tensor": {
       "delta_tensor_over_tabular": {
-        "ci_high": 0.000527849286785687,
-        "ci_low": -0.0006452274426316865,
+        "ci_high": 0.0010464354871817438,
+        "ci_low": -0.0001701775123843294,
         "clusters": 156.0,
-        "delta_qlike": -7.141424563083543e-05,
-        "p_value": 0.767616191904048
+        "delta_qlike": 0.00043533198050582894,
+        "p_value": 0.15992003998001
       },
       "qlike": {
         "tabular": 0.13463375186327192,
-        "tabular+tensor": 0.13470516610890274
+        "tabular+tensor": 0.13419841988276607
       },
       "tensor_columns": 112
     },
@@ -543,7 +543,7 @@
     "train_share": 0.6
   },
   "device": "cuda",
-  "ext12_sha256": "51be6d2b9225fe9f596b631812fdc4e0008c952afbd35747620185a9c092de7a",
+  "ext12_sha256": "7fe06c80ba7b72c20eb3018919cfda19986bc80ff3f73a45163550b2585c981a",
   "extension_inputs": "the tensor and sequence arms add inputs outside the registry; their resolved names are recorded per arm under information_sets",
   "extensions": [
     1,
@@ -697,7 +697,7 @@
     }
   },
   "gate_met_by": "Block 7 signal present + Block 8 tabular ladder fails to convert it",
-  "generated_at_utc": "2026-08-21T11:28:16.335397+00:00",
+  "generated_at_utc": "2026-08-21T19:21:59.100371+00:00",
   "gpu": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "label": "EXPLORATORY_MECHANISM_DISCOVERY",
   "panel_rows": 184632,

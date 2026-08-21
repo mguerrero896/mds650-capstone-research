@@ -1133,8 +1133,17 @@ Spec Kit consistency and preregistration gates pass.
     in place with what replaced them, and `tests/contract/test_readme_matches_artifacts.py`
     now reads the run id out of the README and checks each figure against that run.
 
-    **What still has to be re-run.** The ladder and tensor corrections change producers, not
-    artifacts. `artifacts/rp2_ext12_level4/level4_and_tensor.json` was measured on tensors
-    built with the look-ahead mark, and the ladder's published levels predate the session
-    weighting. Neither is restated here; both need their producer re-run before any number
-    that depends on them is published again.
+    **Re-run, and what it moved.** The tensors were rebuilt with the corrected mark and
+    installed at their canonical path, so the default invocation no longer reads the
+    look-ahead ones: the inputs hash moves from `793c56cb033f3b78` to `8c6ed992d58a1414`,
+    over identical shapes and row counts, with `tensor_nonzero_share` shifting from
+    0.8217336 to 0.8217224 as a handful of trades land in different buckets. Level 4
+    re-measured on them: the tensor contrast moves from −0.00007 [−0.00065, +0.00053] at
+    p 0.7676 to **+0.00044 [−0.00017, +0.00105] at p 0.1599** — sign reversed and six times
+    larger, still containing zero — and the sequence contrast from −0.00664 to **−0.00607
+    [−0.01249, −0.00130] at p 0.0070**, unchanged in substance and still excluding zero.
+    Recorded in `SUPERSEDED_RESULTS.md`.
+
+    The ladder's published levels still predate the session weighting: that producer has not
+    been re-run here, and no number depending on those levels should be published until it
+    is.
