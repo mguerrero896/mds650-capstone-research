@@ -144,6 +144,26 @@ def _predict(
     return np.concatenate(out).astype(np.float64)
 
 
+def _contrast_squared_error(
+    base: FloatArray, expanded: FloatArray, target: FloatArray,
+    sessions: npt.NDArray[np.str_]
+) -> dict[str, float]:
+    """The paired session contrast on squared error, for the scale the model minimised."""
+
+    difference = (target - base) ** 2 - (target - expanded) ** 2
+    boot = paired_day_bootstrap(
+        pl.DataFrame({"session_date": sessions, "loss_difference": difference}),
+        repetitions=DEFAULT_BOOTSTRAP, seed=DEFAULT_SEED,
+    )
+    return {
+        "delta_squared_error": float(boot["estimate"]),
+        "ci_low": float(boot["ci_low"]),
+        "ci_high": float(boot["ci_high"]),
+        "p_value": float(boot["p_value_two_sided"]),
+        "clusters": float(boot["clusters"]),
+    }
+
+
 def _contrast(
     base: FloatArray, expanded: FloatArray, target: FloatArray,
     sessions: npt.NDArray[np.str_]
@@ -280,6 +300,7 @@ def run_role(
 
     neural: dict[str, FloatArray] = {}
     log_rmse: dict[str, float] = {}
+    fitted_by_arm: dict[str, FloatArray] = {}
     for name, use_sequence in (("mlp_tabular", False), ("deepsets_sequence", True)):
         torch.manual_seed(SEED)
         model = DeepSetsForecaster(
@@ -287,6 +308,7 @@ def run_role(
         ).to(device)
         _train(model, tabular_t, sequence_t, mask_t, response_t, train_index, device)
         fitted = _predict(model, tabular_t, sequence_t, mask_t)
+        fitted_by_arm[name] = fitted
         log_rmse[name] = float(np.sqrt(np.mean((response[test] - fitted[test]) ** 2)))
         # Lognormal smearing amplifies a poorly fit network's level error into an
         # enormous QLIKE, which makes the two arms incomparable. Recalibrate BOTH on
@@ -313,6 +335,23 @@ def run_role(
             neural["mlp_tabular"][test], neural["deepsets_sequence"][test],
             target[test], labels[test],
         ),
+        # The second reference the preregistration requires. The run of 2026-08-18 reported
+        # +0.634 at p=0.004 against the control alone while scoring QLIKE 0.1496 against the
+        # ladder's 0.1374 - it lost to the model already in production and the delta was
+        # significant anyway, because the control was five times worse than a tree on the
+        # same features. One reference cannot tell "the sequence helps" from "our control is
+        # bad".
+        "delta_sequence_over_lightgbm": _contrast(
+            forecasts["tabular"][test], neural["deepsets_sequence"][test],
+            target[test], labels[test],
+        ),
+        # The same contrast on the scale the networks were fitted on. A QLIKE delta that
+        # disagrees in magnitude with this one is reporting the exp() transform's
+        # sensitivity to level error, not predictive skill.
+        "delta_log_scale_sequence_over_tabular": _contrast_squared_error(
+            fitted_by_arm["mlp_tabular"][test], fitted_by_arm["deepsets_sequence"][test],
+            response[test], labels[test],
+        ),
         "qlike_lightgbm_reference": float(
             np.mean(qlike_losses(target[test], forecasts["tabular"][test]))
         ),
@@ -323,9 +362,25 @@ def run_role(
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--inputs", type=Path, default=INPUTS)
+    parser.add_argument(
+        "--panel-root",
+        type=Path,
+        default=ROOT / "artifacts",
+        help="directory holding rp2_blockN_* panels; a run directory reads that run",
+    )
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--train-share", type=float, default=0.6)
     args = parser.parse_args(argv)
+    global B0_PANEL, B1_PANEL, B2_PANEL, TARGET_PANEL  # noqa: PLW0603
+    for _name, _sub in (
+        ("B0_PANEL", "rp2_block4_b0/b0_panel.parquet"),
+        ("B1_PANEL", "rp2_block5_surface/b1_surface_panel.parquet"),
+        ("B2_PANEL", "rp2_block6_flow/b2_flow_panel.parquet"),
+        ("TARGET_PANEL", "rp2_block3_target/target_panel.parquet"),
+    ):
+        if _name in globals():
+            globals()[_name] = args.panel_root / _sub
+
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     tensor = np.load(args.inputs / "tensor.npy")
@@ -351,7 +406,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         "seed": SEED,
         "panel_rows": panel.height,
     }
-    for role in ("D", "V"):
+    # Development only, per the preregistration: V holds 32 evaluated sessions with an
+    # MDE of 0.0027 to 0.0177 against effects near 0.004, and it is the only untouched
+    # comparison left. Spending it on an exploratory family would leave nothing to
+    # confirm whatever this finds.
+    for role in ("D",):
         document[role] = run_role(
             panel, tensor, sequence, role=role, train_share=args.train_share, device=device
         )
@@ -362,7 +421,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     (args.output_dir / "level4_and_tensor.json").write_text(
         json.dumps(document, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
-    for role in ("D", "V"):
+    # Development only, per the preregistration: V holds 32 evaluated sessions with an
+    # MDE of 0.0027 to 0.0177 against effects near 0.004, and it is the only untouched
+    # comparison left. Spending it on an exploratory family would leave nothing to
+    # confirm whatever this finds.
+    for role in ("D",):
         block = document[role]
         assert isinstance(block, dict)
         print(f"=== role {role}: {block.get('status')} rows={block.get('rows')} ===")

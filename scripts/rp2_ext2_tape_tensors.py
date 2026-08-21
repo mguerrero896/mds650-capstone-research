@@ -193,10 +193,26 @@ def build_session_arrays(
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-root", type=Path, default=Path("D:/MDS650"))
+    parser.add_argument(
+        "--panel-root",
+        type=Path,
+        default=ROOT / "artifacts",
+        help="directory holding rp2_blockN_* panels; a run directory reads that run",
+    )
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--workers", type=int, default=8)
     parser.add_argument("--limit-sessions", type=int, default=0)
     args = parser.parse_args(argv)
+    global B0_PANEL, B1_PANEL, B2_PANEL, TARGET_PANEL  # noqa: PLW0603
+    for _name, _sub in (
+        ("B0_PANEL", "rp2_block4_b0/b0_panel.parquet"),
+        ("B1_PANEL", "rp2_block5_surface/b1_surface_panel.parquet"),
+        ("B2_PANEL", "rp2_block6_flow/b2_flow_panel.parquet"),
+        ("TARGET_PANEL", "rp2_block3_target/target_panel.parquet"),
+    ):
+        if _name in globals():
+            globals()[_name] = args.panel_root / _sub
+
 
     panel = pl.read_parquet(B0_PANEL)
     inventory = load_inventory()
