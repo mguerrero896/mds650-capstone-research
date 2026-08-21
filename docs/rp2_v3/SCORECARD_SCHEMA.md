@@ -70,7 +70,15 @@ medians afterwards would describe typical origins rather than stale quotes.
 histogram the producer emits per counting window and the scorecard adds. Per-window
 quantiles cannot be merged: a median across windows of their own 95th percentiles lets a
 window holding one trade weigh as much as a window holding ninety-nine, and the result is not
-the 95th percentile of any population. Counts in fixed bins do merge, by adding. The bins are
+the 95th percentile of any population.
+
+A tail below the mean beside it is not a symptom of that, and was mistaken for one when this
+was first investigated. The measured distribution over 580,549,989 trades is
+`p50 0.067 s, p90 0.137 s, p95 0.280 s, p99 4.877 s, p999 279.102 s`: 94.3 % of records
+arrive within 0.28 s and 0.23 % take more than 100 s, and that fraction alone carries the
+mean to 1.221 s. A heavy tail puts the mean above the 95th percentile as a matter of
+arithmetic, so the ordering of these two fields says nothing about whether either is
+correct. Counts in fixed bins do merge, by adding. The bins are
 log-spaced from 0.01 s to about 3.5 hours, and the reported value is the lower edge of the
 bin the quantile falls in, so it understates rather than overstates a number reported as a
 worst case.
