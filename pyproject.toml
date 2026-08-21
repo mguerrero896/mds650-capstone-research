@@ -30,6 +30,18 @@ dependencies = [
 #     uv sync --extra gpu
 gpu = ["torch>=2.6,<3"]
 
+# The default index serves a CPU-only wheel for torch, so `uv sync --extra gpu` installed a
+# build with `torch.cuda.is_available() == False` and the experiment fell back to the CPU
+# silently - the only trace was `"device": "cpu"` inside the artifact. The extra names a GPU
+# and must deliver one, so torch is pinned to the CUDA 12.8 index.
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cu128" }]
+
 [dependency-groups]
 dev = [
   "coverage>=7.10,<8",
