@@ -86,35 +86,54 @@ timeline
 | MDE | The smallest effect size the study promised to care about |
 | Holm | A correction so that testing many things doesn't manufacture false positives |
 
-## Findings at a glance (as of 2026-08-19)
+## Findings at a glance (RP2-v3, 2026-08-21)
 
-Honest summary, in the order the evidence deserves:
+Measured on `rp2-v3-20260821-134741`, published to Supabase and readable through
+`api.current_rp2_contrasts`. Development 389 sessions, validation 80. A positive delta is an
+improvement in QLIKE: the smaller information set's loss minus the larger one's.
 
-1. **The only prospective, preregistered test returned null.** A 10-session holdout
-   (July 2026), sealed before collection and read exactly once, confirmed neither the B1
-   nor the B2 increment.
-2. **Retrospective evaluations show a recurring, model-specific B2 signal.** Under the
-   confirmatory Gamma GLM, the B2-over-B1 QLIKE improvement is positive and statistically
-   supported in several historical blocks (up to +0.053, robust to the five registered
-   timing sensitivities in the latest confirmation), **but the fixed LightGBM challenger
-   reverses or nulls it in every one of those samples.** The binding label is
-   `POSITIVE_BUT_NOT_GLOBALLY_CONFIRMED`.
-3. **Conventional option state (B1) does not reliably beat B0** under the frozen
-   campaign designs; the contrast flips sign across periods, assets, and model families.
-4. **Exploratory, but model-robust: the *total* option-information contribution
-   (B0→B2) is positive across families in most eras.** In the 2024 blocks it is
-   significantly positive in 5/5 families, and a uniform three-family ladder over the
-   frozen panels shows 3/3-family positive totals across 2025-03..2026-03 (229
-   sessions, wild p ≤ 2e−4), concentrated in option state and fading toward null in
-   2026 (`docs/positive_findings_v1.md`, decision 56). The family-dependence headline
-   is partly a property of the frozen confirmatory design, not of option information
-   itself.
+| Family | ΔB1 (D) | ΔB2\|B1 (D) | ΔB1 (V) | ΔB2\|B1 (V) |
+| --- | ---: | ---: | ---: | ---: |
+| `gamma_glm` | +0.00408 | −0.02549 | −0.00111 | −0.00222 |
+| `ridge_log` | +0.00424 | −0.15509 | −0.00084 | −0.00195 |
+| `lightgbm_qlike` | +0.00381 | +0.00065 | +0.00092 | −0.00051 |
 
-![Five campaign estimates with 95 percent confidence intervals declining from 2024 to a 2026 null, with the prospective holdout highlighted](docs/figures/signal_decay.png)
+1. **Contemporaneous option state helps in development, consistently.** ΔB1 is positive in
+   all three families, +0.0038 to +0.0042, with 95 % intervals excluding zero and effects
+   1.7 times the minimum this design could detect. This is the one finding the evidence
+   supports without qualification.
 
-*The Gamma-family B2 effect, campaign by campaign (95% CI, canonical numbers from the
-Gate-4 artifact). The amber point is the prospective holdout — sealed before collection,
-read once, and sitting on zero.*
+2. **It does not survive out of sample where the design could test it.** `ridge_log`'s
+   validation MDE is 0.0027 against a development effect of 0.0042 — powered to see it, and
+   it measured −0.00084. `gamma_glm` lands one session short of its own requirement (33
+   needed, 32 available) and decides nothing. `lightgbm_qlike` would need roughly 692
+   validation sessions to test its own effect and has 32, so its interval
+   [−0.0108, +0.0129] cannot support any conclusion.
+
+3. **Point-in-time flow adds nothing over option state.** ΔB2\|B1 is negative or
+   indistinguishable from zero everywhere, and in `ridge_log` it is −0.155 with an interval
+   spanning [−0.455, +0.001] — instability rather than signal.
+
+4. **Ten of the twelve contrasts sit below their own minimum detectable effect.** Reporting
+   those as nulls without saying so would claim more than the design can support. The full
+   family-by-family power reading is in
+   [`docs/rp2_v3/VERDICT.md`](docs/rp2_v3/VERDICT.md).
+
+The section 21 gate returns **Result C**, on the narrower reading above rather than the
+broader "B1 does not contribute" that the plan's wording invites.
+
+### What this replaces
+
+An earlier version of this section reported the B2-over-B1 increment under the Gamma GLM as
+positive and statistically supported, up to +0.053. The rebuilt contrast is **−0.02549** in
+development and **−0.00222** in validation, the latter with an interval excluding zero. The
+sign is reversed, not the magnitude reduced. Six corrections account for it — a baseline
+built from the square root of its own target, an option snapshot ending 1 920 s before the
+origin, economics measured on the provider's clock, imputation using rows that were later
+scored, a missing diagnostic dropping origins from the baseline too, and a cross-family race
+that confounded estimator with information set. Five of the six leaked information toward the
+predictor, and all pushed the same way.
+[`SUPERSEDED_RESULTS.md`](docs/rp2_v3/SUPERSEDED_RESULTS.md) records each one.
 
 ### What a much richer option representation changed (2026-08-19)
 

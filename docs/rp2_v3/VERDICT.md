@@ -46,13 +46,42 @@ the B1 those numbers were measured on is contemporaneous with a core coverage of
 median quote age of **579 s**, a 95th percentile of **1724 s** against a 1800 s cutoff, and
 **zero** post-cutoff observations. The representation is not the explanation.
 
-> **Interpretation, as the plan words it:** B1 does not contribute contemporaneous
-> forecastability for RV30 under this representation.
+> **Interpretation.** The plan words Result C as *B1 does not contribute contemporaneous
+> forecastability for RV30 under this representation*. The measurements support the weaker
+> and more precise statement: **the development-sample B1 effect does not survive
+> out-of-sample where the design could test it.** One family refutes it on adequate power,
+> one is one session short of deciding, and one could not have measured it at all.
 
 `lightgbm_qlike` is the exception worth stating rather than burying: its ΔB1 is positive in
 both roles, +0.00381 in D and +0.00092 in V, though the validation interval spans zero. One
 family of three, on 32 evaluation sessions, is not a result — it is where a future
 prospective test would aim.
+
+## What the intervals could have detected, family by family
+
+Eight of twelve intervals contain zero, and that alone does not distinguish "there is no
+effect" from "this design could not have seen one". The minimum detectable effect separates
+them. The question worth asking is whether validation could have detected an effect the size
+of the one development measured:
+
+| Family | Effect in D | MDE in V | Could V have detected it? |
+| --- | ---: | ---: | --- |
+| `ridge_log` | +0.00424 | 0.00268 | **Yes** — and it measured −0.00084 |
+| `gamma_glm` | +0.00408 | 0.00413 | Marginally not: ~33 sessions needed, 32 available |
+| `lightgbm_qlike` | +0.00381 | 0.01770 | No — roughly 692 sessions would be needed |
+
+So the three families answer three different questions, and only one of them is a refutation:
+
+- **`ridge_log` refutes.** Validation was powered to see a development-sized effect and did
+  not. That is evidence of absence rather than absence of evidence.
+- **`gamma_glm` is undetermined.** The design lands one session short of its own requirement,
+  which is not a result in either direction.
+- **`lightgbm_qlike` was not measurable in validation.** Its MDE is 4.65 times the effect it
+  would be testing; the interval [−0.01081, +0.01292] is wide enough to contain almost any
+  conclusion.
+
+Ten of the twelve contrasts sit below their own minimum detectable effect. Reporting those as
+nulls without saying so would state a finding the design could not support.
 
 ## What was corrected on the way here, and what it did not change
 
