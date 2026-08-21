@@ -65,10 +65,12 @@ from mds650.rp2.panel import (
     describe_information_set,
     lift_mask,
     load_merged_panel,
+    panel_paths,
     session_rank,
     standardise,
 )
 from mds650.rp2.preprocessing import describe_preprocessor, fold_design
+from mds650.rp2.run_manifest import normalised_digest
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_ext12_level4"
@@ -335,8 +337,15 @@ def run_role(
         lift_mask(keep, test),
     )
     forecasts = {
-        "tabular": LADDER["lightgbm"](base_design, target, train),
-        "tabular+tensor": LADDER["lightgbm"](standardise(with_tensor, train), target, train),
+        # `lightgbm_qlike`, the family the preregistration freezes as the second reference
+        # and the one in PRIMARY_MODELS. This read `LADDER["lightgbm"]`, the log-MSE tree,
+        # so the level published as `qlike_lightgbm_reference` was another family's - in
+        # the same change whose argument was that the arms must be fitted to the frozen
+        # QLIKE objective, while the reference they are scored against was not.
+        "tabular": LADDER["lightgbm_qlike"](base_design, target, train),
+        "tabular+tensor": LADDER["lightgbm_qlike"](
+            standardise(with_tensor, train), target, train
+        ),
     }
     results["extension_2_tensor"] = {
         "tensor_columns": int(tensor_block.shape[1]),
@@ -489,6 +498,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         "gpu": torch.cuda.get_device_name(0) if torch.cuda.is_available() else None,
         "seed": SEED,
         "panel_rows": panel.height,
+        # `--panel-root` makes the panel set a free parameter of this producer, and the
+        # document recorded only a row count. The re-measurement of 2026-08-21 ran against
+        # the panels from BEFORE the bar repair - parkinson_30 exactly zero on 22,967 of
+        # 152,954 development rows - and nothing in the artifact said so. A digest per
+        # panel lets a reader tell a pre-repair measurement from a post-repair one.
+        "panel_root": str(args.panel_root),
+        "panel_digests": {
+            name: normalised_digest(path) if path.is_file() else None
+            for name, path in sorted(panel_paths(args.panel_root).items())
+        },
     }
     # Development only, per the preregistration: V holds 32 evaluated sessions with an
     # MDE of 0.0027 to 0.0177 against effects near 0.004, and it is the only untouched

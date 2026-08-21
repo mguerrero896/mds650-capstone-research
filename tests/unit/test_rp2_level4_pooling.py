@@ -155,3 +155,42 @@ def test_the_torch_script_carries_no_type_suppression() -> None:
         f"torch is now imported by {[str(p.relative_to(ROOT)) for p in importers]}; "
         "extend this check to cover them"
     )
+
+
+def test_the_reference_is_the_family_the_preregistration_names() -> None:
+    """The second reference is frozen as `lightgbm_qlike`, and it was `lightgbm`.
+
+    `docs/rp2_v3/LEVEL4_PREREGISTRATION.md` freezes the second reference as "`lightgbm_qlike`
+    from the frozen ladder" and names it in the success criterion. The producer built its
+    reference from `LADDER["lightgbm"]` - `fit_lightgbm`, the log-MSE tree, which is not one
+    of `PRIMARY_MODELS`. The published `qlike_lightgbm_reference` was therefore the wrong
+    family's level, in the same commit range whose whole argument was that the arms must be
+    fitted to the frozen QLIKE objective while the reference they are scored against was not.
+    """
+    from mds650.rp2.ladder import PRIMARY_MODELS
+
+    source = SCRIPT.read_text(encoding="utf-8")
+    # The CALL, not a mention: the comment recording what this replaced names the old
+    # expression, and a substring check on that would fail on its own documentation.
+    assert 'LADDER["lightgbm"](' not in source, (
+        "the producer still builds a forecast from the log-MSE tree; every published "
+        "contrast has to use a family in PRIMARY_MODELS"
+    )
+    assert 'LADDER["lightgbm_qlike"](' in source
+    assert "lightgbm_qlike" in PRIMARY_MODELS
+
+
+def test_the_artifact_records_which_panels_it_was_measured_on() -> None:
+    """`--panel-root` makes the panel set a free parameter, so the run must name it.
+
+    The level-4 artifact recorded only `panel_rows`. The re-measurement of 2026-08-21 ran
+    against `artifacts/rp2_v3/rp2-v3-20260821-171154`, the panel set from BEFORE the bar
+    repair, in which parkinson_30 is exactly zero on 22,967 of 152,954 development rows -
+    so the correction that commit existed to make never reached this arm, and nothing in
+    the artifact said which panels produced it.
+    """
+    source = SCRIPT.read_text(encoding="utf-8")
+    assert "panel_digests" in source, (
+        "the artifact does not record a digest for the panels it read, so a reader cannot "
+        "tell a pre-repair measurement from a post-repair one"
+    )

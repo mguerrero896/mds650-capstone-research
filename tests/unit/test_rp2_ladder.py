@@ -57,7 +57,8 @@ def test_partial_pooling_shrinks_noise_and_keeps_real_group_offsets() -> None:
     true_offset = np.array([0.8, -0.8, 0.0, 0.0, 0.4, -0.4])
     residuals = true_offset[groups] + rng.normal(scale=0.5, size=groups.size)
     train = np.ones(groups.size, dtype=bool)
-    pooled = partial_pooling(residuals, groups, train)
+    sessions = np.arange(groups.size, dtype=np.int64)
+    pooled = partial_pooling(residuals, groups, train, sessions=sessions)
     applied = pooled.apply(np.arange(6, dtype=np.int64))
     assert pooled.between_variance > 0.0
     # Shrunk toward zero but still ordered like the truth.
@@ -69,15 +70,33 @@ def test_partial_pooling_collapses_to_zero_when_groups_are_indistinguishable() -
     rng = np.random.default_rng(22)
     groups = np.repeat(np.arange(5, dtype=np.int64), 300)
     residuals = rng.normal(scale=1.0, size=groups.size)
-    pooled = partial_pooling(residuals, groups, np.ones(groups.size, dtype=bool))
+    sessions = np.arange(groups.size, dtype=np.int64)
+    pooled = partial_pooling(
+        residuals, groups, np.ones(groups.size, dtype=bool), sessions=sessions
+    )
     assert float(np.max(np.abs(pooled.apply(np.arange(5, dtype=np.int64))))) < 0.2
 
 
 def test_partial_pooling_validates_shapes_and_empty_training() -> None:
+    sessions = np.arange(3, dtype=np.int64)
     with pytest.raises(ValueError, match="RP2_POOLING_SHAPE_MISMATCH"):
-        partial_pooling(np.ones(3), np.zeros(2, dtype=np.int64), np.ones(3, dtype=bool))
-    empty = partial_pooling(np.ones(3), np.zeros(3, dtype=np.int64), np.zeros(3, dtype=bool))
+        partial_pooling(
+            np.ones(3), np.zeros(2, dtype=np.int64), np.ones(3, dtype=bool), sessions=sessions
+        )
+    # The session index is the unit the sampling variance is measured on, so a mismatched
+    # one is as wrong as a mismatched group index and is refused the same way.
+    with pytest.raises(ValueError, match="RP2_POOLING_SESSION_SHAPE_MISMATCH"):
+        partial_pooling(
+            np.ones(3),
+            np.zeros(3, dtype=np.int64),
+            np.ones(3, dtype=bool),
+            sessions=np.arange(2, dtype=np.int64),
+        )
+    empty = partial_pooling(
+        np.ones(3), np.zeros(3, dtype=np.int64), np.zeros(3, dtype=bool), sessions=sessions
+    )
     assert empty.offsets == {}
+    assert empty.sampling_variance == {}
 
 
 def _heteroskedastic_panel(

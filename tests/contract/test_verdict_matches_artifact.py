@@ -20,6 +20,7 @@ import math
 import re
 from collections.abc import Callable
 from pathlib import Path
+from typing import Final
 
 import pytest
 
@@ -57,6 +58,16 @@ CLAIMS: tuple[tuple[str, str, Callable[[dict], bool]], ...] = (
         r"(\w+) of the twelve contrasts sit below their own",
         lambda c: abs(c["estimate"]) < c["mde"],
     ),
+)
+#: The "Not A" argument counts the sign of the six B2-over-B1 pairs separately, over a
+#: different denominator, so it needs its own entry. It read "four of the six" against a
+#: true five in every run this repository holds - wrong before the rebuild and carried
+#: through the rewrite - while README.md stated five, so two published documents disagreed.
+#: None of the three patterns above matches its phrasing, which is why nothing caught it.
+SIX_PAIRS: Final = (
+    "negative B2-over-B1 pairs",
+    r"(\w+) of the six family-role pairs",
+    "b2_over_b1",
 )
 #: The two sizing figures the power table's prose states, read from the document so the
 #: same rule applies to them.
@@ -260,3 +271,23 @@ def test_the_rebuild_table_matches_both_runs(document, tables, inference) -> Non
             )
     joined = "\n  ".join(wrong)
     assert not wrong, f"the rebuild table does not match the runs:\n  {joined}"
+
+
+def test_the_six_pair_count_matches_the_artifact(document, inference) -> None:
+    """The Not-A argument's own count, over the six B2-over-B1 pairs rather than twelve."""
+    label, pattern, key = SIX_PAIRS
+    stated = re.findall(pattern, document, flags=re.IGNORECASE)
+    assert stated, f"{label}: the document no longer states this count"
+    claimed = {WORDS.get(word.lower()) for word in stated}
+    assert None not in claimed, f"{label}: {stated} is not a number word this test can read"
+    assert len(claimed) == 1, f"{label}: stated {len(stated)} times and they disagree: {stated}"
+
+    negative = sum(
+        1
+        for role in ("D", "V")
+        for family in inference[role]["nested_tests"]
+        if inference[role]["nested_tests"][family][key]["estimate"] < 0
+    )
+    assert negative == claimed.pop(), (
+        f"{label}: measured {negative} of six, document says {stated[0]}"
+    )

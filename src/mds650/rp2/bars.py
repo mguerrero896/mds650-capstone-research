@@ -328,6 +328,16 @@ def build_session_grid(group: pl.DataFrame, *, session: date | None = None) -> S
     high = np.where(absent, close, grids["high"])
     low = np.where(absent, close, grids["low"])
     volume = np.where(absent, 0.0, grids["volume"])
+    # And a volume of exactly zero on a minute whose price moved is an absence, not a
+    # count: a price cannot move without trades. Measured across the six bar stores, 2,355
+    # of the 2,357 zero-volume minutes have high > low - AAPL on 2026-02-02 alone has 133
+    # consecutive ones, one opening 264.66, ranging 264.508 to 264.69 and closing 264.68 on
+    # a recorded volume of zero. Keeping those zeros left 2,958 of 152,954 development
+    # origins and 0 of 31,678 validation ones carrying the same fabricated -27.631 the
+    # repair above exists to remove, by the same route: a `log` feature, a finite zero, no
+    # missing indicator, no imputation. The two genuinely flat minutes keep their zero.
+    contradicted = (volume == 0.0) & np.isfinite(high) & np.isfinite(low) & (high > low)
+    volume = np.where(contradicted, np.nan, volume)
     return SessionGrid(
         close=close,
         open=opening,

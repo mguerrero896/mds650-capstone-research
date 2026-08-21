@@ -275,10 +275,15 @@ def run_role(
     forecast = LADDER["log_ols"](design, target, train)
     residual = np.log(np.maximum(target, 1e-12)) - np.log(np.maximum(forecast, 1e-12))
     asset_index = np.unique(assets, return_inverse=True)[1].astype(np.int64)
-    pooled = partial_pooling(residual, asset_index, train)
+    # The session, not the origin, is the unit the sampling variance is measured on: the
+    # origins inside a session share overlapping thirty-minute targets, so counting them
+    # as independent draws made the subtracted term about six times too small.
+    pooled_sessions = np.unique(session_labels, return_inverse=True)[1].astype(np.int64)
+    pooled = partial_pooling(residual, asset_index, train, sessions=pooled_sessions)
     pooled_forecast = forecast * np.exp(pooled.apply(asset_index))
     results["hierarchical_partial_pooling"] = {
         "between_variance": pooled.between_variance,
+        "sampling_variance_by_group": pooled.sampling_variance,
         "qlike_without_pooling": float(np.mean(qlike_losses(target[test], forecast[test]))),
         "qlike_with_pooling": float(
             np.mean(qlike_losses(target[test], pooled_forecast[test]))

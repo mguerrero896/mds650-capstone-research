@@ -37,7 +37,7 @@ Five of twelve deltas are positive. Seven of twelve intervals contain zero.
 ## Why this is Result C and not A, B or D
 
 **Not A.** A requires ΔB1 > 0 *and* ΔB2\|B1 > 0, in D *and* in V. ΔB1 is negative in V for
-`gamma_glm` and `ridge_log`, and ΔB2\|B1 is negative in four of the six family-role pairs.
+`gamma_glm` and `ridge_log`, and ΔB2\|B1 is negative in five of the six family-role pairs.
 
 **Not B.** B requires ΔB1 > 0 with ΔB2\|B1 ≈ 0. ΔB1 is not positive in validation for two of
 the three families, so the premise fails before the B2 question is reached.
@@ -137,9 +137,9 @@ pooled share is 0.23694, not 0.23057.
 
 `b2_p95_provider_latency_s` reads 0.3555 s against the previous 0.2802 s, and that is a
 reporting artefact rather than a change in the tape: the two are **adjacent edges of the same
-log-spaced bin**, which is 26.9 % wide. A 0.12 % shift in the counted trades crossed the
+log-spaced bin**, which is 26.9 % wide. A 0.195 % shift in the counted trades crossed the
 boundary and the reported figure moved by a full bin. The value is the bin's lower edge, so
-the tail is at least 0.3555 s and below 0.4508 s; it is not resolved more finely than that,
+the tail is at least 0.3555 s and below 0.4511 s; it is not resolved more finely than that,
 and no claim on this page depends on it.
 
 Seventy-four of 162 comparable scorecard fields moved against `rp2-v3-20260821-134741`, which
