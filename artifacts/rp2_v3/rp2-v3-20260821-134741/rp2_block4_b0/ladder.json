@@ -1,0 +1,184 @@
+{
+  "b0_sha256": "3c17b929bb0c21a5d624fc3d9b9ff470e60867acb669667dc6f5d9467de6494d",
+  "block": 4,
+  "generated_at_utc": "2026-08-21T03:49:48.157828+00:00",
+  "label": "EXPLORATORY_MECHANISM_DISCOVERY",
+  "market_control_columns": [
+    "SPY_rv_30",
+    "SPY_ret_30",
+    "QQQ_rv_30",
+    "QQQ_ret_30"
+  ],
+  "origin_grid": {
+    "first": 30,
+    "last": 360,
+    "step": 5
+  },
+  "panel_columns": 30,
+  "panel_rows": 184632,
+  "program": "docs/research_program_v2.md",
+  "results": {
+    "D": {
+      "_meta": {
+        "market_control_columns": 4.0,
+        "market_control_rows": 150968.0,
+        "sessions": 389.0,
+        "test_rows": 61336.0,
+        "train_rows": 89638.0
+      },
+      "b0_core": {
+        "calibration_intercept": -0.233237088299389,
+        "calibration_r2": 0.7478542132265594,
+        "calibration_slope": 0.9912900427893686,
+        "log_r2": 0.761297903782184,
+        "qlike": 0.14462167866220357,
+        "well_calibrated": 1.0
+      },
+      "b0_core_on_market_rows": {
+        "calibration_intercept": -0.2314564433995646,
+        "calibration_r2": 0.747832162189583,
+        "calibration_slope": 0.9914398384741241,
+        "log_r2": 0.7612994476245447,
+        "qlike": 0.1446129600646248,
+        "well_calibrated": 1.0
+      },
+      "b0_market": {
+        "calibration_intercept": -0.12789499216603142,
+        "calibration_r2": 0.7547237595154498,
+        "calibration_slope": 0.9996706807895651,
+        "log_r2": 0.7680676946818158,
+        "qlike": 0.14242600336058267,
+        "well_calibrated": 1.0
+      },
+      "ewma": {
+        "calibration_intercept": -2.1472241010923363,
+        "calibration_r2": 0.7184061072959236,
+        "calibration_slope": 0.838986660786535,
+        "log_r2": 0.6044644368072375,
+        "qlike": 0.18923072418240003,
+        "scored_rows": 61336.0,
+        "well_calibrated": 0.0
+      },
+      "garch11_intraday": {
+        "alpha": 0.09539089540309528,
+        "beta": 0.9036091045968959,
+        "calibration_intercept": -0.22645085202566695,
+        "calibration_r2": 0.6744743637751685,
+        "calibration_slope": 1.0206094586604684,
+        "log_r2": 0.488483326754962,
+        "omega": 4.028670947224094e-09,
+        "persistence": 0.9989999999999912,
+        "qlike": 0.2130542955342796,
+        "well_calibrated": 1.0
+      },
+      "har_simple": {
+        "calibration_intercept": -0.19439069147520638,
+        "calibration_r2": 0.7244230980663606,
+        "calibration_slope": 0.996775217475579,
+        "log_r2": 0.738606449005359,
+        "qlike": 0.15499939922860692,
+        "well_calibrated": 1.0
+      },
+      "intraday_mean": {
+        "calibration_intercept": -0.09123245537811986,
+        "calibration_r2": 0.17629175346624837,
+        "calibration_slope": 1.066084550898644,
+        "log_r2": -0.43621938612750344,
+        "qlike": 0.48633117931272835,
+        "well_calibrated": 1.0
+      },
+      "persistence": {
+        "calibration_intercept": -2.7847473470788007,
+        "calibration_r2": 0.6932497996682556,
+        "calibration_slope": 0.7718064524179357,
+        "log_r2": 0.6265598843676159,
+        "qlike": 0.206602138610118,
+        "well_calibrated": 0.0
+      }
+    },
+    "V": {
+      "_meta": {
+        "market_control_columns": 4.0,
+        "market_control_rows": 31678.0,
+        "sessions": 80.0,
+        "test_rows": 12672.0,
+        "train_rows": 19006.0
+      },
+      "b0_core": {
+        "calibration_intercept": 0.3013424597262533,
+        "calibration_r2": 0.638442794564819,
+        "calibration_slope": 1.0332961047748805,
+        "log_r2": 0.6869289334452544,
+        "qlike": 0.18146124880494796,
+        "well_calibrated": 0.0
+      },
+      "b0_core_on_market_rows": {
+        "calibration_intercept": 0.3013424597262533,
+        "calibration_r2": 0.638442794564819,
+        "calibration_slope": 1.0332961047748805,
+        "log_r2": 0.6869289334452544,
+        "qlike": 0.18146124880494796,
+        "well_calibrated": 0.0
+      },
+      "b0_market": {
+        "calibration_intercept": 0.26273517663606916,
+        "calibration_r2": 0.6468636782023904,
+        "calibration_slope": 1.0304978980159754,
+        "log_r2": 0.6949919094548801,
+        "qlike": 0.1762157063446911,
+        "well_calibrated": 0.0
+      },
+      "ewma": {
+        "calibration_intercept": -2.9486909129424617,
+        "calibration_r2": 0.6008206019176514,
+        "calibration_slope": 0.7585245720995053,
+        "log_r2": 0.47576064405109,
+        "qlike": 0.23134486464310153,
+        "scored_rows": 12672.0,
+        "well_calibrated": 0.0
+      },
+      "garch11_intraday": {
+        "alpha": 0.1120183747551726,
+        "beta": 0.8814421375185267,
+        "calibration_intercept": -0.8128973260328802,
+        "calibration_r2": 0.5256170899684143,
+        "calibration_slope": 0.961354692811948,
+        "log_r2": 0.401167981169548,
+        "omega": 9.521798677014839e-09,
+        "persistence": 0.9934605122736994,
+        "qlike": 0.22656411917861252,
+        "well_calibrated": 0.0
+      },
+      "har_simple": {
+        "calibration_intercept": -0.024227125999472368,
+        "calibration_r2": 0.5855775067900983,
+        "calibration_slope": 1.006320554741314,
+        "log_r2": 0.6424442785622411,
+        "qlike": 0.19322105473895557,
+        "well_calibrated": 1.0
+      },
+      "intraday_mean": {
+        "calibration_intercept": -0.18381917824278768,
+        "calibration_r2": 0.2518059556752361,
+        "calibration_slope": 0.9761137372942627,
+        "log_r2": 0.34895119163531907,
+        "qlike": 0.40568140021156174,
+        "well_calibrated": 1.0
+      },
+      "persistence": {
+        "calibration_intercept": -3.6618205304619966,
+        "calibration_r2": 0.5656406664161265,
+        "calibration_slope": 0.6819164607863166,
+        "log_r2": 0.49372599035325837,
+        "qlike": 0.2555277962443534,
+        "well_calibrated": 0.0
+      }
+    }
+  },
+  "session_counters": {
+    "dropped_fill": 0,
+    "dropped_short_session": 0,
+    "session_assets_seen": 2814
+  },
+  "target": "rv30"
+}

@@ -18,7 +18,14 @@ its final commit.
 | 9 | `fix/rp2-v3-session-inference` | Session-level, family-matched inference | merged |
 | 10 | `feat/rp2-v3-pipeline-runner` | One reproducible runner | merged |
 | 11 | `db/rp2-v3-versioned-results` | Versioned Supabase results | merged |
-| 12 | `results/rp2-v3-rebuild` | Rebuild, scorecard, publication | in progress |
+| 12 | `results/rp2-v3-rebuild` | Rebuild, scorecard, publication | rebuilt and published |
+
+## The result
+
+`rp2-v3-20260821-134741`, thirteen steps, every exit code zero, scientific hash
+`fdce125264082af5` at commit `08a4a06448c9`, published to Supabase and readable through
+`api.current_rp2_contrasts`. The section 21 gate returns **Result C**; the reasoning and the
+twelve contrasts are in [`VERDICT.md`](VERDICT.md).
 
 ## Settled decision
 
