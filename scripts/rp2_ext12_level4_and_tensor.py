@@ -100,8 +100,14 @@ class DeepSetsForecaster(nn.Module):
         encoded = self.encoder(sequence) * mask.unsqueeze(-1)
         counts = mask.sum(dim=1, keepdim=True).clamp(min=1.0)
         mean_pooled = encoded.sum(dim=1) / counts
+        # A session with no observable trades leaves every position padded, so the max
+        # is the sentinel itself. nan_to_num does not repair it because -1e9 is finite,
+        # and it reached the head as a feature of magnitude 1e9 on 448 of 2,975,222
+        # passes. Fall back to zeros there, which is what the mean pool already yields
+        # because it divides by a count clamped to one.
+        observed = mask.sum(dim=1, keepdim=True) > 0
         max_pooled = encoded.masked_fill(mask.unsqueeze(-1) == 0, -1e9).max(dim=1).values
-        max_pooled = torch.nan_to_num(max_pooled, neginf=0.0)
+        max_pooled = torch.where(observed, max_pooled, torch.zeros_like(max_pooled))
         combined = torch.cat([tabular, mean_pooled, max_pooled], dim=1)
         out: torch.Tensor = self.head(combined).squeeze(-1)
         return out
@@ -277,11 +283,21 @@ def run_role(
 
     # ---- Extension 1: DeepSets over the raw trade sequence ---------------------------
     torch.manual_seed(SEED)
-    standardised = base_design
+    # The variable was named `standardised` and held the raw design. Measured on the RP2-v3
+    # panels, that block spans standard deviations from 0 to 95.28 and means from -22.69 to
+    # 197.2, so an MLP under AdamW at 1e-3 spends its capacity on scale rather than signal.
+    # LightGBM is unaffected because trees are scale-invariant, which is most of why it won.
+    # Both neural arms are standardised on the training fold, exactly as the tabular ladder
+    # does, so the contrast is about the sequence and not about conditioning.
+    standardised = standardise(base_design, train)
     sequence_block = sequence[index]
     flat = sequence_block.reshape(-1, sequence_block.shape[-1])
     centre = flat[flat[:, 2] != 0.0].mean(axis=0)
-    spread = np.where(flat[flat[:, 2] != 0.0].std(axis=0) > 0, flat.std(axis=0), 1.0)
+    # Centre and spread from the same rows. The condition read the unpadded rows and the
+    # value read all of them, so padding entered the scale but not the location. It is 0.34 %
+    # of rows and shifts the spread by about 1 %, which is small and was still wrong.
+    unpadded = flat[flat[:, 2] != 0.0]
+    spread = np.where(unpadded.std(axis=0) > 0, unpadded.std(axis=0), 1.0)
     normalised = (sequence_block - centre) / spread
     information_sets["B0+B1+B2+sequence"] = describe_information_set(
         ("B0", "B1", "B2", "sequence"),

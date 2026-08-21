@@ -880,3 +880,41 @@ Spec Kit consistency and preregistration gates pass.
     sample was widened, nothing was re-fitted, and the artifacts are exactly the ones that
     existed before it. It records which of two written statements governs, and
     `configs/rp2_v3_study_window.json` is where publication reads it.
+
+85. **The sequence arm's apparent deficit was a padding sentinel, not a finding (2026-08-21)** —
+    the DeepSets encoder pools its trade set two ways, mean and max. The max pool drops padded
+    positions by filling them with `-1e9` before taking the maximum, and a following
+    `nan_to_num(neginf=0.0)` was meant to repair the case where nothing survives. It never
+    fired, because `-1e9` is finite. On a session with **zero** observable trades every position
+    is padding, the maximum is the sentinel itself, and it reached the head as a feature of
+    magnitude 1e9. Measured on the development panel: **448 of 2,975,222 forward passes**. The
+    first training epoch recorded MSE **1.7 × 10¹⁴** against the tabular control's 43.5, and by
+    epoch 30 both arms fitted the training period identically (0.206) while the sequence arm
+    generalised at twice the error — 1.103 log-scale RMSE against 0.560 — because the corrupt
+    rows are in the test period too. Two independent consistency checks had been failing and
+    were not read as such: near-identical architectures should not differ twofold in fitted-scale
+    RMSE, and a 61-second run for two networks over 152,954 rows was reported as fast rather
+    than as fast *and* unexplained. The programme owner raised the speed as suspicious; the
+    defect was found by instrumenting the loss trajectory rather than by re-reading the output.
+    Corrected by pooling an unobserved trade set to zeros, which is what the mean pool already
+    yields because it divides by a count clamped to one. Re-measured under the same
+    preregistration — same seed, epochs, control, split and loss — the arm moves from
+    ΔQLIKE −0.05747 to **−0.00469** with a 95 % interval of [−0.01967, +0.00729] at p 0.6017,
+    and the fitted-scale RMSEs become comparable (0.582 against 0.560). **The preregistered
+    conclusion does not change and the direction of the correction was not toward a favourable
+    sign**: the sequence still fails both references — indistinguishable from its own control,
+    and beaten by the LightGBM tabular ladder already in production by ΔQLIKE −0.03553
+    [−0.07755, −0.01184] at p 0.0010. What changed is that 92 % of the reported effect was an
+    artifact of 448 rows, and it is recorded here because a published magnitude was wrong even
+    though the verdict it supported was not. Guarded by
+    `tests/unit/test_rp2_level4_pooling.py`, which fails against the sentinel.
+
+    A second defect was found and fixed in the same reading and is reported as measured: the
+    variable feeding the tabular block to both neural arms was named `standardised` and held
+    the raw design, whose 45 columns span standard deviations from 0 to 95.28 and means from
+    −22.69 to 197.2. It was fixed because the name asserted something false and because
+    LightGBM, being scale-invariant, was not subject to it. **It explained nothing**: every
+    figure moved by under 1 %, and the sequence arm's fitted-scale RMSE did not move at all
+    (1.10246 → 1.10286), because AdamW rescales by each parameter's second moment and absorbs
+    most of the conditioning. Recorded so that a reader does not credit the correction with
+    the recovery, which belongs entirely to the sentinel.
