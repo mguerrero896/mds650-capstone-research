@@ -44,7 +44,9 @@ Rules:
 - Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
   - MDS650 knowledge MUST remain isolated from Earnings, GenIA and global transcripts. Use the dedicated GBrain profile `%USERPROFILE%\.mds650`, database `gbrain_mds650`, and the project-only sources `mds650-research` and `mds650-code`; never use the global GBrain corpus to answer an MDS650 question.
   - For natural-language project search, run `scripts/query_project_knowledge.ps1`. It queries the isolated GBrain corpus and the repository-local Graphify graph.
-  - The project hooks run Graphify after commits/branch switches and synchronize the isolated GBrain source after the same events. `MDS650_Knowledge_AutoSync` also refreshes both engines every fifteen minutes and at logon. For an immediate refresh, run `scripts/sync_project_knowledge.ps1`.
+  - The project hooks run Graphify after commits/branch switches and synchronize the isolated GBrain source after the same events. For an immediate refresh, run `scripts/sync_project_knowledge.ps1`.
+  - `scripts/phase8_watchdog_health.py` audits whether the Phase 8 watchdog's body actually ran on a given date, out of band. It exists but is **not armed**: nothing schedules or calls it, so run it by hand — `uv run python scripts/phase8_watchdog_health.py --date YYYY-MM-DD` — until an owner wires it into a task. It reads only `phase8_watch.log`; no evaluator, no holdout.
+  - **GBrain autosync is NOT running, as of 2026-08-21.** `MDS650_Knowledge_AutoSync` is Disabled (last result `0x00000040`), and the isolated database it needs — `gbrain_mds650` on `127.0.0.1:5433`, per `%USERPROFILE%\.mds650\.gbrain\config.json` — has nothing listening on that port. `query_project_knowledge.ps1` therefore exits non-zero with `ECONNREFUSED`; it does **not** fall back to a global corpus, which is the behaviour the isolation requires. Graphify alone is unavailable through that script too: it seeds its query from GBrain before running, so a down database blocks both engines. Until the database is up, use `graphify query` directly against the repository-local `graphify-out/`. Starting the database and re-enabling the task are owner actions.
 
 ## Gated data relocation (2026-08-18) — READ BEFORE PUBLISHING OR TOUCHING PARQUETS
 
@@ -58,6 +60,19 @@ the suite if a new granular parquet is committed without registering it in the
 exclude list. NEVER push to the remote directly; ALWAYS publish via
 `bash scripts/publish_mirror.sh`. Pointers + access policy:
 `data/GATED_DATA_POINTERS.json`, `data/DATA_ACCESS.md`.
+
+**That instruction is currently blocked, and deliberately so.** The canonical
+tree stopped projecting the public repository when the RP2-v3 gates landed there
+as pull requests: the two histories are disjoint, and the script's closing
+`git push --force` would drop every published commit
+(`docs/rp2_v3/MIRROR_HAZARD.md` measures 392). `publish_mirror.sh` therefore runs
+`scripts/publish_ancestry_guard.py` as check 4 and refuses unless the branch it
+would overwrite is contained in what replaces it. Verified against the live
+remote: the guard refuses with `ancestry violation … would drop 392 published
+commit(s)`. Unblocking it is an owner decision — adopt the public lineage, or
+publish somewhere other than `main` — not a code change, and not something to
+work around. `SKIP_TIER2=1` skips the local gates only; it does not and must not
+bypass check 4.
 
 ## Supabase research catalog (2026-08-18)
 

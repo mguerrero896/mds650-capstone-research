@@ -14,11 +14,14 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import contextlib
 import datetime as dt
 import json
 import os
+import signal
 import time
 from pathlib import Path
+from types import FrameType
 from zoneinfo import ZoneInfo
 
 import exchange_calendars  # type: ignore[import-untyped]
@@ -129,6 +132,40 @@ def _poll_cycle(
     return observed
 
 
+def _install_cancellation() -> None:
+    """Route cooperative stop signals through KeyboardInterrupt.
+
+    This covers the paths where the OS still lets Python run code. It is a
+    narrower set than it looks on Windows, which is where this collector runs:
+
+    - SIGINT (Ctrl+C) unwinds promptly.
+    - SIGBREAK (CTRL_BREAK_EVENT) unwinds, but only after the in-flight
+      time.sleep returns, because CPython wakes sleep for SIGINT only. With
+      POLL_SECONDS at 60 that is up to a minute, longer than a shutdown grace
+      window.
+    - SIGTERM is accepted by signal.signal and never delivered: os.kill with
+      SIGTERM on Windows is TerminateProcess. The registration is harmless and
+      correct on POSIX.
+
+    Every production stop path here — Task Scheduler End Task, ExecutionTimeLimit
+    expiry, taskkill /F, host shutdown — is TerminateProcess, which unwinds
+    nothing. So this does NOT explain the missing summaries on 2026-08-18/19/20,
+    and it is not what protects against them: uw_latency_verify._verify treating
+    an absent summary as a failure is.
+    """
+
+    def _raise(signum: int, _frame: FrameType | None) -> None:
+        raise KeyboardInterrupt(f"signal {signum}")
+
+    for name in ("SIGINT", "SIGTERM", "SIGBREAK"):
+        received = getattr(signal, name, None)
+        if received is None:
+            continue
+        # Not every signal is settable on every platform or from every thread.
+        with contextlib.suppress(OSError, ValueError):
+            signal.signal(received, _raise)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dry-run", action="store_true")
@@ -151,6 +188,8 @@ def main() -> None:
     seen: dict[str, set[str]] = {asset: set() for asset in ASSETS}
     total = 0
     cycle = 0
+    _install_cancellation()
+    termination = "killed"
     try:
         if arguments.dry_run:
             for cycle in range(1, 4):
@@ -158,6 +197,7 @@ def main() -> None:
                 _heartbeat(session_dir, cycle, total)
                 time.sleep(2)
             print(f"[uw-latency] dry run complete: {total} records in {session_dir}")
+            termination = "normal"
             return
         while dt.datetime.now(NY) < open_ny:
             _heartbeat(session_dir, cycle, total)
@@ -167,6 +207,14 @@ def main() -> None:
             total += _poll_cycle(provider, session_dir, cursors, seen)
             _heartbeat(session_dir, cycle, total)
             time.sleep(POLL_SECONDS)
+        termination = "normal"
+    except KeyboardInterrupt:
+        # SIGINT/SIGTERM/SIGBREAK arrive here via _install_cancellation, so a
+        # cooperative stop still records a terminal summary. A hard
+        # TerminateProcess cannot: it never unwinds this frame, the summary stays
+        # absent, and uw_latency_verify._verify treats that absence as a failure.
+        termination = "cancelled"
+        raise
     finally:
         provider.close()
         summary = {
@@ -175,6 +223,8 @@ def main() -> None:
             "observed_records": total,
             "finished_utc": dt.datetime.now(dt.UTC).isoformat(),
             "dry_run": bool(arguments.dry_run),
+            "termination": termination,
+            "configured_close_utc": close_ny.astimezone(dt.UTC).isoformat(),
         }
         (session_dir / "collector_summary.json").write_text(
             json.dumps(summary, indent=1), encoding="utf-8"

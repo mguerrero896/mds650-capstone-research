@@ -10,10 +10,17 @@ $uv = (Get-Command uv).Source
 function Register-MDSTask {
     param([string]$Name, [string]$Arguments, [string]$Time, [string]$Interval = $null)
     $action = New-ScheduledTaskAction -Execute $uv -Argument $Arguments -WorkingDirectory $repo
+    # -Daily always, so the trigger re-arms every night. A bare -Once trigger
+    # decorated with a repetition fires for its RepetitionDuration and then goes
+    # dead: that is how the watchdog stopped after 2026-08-18 06:40 with an empty
+    # NextRunTime, leaving three truncated sessions unwatched. The repetition is
+    # copied onto the daily trigger instead of replacing it.
+    $trigger = New-ScheduledTaskTrigger -Daily -At $Time
     if ($Interval) {
-        $trigger = New-ScheduledTaskTrigger -Once -At $Time -RepetitionInterval (New-TimeSpan -Minutes $Interval) -RepetitionDuration (New-TimeSpan -Hours 7)
-    } else {
-        $trigger = New-ScheduledTaskTrigger -Daily -At $Time
+        $pattern = New-ScheduledTaskTrigger -Once -At $Time `
+            -RepetitionInterval (New-TimeSpan -Minutes $Interval) `
+            -RepetitionDuration (New-TimeSpan -Hours 7)
+        $trigger.Repetition = $pattern.Repetition
     }
     $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -ExecutionTimeLimit (New-TimeSpan -Hours 8) -MultipleInstances IgnoreNew
     Register-ScheduledTask -TaskName $Name -Action $action -Trigger $trigger -Settings $settings -Force | Out-Null

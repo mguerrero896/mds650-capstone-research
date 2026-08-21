@@ -47,8 +47,21 @@ git fast-export --all --reencode=yes | git -C "$MIRROR" fast-import --quiet
 # Strip gated data from every commit of the published lineage.
 (cd "$MIRROR" && uvx git-filter-repo --force --invert-paths --paths-from-file "$EXCLUDES" >/dev/null)
 # Check 1: no gated path may survive anywhere in the published history.
-if (cd "$MIRROR" && git log --all --name-only --pretty=format: | sort -u | grep -Fxf "$EXCLUDES_EXPANDED" | head -1) ; then
-    echo "GATED PATH LEAKED INTO PUBLISHED HISTORY" >&2; exit 1
+# The decision must not run through `head`: closing the pipe early makes grep
+# die on SIGPIPE, pipefail turns the pipeline non-zero, and the `if` reads that
+# as "no leak". Measured on this construction: clean detection at 1,000 leaked
+# paths, silent false pass from ~4,000 up. The property was perverse — the more
+# that leaked, the likelier the check passed. Collect first, decide after.
+if [ ! -s "$EXCLUDES_EXPANDED" ]; then
+    echo "PUBLISH REFUSED: the expanded exclude list is empty; nothing would be stripped" >&2
+    exit 1
+fi
+LEAKED=$(cd "$MIRROR" && git log --all --name-only --pretty=format: | sort -u \
+    | grep -Fxf "$EXCLUDES_EXPANDED" || true)
+if [ -n "$LEAKED" ]; then
+    echo "GATED PATH LEAKED INTO PUBLISHED HISTORY ($(printf '%s\n' "$LEAKED" | wc -l) path(s)):" >&2
+    printf '%s\n' "$LEAKED" | head -5 >&2
+    exit 1
 fi
 # Check 2: every non-gated file at canonical HEAD must match blob-for-blob.
 DIFF=$(comm -3 \
@@ -66,6 +79,18 @@ git -C "$MIRROR" worktree add --detach "$PUBCHECK" main >/dev/null 2>&1 || git c
 echo "[publish] check 3: hermetic suite on the stripped public tree"
 (cd "$PUBCHECK" && env -u MDS650_EVIDENCE_ROOT uv run --project . pytest tests -q --ignore=tests/unit/test_generate_date_level_pit_preflight_plan_v1.py --ignore=tests/unit/test_independent_replication_panel.py --ignore=tests/unit/test_date_level_pit_preflight_request_budget_v1.py --ignore=tests/contract/test_b2_confirmation_inputs.py --cov=src/mds650 --cov-report=term --cov-fail-under=80) || {
     echo "PUBLISH REFUSED: hermetic suite FAILS on the stripped public tree" >&2; exit 1; }
+# Check 4: never force-push a lineage that does not contain what is already
+# published. The mirror is built from the canonical tree, which no longer
+# projects the public repository — the RP2-v3 gates landed there as pull
+# requests. docs/rp2_v3/MIRROR_HAZARD.md measures the two histories as disjoint,
+# and --force means the remote would not refuse the loss.
+# --check-tags covers the --tags push below: it force-updates every tag ref, and
+# the tags are this project's frozen-evidence anchors. No --expect-remote here:
+# passing $REMOTE as both the destination and the expectation compares a variable
+# to itself and can never fire. The expectation belongs to a caller that knows
+# the remote independently; the ancestry check is what protects this one.
+uv run python "$CANON/scripts/publish_ancestry_guard.py" \
+    --mirror "$MIRROR" --remote "$REMOTE" --branch main --check-tags || exit 1
 git -C "$MIRROR" push --force "$REMOTE" main
 git -C "$MIRROR" push --force "$REMOTE" --tags
 echo "mirror published: canonical $(git rev-parse --short HEAD) -> mirror $(git -C "$MIRROR" rev-parse --short main) (gated data stripped)"
