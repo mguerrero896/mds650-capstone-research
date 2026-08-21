@@ -140,11 +140,29 @@ def test_a_session_with_no_observations_is_entirely_invalid() -> None:
     assert grid.fill_share == pytest.approx(1.0)
 
 
-def test_high_and_low_fall_back_to_close_when_absent() -> None:
+def test_a_source_without_a_range_reports_it_as_unknown() -> None:
+    """This assertion used to run the other way, and it pinned a defect as a feature.
+
+    It required a source carrying only closes to have its high and low fabricated from the
+    close and its volume set to zero. Two of the six bar stores carry exactly that schema,
+    both in development, so parkinson_30, volume_30 and dollar_volume_30 came out exactly
+    zero on 22,967 of 152,954 development origins and on none of the 31,678 validation
+    ones. All three are `log` features: zero became log(1e-12) = -27.631, and being finite
+    it recorded no missing indicator, so the fabrication could not be told from a
+    measurement. The evidence is in the published ladder's own standardisation scales,
+    where dollar_volume_30 is 20.762 in development against 0.692 in validation.
+
+    A minute that had no bar keeps the old treatment - a flat range and no volume - because
+    there the zero is the truth. See `tests/unit/test_rp2_bars_missing_columns.py`.
+    """
     grid = build_session_grid(_group([0, 1], [100.0, 101.0]), session=date(2026, 6, 15))
-    assert grid.high[0:2].tolist() == [100.0, 101.0]
-    assert grid.low[0:2].tolist() == [100.0, 101.0]
-    assert grid.volume.sum() == 0.0
+    assert grid.close[0:2].tolist() == [100.0, 101.0]
+    assert np.isnan(grid.high[0:2]).all()
+    assert np.isnan(grid.low[0:2]).all()
+    assert np.isnan(grid.volume[0:2]).all()
+    # Minutes the source never reached still had no bar, so they stay repaired.
+    assert grid.volume[2] == 0.0
+    assert grid.high[2] == 101.0
 
 
 # ------------------------------------------------------------------- source loading

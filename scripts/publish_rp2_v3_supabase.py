@@ -285,6 +285,15 @@ def _bar_inputs(resolved: dict[str, Any], data_root: Path) -> list[dict[str, Any
     from mds650.rp2.bars import BAR_SOURCES
 
     digests = resolved.get("bar_sources_sha256", {})
+    # The loop below walks BAR_SOURCES, so a digest key naming a store the code no longer
+    # declares is never visited and its lineage row is silently dropped - the published
+    # lineage would then describe fewer inputs than the run actually read, with nothing
+    # saying so. A run whose manifest names an undeclared store cannot be published from
+    # this checkout, because this checkout cannot say which file that store was.
+    declared = {f"{name}|{role}" for name, role, _ in BAR_SOURCES}
+    undeclared = sorted(set(digests) - declared)
+    if undeclared:
+        raise SystemExit(f"RP2_PUBLISH_BAR_INPUT_UNDECLARED:{','.join(undeclared)}")
     rows: list[dict[str, Any]] = []
     for name, role, relative in BAR_SOURCES:
         key = f"{name}|{role}"

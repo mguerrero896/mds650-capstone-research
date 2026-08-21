@@ -41,8 +41,16 @@ CALENDAR: Final = "XNYS"
 
 #: ``(name, partition role, path relative to the store root)``, oldest window first.
 BAR_SOURCES: Final[tuple[tuple[str, str, str], ...]] = (
-    ("gate7_c6", "D", "data/fmp/gate7/underlying_1min_c6.parquet"),
-    ("gate8_c4c", "D", "data/fmp/gate8_c4c/underlying_1min_c4c.parquet"),
+    # Replaces gate7_c6 and gate8_c4c, which held only (asset, bar_start_utc, close). Their
+    # missing range and volume were being fabricated as high == low == close and volume == 0,
+    # which made parkinson_30, volume_30 and dollar_volume_30 exactly zero on 22,967 of
+    # 152,954 development origins and on none of the 31,678 validation ones. Re-acquired from
+    # the provider with full OHLCV over the same 360 asset-sessions: 138,239 bars against
+    # 138,239, no bar missing, no bar added, and every close identical to eight decimal
+    # places, so the closes every earlier result rests on are unchanged. Of those minutes
+    # 0.07 % genuinely had no volume and 0.02 % genuinely had no range, against the 100 %
+    # the fabrication asserted.
+    ("ohlcv_repair", "D", "data/fmp/rp2_ohlcv_repair/underlying_1min_repair.parquet"),
     ("phase6_180d", "D", "phase6/data/fmp/underlying_1min_180d.parquet"),
     ("gate3_dev80", "V", "data/fmp/gate3/underlying_1min_dev80.parquet"),
     # The 153 tape sessions (2024-08-02..2025-12-24) that had no bars. Already-observed
@@ -303,9 +311,23 @@ def build_session_grid(group: pl.DataFrame, *, session: date | None = None) -> S
     # would hand every opening-minute trade a price from its own future — the exact
     # look-ahead the open exists to avoid.
     opening = grids["open"]
-    high = np.where(np.isnan(grids["high"]), close, grids["high"])
-    low = np.where(np.isnan(grids["low"]), close, grids["low"])
-    volume = np.where(np.isnan(grids["volume"]), 0.0, grids["volume"])
+    # Repair ONLY the minutes that had no bar. A minute with no close did not trade, so a
+    # flat range and a zero volume are the truth. A minute WITH a close whose high is still
+    # missing traded and had its range go unrecorded, and the honest value is unknown.
+    #
+    # `load_bar_sources` concatenates the six stores with `how="diagonal"`, so a store that
+    # holds only (asset, bar_start_utc, close) still arrives carrying the full schema with
+    # nulls, and a column-presence check cannot see the difference. Repairing every NaN
+    # gave parkinson_30, volume_30 and dollar_volume_30 the value exactly zero on 22,967 of
+    # 152,954 development origins and on none of the 31,678 validation ones. All three are
+    # `log` features, so zero became log(1e-12) = -27.631; being finite, it recorded no
+    # missing indicator and the fold-local imputation never fired. The published ladder
+    # shows the damage in its own standardisation scales: dollar_volume_30 is 20.762 in
+    # development against 0.692 in validation, where no honest feature differs by two.
+    absent = np.isnan(grids["close"])
+    high = np.where(absent, close, grids["high"])
+    low = np.where(absent, close, grids["low"])
+    volume = np.where(absent, 0.0, grids["volume"])
     return SessionGrid(
         close=close,
         open=opening,

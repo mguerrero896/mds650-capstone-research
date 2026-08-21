@@ -918,3 +918,87 @@ Spec Kit consistency and preregistration gates pass.
     (1.10246 → 1.10286), because AdamW rescales by each parameter's second moment and absorbs
     most of the conditioning. Recorded so that a reader does not credit the correction with
     the recovery, which belongs entirely to the sentinel.
+
+86. **Two development bar stores never carried a range or a volume, and the grid invented
+    both (2026-08-21)** — `data/fmp/gate7/underlying_1min_c6.parquet` and
+    `data/fmp/gate8_c4c/underlying_1min_c4c.parquet` hold only `(asset, bar_start_utc,
+    close)`. `load_bar_sources` concatenates the six stores with `how="diagonal"`, so those
+    rows arrive carrying the full schema with nulls, and `build_session_grid` repaired every
+    null unconditionally: `high` and `low` from the close, `volume` from zero. That is the
+    right treatment for a minute in which nothing traded and the wrong one for a minute that
+    traded and whose range was never recorded. The docstring three lines above reasons
+    explicitly about "a store without the column" for `open` and deliberately leaves it NaN;
+    the identical case was not handled for the other three.
+
+    Measured on the panel: `parkinson_30`, `volume_30` and `dollar_volume_30` are exactly
+    zero on **22,967 of 152,954 development origins and on 0 of 31,678 validation origins**,
+    because both deficient stores are development-only. All three are declared `log` in the
+    feature registry, so zero became `log(1e-12) = -27.631`; being finite it recorded no
+    missing indicator and the fold-local imputation never fired, which is why the fabrication
+    was indistinguishable from a measurement. The published ladder carried the evidence in
+    its own standardisation scales: `dollar_volume_30` 20.762 in development against 0.692 in
+    validation, `volume_30` 18.349 against 0.878, `parkinson_30` 5.749 against 0.924, where
+    no honest feature differs between roles by as much as a factor of two.
+
+    **Repaired by acquiring the data rather than by imputing around its absence.** The
+    provider still serves those sessions with full OHLCV. Re-acquired over the same 360
+    asset-sessions: 138,239 bars against 138,239, no bar missing, no bar added, and every
+    close identical to the byte, so the closes every earlier result rests on are unchanged.
+    Of those minutes **0.07 % genuinely had no volume and 0.02 % genuinely had no range**,
+    against the 100 % the fabrication asserted. `BAR_SOURCES` now names one
+    `ohlcv_repair` store in place of the two, and `build_session_grid` repairs only minutes
+    whose close is absent, which is the only case where a flat range and a zero volume are
+    the truth.
+
+    **What it changes, measured.** With a baseline built on real range and volume, B0 itself
+    improves and the development B1 increment shrinks by about two fifths, while validation
+    does not move at all — there were no deficient stores there, which is the control:
+
+    | family | QLIKE B0 before / after | ΔB1 in D before / after | ΔB1 in V |
+    | --- | ---: | ---: | ---: |
+    | `gamma_glm` | 0.14837 / 0.13921 | +0.00408 / **+0.00234** | −0.00111, unchanged |
+    | `ridge_log` | 0.14901 / 0.14000 | +0.00424 / **+0.00250** | −0.00084, unchanged |
+    | `lightgbm_qlike` | 0.13893 / 0.13690 | +0.00381 / **+0.00314** | +0.00092, unchanged |
+
+    B1 and B2 are unaffected: neither producer reads `high`, `low` or `volume`, and block 5
+    takes only `close` from the grid, so the corrected B0 composes with the published B1 and
+    B2 exactly as a full rebuild would.
+
+    **The section 21 verdict's one refutation does not survive this.** It read: "`ridge_log`
+    refutes. Validation was powered to see a development-sized effect and did not." With the
+    corrected baseline the development effect is +0.00250 against a validation MDE of
+    0.00268 — *below* it. Validation would need about 37 sessions and has 32. All three
+    families are now underpowered rather than one refuting, which also removes one of the two
+    grounds the verdict gave for excluding Result D; the other, `gamma_glm`'s validation
+    ΔB2\|B1 interval excluding zero, rests on an interval whose coverage measures 0.784
+    against a nominal 0.95. **The verdict is not rewritten here.** Restating it requires a
+    full pipeline rebuild and a republication, which is a decision for the programme owner.
+    Guarded by `tests/unit/test_rp2_bars_missing_columns.py`, and by the corrected
+    `test_a_source_without_a_range_reports_it_as_unknown`, which previously asserted the
+    fabrication as a requirement.
+
+87. **Three more statistics were pooled in ways that are not the statistic (2026-08-21)** —
+    the latency tail was corrected once and the identical mistake was left standing beside
+    it, which is the failure this entry exists to stop repeating.
+
+    - `b1_p95_quote_age_s` and `b1_median_quote_age_s` were the **median across origins** of
+      each origin's own 95th percentile and own median. Quantiles do not merge by averaging,
+      and an origin holding four contracts weighed as much as one holding two thousand. The
+      95th percentile is cited in the verdict against an 1800-second cutoff, so the number
+      had to be the real one. Block 5 now emits `b1_quote_age_bin_*` and the scorecard reads
+      the quantile off the summed bins, through the same machinery the flow latency uses:
+      one `duration_bins` function now serves all three producers, replacing the private copy
+      block 6 carried. The bins for quote age are uniform at 25 seconds rather than the log
+      spacing latency uses, because the value is bounded by the cutoff and is compared
+      against it: a log bin near the tail spans 1477 to 1873 seconds and straddles the
+      threshold the number is judged against.
+    - `b2_multileg_share` was an unweighted mean of per-origin premium shares whose
+      denominators differ by a factor of fourteen between the median origin and the 99th
+      percentile. The pooled share is 0.236861 where the published figure was 0.231077.
+    - The level-4 sequence encoder took its centre and spread from **every** row while the
+      tabular block beside it used the training fold only, and a comment above asserted that
+      both used the training fold. Corrected; the arm moves from ΔQLIKE −0.00469 to −0.00372
+      at p 0.6477 and remains null.
+
+    Guarded by `tests/unit/test_rp2_scorecard_pooling.py` and the normalisation tests in
+    `tests/unit/test_rp2_level4_pooling.py`.

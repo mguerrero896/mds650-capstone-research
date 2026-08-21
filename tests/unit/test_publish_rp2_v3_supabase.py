@@ -486,9 +486,24 @@ def test_each_block_publishes_the_artifact_that_is_its_result() -> None:
 
 def test_a_missing_bar_store_is_refused_rather_than_invented(tmp_path: Path) -> None:
     module = _load("publish_rp2_v3_supabase")
-    resolved = {"bar_sources_sha256": {"gate7_c6|D": "2" * 64}}
+    resolved = {"bar_sources_sha256": {"phase6_180d|D": "2" * 64}}
     with pytest.raises(SystemExit, match="RP2_PUBLISH_BAR_INPUT_MISSING"):
         module._bar_inputs(resolved, tmp_path / "absent")
+
+
+def test_a_bar_store_the_code_no_longer_declares_is_refused(tmp_path: Path) -> None:
+    """A digest key outside BAR_SOURCES used to vanish from the published lineage.
+
+    `_bar_inputs` walks BAR_SOURCES and skips keys it cannot match, so the reverse case -
+    a manifest naming a store this checkout does not declare - was never visited at all.
+    The publication then carried one lineage row fewer than the run had inputs, with
+    nothing recording the omission. It surfaced when `gate7_c6` and `gate8_c4c` were
+    replaced by `ohlcv_repair`.
+    """
+    module = _load("publish_rp2_v3_supabase")
+    resolved = {"bar_sources_sha256": {"a_store_that_was_retired|D": "2" * 64}}
+    with pytest.raises(SystemExit, match="RP2_PUBLISH_BAR_INPUT_UNDECLARED"):
+        module._bar_inputs(resolved, tmp_path)
 
 
 def test_a_block_that_measured_nothing_is_not_published_as_measured(tmp_path: Path) -> None:

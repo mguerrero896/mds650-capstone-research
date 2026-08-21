@@ -64,3 +64,65 @@ def test_empty_trade_set_matches_a_zero_encoding() -> None:
         f"an empty trade set forecast {empty.item():.6g} where a zero encoding gives "
         f"{expected.item():.6g}"
     )
+
+
+def _module():
+    spec = importlib.util.spec_from_file_location("rp2_level4_normalisation", SCRIPT)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_sequence_normalisation_ignores_the_evaluation_fold() -> None:
+    """The scale of the trade channels must not be learned from rows being scored.
+
+    The tabular block is standardised with `standardise(design, train)`, on the training
+    fold only. The sequence block was normalised from every row, so the two halves of the
+    same network disagreed about which rows they were allowed to see, and a comment
+    asserting both used the training fold sat directly above.
+    """
+    import numpy as np
+
+    module = _module()
+    channels = 8
+    train = np.array([True, True, False, False])
+    block = np.zeros((4, 3, channels), dtype=np.float64)
+    block[:2] = 1.0          # training rows: every channel is one
+    block[2:] = 1_000.0      # evaluation rows: wildly different scale
+
+    centre, spread = module.sequence_normalisation(block, train)
+
+    assert np.allclose(centre, 1.0), (
+        f"the centre is {centre[:3]}, so rows outside the training fold reached it"
+    )
+    assert np.all(np.isfinite(spread)) and np.all(spread > 0.0)
+
+
+def test_sequence_normalisation_excludes_padded_positions() -> None:
+    """Padding carries a zero size in channel 2 and is not a market observation."""
+    import numpy as np
+
+    module = _module()
+    channels = 8
+    train = np.array([True, True])
+    block = np.zeros((2, 4, channels), dtype=np.float64)
+    block[:, :2, :] = 5.0    # two real trades per row
+    block[:, :2, 2] = 3.0    # non-zero size marks them observed
+    # positions 2 and 3 stay all-zero: padding
+
+    centre, _ = module.sequence_normalisation(block, train)
+
+    assert np.isclose(centre[0], 5.0), (
+        f"channel 0 centred at {centre[0]}, so padded positions entered the mean"
+    )
+
+
+def test_sequence_normalisation_refuses_an_empty_training_fold() -> None:
+    import numpy as np
+
+    module = _module()
+    block = np.ones((2, 3, 8), dtype=np.float64)
+    with pytest.raises(ValueError, match="RP2_LEVEL4_SEQUENCE_EMPTY_TRAIN"):
+        module.sequence_normalisation(block, np.array([False, False]))

@@ -48,6 +48,7 @@ from mds650.rp2.b1_snapshot import (
 )
 from mds650.rp2.bars import MARKET_TZ, SESSION_OPEN_MINUTE, build_session_grid, load_bar_sources
 from mds650.rp2.panel import panel_paths
+from mds650.rp2.scorecard import QUOTE_AGE_BIN_EDGES, duration_bins
 from mds650.rp2.surface import (
     CONSTANT_MATURITY_DAYS,
     EXPIRY_CLOSE,
@@ -239,12 +240,21 @@ def _surface_at(
         "b1_contracts": float(coverage.contracts),
         "b1_expiries": float(coverage.expiries),
         "b1_strikes": float(coverage.strikes),
+        # This origin's own median and tail, kept because a per-origin diagnostic is what
+        # a reader inspecting one origin wants. They are NOT what the scorecard pools: a
+        # quantile across origins of these is not a quantile of any population, which is
+        # what `b1_quote_age_bin_*` below exists to make possible.
         "b1_median_quote_age_s": float(np.median(age_seconds)),
-        # The tail of this origin's own quote ages. Taking a quantile of per-origin
-        # medians afterwards would be a statistic about typical origins, not about stale
-        # quotes: an origin of mostly fresh quotes with a stale tail has a fresh median.
         "b1_p95_quote_age_s": float(np.quantile(age_seconds, 0.95)),
         "b1_median_relative_spread": float(np.median(relative_spread)),
+        # Counts in fixed bins, which add across origins where quantiles do not. The
+        # scorecard reads the run's real median and 95th percentile off the sum.
+        **{
+            f"b1_quote_age_bin_{index}": float(count)
+            for index, count in enumerate(
+                duration_bins(np.asarray(age_seconds, dtype=np.float64), QUOTE_AGE_BIN_EDGES)
+            )
+        },
         "b1_forward_expiries_fitted": float(len(forward_by_expiry)),
         "b1_min_log_moneyness": coverage.min_log_moneyness,
         "b1_max_log_moneyness": coverage.max_log_moneyness,

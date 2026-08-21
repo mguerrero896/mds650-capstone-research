@@ -23,6 +23,7 @@ import json
 from collections.abc import Sequence
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import numpy.typing as npt
@@ -111,6 +112,34 @@ class DeepSetsForecaster(nn.Module):
         combined = torch.cat([tabular, mean_pooled, max_pooled], dim=1)
         out: torch.Tensor = self.head(combined).squeeze(-1)
         return out
+
+
+def sequence_normalisation(
+    sequence_block: npt.NDArray[np.floating[Any]], train: npt.NDArray[np.bool_]
+) -> tuple[FloatArray, FloatArray]:
+    """Centre and spread for the trade-set channels, from the training fold only.
+
+    Padded positions carry a zero size in channel 2 and are excluded from both statistics:
+    including them pulls the location toward zero and shrinks the scale by however much
+    padding a session happens to carry, which is a property of the session's activity
+    rather than of the market.
+    """
+
+    if sequence_block.shape[0] != train.shape[0]:
+        raise ValueError("RP2_LEVEL4_SEQUENCE_TRAIN_SHAPE")
+    if not train.any():
+        raise ValueError("RP2_LEVEL4_SEQUENCE_EMPTY_TRAIN")
+    flat = sequence_block[train].reshape(-1, sequence_block.shape[-1])
+    observed = flat[flat[:, 2] != 0.0]
+    if observed.size == 0:
+        raise ValueError("RP2_LEVEL4_SEQUENCE_ALL_PADDED")
+    # The tape arrives as float32. A mean over tens of millions of them accumulates
+    # rounding that a float64 accumulator does not, and these two constants set the scale
+    # every downstream weight is learned against.
+    wide = observed.astype(np.float64)
+    centre = wide.mean(axis=0)
+    spread = np.where(wide.std(axis=0) > 0, wide.std(axis=0), 1.0)
+    return centre, spread
 
 
 def _train(
@@ -287,17 +316,12 @@ def run_role(
     # panels, that block spans standard deviations from 0 to 95.28 and means from -22.69 to
     # 197.2, so an MLP under AdamW at 1e-3 spends its capacity on scale rather than signal.
     # LightGBM is unaffected because trees are scale-invariant, which is most of why it won.
-    # Both neural arms are standardised on the training fold, exactly as the tabular ladder
-    # does, so the contrast is about the sequence and not about conditioning.
+    # BOTH blocks take their statistics from the training fold. An earlier version of this
+    # comment claimed that while the sequence block was still centred and scaled over every
+    # row, so the two halves of one network disagreed about which rows they could see.
     standardised = standardise(base_design, train)
     sequence_block = sequence[index]
-    flat = sequence_block.reshape(-1, sequence_block.shape[-1])
-    centre = flat[flat[:, 2] != 0.0].mean(axis=0)
-    # Centre and spread from the same rows. The condition read the unpadded rows and the
-    # value read all of them, so padding entered the scale but not the location. It is 0.34 %
-    # of rows and shifts the spread by about 1 %, which is small and was still wrong.
-    unpadded = flat[flat[:, 2] != 0.0]
-    spread = np.where(unpadded.std(axis=0) > 0, unpadded.std(axis=0), 1.0)
+    centre, spread = sequence_normalisation(sequence_block, train)
     normalised = (sequence_block - centre) / spread
     information_sets["B0+B1+B2+sequence"] = describe_information_set(
         ("B0", "B1", "B2", "sequence"),
