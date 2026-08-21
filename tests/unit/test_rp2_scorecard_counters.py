@@ -328,9 +328,9 @@ def test_a_panel_without_the_latency_bins_is_refused_rather_than_read_as_zero(
 
     truncated = {k: v for k, v in complete.items() if k != "b2_latency_bin_7"}
     pl.DataFrame(truncated).write_parquet(panel)
-    with pytest.raises(ValueError, match="RP2_SCORECARD_LATENCY_BINS_INCOMPLETE"):
+    with pytest.raises(ValueError, match="RP2_SCORECARD_HISTOGRAM_BINS_INCOMPLETE"):
         duration_histogram(panel, "b2_latency_bin_")
 
     pl.DataFrame({"b2_counting_trades": [1.0]}).write_parquet(panel)
-    with pytest.raises(ValueError, match="RP2_SCORECARD_LATENCY_BINS_INCOMPLETE"):
+    with pytest.raises(ValueError, match="RP2_SCORECARD_HISTOGRAM_BINS_INCOMPLETE"):
         duration_histogram(panel, "b2_latency_bin_")

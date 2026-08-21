@@ -217,15 +217,26 @@ def duration_quantile(
     return float(scale[index - 1])
 
 
-def duration_histogram(path: Path, prefix: str) -> npt.NDArray[np.int64]:
-    """Add every window's latency bins into one histogram of the run's trades.
+def duration_histogram(
+    path: Path, prefix: str, edges: npt.NDArray[np.float64] | None = None
+) -> npt.NDArray[np.int64]:
+    """Add every window's bins into one histogram of the run's observations.
+
+    ``edges`` must be the same scale the producer binned against. This used to size its
+    loop from `DURATION_BIN_EDGES` whatever the prefix, which is the latency scale. Quote
+    age is binned on `QUOTE_AGE_BIN_EDGES`, thirteen bins longer, so block 5 wrote 74 and
+    the scorecard summed the first 61: **16,497,996 of 144,587,810 quotes went uncounted**,
+    every one of them in the oldest bins, and the published 95th percentile read 1350 s
+    where the whole histogram gives 1725 s. Truncating a histogram from the top always
+    shortens the tail, which is the direction that flatters the measurement.
 
     A window absent from the panel contributes nothing, and a run whose producer wrote no
     bins yields an empty histogram, which `duration_quantile` reports as zero rather than as
     a tail nobody measured.
     """
 
-    expected = len(DURATION_BIN_EDGES) + 1
+    scale = DURATION_BIN_EDGES if edges is None else edges
+    expected = len(scale) + 1
     counts = np.zeros(expected, dtype=np.int64)
     missing: list[int] = []
     for index in range(expected):
@@ -240,8 +251,16 @@ def duration_histogram(path: Path, prefix: str) -> npt.NDArray[np.int64]:
         # 0.0 - a panel from an older or truncated producer published as perfect latency.
         # The set is required whole: a producer that emits these emits all of them.
         raise ValueError(
-            f"RP2_SCORECARD_LATENCY_BINS_INCOMPLETE:{len(missing)} of {expected} absent, "
+            f"RP2_SCORECARD_HISTOGRAM_BINS_INCOMPLETE:{len(missing)} of {expected} absent, "
             f"first {missing[0]}"
+        )
+    # And the producer wrote no more than this scale describes. Extra columns are bins on a
+    # different scale, and ignoring them silently is exactly how the quote-age tail went
+    # missing: the reader saw a complete set because it never looked past its own length.
+    if _column(path, f"{prefix}{expected}") is not None:
+        raise ValueError(
+            f"RP2_SCORECARD_HISTOGRAM_BINS_UNREAD:{prefix} carries at least {expected + 1} "
+            f"bins but this scale describes {expected}"
         )
     return counts
 
@@ -416,10 +435,14 @@ def assemble_scorecard(
             # not merge by averaging in any case. The 95th percentile is cited in the
             # verdict against an 1800-second cutoff, so the number had to be the real one.
             "b1_median_quote_age_s": duration_quantile(
-                duration_histogram(b1_panel, "b1_quote_age_bin_"), 0.5, QUOTE_AGE_BIN_EDGES
+                duration_histogram(b1_panel, "b1_quote_age_bin_", QUOTE_AGE_BIN_EDGES),
+                0.5,
+                QUOTE_AGE_BIN_EDGES,
             ),
             "b1_p95_quote_age_s": duration_quantile(
-                duration_histogram(b1_panel, "b1_quote_age_bin_"), 0.95, QUOTE_AGE_BIN_EDGES
+                duration_histogram(b1_panel, "b1_quote_age_bin_", QUOTE_AGE_BIN_EDGES),
+                0.95,
+                QUOTE_AGE_BIN_EDGES,
             ),
             "b1_surface_contracts_per_origin": _mean(b1_panel, "b1_contracts"),
             "b1_surface_expiry_coverage": _coverage(b1_coverage, "b1_expiries"),
@@ -458,7 +481,7 @@ def assemble_scorecard(
             # much as a window of ninety-nine, and quantiles do not merge that way in any
             # case, so the number was not the 95th percentile of any population.
             "b2_p95_provider_latency_s": duration_quantile(
-                duration_histogram(panels["b2"], "b2_latency_bin_"), 0.95
+                duration_histogram(panels["b2"], "b2_latency_bin_", DURATION_BIN_EDGES), 0.95
             ),
             # The share of the run's premium that was multileg, not the average of each
             # origin's own share. Premium per origin runs from a median of 30.2 million to
