@@ -27,6 +27,8 @@ Carried in three places, so that no single omission hides the supersession:
 | `artifacts/rp2_block10_inference/inference.json` → `{D,V}.superior_predictive_ability` (D: `lightgbm|B0+B1+B2`, ΔQLIKE +0.01195, SPA p 0.0010) | `artifacts/rp2_v3/gate9-session-inference/inference.json` (D: `gamma_glm|B0+B1`, ΔQLIKE +0.00408, SPA p 0.0010; V: nothing beats its own B0) | one cross-family race over per-origin rows: it confounded the estimator with the information set and used a sample it did not have | 2026-08-20 |
 | `artifacts/rp2_block8_ladder/ladder.json` and `artifacts/rp2_block10_inference/inference.json` → every contrast estimate and p-value | `fix/rp2-v3-session-inference` | the estimate averaged over origins, so a busy session weighed more than a quiet one and an early close weighed less than a full day; the interval resampled single days rather than blocks of five sessions | 2026-08-20 |
 
+| `artifacts/rp2_block6_flow/flow_coverage.json` -> `b2_p95_provider_latency_s` (0.122 s, beside a mean of 1.221 s) | `results/rp2-v3-rebuild` | the mean was trade-weighted over the counting windows, which tile the session and whose first bucket carries 129 M of 580 M trades at 2.30 s; the tail was read from the thirty-minute windows, which open after the session does and never see them, so a 95th percentile was published below its own mean | 2026-08-21 |
+
 Later rows are added by the rebuild gate (`results/rp2-v3-rebuild`) once the RP2-v3 run
 exists and its `run_id` is known. A gate that supersedes a number before that point records
 it here against its own branch, because a reader of the frozen artifact would otherwise

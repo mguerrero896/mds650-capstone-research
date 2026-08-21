@@ -78,3 +78,10 @@ artifacts_scratch_run/
 # publishes them, not by the gate that builds the runner.
 .run_id
 pipeline_run.log
+
+# The panels inside a run directory, for the same reason as the ones under
+# artifacts/rp2_block*/: they are large and derived from licensed provider data, and the
+# rules above name fixed paths that a run directory's copies do not match. The run's JSON
+# summaries, manifests and digests are versioned; the panels stay local.
+artifacts/rp2_v3/*/*/*.parquet
+artifacts/rp2_v3/*/*.parquet
