@@ -28,7 +28,36 @@ identical network without the sequence branch?
 | Seed | 20260819 |
 | Epochs | 30, fixed |
 | Inference | session-level, circular block bootstrap, block 5, as `mds650.rp2.inference` |
-| Success | ΔQLIKE > 0 against the control **and** the 95 % session-level interval excluding zero |
+| Success | ΔQLIKE > 0 against **both** references below, each with a 95 % session-level interval excluding zero |
+
+### Two references, not one
+
+The control must be beaten *and* the model already in production must be beaten. The reason
+is measured rather than hypothetical: the level-4 run of 2026-08-18 reported
+`delta_sequence_over_tabular = +0.634, p = 0.004` in development, and the numbers behind it
+were
+
+```text
+control MLP tabular      QLIKE 0.7834
+DeepSets sequence        QLIKE 0.1496
+lightgbm_qlike reference QLIKE 0.1374   <- better than the sequence model
+```
+
+The control was five times worse than the tabular LightGBM fitted on the same features, so
+beating it measured the control's weakness. The sequence model lost to the model already in
+the ladder, and the reported improvement was significant at p = 0.004 regardless.
+
+A single reference cannot distinguish "the sequence helps" from "our control is bad". Two
+can:
+
+| Reference | What it isolates |
+| --- | --- |
+| The same network with the sequence branch removed | whether the sequence contributes, holding architecture fixed |
+| `lightgbm_qlike` from the frozen ladder | whether the whole approach beats what already exists |
+
+Failing the second is a result and is reported as one: a sequence model that loses to a
+gradient-boosted tree on the same information has not found a non-linear signal, it has found
+a harder optimisation problem.
 
 ## Why validation is not used
 
