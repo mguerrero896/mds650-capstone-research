@@ -271,3 +271,32 @@ def test_the_latency_tail_is_a_quantile_of_trades_not_of_windows() -> None:
     many_slow[np.searchsorted(LATENCY_BIN_EDGES, 600.0, side="right")] = 20
     assert latency_quantile(fast + many_slow, 0.95) > 100.0
     assert latency_quantile(np.zeros_like(fast), 0.95) == 0.0
+
+
+def test_a_tail_of_zero_beside_counted_trades_is_a_missing_measurement() -> None:
+    """Zero is a legitimate latency and a legitimate way for a histogram to be absent.
+
+    A panel written by a producer that does not emit latency bins yields an empty histogram,
+    and `latency_quantile` reports 0.0 for it — a finite float that `assert_scorecard_complete`
+    accepts. That is exactly how a run built by the previous Block 6 would have published an
+    unmeasured tail as a measured one, so the pairing is checked instead: trades were counted
+    and no latency was binned.
+    """
+
+    from mds650.rp2.scorecard import assert_scorecard_invariants
+
+    measured = {
+        "data": {"duplicate_keys": 0},
+        "b1": {"b1_post_cutoff_observations": 0, "b1_duplicate_contracts_per_snapshot": 0},
+        "b2": {
+            "b2_pit_violation_count": 0,
+            "b2_counted_trades": 580_000_000,
+            "b2_p95_provider_latency_s": 4.5,
+            "b2_mean_provider_latency_s": 1.2,
+        },
+    }
+    assert_scorecard_invariants(measured)
+
+    unmeasured = {**measured, "b2": {**measured["b2"], "b2_p95_provider_latency_s": 0.0}}
+    with pytest.raises(ValueError, match="RP2_SCORECARD_LATENCY_TAIL_UNMEASURED"):
+        assert_scorecard_invariants(unmeasured)

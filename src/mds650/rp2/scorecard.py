@@ -559,6 +559,18 @@ def assert_scorecard_invariants(scorecard: Mapping[str, Any]) -> None:
     if breaches:
         raise ValueError("RP2_SCORECARD_INVARIANT_BREACH:" + ",".join(breaches))
 
+    # Zero is a legitimate latency and a legitimate way for a histogram to be absent, and
+    # `assert_scorecard_complete` accepts it either way because it is a finite float. A run
+    # whose producer emitted no latency bins would therefore have published an unmeasured
+    # tail as a measured one, so the pair is checked: trades counted, nothing binned.
+    flow = scorecard.get("b2", {})
+    counted = flow.get("b2_counted_trades") or flow.get("b2_zero_dte_count") or 0
+    if counted and not flow.get("b2_p95_provider_latency_s"):
+        raise ValueError(
+            "RP2_SCORECARD_LATENCY_TAIL_UNMEASURED:"
+            f"{counted} trades counted and no latency binned"
+        )
+
 
 #: Fields the Markdown rendering points at rather than prints, because they vary between
 #: two runs that produced the same result.
