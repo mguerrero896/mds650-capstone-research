@@ -53,6 +53,27 @@ row per block outcome and one row per nested contrast. No origin-level forecast,
 quote, no trade. A contrast without its `common_mask_sha256` is refused rather than
 published.
 
+## The section 17 acceptance, on the whole migration
+
+The checks above exercised parts of the migration as they were written. This is the file as
+it stands, applied to the live schema in one transaction and rolled back, with the section 17
+acceptance queries inside it:
+
+```text
+new_run_columns             8
+blocks_seeded_current       9
+extensions_seeded_current   7
+power_seeded_not_current    6 seeded / 0 current
+public_views                current_rp2_block_results, current_rp2_contrasts,
+                            current_rp2_extension_results, current_rp2_power_results
+contrast_view_has           block_length, common_mask_sha256
+failure_fn_execute          service_role=true anon=false public=false
+rls_on_base_tables          all four = true
+```
+
+Production afterwards: `blocks null`, `power null`, `contrast_view null`, `runs 1`,
+`new_cols 0` — the migration has still never been applied.
+
 ## The dry run
 
 `--dry-run` prints the payload whole and writes it to `publication_payload.json` beside the

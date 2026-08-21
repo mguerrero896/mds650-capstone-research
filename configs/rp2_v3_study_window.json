@@ -1,6 +1,6 @@
 {
   "description": "Which window RP2-v3 results may be published under. `adopted` records the window the repository has already frozen, not a preference chosen here; changing it is a recorded configuration change and requires a reason in docs/rp2_v3/STUDY_WINDOW.md.",
-  "adopted": "twelve_month",
+  "adopted": "partition",
   "decision_document": "docs/rp2_v3/STUDY_WINDOW.md",
   "candidates": {
     "twelve_month": {
@@ -20,6 +20,6 @@
       "last_session": "2026-07-17"
     }
   },
-  "adopted_because": "AGENTS.md, 'Study window rule (binding)', states that a recorded configuration change already froze 2025-07-21 through 2026-07-21 (end exclusive). Recording anything else here would be a new decision; recording nothing claimed no decision existed, which the rule contradicts.",
-  "consequence": "Measured against artifacts/rp2_block1_partition/inventory.jsonl: of the 389 development sessions, 170 fall inside 2025-07-21..2026-07-17, and all 80 validation sessions do. Publishing under this window therefore requires re-running Block 1 against it and rebuilding downstream, with D falling from 389 to 170 sessions. Adopting 'partition' instead amends a rule AGENTS.md calls binding and needs its own recorded configuration change."
+  "adopted_because": "Recorded configuration change of 2026-08-21, methodology decision 84, made by the owner of the research programme: the partition is the RP2 study window. AGENTS.md's twelve-month freeze requires another recorded configuration change to widen or shorten, and this is it; the twelve-month rule is retained for the acquisition programme it was written for.",
+  "consequence": "Nothing is rebuilt and no number changes. D keeps 389 development sessions and V its 80, which is the sample every existing RP2 and RP2-v3 artifact was built on. Measured before deciding: only 170 of the 389 development sessions fall inside the twelve-month window, so adopting that instead would have discarded 219 of them and required Block 1 to be re-run with a lower bound it does not have."
 }

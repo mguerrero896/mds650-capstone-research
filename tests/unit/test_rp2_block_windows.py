@@ -134,3 +134,27 @@ def test_every_tape_column_a_builder_reads_is_a_column_it_declares() -> None:
         assert used <= declared, (
             f"{module.__name__} reads tape columns it never declares: {sorted(used - declared)}"
         )
+
+
+def test_the_counting_window_reports_its_tail_over_the_trades_it_averages() -> None:
+    """One slice, two statistics.
+
+    The thirty-minute windows open after the session does and overlap each other; the
+    counting windows tile the session and their first bucket reaches back to the start of the
+    tape. A mean read from one and a tail read from the other are two populations under names
+    that invite comparison - and the published scorecard carried exactly that pair.
+    """
+
+    latency = np.array([0.5] * 19 + [60.0])
+
+    mean, p95 = BLOCK6.counting_latency(latency, 0, latency.size)
+    assert mean == pytest.approx(float(np.mean(latency)))
+    assert p95 == pytest.approx(float(np.quantile(latency, 0.95)))
+
+    # The slow trade is inside the window the mean covers, so it is inside the window the
+    # tail covers. A tail taken from a window that excludes it describes a different day.
+    without_the_tail = BLOCK6.counting_latency(latency, 0, 19)
+    assert without_the_tail == (pytest.approx(0.5), pytest.approx(0.5))
+    assert p95 > without_the_tail[1]
+
+    assert BLOCK6.counting_latency(latency, 3, 3) == (0.0, 0.0)

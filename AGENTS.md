@@ -7,6 +7,16 @@ window probe established sufficient FMP/UW/Massive coverage. Future widening or
 shortening requires another recorded configuration change; never retry blocked
 ranges or silently substitute a different window.
 
+**Amendment, 2026-08-21 (recorded configuration change; methodology decision
+84).** For RP2 and RP2-v3 the study window is the frozen partition:
+`2024-08-02` through `2026-07-17`, D `2024-08-02..2026-03-23` (389 sessions) and
+V `2026-03-24..2026-07-17` (80). Every RP2 artifact was built on it, and the
+twelve-month freeze above is retained for the acquisition programme it was
+written for. Measured before deciding: 170 of the 389 development sessions fall
+inside the twelve-month window, so adopting it would have discarded 219 of them.
+Publication reads the adopted window from
+`configs/rp2_v3_study_window.json` and refuses a run that does not match it.
+
 Measured evidence (2026-07-21, `scripts/window_probe_v1.py`, artifacts under
 `artifacts/api_audit/window_probe_20260720/`): UW flow-alerts entitled back to
 2023-08-18 (oldest non-empty events ~2024-08-02); FMP 1-min bars verified to

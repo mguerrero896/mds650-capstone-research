@@ -741,9 +741,12 @@ as $$
     values (failed_run_id, now(), 'FAILED', 0, 0, now()::text || ' ' || reason)
     on conflict (run_id) do update set
         status = case when public.ingestion_runs.status = 'PUBLISHED' then 'PUBLISHED' else 'FAILED' end,
+        -- The separator is the escape `E'\n'`, written as two characters. A literal
+        -- newline inside the quotes works and is fragile: on a checkout with CRLF endings
+        -- it becomes a two-character separator, so what joins the attempts depends on how
+        -- the file was checked out rather than on what this line says.
         attempt_log = concat_ws(
-            E'
-', nullif(public.ingestion_runs.attempt_log, ''), excluded.attempt_log
+            E'\n', nullif(public.ingestion_runs.attempt_log, ''), excluded.attempt_log
         ),
         completed_at = case
             when public.ingestion_runs.status = 'PUBLISHED' then public.ingestion_runs.completed_at
