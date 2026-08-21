@@ -126,3 +126,32 @@ def test_sequence_normalisation_refuses_an_empty_training_fold() -> None:
     block = np.ones((2, 3, 8), dtype=np.float64)
     with pytest.raises(ValueError, match="RP2_LEVEL4_SEQUENCE_EMPTY_TRAIN"):
         module.sequence_normalisation(block, np.array([False, False]))
+
+
+def test_the_torch_script_carries_no_type_suppression() -> None:
+    """A suppression here fires by wheel rather than by content.
+
+    torch is the one dependency in this repository whose type stubs differ between
+    distributions: the CUDA build annotates `Tensor.backward` and `Sequential.__getitem__`
+    differently from the CPU build. A `# type: ignore` that one requires, the other reports
+    as unused, so the tree was clean locally and mypy failed in CI on both the `quality` and
+    `hermetic` jobs. Either spelling is wrong on one of the two platforms, so the file
+    carries none: the output layer is held by name and the backward call goes through `Any`.
+
+    This is the only module that imports torch. If that stops being true, this test should
+    grow to cover the others rather than be relaxed.
+    """
+    source = SCRIPT.read_text(encoding="utf-8")
+    assert "type: ignore" not in source, (
+        "a type suppression in the torch script fires by installed wheel, not by content"
+    )
+
+    importers = [
+        path
+        for path in sorted((ROOT / "src").rglob("*.py")) + sorted((ROOT / "scripts").rglob("*.py"))
+        if "import torch" in path.read_text(encoding="utf-8", errors="replace")
+    ]
+    assert importers == [SCRIPT], (
+        f"torch is now imported by {[str(p.relative_to(ROOT)) for p in importers]}; "
+        "extend this check to cover them"
+    )
