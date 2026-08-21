@@ -12,6 +12,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from mds650.rp2.lookup import dig
+
 ROOT = Path(__file__).resolve().parents[1]
 
 #: The families the research contract decides on, in the order the ladder reports them.
@@ -40,6 +42,7 @@ def render(scorecard: dict[str, Any]) -> str:
         header,
         "| --- | ---: | ---: | ---: | ---: |",
     ]
+    measured = dict.fromkeys(FAMILIES, True)
     for family in FAMILIES:
         cells = [
             _delta(scorecard, "delta_b1", family, "D"),
@@ -47,8 +50,19 @@ def render(scorecard: dict[str, Any]) -> str:
             _delta(scorecard, "delta_b1", family, "V"),
             _delta(scorecard, "delta_b2_given_b1", family, "V"),
         ]
+        if all(cell is None for cell in cells):
+            # Every delta of one family absent means the ladder did not fit it, which is
+            # a result. Every delta of every family absent means this function is reading
+            # the wrong document, which is not - and it rendered exactly that once.
+            measured[family] = False
         rendered = " | ".join("n/a" if c is None else f"{c:+.5f}" for c in cells)
         lines.append(f"| `{family}` | {rendered} |")
+    if not any(measured.values()):
+        raise ValueError(
+            "RP2_README_NO_FAMILY_MEASURED: the scorecard holds "
+            f"{sorted(dig(scorecard, 'forecast'))}, and none of {list(FAMILIES)} "
+            "was read from it"
+        )
     return "\n".join(lines) + "\n"
 
 
