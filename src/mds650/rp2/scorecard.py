@@ -168,13 +168,24 @@ def latency_histogram(path: Path, prefix: str) -> npt.NDArray[np.int64]:
     a tail nobody measured.
     """
 
-    empty = np.zeros(len(LATENCY_BIN_EDGES) + 1, dtype=np.int64)
-    counts = empty.copy()
-    for index in range(len(LATENCY_BIN_EDGES) + 1):
+    expected = len(LATENCY_BIN_EDGES) + 1
+    counts = np.zeros(expected, dtype=np.int64)
+    missing: list[int] = []
+    for index in range(expected):
         column = _column(path, f"{prefix}{index}")
         if column is None:
+            missing.append(index)
             continue
         counts[index] = int(column.fill_null(0).sum())
+    if missing:
+        # A bin treated as empty because its column is absent is indistinguishable from a
+        # bin no trade fell into, and if every column is absent the quantile below reads
+        # 0.0 - a panel from an older or truncated producer published as perfect latency.
+        # The set is required whole: a producer that emits these emits all of them.
+        raise ValueError(
+            f"RP2_SCORECARD_LATENCY_BINS_INCOMPLETE:{len(missing)} of {expected} absent, "
+            f"first {missing[0]}"
+        )
     return counts
 
 

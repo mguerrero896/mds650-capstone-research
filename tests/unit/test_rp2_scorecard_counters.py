@@ -8,6 +8,8 @@ as zero because somebody did, and only one of them would notice a regression.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import numpy as np
 import pytest
 
@@ -300,3 +302,29 @@ def test_a_tail_of_zero_beside_counted_trades_is_a_missing_measurement() -> None
     unmeasured = {**measured, "b2": {**measured["b2"], "b2_p95_provider_latency_s": 0.0}}
     with pytest.raises(ValueError, match="RP2_SCORECARD_LATENCY_TAIL_UNMEASURED"):
         assert_scorecard_invariants(unmeasured)
+
+
+def test_a_panel_without_the_latency_bins_is_refused_rather_than_read_as_zero(
+    tmp_path: Path,
+) -> None:
+    """An absent bin column and an empty bin are the same number and different facts."""
+
+    import polars as pl
+
+    from mds650.rp2.scorecard import LATENCY_BIN_EDGES, latency_histogram
+
+    panel = tmp_path / "b2.parquet"
+    complete = {
+        f"b2_latency_bin_{index}": [0.0] for index in range(len(LATENCY_BIN_EDGES) + 1)
+    }
+    pl.DataFrame(complete).write_parquet(panel)
+    assert latency_histogram(panel, "b2_latency_bin_").sum() == 0
+
+    truncated = {k: v for k, v in complete.items() if k != "b2_latency_bin_7"}
+    pl.DataFrame(truncated).write_parquet(panel)
+    with pytest.raises(ValueError, match="RP2_SCORECARD_LATENCY_BINS_INCOMPLETE"):
+        latency_histogram(panel, "b2_latency_bin_")
+
+    pl.DataFrame({"b2_counting_trades": [1.0]}).write_parquet(panel)
+    with pytest.raises(ValueError, match="RP2_SCORECARD_LATENCY_BINS_INCOMPLETE"):
+        latency_histogram(panel, "b2_latency_bin_")

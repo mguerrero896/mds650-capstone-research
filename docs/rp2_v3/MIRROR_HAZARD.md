@@ -43,6 +43,36 @@ One of these, and it is a decision about the repository rather than a code chang
    canonical history somewhere that is not the branch the pull requests merged into, and
    what `main` means is stated.
 
-Until one is chosen, do not run `scripts/publish_mirror.sh`. Nothing in the RP2-v3 gates
-needs it: the gates publish through pull requests, and the gated-data stripping they rely on
-is enforced by `.gitignore` and by the pointer register rather than by the mirror filter.
+## How the RP2-v3 gates were actually published, and why that is not an endorsement
+
+`AGENTS.md` says, of this remote: **"NEVER push to the remote directly; ALWAYS publish via
+`bash scripts/publish_mirror.sh`."** The twelve RP2-v3 gates were published by pushing
+branches and opening pull requests, which is not that.
+
+An earlier version of this page argued the two were equivalent because `.gitignore` and the
+pointer register cover the gated data. They are not equivalent, and the argument was wrong in
+a way worth stating: `.gitignore` prevents an untracked file from being added, and the mirror
+filter removes gated paths from *every commit of the published history*. A file already
+tracked, or one added before its rule existed, is invisible to the first and removed by the
+second. They defend different things.
+
+What was measured, on `origin/main`'s own history and not on all refs:
+
+```text
+paths in origin/main's history          1393
+gated paths among them                  none
+non-gated parquets                      17
+tests/test_gated_publish_contract.py    passes
+```
+
+So nothing licensed reached the public repository. That is the outcome, not the procedure:
+the gates were published a way the repository forbids, and it happened to be safe because the
+gated files are absent from the worktrees the branches were built in.
+
+Do not read this as a licence to keep doing it. Until the two lineages are reconciled, a push
+to this remote is outside the documented process and needs the check above run against it.
+
+## What must not be done meanwhile
+
+Do not run `scripts/publish_mirror.sh` until the reconciliation is chosen: as measured above,
+it would force-push over 392 commits that are not in the canonical tree.

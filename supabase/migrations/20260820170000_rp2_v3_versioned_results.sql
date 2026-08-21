@@ -748,7 +748,6 @@ as $$
         attempt_log = concat_ws(
             E'\n', nullif(public.ingestion_runs.attempt_log, ''), excluded.attempt_log
         ),
-        ),
         completed_at = case
             when public.ingestion_runs.status = 'PUBLISHED' then public.ingestion_runs.completed_at
             else now()
