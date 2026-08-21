@@ -194,6 +194,28 @@ class PooledIntercepts:
         return np.array([self.offsets.get(int(g), 0.0) for g in groups], dtype=np.float64)
 
 
+def session_weighted_level(losses: FloatArray, sessions: npt.NDArray[np.int64]) -> float:
+    """Mean loss with the session as the unit, matching the contrasts beside it.
+
+    The contrasts aggregate to the session first, because origins five minutes apart share
+    overlapping thirty-minute targets: a busy session would otherwise outweigh a quiet one
+    and an early close would count for less than a full day. The published LEVELS averaged
+    every evaluated row instead, so `level(base) - level(expanded)` did not reproduce the
+    published delta - by 2.2 % for gamma_glm and 2.0 % for ridge_log on the RP2-v3
+    development panel. Two numbers in one record that do not describe the same quantity are
+    worse than either alone.
+    """
+
+    if losses.shape != sessions.shape:
+        raise ValueError("RP2_LADDER_LEVEL_SHAPE_MISMATCH")
+    finite = np.isfinite(losses)
+    if not finite.any():
+        return float("nan")
+    values, labels = losses[finite], sessions[finite]
+    means = np.array([values[labels == label].mean() for label in np.unique(labels)])
+    return float(means.mean())
+
+
 def partial_pooling(
     residuals: FloatArray, groups: npt.NDArray[np.int64], train: npt.NDArray[np.bool_]
 ) -> PooledIntercepts:
@@ -211,14 +233,30 @@ def partial_pooling(
     if not usable.any():
         return PooledIntercepts(grand_mean=0.0, between_variance=0.0, offsets={})
     grand = float(np.mean(residuals[usable]))
-    within = float(np.var(residuals[usable]))
     means: dict[int, float] = {}
     counts: dict[int, int] = {}
+    deviations: list[FloatArray] = []
     for group in np.unique(groups[usable]):
         mask = usable & (groups == group)
-        means[int(group)] = float(np.mean(residuals[mask]))
+        block = residuals[mask]
+        means[int(group)] = float(np.mean(block))
         counts[int(group)] = int(mask.sum())
-    spread = float(np.var(list(means.values()))) if len(means) > 1 else 0.0
+        deviations.append(block - block.mean())
+    # sigma^2 in the model above is the variance WITHIN a group. This was the variance of
+    # every residual at once, which is the within variance plus the between variance, so
+    # the quantity the model wants was being estimated by something that already contains
+    # the quantity it is subtracted from. Pooled within-group sum of squares over N - G is
+    # the estimator the moment identity below assumes.
+    stacked = np.concatenate(deviations) if deviations else np.empty(0, dtype=np.float64)
+    degrees = max(int(usable.sum()) - len(means), 1)
+    within = float((stacked @ stacked) / degrees) if stacked.size else 0.0
+    # The sample variance of G group means, not the population variance of them. With the
+    # six assets this programme runs, `np.var`'s default divisor of G understates the
+    # spread by a sixth, and tau^2 is the numerator of the shrinkage weight: a smaller tau
+    # pulls every per-asset intercept harder toward the grand mean than the data supports.
+    # The subtraction below floors at zero, so an understated spread can collapse the term
+    # entirely and turn partial pooling into total pooling without saying so.
+    spread = float(np.var(list(means.values()), ddof=1)) if len(means) > 1 else 0.0
     between = max(spread - within / max(np.mean(list(counts.values())), 1.0), 0.0)
     offsets: dict[int, float] = {}
     for group, mean in means.items():

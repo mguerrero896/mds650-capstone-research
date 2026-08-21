@@ -1075,3 +1075,66 @@ Spec Kit consistency and preregistration gates pass.
     moves on re-run cannot be the evidence a frozen digest is for. `CUBLAS_WORKSPACE_CONFIG`
     is set before torch is imported and `torch.use_deterministic_algorithms(True)` is enabled
     with the seed; two runs now produce `51be6d2b9225fe9f...` both times.
+89. **Five defects the audit confirmed, and one it did not see (2026-08-21)** — every one of
+    them is a statistic beside a corrected twin that was left uncorrected, which is the
+    pattern this entry exists to close rather than repeat.
+
+    **The 95th percentile of a sum is not the sum of the 95th percentiles.** Block 2
+    published `end_to_end_p95_seconds` as `provider_p95 + local_p95`, and that number sizes
+    `recommended_b2_cutoff_seconds`. Adding two quantiles gives the tail the sum would have
+    if the two delays were perfectly rank-correlated; a quantile is not subadditive, so it is
+    not a bound in either direction, and the assumption was stated by arithmetic rather than
+    in words. Both stages already keep a histogram, so both cases are now computed:
+    `end_to_end_p95_seconds_comonotonic` and `end_to_end_p95_seconds_independent`. The cutoff
+    is sized on the comonotonic figure, which is the conservative one, and the independent
+    figure is published beside it so a reader can see how much of the recommendation rests on
+    the dependence assumption. Guarded by `tests/unit/test_rp2_pit_sum_quantile.py`.
+
+    **The between-group variance was estimated with the wrong divisor, and its partner with
+    the wrong quantity.** `partial_pooling` took `np.var` of the six per-asset mean residuals,
+    dividing by G rather than G-1 and understating tau^2 by a sixth. tau^2 is the numerator of
+    the shrinkage weight, so every per-asset intercept was pulled harder toward the grand mean
+    than the data supports, and because the estimate is floored at zero an understated spread
+    can collapse the term and turn partial pooling into total pooling silently. Reading that
+    line also showed sigma^2 being estimated as `np.var` over **every** residual — the within
+    variance plus the between variance — where the model the docstring states wants the within
+    variance alone, so the quantity being subtracted already contained the quantity it was
+    subtracted from. Both corrected: the sample variance of the means, and the pooled
+    within-group sum of squares over N-G. The second was not in the audit's findings.
+
+    **A published level and the delta beside it were different statistics.** The ladder's
+    contrasts were moved to session weighting because origins five minutes apart share
+    overlapping thirty-minute targets — `_contrast`'s own docstring records that change — and
+    the loss LEVELS in the same record kept `np.mean` over every evaluated row. Measured,
+    `qlike[B0] - qlike[B0+B1]` disagreed with `delta_b1` by 2.2 % for `gamma_glm`, 2.0 % for
+    `ridge_log` and 0.2 % for `lightgbm_qlike`, so a reader could not rebuild the published
+    delta from the published levels. `qlike` is now session-weighted and reconstructs the
+    contrast; the origin-weighted figure is kept as `qlike_by_origin` rather than removed.
+
+    **A trade was marked at a price from its own future.** `rp2_ext2_tape_tensors.py` priced
+    every trade at `closes[minute_of_trade]`, so a trade at 10:15:03 was marked at 10:16:00 —
+    forty-three seconds after it printed — and its Greeks, its log-moneyness and its bucket
+    all followed from that. The producer built the full `SessionGrid` and kept only
+    `grid.close`, discarding the field whose docstring says it exists for this case: the open
+    is "the one price a trade *inside* that minute can be marked at without reading its own
+    future". The mark is now that open, falling back to the previous minute's close where the
+    store supplied none, and a trade in an opening minute with neither is left unmarked — the
+    level-4 producer already drops rows whose tensor is not finite, so it is excluded rather
+    than given a plausible price.
+
+    **The front page published two RP2-v2 figures under an RP2-v3 heading.** README section
+    "Findings at a glance" is scoped "Measured on `rp2-v3-20260821-134741`" and then stated
+    the DML joint test as `p = 3e-46` on 383 sessions, where that run gives `p = 3.9e-09`,
+    Wald 59.83, on 389 clusters and 152,954 rows — an overstatement of thirty-seven orders of
+    magnitude and a sample the run does not have. It stated Hansen's SPA as `p = 0.0070, above
+    the project's own sequential budget of 0.00417`, where the rebuilt within-family race
+    gives `p = 0.0010` against `ridge_log|B0` out of three candidates on 156 sessions, which
+    **clears** that budget rather than failing it. Both corrected, both superseded figures kept
+    in place with what replaced them, and `tests/contract/test_readme_matches_artifacts.py`
+    now reads the run id out of the README and checks each figure against that run.
+
+    **What still has to be re-run.** The ladder and tensor corrections change producers, not
+    artifacts. `artifacts/rp2_ext12_level4/level4_and_tensor.json` was measured on tensors
+    built with the look-ahead mark, and the ladder's published levels predate the session
+    weighting. Neither is restated here; both need their producer re-run before any number
+    that depends on them is published again.

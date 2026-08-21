@@ -98,11 +98,38 @@ def _read_tape(paths: Sequence[str], asset: str) -> pl.DataFrame | None:
     return tape.sort("created_at") if tape.height else None
 
 
+def trade_marks(
+    minute_of_trade: npt.NDArray[np.int64], opens: FloatArray, closes: FloatArray
+) -> FloatArray:
+    """The last price a trade inside minute ``m`` could have been marked at.
+
+    Every trade used to be marked at `closes[m]`, the close of its own minute: a trade at
+    10:15:03 was priced at 10:16:00, forty-three seconds after it printed, and its Greeks,
+    its log-moneyness and its bucket all followed from that. `SessionGrid.open` exists for
+    exactly this case and the producer was discarding it.
+
+    The open of the trade's own minute is the first print inside it. Where the store did
+    not supply one, the close of the PREVIOUS minute is the last price that had certainly
+    completed. A trade in the first minute of a session with no open has neither, and is
+    left unmarked: the level-4 producer drops rows whose tensor is not finite, so an
+    unmarked trade is excluded rather than given a plausible price.
+    """
+
+    marks = np.asarray(opens, dtype=np.float64)[minute_of_trade]
+    previous = np.where(
+        minute_of_trade > 0,
+        np.asarray(closes, dtype=np.float64)[np.maximum(minute_of_trade - 1, 0)],
+        np.nan,
+    )
+    return np.asarray(np.where(np.isfinite(marks), marks, previous), dtype=np.float64)
+
+
 def build_session_arrays(
     asset: str,
     session: str,
     paths: Sequence[str],
     origins: npt.NDArray[np.int64],
+    opens: FloatArray,
     closes: FloatArray,
 ) -> tuple[npt.NDArray[np.float32], npt.NDArray[np.float32], list[tuple[str, str, int]]] | None:
     """Tensor and sequence for every origin of one session-asset."""
@@ -136,7 +163,7 @@ def build_session_arrays(
     minute_of_trade = np.clip(
         ((created - open_us) // 60_000_000).astype(np.int64), 0, closes.size - 1
     )
-    spot = closes[minute_of_trade]
+    spot = trade_marks(minute_of_trade, opens, closes)
     greeks = black_scholes_greeks(spot, strike, tenor_days / CALENDAR_YEAR, iv, is_call)
     log_moneyness = np.log(np.maximum(strike, 1e-9) / np.maximum(spot, 1e-9))
     vega_flow = greeks.vega * size * CONTRACT_MULTIPLIER * direction
@@ -217,29 +244,35 @@ def main(argv: Sequence[str] | None = None) -> int:
     panel = pl.read_parquet(B0_PANEL)
     inventory = load_inventory()
     bars = load_bar_sources(args.data_root)
-    grids: dict[tuple[str, str], FloatArray] = {}
+    # Both fields travel: the open marks a trade inside its own minute, the close of the
+    # previous minute is the fallback when the store supplied no open.
+    grids: dict[tuple[str, str], tuple[FloatArray, FloatArray]] = {}
     for (asset, session_date), group in bars.sort(["asset", "session_date", "minute"]).group_by(
         ["asset", "session_date"], maintain_order=True
     ):
         grid = build_session_grid(group, session=session_date)
-        grids[(str(asset), str(session_date))] = grid.close
+        grids[(str(asset), str(session_date))] = (grid.open, grid.close)
 
-    jobs: list[tuple[str, str, list[str], npt.NDArray[np.int64], FloatArray]] = []
+    jobs: list[
+        tuple[str, str, list[str], npt.NDArray[np.int64], FloatArray, FloatArray]
+    ] = []
     for (asset, session_date), group in panel.sort(
         ["asset", "session_date", "origin_minute"]
     ).group_by(["asset", "session_date"], maintain_order=True):
         paths = inventory.get((str(session_date), str(asset))) or inventory.get(
             (str(session_date), "__ALL__")
         )
-        closes = grids.get((str(asset), str(session_date)))
-        if paths is None or closes is None:
+        marks = grids.get((str(asset), str(session_date)))
+        if paths is None or marks is None:
             continue
+        opens, closes = marks
         jobs.append(
             (
                 str(asset),
                 str(session_date),
                 paths,
                 group["origin_minute"].to_numpy().astype(np.int64),
+                opens,
                 closes,
             )
         )

@@ -16,6 +16,7 @@ from collections.abc import Sequence
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Final
 
 import numpy as np
 import numpy.typing as npt
@@ -31,7 +32,9 @@ from mds650.rp2.partition import (
 from mds650.rp2.pit_ledger import (
     BACKFILL_THRESHOLD_SECONDS,
     LatencySample,
+    comonotonic_sum_quantile,
     empty_sample,
+    independent_sum_quantile,
     pooled_quantile,
     recommended_cutoff_seconds,
     stability_verdict,
@@ -41,6 +44,8 @@ from mds650.rp2.pit_ledger import (
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_block2_pit"
 LIVE_CAMPAIGN = Path("D:/MDS650/uw_latency/sessions")
+#: The tail the cutoff is sized against, fixed here so both estimators read it.
+END_TO_END_QUANTILE: Final = 0.95
 QUANTILES = (0.5, 0.9, 0.95, 0.99, 0.999)
 
 
@@ -89,7 +94,7 @@ def _p95_of(stats: dict[str, object]) -> float:
 
 def measure_tape(
     data_root: Path, *, roles: tuple[str, ...], workers: int
-) -> tuple[dict[str, object], dict[str, dict[str, object]]]:
+) -> tuple[dict[str, object], dict[str, dict[str, object]], LatencySample]:
     """Pool latency statistics over every partition in the requested roles."""
 
     files = [item for item in discover_sessions(TAPE_SOURCES, data_root) if item.role in roles]
@@ -109,14 +114,16 @@ def measure_tape(
     summary["p95_stable_across_sessions"] = stability_verdict(session_p95)
     summary["session_p95_max_seconds"] = max(session_p95)
     summary["session_p95_median_seconds"] = float(np.median(session_p95))
-    return summary, sessions
+    # The pooled sample travels with its summary: combining this stage's tail with the
+    # local one needs the distribution, not a quantile read off it.
+    return summary, sessions, pooled
 
 
-def measure_live_receipt(campaign_root: Path) -> dict[str, object]:
+def measure_live_receipt(campaign_root: Path) -> tuple[dict[str, object], LatencySample]:
     """Latency from provider ``created_at`` to local receipt, steady-state arrivals only."""
 
     if not campaign_root.is_dir():
-        return {"status": "NO_LIVE_CAMPAIGN", "root": campaign_root.as_posix()}
+        return {"status": "NO_LIVE_CAMPAIGN", "root": campaign_root.as_posix()}, empty_sample()
     sessions: dict[str, object] = {}
     pooled = empty_sample()
     for session_dir in sorted(campaign_root.iterdir()):
@@ -165,7 +172,7 @@ def measure_live_receipt(campaign_root: Path) -> dict[str, object]:
     result: dict[str, object] = {"status": "MEASURED", "sessions": sessions}
     if pooled.rows:
         result["pooled_steady_state"] = _describe(pooled)
-    return result
+    return result, pooled
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -178,15 +185,23 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     roles = tuple(part.strip() for part in str(args.roles).split(",") if part.strip())
-    summary, sessions = measure_tape(args.data_root, roles=roles, workers=args.workers)
-    live = measure_live_receipt(args.live_campaign)
+    summary, sessions, provider_sample = measure_tape(
+        args.data_root, roles=roles, workers=args.workers
+    )
+    live, local_sample = measure_live_receipt(args.live_campaign)
 
-    provider_p95 = _p95_of(summary)
-    local_p95 = 0.0
-    pooled_live = live.get("pooled_steady_state")
-    if isinstance(pooled_live, dict):
-        local_p95 = _p95_of(pooled_live)
-    end_to_end_p95 = provider_p95 + local_p95
+    # This used to be `provider_p95 + local_p95`, published as `end_to_end_p95_seconds`.
+    # Adding two quantiles gives the tail the sum would have if the two delays were
+    # perfectly rank-correlated - every record the provider was slow to publish also being
+    # slow to arrive here. That is one dependence assumption stated by arithmetic instead
+    # of in words, and a quantile is not subadditive, so it is not a bound in either
+    # direction. Both stages keep a histogram, so both cases are computed and named.
+    comonotonic = comonotonic_sum_quantile(
+        provider_sample.histogram, local_sample.histogram, END_TO_END_QUANTILE
+    )
+    independent = independent_sum_quantile(
+        provider_sample.histogram, local_sample.histogram, END_TO_END_QUANTILE
+    )
 
     document: dict[str, object] = {
         "block": 2,
@@ -195,8 +210,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         "roles_measured": list(roles),
         "provider_ingestion_latency": summary,
         "local_receipt_latency": live,
-        "end_to_end_p95_seconds": end_to_end_p95,
-        "recommended_b2_cutoff_seconds": recommended_cutoff_seconds(end_to_end_p95),
+        # The comonotonic figure is the conservative one of the two and is what sizes the
+        # cutoff. The independent figure is published beside it so a reader can see how
+        # much of the recommendation rests on the dependence assumption.
+        "end_to_end_p95_seconds_comonotonic": comonotonic,
+        "end_to_end_p95_seconds_independent": independent,
+        "end_to_end_quantile": END_TO_END_QUANTILE,
+        "recommended_b2_cutoff_seconds": recommended_cutoff_seconds(comonotonic),
         "incumbent_b2_cutoff_seconds": 60.0,
     }
     document["ledger_sha256"] = canonical_sha256(document)

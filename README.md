@@ -167,9 +167,13 @@ asserted a model that does not exist.
 5. **Recent option flow carries information the price history and the option surface cannot
    reconstruct — in one sample.** Under double machine learning, orthogonalising B2 against
    B0+B1 and clustering by session, the joint null is rejected in discovery at
-   **p = 3 × 10⁻⁴⁶** (383 sessions). Traded premium, strike concentration, the
-   arrival-intensity innovation and delta flow all carry it; vega- and gamma-weighted flow are
-   null.
+   **p = 3.9 × 10⁻⁹**, Wald 59.83 on 389 session clusters and 152,954 rows. Traded premium,
+   strike concentration, the arrival-intensity innovation and delta flow all carry it; vega-
+   and gamma-weighted flow are null.
+
+   The figure that stood here, `p = 3 × 10⁻⁴⁶` on 383 sessions, was the RP2-v2 measurement
+   and survived the rebuild that this section says it reports. It overstated the joint test
+   by thirty-seven orders of magnitude and named a sample the run does not have.
 
    **It survives a control that could have killed it.** Every B2 increment in this project was
    previously measured against a baseline that could not see the market: the SPY and QQQ
@@ -187,9 +191,15 @@ asserted a model that does not exist.
 6. **That information is smaller than the cost of estimating the parameters needed to use
    it.** The out-of-sample QLIKE change is frequently negative even where the in-sample
    evidence is strong. Across six model families, four contrasts and an interaction term,
-   every estimand is null or family-dependent. Hansen's SPA picks a best candidate at
-   p = 0.0070, above the project's own sequential budget of 0.00417; White's Reality Check
-   rejects nothing.
+   every estimand is null or family-dependent. Hansen's SPA, run within each family against
+   that family's own B0, picks `ridge_log|B0+B1` over `ridge_log|B0` out of three candidates
+   at **p = 0.0010** on 156 evaluated sessions, and White's Reality Check on the same race
+   rejects nothing (p = 0.4635).
+
+   The figure that stood here, `p = 0.0070, above the project's own sequential budget of
+   0.00417`, was the RP2-v2 cross-family race. It is superseded and its direction reversed:
+   the rebuilt within-family SPA clears that budget rather than failing it. What the two
+   agree on is the Reality Check, which rejects nothing in either.
 
    The Clark–West figures that previously appeared here have been **withdrawn** (decision 68).
    The adjustment is derived for a linear model whose restricted form is a parameter
