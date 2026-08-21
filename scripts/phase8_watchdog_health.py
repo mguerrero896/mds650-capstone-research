@@ -33,8 +33,7 @@ DATA_ROOT = Path(os.environ.get("MDS650_EXTERNAL_ROOT", "D:/MDS650"))
 DEFAULT_LOG = DATA_ROOT / "logs" / "phase8_watch.log"
 # 2026-08-19T20:00:03 completed=22/30 expected>=21 reads=0
 LINE = re.compile(
-    r"^(?P<date>\d{4}-\d{2}-\d{2})T\S+\s+completed=(?P<completed>\d+)/(?P<total>\d+)"
-    r"\s+expected>=(?P<expected>\d+)\s+reads=(?P<reads>\d+)\s*$"
+    r"^\d{4}-\d{2}-\d{2}T\S+\s+completed=\d+/\d+\s+expected>=\d+\s+reads=(?P<reads>\d+)\s*$"
 )
 
 

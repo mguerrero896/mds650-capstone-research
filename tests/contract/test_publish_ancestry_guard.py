@@ -60,6 +60,21 @@ def _remote_with_history(tmp_path: Path) -> tuple[Path, Path]:
 
 
 REFUSAL = "PUBLISH REFUSED"
+LF = chr(10)
+
+
+def _bash_runs() -> bool:
+    """Git Bash is not reliably invocable from a Windows subprocess; CI's is."""
+    try:
+        probe = subprocess.run(
+            ["bash", "-c", "echo ok"], capture_output=True, text=True, check=False
+        )  # single-line -c is safe on every platform
+    except OSError:
+        return False
+    return probe.stdout.strip() == "ok"
+
+
+NEEDS_BASH = pytest.mark.skipif(not _bash_runs(), reason="bash not invocable here")
 
 
 def _run_guard(*args: str) -> subprocess.CompletedProcess[str]:
@@ -119,7 +134,7 @@ def test_missing_branch_on_remote_aborts(tmp_path: Path) -> None:
 
 
 def test_related_history_reaches_dry_run_only(tmp_path: Path) -> None:
-    """A descendant of the published tip is allowed — and still must not push."""
+    """A descendant of the published tip is allowed — and the guard still must not push."""
     remote, source = _remote_with_history(tmp_path)
     mirror = tmp_path / "mirror"
     _git(tmp_path, "clone", "-q", str(source), str(mirror))
@@ -127,7 +142,7 @@ def test_related_history_reaches_dry_run_only(tmp_path: Path) -> None:
     before = _git(Path(remote), "rev-parse", "main")
 
     result = _run_guard(
-        "--mirror", str(mirror), "--remote", str(remote), "--branch", "main", "--dry-run"
+        "--mirror", str(mirror), "--remote", str(remote), "--branch", "main"
     )
     assert result.returncode == 0, result.stdout + result.stderr
     assert _git(Path(remote), "rev-parse", "main") == before, "dry run must not move the remote"
@@ -142,7 +157,7 @@ def test_explicit_base_mismatch_aborts(tmp_path: Path) -> None:
 
     result = _run_guard(
         "--mirror", str(mirror), "--remote", str(remote), "--branch", "main",
-        "--expect-base", "0" * 40, "--dry-run",
+        "--expect-base", "0" * 40,
     )
     assert result.returncode != 0
     assert "base" in _refusal(result)
@@ -158,3 +173,143 @@ def test_publish_script_guards_before_every_push(push_line: str) -> None:
     assert "publish_ancestry_guard.py" in source, "publish_mirror.sh must invoke the guard"
     guard_at = source.index("publish_ancestry_guard.py")
     assert source.index(push_line) > guard_at, f"guard must run before: {push_line}"
+
+
+# ---------------------------------------------------------------------------
+# The tag push. publish_mirror.sh runs `git push --force "$REMOTE" --tags`
+# immediately after the branch push. Check 4 as first written resolved
+# refs/heads/<branch> only, so every tag ref went out unguarded — and with two
+# disjoint lineages, a same-named tag on the remote would be silently replaced
+# by a commit from an unrelated history. The tags are the frozen-evidence
+# anchors, so that is the worst possible ref to leave uncovered.
+# ---------------------------------------------------------------------------
+
+
+def _tag(repo: Path, name: str) -> None:
+    _git(repo, "tag", name)
+
+
+def test_tag_moving_to_unrelated_commit_aborts(tmp_path: Path) -> None:
+    """Branch is a clean descendant; only the tag is off-lineage.
+
+    The branch must be related, or the branch ancestry check fires first and
+    the tag rule is never exercised.
+    """
+    remote, source = _remote_with_history(tmp_path)
+    _tag(source, "evidence-freeze")
+    _git(source, "push", "-q", str(remote), "evidence-freeze")
+
+    mirror = tmp_path / "mirror"
+    _git(tmp_path, "clone", "-q", str(source), str(mirror))
+    _commit(mirror, "new-work")
+    # A parentless commit built with plumbing: shares no history with anything
+    # the remote published, and leaves the working tree untouched.
+    tree = _git(mirror, "rev-parse", "HEAD^{tree}")
+    orphan = _git(mirror, "commit-tree", tree, "-m", "orphan lineage")
+    _git(mirror, "tag", "-f", "evidence-freeze", orphan)
+
+    result = _run_guard(
+        "--mirror", str(mirror), "--remote", str(remote), "--branch", "main", "--check-tags"
+    )
+    assert result.returncode != 0
+    assert "tag" in _refusal(result)
+
+
+def test_tag_advancing_on_the_same_lineage_is_allowed(tmp_path: Path) -> None:
+    remote, source = _remote_with_history(tmp_path)
+    _tag(source, "evidence-freeze")
+    _git(source, "push", "-q", str(remote), "evidence-freeze")
+
+    mirror = tmp_path / "mirror"
+    _git(tmp_path, "clone", "-q", str(source), str(mirror))
+    _commit(mirror, "new-work")
+    _git(mirror, "tag", "-f", "evidence-freeze")
+
+    result = _run_guard(
+        "--mirror", str(mirror), "--remote", str(remote), "--branch", "main", "--check-tags"
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_local_only_tag_is_allowed(tmp_path: Path) -> None:
+    """A tag the remote does not have yet cannot destroy anything."""
+    remote, source = _remote_with_history(tmp_path)
+    mirror = tmp_path / "mirror"
+    _git(tmp_path, "clone", "-q", str(source), str(mirror))
+    _git(mirror, "tag", "brand-new-tag")
+
+    result = _run_guard(
+        "--mirror", str(mirror), "--remote", str(remote), "--branch", "main", "--check-tags"
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_publish_script_guards_the_tag_push() -> None:
+    """--tags force-updates every tag ref; the guard call must cover them."""
+    source = PUBLISH.read_text(encoding="utf-8")
+    assert "--check-tags" in source, "check 4 must validate tags, not only the branch"
+    assert source.index("--check-tags") < source.index('push --force "$REMOTE" --tags')
+
+
+def test_publish_script_does_not_compare_the_remote_to_itself() -> None:
+    """--expect-remote "$REMOTE" alongside --remote "$REMOTE" can never fire."""
+    source = PUBLISH.read_text(encoding="utf-8")
+    assert '--remote "$REMOTE" --branch main \\n    --expect-remote "$REMOTE"' not in source
+
+
+# ---------------------------------------------------------------------------
+# Check 1's leak detector. It used to end in `| head -1` inside an `if`. Under
+# `set -o pipefail`, closing the pipe early makes grep die on SIGPIPE (141), the
+# pipeline reports non-zero, and the `if` reads that as "no leak". Measured on
+# this machine: detection at 1,000 leaked paths, silent false pass from ~4,000.
+# The more that leaked, the likelier the publish proceeded.
+# ---------------------------------------------------------------------------
+
+
+def _run_leak_check(tmp_path: Path, leaked_paths: int) -> str:
+    """Run the current check-1 construction against a synthetic path list.
+
+    bash runs with cwd=tmp_path and bare filenames: Git Bash cannot resolve a
+    Windows-drive path. Files are written with explicit LF newlines because
+    grep -Fx would otherwise compare CRLF-terminated lines and match nothing.
+    """
+    paths = LF.join(f"artifacts/gated/panel_{i}.parquet" for i in range(leaked_paths))
+    for name in ("all.txt", "excludes.txt"):
+        with (tmp_path / name).open("w", encoding="utf-8", newline=LF) as handle:
+            handle.write(paths + LF)
+    script = LF.join(
+        [
+            "set -euo pipefail",
+            "LEAKED=$(cat all.txt | sort -u | grep -Fxf excludes.txt || true)",
+            'if [ -n "$LEAKED" ]; then echo DETECTED; else echo FALSE_PASS; fi',
+        ]
+    )
+    # Windows builds a command line rather than an argv array, so a multi-line
+    # -c argument is split at its newlines. Run it from a file instead.
+    runner = tmp_path / "check.sh"
+    with runner.open("w", encoding="utf-8", newline=LF) as handle:
+        handle.write(script + LF)
+    result = subprocess.run(
+        ["bash", runner.name], cwd=tmp_path, capture_output=True, text=True, check=False
+    )
+    return result.stdout.strip()
+
+
+@NEEDS_BASH
+@pytest.mark.parametrize("leaked", [10, 4_000, 20_000])
+def test_leak_check_detects_at_every_volume(tmp_path: Path, leaked: int) -> None:
+    assert _run_leak_check(tmp_path, leaked) == "DETECTED"
+
+
+def test_leak_check_decision_does_not_flow_through_head() -> None:
+    """`head` may format the report; it must not gate the verdict."""
+    source = PUBLISH.read_text(encoding="utf-8")
+    check_one = source[source.index("# Check 1:") : source.index("# Check 2:")]
+    assert 'grep -Fxf "$EXCLUDES_EXPANDED" | head' not in check_one
+    assert "LEAKED=$(" in check_one, "the match set must be collected before the decision"
+
+
+def test_empty_exclude_list_refuses_the_publish() -> None:
+    """An empty expansion strips nothing; publishing on it is not a clean pass."""
+    source = PUBLISH.read_text(encoding="utf-8")
+    assert '[ ! -s "$EXCLUDES_EXPANDED" ]' in source

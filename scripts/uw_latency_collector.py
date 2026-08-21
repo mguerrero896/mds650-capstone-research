@@ -135,11 +135,23 @@ def _poll_cycle(
 def _install_cancellation() -> None:
     """Route cooperative stop signals through KeyboardInterrupt.
 
-    Without this, a SIGTERM (or a console CTRL_BREAK, which is what Windows
-    records as 0xC000013A) terminates the interpreter without unwinding, so the
-    try/finally in main() never writes collector_summary.json. Converting the
-    signal into an exception lets the terminal summary reach disk on every path
-    the OS still lets Python run code on.
+    This covers the paths where the OS still lets Python run code. It is a
+    narrower set than it looks on Windows, which is where this collector runs:
+
+    - SIGINT (Ctrl+C) unwinds promptly.
+    - SIGBREAK (CTRL_BREAK_EVENT) unwinds, but only after the in-flight
+      time.sleep returns, because CPython wakes sleep for SIGINT only. With
+      POLL_SECONDS at 60 that is up to a minute, longer than a shutdown grace
+      window.
+    - SIGTERM is accepted by signal.signal and never delivered: os.kill with
+      SIGTERM on Windows is TerminateProcess. The registration is harmless and
+      correct on POSIX.
+
+    Every production stop path here — Task Scheduler End Task, ExecutionTimeLimit
+    expiry, taskkill /F, host shutdown — is TerminateProcess, which unwinds
+    nothing. So this does NOT explain the missing summaries on 2026-08-18/19/20,
+    and it is not what protects against them: uw_latency_verify._verify treating
+    an absent summary as a failure is.
     """
 
     def _raise(signum: int, _frame: FrameType | None) -> None:

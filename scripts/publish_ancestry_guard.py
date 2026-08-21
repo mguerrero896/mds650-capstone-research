@@ -81,6 +81,40 @@ def guard(
     return tip
 
 
+def guard_tags(mirror: Path, remote: str) -> int:
+    """Refuse if pushing --tags would move a published tag off its own lineage.
+
+    `git push --force --tags` updates every tag ref. With two disjoint
+    histories, a tag that exists on both sides is silently repointed at a commit
+    from a history the remote has never seen — and these tags are the project's
+    frozen-evidence anchors. A tag the remote does not have yet cannot destroy
+    anything, so only shared names are checked.
+    """
+    listing = _git(mirror, "ls-remote", "--tags", remote)
+    if listing.returncode != 0:
+        _refuse(f"cannot list tags on remote {remote}")
+    published = {}
+    for line in listing.stdout.splitlines():
+        sha, _, ref = line.partition("\t")
+        # Peeled entries (refs/tags/x^{}) name the commit an annotated tag wraps.
+        published[ref.removeprefix("refs/tags/").removesuffix("^{}")] = sha
+
+    checked = 0
+    for name, remote_sha in sorted(published.items()):
+        local = _git(mirror, "rev-parse", f"{name}^{{commit}}")
+        if local.returncode != 0:
+            continue  # not a tag this mirror would push
+        _git(mirror, "fetch", "--quiet", remote, f"refs/tags/{name}")
+        if _git(mirror, "merge-base", "--is-ancestor", remote_sha, local.stdout.strip()).returncode:
+            _refuse(
+                f"tag {name} would move from published {remote_sha[:12]} to "
+                f"{local.stdout.strip()[:12]}, which does not contain it. "
+                "--tags force-updates every tag ref; refusing the whole publish."
+            )
+        checked += 1
+    return checked
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--mirror", type=Path, required=True)
@@ -89,10 +123,11 @@ def main() -> None:
     parser.add_argument("--expect-remote", default=None)
     parser.add_argument("--expect-base", default=None)
     parser.add_argument(
-        "--dry-run",
+        "--check-tags",
         action="store_true",
-        help="validate only; this guard never pushes, the flag documents intent at call sites",
+        help="also validate every tag the remote already publishes (git push --tags)",
     )
+    # No --dry-run: this guard validates and never pushes, so every run is dry.
     arguments = parser.parse_args()
     tip = guard(
         arguments.mirror,
@@ -102,6 +137,9 @@ def main() -> None:
         expect_base=arguments.expect_base,
     )
     print(f"[publish-guard] {arguments.branch} at {tip[:12]} is contained; push may proceed")
+    if arguments.check_tags:
+        checked = guard_tags(arguments.mirror, arguments.remote)
+        print(f"[publish-guard] {checked} published tag(s) contained; --tags may proceed")
 
 
 if __name__ == "__main__":

@@ -167,10 +167,18 @@ def _verify(session: dt.date) -> int:
         failures.append("collector_summary.json has no parseable finished_utc")
     elif finished < deadline:
         failures.append(f"collector finished {_short_by(finished)}")
-    if summary is not None and summary.get("observed_records") != total:
-        failures.append(
-            f"summary claims {summary.get('observed_records')} records, tape holds {total}"
-        )
+    elif summary.get("termination") not in (None, "normal"):
+        # The collector records how it ended; a stop that was not a clean close
+        # cannot certify the session even when its finished_utc looks late enough.
+        failures.append(f"collector terminated as {summary['termination']}, not a normal close")
+    claimed = summary.get("observed_records") if summary is not None else None
+    if isinstance(claimed, int) and claimed > total:
+        # Deliberately not equality. The watchdog restarts a stalled collector
+        # (uw_latency_verify._watchdog), and a restarted run re-enters main() with
+        # its counters at zero while appending to the same tape, so its summary
+        # legitimately describes only part of the file. Claiming MORE than the
+        # tape holds is the case that cannot be legitimate.
+        failures.append(f"summary claims {claimed} records, tape holds only {total}")
     if last_beat is None:
         failures.append("heartbeat.json absent or unreadable")
     elif last_beat < deadline:

@@ -277,3 +277,33 @@ def test_collector_records_termination_mode() -> None:
     # The default must be the pessimistic one: anything that skips both
     # assignments was killed, and must not be recorded as a clean close.
     assert 'termination = "killed"' in source
+
+
+def test_watchdog_recovered_session_is_not_a_false_failure(tmp_path: Path) -> None:
+    """A restarted collector's summary describes only its own run.
+
+    _watchdog restarts a stalled collector via schtasks; the new process re-enters
+    main() with its counters at zero and appends to the same observations.jsonl.
+    Requiring summary.observed_records to equal the whole tape would turn every
+    successful recovery into a red session — and the -Daily trigger fix in this
+    same change is what makes recoveries happen again.
+    """
+    session_dir = _complete_session(tmp_path)
+    summary_path = session_dir / "collector_summary.json"
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    summary["observed_records"] = 90  # second run only; the tape holds 240
+    summary["cycles"] = 140
+    summary_path.write_text(json.dumps(summary, indent=1), encoding="utf-8")
+    verifier = _load_verifier(tmp_path)
+    assert verifier._verify(SESSION) == 0
+
+
+def test_non_normal_termination_fails(tmp_path: Path) -> None:
+    """A summary that says it was killed cannot certify the session."""
+    session_dir = _complete_session(tmp_path)
+    summary_path = session_dir / "collector_summary.json"
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    summary["termination"] = "killed"
+    summary_path.write_text(json.dumps(summary, indent=1), encoding="utf-8")
+    verifier = _load_verifier(tmp_path)
+    assert verifier._verify(SESSION) != 0
