@@ -1058,3 +1058,20 @@ Spec Kit consistency and preregistration gates pass.
     `mds650.rp2.run_manifest.normalised_digest` already uses, and verifies. The document's
     content was never edited, so the freeze itself held throughout; only its receipt was
     unusable.
+
+    Two further things surfaced while fixing the above and are recorded because each was a
+    real defect. The suppressions added for the two lines above were `type: ignore` comments
+    that one torch distribution's stubs require and another's report as unused, so the gate
+    fired by wheel rather than by content and CI failed on a tree that was clean locally.
+    They are removed rather than conditioned: the output layer is now held by name on the
+    model instead of reached through `head[-1]`, and the backward call goes through `Any`.
+    The three linear layers are constructed in the order the `Sequential` used to build them
+    because that order is the order they draw from the seeded generator, so naming one of
+    them left every fitted weight unchanged.
+
+    And the run was not reproducible. Two executions of identical code on the same GPU agreed
+    only to the ninth significant figure -- cuBLAS chooses a reduction order unless given a
+    fixed workspace -- which was enough to change `ext12_sha256`. An artifact whose digest
+    moves on re-run cannot be the evidence a frozen digest is for. `CUBLAS_WORKSPACE_CONFIG`
+    is set before torch is imported and `torch.use_deterministic_algorithms(True)` is enabled
+    with the seed; two runs now produce `51be6d2b9225fe9f...` both times.

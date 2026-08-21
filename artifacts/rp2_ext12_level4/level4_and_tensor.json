@@ -2,10 +2,10 @@
   "D": {
     "extension_1_level4": {
       "delta_log_scale_sequence_over_tabular": {
-        "ci_high": -0.003003075388031164,
-        "ci_low": -0.010673519906014351,
+        "ci_high": -0.003003076392142577,
+        "ci_low": -0.010673524518983407,
         "clusters": 156.0,
-        "delta_squared_error": -0.006813386296675898,
+        "delta_squared_error": -0.0068133875887557566,
         "p_value": 0.0009995002498750624
       },
       "delta_sequence_over_lightgbm": {
@@ -16,23 +16,23 @@
         "p_value": 0.0009995002498750624
       },
       "delta_sequence_over_tabular": {
-        "ci_high": -0.0013835323637823363,
-        "ci_low": -0.013918246409608566,
+        "ci_high": -0.0013835330865602372,
+        "ci_low": -0.01391824273280258,
         "clusters": 156.0,
-        "delta_qlike": -0.006642358766947197,
+        "delta_qlike": -0.0066423578388822655,
         "p_value": 0.0079960019990005
       },
       "device": "cuda",
       "epochs": 30,
       "log_scale_rmse": {
         "deepsets_sequence": 0.5082237633625037,
-        "mlp_tabular": 0.5014758292776136
+        "mlp_tabular": 0.5014758279893363
       },
       "mean_trades_per_origin": 47.86796188354492,
       "qlike_lightgbm_reference": 0.13463375186327192,
       "qlike_recalibrated": {
         "deepsets_sequence": 0.1550703378890298,
-        "mlp_tabular": 0.1484279791220826
+        "mlp_tabular": 0.14842798005014754
       },
       "sequence_length": 48
     },
@@ -543,7 +543,7 @@
     "train_share": 0.6
   },
   "device": "cuda",
-  "ext12_sha256": "57e995a2fe40d573d65746f5a456a3596027dc4c9c7f6d3ffe1b6b05a2dfe0b5",
+  "ext12_sha256": "51be6d2b9225fe9f596b631812fdc4e0008c952afbd35747620185a9c092de7a",
   "extension_inputs": "the tensor and sequence arms add inputs outside the registry; their resolved names are recorded per arm under information_sets",
   "extensions": [
     1,
@@ -697,7 +697,7 @@
     }
   },
   "gate_met_by": "Block 7 signal present + Block 8 tabular ladder fails to convert it",
-  "generated_at_utc": "2026-08-21T11:17:03.828118+00:00",
+  "generated_at_utc": "2026-08-21T11:28:16.335397+00:00",
   "gpu": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "label": "EXPLORATORY_MECHANISM_DISCOVERY",
   "panel_rows": 184632,

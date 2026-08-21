@@ -20,10 +20,18 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from collections.abc import Sequence
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
+
+#: cuBLAS picks a non-deterministic reduction order unless it is given a fixed workspace,
+#: and it reads this at CUDA initialisation, so it is set before torch is imported. Two runs
+#: of identical code differed in the tenth significant figure without it - small, but enough
+#: to move `ext12_sha256`, and an artifact whose digest changes on re-run cannot be the
+#: evidence a frozen digest is supposed to be.
+os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
 
 import numpy as np
 import numpy.typing as npt
@@ -87,11 +95,19 @@ class DeepSetsForecaster(nn.Module):
             nn.Linear(HIDDEN, HIDDEN), nn.GELU(),
         )
         pooled = 2 * HIDDEN if use_sequence else 0
-        self.head = nn.Sequential(
-            nn.Linear(tabular_features + pooled, HIDDEN), nn.GELU(),
-            nn.Linear(HIDDEN, HIDDEN), nn.GELU(),
-            nn.Linear(HIDDEN, 1),
-        )
+        # Held by name as well as by position. `_train` initialises this layer's bias at the
+        # training mean log variance, and reaching it through `head[-1]` made that line's
+        # type depend on how a given torch distribution's stubs annotate Sequential's
+        # __getitem__, which differs between the CUDA and CPU wheels.
+        #
+        # The three linear layers are constructed in the order the Sequential used to build
+        # them, because that order is the order they draw from the seeded generator. GELU
+        # holds no parameters and draws nothing, so naming the output layer here leaves the
+        # random stream, and therefore every fitted weight, exactly as it was.
+        first = nn.Linear(tabular_features + pooled, HIDDEN)
+        second = nn.Linear(HIDDEN, HIDDEN)
+        self.output = nn.Linear(HIDDEN, 1)
+        self.head = nn.Sequential(first, nn.GELU(), second, nn.GELU(), self.output)
 
     def forward(self, tabular: torch.Tensor, sequence: torch.Tensor,
                 mask: torch.Tensor) -> torch.Tensor:
@@ -157,8 +173,9 @@ def qlike_of_log_forecast(predicted: torch.Tensor, response: torch.Tensor) -> to
 
 
 def _train(
-    model: nn.Module, tabular: torch.Tensor, sequence: torch.Tensor, mask: torch.Tensor,
-    response: torch.Tensor, train_index: torch.Tensor, device: torch.device
+    model: DeepSetsForecaster, tabular: torch.Tensor, sequence: torch.Tensor,
+    mask: torch.Tensor, response: torch.Tensor, train_index: torch.Tensor,
+    device: torch.device
 ) -> None:
     # Start the output at the training mean of the log variance. A randomly initialised head
     # predicts near zero while the optimum sits near -11, and under QLIKE the descent term
@@ -168,9 +185,7 @@ def _train(
     # against a target range of [-13.97, -7.13] in its second epoch. Starting calibrated
     # removes the runaway without touching the objective the preregistration froze.
     with torch.no_grad():
-        output_layer = model.head[-1]  # type: ignore[index]
-        assert isinstance(output_layer, nn.Linear), "the head must end in a linear layer"
-        output_layer.bias.fill_(float(response[train_index].mean()))
+        model.output.bias.fill_(float(response[train_index].mean()))
     optimiser = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-4)
     schedule = torch.optim.lr_scheduler.CosineAnnealingLR(optimiser, T_max=EPOCHS)
     loss_fn = qlike_of_log_forecast
@@ -183,7 +198,7 @@ def _train(
             optimiser.zero_grad(set_to_none=True)
             predicted = model(tabular[batch], sequence[batch], mask[batch])
             loss: torch.Tensor = loss_fn(predicted, response[batch])
-            loss.backward()  # type: ignore[no-untyped-call]
+            cast(Any, loss).backward()
             nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             optimiser.step()
         schedule.step()
@@ -337,6 +352,11 @@ def run_role(
 
     # ---- Extension 1: DeepSets over the raw trade sequence ---------------------------
     torch.manual_seed(SEED)
+    # The same code and the same seed have to give the same artifact. Without this, two runs
+    # agreed only to the ninth significant figure and produced different `ext12_sha256`.
+    torch.use_deterministic_algorithms(True)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
     # `base_design` arrives from `fold_design` already imputed and z-scored on the training
     # fold, so it is fed to the networks as it is. A re-standardisation was added here on the
     # belief that the block was raw; measured, 43 of its 47 non-intercept columns already had
