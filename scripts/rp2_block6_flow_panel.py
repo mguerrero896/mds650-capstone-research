@@ -52,7 +52,7 @@ from mds650.rp2.option_clock import (
     time_to_expiry_years,
 )
 from mds650.rp2.panel import panel_paths
-from mds650.rp2.scorecard import LATENCY_BIN_EDGES as SCORECARD_LATENCY_BIN_EDGES
+from mds650.rp2.scorecard import DURATION_BIN_EDGES, duration_bins
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_block6_flow"
@@ -87,11 +87,6 @@ def counting_bounds(
     return low, max(visible, low)
 
 
-#: Shared with the scorecard, which adds these bins across every window of the run. Importing
-#: keeps one definition: bins that differ between producer and reader do not add.
-LATENCY_BIN_EDGES = SCORECARD_LATENCY_BIN_EDGES
-
-
 def counting_latency_bins(latency: FloatArray, low: int, high: int) -> npt.NDArray[np.int64]:
     """How many of this window's trades fall in each latency bin.
 
@@ -101,9 +96,8 @@ def counting_latency_bins(latency: FloatArray, low: int, high: int) -> npt.NDArr
     """
 
     if high <= low:
-        return np.zeros(len(LATENCY_BIN_EDGES) + 1, dtype=np.int64)
-    placed = np.searchsorted(LATENCY_BIN_EDGES, latency[low:high], side="right")
-    return np.bincount(placed, minlength=len(LATENCY_BIN_EDGES) + 1).astype(np.int64)
+        return duration_bins(np.empty(0, dtype=np.float64), DURATION_BIN_EDGES)
+    return duration_bins(latency[low:high], DURATION_BIN_EDGES)
 
 
 def counting_latency(latency: FloatArray, low: int, high: int) -> tuple[float, float]:

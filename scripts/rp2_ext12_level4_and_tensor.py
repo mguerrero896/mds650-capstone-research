@@ -20,9 +20,18 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from collections.abc import Sequence
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any, cast
+
+#: cuBLAS picks a non-deterministic reduction order unless it is given a fixed workspace,
+#: and it reads this at CUDA initialisation, so it is set before torch is imported. Two runs
+#: of identical code differed in the tenth significant figure without it - small, but enough
+#: to move `ext12_sha256`, and an artifact whose digest changes on re-run cannot be the
+#: evidence a frozen digest is supposed to be.
+os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
 
 import numpy as np
 import numpy.typing as npt
@@ -56,10 +65,12 @@ from mds650.rp2.panel import (
     describe_information_set,
     lift_mask,
     load_merged_panel,
+    panel_paths,
     session_rank,
     standardise,
 )
 from mds650.rp2.preprocessing import describe_preprocessor, fold_design
+from mds650.rp2.run_manifest import normalised_digest
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "rp2_ext12_level4"
@@ -86,11 +97,19 @@ class DeepSetsForecaster(nn.Module):
             nn.Linear(HIDDEN, HIDDEN), nn.GELU(),
         )
         pooled = 2 * HIDDEN if use_sequence else 0
-        self.head = nn.Sequential(
-            nn.Linear(tabular_features + pooled, HIDDEN), nn.GELU(),
-            nn.Linear(HIDDEN, HIDDEN), nn.GELU(),
-            nn.Linear(HIDDEN, 1),
-        )
+        # Held by name as well as by position. `_train` initialises this layer's bias at the
+        # training mean log variance, and reaching it through `head[-1]` made that line's
+        # type depend on how a given torch distribution's stubs annotate Sequential's
+        # __getitem__, which differs between the CUDA and CPU wheels.
+        #
+        # The three linear layers are constructed in the order the Sequential used to build
+        # them, because that order is the order they draw from the seeded generator. GELU
+        # holds no parameters and draws nothing, so naming the output layer here leaves the
+        # random stream, and therefore every fitted weight, exactly as it was.
+        first = nn.Linear(tabular_features + pooled, HIDDEN)
+        second = nn.Linear(HIDDEN, HIDDEN)
+        self.output = nn.Linear(HIDDEN, 1)
+        self.head = nn.Sequential(first, nn.GELU(), second, nn.GELU(), self.output)
 
     def forward(self, tabular: torch.Tensor, sequence: torch.Tensor,
                 mask: torch.Tensor) -> torch.Tensor:
@@ -100,20 +119,78 @@ class DeepSetsForecaster(nn.Module):
         encoded = self.encoder(sequence) * mask.unsqueeze(-1)
         counts = mask.sum(dim=1, keepdim=True).clamp(min=1.0)
         mean_pooled = encoded.sum(dim=1) / counts
+        # A session with no observable trades leaves every position padded, so the max
+        # is the sentinel itself. nan_to_num does not repair it because -1e9 is finite,
+        # and it reached the head as a feature of magnitude 1e9 on 448 of 2,975,222
+        # passes. Fall back to zeros there, which is what the mean pool already yields
+        # because it divides by a count clamped to one.
+        observed = mask.sum(dim=1, keepdim=True) > 0
         max_pooled = encoded.masked_fill(mask.unsqueeze(-1) == 0, -1e9).max(dim=1).values
-        max_pooled = torch.nan_to_num(max_pooled, neginf=0.0)
+        max_pooled = torch.where(observed, max_pooled, torch.zeros_like(max_pooled))
         combined = torch.cat([tabular, mean_pooled, max_pooled], dim=1)
         out: torch.Tensor = self.head(combined).squeeze(-1)
         return out
 
 
+def sequence_normalisation(
+    sequence_block: npt.NDArray[np.floating[Any]], train: npt.NDArray[np.bool_]
+) -> tuple[FloatArray, FloatArray]:
+    """Centre and spread for the trade-set channels, from the training fold only.
+
+    Padded positions carry a zero size in channel 2 and are excluded from both statistics:
+    including them pulls the location toward zero and shrinks the scale by however much
+    padding a session happens to carry, which is a property of the session's activity
+    rather than of the market.
+    """
+
+    if sequence_block.shape[0] != train.shape[0]:
+        raise ValueError("RP2_LEVEL4_SEQUENCE_TRAIN_SHAPE")
+    if not train.any():
+        raise ValueError("RP2_LEVEL4_SEQUENCE_EMPTY_TRAIN")
+    flat = sequence_block[train].reshape(-1, sequence_block.shape[-1])
+    observed = flat[flat[:, 2] != 0.0]
+    if observed.size == 0:
+        raise ValueError("RP2_LEVEL4_SEQUENCE_ALL_PADDED")
+    # The tape arrives as float32. A mean over tens of millions of them accumulates
+    # rounding that a float64 accumulator does not, and these two constants set the scale
+    # every downstream weight is learned against.
+    wide = observed.astype(np.float64)
+    centre = wide.mean(axis=0)
+    spread = np.where(wide.std(axis=0) > 0, wide.std(axis=0), 1.0)
+    return centre, spread
+
+
+def qlike_of_log_forecast(predicted: torch.Tensor, response: torch.Tensor) -> torch.Tensor:
+    """QLIKE for a network that predicts a log variance, against a log realised variance.
+
+    The preregistration freezes the loss as QLIKE, the one the ladder decides on, and the
+    `lightgbm_qlike` reference is fitted to it. Training these arms on the mean squared
+    error of the log response instead left the comparison confounding the architecture with
+    the objective. With ``predicted`` the log forecast r and ``response`` the log target,
+    QLIKE(y, exp(r)) = r + y*exp(-r), which is what this returns.
+    """
+
+    target = torch.exp(response)
+    return torch.mean(predicted + target * torch.exp(-predicted))
+
+
 def _train(
-    model: nn.Module, tabular: torch.Tensor, sequence: torch.Tensor, mask: torch.Tensor,
-    response: torch.Tensor, train_index: torch.Tensor, device: torch.device
+    model: DeepSetsForecaster, tabular: torch.Tensor, sequence: torch.Tensor,
+    mask: torch.Tensor, response: torch.Tensor, train_index: torch.Tensor,
+    device: torch.device
 ) -> None:
+    # Start the output at the training mean of the log variance. A randomly initialised head
+    # predicts near zero while the optimum sits near -11, and under QLIKE the descent term
+    # 1 - y*exp(-r) stays close to 1 over that whole distance while the corrective term past
+    # the optimum grows exponentially. Gradient clipping caps both at the same norm, so the
+    # descent is paid in full and the correction is not: measured, the control reached -100.9
+    # against a target range of [-13.97, -7.13] in its second epoch. Starting calibrated
+    # removes the runaway without touching the objective the preregistration froze.
+    with torch.no_grad():
+        model.output.bias.fill_(float(response[train_index].mean()))
     optimiser = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-4)
     schedule = torch.optim.lr_scheduler.CosineAnnealingLR(optimiser, T_max=EPOCHS)
-    loss_fn = nn.MSELoss()
+    loss_fn = qlike_of_log_forecast
     generator = torch.Generator(device="cpu").manual_seed(SEED)
     model.train()
     for _epoch in range(EPOCHS):
@@ -122,8 +199,8 @@ def _train(
             batch = order[start : start + BATCH].to(device)
             optimiser.zero_grad(set_to_none=True)
             predicted = model(tabular[batch], sequence[batch], mask[batch])
-            loss = loss_fn(predicted, response[batch])
-            loss.backward()
+            loss: torch.Tensor = loss_fn(predicted, response[batch])
+            cast(Any, loss).backward()
             nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             optimiser.step()
         schedule.step()
@@ -142,6 +219,26 @@ def _predict(
                 .float().cpu().numpy()
             )
     return np.concatenate(out).astype(np.float64)
+
+
+def _contrast_squared_error(
+    base: FloatArray, expanded: FloatArray, target: FloatArray,
+    sessions: npt.NDArray[np.str_]
+) -> dict[str, float]:
+    """The paired session contrast on squared error, for the scale the model minimised."""
+
+    difference = (target - base) ** 2 - (target - expanded) ** 2
+    boot = paired_day_bootstrap(
+        pl.DataFrame({"session_date": sessions, "loss_difference": difference}),
+        repetitions=DEFAULT_BOOTSTRAP, seed=DEFAULT_SEED,
+    )
+    return {
+        "delta_squared_error": float(boot["estimate"]),
+        "ci_low": float(boot["ci_low"]),
+        "ci_high": float(boot["ci_high"]),
+        "p_value": float(boot["p_value_two_sided"]),
+        "clusters": float(boot["clusters"]),
+    }
 
 
 def _contrast(
@@ -240,8 +337,15 @@ def run_role(
         lift_mask(keep, test),
     )
     forecasts = {
-        "tabular": LADDER["lightgbm"](base_design, target, train),
-        "tabular+tensor": LADDER["lightgbm"](standardise(with_tensor, train), target, train),
+        # `lightgbm_qlike`, the family the preregistration freezes as the second reference
+        # and the one in PRIMARY_MODELS. This read `LADDER["lightgbm"]`, the log-MSE tree,
+        # so the level published as `qlike_lightgbm_reference` was another family's - in
+        # the same change whose argument was that the arms must be fitted to the frozen
+        # QLIKE objective, while the reference they are scored against was not.
+        "tabular": LADDER["lightgbm_qlike"](base_design, target, train),
+        "tabular+tensor": LADDER["lightgbm_qlike"](
+            standardise(with_tensor, train), target, train
+        ),
     }
     results["extension_2_tensor"] = {
         "tensor_columns": int(tensor_block.shape[1]),
@@ -257,11 +361,20 @@ def run_role(
 
     # ---- Extension 1: DeepSets over the raw trade sequence ---------------------------
     torch.manual_seed(SEED)
-    standardised = base_design
+    # The same code and the same seed have to give the same artifact. Without this, two runs
+    # agreed only to the ninth significant figure and produced different `ext12_sha256`.
+    torch.use_deterministic_algorithms(True)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    # `base_design` arrives from `fold_design` already imputed and z-scored on the training
+    # fold, so it is fed to the networks as it is. A re-standardisation was added here on the
+    # belief that the block was raw; measured, 43 of its 47 non-intercept columns already had
+    # a training standard deviation of exactly 1, and the call changed only the three
+    # missingness indicators - turning clean 0/1 flags into z-scores reaching 14.18. The
+    # sequence block is not a registry design, so it carries its own normalisation, taken
+    # from the training fold for the same reason.
     sequence_block = sequence[index]
-    flat = sequence_block.reshape(-1, sequence_block.shape[-1])
-    centre = flat[flat[:, 2] != 0.0].mean(axis=0)
-    spread = np.where(flat[flat[:, 2] != 0.0].std(axis=0) > 0, flat.std(axis=0), 1.0)
+    centre, spread = sequence_normalisation(sequence_block, train)
     normalised = (sequence_block - centre) / spread
     information_sets["B0+B1+B2+sequence"] = describe_information_set(
         ("B0", "B1", "B2", "sequence"),
@@ -270,7 +383,7 @@ def run_role(
         lift_mask(keep, test),
     )
 
-    tabular_t = torch.tensor(standardised, dtype=torch.float32, device=device)
+    tabular_t = torch.tensor(base_design, dtype=torch.float32, device=device)
     sequence_t = torch.tensor(normalised, dtype=torch.float32, device=device)
     mask_t = torch.tensor(
         (sequence_block[:, :, 2] != 0.0).astype(np.float32), dtype=torch.float32, device=device
@@ -280,6 +393,7 @@ def run_role(
 
     neural: dict[str, FloatArray] = {}
     log_rmse: dict[str, float] = {}
+    fitted_by_arm: dict[str, FloatArray] = {}
     for name, use_sequence in (("mlp_tabular", False), ("deepsets_sequence", True)):
         torch.manual_seed(SEED)
         model = DeepSetsForecaster(
@@ -287,6 +401,7 @@ def run_role(
         ).to(device)
         _train(model, tabular_t, sequence_t, mask_t, response_t, train_index, device)
         fitted = _predict(model, tabular_t, sequence_t, mask_t)
+        fitted_by_arm[name] = fitted
         log_rmse[name] = float(np.sqrt(np.mean((response[test] - fitted[test]) ** 2)))
         # Lognormal smearing amplifies a poorly fit network's level error into an
         # enormous QLIKE, which makes the two arms incomparable. Recalibrate BOTH on
@@ -313,6 +428,23 @@ def run_role(
             neural["mlp_tabular"][test], neural["deepsets_sequence"][test],
             target[test], labels[test],
         ),
+        # The second reference the preregistration requires. The run of 2026-08-18 reported
+        # +0.634 at p=0.004 against the control alone while scoring QLIKE 0.1496 against the
+        # ladder's 0.1374 - it lost to the model already in production and the delta was
+        # significant anyway, because the control was five times worse than a tree on the
+        # same features. One reference cannot tell "the sequence helps" from "our control is
+        # bad".
+        "delta_sequence_over_lightgbm": _contrast(
+            forecasts["tabular"][test], neural["deepsets_sequence"][test],
+            target[test], labels[test],
+        ),
+        # The same contrast on the scale the networks were fitted on. A QLIKE delta that
+        # disagrees in magnitude with this one is reporting the exp() transform's
+        # sensitivity to level error, not predictive skill.
+        "delta_log_scale_sequence_over_tabular": _contrast_squared_error(
+            fitted_by_arm["mlp_tabular"][test], fitted_by_arm["deepsets_sequence"][test],
+            response[test], labels[test],
+        ),
         "qlike_lightgbm_reference": float(
             np.mean(qlike_losses(target[test], forecasts["tabular"][test]))
         ),
@@ -323,9 +455,25 @@ def run_role(
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--inputs", type=Path, default=INPUTS)
+    parser.add_argument(
+        "--panel-root",
+        type=Path,
+        default=ROOT / "artifacts",
+        help="directory holding rp2_blockN_* panels; a run directory reads that run",
+    )
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--train-share", type=float, default=0.6)
     args = parser.parse_args(argv)
+    global B0_PANEL, B1_PANEL, B2_PANEL, TARGET_PANEL  # noqa: PLW0603
+    for _name, _sub in (
+        ("B0_PANEL", "rp2_block4_b0/b0_panel.parquet"),
+        ("B1_PANEL", "rp2_block5_surface/b1_surface_panel.parquet"),
+        ("B2_PANEL", "rp2_block6_flow/b2_flow_panel.parquet"),
+        ("TARGET_PANEL", "rp2_block3_target/target_panel.parquet"),
+    ):
+        if _name in globals():
+            globals()[_name] = args.panel_root / _sub
+
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     tensor = np.load(args.inputs / "tensor.npy")
@@ -350,8 +498,22 @@ def main(argv: Sequence[str] | None = None) -> int:
         "gpu": torch.cuda.get_device_name(0) if torch.cuda.is_available() else None,
         "seed": SEED,
         "panel_rows": panel.height,
+        # `--panel-root` makes the panel set a free parameter of this producer, and the
+        # document recorded only a row count. The re-measurement of 2026-08-21 ran against
+        # the panels from BEFORE the bar repair - parkinson_30 exactly zero on 22,967 of
+        # 152,954 development rows - and nothing in the artifact said so. A digest per
+        # panel lets a reader tell a pre-repair measurement from a post-repair one.
+        "panel_root": str(args.panel_root),
+        "panel_digests": {
+            name: normalised_digest(path) if path.is_file() else None
+            for name, path in sorted(panel_paths(args.panel_root).items())
+        },
     }
-    for role in ("D", "V"):
+    # Development only, per the preregistration: V holds 32 evaluated sessions with an
+    # MDE of 0.0027 to 0.0177 against effects near 0.004, and it is the only untouched
+    # comparison left. Spending it on an exploratory family would leave nothing to
+    # confirm whatever this finds.
+    for role in ("D",):
         document[role] = run_role(
             panel, tensor, sequence, role=role, train_share=args.train_share, device=device
         )
@@ -362,7 +524,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     (args.output_dir / "level4_and_tensor.json").write_text(
         json.dumps(document, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
-    for role in ("D", "V"):
+    # Development only, per the preregistration: V holds 32 evaluated sessions with an
+    # MDE of 0.0027 to 0.0177 against effects near 0.004, and it is the only untouched
+    # comparison left. Spending it on an exploratory family would leave nothing to
+    # confirm whatever this finds.
+    for role in ("D",):
         block = document[role]
         assert isinstance(block, dict)
         print(f"=== role {role}: {block.get('status')} rows={block.get('rows')} ===")

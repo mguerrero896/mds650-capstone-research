@@ -246,7 +246,13 @@ def test_block_three_and_block_four_read_one_list_of_bar_stores() -> None:
     spec.loader.exec_module(module)
 
     assert module.BAR_SOURCES is BAR_SOURCES
-    assert len(BAR_SOURCES) == 6
+    # Both roles must be represented, and every store must name a distinct path. The count
+    # itself is not the invariant: it went from six to five when `gate7_c6` and
+    # `gate8_c4c`, which carried no high, low or volume, were replaced by the re-acquired
+    # `ohlcv_repair` covering the same 360 asset-sessions with the same closes.
+    assert {role for _, role, _ in BAR_SOURCES} == {"D", "V"}
+    assert len({path for _, _, path in BAR_SOURCES}) == len(BAR_SOURCES)
+    assert len({name for name, _, _ in BAR_SOURCES}) == len(BAR_SOURCES)
 
 
 def test_the_latency_tail_is_a_quantile_of_trades_not_of_windows() -> None:
@@ -258,28 +264,28 @@ def test_the_latency_tail_is_a_quantile_of_trades_not_of_windows() -> None:
     the latencies it saw, the histograms add, and the quantile is read off the total.
     """
 
-    from mds650.rp2.scorecard import LATENCY_BIN_EDGES, latency_quantile
+    from mds650.rp2.scorecard import DURATION_BIN_EDGES, duration_quantile
 
     # One window of ninety-nine fast trades and one window of a single slow trade. A median
     # of per-window tails calls this slow; the population's 95th percentile is fast.
-    fast = np.zeros(len(LATENCY_BIN_EDGES) + 1, dtype=np.int64)
-    fast[np.searchsorted(LATENCY_BIN_EDGES, 0.5, side="right")] = 99
+    fast = np.zeros(len(DURATION_BIN_EDGES) + 1, dtype=np.int64)
+    fast[np.searchsorted(DURATION_BIN_EDGES, 0.5, side="right")] = 99
     slow = np.zeros_like(fast)
-    slow[np.searchsorted(LATENCY_BIN_EDGES, 600.0, side="right")] = 1
+    slow[np.searchsorted(DURATION_BIN_EDGES, 600.0, side="right")] = 1
 
-    assert latency_quantile(fast + slow, 0.95) == pytest.approx(0.5, rel=0.5)
+    assert duration_quantile(fast + slow, 0.95) == pytest.approx(0.5, rel=0.5)
     # And the tail does find the slow trades once there are enough of them to be the tail.
     many_slow = np.zeros_like(fast)
-    many_slow[np.searchsorted(LATENCY_BIN_EDGES, 600.0, side="right")] = 20
-    assert latency_quantile(fast + many_slow, 0.95) > 100.0
-    assert latency_quantile(np.zeros_like(fast), 0.95) == 0.0
+    many_slow[np.searchsorted(DURATION_BIN_EDGES, 600.0, side="right")] = 20
+    assert duration_quantile(fast + many_slow, 0.95) > 100.0
+    assert duration_quantile(np.zeros_like(fast), 0.95) == 0.0
 
 
 def test_a_tail_of_zero_beside_counted_trades_is_a_missing_measurement() -> None:
     """Zero is a legitimate latency and a legitimate way for a histogram to be absent.
 
     A panel written by a producer that does not emit latency bins yields an empty histogram,
-    and `latency_quantile` reports 0.0 for it — a finite float that `assert_scorecard_complete`
+    and `duration_quantile` reports 0.0 for it — a finite float that `assert_scorecard_complete`
     accepts. That is exactly how a run built by the previous Block 6 would have published an
     unmeasured tail as a measured one, so the pairing is checked instead: trades were counted
     and no latency was binned.
@@ -311,20 +317,20 @@ def test_a_panel_without_the_latency_bins_is_refused_rather_than_read_as_zero(
 
     import polars as pl
 
-    from mds650.rp2.scorecard import LATENCY_BIN_EDGES, latency_histogram
+    from mds650.rp2.scorecard import DURATION_BIN_EDGES, duration_histogram
 
     panel = tmp_path / "b2.parquet"
     complete = {
-        f"b2_latency_bin_{index}": [0.0] for index in range(len(LATENCY_BIN_EDGES) + 1)
+        f"b2_latency_bin_{index}": [0.0] for index in range(len(DURATION_BIN_EDGES) + 1)
     }
     pl.DataFrame(complete).write_parquet(panel)
-    assert latency_histogram(panel, "b2_latency_bin_").sum() == 0
+    assert duration_histogram(panel, "b2_latency_bin_").sum() == 0
 
     truncated = {k: v for k, v in complete.items() if k != "b2_latency_bin_7"}
     pl.DataFrame(truncated).write_parquet(panel)
-    with pytest.raises(ValueError, match="RP2_SCORECARD_LATENCY_BINS_INCOMPLETE"):
-        latency_histogram(panel, "b2_latency_bin_")
+    with pytest.raises(ValueError, match="RP2_SCORECARD_HISTOGRAM_BINS_INCOMPLETE"):
+        duration_histogram(panel, "b2_latency_bin_")
 
     pl.DataFrame({"b2_counting_trades": [1.0]}).write_parquet(panel)
-    with pytest.raises(ValueError, match="RP2_SCORECARD_LATENCY_BINS_INCOMPLETE"):
-        latency_histogram(panel, "b2_latency_bin_")
+    with pytest.raises(ValueError, match="RP2_SCORECARD_HISTOGRAM_BINS_INCOMPLETE"):
+        duration_histogram(panel, "b2_latency_bin_")

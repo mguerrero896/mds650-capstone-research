@@ -189,42 +189,104 @@ class PooledIntercepts:
     grand_mean: float
     between_variance: float
     offsets: dict[int, float]
+    #: The sampling variance of each group's mean, with the SESSION as the unit. Published
+    #: so a reader can see the term tau^2 is measured against rather than infer it.
+    sampling_variance: dict[int, float]
 
     def apply(self, groups: npt.NDArray[np.int64]) -> FloatArray:
         return np.array([self.offsets.get(int(g), 0.0) for g in groups], dtype=np.float64)
 
 
+def session_weighted_level(losses: FloatArray, sessions: npt.NDArray[np.int64]) -> float:
+    """Mean loss with the session as the unit, matching the contrasts beside it.
+
+    The contrasts aggregate to the session first, because origins five minutes apart share
+    overlapping thirty-minute targets: a busy session would otherwise outweigh a quiet one
+    and an early close would count for less than a full day. The published LEVELS averaged
+    every evaluated row instead, so `level(base) - level(expanded)` did not reproduce the
+    published delta - by 2.2 % for gamma_glm and 2.0 % for ridge_log on the RP2-v3
+    development panel. Two numbers in one record that do not describe the same quantity are
+    worse than either alone.
+    """
+
+    if losses.shape != sessions.shape:
+        raise ValueError("RP2_LADDER_LEVEL_SHAPE_MISMATCH")
+    finite = np.isfinite(losses)
+    if not finite.any():
+        return float("nan")
+    values, labels = losses[finite], sessions[finite]
+    means = np.array([values[labels == label].mean() for label in np.unique(labels)])
+    return float(means.mean())
+
+
 def partial_pooling(
-    residuals: FloatArray, groups: npt.NDArray[np.int64], train: npt.NDArray[np.bool_]
+    residuals: FloatArray,
+    groups: npt.NDArray[np.int64],
+    train: npt.NDArray[np.bool_],
+    *,
+    sessions: npt.NDArray[np.int64],
 ) -> PooledIntercepts:
     """Shrink per-group mean residuals toward zero by their own signal-to-noise ratio.
 
     ``theta_g ~ N(mu, tau^2)`` estimated by moments: the shrinkage weight is
-    ``tau^2 / (tau^2 + sigma^2 / n_g)``, which is total pooling when groups are
-    indistinguishable and no pooling when they are sharply different.  This is the
-    level-3 model the program asks for, without a sampler.
+    ``tau^2 / (tau^2 + v_g)``, where ``v_g`` is the sampling variance of group g's mean.
+    Total pooling when groups are indistinguishable, none when they are sharply different.
+    This is the level-3 model the program asks for, without a sampler.
+
+    ``v_g`` is measured with the SESSION as the unit. It was ``sigma^2 / n_g`` with ``n_g``
+    the number of ORIGINS in the group - 15,270 per asset in the published fit - which is
+    the sampling variance only if residuals inside a group are independent. They are not:
+    origins are five minutes apart and share overlapping thirty-minute targets, which is
+    why `aggregate_by_session`, `_contrast` and `session_weighted_level` all refuse to
+    treat them as the unit. On the published development fit the origin-based term was
+    1.4473e-5 against a session-clustered 8.5937e-5, 5.9 times smaller, so tau^2 came out
+    inflated and the intercepts were shrunk too little: weight 0.969 against 0.817.
     """
 
     if residuals.shape != groups.shape or residuals.shape != train.shape:
         raise ValueError("RP2_POOLING_SHAPE_MISMATCH")
+    if sessions.shape != residuals.shape:
+        raise ValueError("RP2_POOLING_SESSION_SHAPE_MISMATCH")
     usable = train & np.isfinite(residuals)
     if not usable.any():
-        return PooledIntercepts(grand_mean=0.0, between_variance=0.0, offsets={})
+        return PooledIntercepts(
+            grand_mean=0.0, between_variance=0.0, offsets={}, sampling_variance={}
+        )
     grand = float(np.mean(residuals[usable]))
-    within = float(np.var(residuals[usable]))
     means: dict[int, float] = {}
-    counts: dict[int, int] = {}
+    sampling: dict[int, float] = {}
     for group in np.unique(groups[usable]):
         mask = usable & (groups == group)
-        means[int(group)] = float(np.mean(residuals[mask]))
-        counts[int(group)] = int(mask.sum())
-    spread = float(np.var(list(means.values()))) if len(means) > 1 else 0.0
-    between = max(spread - within / max(np.mean(list(counts.values())), 1.0), 0.0)
+        block = residuals[mask]
+        means[int(group)] = float(np.mean(block))
+        # One value per session, then the variance of those over their own count. A group
+        # observed on many origins of few sessions has the precision of the few sessions.
+        labels = sessions[mask]
+        per_session = np.array(
+            [block[labels == label].mean() for label in np.unique(labels)], dtype=np.float64
+        )
+        sampling[int(group)] = (
+            float(np.var(per_session, ddof=1)) / per_session.size if per_session.size > 1 else 0.0
+        )
+    # The sample variance of G group means, not the population variance of them. With the
+    # six assets this programme runs, `np.var`'s default divisor of G understates the
+    # spread by a sixth, and tau^2 is the numerator of the shrinkage weight: a smaller tau
+    # pulls every per-asset intercept harder toward the grand mean than the data supports.
+    # The subtraction below floors at zero, so an understated spread can collapse the term
+    # entirely and turn partial pooling into total pooling without saying so.
+    spread = float(np.var(list(means.values()), ddof=1)) if len(means) > 1 else 0.0
+    # E[Var(m_g | theta_g)] over the groups, each measured on its own sessions.
+    between = max(spread - float(np.mean(list(sampling.values()))), 0.0) if sampling else 0.0
     offsets: dict[int, float] = {}
     for group, mean in means.items():
-        weight = between / (between + within / max(counts[group], 1)) if between > 0.0 else 0.0
+        weight = between / (between + sampling[group]) if between > 0.0 else 0.0
         offsets[group] = weight * (mean - grand)
-    return PooledIntercepts(grand_mean=grand, between_variance=between, offsets=offsets)
+    return PooledIntercepts(
+        grand_mean=grand,
+        between_variance=between,
+        offsets=offsets,
+        sampling_variance=sampling,
+    )
 
 
 #: Every model the ladder runs, keyed by name.

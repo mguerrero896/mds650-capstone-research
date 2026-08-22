@@ -880,3 +880,328 @@ Spec Kit consistency and preregistration gates pass.
     sample was widened, nothing was re-fitted, and the artifacts are exactly the ones that
     existed before it. It records which of two written statements governs, and
     `configs/rp2_v3_study_window.json` is where publication reads it.
+
+85. **The sequence arm's apparent deficit was a padding sentinel, not a finding (2026-08-21)** —
+    the DeepSets encoder pools its trade set two ways, mean and max. The max pool drops padded
+    positions by filling them with `-1e9` before taking the maximum, and a following
+    `nan_to_num(neginf=0.0)` was meant to repair the case where nothing survives. It never
+    fired, because `-1e9` is finite. On a session with **zero** observable trades every position
+    is padding, the maximum is the sentinel itself, and it reached the head as a feature of
+    magnitude 1e9. Measured on the development panel: **448 of 2,975,222 forward passes**. The
+    first training epoch recorded MSE **1.7 × 10¹⁴** against the tabular control's 43.5, and by
+    epoch 30 both arms fitted the training period identically (0.206) while the sequence arm
+    generalised at twice the error — 1.103 log-scale RMSE against 0.560 — because the corrupt
+    rows are in the test period too. Two independent consistency checks had been failing and
+    were not read as such: near-identical architectures should not differ twofold in fitted-scale
+    RMSE, and a 61-second run for two networks over 152,954 rows was reported as fast rather
+    than as fast *and* unexplained. The programme owner raised the speed as suspicious; the
+    defect was found by instrumenting the loss trajectory rather than by re-reading the output.
+    Corrected by pooling an unobserved trade set to zeros, which is what the mean pool already
+    yields because it divides by a count clamped to one. Re-measured under the same
+    preregistration — same seed, epochs, control, split and loss — the arm moves from
+    ΔQLIKE −0.05747 to **−0.00469** with a 95 % interval of [−0.01967, +0.00729] at p 0.6017,
+    and the fitted-scale RMSEs become comparable (0.582 against 0.560). **The preregistered
+    conclusion does not change and the direction of the correction was not toward a favourable
+    sign**: the sequence still fails both references — indistinguishable from its own control,
+    and beaten by the LightGBM tabular ladder already in production by ΔQLIKE −0.03553
+    [−0.07755, −0.01184] at p 0.0010. What changed is that 92 % of the reported effect was an
+    artifact of 448 rows, and it is recorded here because a published magnitude was wrong even
+    though the verdict it supported was not. Guarded by
+    `tests/unit/test_rp2_level4_pooling.py`, which fails against the sentinel.
+
+    **A second defect was reported here and did not exist. Withdrawn.** The entry claimed the
+    variable feeding the tabular block to both neural arms was named `standardised` and held
+    a raw design spanning standard deviations from 0 to 95.28. Those statistics are real but
+    they belong to `build_design`, the raw constructor; the script does not use it. It uses
+    `fold_design`, whose `transform_features` imputes and z-scores every feature on the
+    training fold, and a comment six lines above the call already said so. Measured on the
+    design the script actually builds: **43 of its 47 non-intercept columns already had a
+    training standard deviation of exactly 1**, and the added `standardise` call changed only
+    three columns — the missingness indicators — turning clean 0/1 flags into z-scores
+    reaching 14.18. It was not a correction and the before/after movement attributed to it
+    was that unintended rescaling. The call is removed. The finding was raised in review; the
+    error was measuring one function and reasoning about another.
+
+86. **Two development bar stores never carried a range or a volume, and the grid invented
+    both (2026-08-21)** — `data/fmp/gate7/underlying_1min_c6.parquet` and
+    `data/fmp/gate8_c4c/underlying_1min_c4c.parquet` hold only `(asset, bar_start_utc,
+    close)`. `load_bar_sources` concatenates the six stores with `how="diagonal"`, so those
+    rows arrive carrying the full schema with nulls, and `build_session_grid` repaired every
+    null unconditionally: `high` and `low` from the close, `volume` from zero. That is the
+    right treatment for a minute in which nothing traded and the wrong one for a minute that
+    traded and whose range was never recorded. The docstring three lines above reasons
+    explicitly about "a store without the column" for `open` and deliberately leaves it NaN;
+    the identical case was not handled for the other three.
+
+    Measured on the panel: `parkinson_30`, `volume_30` and `dollar_volume_30` are exactly
+    zero on **22,967 of 152,954 development origins and on 0 of 31,678 validation origins**,
+    because both deficient stores are development-only. All three are declared `log` in the
+    feature registry, so zero became `log(1e-12) = -27.631`; being finite it recorded no
+    missing indicator and the fold-local imputation never fired, which is why the fabrication
+    was indistinguishable from a measurement. The published ladder carried the evidence in
+    its own standardisation scales: `dollar_volume_30` 20.762 in development against 0.692 in
+    validation, `volume_30` 18.349 against 0.878, `parkinson_30` 5.749 against 0.924, where
+    no honest feature differs between roles by as much as a factor of two.
+
+    **Repaired by acquiring the data rather than by imputing around its absence.** The
+    provider still serves those sessions with full OHLCV. Re-acquired over the same 360
+    asset-sessions: 138,239 bars against 138,239, no bar missing, no bar added, and every
+    close identical to the byte, so the closes every earlier result rests on are unchanged.
+    Of those minutes **0.07 % genuinely had no volume and 0.02 % genuinely had no range**,
+    against the 100 % the fabrication asserted. `BAR_SOURCES` now names one
+    `ohlcv_repair` store in place of the two, and `build_session_grid` repairs only minutes
+    whose close is absent, which is the only case where a flat range and a zero volume are
+    the truth.
+
+    **What it changes, measured.** With a baseline built on real range and volume, B0 itself
+    improves and the development B1 increment shrinks by about two fifths, while validation
+    does not move at all — there were no deficient stores there, which is the control:
+
+    | family | QLIKE B0 before / after | ΔB1 in D before / after | ΔB1 in V |
+    | --- | ---: | ---: | ---: |
+    | `gamma_glm` | 0.14837 / 0.13921 | +0.00408 / **+0.00234** | −0.00111, unchanged |
+    | `ridge_log` | 0.14901 / 0.14000 | +0.00424 / **+0.00250** | −0.00084, unchanged |
+    | `lightgbm_qlike` | 0.13893 / 0.13690 | +0.00381 / **+0.00314** | +0.00092, unchanged |
+
+    B1 and B2 are unaffected: neither producer reads `high`, `low` or `volume`, and block 5
+    takes only `close` from the grid, so the corrected B0 composes with the published B1 and
+    B2 exactly as a full rebuild would.
+
+    **The section 21 verdict's one refutation does not survive this.** It read: "`ridge_log`
+    refutes. Validation was powered to see a development-sized effect and did not." With the
+    corrected baseline the development effect is +0.00250 against a validation MDE of
+    0.00268 — *below* it. Validation would need about 37 sessions and has 32. All three
+    families are now underpowered rather than one refuting, which also removes one of the two
+    grounds the verdict gave for excluding Result D; the other, `gamma_glm`'s validation
+    ΔB2\|B1 interval excluding zero, rests on an interval whose coverage measures 0.784
+    against a nominal 0.95. **The verdict is not rewritten here.** Restating it requires a
+    full pipeline rebuild and a republication, which is a decision for the programme owner.
+    Guarded by `tests/unit/test_rp2_bars_missing_columns.py`, and by the corrected
+    `test_a_source_without_a_range_reports_it_as_unknown`, which previously asserted the
+    fabrication as a requirement.
+
+87. **Three more statistics were pooled in ways that are not the statistic (2026-08-21)** —
+    the latency tail was corrected once and the identical mistake was left standing beside
+    it, which is the failure this entry exists to stop repeating.
+
+    - `b1_p95_quote_age_s` and `b1_median_quote_age_s` were the **median across origins** of
+      each origin's own 95th percentile and own median. Quantiles do not merge by averaging,
+      and an origin holding four contracts weighed as much as one holding two thousand. The
+      95th percentile is cited in the verdict against an 1800-second cutoff, so the number
+      had to be the real one. Block 5 now emits `b1_quote_age_bin_*` and the scorecard reads
+      the quantile off the summed bins, through the same machinery the flow latency uses:
+      one `duration_bins` function now serves all three producers, replacing the private copy
+      block 6 carried. The bins for quote age are uniform at 25 seconds rather than the log
+      spacing latency uses, because the value is bounded by the cutoff and is compared
+      against it: a log bin near the tail spans 1477 to 1873 seconds and straddles the
+      threshold the number is judged against.
+    - `b2_multileg_share` was an unweighted mean of per-origin premium shares whose
+      denominators differ by a factor of fourteen between the median origin and the 99th
+      percentile. The pooled share is 0.236861 where the published figure was 0.231077.
+    - The level-4 sequence encoder took its centre and spread from **every** row while the
+      tabular block beside it used the training fold only, and a comment above asserted that
+      both used the training fold. Corrected; the arm moves from ΔQLIKE −0.00469 to −0.00372
+      at p 0.6477 and remains null.
+
+    Guarded by `tests/unit/test_rp2_scorecard_pooling.py` and the normalisation tests in
+    `tests/unit/test_rp2_level4_pooling.py`.
+
+
+88. **The level-4 arms were fitted to a loss the preregistration did not freeze (2026-08-21)**
+    — `docs/rp2_v3/LEVEL4_PREREGISTRATION.md` freezes `Loss | QLIKE, the same the ladder
+    decides on`. `_train` minimised `nn.MSELoss()` against the log response instead, so the
+    committed arms were fitted under log-MSE and scored under QLIKE, and the `lightgbm_qlike`
+    reference they are measured against *is* fitted to QLIKE. The second reference therefore
+    confounded the architecture with the objective, and the artifact could not honestly be
+    described as a run under this preregistration. Raised in review.
+
+    Corrected by honouring the preregistration rather than by amending it: both arms now
+    minimise QLIKE, using the same exponent clip of 30 and target floor of 1e-12 that
+    `mds650.rp2.qlike_objective` applies for the LightGBM arm, so the two are fitted to one
+    function rather than to two spellings of it. Two things had to be right for that to run
+    at all, and both are recorded because each was a real failure first:
+
+    - QLIKE's `y·exp(−r)` term is unbounded as the log forecast falls. A randomly initialised
+      head predicts near zero while the optimum sits near −11, the descent gradient stays
+      close to 1 over that whole distance, and the corrective gradient past the optimum grows
+      exponentially — but gradient clipping caps both at the same norm, so the descent is paid
+      in full and the correction is not. Measured: the control reached a prediction of −100.9
+      against a target range of [−13.97, −7.13] in its second epoch and the loss stopped being
+      finite. The output layer's bias now starts at the training mean of the log variance,
+      which removes the runaway without touching the frozen objective.
+    - Clipping alone does not fix it, because `torch.clamp` has zero gradient outside its
+      range: a prediction that leaves never returns. The clip is kept for the same safety the
+      LightGBM arm has, not as the remedy.
+
+    **Measured under the frozen loss**, both neural arms improve substantially and the
+    conclusion sharpens rather than softening:
+
+    | | log-MSE, as committed | QLIKE, as preregistered |
+    | --- | ---: | ---: |
+    | `mlp_tabular` | 0.16548 | **0.14843** |
+    | `deepsets_sequence` | 0.16920 | **0.15507** |
+    | Δ against the control | −0.00372, p 0.6477 | **−0.00664 [−0.01392, −0.00138], p 0.0080** |
+    | Δ against `lightgbm_qlike` | −0.03457 | **−0.02044 [−0.03041, −0.01349], p 0.0010** |
+
+    The arm moves from indistinguishable from its control to **significantly worse than it**,
+    and three internal consistency checks that previously disagreed now agree: the fitted-scale
+    RMSEs are 0.50822 against 0.50148 for near-identical architectures, the delta against
+    LightGBM equals the raw QLIKE gap 0.13463 − 0.15507 exactly, and the fitted-scale delta
+    (−0.00681) matches the QLIKE delta (−0.00664) in sign and size. The preregistered verdict
+    is unchanged — the sequence fails both references — and it is now measured under the loss
+    that was frozen for it.
+
+    The preregistration's own digest was also wrong: `LEVEL4_PREREGISTRATION.sha256` recorded
+    `549beb9c…`, taken over CRLF bytes, while the committed document is stored with LF and
+    hashes to `2ebfb745…`. The sidecar identified no checkout and `sha256sum -c` failed on
+    every POSIX one. It now records the LF-normalised digest, the convention
+    `mds650.rp2.run_manifest.normalised_digest` already uses, and verifies. The document's
+    content was never edited, so the freeze itself held throughout; only its receipt was
+    unusable.
+
+    Two further things surfaced while fixing the above and are recorded because each was a
+    real defect. The suppressions added for the two lines above were `type: ignore` comments
+    that one torch distribution's stubs require and another's report as unused, so the gate
+    fired by wheel rather than by content and CI failed on a tree that was clean locally.
+    They are removed rather than conditioned: the output layer is now held by name on the
+    model instead of reached through `head[-1]`, and the backward call goes through `Any`.
+    The three linear layers are constructed in the order the `Sequential` used to build them
+    because that order is the order they draw from the seeded generator, so naming one of
+    them left every fitted weight unchanged.
+
+    And the run was not reproducible. Two executions of identical code on the same GPU agreed
+    only to the ninth significant figure -- cuBLAS chooses a reduction order unless given a
+    fixed workspace -- which was enough to change `ext12_sha256`. An artifact whose digest
+    moves on re-run cannot be the evidence a frozen digest is for. `CUBLAS_WORKSPACE_CONFIG`
+    is set before torch is imported and `torch.use_deterministic_algorithms(True)` is enabled
+    with the seed; two runs now produce `51be6d2b9225fe9f...` both times.
+89. **Five defects the audit confirmed, and one it did not see (2026-08-21)** — every one of
+    them is a statistic beside a corrected twin that was left uncorrected, which is the
+    pattern this entry exists to close rather than repeat.
+
+    **The 95th percentile of a sum is not the sum of the 95th percentiles.** Block 2
+    published `end_to_end_p95_seconds` as `provider_p95 + local_p95`, and that number sizes
+    `recommended_b2_cutoff_seconds`. Adding two quantiles gives the tail the sum would have
+    if the two delays were perfectly rank-correlated; a quantile is not subadditive, so it is
+    not a bound in either direction, and the assumption was stated by arithmetic rather than
+    in words. Both stages already keep a histogram, so both cases are now computed:
+    `end_to_end_p95_seconds_comonotonic` and `end_to_end_p95_seconds_independent`. The cutoff
+    is sized on the comonotonic figure, which is the conservative one, and the independent
+    figure is published beside it so a reader can see how much of the recommendation rests on
+    the dependence assumption. Guarded by `tests/unit/test_rp2_pit_sum_quantile.py`.
+
+    **The between-group variance was estimated with the wrong divisor, and its partner with
+    the wrong quantity.** `partial_pooling` took `np.var` of the six per-asset mean residuals,
+    dividing by G rather than G-1 and understating tau^2 by a sixth. tau^2 is the numerator of
+    the shrinkage weight, so every per-asset intercept was pulled harder toward the grand mean
+    than the data supports, and because the estimate is floored at zero an understated spread
+    can collapse the term and turn partial pooling into total pooling silently. Reading that
+    line also showed sigma^2 being estimated as `np.var` over **every** residual — the within
+    variance plus the between variance — where the model the docstring states wants the within
+    variance alone, so the quantity being subtracted already contained the quantity it was
+    subtracted from. Both corrected: the sample variance of the means, and the pooled
+    within-group sum of squares over N-G. The second was not in the audit's findings.
+
+    **A published level and the delta beside it were different statistics.** The ladder's
+    contrasts were moved to session weighting because origins five minutes apart share
+    overlapping thirty-minute targets — `_contrast`'s own docstring records that change — and
+    the loss LEVELS in the same record kept `np.mean` over every evaluated row. Measured,
+    `qlike[B0] - qlike[B0+B1]` disagreed with `delta_b1` by 2.2 % for `gamma_glm`, 2.0 % for
+    `ridge_log` and 0.2 % for `lightgbm_qlike`, so a reader could not rebuild the published
+    delta from the published levels. `qlike` is now session-weighted and reconstructs the
+    contrast; the origin-weighted figure is kept as `qlike_by_origin` rather than removed.
+
+    **A trade was marked at a price from its own future.** `rp2_ext2_tape_tensors.py` priced
+    every trade at `closes[minute_of_trade]`, so a trade at 10:15:03 was marked at 10:16:00 —
+    forty-three seconds after it printed — and its Greeks, its log-moneyness and its bucket
+    all followed from that. The producer built the full `SessionGrid` and kept only
+    `grid.close`, discarding the field whose docstring says it exists for this case: the open
+    is "the one price a trade *inside* that minute can be marked at without reading its own
+    future". The mark is now that open, falling back to the previous minute's close where the
+    store supplied none, and a trade in an opening minute with neither is left unmarked — the
+    level-4 producer already drops rows whose tensor is not finite, so it is excluded rather
+    than given a plausible price.
+
+    **The front page published two RP2-v2 figures under an RP2-v3 heading.** README section
+    "Findings at a glance" is scoped "Measured on `rp2-v3-20260821-134741`" and then stated
+    the DML joint test as `p = 3e-46` on 383 sessions, where that run gives `p = 3.9e-09`,
+    Wald 59.83, on 389 clusters and 152,954 rows — an overstatement of thirty-seven orders of
+    magnitude and a sample the run does not have. It stated Hansen's SPA as `p = 0.0070, above
+    the project's own sequential budget of 0.00417`, where the rebuilt within-family race
+    gives `p = 0.0010` against `ridge_log|B0` out of three candidates on 156 sessions, which
+    **clears** that budget rather than failing it. Both corrected, both superseded figures kept
+    in place with what replaced them, and `tests/contract/test_readme_matches_artifacts.py`
+    now reads the run id out of the README and checks each figure against that run.
+
+    **Re-run, and what it moved.** The tensors were rebuilt with the corrected mark and
+    installed at their canonical path, so the default invocation no longer reads the
+    look-ahead ones: the inputs hash moves from `793c56cb033f3b78` to `8c6ed992d58a1414`,
+    over identical shapes and row counts, with `tensor_nonzero_share` shifting from
+    0.8217336 to 0.8217224 as a handful of trades land in different buckets. Level 4
+    re-measured on them: the tensor contrast moves from −0.00007 [−0.00065, +0.00053] at
+    p 0.7676 to **+0.00044 [−0.00017, +0.00105] at p 0.1599** — sign reversed and six times
+    larger, still containing zero — and the sequence contrast from −0.00664 to **−0.00607
+    [−0.01249, −0.00130] at p 0.0070**, unchanged in substance and still excluding zero.
+    Recorded in `SUPERSEDED_RESULTS.md`.
+
+    The ladder's published levels still predate the session weighting: that producer has not
+    been re-run here, and no number depending on those levels should be published until it
+    is.
+
+90. **The section 21 verdict is restated on a repaired baseline, and its one refutation is
+    withdrawn (2026-08-22)** — `rp2-v3-20260822-054000`, scientific hash `07456efcd4bce4ec` at
+    commit `7225fdf`, thirteen steps, supersedes `rp2-v3-20260821-134741`.
+
+    The published page claimed that `ridge_log` **refuted** the development effect:
+    "validation was powered to see a development-sized effect and did not. That is evidence of
+    absence rather than absence of evidence." That claim rested on a development baseline in
+    which three B0 features were fabricated zeros on 15 % of the rows (decision 89). With the
+    baseline repaired, the development effect falls below validation's own minimum detectable
+    effect and the claim does not survive:
+
+    | Family | Effect in D, before → after | MDE in V | Detectable |
+    | --- | ---: | ---: | --- |
+    | `ridge_log` | +0.00424 → **+0.00250** | 0.00268 | **yes → no**, ~37 sessions needed, 32 available |
+    | `gamma_glm` | +0.00408 → **+0.00234** | 0.00413 | no → no, ~100 needed |
+    | `lightgbm_qlike` | +0.00381 → **+0.00314** | 0.01770 | no → no, ~1019 needed |
+
+    **No family refutes.** Validation is unchanged to the digit in all three, which is the
+    control: no deficient bar store supplied it. Every validation null on this page is
+    therefore absence of evidence rather than evidence of absence, and the page now says so.
+
+    Result C still stands on its own criterion — ΔB1 is negative in validation for two of the
+    three families, on a contemporaneous B1 with core coverage 0.9934 and zero post-cutoff
+    observations. What is withdrawn is the strength the previous page claimed for it. The
+    "not D" argument also loses one of its two grounds; the surviving one, `gamma_glm`'s
+    validation B2-over-B1 interval excluding zero, is stated together with its measured
+    empirical coverage of 0.784 against a nominal 0.95, so a reader is not left to assume the
+    interval reads as tightly as its label.
+
+    Two counts moved with the rebuild, from eight to **seven** intervals containing zero and
+    from ten to **nine** contrasts below their own MDE, because a new contrast appeared:
+    `lightgbm_qlike`'s development B2-over-B1 is now +0.00113 with an interval
+    [+0.00042, +0.00188] excluding zero — the only positive B2 increment in the twelve.
+
+    Seventy-four of 162 comparable scorecard fields moved, which is what four corrections to
+    the science should do. One of them is not a change in the data and is labelled as such:
+    `b2_p95_provider_latency_s` reads 0.3555 s against 0.2802 s, and those are **adjacent
+    edges of the same log-spaced bin**, 26.9 % wide. A 0.12 % shift in counted trades crossed
+    the boundary and the reported figure moved by a full bin. The value is the bin's lower
+    edge, so the tail is at least 0.3555 s and below 0.4508 s; nothing on the page depends on
+    it, and the page says that rather than presenting the figure as resolved.
+
+    The tables on the verdict page are now emitted by `scripts/rp2_verdict_tables.py` rather
+    than transcribed, validated by reproducing the previous published page row for row before
+    being used here. `tests/contract/test_verdict_matches_artifact.py` reads the three counts
+    out of the document's own prose instead of pinning them as literals — a test that has to
+    be edited to keep a document honest will eventually be edited to agree with it — and it
+    now also verifies the before/after table against **both** runs, so the claim that
+    validation did not move is checked rather than asserted.
+
+    Two things about how this was written, recorded because each was a real failure. A
+    generated string in the contract test lost an escape and produced an unterminated literal;
+    `tests/contract/test_source_integrity.py`, added for exactly that class after it had
+    happened twice before, caught it as `unterminated string literal (detected at line 259)`
+    rather than letting it ship. And the verdict's table parser refused the new before/after
+    table instead of skipping the rows it could not read, which is what sent that table to be
+    checked rather than ignored.

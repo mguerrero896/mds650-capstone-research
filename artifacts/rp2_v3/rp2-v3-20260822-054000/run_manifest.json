@@ -1,0 +1,277 @@
+{
+  "code_commit": "7225fdfaa7d75f634a1037df15c4b26360ba4d00",
+  "data_root": "D:\\MDS650",
+  "feature_registry_sha256": "3c108a14a5a88e4da08bade7debd5dc05a1d51ea50c1e5adea6d1e88dc0acb9c",
+  "finished_at_utc": "2026-08-21T20:55:46.075819+00:00",
+  "input_manifest_sha256": "11a158b302ade3c4c6b475f6cde973a93b275ec1c4b894ace66bccbc84ded8ab",
+  "model_config_sha256": "0c35efea1cabbac2c39406ba99bf88db1728c7b65124a7988bad65ee5b8f57d5",
+  "roles": [
+    "D",
+    "V"
+  ],
+  "run_id": "rp2-v3-20260822-054000",
+  "scientific_sha256": "07456efcd4bce4ece038037ead5fa0240bcb1a20f8f37172def43444ba25f54b",
+  "seeds": {
+    "bootstrap": 650,
+    "dml_folds": 5,
+    "lightgbm": 20260818
+  },
+  "started_at_utc": "2026-08-21T19:40:16.072901+00:00",
+  "steps": [
+    {
+      "artifacts": {
+        "input_manifest.json": "c9dc96f7eafa1e3973936e0ec820f0076e6ecb2de47f243be0643bb31385d49c"
+      },
+      "command": [
+        "internal",
+        "validate_inputs"
+      ],
+      "content": {
+        "input_manifest.json": "9a2a1633127623a9ff806051ee75da5b57633e277619e3005ae41d22dbd20984"
+      },
+      "exit_code": 0,
+      "name": "validate-input-manifests",
+      "peak_memory_bytes": 0,
+      "reused": false,
+      "runtime_seconds": 56.925
+    },
+    {
+      "artifacts": {
+        "rp2_block3_target/comparison.json": "cc5dd6df47fa532e7cdcf4e8889c8fa9bca33f2e084e5fbcb60954ca6f92d9fd",
+        "rp2_block3_target/target_panel.parquet": "4723e433b7feb2043270c463924cfbc975ccf44cc665845f9ee80346770ba992"
+      },
+      "command": [
+        "C:\\Users\\mguer\\Dev\\MDS650-Capstone\\.worktrees\\rp2-level4\\.venv\\Scripts\\python.exe",
+        "scripts/rp2_block3_target_panel.py",
+        "--data-root",
+        "D:\\MDS650",
+        "--output-dir",
+        "artifacts\\rp2_v3\\rp2-v3-20260822-054000\\rp2_block3_target"
+      ],
+      "content": {
+        "rp2_block3_target/comparison.json": "71ea4e179103ed4b0788c9e4fde30624796d06667fa7a092f0f0a34ac7890d35",
+        "rp2_block3_target/target_panel.parquet": "4723e433b7feb2043270c463924cfbc975ccf44cc665845f9ee80346770ba992"
+      },
+      "exit_code": 0,
+      "name": "build-targets",
+      "peak_memory_bytes": 5115904,
+      "reused": false,
+      "runtime_seconds": 11.298
+    },
+    {
+      "artifacts": {
+        "rp2_block4_b0/b0_panel.parquet": "7a6b8dc721ae9fca974f6c574da66e33b433c4f27f7ee6935182cd6447d3c56f",
+        "rp2_block4_b0/ladder.json": "d2581dd8a76f35df6bdb9262db3798d57773731e84720e25c35c4f0ecc9a6f19"
+      },
+      "command": [
+        "C:\\Users\\mguer\\Dev\\MDS650-Capstone\\.worktrees\\rp2-level4\\.venv\\Scripts\\python.exe",
+        "scripts/rp2_block4_b0_panel.py",
+        "--data-root",
+        "D:\\MDS650",
+        "--output-dir",
+        "artifacts\\rp2_v3\\rp2-v3-20260822-054000\\rp2_block4_b0"
+      ],
+      "content": {
+        "rp2_block4_b0/b0_panel.parquet": "7a6b8dc721ae9fca974f6c574da66e33b433c4f27f7ee6935182cd6447d3c56f",
+        "rp2_block4_b0/ladder.json": "79e0d26bc2b2f429533f916279041385e0babacb2d7b68d4f4a38fdfe458919c"
+      },
+      "exit_code": 0,
+      "name": "build-b0",
+      "peak_memory_bytes": 5091328,
+      "reused": false,
+      "runtime_seconds": 52.663
+    },
+    {
+      "artifacts": {
+        "rp2_block5_surface/b1_surface_panel.parquet": "3da2195176468f0f2fd83c6e3a085cb6436d026989cfdec7e6d4627ea2dec5ba",
+        "rp2_block5_surface/surface_coverage.json": "d4cd6a80a9bb67924ea721b90bb9dd7bb75d607de26e8e7722d411d6704aa3d5"
+      },
+      "command": [
+        "C:\\Users\\mguer\\Dev\\MDS650-Capstone\\.worktrees\\rp2-level4\\.venv\\Scripts\\python.exe",
+        "scripts/rp2_block5_surface_panel.py",
+        "--data-root",
+        "D:\\MDS650",
+        "--output-dir",
+        "artifacts\\rp2_v3\\rp2-v3-20260822-054000\\rp2_block5_surface",
+        "--panel-root",
+        "artifacts\\rp2_v3\\rp2-v3-20260822-054000"
+      ],
+      "content": {
+        "rp2_block5_surface/b1_surface_panel.parquet": "3da2195176468f0f2fd83c6e3a085cb6436d026989cfdec7e6d4627ea2dec5ba",
+        "rp2_block5_surface/surface_coverage.json": "ce518771dbcd0b84902b3f71346344e9cf08c9ecc4025aa8965328cf508ffbff"
+      },
+      "exit_code": 0,
+      "name": "build-b1",
+      "peak_memory_bytes": 5095424,
+      "reused": false,
+      "runtime_seconds": 3915.433
+    },
+    {
+      "artifacts": {
+        "rp2_block6_flow/b2_flow_panel.parquet": "5375ef33a13f188ebaa84dd4db5bb7813aecd2eb19f5b09027d725a8f9053eda",
+        "rp2_block6_flow/flow_coverage.json": "dbac9664f2cac26b824aae938bf63cd2a07741320db090c45b3fe457c634e350"
+      },
+      "command": [
+        "C:\\Users\\mguer\\Dev\\MDS650-Capstone\\.worktrees\\rp2-level4\\.venv\\Scripts\\python.exe",
+        "scripts/rp2_block6_flow_panel.py",
+        "--data-root",
+        "D:\\MDS650",
+        "--output-dir",
+        "artifacts\\rp2_v3\\rp2-v3-20260822-054000\\rp2_block6_flow",
+        "--panel-root",
+        "artifacts\\rp2_v3\\rp2-v3-20260822-054000"
+      ],
+      "content": {
+        "rp2_block6_flow/b2_flow_panel.parquet": "5375ef33a13f188ebaa84dd4db5bb7813aecd2eb19f5b09027d725a8f9053eda",
+        "rp2_block6_flow/flow_coverage.json": "d5836b7b4c12fcb6a91d2038c8f9cbb1c014a225fa7ebe13e5574f99f5a52b0f"
+      },
+      "exit_code": 0,
+      "name": "build-b2",
+      "peak_memory_bytes": 5095424,
+      "reused": false,
+      "runtime_seconds": 288.941
+    },
+    {
+      "artifacts": {
+        "feature_registry_report.json": "4981b10303f21b179bc03eaabe11b4e11134ee481243d4fd744044addbc9bb20"
+      },
+      "command": [
+        "internal",
+        "validate-feature-registry"
+      ],
+      "content": {
+        "feature_registry_report.json": "9e50396995ed9dee07fc05823da613467a7c2b7c36ee5f3ae4e773af41262b87"
+      },
+      "exit_code": 0,
+      "name": "validate-feature-registry",
+      "peak_memory_bytes": 0,
+      "reused": false,
+      "runtime_seconds": 0.376
+    },
+    {
+      "artifacts": {
+        "common_masks.json": "3b380bd30e1d872e2d0900087b0e446b0f82303356cb805db6f47fb451311936"
+      },
+      "command": [
+        "internal",
+        "construct-common-masks"
+      ],
+      "content": {
+        "common_masks.json": "60b5a709af1db14e928b39b40648f78d54ba5689dabce6d7737177e271bbc4fc"
+      },
+      "exit_code": 0,
+      "name": "construct-common-masks",
+      "peak_memory_bytes": 0,
+      "reused": false,
+      "runtime_seconds": 0.307
+    },
+    {
+      "artifacts": {
+        "rp2_block8_ladder/ladder.json": "6ad1660f49c74f1f5e5c5bfffa416a44942ed834b41fa2635cf16a7f434271df"
+      },
+      "command": [
+        "C:\\Users\\mguer\\Dev\\MDS650-Capstone\\.worktrees\\rp2-level4\\.venv\\Scripts\\python.exe",
+        "scripts/rp2_block8_ladder.py",
+        "--output-dir",
+        "artifacts\\rp2_v3\\rp2-v3-20260822-054000\\rp2_block8_ladder",
+        "--panel-root",
+        "artifacts\\rp2_v3\\rp2-v3-20260822-054000"
+      ],
+      "content": {
+        "rp2_block8_ladder/ladder.json": "102c05e44ba0fecadac235b0496b1b51500fedd9317b171e135086e7f97d8eba"
+      },
+      "exit_code": 0,
+      "name": "fit-model-ladder",
+      "peak_memory_bytes": 5087232,
+      "reused": false,
+      "runtime_seconds": 31.007
+    },
+    {
+      "artifacts": {
+        "rp2_block7_dml/dml.json": "f1cc51116442479ebc6f6fa12b06c30d56425e32cfea9e9c28f48db48e7f372b"
+      },
+      "command": [
+        "C:\\Users\\mguer\\Dev\\MDS650-Capstone\\.worktrees\\rp2-level4\\.venv\\Scripts\\python.exe",
+        "scripts/rp2_block7_dml.py",
+        "--output-dir",
+        "artifacts\\rp2_v3\\rp2-v3-20260822-054000\\rp2_block7_dml",
+        "--panel-root",
+        "artifacts\\rp2_v3\\rp2-v3-20260822-054000"
+      ],
+      "content": {
+        "rp2_block7_dml/dml.json": "68113e76b46d33cf1c3145b9a163d1204bc04df2d29a0cdf7e78d7ec418b1cc9"
+      },
+      "exit_code": 0,
+      "name": "run-dml-diagnostics",
+      "peak_memory_bytes": 5091328,
+      "reused": false,
+      "runtime_seconds": 99.927
+    },
+    {
+      "artifacts": {
+        "rp2_block10_inference/inference.json": "69235e13105ceb8150c42f526773759fabe439dc75639309d3eb16377fcb4372"
+      },
+      "command": [
+        "C:\\Users\\mguer\\Dev\\MDS650-Capstone\\.worktrees\\rp2-level4\\.venv\\Scripts\\python.exe",
+        "scripts/rp2_block10_inference.py",
+        "--output-dir",
+        "artifacts\\rp2_v3\\rp2-v3-20260822-054000\\rp2_block10_inference",
+        "--panel-root",
+        "artifacts\\rp2_v3\\rp2-v3-20260822-054000"
+      ],
+      "content": {
+        "rp2_block10_inference/inference.json": "e380162d9ff8def9dbb09a4d749ed05b74c0d2db358634979fa5479a0b4df95b"
+      },
+      "exit_code": 0,
+      "name": "run-incremental-inference",
+      "peak_memory_bytes": 5115904,
+      "reused": false,
+      "runtime_seconds": 15.089
+    },
+    {
+      "artifacts": {
+        "scorecard.json": "ee684e1bf4673af71f6d16199dd2d58ef3fed72d5fcfaed5a227906a7f5942c5",
+        "scorecard.md": "3a317fafe13642f508a9f2ae9d53ede77eedfa72cf331a17d97cdb9eeffc8934"
+      },
+      "command": [
+        "internal",
+        "build_scorecard"
+      ],
+      "content": {
+        "scorecard.json": "e3c0591f5f1894f40400c8bd0fa860d9515469ad3f45c4c1535c848db5e28d2e",
+        "scorecard.md": "3a317fafe13642f508a9f2ae9d53ede77eedfa72cf331a17d97cdb9eeffc8934"
+      },
+      "exit_code": 0,
+      "name": "generate-scorecard",
+      "peak_memory_bytes": 0,
+      "reused": false,
+      "runtime_seconds": 0.469
+    },
+    {
+      "artifacts": {},
+      "command": [
+        "internal",
+        "write_manifest"
+      ],
+      "content": {},
+      "exit_code": 0,
+      "name": "generate-provenance",
+      "peak_memory_bytes": 0,
+      "reused": false,
+      "runtime_seconds": 0.0
+    },
+    {
+      "artifacts": {},
+      "command": [
+        "internal",
+        "verify_artifacts"
+      ],
+      "content": {},
+      "exit_code": 0,
+      "name": "verify-artifact-hashes",
+      "peak_memory_bytes": 0,
+      "reused": false,
+      "runtime_seconds": 0.131
+    }
+  ]
+}

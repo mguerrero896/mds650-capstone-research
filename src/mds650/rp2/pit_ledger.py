@@ -134,6 +134,76 @@ def pooled_quantile(histogram: npt.NDArray[np.int64], quantile: float) -> float:
     return float(10.0 ** (low + fraction * (high - low)))
 
 
+#: Draws used to combine two latency histograms under independence. Fixed, with a fixed
+#: seed, because the result sets a design parameter and a design parameter may not move
+#: between two runs of the same code.
+SUM_QUANTILE_DRAWS: Final = 400_000
+SUM_QUANTILE_SEED: Final = 650
+
+
+def comonotonic_sum_quantile(
+    first: npt.NDArray[np.int64], second: npt.NDArray[np.int64], quantile: float
+) -> float:
+    """Quantile of ``X + Y`` when the two are perfectly rank-correlated.
+
+    This is the sum of the two quantiles, which is what adding two published p95 figures
+    computes. It is a specific dependence assumption and not a bound in either direction:
+    a quantile is not subadditive, so some dependence structures put the real tail above
+    this and independence usually puts it below.
+    """
+
+    left = pooled_quantile(first, quantile) if int(first.sum()) else 0.0
+    right = pooled_quantile(second, quantile) if int(second.sum()) else 0.0
+    if not int(first.sum()) and not int(second.sum()):
+        return math.nan
+    return float(left + right)
+
+
+def independent_sum_quantile(
+    first: npt.NDArray[np.int64],
+    second: npt.NDArray[np.int64],
+    quantile: float,
+    *,
+    draws: int = SUM_QUANTILE_DRAWS,
+    seed: int = SUM_QUANTILE_SEED,
+) -> float:
+    """Quantile of ``X + Y`` when the two stages are independent.
+
+    Both stages keep a histogram, so this is computed rather than assumed. A value is drawn
+    from each histogram by picking a bin against its cumulative counts and then placing the
+    draw log-uniformly inside that bin, which is the same interpolation `pooled_quantile`
+    uses to read a single distribution. Sums do not combine in log space, so the two draws
+    are added on the linear scale and the quantile is taken of the result.
+    """
+
+    if not 0.0 < quantile < 1.0:
+        raise ValueError("RP2_PIT_QUANTILE_OUT_OF_RANGE")
+    left_total, right_total = int(first.sum()), int(second.sum())
+    if not left_total and not right_total:
+        return math.nan
+    generator = np.random.default_rng(seed)
+    edges = latency_bin_edges()
+    logs = np.log10(edges)
+
+    def sample(histogram: npt.NDArray[np.int64], total: int) -> npt.NDArray[np.float64]:
+        # A stage with no observation contributes no delay, rather than an invented one.
+        if not total:
+            return np.zeros(draws, dtype=np.float64)
+        cumulative = np.cumsum(histogram)
+        picked = np.searchsorted(
+            cumulative, generator.uniform(0.0, float(total), size=draws), side="left"
+        )
+        picked = np.clip(picked, 0, LATENCY_BIN_COUNT - 1)
+        inside = generator.uniform(0.0, 1.0, size=draws)
+        return np.asarray(
+            10.0 ** (logs[picked] + inside * (logs[picked + 1] - logs[picked])),
+            dtype=np.float64,
+        )
+
+    combined = sample(first, left_total) + sample(second, right_total)
+    return float(np.quantile(combined, quantile))
+
+
 def recommended_cutoff_seconds(
     p95_seconds: float,
     *,

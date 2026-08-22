@@ -41,8 +41,16 @@ CALENDAR: Final = "XNYS"
 
 #: ``(name, partition role, path relative to the store root)``, oldest window first.
 BAR_SOURCES: Final[tuple[tuple[str, str, str], ...]] = (
-    ("gate7_c6", "D", "data/fmp/gate7/underlying_1min_c6.parquet"),
-    ("gate8_c4c", "D", "data/fmp/gate8_c4c/underlying_1min_c4c.parquet"),
+    # Replaces gate7_c6 and gate8_c4c, which held only (asset, bar_start_utc, close). Their
+    # missing range and volume were being fabricated as high == low == close and volume == 0,
+    # which made parkinson_30, volume_30 and dollar_volume_30 exactly zero on 22,967 of
+    # 152,954 development origins and on none of the 31,678 validation ones. Re-acquired from
+    # the provider with full OHLCV over the same 360 asset-sessions: 138,239 bars against
+    # 138,239, no bar missing, no bar added, and every close identical to eight decimal
+    # places, so the closes every earlier result rests on are unchanged. Of those minutes
+    # 0.07 % genuinely had no volume and 0.02 % genuinely had no range, against the 100 %
+    # the fabrication asserted.
+    ("ohlcv_repair", "D", "data/fmp/rp2_ohlcv_repair/underlying_1min_repair.parquet"),
     ("phase6_180d", "D", "phase6/data/fmp/underlying_1min_180d.parquet"),
     ("gate3_dev80", "V", "data/fmp/gate3/underlying_1min_dev80.parquet"),
     # The 153 tape sessions (2024-08-02..2025-12-24) that had no bars. Already-observed
@@ -55,6 +63,10 @@ BAR_SOURCES: Final[tuple[tuple[str, str, str], ...]] = (
 )
 
 _OPTIONAL_COLUMNS: Final = ("open", "high", "low", "volume")
+
+#: Minutes whose volume the primary provider lost, recovered from the second one. Written
+#: by `scripts/rp2_repair_contradicted_volume.py`; absent means no repair is applied.
+VOLUME_REPAIR: Final = "data/fmp/rp2_volume_repair/minute_volume_repair.parquet"
 
 
 @lru_cache(maxsize=1)
@@ -217,7 +229,45 @@ def load_bar_sources(
         frames.append(frame.with_columns(source=pl.lit(name), role=pl.lit(role)))
     if not frames:
         raise ValueError("RP2_BARS_NO_SOURCES")
-    return deduplicate_bar_sources(pl.concat(frames, how="diagonal"))
+    return apply_volume_repair(
+        deduplicate_bar_sources(pl.concat(frames, how="diagonal")), data_root
+    )
+
+
+def apply_volume_repair(bars: pl.DataFrame, data_root: Path) -> pl.DataFrame:
+    """Fill a volume the primary provider lost, from the second provider's aggregates.
+
+    A price cannot move without trades, and 2,343 minutes across these stores carry
+    `volume == 0.0` with `high > low` - 60 % of them at midday, on the six most heavily
+    traded US equities. The second provider reports real volume on them: 53,676 shares
+    across 809 trades on the AAPL minute the first provider records as empty.
+
+    The overlay carries only minutes whose day passed the reconciliation gate in
+    `scripts/rp2_repair_contradicted_volume.py`: its healthy minutes had to reproduce the
+    close agreement gate 5.1 measured between the two providers before any volume was taken
+    from it. Minutes with no overlay entry keep whatever `build_session_grid` decides, which
+    for a contradicted zero is "unknown" rather than zero.
+    """
+
+    path = data_root / VOLUME_REPAIR
+    if not path.is_file():
+        return bars
+    overlay = pl.read_parquet(path).select(
+        pl.col("asset"),
+        pl.col("bar_start_utc").dt.convert_time_zone(MARKET_TZ).alias("bar_ny"),
+        pl.col("volume").cast(pl.Float64).alias("repaired_volume"),
+    )
+    joined = bars.join(overlay, on=["asset", "bar_ny"], how="left")
+    return joined.with_columns(
+        pl.when(
+            pl.col("repaired_volume").is_not_null()
+            & (pl.col("volume") == 0.0)
+            & (pl.col("high") > pl.col("low"))
+        )
+        .then(pl.col("repaired_volume"))
+        .otherwise(pl.col("volume"))
+        .alias("volume")
+    ).drop("repaired_volume")
 
 
 @dataclass(frozen=True, slots=True)
@@ -303,9 +353,33 @@ def build_session_grid(group: pl.DataFrame, *, session: date | None = None) -> S
     # would hand every opening-minute trade a price from its own future — the exact
     # look-ahead the open exists to avoid.
     opening = grids["open"]
-    high = np.where(np.isnan(grids["high"]), close, grids["high"])
-    low = np.where(np.isnan(grids["low"]), close, grids["low"])
-    volume = np.where(np.isnan(grids["volume"]), 0.0, grids["volume"])
+    # Repair ONLY the minutes that had no bar. A minute with no close did not trade, so a
+    # flat range and a zero volume are the truth. A minute WITH a close whose high is still
+    # missing traded and had its range go unrecorded, and the honest value is unknown.
+    #
+    # `load_bar_sources` concatenates the six stores with `how="diagonal"`, so a store that
+    # holds only (asset, bar_start_utc, close) still arrives carrying the full schema with
+    # nulls, and a column-presence check cannot see the difference. Repairing every NaN
+    # gave parkinson_30, volume_30 and dollar_volume_30 the value exactly zero on 22,967 of
+    # 152,954 development origins and on none of the 31,678 validation ones. All three are
+    # `log` features, so zero became log(1e-12) = -27.631; being finite, it recorded no
+    # missing indicator and the fold-local imputation never fired. The published ladder
+    # shows the damage in its own standardisation scales: dollar_volume_30 is 20.762 in
+    # development against 0.692 in validation, where no honest feature differs by two.
+    absent = np.isnan(grids["close"])
+    high = np.where(absent, close, grids["high"])
+    low = np.where(absent, close, grids["low"])
+    volume = np.where(absent, 0.0, grids["volume"])
+    # And a volume of exactly zero on a minute whose price moved is an absence, not a
+    # count: a price cannot move without trades. Measured across the six bar stores, 2,355
+    # of the 2,357 zero-volume minutes have high > low - AAPL on 2026-02-02 alone has 133
+    # consecutive ones, one opening 264.66, ranging 264.508 to 264.69 and closing 264.68 on
+    # a recorded volume of zero. Keeping those zeros left 2,958 of 152,954 development
+    # origins and 0 of 31,678 validation ones carrying the same fabricated -27.631 the
+    # repair above exists to remove, by the same route: a `log` feature, a finite zero, no
+    # missing indicator, no imputation. The two genuinely flat minutes keep their zero.
+    contradicted = (volume == 0.0) & np.isfinite(high) & np.isfinite(low) & (high > low)
+    volume = np.where(contradicted, np.nan, volume)
     return SessionGrid(
         close=close,
         open=opening,

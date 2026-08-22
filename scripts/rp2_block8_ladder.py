@@ -43,6 +43,7 @@ from mds650.rp2.ladder import (
     PRIMARY_MODELS,
     assert_primary_models,
     partial_pooling,
+    session_weighted_level,
 )
 from mds650.rp2.panel import (
     B0_FEATURES,
@@ -216,6 +217,7 @@ def run_role(
         losses: dict[str, FloatArray] = {}
         losses_recalibrated: dict[str, FloatArray] = {}
         qlike_levels: dict[str, float] = {}
+        qlike_levels_by_origin: dict[str, float] = {}
         calibrations: dict[str, dict[str, float]] = {}
         for set_name in INFORMATION_SETS:
             design = designs[set_name]
@@ -224,7 +226,13 @@ def run_role(
             recalibrated, calibration = _recalibrate(forecast, target, train)
             calibrations[f"{model_name}|{set_name}"] = calibration
             losses_recalibrated[set_name] = qlike_losses(target[test], recalibrated[test])
-            qlike_levels[set_name] = float(np.mean(losses[set_name]))
+            # Session-weighted, so that level(base) - level(expanded) reproduces the
+            # contrast published beside it. This was `np.mean` over every evaluated row
+            # while the contrasts already aggregated to the session, and the two disagreed
+            # by 2.2 % for gamma_glm and 2.0 % for ridge_log. The origin-weighted figure is
+            # kept under a name that says what it is rather than silently replaced.
+            qlike_levels[set_name] = session_weighted_level(losses[set_name], session_index)
+            qlike_levels_by_origin[set_name] = float(np.mean(losses[set_name]))
         contrasts: dict[str, object] = {}
         raw_p: dict[str, float] = {}
         for label, (base, expanded) in CONTRASTS.items():
@@ -254,6 +262,7 @@ def run_role(
         per_model[model_name] = {
             "family": INDEPENDENT_FAMILIES[model_name],
             "qlike": qlike_levels,
+            "qlike_by_origin": qlike_levels_by_origin,
             "calibration": calibrations,
             "contrasts": contrasts,
             "delta_interaction": interaction,
@@ -266,10 +275,15 @@ def run_role(
     forecast = LADDER["log_ols"](design, target, train)
     residual = np.log(np.maximum(target, 1e-12)) - np.log(np.maximum(forecast, 1e-12))
     asset_index = np.unique(assets, return_inverse=True)[1].astype(np.int64)
-    pooled = partial_pooling(residual, asset_index, train)
+    # The session, not the origin, is the unit the sampling variance is measured on: the
+    # origins inside a session share overlapping thirty-minute targets, so counting them
+    # as independent draws made the subtracted term about six times too small.
+    pooled_sessions = np.unique(session_labels, return_inverse=True)[1].astype(np.int64)
+    pooled = partial_pooling(residual, asset_index, train, sessions=pooled_sessions)
     pooled_forecast = forecast * np.exp(pooled.apply(asset_index))
     results["hierarchical_partial_pooling"] = {
         "between_variance": pooled.between_variance,
+        "sampling_variance_by_group": pooled.sampling_variance,
         "qlike_without_pooling": float(np.mean(qlike_losses(target[test], forecast[test]))),
         "qlike_with_pooling": float(
             np.mean(qlike_losses(target[test], pooled_forecast[test]))

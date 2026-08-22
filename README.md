@@ -86,37 +86,39 @@ timeline
 | MDE | The smallest effect size the study promised to care about |
 | Holm | A correction so that testing many things doesn't manufacture false positives |
 
-## Findings at a glance (RP2-v3, 2026-08-21)
+## Findings at a glance (RP2-v3, 2026-08-22)
 
-Measured on `rp2-v3-20260821-134741`, published to Supabase and readable through
+Measured on `rp2-v3-20260822-054000`, published to Supabase and readable through
 `api.current_rp2_contrasts`. Development 389 sessions, validation 80. A positive delta is an
 improvement in QLIKE: the smaller information set's loss minus the larger one's.
 
 | Family | ΔB1 (D) | ΔB2\|B1 (D) | ΔB1 (V) | ΔB2\|B1 (V) |
 | --- | ---: | ---: | ---: | ---: |
-| `gamma_glm` | +0.00408 | −0.02549 | −0.00111 | −0.00222 |
-| `ridge_log` | +0.00424 | −0.15509 | −0.00084 | −0.00195 |
-| `lightgbm_qlike` | +0.00381 | +0.00065 | +0.00092 | −0.00051 |
+| `gamma_glm` | +0.00234 | −0.00506 | −0.00111 | −0.00222 |
+| `ridge_log` | +0.00250 | −0.01451 | −0.00084 | −0.00195 |
+| `lightgbm_qlike` | +0.00314 | +0.00113 | +0.00092 | −0.00051 |
 
 1. **Contemporaneous option state helps in development, in two of three families.** ΔB1 is
-   positive in all three, +0.0038 to +0.0042, with 95 % intervals excluding zero. Against the
-   minimum this design could detect, the three differ: `gamma_glm` 1.66×, `ridge_log` 1.75×,
-   and `lightgbm_qlike` **0.93× — below its own threshold**. So two families report an effect
+   positive in all three, +0.0023 to +0.0031, with 95 % intervals excluding zero. Against the
+   minimum this design could detect, the three differ: `gamma_glm` 1.31×, `ridge_log` 1.48×,
+   and `lightgbm_qlike` **0.80× — below its own threshold**. So two families report an effect
    their design could resolve and the third reports one it could not, which is a weaker
    statement than "consistently" and the one the numbers support.
 
-2. **It does not survive out of sample where the design could test it.** `ridge_log`'s
-   validation MDE is 0.0027 against a development effect of 0.0042 — powered to see it, and
-   it measured −0.00084. `gamma_glm` lands one session short of its own requirement (33
-   needed, 32 available) and decides nothing. `lightgbm_qlike` would need roughly 692
-   validation sessions to test its own effect and has 32, so its interval
-   [−0.0108, +0.0129] cannot support any conclusion.
+2. **It is not reproduced out of sample, and the design could not have tested it.** No family
+   was powered: `ridge_log` comes closest and is still short, needing ~37 validation sessions
+   against the 32 available; `gamma_glm` would need ~100 and `lightgbm_qlike` ~1019. Every
+   validation null here is therefore absence of evidence, not evidence of absence. An earlier
+   version of this list claimed `ridge_log` was powered to see the effect and refuted it; that
+   rested on a development baseline built from a fabricated range and volume, and the claim is
+   withdrawn.
 
 3. **Point-in-time flow adds nothing over option state.** ΔB2\|B1 is negative or
-   indistinguishable from zero everywhere, and in `ridge_log` it is −0.155 with an interval
-   spanning [−0.455, +0.001] — instability rather than signal.
+   indistinguishable from zero in five of six family-role pairs. The exception is
+   `lightgbm_qlike` in development, +0.00113 with an interval [+0.00042, +0.00188] excluding
+   zero — the only positive B2 increment in the twelve, and one family on one role.
 
-4. **Ten of the twelve contrasts sit below their own minimum detectable effect.** Reporting
+4. **Nine of the twelve contrasts sit below their own minimum detectable effect.** Reporting
    those as nulls without saying so would claim more than the design can support. The full
    family-by-family power reading is in
    [`docs/rp2_v3/VERDICT.md`](docs/rp2_v3/VERDICT.md).
@@ -127,7 +129,7 @@ broader "B1 does not contribute" that the plan's wording invites.
 ### What this replaces
 
 An earlier version of this section reported the B2-over-B1 increment under the Gamma GLM as
-positive and statistically supported, up to +0.053. The rebuilt contrast is **−0.02549** in
+positive and statistically supported, up to +0.053. The rebuilt contrast is **−0.00506** in
 development and **−0.00222** in validation, the latter with an interval excluding zero. The
 sign is reversed, not the magnitude reduced. Six corrections account for it — a baseline
 built from the square root of its own target, an option snapshot ending 1 920 s before the
@@ -167,9 +169,13 @@ asserted a model that does not exist.
 5. **Recent option flow carries information the price history and the option surface cannot
    reconstruct — in one sample.** Under double machine learning, orthogonalising B2 against
    B0+B1 and clustering by session, the joint null is rejected in discovery at
-   **p = 3 × 10⁻⁴⁶** (383 sessions). Traded premium, strike concentration, the
-   arrival-intensity innovation and delta flow all carry it; vega- and gamma-weighted flow are
-   null.
+   **p = 1.2 × 10⁻¹³**, Wald 83.19 on 389 session clusters and 152,954 rows. Traded premium,
+   strike concentration, the arrival-intensity innovation and delta flow all carry it; vega-
+   and gamma-weighted flow are null.
+
+   The figure that stood here, `p = 3 × 10⁻⁴⁶` on 383 sessions, was the RP2-v2 measurement
+   and survived the rebuild that this section says it reports. It overstated the joint test
+   by thirty-seven orders of magnitude and named a sample the run does not have.
 
    **It survives a control that could have killed it.** Every B2 increment in this project was
    previously measured against a baseline that could not see the market: the SPY and QQQ
@@ -187,9 +193,15 @@ asserted a model that does not exist.
 6. **That information is smaller than the cost of estimating the parameters needed to use
    it.** The out-of-sample QLIKE change is frequently negative even where the in-sample
    evidence is strong. Across six model families, four contrasts and an interaction term,
-   every estimand is null or family-dependent. Hansen's SPA picks a best candidate at
-   p = 0.0070, above the project's own sequential budget of 0.00417; White's Reality Check
-   rejects nothing.
+   every estimand is null or family-dependent. Hansen's SPA, run within each family against
+   that family's own B0, picks `ridge_log|B0+B1` over `ridge_log|B0` out of three candidates
+   at **p = 0.0010** on 156 evaluated sessions, and White's Reality Check on the same race
+   rejects nothing (p = 0.3576).
+
+   The figure that stood here, `p = 0.0070, above the project's own sequential budget of
+   0.00417`, was the RP2-v2 cross-family race. It is superseded and its direction reversed:
+   the rebuilt within-family SPA clears that budget rather than failing it. What the two
+   agree on is the Reality Check, which rejects nothing in either.
 
    The Clark–West figures that previously appeared here have been **withdrawn** (decision 68).
    The adjustment is derived for a linear model whose restricted form is a parameter

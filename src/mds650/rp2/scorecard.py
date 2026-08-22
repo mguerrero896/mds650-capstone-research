@@ -102,6 +102,34 @@ def _share(path: Path, name: str, predicate: Callable[[pl.Series], pl.Series]) -
     return float(predicate(column).sum() / column.len())
 
 
+def weighted_share(path: Path, share: str, weight: str) -> float | None:
+    """Pool per-origin shares by the quantity they are shares OF.
+
+    An unweighted mean of ratios answers "what was the share at a typical origin". The
+    published field claims the share of the run, which is the ratio of the sums. Measured
+    on the RP2-v3 flow panel the two differ by 2.5 % because premium per origin spans a
+    factor of fourteen between the median origin and the 99th percentile.
+
+    Returns ``None`` rather than zero when no origin carries weight: a share of nothing is
+    not a share of zero, and reporting the second would state a measurement never made.
+    """
+
+    shares = _column(path, share)
+    weights = _column(path, weight)
+    if shares is None or weights is None:
+        return None
+    frame = pl.DataFrame({"share": shares, "weight": weights}).drop_nulls()
+    if frame.height == 0:
+        return None
+    share_values = frame["share"].to_numpy().astype(float)
+    weight_values = frame["weight"].to_numpy().astype(float)
+    usable = np.isfinite(share_values) & np.isfinite(weight_values) & (weight_values > 0.0)
+    total = float(weight_values[usable].sum())
+    if total <= 0.0:
+        return None
+    return float((share_values[usable] * weight_values[usable]).sum() / total)
+
+
 def _sum(path: Path, name: str) -> int | None:
     column = _column(path, name)
     if column is None:
@@ -135,10 +163,38 @@ def _quantile_where(path: Path, name: str, weight: str, quantile: float) -> floa
 #: merge - but counts in fixed bins do, so the producer emits the bins and the scorecard adds
 #: them. Sixty bins put the resolution near 20 % of the value, which is far finer than the
 #: difference the reported tail exists to show.
-LATENCY_BIN_EDGES: Final[npt.NDArray[np.float64]] = np.logspace(-2.0, 4.1, 60)
+DURATION_BIN_EDGES: Final[npt.NDArray[np.float64]] = np.logspace(-2.0, 4.1, 60)
 
 
-def latency_quantile(counts: npt.NDArray[np.int64], quantile: float) -> float:
+#: Quote ages are bounded above by the snapshot cutoff and the reported tail is compared
+#: against that cutoff, so they need uniform resolution rather than the log spacing the
+#: latency tail uses. Twenty-five-second bins decide "under 1800" for any value more than
+#: twenty-five seconds away from it; the log edges step by 27 % and a bin near the tail
+#: spans 1477 to 1873, which straddles the threshold the number is judged against.
+QUOTE_AGE_BIN_EDGES: Final[npt.NDArray[np.float64]] = np.linspace(0.0, 1800.0, 73)
+
+
+def duration_bins(
+    values: npt.NDArray[np.float64], edges: npt.NDArray[np.float64]
+) -> npt.NDArray[np.int64]:
+    """How many of ``values`` fall in each bin of ``edges``.
+
+    A quantile of a population cannot be recovered from per-origin quantiles, because
+    quantiles do not merge. Counts in fixed bins do merge, by adding, so every producer
+    that reports a duration tail emits these and the scorecard sums them.
+    """
+
+    if values.size == 0:
+        return np.zeros(len(edges) + 1, dtype=np.int64)
+    placed = np.searchsorted(edges, values, side="right")
+    return np.bincount(placed, minlength=len(edges) + 1).astype(np.int64)
+
+
+def duration_quantile(
+    counts: npt.NDArray[np.int64],
+    quantile: float,
+    edges: npt.NDArray[np.float64] | None = None,
+) -> float:
     """The quantile of the latencies these bin counts describe.
 
     `counts` has one entry per bin plus one for everything above the last edge, exactly as
@@ -147,6 +203,7 @@ def latency_quantile(counts: npt.NDArray[np.int64], quantile: float) -> float:
     is the safer direction for a number reported as a worst case.
     """
 
+    scale = DURATION_BIN_EDGES if edges is None else edges
     total = int(counts.sum())
     if total <= 0:
         return 0.0
@@ -154,21 +211,32 @@ def latency_quantile(counts: npt.NDArray[np.int64], quantile: float) -> float:
     cumulative = np.cumsum(counts)
     index = int(np.searchsorted(cumulative, target, side="left"))
     if index == 0:
-        return float(LATENCY_BIN_EDGES[0])
-    if index >= len(LATENCY_BIN_EDGES):
-        return float(LATENCY_BIN_EDGES[-1])
-    return float(LATENCY_BIN_EDGES[index - 1])
+        return float(scale[0])
+    if index >= len(scale):
+        return float(scale[-1])
+    return float(scale[index - 1])
 
 
-def latency_histogram(path: Path, prefix: str) -> npt.NDArray[np.int64]:
-    """Add every window's latency bins into one histogram of the run's trades.
+def duration_histogram(
+    path: Path, prefix: str, edges: npt.NDArray[np.float64] | None = None
+) -> npt.NDArray[np.int64]:
+    """Add every window's bins into one histogram of the run's observations.
+
+    ``edges`` must be the same scale the producer binned against. This used to size its
+    loop from `DURATION_BIN_EDGES` whatever the prefix, which is the latency scale. Quote
+    age is binned on `QUOTE_AGE_BIN_EDGES`, thirteen bins longer, so block 5 wrote 74 and
+    the scorecard summed the first 61: **16,497,996 of 144,587,810 quotes went uncounted**,
+    every one of them in the oldest bins, and the published 95th percentile read 1350 s
+    where the whole histogram gives 1725 s. Truncating a histogram from the top always
+    shortens the tail, which is the direction that flatters the measurement.
 
     A window absent from the panel contributes nothing, and a run whose producer wrote no
-    bins yields an empty histogram, which `latency_quantile` reports as zero rather than as
+    bins yields an empty histogram, which `duration_quantile` reports as zero rather than as
     a tail nobody measured.
     """
 
-    expected = len(LATENCY_BIN_EDGES) + 1
+    scale = DURATION_BIN_EDGES if edges is None else edges
+    expected = len(scale) + 1
     counts = np.zeros(expected, dtype=np.int64)
     missing: list[int] = []
     for index in range(expected):
@@ -183,8 +251,16 @@ def latency_histogram(path: Path, prefix: str) -> npt.NDArray[np.int64]:
         # 0.0 - a panel from an older or truncated producer published as perfect latency.
         # The set is required whole: a producer that emits these emits all of them.
         raise ValueError(
-            f"RP2_SCORECARD_LATENCY_BINS_INCOMPLETE:{len(missing)} of {expected} absent, "
+            f"RP2_SCORECARD_HISTOGRAM_BINS_INCOMPLETE:{len(missing)} of {expected} absent, "
             f"first {missing[0]}"
+        )
+    # And the producer wrote no more than this scale describes. Extra columns are bins on a
+    # different scale, and ignoring them silently is exactly how the quote-age tail went
+    # missing: the reader saw a complete set because it never looked past its own length.
+    if _column(path, f"{prefix}{expected}") is not None:
+        raise ValueError(
+            f"RP2_SCORECARD_HISTOGRAM_BINS_UNREAD:{prefix} carries at least {expected + 1} "
+            f"bins but this scale describes {expected}"
         )
     return counts
 
@@ -352,11 +428,22 @@ def assemble_scorecard(
             # The metric is a median. Averaging per-origin medians is a different number,
             # and on a skewed age distribution it can decide whether the reported
             # freshness clears its target.
-            "b1_median_quote_age_s": _quantile(b1_panel, "b1_median_quote_age_s", 0.5),
-            # The producer's own per-origin tail, summarised across origins. Taking a
-            # quantile of per-origin medians would be a statistic about typical origins:
-            # an origin of mostly fresh quotes with a stale tail has a fresh median.
-            "b1_p95_quote_age_s": _quantile(b1_panel, "b1_p95_quote_age_s", 0.5),
+            # Read off the summed bins, exactly as the flow latency is. Both of these were
+            # a median ACROSS origins of each origin's own median and each origin's own
+            # 95th percentile, which is not a quantile of any population: an origin holding
+            # four contracts weighed as much as one holding two thousand, and quantiles do
+            # not merge by averaging in any case. The 95th percentile is cited in the
+            # verdict against an 1800-second cutoff, so the number had to be the real one.
+            "b1_median_quote_age_s": duration_quantile(
+                duration_histogram(b1_panel, "b1_quote_age_bin_", QUOTE_AGE_BIN_EDGES),
+                0.5,
+                QUOTE_AGE_BIN_EDGES,
+            ),
+            "b1_p95_quote_age_s": duration_quantile(
+                duration_histogram(b1_panel, "b1_quote_age_bin_", QUOTE_AGE_BIN_EDGES),
+                0.95,
+                QUOTE_AGE_BIN_EDGES,
+            ),
             "b1_surface_contracts_per_origin": _mean(b1_panel, "b1_contracts"),
             "b1_surface_expiry_coverage": _coverage(b1_coverage, "b1_expiries"),
             # Rows *dropped* for a failed rate or dividend fit. Block 5 drops none: an
@@ -393,10 +480,17 @@ def assemble_scorecard(
             # median across windows of their own tails let a window of one trade weigh as
             # much as a window of ninety-nine, and quantiles do not merge that way in any
             # case, so the number was not the 95th percentile of any population.
-            "b2_p95_provider_latency_s": latency_quantile(
-                latency_histogram(panels["b2"], "b2_latency_bin_"), 0.95
+            "b2_p95_provider_latency_s": duration_quantile(
+                duration_histogram(panels["b2"], "b2_latency_bin_", DURATION_BIN_EDGES), 0.95
             ),
-            "b2_multileg_share": _mean(panels["b2"], "b2_30m_multileg_premium_share"),
+            # The share of the run's premium that was multileg, not the average of each
+            # origin's own share. Premium per origin runs from a median of 30.2 million to
+            # a 99th percentile of 411.6 million, so the unweighted mean let a quiet origin
+            # count as much as one carrying fourteen times the flow: it read 0.231077 where
+            # the pooled share is 0.236861.
+            "b2_multileg_share": weighted_share(
+                panels["b2"], "b2_30m_multileg_premium_share", "b2_30m_premium"
+            ),
             "b2_empty_window_share": flow.get(
                 "empty_window_share_5m",
                 _share(panels["b2"], "b2_5m_is_empty_window", lambda column: column > 0),
