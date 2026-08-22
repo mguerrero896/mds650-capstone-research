@@ -64,6 +64,10 @@ BAR_SOURCES: Final[tuple[tuple[str, str, str], ...]] = (
 
 _OPTIONAL_COLUMNS: Final = ("open", "high", "low", "volume")
 
+#: Minutes whose volume the primary provider lost, recovered from the second one. Written
+#: by `scripts/rp2_repair_contradicted_volume.py`; absent means no repair is applied.
+VOLUME_REPAIR: Final = "data/fmp/rp2_volume_repair/minute_volume_repair.parquet"
+
 
 @lru_cache(maxsize=1)
 def _schedule() -> pl.DataFrame:
@@ -225,7 +229,45 @@ def load_bar_sources(
         frames.append(frame.with_columns(source=pl.lit(name), role=pl.lit(role)))
     if not frames:
         raise ValueError("RP2_BARS_NO_SOURCES")
-    return deduplicate_bar_sources(pl.concat(frames, how="diagonal"))
+    return apply_volume_repair(
+        deduplicate_bar_sources(pl.concat(frames, how="diagonal")), data_root
+    )
+
+
+def apply_volume_repair(bars: pl.DataFrame, data_root: Path) -> pl.DataFrame:
+    """Fill a volume the primary provider lost, from the second provider's aggregates.
+
+    A price cannot move without trades, and 2,343 minutes across these stores carry
+    `volume == 0.0` with `high > low` - 60 % of them at midday, on the six most heavily
+    traded US equities. The second provider reports real volume on them: 53,676 shares
+    across 809 trades on the AAPL minute the first provider records as empty.
+
+    The overlay carries only minutes whose day passed the reconciliation gate in
+    `scripts/rp2_repair_contradicted_volume.py`: its healthy minutes had to reproduce the
+    close agreement gate 5.1 measured between the two providers before any volume was taken
+    from it. Minutes with no overlay entry keep whatever `build_session_grid` decides, which
+    for a contradicted zero is "unknown" rather than zero.
+    """
+
+    path = data_root / VOLUME_REPAIR
+    if not path.is_file():
+        return bars
+    overlay = pl.read_parquet(path).select(
+        pl.col("asset"),
+        pl.col("bar_start_utc").dt.convert_time_zone(MARKET_TZ).alias("bar_ny"),
+        pl.col("volume").cast(pl.Float64).alias("repaired_volume"),
+    )
+    joined = bars.join(overlay, on=["asset", "bar_ny"], how="left")
+    return joined.with_columns(
+        pl.when(
+            pl.col("repaired_volume").is_not_null()
+            & (pl.col("volume") == 0.0)
+            & (pl.col("high") > pl.col("low"))
+        )
+        .then(pl.col("repaired_volume"))
+        .otherwise(pl.col("volume"))
+        .alias("volume")
+    ).drop("repaired_volume")
 
 
 @dataclass(frozen=True, slots=True)

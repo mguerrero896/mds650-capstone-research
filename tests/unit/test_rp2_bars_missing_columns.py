@@ -22,6 +22,9 @@ recorded, and NaN is the only honest value.
 
 from __future__ import annotations
 
+from datetime import UTC, datetime, timedelta
+from zoneinfo import ZoneInfo
+
 import numpy as np
 import polars as pl
 
@@ -139,3 +142,71 @@ def test_a_flat_minute_with_no_volume_keeps_its_zero() -> None:
     grid = build_session_grid(group)
 
     assert grid.volume[0] == 0.0
+
+
+def test_the_volume_overlay_fills_only_the_contradicted_minutes(tmp_path) -> None:
+    """A volume recovered from the second provider replaces a zero, never a measurement.
+
+    2,343 minutes across the bar stores carry `volume == 0.0` with `high > low`. The
+    second provider reports real volume on them - 53,676 shares across 809 trades on the
+    AAPL minute the first records as empty - and 899 of them were recovered, taking the
+    development test-fold coverage of `volume_30` from 0.8433 to 0.9205 against a 0.90
+    floor. The overlay must touch those minutes and nothing else: a minute that genuinely
+    reported zero on a flat price keeps its zero, and a minute with a real volume keeps
+    the one its own store recorded even if the overlay disagrees.
+    """
+    import polars as pl
+
+    from mds650.rp2.bars import VOLUME_REPAIR, apply_volume_repair
+
+    stamp = datetime(2026, 6, 15, 13, 30, tzinfo=UTC)
+    bars = pl.DataFrame(
+        {
+            "asset": ["AAPL"] * 3,
+            "bar_ny": [
+                (stamp + timedelta(minutes=index)).astimezone(ZoneInfo("America/New_York"))
+                for index in range(3)
+            ],
+            "close": [100.0, 101.0, 102.0],
+            "high": [100.5, 101.5, 102.0],
+            "low": [99.5, 100.5, 102.0],
+            "volume": [5_000.0, 0.0, 0.0],
+        }
+    )
+    overlay = pl.DataFrame(
+        {
+            "asset": ["AAPL"] * 3,
+            "bar_start_utc": [stamp + timedelta(minutes=index) for index in range(3)],
+            "volume": [999_999.0, 42_000.0, 777_777.0],
+        }
+    )
+    path = tmp_path / VOLUME_REPAIR
+    path.parent.mkdir(parents=True, exist_ok=True)
+    overlay.write_parquet(path)
+
+    out = apply_volume_repair(bars, tmp_path).sort("bar_ny")
+
+    assert out["volume"].to_list() == [5_000.0, 42_000.0, 0.0], (
+        "the overlay must fill only the minute whose own bar contradicts its zero: minute 0 "
+        "recorded a real volume and minute 2 was flat, so neither is a contradiction"
+    )
+
+
+def test_bars_load_unchanged_when_no_overlay_exists(tmp_path) -> None:
+    """The repair is an input, not a requirement: without it the bars pass through."""
+    import polars as pl
+
+    from mds650.rp2.bars import apply_volume_repair
+
+    bars = pl.DataFrame(
+        {
+            "asset": ["AAPL"],
+            "bar_ny": [datetime(2026, 6, 15, 9, 30, tzinfo=ZoneInfo("America/New_York"))],
+            "close": [100.0],
+            "high": [100.5],
+            "low": [99.5],
+            "volume": [0.0],
+        }
+    )
+
+    assert apply_volume_repair(bars, tmp_path).equals(bars)
